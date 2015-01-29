@@ -1,0 +1,95 @@
+body {
+    font-family: Arial;
+}
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+td {
+    font-family: Arial;
+	padding: 0;
+	border-spacing:0;
+}
+.Titre {
+    color: White;
+    background:  #003399;
+    font-weight: bold;
+    font-size: large;
+}
+
+.textebleu {
+     font-size: small;
+    font-style: normal;
+    font-weight: normal;
+    color: #003399;
+    text-decoration: none;
+}
+.textegrasbleu {
+    font-size: small;
+    font-style: normal;
+    font-weight: bold;
+    color: #003399;
+    text-decoration: none;
+}
+.textegrasbleu14 {
+    font-size: large;
+    font-style: normal;
+    font-weight: bold;
+    color: #003399;
+    text-decoration: none;
+}
+.textegrasrouge {
+    font-size: small;
+    font-style: normal;
+    font-weight: bold;
+    color: Red;
+    text-decoration: none;
+}
+
+.textegrasnoir {
+    font-size: small;
+    font-style: normal;
+    font-weight: bold;
+    color: Black;
+    text-decoration: none;
+}
+.textegrasnoir14 {
+    font-size: large;
+    font-style: normal;
+    font-weight: bold;
+    color: Black;
+    text-decoration: none;
+}
+
+.textegrasgris {
+    font-size: small;
+    font-style: normal;
+    font-weight: bold;
+    color: #AFAFAF;
+    text-decoration: none;
+}
+
+.textecourant {
+    font-size: small;
+    font-style: normal;
+    font-weight: normal;
+    color: Black;
+    text-decoration: none;
+}
+
+.droite {
+    text-align: right;
+}
+
+.fondgris {
+    background: lightgray;
+ }
+
+.textegrasnoir {
+    font-size: small;
+    font-style: normal;
+    font-weight: bold;
+    color: Black;
+    text-decoration: none;
+}
+

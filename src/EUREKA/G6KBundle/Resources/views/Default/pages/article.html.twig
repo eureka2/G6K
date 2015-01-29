@@ -1,0 +1,36 @@
+{# DO NOT MODIFY THIS FILE #}	
+
+{% extends 'EUREKAG6KBundle:Default/layout:pagelayout.html.twig' %}
+
+{% block title %}{{ parent() }} - {{ step.label }}{% endblock %}
+
+{% block content %}
+
+<div id="step{{ step.id }}" class="step-page">
+
+{{ form.breadcrumb(_context) }}
+
+{% set simu = step.simulator %}
+
+<div class="step-description">
+	{{ form.paragraphs(step.description) }}
+</div>
+<div class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|raw }}</div>
+
+<form method="post" action="#main" enctype="multipart/form-data" id="g6k_form">
+
+{{ form.row(_context) }}
+
+{{ form.actions(_context) }}
+
+<br /><br />
+</form>
+
+{%- for data in simu.datas -%}
+	{%- if data.error -%}
+		Error on {{ data.name }}  : {{ data.errorMessage }}<br />
+	{% endif %}
+{% endfor %}
+
+</div>
+{% endblock %}

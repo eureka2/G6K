@@ -1,0 +1,14 @@
+div.field-container {display:inline;margin:0; padding:0;}
+.btn-help { padding:0;vertical-align:middle}
+.no-js .btn-help:focus ~ div.help-panel { display:block}
+.btn-help { border:none; background: transparent; position:relative;display:inline-block;vertical-align:middle;overflow:hidden;padding:0;width:19px;height:19px}
+.btn-help img { border:none; position:absolute;top:0;left:0;*position:static}
+.collapse{display:none}
+.collapse.in{display:block}
+.collapsing { position:relative;height:0;overflow:hidden;-webkit-transition:height 0.35s ease;transition:height 0.35s ease}
+.g6k-date {
+	padding: 0;
+	margin: 0;
+}
+.g6k-date legend { display: none; width: 0;}
+.g6k-date label { display: none; }

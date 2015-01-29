@@ -1,0 +1,32 @@
+
+
+{# 
+ # nav-top
+ # liens d'évitements
+ #}
+{% macro nav_top() %}
+
+  <ul class="liensAccessibilite">
+    <li><a class="accessibleHiddenLink" href="#core">Aller au contenu</a></li>
+    <li><a class="accessibleHiddenLink" href="#navPrincipale">Aller au menu</a></li>
+    <li><a class="accessibleHiddenLink" href="#search-wrapper">Aller &agrave; la recherche</a></li>
+  </ul>
+
+{% endmacro %}
+
+
+{# 
+ #  breadcrumb
+ #}
+{% macro breadcrumb() %}
+
+  <div id="filAriane" role="navigation">
+    <ul>
+      <li class="sepAriane accueil"><a href="./">Particuliers</a></li>
+      <li class="sepAriane dernier">Simulateurs</li>
+    </ul>
+  </div><!-- id="filAriane" -->
+
+{% endmacro %}
+
+

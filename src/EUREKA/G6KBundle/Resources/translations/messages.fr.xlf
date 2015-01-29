@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>January</source>
+                <target>Janvier</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>February</source>
+                <target>Février</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>March</source>
+                <target>Mars</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>April</source>
+                <target>Avril</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>May</source>
+                <target>Mai</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>June</source>
+                <target>Juin</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>July</source>
+                <target>Juillet</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>August</source>
+                <target>Août</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>September</source>
+                <target>Septembre</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>October</source>
+                <target>Octobre</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>November</source>
+                <target>Novembre</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>December</source>
+                <target>Décembre</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>Day</source>
+                <target>Jour</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>Month</source>
+                <target>Mois</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>Year</source>
+                <target>Année</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>Current step</source>
+                <target>Etape courante</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>Fields marked with an %asterisk% are required.</source>
+                <target>Les champs marqués d'un %asterisk% sont obligatoires.</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>This simulator does not exist</source>
+                <target>Ce simulateur n'existe pas</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>The '%field%' field is required</source>
+                <target>Le champ '%field%' est requis</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>This field is required</source>
+                <target>Ce champ est requis</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>This value is not in the expected format</source>
+                <target>Cette donnée n'est pas au format attendu</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>This value is not in the expected format (%format%)</source>
+                <target>Cette donnée n'est pas au format attendu (%format%)</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>This template does not exist</source>
+                <target>Ce template n'existe pas</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>This value can not be less than %min%</source>
+                <target>Cette donnée ne peut être inférieure à %min%</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>This value can not be greater than %max%</source>
+                <target>Cette donnée ne peut être supérieure à %max%</target>
+            </trans-unit>
+      </body>
+    </file>
+</xliff>

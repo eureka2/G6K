@@ -1,0 +1,141 @@
+.step-page .step-description p {
+	margin: 0;
+	padding: 0;
+}
+
+.step-page input[type=money]  {
+	max-width: 8em;
+	width: 8em;
+}
+
+.step-page fieldset {
+	margin-top : 0;
+	border: 1px solid #e2f1ff;
+	margin-bottom: 25px;
+	padding: 10px 14px;
+	font-size: 1em;
+}
+
+.step-page input[type=text]  {
+	max-width: 5.5em;
+}
+
+.step-page input[type=number]  {
+	max-width: 3em;
+}
+
+.step-page input {
+	height:1.3em;
+}
+.step-page input[type=submit], .step-page input[type=reset] {
+	height:auto;
+}
+.step-page input[disabled=disabled]  {
+	border: 0;
+}
+
+.step-page label , .step-page .label , .step-page input{
+	display: block;
+	float: left;
+	margin-bottom: 2px;
+}
+.step-page label, .step-page .label {
+	text-align: right;
+	padding-right: 10px;
+	min-width: 25em;
+	width: 25em;
+}
+.step-page label.choice {
+	text-align: left;
+	min-width: initial;
+	width: auto;
+}
+
+.step-page br  {
+	clear: both;
+}
+.step-page .error {
+	color: red;
+	font-weight: bold;
+}
+.step-page .emphasized {
+	color: blue;
+	font-weight: bold;
+}
+.step-page .explanation {
+	color: blue;
+	font-weight: bold;
+	width: 25em;
+	float:right;
+}
+
+.action_buttons  input {
+	margin-right: 1em;
+}
+.breadcrumb {
+	font-family:Arial,Helvetica,sans-serif;
+    font-size: 1em;
+    color: #333;
+    line-height: 1.1em;
+    text-align: left;
+}
+.breadcrumb ol {
+	padding:0;
+	list-style:none;
+}
+.breadcrumb-4 {
+	width:568px;
+	min-height:55px;
+	background:url(../images/breadcrumb4.png) -8300px 0;
+	margin:0 0 18px 0
+}
+.breadcrumb-4-1 {
+	background-position:-5500px 0
+}
+.breadcrumb-4-2 {
+	background-position:-6100px 0
+}
+.breadcrumb-4-3 {
+	background-position:-6700px 0
+}
+.breadcrumb-4-4 {
+	background-position:-7300px 0
+}
+.breadcrumb li {
+    font-size: 0.75em;
+    line-height: 1.35em;
+	margin:0;
+	float:left;
+	width:9.1em;
+	padding:12px 20px 0 12px;
+	list-style:none;
+}
+.breadcrumb li p {
+    font-size: 1em;
+	line-height:1.333em;
+	padding:0;
+	margin:0;
+	background:#ddd;
+	font-weight:bold;
+	display: block;
+	
+}
+.breadcrumb li p:first-line {
+	font-size:1.667em
+}
+.breadcrumb li.current p {
+	color:#fff;
+	background:#007dbb
+}
+.breadcrumb li.current p strong {
+	font-weight:bold
+}
+.clearer {
+    clear: both;
+    float: none;
+	padding:0;
+	margin:0;
+}
+
+.help-panel { margin-top: -3px; }
+.help-panel p { margin-bottom:0.5em; width:534px}

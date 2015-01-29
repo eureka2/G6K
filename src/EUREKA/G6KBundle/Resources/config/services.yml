@@ -1,0 +1,7 @@
+parameters:
+
+services:
+    kernel.listener.g6k_exception_listener:
+        class: EUREKA\G6KBundle\EventListener\G6KExceptionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }

@@ -1,0 +1,40 @@
+{% extends "EUREKAG6KBundle:service-public.fr/layout:pagelayout.html.twig" %}
+
+{% block title %}{{step.simulator.label }} - {{ step.label }} - {{ parent() }}{% endblock %}
+
+{% block styles %}
+{{ parent() }}<link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/service-public.fr/css') }}/{{ step.simulator.name }}.css" />
+{% endblock %}
+
+{% block content %}
+
+	<div id="colonne2">
+	  <div id="core">
+	    <div id="blocTitrePage"><h2 id="titrePage">{% block page_title %}{{ step.simulator.label }}{% endblock %}</h2></div>
+		<div class="intro">{{ form.paragraphs(step.simulator.description|raw) }}</div>
+	    <div class="accueilSite">
+
+			<div id="step{{ step.id }}" class="step-page{% if step.simulator.dynamic %} dynamic{%- endif -%}{% if script == 0 %} no-js{%- endif -%}">
+
+				{{ form.breadcrumb(_context) }}
+
+				<div class="step-description">
+					{{ form.paragraphs(step.description) }}
+				</div>
+				<div class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|raw }}</div>
+
+				<form method="post" action="#main" enctype="multipart/form-data" id="g6k_form">
+				{{ form.row(_context) }}
+	
+				{{ form.actions(_context) }}
+
+				<br /><br />
+				</form>
+
+			</div>
+
+	    </div><!-- end of accueilSite -->
+
+	  </div><!-- end of core -->
+	</div><!-- end colonne2 -->
+{% endblock %}
