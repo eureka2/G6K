@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+use Silex\Application;
+use Binfo\Silex\MobileDetectServiceProvider;
+
 class DefaultController extends Controller {
 
 	protected $simu;
@@ -310,13 +313,15 @@ class DefaultController extends Controller {
 		$hiddens['sequence'] = implode('|', $sequence);
 		$hiddens['script'] = $script;
 		$hiddens['view'] = $view;
+		$silex = new Application();
+		$silex->register(new MobileDetectServiceProvider());
 		try {
 			return $this->render(
 				'EUREKAG6KBundle:'.$view.'/'.$step->getTemplate(),
 				array(
 					'view' => $view,
 					'script' => $script,
-					'ua' => new \mDetect_mDetect,
+					'ua' => $silex["mobile_detect"],
 					'path' => 'http://www.service-public.fr',
 					// 'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'log' => $this->log,
@@ -639,12 +644,14 @@ class DefaultController extends Controller {
 	
     protected function pdfOutput($step, $pathlength, $datas, $view = "Default")
     {
-        $page = $this->render(
+ 		$silex = new Application();
+		$silex->register(new MobileDetectServiceProvider());
+		$page = $this->render(
 			'EUREKAG6KBundle:'.$view.'/'.$step->getTemplate(),
 			array(
 				'view' => $view,
 				'script' => $script,
-				'ua' => new \mDetect_mDetect,
+				'ua' => $silex["mobile_detect"],
 				'path' => 'http://www.service-public.fr',
 				// 'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'log' => $this->log,
@@ -653,7 +660,8 @@ class DefaultController extends Controller {
 			)
 		);
 		
-		$mpdf=new \mPDF_mPDF();
+		$mpdfService = $this->get('tfox.mpdfport');
+		$mpdf = $mpdfService->getMpdf();
 		$mpdf->PDFA = true;
   
 		$mpdf->SetDisplayMode('fullpage');

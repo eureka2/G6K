@@ -1,10 +1,8 @@
 /web/bundles/
 /calcul/bundles/
 /src/EUREKA/G6KBundle/Resources/config/parameters.yml
-/src/EUREKA/G6KBundle/Resources/data/databases/*
-/src/EUREKA/G6KBundle/Resources/data/simulators/*
 /src/EUREKA/G6KBundle/Resources/public/service-public.fr/*
-/src/EUREKA/G6KBundle/Resources/public/views/*
+/src/EUREKA/G6KBundle/Resources/views/service-public.fr/*
 /app/bootstrap.php.cache
 /app/cache/*
 /app/config/parameters.yml

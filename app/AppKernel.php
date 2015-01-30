@@ -17,6 +17,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 			new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
+			new TFox\MpdfPortBundle\TFoxMpdfPortBundle(),
             new EUREKA\G6KBundle\EUREKAG6KBundle(),
         );
 

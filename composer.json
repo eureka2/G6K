@@ -18,6 +18,9 @@
         "sensio/distribution-bundle": "~3.0.12",
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
+		"tfox/mpdf-port-bundle": "1.2.*",
+		"jbinfo/mobile-detect-service-provider": "~1",
+        "silex/silex": "~1",
         "willdurand/js-translation-bundle": "@stable"
     },
     "require-dev": {
