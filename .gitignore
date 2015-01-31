@@ -1,6 +1,5 @@
 /web/bundles/
 /calcul/bundles/
-/src/EUREKA/G6KBundle/Resources/config/parameters.yml
 /src/EUREKA/G6KBundle/Resources/public/service-public.fr/*
 /src/EUREKA/G6KBundle/Resources/views/service-public.fr/*
 /src/EUREKA/G6KBundle/Resources/data/databases/*.db

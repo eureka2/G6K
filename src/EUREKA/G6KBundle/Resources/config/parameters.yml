@@ -1,0 +1,4 @@
+parameters:
+    domainview: 
+        localhost: Default
+    page404: /404.html
