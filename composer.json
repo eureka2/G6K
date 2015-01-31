@@ -1,9 +1,14 @@
 {
-    "name": "symfony/framework-standard-edition",
+    "name": "eureka2/G6K",
     "license": "MIT",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
-    "autoload": {
+    "description": "Generator of simulator of calculation",
+    "authors": [
+        {
+            "name": "Eureka2",
+            "homepage": "https://github.com/eureka2/G6K"
+        }
+    ],    "autoload": {
         "psr-0": { "": "src/", "SymfonyStandard": "app/" }
     },
     "require": {
