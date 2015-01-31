@@ -4,9 +4,9 @@
 /src/EUREKA/G6KBundle/Resources/public/service-public.fr/*
 /src/EUREKA/G6KBundle/Resources/views/service-public.fr/*
 /src/EUREKA/G6KBundle/Resources/data/databases/*.db
-!/src/EUREKA/G6KBundle/Resources/data/databases/.gitkeep
+!src/EUREKA/G6KBundle/Resources/data/databases/.gitkeep
 /src/EUREKA/G6KBundle/Resources/data/simulators/*.xml
-!/src/EUREKA/G6KBundle/Resources/data/simulators/.gitkeep
+!src/EUREKA/G6KBundle/Resources/data/simulators/.gitkeep
 /app/bootstrap.php.cache
 /app/cache/*
 /app/config/parameters.yml
