@@ -8,10 +8,12 @@
             "name": "Eureka2",
             "homepage": "https://github.com/eureka2/G6K"
         }
-    ],    "autoload": {
+    ],
+	"autoload": {
         "psr-0": { "": "src/", "SymfonyStandard": "app/" }
     },
-	"minimum-stability": "stable",
+	"minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "2.6.*",
