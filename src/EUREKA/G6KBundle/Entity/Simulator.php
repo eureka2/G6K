@@ -394,6 +394,18 @@ class Simulator {
 		return "#(".$this->addDependency ($matches).")";
 	}
 	
+	private function paragraphs ($text) {
+		$result = "";
+		$paras = explode("\n", trim($text));
+		foreach ($paras as $para) {
+			$para = trim($para);
+			$result .= "<p>";
+			$result .= $para == "" ? "&nbsp;" : $para;
+			$result .= "</p>";
+		}
+		return $result;
+	}
+	
 	public function toJSON($url, $stepId = 0) {		
 		$json = array();
 		$datas = array();
@@ -485,7 +497,7 @@ class Simulator {
 		}
 		$json["name"] = (string)$simulator["name"];
 		$json["label"] = (string)$simulator["label"];
-		$json["description"] = $simulator->Description;
+		$json["description"] = $this->paragraphs($simulator->Description);
 		$fieldsets = array();
 		$actions = array();
 		$footnotes = array();
@@ -534,18 +546,18 @@ class Simulator {
 								}
 								$this->dependencies = 'noteDependencies';
 								if ((string)$field->PreNote != "") {
-									$nfield['prenote'] = preg_replace_callback(
+									$nfield['prenote'] = $this->paragraphs(preg_replace_callback(
 										"/#(\d+)/", 
 										array($this, 'addNoteDependency'), 
 										(string)$field->PreNote
-									);
+									));
 								}
 								if ((string)$field->PostNote != "") {
-									$nfield['postnote'] = preg_replace_callback(
+									$nfield['postnote'] = $this->paragraphs(preg_replace_callback(
 										"/#(\d+)/", 
 										array($this, 'addNoteDependency'),
 										(string)$field->PostNote
-									);
+									));
 								}
 								if ((string)$field['usage'] == 'input') {
 									$this->datas[$id]['inputField'] = array(
@@ -595,11 +607,11 @@ class Simulator {
 							$this->name = (int)$footnote['id'];
 							$this->dependencies = 'footNoteDependencies';
 							$nfootnote = array(
-								'text'	=> preg_replace_callback(
+								'text'	=> $this->paragraphs(preg_replace_callback(
 									"/#(\d+)/", 
 									array($this, 'addNoteDependency'), 
 									$footnote
-								)
+								))
 							);
 							if ((string)$footnote['condition'] != "") {
 								$nfootnote['unparsedCondition'] = preg_replace_callback(
