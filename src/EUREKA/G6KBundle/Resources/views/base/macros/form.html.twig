@@ -233,6 +233,8 @@
 	</{%- if count > 1 -%}fieldset{% else %}div{% endif %}>
 	{% endif %}
 {% endfor %}
+{%- if step.footNotes %}
+<div class="foot-notes">
 {%- for footnote in step.footNotes -%}
 	{%- if footnote.displayable or (simu.dynamic and step.id == 0) -%}
 	<div id="foot-note-{{ footnote.id }}" class="foot-note">
@@ -240,6 +242,8 @@
 	</div>
 	{% endif %}
 {% endfor %}
+</div>
+{% endif %}
 
 {{ _self.hiddens(context) }}
 
