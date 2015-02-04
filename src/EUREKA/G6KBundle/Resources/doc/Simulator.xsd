@@ -41,14 +41,7 @@
 											<xs:complexType>
 												<xs:sequence>
 													<xs:element name="Description" type="xs:string" minOccurs="0"/>
-													<xs:element name="Column" minOccurs="1" maxOccurs="unbounded">
-														<xs:complexType>
-															<xs:attribute name="id" type="xs:string" use="required"/>
-															<xs:attribute name="name" type="xs:string" use="required"/>
-															<xs:attribute name="label" type="xs:string" use="required"/>
-															<xs:attribute name="condition" type="xs:string"/>
-														</xs:complexType>
-													</xs:element>
+													<xs:element name="Column" type="ColumnType" minOccurs="1" maxOccurs="unbounded"/>
 												</xs:sequence>
 												<xs:attribute name="id" type="xs:string"/>
 												<xs:attribute name="label" type="xs:string"/>
@@ -116,38 +109,29 @@
 											<xs:complexType>
 												<xs:sequence>
 													<xs:element name="Legend" type="xs:string" minOccurs="0"/>
-													<xs:element name="Field" maxOccurs="unbounded">
-														<xs:complexType>
-															<xs:choice minOccurs="0">
-																<xs:element name="PreNote" type="xs:string"/>
-																<xs:element name="PostNote" type="xs:string"/>
-															</xs:choice>
-															<xs:attribute name="newline" type="xs:boolean" default="1"/>
-															<xs:attribute name="position" type="xs:positiveInteger" use="required"/>
-															<xs:attribute name="data" type="xs:positiveInteger" use="required"/>
-															<xs:attribute name="label" type="xs:string" use="required"/>
-															<xs:attribute name="usage" use="required">
-																<xs:simpleType>
-																	<xs:restriction base="xs:NMTOKEN">
-																		<xs:enumeration value="input"/>
-																		<xs:enumeration value="output"/>
-																	</xs:restriction>
-																</xs:simpleType>
-															</xs:attribute>
-															<xs:attribute name="prompt"/>
-															<xs:attribute name="required" type="xs:boolean"/>
-															<xs:attribute name="colon" type="xs:boolean" default="1"/>
-															<xs:attribute name="underlabel" type="xs:boolean" default="0"/>
-															<xs:attribute name="help" type="xs:boolean"/>
-															<xs:attribute name="emphasize" type="xs:boolean"/>
-															<xs:attribute name="explanation" type="xs:string"/>
-															<xs:attribute name="condition" type="xs:string"/>
-															<xs:attribute name="expanded" type="xs:boolean" default="1"/>
-														</xs:complexType>
-													</xs:element>
+													<xs:element name="Column" type="ColumnType" minOccurs="0" maxOccurs="unbounded"/>
+													<xs:choice>
+														<xs:element name="FieldRow" maxOccurs="unbounded">
+															<xs:complexType>
+																<xs:sequence maxOccurs="unbounded">
+																	<xs:element name="Field" type="FieldType"/>
+																</xs:sequence>
+																<xs:attribute name="label" type="xs:string"/>
+															</xs:complexType>
+														</xs:element>
+														<xs:element name="Field" type="FieldType" maxOccurs="unbounded"/>
+													</xs:choice>
 												</xs:sequence>
 												<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
 												<xs:attribute name="condition" type="xs:string"/>
+												<xs:attribute name="disposition">
+													<xs:simpleType>
+														<xs:restriction base="xs:NMTOKEN">
+															<xs:enumeration value="classic"/>
+															<xs:enumeration value="grid"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="ActionList" minOccurs="0">
@@ -314,4 +298,37 @@
 			<xs:attribute name="dynamic" type="xs:boolean" default="0"/>
 		</xs:complexType>
 	</xs:element>
+	<xs:complexType name="ColumnType">
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="condition" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="FieldType">
+		<xs:choice minOccurs="0">
+			<xs:element name="PreNote" type="xs:string"/>
+			<xs:element name="PostNote" type="xs:string"/>
+		</xs:choice>
+		<xs:attribute name="newline" type="xs:boolean" default="1"/>
+		<xs:attribute name="position" type="xs:positiveInteger" use="required"/>
+		<xs:attribute name="data" type="xs:positiveInteger" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="usage" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="input"/>
+					<xs:enumeration value="output"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="prompt"/>
+		<xs:attribute name="required" type="xs:boolean"/>
+		<xs:attribute name="colon" type="xs:boolean" default="1"/>
+		<xs:attribute name="underlabel" type="xs:boolean" default="0"/>
+		<xs:attribute name="help" type="xs:boolean"/>
+		<xs:attribute name="emphasize" type="xs:boolean"/>
+		<xs:attribute name="explanation" type="xs:string"/>
+		<xs:attribute name="condition" type="xs:string"/>
+		<xs:attribute name="expanded" type="xs:boolean" default="1"/>
+	</xs:complexType>
 </xs:schema>

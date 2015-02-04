@@ -18,6 +18,126 @@
 	{% else %}
 		{%- if fieldset.legend is not empty -%}<div class="legend">{{ fieldset.legend }}</div>{%- endif -%}
 	{% endif %}
+	{%- if fieldset.disposition is not empty and fieldset.disposition == "grid" -%}
+	<table class="grid" id="{{ step.name }}-grid-{{ fieldset.id }}">
+	<thead>
+	<tr>
+	<th>&nbsp;</th>
+	{%- for column in fieldset.column -%}
+	<th>{{ column.label }}</th>
+	{% endfor %}
+	</tr>
+	</thead>
+	<tbody>
+	{%- for row in fieldset.fieldRows -%}
+	<tr>
+	<th>{{ row.label }}</th>
+	{%- for field in row.fields -%}
+		{%- if field.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
+			{% set id = field.data %}
+			{% set data = simu.dataById(id) %}
+			{% set type = data.type %}
+			{% set name = data.name %}
+			{% set value = data.value %}
+			{% set prompt = field.prompt ? field.prompt : '---------' %}
+			{%- if type == 'money' or type == 'percent' -%}
+				{% set value = value|replace(".", ",") %}
+			{% elseif type == 'number' %}
+			{% elseif type == 'integer' %}
+				{% set type = 'number' %}
+			{% endif %}
+			{%- if field.usage == 'input' -%}
+			<td>
+				{%- if type == 'money' and simu.symbolPosition == 'before' %}<span class="money-symbol">{{ simu.moneySymbol }}</span> {% endif %}
+				{%- if type == 'choice' -%}
+					{%- if field.expanded == 1 -%}
+					<div id="{{ name }}">
+					{%- for choice in data.choices -%}
+						{%- if choice.selected -%}
+						<label class="choice" for="{{ name }}_{{ choice.id }}"><input id="{{ name }}_{{ choice.id }}" type="radio" name="{{ name }}" value="{{ choice.value }}"{%- if choice.value == value %} checked="checked"{% endif %} />{{ choice.label }}</label>
+						{% endif %}
+					{% endfor %}
+					</div>
+					{% else %}
+						<select id="{{ name }}" name="{{ name }}">
+						{%- if not(data.default) -%}<option id="{{ name }}_none" value="">{{ prompt }}</option>{% endif %}
+						{%- for choice in data.choices -%}
+							{%- if choice.selected -%}
+							<option id="{{ name }}_{{ choice.id }}" value="{{ choice.value }}"{%- if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
+							{% endif %}
+						{% endfor %}
+						</select>
+					{% endif %}
+				{% elseif type == 'boolean' %}
+				<input type="checkbox" id="{{ name }}" name="{{ name }}" value="true"{%- if value == 'true' %} checked="checked"{% endif %} />
+				{% elseif type == 'date' %}
+					{%- if context.ua.mobile -%}
+					<input type="date" id="{{ name }}" name="{{ name }}" value="{{ value }}" class="date{%- if data.error %} error{% endif %}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %} />
+					{% elseif context.script == 0 %}
+					<input type="date" id="{{ name }}" name="{{ name }}" value="{{ value }}" class="date{%- if data.error %} error{% endif %}" placeholder="jj/mm/aaaa" />
+					{% else %}
+					<input type="text" id="{{ name }}" name="{{ name }}" value="{{ value }}" class="date{%- if data.error %} error{% endif %}" placeholder="jj/mm/aaaa" />
+					{% endif %}
+				{% elseif type == 'day' %}
+					{% set min = data.min ?: 01 %}
+					{% set max = data.max ?: 31 %}
+					<select id="{{ name }}" name="{{ name }}"{%- if data.error %} class="error"{% endif %}>
+					{%- if not(data.default) -%}<option value="00">--</option>{% endif %}
+					{% for i in min..max %}
+					<option value="{{ i }}"{%- if i == value %} selected="selected"{% endif %}>{{ i }}</option>
+					{% endfor %}
+					</select>
+				{% elseif type == 'month' %}
+					{% set min = data.min|default(01) %}
+					{% set max = data.max|default(12) %}
+					<select id="{{ name }}" name="{{ name }}"{%- if data.error %} class="error"{% endif %}>
+					{%- if not(data.default) -%}<option value="00">{{ prompt }}</option>{% endif %}
+					{% for i in min..max %}
+					<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ _self.monthname(i) }}</option>
+					{% endfor %}
+					</select>
+				{% elseif type == 'year' %}
+					{% set min = data.min|default(1964) %}
+					{% set max = data.max|default(min + 100) %}
+					<select id="{{ name }}" name="{{ name }}"{%- if data.error %} class="error"{% endif %}>
+					{%- if not(data.default) -%}<option value="">----</option>{% endif %}
+					{% for i in min..max %}
+					<option value="{{ i }}"{%- if i == value %} selected="selected"{% endif %}>{{ i }}</option>
+					{% endfor %}
+					</select>
+				{% elseif type == 'region' %}
+					<select id="{{ name }}" name="{{ name }}"{%- if data.error %} class="error"{% endif %}>
+					{{ _self.regions() }}
+					</select>
+				{% elseif type == 'department' %}
+					<select id="{{ name }}" name="{{ name }}"{%- if data.error %} class="error"{% endif %}>
+					{{ _self.departments(value) }}
+					</select>
+				{% elseif type == 'textarea' %}
+				<textarea id="{{ name }}" name="{{ name }}"{%- if data.error %} class="error"{% endif %}>{{ value }}</textarea>
+				{% elseif type == 'number' %}
+				<input type="{{ type }}" id="{{ name }}" name="{{ name }}" value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="error"{% endif %} />
+				{% else %}
+				<input type="{{ type }}" id="{{ name }}" name="{{ name }}" value="{{ value }}"{%- if data.error -%} class="error"{% endif %} />
+				{% endif %}
+				{%- if type == 'money' and simu.symbolPosition == 'after' %}
+					<span class="money-symbol">{{ simu.moneySymbol }}</span>
+				{% endif %}
+				{%- if type == 'percent' -%}<span class="percent-symbol">%</span>{%- endif %}
+				{%- if data.unit -%}<span class="unit"> {{ data.unit }}</span>{%- endif -%}
+			</td>
+			{% else %}
+			<td>{{ value }}</td>
+			{% endif %}
+		{% else %}
+		<td>&nbsp;</td>
+		{% endif %}
+	{% endfor %}
+	</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+	{% else %}
 	{%- for field in fieldset.fields -%}
 		{%- if field.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
 			{% set id = field.data %}
@@ -230,6 +350,7 @@
 			</div>
 		{% endif %}
 	{% endfor %}
+	{% endif %}
 	</{%- if count > 1 -%}fieldset{% else %}div{% endif %}>
 	{% endif %}
 {% endfor %}

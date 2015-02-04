@@ -135,51 +135,11 @@ class DefaultController extends Controller {
 			}
 			foreach ($step->getFieldSets() as $fieldset) {
 				foreach ($fieldset->getFields() as $field) {
-					$id = $field->getData();
-					$data = $this->simu->getDataById($id);
-					if ($field->getUsage() == "input") {
-						if (!isset($form[$data->getName()])) {
-							if ($data->getType() == 'boolean') {
-								$data->setValue('false');
-							}
-							$this->variables[''.$data->getId()] = $data->getValue();
-							$this->variables[$data->getName()] = $data->getValue();
-						} elseif (! $skipValidation) {
-							$value = $data->getValue();
-							if ($field->isRequired() && empty($value)) {
-								$data->setError(true);
-								if ($field->getLabel() != "") {
-									$data->setErrorMessage($this->get('translator')->trans("The '%field%' field is required", array('%field%' => $field->getLabel())));
-								} else {
-									$data->setErrorMessage($this->get('translator')->trans("This field is required"));
-								}
-								$this->error = true;
-							} elseif (! $data->check()) {
-								$data->setError(true);
-								switch ($data->getType()) {
-									case 'date':
-										$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'jj/mm/aaaa')));
-										break;
-									case 'number': 
-										$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
-										break;
-									case 'integer': 
-										$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
-										break;
-									case 'money': 
-										$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'montant')));
-										break;
-									case 'percent':
-										$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'pourcentage')));
-										break;
-									default:
-										$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format"));
-								}
-								$this->error = true;
-								unset($this->variables[''.$data->getId()]);
-								unset($this->variables[$data->getName()]);
-							}
-						}
+					$this->checkField($field);
+				}
+				foreach ($fieldset->getFieldRows() as $fieldrow) {
+					foreach ($fieldrow->getFields() as $field) {
+						$this->checkField($field);
 					}
 				}
 			}
@@ -223,49 +183,13 @@ class DefaultController extends Controller {
 					}
 				}
 				foreach ($fieldset->getFields() as $field) {
-					$id = $field->getData();
-					$data = $this->simu->getDataById($id);
-					$data->setUsed(false);
-					$condition = $field->getCondition();
 					$field->setDisplayable($fieldset->isDisplayable());
-					if ($condition != "" && $istep > 0) {
-						if ($this->evaluate($condition) == 'false') {
-							$field->setDisplayable(false);
-						}
-					}
-					if ($field->isDisplayable()) {
-						$displayable = true;
-						$explanation = $field->getExplanation();
-						if ($explanation != "") {
-							$result = $this->evaluate($explanation);
-							if ($result !== false) {
-								$field->setExplanation($result);
-							}
-						}
-						if ($field->getUsage() == 'input') {
-							$data->setUsed(true);
-						}
-						$choiceSource = $data->getChoiceSource();
-						if ($choiceSource != null) {
-							$source = $choiceSource->getId();
-							if ($source != "") {
-								$source = $this->evaluate($source);
-								if ($source !== false) {
-									$source = $this->simu->getSourceById($source);
-									$result = $this->processSource($source);
-									if ($result !== null) {
-										$n = 0;
-										foreach ($result as $row) {
-											$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
-											$choice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
-											$data->addChoice($choice);
-										}
-									}
-								}
-							}
-						}
-						$field->setPreNote($this->replaceVariables($field->getPreNote()));
-						$field->setPostNote($this->replaceVariables($field->getPostNote()));
+					$this->processField($field, $istep, $displayable); 
+				}
+				foreach ($fieldset->getFieldRows() as $fieldrow) {
+					foreach ($fieldrow->getFields() as $field) {
+						$field->setDisplayable($fieldset->isDisplayable());
+						$this->processField($field, $istep, $displayable); 
 					}
 				}
 				$fieldset->setLegend($this->replaceVariables($fieldset->getLegend()));
@@ -365,6 +289,103 @@ class DefaultController extends Controller {
 		$response->setContent(json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES | JSON_HEX_APOS | JSON_HEX_QUOT));
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
+	}
+	
+	protected function checkField($field) 
+	{
+		$id = $field->getData();
+		$data = $this->simu->getDataById($id);
+		if ($field->getUsage() == "input") {
+			if (!isset($form[$data->getName()])) {
+				if ($data->getType() == 'boolean') {
+					$data->setValue('false');
+				}
+				$this->variables[''.$data->getId()] = $data->getValue();
+				$this->variables[$data->getName()] = $data->getValue();
+			} elseif (! $skipValidation) {
+				$value = $data->getValue();
+				if ($field->isRequired() && empty($value)) {
+					$data->setError(true);
+					if ($field->getLabel() != "") {
+						$data->setErrorMessage($this->get('translator')->trans("The '%field%' field is required", array('%field%' => $field->getLabel())));
+					} else {
+						$data->setErrorMessage($this->get('translator')->trans("This field is required"));
+					}
+					$this->error = true;
+				} elseif (! $data->check()) {
+					$data->setError(true);
+					switch ($data->getType()) {
+						case 'date':
+							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'jj/mm/aaaa')));
+							break;
+						case 'number': 
+							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
+							break;
+						case 'integer': 
+							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
+							break;
+						case 'money': 
+							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'montant')));
+							break;
+						case 'percent':
+							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'pourcentage')));
+							break;
+						default:
+							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format"));
+					}
+					$this->error = true;
+					unset($this->variables[''.$data->getId()]);
+					unset($this->variables[$data->getName()]);
+				}
+			}
+		}
+	}
+	
+	protected function processField($field, $istep, &$displayable) 
+	{
+		$id = $field->getData();
+		$data = $this->simu->getDataById($id);
+		$data->setUsed(false);
+		$condition = $field->getCondition();
+		if ($condition != "" && $istep > 0) {
+			if ($this->evaluate($condition) == 'false') {
+				$field->setDisplayable(false);
+			}
+		}
+		if ($field->isDisplayable()) {
+			$displayable = true;
+			$explanation = $field->getExplanation();
+			if ($explanation != "") {
+				$result = $this->evaluate($explanation);
+				if ($result !== false) {
+					$field->setExplanation($result);
+				}
+			}
+			if ($field->getUsage() == 'input') {
+				$data->setUsed(true);
+			}
+			$choiceSource = $data->getChoiceSource();
+			if ($choiceSource != null) {
+				$source = $choiceSource->getId();
+				if ($source != "") {
+					$source = $this->evaluate($source);
+					if ($source !== false) {
+						$source = $this->simu->getSourceById($source);
+						$result = $this->processSource($source);
+						if ($result !== null) {
+							$n = 0;
+							foreach ($result as $row) {
+								$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
+								$choice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
+								$data->addChoice($choice);
+							}
+						}
+					}
+				}
+			}
+			$field->setPreNote($this->replaceVariables($field->getPreNote()));
+			$field->setPostNote($this->replaceVariables($field->getPostNote()));
+		}
 	}
 	
 	protected function evaluate($condition) 
@@ -645,7 +666,7 @@ class DefaultController extends Controller {
     {
  		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
-		$page = $this->render(
+        $page = $this->render(
 			'EUREKAG6KBundle:'.$view.'/'.$step->getTemplate(),
 			array(
 				'view' => $view,

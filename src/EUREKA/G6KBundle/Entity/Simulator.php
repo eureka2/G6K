@@ -258,6 +258,9 @@ class Simulator {
 					$fieldsetObj = new FieldSet($stepObj, (int)$fieldset['id']);
 					$fieldsetObj->setLegend($fieldset->Legend);
 					$fieldsetObj->setCondition((string)$fieldset['condition']);
+					if ((string)$fieldset['disposition'] != "") {
+						$fieldsetObj->setDisposition((string)$fieldset['disposition']);
+					}
 					foreach ($fieldset->Field as $field) {
 						$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
 						$fieldObj->setUsage((string)$field['usage']);
@@ -274,6 +277,27 @@ class Simulator {
 						$fieldObj->setPreNote($field->PreNote);
 						$fieldObj->setPostNote($field->PostNote);
 						$fieldsetObj->addField($fieldObj);
+					}
+					foreach ($fieldset->FieldRow as $fieldrow) {
+						$fieldRowObj = new Field($fieldsetObj, (string)$field['label']);
+						foreach ($fieldrow as $field) {
+							$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
+							$fieldObj->setUsage((string)$field['usage']);
+							$fieldObj->setPrompt((string)$field['prompt']);
+							$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');					
+							$fieldObj->setRequired((string)$field['required'] == '1');					
+							$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');					
+							$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');					
+							$fieldObj->setHelp((string)$field['help'] == '1');					
+							$fieldObj->setEmphasize((string)$field['emphasize'] == '1');					
+							$fieldObj->setExplanation((string)$field['explanation']);
+							$fieldObj->setCondition((string)$field['condition']);
+							$fieldObj->setExpanded((string)$field['expanded'] == '1');					
+							$fieldObj->setPreNote($field->PreNote);
+							$fieldObj->setPostNote($field->PostNote);
+							$fieldRowObj->addField($fieldObj);
+						}
+						$fieldsetObj->addFieldRow($fieldRowObj);
 					}
 					$stepObj->addFieldSet($fieldsetObj);
 				}
@@ -406,6 +430,52 @@ class Simulator {
 		return $result;
 	}
 	
+	private function fieldProperties ($field) {
+		$id = (int)$field['data'];
+		$nfield = array(
+			'data' => $this->name,
+			'label' => (string)$field['label'],
+			'usage' => (string)$field['usage']
+		);
+		if ((string)$field['prompt'] != "") {
+			$nfield['prompt'] = (string)$field['prompt'];
+		}
+		if ((string)$field['required'] == '1') {
+			$nfield['required'] = '1';
+		}
+		$this->dependencies = 'fieldDependencies';
+		if ((string)$field['condition'] != "") {
+			$this->datas[$id]['unparsedCondition'] = preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addDependency'),
+				(string)$field['condition']
+			);
+		}
+		if ((string)$field['explanation'] != "") {
+			$this->datas[$id]['unparsedExplanation'] = preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addDependency'),
+				(string)$field['explanation']
+			);
+		}
+		$this->dependencies = 'noteDependencies';
+		if ((string)$field->PreNote != "") {
+			$nfield['prenote'] = $this->paragraphs(preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addNoteDependency'), 
+				(string)$field->PreNote
+			));
+		}
+		if ((string)$field->PostNote != "") {
+			$nfield['postnote'] = $this->paragraphs(preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addNoteDependency'),
+				(string)$field->PostNote
+			));
+		}
+		return $nfield;
+	}
+	
 	public function toJSON($url, $stepId = 0) {		
 		$json = array();
 		$datas = array();
@@ -517,60 +587,19 @@ class Simulator {
 							$data = $this->datas[$id];
 							if (!isset($usages[$data['name']])) {
 								$usages[$data['name']] = (string)$field['usage'];
-								$nfield = array(
-									'data' => $data['name'],
-									'label' => (string)$field['label'],
-									'usage' => (string)$field['usage']
-								);
-								if ((string)$field['prompt'] != "") {
-									$nfield['prompt'] = (string)$field['prompt'];
-								}
-								if ((string)$field['required'] == '1') {
-									$nfield['required'] = '1';
-								}
 								$this->name = $data['name'];
-								$this->dependencies = 'fieldDependencies';
-								if ((string)$field['condition'] != "") {
-									$this->datas[$id]['unparsedCondition'] = preg_replace_callback(
-										"/#(\d+)/", 
-										array($this, 'addDependency'),
-										(string)$field['condition']
-									);
-								}
-								if ((string)$field['explanation'] != "") {
-									$this->datas[$id]['unparsedExplanation'] = preg_replace_callback(
-										"/#(\d+)/", 
-										array($this, 'addDependency'),
-										(string)$field['explanation']
-									);
-								}
-								$this->dependencies = 'noteDependencies';
-								if ((string)$field->PreNote != "") {
-									$nfield['prenote'] = $this->paragraphs(preg_replace_callback(
-										"/#(\d+)/", 
-										array($this, 'addNoteDependency'), 
-										(string)$field->PreNote
-									));
-								}
-								if ((string)$field->PostNote != "") {
-									$nfield['postnote'] = $this->paragraphs(preg_replace_callback(
-										"/#(\d+)/", 
-										array($this, 'addNoteDependency'),
-										(string)$field->PostNote
-									));
-								}
 								if ((string)$field['usage'] == 'input') {
 									$this->datas[$id]['inputField'] = array(
 										(string)$step['name']."-fieldset-".$fieldset['id'],
 										count($fields)
 									);
 								}
-								$fields[] = $nfield;
+								$fields[] = $this->fieldProperties($field);
 							}
 						}
 						$nfieldset = array(
 							'id'	 => (int)$fieldset['id'],
-							'legend' => (string)$field->Legend,
+							'legend' => (string)$fieldset->Legend,
 							'fields' => $fields
 						);
 						$this->name = (string)$step['name']."-fieldset-".$fieldset['id'];

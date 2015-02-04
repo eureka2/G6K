@@ -7,9 +7,11 @@ class FieldSet {
 	private $step = null;
 	private $id = 0;
 	private $legend = "";
+	private $disposition = "classic";
 	private $condition = "";
 	private $displayable = true;
 	private $fields = array();
+	private $fieldrows = array();
 	
 	
 	public function __construct($step, $id) {
@@ -45,6 +47,14 @@ class FieldSet {
 		$this->condition = $condition;
 	}
 	
+	public function getDisposition() {
+		return $this->disposition;
+	}
+	
+	public function setDisposition($disposition) {
+		$this->disposition = $disposition;
+	}
+	
 	public function isDisplayable() {
 		return $this->displayable;
 	}
@@ -52,7 +62,6 @@ class FieldSet {
 	public function setDisplayable($displayable) {
 		$this->displayable = $displayable;
 	}
-	
 	
 	public function getFields() {
 		return $this->fields;
@@ -68,6 +77,22 @@ class FieldSet {
 	
 	public function removeField($index) {
 		$this->fields[$index] = null;
+	}
+	
+	public function getFieldRows() {
+		return $this->fieldrows;
+	}
+	
+	public function setFieldRows($fieldrows) {
+		$this->fieldrows = $fieldrows;
+	}
+	
+	public function addFieldRow(FieldRow $fieldrow) {
+		$this->fieldrows[] = $fieldrow;
+	}
+	
+	public function removeFieldRow($index) {
+		$this->fieldrows[$index] = null;
 	}
 	
 }
