@@ -10,7 +10,4 @@ $loader = require __DIR__.'/../vendor/autoload.php';
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-$loader->add('mPDF_', __DIR__.'/../vendor/mpdf/lib');
-$loader->add('mDetect_', __DIR__.'/../vendor/Mobile-Detect/lib');
-
 return $loader;
