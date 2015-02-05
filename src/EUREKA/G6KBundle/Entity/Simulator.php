@@ -278,8 +278,12 @@ class Simulator {
 						$fieldObj->setPostNote($field->PostNote);
 						$fieldsetObj->addField($fieldObj);
 					}
+					foreach ($fieldset->Column as $column) {
+						$columnObj = new Column(null, (int)$column['id'], (string)$column['name'], (string)$column['label']);
+						$fieldsetObj->addColumn($columnObj);
+					}
 					foreach ($fieldset->FieldRow as $fieldrow) {
-						$fieldRowObj = new Field($fieldsetObj, (string)$field['label']);
+						$fieldRowObj = new FieldRow($fieldsetObj, (string)$fieldrow['label']);
 						foreach ($fieldrow as $field) {
 							$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
 							$fieldObj->setUsage((string)$field['usage']);
@@ -595,6 +599,23 @@ class Simulator {
 									);
 								}
 								$fields[] = $this->fieldProperties($field);
+							}
+						}
+						foreach ($fieldset->FieldRow as $fieldrow) {
+							foreach ($fieldrow->Field as $field) {
+								$id = (int)$field['data'];
+								$data = $this->datas[$id];
+								if (!isset($usages[$data['name']])) {
+									$usages[$data['name']] = (string)$field['usage'];
+									$this->name = $data['name'];
+									if ((string)$field['usage'] == 'input') {
+										$this->datas[$id]['inputField'] = array(
+											(string)$step['name']."-fieldset-".$fieldset['id'],
+											count($fields)
+										);
+									}
+									$fields[] = $this->fieldProperties($field);
+								}
 							}
 						}
 						$nfieldset = array(

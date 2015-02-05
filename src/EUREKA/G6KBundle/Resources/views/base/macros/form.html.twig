@@ -23,7 +23,7 @@
 	<thead>
 	<tr>
 	<th>&nbsp;</th>
-	{%- for column in fieldset.column -%}
+	{%- for column in fieldset.columns -%}
 	<th>{{ column.label }}</th>
 	{% endfor %}
 	</tr>
@@ -48,6 +48,7 @@
 			{% endif %}
 			{%- if field.usage == 'input' -%}
 			<td>
+				<div id="{{ name }}-container" class="field-container">
 				{%- if type == 'money' and simu.symbolPosition == 'before' %}<span class="money-symbol">{{ simu.moneySymbol }}</span> {% endif %}
 				{%- if type == 'choice' -%}
 					{%- if field.expanded == 1 -%}
@@ -125,6 +126,7 @@
 				{% endif %}
 				{%- if type == 'percent' -%}<span class="percent-symbol">%</span>{%- endif %}
 				{%- if data.unit -%}<span class="unit"> {{ data.unit }}</span>{%- endif -%}
+				</div>
 			</td>
 			{% else %}
 			<td>{{ value }}</td>

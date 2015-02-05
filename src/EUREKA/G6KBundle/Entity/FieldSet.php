@@ -11,6 +11,7 @@ class FieldSet {
 	private $condition = "";
 	private $displayable = true;
 	private $fields = array();
+	private $columns = array();
 	private $fieldrows = array();
 	
 	
@@ -77,6 +78,22 @@ class FieldSet {
 	
 	public function removeField($index) {
 		$this->fields[$index] = null;
+	}
+	
+	public function getColumns() {
+		return $this->columns;
+	}
+	
+	public function setColumns($columns) {
+		$this->columns = $columns;
+	}
+	
+	public function addColumn(Column $column) {
+		$this->columns[] = $column;
+	}
+	
+	public function removeColumn($index) {
+		$this->columns[$index] = null;
 	}
 	
 	public function getFieldRows() {
