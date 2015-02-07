@@ -278,9 +278,11 @@ class Simulator {
 						$fieldObj->setPostNote($field->PostNote);
 						$fieldsetObj->addField($fieldObj);
 					}
-					foreach ($fieldset->Column as $column) {
-						$columnObj = new Column(null, (int)$column['id'], (string)$column['name'], (string)$column['label']);
-						$fieldsetObj->addColumn($columnObj);
+					if ($fieldset->Columns) {
+						foreach ($fieldset->Columns->Column as $column) {
+							$columnObj = new Column(null, (int)$column['id'], (string)$column['name'], (string)$column['label']);
+							$fieldsetObj->addColumn($columnObj);
+						}
 					}
 					foreach ($fieldset->FieldRow as $fieldrow) {
 						$fieldRowObj = new FieldRow($fieldsetObj, (string)$fieldrow['label']);
