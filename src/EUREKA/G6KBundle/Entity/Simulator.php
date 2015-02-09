@@ -318,13 +318,18 @@ class Simulator {
 						$stepObj->addAction($actionObj);
 					}
 				}
-				if ($step->FootNotes) {
-					foreach ($step->FootNotes->FootNote as $footnote) {
+				foreach ($step->FootNotes as $footnotes) {
+					$footnotesObj = new FootNotes($stepObj);
+					if ((string)$footnotes['position'] != "") {
+						$footnotesObj->setPosition((string)$footnotes['position']);
+					}
+					foreach ($footnotes as $footnote) {
 						$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
 						$footnoteObj->setCondition((string)$footnote['condition']);
 						$footnoteObj->setText($footnote);
-						$stepObj->addFootNote($footnoteObj);
+						$footnotesObj->addFootNote($footnoteObj);
 					}
+					$stepObj->setFootNotes($footnotesObj);
 				}
 				$this->steps[] = $stepObj;
 			}

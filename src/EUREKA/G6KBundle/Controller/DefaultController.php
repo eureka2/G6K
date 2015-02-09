@@ -194,16 +194,22 @@ class DefaultController extends Controller {
 				}
 				$fieldset->setLegend($this->replaceVariables($fieldset->getLegend()));
 			}
-			foreach ($step->getFootNotes() as $footnote) {
-				$condition = $footnote->getCondition();
-				if ($condition != "" && $istep > 0) {
-					if ($this->evaluate($condition) == 'false') {
-						$footnote->setDisplayable(false);
+			$footnotes = $step->getFootNotes();
+			if ($footnotes !== null) {
+				$disp = false;
+				foreach ($footnotes->getFootNotes() as $footnote) {
+					$condition = $footnote->getCondition();
+					if ($condition != "" && $istep > 0) {
+						if ($this->evaluate($condition) == 'false') {
+							$footnote->setDisplayable(false);
+						}
+					}
+					if ($footnote->isDisplayable()) {
+						$footnote->setText($this->replaceVariables($footnote->getText()));
+						$disp = true;
 					}
 				}
-				if ($footnote->isDisplayable()) {
-					$footnote->setText($this->replaceVariables($footnote->getText()));
-				}
+				$footnotes->setDisplayable($disp);
 			}
 			$istep += $direction;
 		} while (!$displayable && $istep > 0 && $istep <= $stepCount);

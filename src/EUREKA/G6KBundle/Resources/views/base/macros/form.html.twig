@@ -356,16 +356,15 @@
 	</{%- if count > 1 -%}fieldset{% else %}div{% endif %}>
 	{% endif %}
 {% endfor %}
-{%- if step.footNotes %}
-<div class="foot-notes">
-{%- for footnote in step.footNotes -%}
-	{%- if footnote.displayable or (simu.dynamic and step.id == 0) -%}
-	<div id="foot-note-{{ footnote.id }}" class="foot-note">
-	{{ footnote.text|raw }}
-	</div>
-	{% endif %}
-{% endfor %}
-</div>
+
+{%- if step.footNotes and step.footNotes.displayable and step.footNotes.position == "beforeActions" %}
+{{ _self.footnotes(context) }}
+{% endif %}
+
+{{ _self.actions(context) }}
+
+{%- if step.footNotes and step.footNotes.displayable and step.footNotes.position == "afterActions" %}
+{{ _self.footnotes(context) }}
 {% endif %}
 
 {{ _self.hiddens(context) }}
@@ -416,6 +415,22 @@
 {% endfor %}
 
 </div>
+{% endmacro %}
+
+{% macro footnotes(context) %}
+{% set step = context.step %}
+{%- if step.footNotes and step.footNotes.displayable %}
+{% set footnotes = step.footNotes %}
+<div class="foot-notes">
+{%- for footnote in footnotes.footNotes -%}
+	{%- if footnote.displayable or (step.simulator.dynamic and step.id == 0) -%}
+	<div id="foot-note-{{ footnote.id }}" class="foot-note">
+	{{ footnote.text|raw }}
+	</div>
+	{% endif %}
+{% endfor %}
+</div>
+{% endif %}
 {% endmacro %}
 
 {% macro hiddens(context) %}

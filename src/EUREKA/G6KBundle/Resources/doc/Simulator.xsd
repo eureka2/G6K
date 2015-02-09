@@ -186,6 +186,14 @@
 														</xs:complexType>
 													</xs:element>
 												</xs:sequence>
+												<xs:attribute name="position">
+													<xs:simpleType>
+														<xs:restriction base="xs:NMTOKEN">
+															<xs:enumeration value="beforeActions"/>
+															<xs:enumeration value="afterActions"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
 									</xs:sequence>

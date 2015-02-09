@@ -15,7 +15,7 @@ class Step {
 	private $dynamic = false;
 	private $fieldsets = array();
 	private $actions = array();
-	private $footnotes = array();
+	private $footnotes = null;
 	private $displayable = true;
 	
 	public function __construct($simulator, $id, $name, $label, $template) {
@@ -139,16 +139,8 @@ class Step {
 		return $this->footnotes;
 	}
 	
-	public function setFootNotes($footnotes) {
+	public function setFootNotes(FootNotes $footnotes) {
 		$this->footnotes = $footnotes;
-	}
-	
-	public function addFootNote(FootNote $footnote) {
-		$this->footnotes[] = $footnote;
-	}
-	
-	public function removeFootNote($index) {
-		$this->footnotes[$index] = null;
 	}
 	
 	public function isDisplayable() {
