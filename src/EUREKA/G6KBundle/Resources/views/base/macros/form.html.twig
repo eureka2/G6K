@@ -344,9 +344,14 @@
 			{%- if field.hasHelp %}
 				{% set paragraphs = data.description|trim|split("\n") %}
 				<div class="collapse help-panel" id="help-{{ name }}">
+				<dl>
+				<dt>aide sur {{ label }}<a title="Fermer" href="javascript:">X</a></dt>
+				<dd>
 				{%- for paragraph in paragraphs -%}
 					<p>{{ paragraph|raw }}</p>
 				{% endfor %}
+				</dd>
+				</dl>
 				</div>
 			{% endif %}
 			</div>
