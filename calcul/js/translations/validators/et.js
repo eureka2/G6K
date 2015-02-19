@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Pilt on liiga kitsas ({{ width }}px). V\u00e4him lubatud laius on {{ min_width }}px.", "validators", "et");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Pilt on liiga pikk ({{ height }}px). Lubatud suurim pikkus on {{ max_height }}px.", "validators", "et");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Pilt pole piisavalt pikk ({{ height }}px). Lubatud v\u00e4him pikkus on {{ min_height }}px.", "validators", "et");
-    Translator.add("This value should be the user's current password.", "V\u00e4\u00e4rtus peaks olema kasutaja kehtiv salas\u00f5na.", "validators", "et");
+    Translator.add("This value should be the user current password.", "V\u00e4\u00e4rtus peaks olema kasutaja kehtiv salas\u00f5na.", "validators", "et");
     Translator.add("This value should have exactly {{ limit }} characters.", "V\u00e4\u00e4rtus peaks olema t\u00e4pselt {{ limit }} t\u00e4hem\u00e4rk pikk.|V\u00e4\u00e4rtus peaks olema t\u00e4pselt {{ limit }} t\u00e4hem\u00e4rki pikk.", "validators", "et");
     Translator.add("The file was only partially uploaded.", "Fail ei laetud t\u00e4ielikult \u00fcles.", "validators", "et");
     Translator.add("No file was uploaded.", "\u00dchtegi faili ei laetud \u00fcles.", "validators", "et");

@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Mae lled y ddelwedd yn rhy fach ({{ width }}px). Y lled lleiaf \u00e2 ganiateir yw {{ min_width }}px.", "validators", "cy");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Mae uchder y ddelwedd yn rhy fawr ({{ width }}px). Yr uchder mwyaf \u00e2 ganiateir yw {{ max_height }}px.", "validators", "cy");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Mae uchder y ddelwedd yn rhy fach ({{ width }}px). Yr uchder lleiaf \u00e2 ganiateir yw {{ min_height }}px.", "validators", "cy");
-    Translator.add("This value should be the user's current password.", "Dylaid bod y gwerth hwn yn gyfrinair presenol y defnyddiwr.", "validators", "cy");
+    Translator.add("This value should be the user current password.", "Dylaid bod y gwerth hwn yn gyfrinair presenol y defnyddiwr.", "validators", "cy");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Dylai'r gwerth hwn fod yn union {{ limit }} nodyn cyfrifiadurol o hyd.", "validators", "cy");
     Translator.add("The file was only partially uploaded.", "Dim ond rhan o'r ffeil ag uwchlwythwyd.", "validators", "cy");
     Translator.add("No file was uploaded.", "Ni uwchlwythwyd unrhyw ffeil.", "validators", "cy");

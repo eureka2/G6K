@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Die Bildbreite ist zu gering ({{ width }}px). Die erwartete Mindestbreite betr\u00e4gt {{ min_width }}px.", "validators", "de");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Die Bildh\u00f6he ist zu gro\u00df ({{ height }}px). Die maximal zul\u00e4ssige H\u00f6he betr\u00e4gt {{ max_height }}px.", "validators", "de");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Die Bildh\u00f6he ist zu gering ({{ height }}px). Die erwartete Mindesth\u00f6he betr\u00e4gt {{ min_height }}px.", "validators", "de");
-    Translator.add("This value should be the user's current password.", "Dieser Wert sollte dem aktuellen Benutzerpasswort entsprechen.", "validators", "de");
+    Translator.add("This value should be the user current password.", "Dieser Wert sollte dem aktuellen Benutzerpasswort entsprechen.", "validators", "de");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Dieser Wert sollte genau {{ limit }} Zeichen lang sein.|Dieser Wert sollte genau {{ limit }} Zeichen lang sein.", "validators", "de");
     Translator.add("The file was only partially uploaded.", "Die Datei wurde nur teilweise hochgeladen.", "validators", "de");
     Translator.add("No file was uploaded.", "Es wurde keine Datei hochgeladen.", "validators", "de");
@@ -74,7 +74,7 @@
     Translator.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "Das Bild ist quadratisch ({{ width }}x{{ height }}px). Quadratische Bilder sind nicht erlaubt.", "validators", "de");
     Translator.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "Das Bild ist im Querformat ({{ width }}x{{ height }}px). Bilder im Querformat sind nicht erlaubt.", "validators", "de");
     Translator.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "Das Bild ist im Hochformat ({{ width }}x{{ height }}px). Bilder im Hochformat sind nicht erlaubt.", "validators", "de");
-    Translator.add("An empty file is not allowed.", "Eine leere Datei ist nicht erlaubt.", "validators", "de");
+    Translator.add("This value does not match the expected {{ charset }} charset.", "Dieser Wert entspricht nicht dem erwarteten Zeichensatz {{ charset }}.", "validators", "de");
     Translator.add("This form should not contain extra fields.", "Dieses Formular sollte keine zus\u00e4tzlichen Felder enthalten.", "validators", "de");
     Translator.add("The uploaded file was too large. Please try to upload a smaller file.", "Die hochgeladene Datei ist zu gro\u00df. Versuchen Sie bitte eine kleinere Datei hochzuladen.", "validators", "de");
     Translator.add("The CSRF token is invalid. Please try to resubmit the form.", "Der CSRF-Token ist ung\u00fcltig. Versuchen Sie bitte das Formular erneut zu senden.", "validators", "de");

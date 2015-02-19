@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Irudiaren zabalera txikiegia da ({{ width }}px). Onartutako gutxieneko zabalera {{ min_width }}px dira.", "validators", "eu");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Irudiaren altuera handiegia da ({{ height }}px). Onartutako gehienezko altuera {{ max_height }}px dira.", "validators", "eu");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Irudiaren altuera txikiegia da ({{ height }}px). Onartutako gutxieneko altuera {{ min_height }}px dira.", "validators", "eu");
-    Translator.add("This value should be the user's current password.", "Balio hau uneko erabiltzailearen pasahitza izan beharko litzateke.", "validators", "eu");
+    Translator.add("This value should be the user current password.", "Balio hau uneko erabiltzailearen pasahitza izan beharko litzateke.", "validators", "eu");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Balio honek zehazki karaktere {{ limit }} izan beharko luke.|Balio honek zehazki {{ limit }} karaktere izan beharko lituzke.", "validators", "eu");
     Translator.add("The file was only partially uploaded.", "Fitxategiaren zati bat bakarrik igo da.", "validators", "eu");
     Translator.add("No file was uploaded.", "Ez da fitxategirik igo.", "validators", "eu");

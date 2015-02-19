@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "A largura da imagem ({{ width }}px) \u00e9 muito pequena. A largura min\u00edma da imagem \u00e9 de: {{ min_width }}px.", "validators", "pt");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "A altura da imagem ({{ height }}px) \u00e9 muito grande. A altura m\u00e1xima da imagem \u00e9 de: {{ max_height }}px.", "validators", "pt");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "A altura da imagem ({{ height }}px) \u00e9 muito pequena. A altura min\u00edma da imagem \u00e9 de: {{ min_height }}px.", "validators", "pt");
-    Translator.add("This value should be the user's current password.", "Este valor deveria de ser a password atual do utilizador.", "validators", "pt");
+    Translator.add("This value should be the user current password.", "Este valor deveria de ser a password atual do utilizador.", "validators", "pt");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Este valor tem de ter exatamente {{ limit }} carateres.", "validators", "pt");
     Translator.add("The file was only partially uploaded.", "S\u00f3 foi enviado parte do ficheiro.", "validators", "pt");
     Translator.add("No file was uploaded.", "Nenhum ficheiro foi enviado.", "validators", "pt");

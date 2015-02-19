@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Die beeld breedte is te klein ({{ width }}px). Minimum breedte verwag is {{ min_width }}px.", "validators", "af");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Die beeld hoogte is te groot ({{ height }}px). Toegelaat maksimum hoogte is {{ max_height }}px.", "validators", "af");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Die beeld hoogte is te klein ({{ height }}px). Minimum hoogte verwag is {{ min_height }}px.", "validators", "af");
-    Translator.add("This value should be the user's current password.", "Hierdie waarde moet die huidige wagwoord van die gebruiker wees.", "validators", "af");
+    Translator.add("This value should be the user current password.", "Hierdie waarde moet die huidige wagwoord van die gebruiker wees.", "validators", "af");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Hierdie waarde moet presies {{ limit }} karakter wees.|Hierdie waarde moet presies {{ limit }} karakters wees.", "validators", "af");
     Translator.add("The file was only partially uploaded.", "Die l\u00eaer is slegs gedeeltelik opgelaai.", "validators", "af");
     Translator.add("No file was uploaded.", "Geen l\u00eaer is opgelaai nie.", "validators", "af");

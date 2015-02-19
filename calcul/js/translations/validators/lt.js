@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Nuotraukos plotis per ma\u017eas ({{ width }}px). Minimalus leid\u017eiamas plotis yra {{ min_width }}px.", "validators", "lt");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Nuotraukos auk\u0161tis per didelis ({{ height }}px). Maksimalus leid\u017eiamas auk\u0161tis yra {{ max_height }}px.", "validators", "lt");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Nuotraukos auk\u0161tis per ma\u017eas ({{ height }}px). Minimalus leid\u017eiamas auk\u0161tis yra {{ min_height }}px.", "validators", "lt");
-    Translator.add("This value should be the user's current password.", "\u0160i reik\u0161m\u0117 turi sutapti su dabartiniu naudotojo slapta\u017eod\u017eiu.", "validators", "lt");
+    Translator.add("This value should be the user current password.", "\u0160i reik\u0161m\u0117 turi sutapti su dabartiniu naudotojo slapta\u017eod\u017eiu.", "validators", "lt");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "\u0160i reik\u0161m\u0117 turi tur\u0117ti lygiai {{ limit }} simbol\u012f.|\u0160i reik\u0161m\u0117 turi tur\u0117ti lygiai {{ limit }} simbolius.|\u0160i reik\u0161m\u0117 turi tur\u0117ti lygiai {{ limit }} simboli\u0173.", "validators", "lt");
     Translator.add("The file was only partially uploaded.", "Failas buvo tik dalinai \u012fkeltas.", "validators", "lt");
     Translator.add("No file was uploaded.", "Nebuvo \u012fkelta joki\u0173 fail\u0173.", "validators", "lt");

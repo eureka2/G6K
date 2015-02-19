@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "La largeur de l'image est trop petite ({{ width }}px). La largeur minimale attendue est de {{ min_width }}px.", "validators", "fr");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "La hauteur de l'image est trop grande ({{ height }}px). La hauteur maximale autoris\u00e9e est de {{ max_height }}px.", "validators", "fr");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "La hauteur de l'image est trop petite ({{ height }}px). La hauteur minimale attendue est de {{ min_height }}px.", "validators", "fr");
-    Translator.add("This value should be the user's current password.", "Cette valeur doit \u00eatre le mot de passe actuel de l'utilisateur.", "validators", "fr");
+    Translator.add("This value should be the user current password.", "Cette valeur doit \u00eatre le mot de passe actuel de l'utilisateur.", "validators", "fr");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Cette chaine doit avoir exactement {{ limit }} caract\u00e8re.|Cette chaine doit avoir exactement {{ limit }} caract\u00e8res.", "validators", "fr");
     Translator.add("The file was only partially uploaded.", "Le fichier a \u00e9t\u00e9 partiellement transf\u00e9r\u00e9.", "validators", "fr");
     Translator.add("No file was uploaded.", "Aucun fichier n'a \u00e9t\u00e9 transf\u00e9r\u00e9.", "validators", "fr");
@@ -74,7 +74,7 @@
     Translator.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "L'image est carr\u00e9e ({{ width }}x{{ height }}px). Les images carr\u00e9es ne sont pas autoris\u00e9es.", "validators", "fr");
     Translator.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "L'image est au format paysage ({{ width }}x{{ height }}px). Les images au format paysage ne sont pas autoris\u00e9es.", "validators", "fr");
     Translator.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "L'image est au format portrait ({{ width }}x{{ height }}px). Les images au format portrait ne sont pas autoris\u00e9es.", "validators", "fr");
-    Translator.add("An empty file is not allowed.", "Un fichier vide n'est pas autoris\u00e9.", "validators", "fr");
+    Translator.add("This value does not match the expected {{ charset }} charset.", "Cette valeur ne correspond pas au jeu de caract\u00e8res {{ charset }} attendu.", "validators", "fr");
     Translator.add("This form should not contain extra fields.", "Ce formulaire ne doit pas contenir des champs suppl\u00e9mentaires.", "validators", "fr");
     Translator.add("The uploaded file was too large. Please try to upload a smaller file.", "Le fichier t\u00e9l\u00e9charg\u00e9 est trop volumineux. Merci d'essayer d'envoyer un fichier plus petit.", "validators", "fr");
     Translator.add("The CSRF token is invalid. Please try to resubmit the form.", "Le jeton CSRF est invalide. Veuillez renvoyer le formulaire.", "validators", "fr");

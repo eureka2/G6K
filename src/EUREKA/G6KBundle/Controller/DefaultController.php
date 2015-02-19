@@ -65,6 +65,7 @@ class DefaultController extends Controller {
 		$dates = array();
 		
 		$this->evaluateDefaults();
+		$this->evaluateMinMax();
 		foreach ($form as $name => $value) {
 			if ($name == 'step') {
 				$istep = (int)$value;
@@ -236,7 +237,7 @@ class DefaultController extends Controller {
 			}
 		}			
 		if ( ! $this->error && ($step->getOutput() == 'inlinePDF' || $step->getOutput() == 'downloadablePDF')) {
-			return $this->pdfOutput($step, $pathlength, $datas, $view);
+			return $this->pdfOutput($request, $step, $datas, $view);
 		}
  		$hiddens = array();		
 		$hiddens['step'] = $step->getId();
@@ -415,6 +416,32 @@ class DefaultController extends Controller {
 			}
 		}
 	}
+	
+	protected function evaluateMinMax() 
+	{
+		foreach ($this->simu->getDatas() as $data) {
+			$min = $data->getUnparsedMin();
+			if ($min != "") {
+				try {
+					$result = $this->evaluate($min);
+					if ($result !== false) {
+						$data->setMin($result);
+					}
+				} catch (\Exception $e) {
+				}
+			}
+			$max = $data->getUnparsedMax();
+			if ($max != "") {
+				try {
+					$result = $this->evaluate($max);
+					if ($result !== false) {
+						$data->setMax($result);
+					}
+				} catch (\Exception $e) {
+				}
+			}
+		}
+	}
 
     protected function processDatas($istep) 
 	{
@@ -479,7 +506,7 @@ class DefaultController extends Controller {
 							$data->setMin($result);
 							if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() < $result) {
 								$data->setError(true);
-								$data->setErrorMessage($this->get('translator')->trans("This value can not be less than %min%", array('%min%', $result)));
+								$data->setErrorMessage($this->get('translator')->trans("This value can not be less than %min%", array('%min%' => $result)));
 								$this->error = true;
 							}
 						}
@@ -494,7 +521,7 @@ class DefaultController extends Controller {
 							$data->setMax($result);
 							if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() > $result) {
 								$data->setError(true);
-								$data->setErrorMessage($this->get('translator')->trans("This value can not be greater than %max%", array('%max%', $result)));
+								$data->setErrorMessage($this->get('translator')->trans("This value can not be greater than %max%", array('%max%' => $result)));
 								$this->error = true;
 							}
 						}
@@ -563,6 +590,46 @@ class DefaultController extends Controller {
 		}
 	}
 
+	protected function formatParamValue($param)
+	{
+		$data = $this->simu->getDataById($param->getData());
+		$value = $data->getValue();
+		if ($value == "") {
+			return null;
+		}
+		switch ($data->getType()) {
+			case "date":
+				$format = $param->getFormat();
+				if ($format != "" && $value != "") {
+					$date = \DateTime::createFromFormat("j/n/Y", $value);
+					$value = $date->format($format);
+				}
+				break;
+			case "day":
+				$format = $param->getFormat();
+				if ($format != "" && $value != "") {
+					$date = \DateTime::createFromFormat("j/n/Y", $value."/1/2015");
+					$value = $date->format($format);
+				}
+				break;
+			case "month":
+				$format = $param->getFormat();
+				if ($format != "" && $value != "") {
+					$date = \DateTime::createFromFormat("j/n/Y", "1/".$value."/2015");
+					$value = $date->format($format);
+				}
+				break;
+			case "year":
+				$format = $param->getFormat();
+				if ($format != "" && $value != "") {
+					$date = \DateTime::createFromFormat("j/n/Y", "1/1/".$value);
+					$value = $date->format($format);
+				}
+				break;
+		}
+		return $value;
+	}
+
     protected function processSource(Source $source) 
 	{
 		$params = $source->getParameters();
@@ -571,19 +638,9 @@ class DefaultController extends Controller {
 				$query = "";
 				$path = "";
 				foreach ($params as $param) {
-					$data = $this->simu->getDataById($param->getData());
-					$value = $data->getValue();
-					if ($value == "") {
+					$value = $this->formatParamValue($param);
+					if ($value === null) {
 						return null;
-					}
-					switch ($data->getType()) {
-						case "date":
-							$format = $param->getFormat();
-							if ($format != "") {
-								$date = \DateTime::createFromFormat("d/m/Y", $value);
-								$value = $date->format($format);
-							}
-							break;
 					}
 					if ($param->getType() == 'path') {
 						$path .= "/".$value;
@@ -609,19 +666,9 @@ class DefaultController extends Controller {
 				$args = array();
 				$args[] = $source->getRequest();
 				foreach ($params as $param) {
-					$data = $this->simu->getDataById($param->getData());
-					$value = $data->getValue();
-					if ($value == "") {
+					$value = $this->formatParamValue($param);
+					if ($value === null) {
 						return null;
-					}
-					switch ($data->getType()) {
-						case "date":
-							$format = $param->getFormat();
-							if ($format != "" && $value != "") {
-								$date = \DateTime::createFromFormat("d/m/Y", $value);
-								$value = $date->format($format);
-							}
-							break;
 					}
 					$args[] = $value;
 				}
@@ -668,7 +715,7 @@ class DefaultController extends Controller {
 		return null;
 	}
 	
-    protected function pdfOutput($step, $pathlength, $datas, $view = "Default")
+    protected function pdfOutput(Request $request, $step, $datas, $view = "Default")
     {
  		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
@@ -676,7 +723,6 @@ class DefaultController extends Controller {
 			'EUREKAG6KBundle:'.$view.'/'.$step->getTemplate(),
 			array(
 				'view' => $view,
-				'script' => $script,
 				'ua' => $silex["mobile_detect"],
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'log' => $this->log,
@@ -688,13 +734,19 @@ class DefaultController extends Controller {
 		$mpdfService = $this->get('tfox.mpdfport');
 		$mpdf = $mpdfService->getMpdf();
 		$mpdf->PDFA = true;
+		$mpdf->PDFAauto = true;
+		$mpdf->ignore_invalid_utf8 = true;
   
 		$mpdf->SetDisplayMode('fullpage');
-		$header = '<table><tr><td class="textecourant" align="right">Le {DATE j-m-Y} Page{PAGENO}/{nbpg}</td></tr></table>';
-		$mpdf->SetHTMLHeader ( $header, 'BLANK', true);
+		$footer = '<table class="pdf-footer"><tr><td>';
+		$footer .= $this->get('translator')->trans("Simulation performed on %host% on %date%", array('%host%' => $request->getHttpHost(), '%date%' => '{DATE j-m-Y}'));
+		$footer .= '</td><td>';
+		$footer .= $this->get('translator')->trans("Page %pageno% of %numberofpages%", array('%pageno%' => '{PAGENO}', '%numberofpages%' => '{nbpg}'));
+		$footer .= '</td></tr></table>';
+		$mpdf->SetHTMLFooter ( $footer, 'BLANK', true);
 		$mpdf->WriteHTML($page);
 
-		$mpdf->Output("im.pdf", $step->getOutput() == 'inlinePDF' ? 'I' : 'D'); // I = inline, D = download
+		$mpdf->Output($this->simu->getName().".pdf", $step->getOutput() == 'inlinePDF' ? 'I' : 'D'); // I = inline, D = download
 		return false;
 	}
 	
@@ -710,6 +762,7 @@ class DefaultController extends Controller {
 			$value = $data->getValue();	
 			switch ($data->getType()) {
 				case 'money': 
+					$value = number_format ( (float)$value , 2 , "." , " "); 
 				case 'percent':
 				case 'number': 
 					$value = str_replace('.', ',', $value);

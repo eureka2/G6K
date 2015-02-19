@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Resmin geni\u015fli\u011fi \u00e7ok k\u00fc\u00e7\u00fck ({{ width }}px). En az {{ min_width }}px olmal\u0131d\u0131r.", "validators", "tr");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Resmin y\u00fcksekli\u011fi \u00e7ok b\u00fcy\u00fck ({{ height }}px). \u0130zin verilen en b\u00fcy\u00fck y\u00fckseklik {{ max_height }}px.", "validators", "tr");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Resmin y\u00fcksekli\u011fi \u00e7ok k\u00fc\u00e7\u00fck ({{ height }}px). En az {{ min_height }}px olmal\u0131d\u0131r.", "validators", "tr");
-    Translator.add("This value should be the user's current password.", "Bu de\u011fer kullan\u0131c\u0131n\u0131n \u015fu anki \u015fifresi olmal\u0131d\u0131r.", "validators", "tr");
+    Translator.add("This value should be the user current password.", "Bu de\u011fer kullan\u0131c\u0131n\u0131n \u015fu anki \u015fifresi olmal\u0131d\u0131r.", "validators", "tr");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Bu de\u011fer tam olarak {{ limit }} karakter olmald\u0131r.", "validators", "tr");
     Translator.add("The file was only partially uploaded.", "Dosya sadece k\u0131smen y\u00fcklendi.", "validators", "tr");
     Translator.add("No file was uploaded.", "Hi\u00e7bir dosya y\u00fcklenmedi.", "validators", "tr");

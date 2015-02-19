@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "L'ampl\u00e0ria de la imatge \u00e9s massa petita ({{ width }}px). L'ampl\u00e0ria m\u00ednima requerida s\u00f3n {{ min_width }}px.", "validators", "ca");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "L'altura de la imatge \u00e9s massa gran ({{ height }}px). L'altura m\u00e0xima permesa s\u00f3n {{ max_height }}px.", "validators", "ca");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "L'altura de la imatge \u00e9s massa petita ({{ height }}px). L'altura m\u00ednima requerida s\u00f3n {{ min_height }}px.", "validators", "ca");
-    Translator.add("This value should be the user's current password.", "Aquest valor hauria de ser la contrasenya actual de l'usuari.", "validators", "ca");
+    Translator.add("This value should be the user current password.", "Aquest valor hauria de ser la contrasenya actual de l'usuari.", "validators", "ca");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Aquest valor hauria de tenir exactament {{ limit }} car\u00e0cter.|Aquest valor hauria de tenir exactament {{ limit }} car\u00e0cters.", "validators", "ca");
     Translator.add("The file was only partially uploaded.", "L'arxiu va ser nom\u00e9s pujat parcialment.", "validators", "ca");
     Translator.add("No file was uploaded.", "Cap arxiu va ser pujat.", "validators", "ca");
@@ -74,7 +74,6 @@
     Translator.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "L'imatge \u00e9s quadrada({{ width }}x{{ height }}px). Les imatges quadrades no estan permeses.", "validators", "ca");
     Translator.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "L'imatge est\u00e0 orientada horitzontalment ({{ width }}x{{ height }}px). Les imatges orientades horitzontalment no estan permeses.", "validators", "ca");
     Translator.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "L'imatge est\u00e0 orientada verticalment ({{ width }}x{{ height }}px). Les imatges orientades verticalment no estan permeses.", "validators", "ca");
-    Translator.add("An empty file is not allowed.", "No est\u00e0 perm\u00e8s un fixter buit.", "validators", "ca");
     Translator.add("This form should not contain extra fields.", "Aquest formulari no hauria de contenir camps addicionals.", "validators", "ca");
     Translator.add("The uploaded file was too large. Please try to upload a smaller file.", "L'arxiu pujat \u00e9s massa gran. Per favor, pugi un arxiu m\u00e9s petit.", "validators", "ca");
     Translator.add("The CSRF token is invalid. Please try to resubmit the form.", "El token CSRF no \u00e9s v\u00e0lid. Per favor, provi d'enviar novament el formulari.", "validators", "ca");

@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Lebar gambar terlalu kecil ({{ width }}px). Ukuran lebar minimum yang diharapkan adalah {{ min_width }}px.", "validators", "id");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Tinggi gambar terlalu besar ({{ height }}px). Ukuran tinggi maksimum adalah {{ max_height }}px.", "validators", "id");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Tinggi gambar terlalu kecil ({{ height }}px). Ukuran tinggi minimum yang diharapkan adalah {{ min_height }}px.", "validators", "id");
-    Translator.add("This value should be the user's current password.", "Nilai ini harus kata sandi pengguna saat ini.", "validators", "id");
+    Translator.add("This value should be the user current password.", "Nilai ini harus kata sandi pengguna saat ini.", "validators", "id");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Nilai ini harus memiliki tepat {{ limit }} karakter.", "validators", "id");
     Translator.add("The file was only partially uploaded.", "Berkas hanya terunggah sebagian.", "validators", "id");
     Translator.add("No file was uploaded.", "Tidak ada berkas terunggah.", "validators", "id");

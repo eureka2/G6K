@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "\u0160irina slike je premala ({{ width }}px). Najmanja dozvoljena \u0161irina je {{ min_width }}px.", "validators", "hr");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Visina slike je prevelika ({{ height }}px). Najve\u0107a dozvoljena visina je {{ max_height }}px.", "validators", "hr");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Visina slike je premala ({{ height }}px). Najmanja dozvoljena visina je {{ min_height }}px.", "validators", "hr");
-    Translator.add("This value should be the user's current password.", "Ova vrijednost treba biti trenutna korisni\u010dka lozinka.", "validators", "hr");
+    Translator.add("This value should be the user current password.", "Ova vrijednost treba biti trenutna korisni\u010dka lozinka.", "validators", "hr");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Ova vrijednost treba imati to\u010dno {{ limit }} znakova.", "validators", "hr");
     Translator.add("The file was only partially uploaded.", "Datoteka je samo djelomi\u010dno prenesena.", "validators", "hr");
     Translator.add("No file was uploaded.", "Niti jedna datoteka nije prenesena.", "validators", "hr");

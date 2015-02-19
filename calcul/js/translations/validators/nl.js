@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "De afbeelding is niet breed genoeg ({{ width }}px). De minimaal verwachte breedte is {{ min_width }}px.", "validators", "nl");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "De afbeelding is te hoog ({{ height }}px). De maximaal toegestane hoogte is {{ max_height }}px.", "validators", "nl");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "De afbeelding is niet hoog genoeg ({{ height }}px). De minimaal verwachte hoogte is {{ min_height }}px.", "validators", "nl");
-    Translator.add("This value should be the user's current password.", "Deze waarde moet het huidige wachtwoord van de gebruiker zijn.", "validators", "nl");
+    Translator.add("This value should be the user current password.", "Deze waarde moet het huidige wachtwoord van de gebruiker zijn.", "validators", "nl");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Deze waarde moet exact {{ limit }} teken lang zijn.|Deze waarde moet exact {{ limit }} tekens lang zijn.", "validators", "nl");
     Translator.add("The file was only partially uploaded.", "Het bestand is niet geheel ge\u00fcpload.", "validators", "nl");
     Translator.add("No file was uploaded.", "Er is geen bestand ge\u00fcpload.", "validators", "nl");
@@ -74,7 +74,7 @@
     Translator.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "De afbeelding is vierkant ({{ width }}x{{ height }}px). Vierkante afbeeldingen zijn niet toegestaan.", "validators", "nl");
     Translator.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "De afbeelding is liggend ({{ width }}x{{ height }}px). Liggende afbeeldingen zijn niet toegestaan.", "validators", "nl");
     Translator.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "De afbeelding is staand ({{ width }}x{{ height }}px). Staande afbeeldingen zijn niet toegestaan.", "validators", "nl");
-    Translator.add("An empty file is not allowed.", "Lege bestanden zijn niet toegestaan.", "validators", "nl");
+    Translator.add("This value does not match the expected {{ charset }} charset.", "Deze waarde is niet in de verwachte tekencodering {{ charset }}.", "validators", "nl");
     Translator.add("This form should not contain extra fields.", "Dit formulier mag geen extra velden bevatten.", "validators", "nl");
     Translator.add("The uploaded file was too large. Please try to upload a smaller file.", "Het ge\u00fcploade bestand is te groot. Probeer een kleiner bestand te uploaden.", "validators", "nl");
     Translator.add("The CSRF token is invalid. Please try to resubmit the form.", "De CSRF-token is ongeldig. Probeer het formulier opnieuw te versturen.", "validators", "nl");

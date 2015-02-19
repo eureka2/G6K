@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Bildens bredd \u00e4r f\u00f6r liten ({{ width }}px). Minsta f\u00f6rv\u00e4ntade bredd \u00e4r {{ min_width }}px.", "validators", "sv");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Bildens h\u00f6jd \u00e4r f\u00f6r stor ({{ height }}px). Till\u00e5ten maximal bredd \u00e4r {{ max_height }}px.", "validators", "sv");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Bildens h\u00f6jd \u00e4r f\u00f6r liten ({{ height }}px). Minsta f\u00f6rv\u00e4ntade h\u00f6jd \u00e4r {{ min_height }}px.", "validators", "sv");
-    Translator.add("This value should be the user's current password.", "V\u00e4rdet ska vara anv\u00e4ndarens nuvarande l\u00f6senord.", "validators", "sv");
+    Translator.add("This value should be the user current password.", "V\u00e4rdet ska vara anv\u00e4ndarens nuvarande l\u00f6senord.", "validators", "sv");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "V\u00e4rdet ska ha exakt {{ limit }} tecken.|V\u00e4rdet ska ha exakt {{ limit }} tecken.", "validators", "sv");
     Translator.add("The file was only partially uploaded.", "Filen laddades bara upp delvis.", "validators", "sv");
     Translator.add("No file was uploaded.", "Ingen fil laddades upp.", "validators", "sv");
@@ -74,7 +74,6 @@
     Translator.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "Bilden \u00e4r kvadratisk ({{ width }}x{{ height }}px). Kvadratiska bilder till\u00e5ts inte.", "validators", "sv");
     Translator.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "Bilden \u00e4r landskapsorienterad ({{ width }}x{{ height }}px). Landskapsorienterade bilder till\u00e5ts inte.", "validators", "sv");
     Translator.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "Bilden \u00e4r portr\u00e4ttsorienterad ({{ width }}x{{ height }}px). Portr\u00e4ttsorienterade bilder till\u00e5ts inte.", "validators", "sv");
-    Translator.add("An empty file is not allowed.", "En tom fil \u00e4r inte till\u00e5ten.", "validators", "sv");
     Translator.add("This form should not contain extra fields.", "Formul\u00e4ret kan inte inneh\u00e5lla extra f\u00e4lt.", "validators", "sv");
     Translator.add("The uploaded file was too large. Please try to upload a smaller file.", "Den uppladdade filen var f\u00f6r stor. F\u00f6rs\u00f6k ladda upp en mindre fil.", "validators", "sv");
     Translator.add("The CSRF token is invalid.", "CSRF-symbolen \u00e4r inte giltig.", "validators", "sv");

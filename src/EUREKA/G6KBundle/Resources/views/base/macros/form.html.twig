@@ -94,7 +94,7 @@
 					<select id="{{ name }}" name="{{ name }}"{%- if data.error %} class="error"{% endif %}>
 					{%- if not(data.default) -%}<option value="00">{{ prompt }}</option>{% endif %}
 					{% for i in min..max %}
-					<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ _self.monthname(i) }}</option>
+					<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ _self.monthname(i)|trans }}</option>
 					{% endfor %}
 					</select>
 				{% elseif type == 'year' %}
@@ -129,7 +129,30 @@
 				</div>
 			</td>
 			{% else %}
-			<td>{{ value }}</td>
+			<td>
+				{% spaceless %}
+				<span id="{{ name }}" class="output{%- if field.emphasized %} emphasized{%- endif -%}">{%- if type == 'money' and simu.symbolPosition == 'before' %}{{ simu.moneySymbol }} {% endif -%}
+				{%- if type == 'choice' -%}
+					{%- for choice in data.choices if choice.value == value -%}
+						{{- choice.label|trim -}}
+					{%- endfor -%}
+				{%- elseif type == 'boolean' -%}
+					{{ value == 'true' ? 'oui' : 'non' }}
+				{%- elseif type == 'month' -%}
+					{{ _self.monthname(value)|trans }}
+				{%- elseif type == 'department' -%}
+					{{ _self.departmentname(value) }}
+				{%- else -%}
+					{{ value }}
+				{%- endif -%}			
+				</span>
+				{%- if type == 'money' and simu.symbolPosition == 'after' %}
+					<span class="money-symbol{%- if field.emphasized %} emphasized{%- endif %}">&#xA0;{{ simu.moneySymbol }}</span>
+				{%- endif -%}
+				{%- if type == 'percent' -%}<span class="percent-symbol{%- if field.emphasized %} emphasized{%- endif -%}">%</span>{%- endif -%}
+				{%- if data.unit -%}<span class="unit{%- if field.emphasized %} emphasized{%- endif -%}"> {{ data.unit }}</span>{%- endif -%}
+				{% endspaceless %}
+			</td>
 			{% endif %}
 		{% else %}
 		<td>&nbsp;</td>
@@ -242,7 +265,7 @@
 					<select id="{{ name }}" name="{{ name }}"{%- if data.error %} class="error"{% endif %}>
 					{%- if not(data.default) -%}<option value="00">{{ prompt }}</option>{% endif %}
 					{% for i in min..max %}
-					<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ _self.monthname(i) }}</option>
+					<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ _self.monthname(i)|trans }}</option>
 					{% endfor %}
 					</select>
 				{% elseif type == 'year' %}
@@ -312,7 +335,7 @@
 					{%- elseif type == 'boolean' -%}
 						{{ value == 'true' ? 'oui' : 'non' }}
 					{%- elseif type == 'month' -%}
-						{{ _self.monthname(value) }}
+						{{ _self.monthname(value)|trans }}
 					{%- elseif type == 'department' -%}
 						{{ _self.departmentname(value) }}
 					{%- else -%}
@@ -345,7 +368,7 @@
 				{% set paragraphs = data.description|trim|split("\n") %}
 				<div class="collapse help-panel" id="help-{{ name }}">
 				<dl>
-				<dt>aide sur {{ label }}<a title="Fermer" href="javascript:">X</a></dt>
+				<dt>aide sur {{ label }}</dt>
 				<dd>
 				{%- for paragraph in paragraphs -%}
 					<p>{{ paragraph|raw }}</p>
@@ -454,7 +477,7 @@
 {% endmacro %}
 
 {% macro monthname(m) %}
-{% set months = ["{{ 'January'|trans }}", "{{ 'February'|trans }", "{{ 'March'|trans }", "{{ 'April'|trans }", "{{ 'May'|trans }", "{{ 'June'|trans }", "{{ 'July'|trans }", "{{ 'August'|trans }", "{{ 'September'|trans }", "{{ 'October'|trans }", "{{ 'November'|trans }", "{{ 'December'|trans }"] %}
+{% set months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}
 {% if m > 0 %}{{ months[m - 1] }}{% endif %}
 {% endmacro %}
 

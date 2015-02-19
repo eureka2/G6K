@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Biletbreidda er for liten, ({{ width }} pikslar). Forventa minimumsbreidde er {{ min_width }} pikslar.", "validators", "no");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Bileth\u00f8gda er for stor, ({{ height }} pikslar). Tillatt maksimumsh\u00f8gde er {{ max_height }} pikslar.", "validators", "no");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Billeth\u00f8gda er for l\u00e5g, ({{ height }} pikslar). Forventa minimumsh\u00f8gde er {{ min_height }} pikslar.", "validators", "no");
-    Translator.add("This value should be the user's current password.", "Verdien m\u00e5 vere brukaren sitt noverande passord.", "validators", "no");
+    Translator.add("This value should be the user current password.", "Verdien m\u00e5 vere brukaren sitt noverande passord.", "validators", "no");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Verdien m\u00e5 vere n\u00f8yaktig {{ limit }} teikn.", "validators", "no");
     Translator.add("The file was only partially uploaded.", "Fila vart kun delvis opplasta.", "validators", "no");
     Translator.add("No file was uploaded.", "Inga fil vart lasta opp.", "validators", "no");

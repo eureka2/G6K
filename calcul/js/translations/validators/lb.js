@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "D'Breet vum Bild ass ze kleng ({{ width }}px). D\u00e9i minimal Breet ass {{ min_width }}px.", "validators", "lb");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "D'H\u00e9icht vum Bild ass ze grouss ({{ height }}px). D\u00e9i erlaabte maximal H\u00e9icht ass {{ max_height }}px.", "validators", "lb");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "D'H\u00e9icht vum Bild ass ze kleng ({{ height }}px). D\u00e9i minimal H\u00e9icht ass {{ min_height }}px.", "validators", "lb");
-    Translator.add("This value should be the user's current password.", "D\u00ebse W\u00e4ert sollt dem aktuelle Benotzerpasswuert entspriechen.", "validators", "lb");
+    Translator.add("This value should be the user current password.", "D\u00ebse W\u00e4ert sollt dem aktuelle Benotzerpasswuert entspriechen.", "validators", "lb");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "D\u00ebse W\u00e4ert sollt exactly {{ limit }} Buschtaf hunn.|D\u00ebse W\u00e4ert sollt exakt {{ limit }} Buschtawen hunn.", "validators", "lb");
     Translator.add("The file was only partially uploaded.", "De Fichier gouf just deelweis eropgelueden.", "validators", "lb");
     Translator.add("No file was uploaded.", "Et gouf kee Fichier eropgelueden.", "validators", "lb");

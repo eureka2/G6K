@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Kuva on liian kapea ({{ width }}px). Leveyden tulisi olla v\u00e4hint\u00e4\u00e4n {{ min_width }}px.", "validators", "fi");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Kuva on liian korkea ({{ width }}px). Sallittu maksimikorkeus on {{ max_width }}px.", "validators", "fi");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Kuva on liian matala ({{ height }}px). Korkeuden tulisi olla v\u00e4hint\u00e4\u00e4n {{ min_height }}px.", "validators", "fi");
-    Translator.add("This value should be the user's current password.", "T\u00e4m\u00e4n arvon tulisi olla k\u00e4ytt\u00e4j\u00e4n t\u00e4m\u00e4nhetkinen salasana.", "validators", "fi");
+    Translator.add("This value should be the user current password.", "T\u00e4m\u00e4n arvon tulisi olla k\u00e4ytt\u00e4j\u00e4n t\u00e4m\u00e4nhetkinen salasana.", "validators", "fi");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "T\u00e4m\u00e4n arvon tulisi olla tasan yhden merkin pituinen.|T\u00e4m\u00e4n arvon tulisi olla tasan {{ limit }} merkki\u00e4 pitk\u00e4.", "validators", "fi");
     Translator.add("The file was only partially uploaded.", "Tiedosto ladattiin vain osittain.", "validators", "fi");
     Translator.add("No file was uploaded.", "Tiedostoa ei ladattu.", "validators", "fi");

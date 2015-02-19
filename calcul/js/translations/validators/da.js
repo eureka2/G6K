@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Billedebredden er for lille ({{ width }}px). Forventet minimumsh\u00f8jde er {{ min_width }}px.", "validators", "da");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Billedh\u00f8jden er for stor ({{ height }}px). Tilladt maksimumsh\u00f8jde er {{ max_height }}px.", "validators", "da");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Billedh\u00f8jden er for lille ({{ height }}px). Forventet minimumsh\u00f8jde er {{ min_height }}px.", "validators", "da");
-    Translator.add("This value should be the user's current password.", "V\u00e6rdien skal v\u00e6re brugerens nuv\u00e6rende password.", "validators", "da");
+    Translator.add("This value should be the user current password.", "V\u00e6rdien skal v\u00e6re brugerens nuv\u00e6rende password.", "validators", "da");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "V\u00e6rdien skal have pr\u00e6cis {{ limit }} tegn.", "validators", "da");
     Translator.add("The file was only partially uploaded.", "Filen var kun delvis uploadet.", "validators", "da");
     Translator.add("No file was uploaded.", "Ingen fil blev uploadet.", "validators", "da");

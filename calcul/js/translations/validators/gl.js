@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "A largura da imaxe \u00e9 demasiado pequena ({{ width }}px). A largura m\u00ednima requerida son {{ min_width }}px.", "validators", "gl");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "A altura da imaxe \u00e9 demasiado grande ({{ height }}px). A altura m\u00e1xima permitida son {{ max_height }}px.", "validators", "gl");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "A altura da imaxe \u00e9 demasiado pequena ({{ height }}px). A altura m\u00ednima requerida son {{ min_height }}px.", "validators", "gl");
-    Translator.add("This value should be the user's current password.", "Este valor deber\u00eda ser a contrasinal actual do usuario.", "validators", "gl");
+    Translator.add("This value should be the user current password.", "Este valor deber\u00eda ser a contrasinal actual do usuario.", "validators", "gl");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Este valor deber\u00eda ter exactamente {{ limit }} car\u00e1cter.|Este valor deber\u00eda ter exactamente {{ limit }} caracteres.", "validators", "gl");
     Translator.add("The file was only partially uploaded.", "O arquivo foi s\u00f3 subido parcialmente.", "validators", "gl");
     Translator.add("No file was uploaded.", "Non se subiu ning\u00fan arquivo.", "validators", "gl");

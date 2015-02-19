@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "\u5716\u7247\u5bec\u5ea6\u4e0d\u5920 ({{ width }}px)\uff0c\u6700\u5c0f\u5bec\u5ea6\u70ba {{ min_width }}px \u3002", "validators", "zh_TW");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "\u5716\u7247\u592a\u9ad8 ({{ height }}px)\uff0c\u6700\u5927\u9ad8\u5ea6\u70ba {{ max_height }}px \u3002", "validators", "zh_TW");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "\u5716\u7247\u9ad8\u5ea6\u4e0d\u5920 ({{ height }}px)\uff0c\u6700\u5c0f\u9ad8\u5ea6\u70ba {{ min_height }}px \u3002", "validators", "zh_TW");
-    Translator.add("This value should be the user's current password.", "\u8a72\u8b8a\u6578\u7684\u503c\u61c9\u70ba\u7528\u6236\u76ee\u524d\u7684\u5bc6\u78bc\u3002", "validators", "zh_TW");
+    Translator.add("This value should be the user current password.", "\u8a72\u8b8a\u6578\u7684\u503c\u61c9\u70ba\u7528\u6236\u76ee\u524d\u7684\u5bc6\u78bc\u3002", "validators", "zh_TW");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "\u8a72\u8b8a\u6578\u61c9\u70ba {{ limit }} \u500b\u5b57\u5143\u3002", "validators", "zh_TW");
     Translator.add("The file was only partially uploaded.", "\u8a72\u6a94\u6848\u7684\u4e0a\u50b3\u4e0d\u5b8c\u6574\u3002", "validators", "zh_TW");
     Translator.add("No file was uploaded.", "\u6c92\u6709\u4e0a\u50b3\u4efb\u4f55\u6a94\u6848\u3002", "validators", "zh_TW");

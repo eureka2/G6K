@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "A k\u00e9p sz\u00e9less\u00e9ge t\u00fal kicsi ({{ width }}px). Az elv\u00e1rt legkisebb sz\u00e9less\u00e9g {{ min_width }}px.", "validators", "hu");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "A k\u00e9p magass\u00e1ga t\u00fal nagy ({{ height }}px). A megengedett legnagyobb magass\u00e1g {{ max_height }}px.", "validators", "hu");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "A k\u00e9p magass\u00e1ga t\u00fal kicsi ({{ height }}px). Az elv\u00e1rt legkisebb magass\u00e1g {{ min_height }}px.", "validators", "hu");
-    Translator.add("This value should be the user's current password.", "Ez az \u00e9rt\u00e9k a felhaszn\u00e1l\u00f3 jelenlegi jelszav\u00e1val kell megegyezzen.", "validators", "hu");
+    Translator.add("This value should be the user current password.", "Ez az \u00e9rt\u00e9k a felhaszn\u00e1l\u00f3 jelenlegi jelszav\u00e1val kell megegyezzen.", "validators", "hu");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Ennek az \u00e9rt\u00e9knek pontosan {{ limit }} karaktert kell tartalmaznia.|Ennek az \u00e9rt\u00e9knek pontosan {{ limit }} karaktert kell tartalmaznia.", "validators", "hu");
     Translator.add("The file was only partially uploaded.", "A f\u00e1jl csak r\u00e9szben lett felt\u00f6ltve.", "validators", "hu");
     Translator.add("No file was uploaded.", "Nem lett f\u00e1jl felt\u00f6ltve.", "validators", "hu");
@@ -74,7 +74,6 @@
     Translator.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "A k\u00e9p n\u00e9gyzet alak\u00fa ({{ width }}x{{ height }}px). A n\u00e9gyzet alak\u00fa k\u00e9pek nem enged\u00e9lyezettek.", "validators", "hu");
     Translator.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "A k\u00e9p fekv\u0151 t\u00e1jol\u00e1s\u00fa ({{ width }}x{{ height }}px). A fekv\u0151 t\u00e1jol\u00e1s\u00fa k\u00e9pek nem enged\u00e9lyezettek.", "validators", "hu");
     Translator.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "A k\u00e9p \u00e1ll\u00f3 t\u00e1jol\u00e1s\u00fa ({{ width }}x{{ height }}px). Az \u00e1ll\u00f3 t\u00e1jol\u00e1s\u00fa k\u00e9pek nem enged\u00e9lyezettek.", "validators", "hu");
-    Translator.add("An empty file is not allowed.", "\u00dcres f\u00e1jl nem megengedett.", "validators", "hu");
     Translator.add("This form should not contain extra fields.", "Ez a mez\u0151csoport nem tartalmazhat extra mez\u0151ket.", "validators", "hu");
     Translator.add("The uploaded file was too large. Please try to upload a smaller file.", "A felt\u00f6lt\u00f6tt f\u00e1jl t\u00fal nagy. K\u00e9rem, pr\u00f3b\u00e1ljon egy kisebb f\u00e1jlt felt\u00f6lteni.", "validators", "hu");
     Translator.add("The CSRF token is invalid. Please try to resubmit the form.", "\u00c9rv\u00e9nytelen CSRF token. K\u00e9rem, pr\u00f3b\u00e1lja \u00fajra elk\u00fcldeni az \u0171rlapot.", "validators", "hu");

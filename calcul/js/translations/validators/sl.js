@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "\u0160irina slike je premajhna ({{ width }}px). Najmanj\u0161a predvidena \u0161irina je {{ min_width }}px.", "validators", "sl");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Vi\u0161ina slike je prevelika ({{ height }}px). Najve\u010dja dovoljena vi\u0161ina je {{ max_height }}px.", "validators", "sl");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Vi\u0161ina slike je premajhna ({{ height }}px). Najmanj\u0161a predvidena vi\u0161ina je {{ min_height }}px.", "validators", "sl");
-    Translator.add("This value should be the user's current password.", "Ta vrednost bi morala biti trenutno uporabnikovo geslo.", "validators", "sl");
+    Translator.add("This value should be the user current password.", "Ta vrednost bi morala biti trenutno uporabnikovo geslo.", "validators", "sl");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Ta vrednost bi morala imeti to\u010dno {{ limit }} znak.|Ta vrednost bi morala imeti to\u010dno {{ limit }} znaka.|Ta vrednost bi morala imeti to\u010dno {{ limit }} znake.|Ta vrednost bi morala imeti to\u010dno {{ limit }} znakov.", "validators", "sl");
     Translator.add("The file was only partially uploaded.", "Datoteka je bila le delno nalo\u017eena.", "validators", "sl");
     Translator.add("No file was uploaded.", "Nobena datoteka ni bila nalo\u017eena.", "validators", "sl");
@@ -74,7 +74,7 @@
     Translator.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "Slika je kvadrat ({{ width }}x{{ height }}px). Kvadratne slike niso dovoljene.", "validators", "sl");
     Translator.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "Slika je le\u017ee\u010de usmerjena ({{ width }}x{{ height }}px). Le\u017ee\u010de usmerjene slike niso dovoljene.", "validators", "sl");
     Translator.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "Slika je pokon\u010dno usmerjena ({{ width }}x{{ height }}px). Pokon\u010dno usmerjene slike niso dovoljene.", "validators", "sl");
-    Translator.add("An empty file is not allowed.", "Prazna datoteka ni dovoljena.", "validators", "sl");
+    Translator.add("This value does not match the expected {{ charset }} charset.", "Ta vrednost se ne ujema s pri\u010dakovanim naborom znakov {{ charset }}.", "validators", "sl");
     Translator.add("This form should not contain extra fields.", "Ta obrazec ne sme vsebovati dodatnih polj.", "validators", "sl");
     Translator.add("The uploaded file was too large. Please try to upload a smaller file.", "Nalo\u017eena datoteka je prevelika. Prosimo, poizkusite nalo\u017eiti manj\u0161o.", "validators", "sl");
     Translator.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF vrednost je napa\u010dna. Prosimo, ponovno po\u0161ljite obrazec.", "validators", "sl");

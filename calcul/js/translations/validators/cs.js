@@ -22,8 +22,8 @@
     Translator.add("This value should be {{ limit }} or more.", "Tato hodnota mus\u00ed b\u00fdt {{ limit }} nebo v\u00edce.", "validators", "cs");
     Translator.add("This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.", "Tato hodnota je p\u0159\u00edli\u0161 kr\u00e1tk\u00e1. Mus\u00ed obsahovat minim\u00e1ln\u011b {{ limit }} znak.|Tato hodnota je p\u0159\u00edli\u0161 kr\u00e1tk\u00e1. Mus\u00ed obsahovat minim\u00e1ln\u011b {{ limit }} znaky.|Tato hodnota je p\u0159\u00edli\u0161 kr\u00e1tk\u00e1. Mus\u00ed obsahovat minim\u00e1ln\u011b {{ limit }} znak\u016f.", "validators", "cs");
     Translator.add("This value should not be blank.", "Tato hodnota nesm\u00ed b\u00fdt pr\u00e1zdn\u00e1.", "validators", "cs");
-    Translator.add("This value should not be null.", "Tato hodnota nesm\u00ed b\u00fdt null.", "validators", "cs");
-    Translator.add("This value should be null.", "Tato hodnota mus\u00ed b\u00fdt null.", "validators", "cs");
+    Translator.add("This value should not be null.", "Tato hodnota nesm\u00ed b\u00fdt pr\u00e1zdn\u00e1.", "validators", "cs");
+    Translator.add("This value should be null.", "Tato hodnota mus\u00ed b\u00fdt pr\u00e1zdn\u00e1.", "validators", "cs");
     Translator.add("This value is not valid.", "Tato hodnota nen\u00ed platn\u00e1.", "validators", "cs");
     Translator.add("This value is not a valid time.", "Tato hodnota nen\u00ed platn\u00fd \u010dasov\u00fd \u00fadaj.", "validators", "cs");
     Translator.add("This value is not a valid URL.", "Tato hodnota nen\u00ed platn\u00e1 URL adresa.", "validators", "cs");
@@ -43,7 +43,7 @@
     Translator.add("The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.", "Obr\u00e1zek je p\u0159\u00edli\u0161 \u00fazk\u00fd ({{ width }}px). Minim\u00e1ln\u00ed \u0161\u00ed\u0159ka mus\u00ed b\u00fdt {{ min_width }}px.", "validators", "cs");
     Translator.add("The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.", "Obr\u00e1zek je p\u0159\u00edli\u0161 vysok\u00fd ({{ height }}px). Maxim\u00e1ln\u00ed povolen\u00e1 v\u00fd\u0161ka obr\u00e1zku je {{ max_height }}px.", "validators", "cs");
     Translator.add("The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.", "Obr\u00e1zek je p\u0159\u00edli\u0161 n\u00edzk\u00fd ({{ height }}px). Minim\u00e1ln\u00ed v\u00fd\u0161ka obr\u00e1zku mus\u00ed b\u00fdt {{ min_height }}px.", "validators", "cs");
-    Translator.add("This value should be the user's current password.", "Tato hodnota mus\u00ed b\u00fdt aktu\u00e1ln\u00ed heslo u\u017eivatele.", "validators", "cs");
+    Translator.add("This value should be the user current password.", "Tato hodnota mus\u00ed b\u00fdt aktu\u00e1ln\u00ed heslo u\u017eivatele.", "validators", "cs");
     Translator.add("This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.", "Tato hodnota mus\u00ed m\u00edt p\u0159esn\u011b {{ limit }} znak.|Tato hodnota mus\u00ed m\u00edt p\u0159esn\u011b {{ limit }} znaky.|Tato hodnota mus\u00ed m\u00edt p\u0159esn\u011b {{ limit }} znak\u016f.", "validators", "cs");
     Translator.add("The file was only partially uploaded.", "Byla nahr\u00e1na jen \u010d\u00e1st souboru.", "validators", "cs");
     Translator.add("No file was uploaded.", "\u017d\u00e1dn\u00fd soubor nebyl nahr\u00e1n.", "validators", "cs");
@@ -74,7 +74,6 @@
     Translator.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "Strany obr\u00e1zku jsou \u010dtvercov\u00e9 ({{ width }}x{{ height }}px). \u010ctvercov\u00e9 obr\u00e1zky nejsou povolen\u00e9.", "validators", "cs");
     Translator.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "Obr\u00e1zek je orientovan\u00fd na \u0161\u00ed\u0159ku ({{ width }}x{{ height }}px). Obr\u00e1zky orientovan\u00e9 na \u0161\u00ed\u0159ku nejsou povolen\u00e9.", "validators", "cs");
     Translator.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "Obr\u00e1zek je orientovan\u00fd na v\u00fd\u0161ku ({{ width }}x{{ height }}px). Obr\u00e1zky orientovan\u00e9 na v\u00fd\u0161ku nejsou povolen\u00e9.", "validators", "cs");
-    Translator.add("An empty file is not allowed.", "Soubor nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.", "validators", "cs");
     Translator.add("This form should not contain extra fields.", "Tato skupina pol\u00ed nesm\u00ed obsahovat dal\u0161\u00ed pole.", "validators", "cs");
     Translator.add("The uploaded file was too large. Please try to upload a smaller file.", "Nahran\u00fd soubor je p\u0159\u00edli\u0161 velk\u00fd. Nahrajte pros\u00edm men\u0161\u00ed soubor.", "validators", "cs");
     Translator.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF token je neplatn\u00fd. Zkuste pros\u00edm znovu odeslat formul\u00e1\u0159.", "validators", "cs");
