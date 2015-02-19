@@ -102,6 +102,14 @@
                 <source>This value can not be greater than %max%</source>
                 <target>Cette donnée ne peut être supérieure à %max%</target>
             </trans-unit>
-      </body>
+            <trans-unit id="26">
+                <source>Simulation performed on %host% on %date%</source>
+                <target>Simulation réalisée sur %host% le %date%</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>Page %pageno% of %numberofpages%</source>
+                <target>Page %pageno%/%numberofpages%</target>
+            </trans-unit>
+     </body>
     </file>
 </xliff>
