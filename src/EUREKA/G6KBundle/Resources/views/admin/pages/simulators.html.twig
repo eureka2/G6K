@@ -1,0 +1,412 @@
+{% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
+
+{% block content %}
+<h2>Simulators definition</h2>
+
+<div class="navbar-default navbar-side" role="navigation">
+	<div class="sidebar-collapse">
+		<div id="simulators" class="nav panel panel-primary">
+			<div class="panel-heading"><h3>Simulators</h3></div>
+			<div class="panel-body">
+				<ul class="nav nav-pills nav-stacked">
+					{% for simu in simulators %}
+					<li><a href="{{ path('eureka_g6k_admin_simulators') }}/{{ simu.file }}">{{ simu.label }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="page-wrapper" class="content">
+	<div id="page-simulators">
+		<div class="row">
+			<div class="col-md-12">
+				{% if simulator is not empty %}
+				<div class="panel-group" id="simulator" role="tablist" aria-multiselectable="true">
+					<div class="panel panel-primary">
+						<div class="panel-heading" role="tab" id="simulator-panel">
+							<h4 class="panel-title">Simulator : {{ simulator.label }}</h4>
+						</div>
+						<div class="panel-body">
+							<div class="panel panel-default" id="simulator-attributes-panel">
+								<div class="panel-body">
+									<div class="attributes-container droppable">
+										<div>
+										{{ _self.showAttribute('simulator', 'text', 'name', 'Name', simulator.name, true, 'name') }}									
+										{{ _self.showAttribute('simulator', 'text', 'label', 'Label', simulator.label, true, 'label') }}									
+										{{ _self.showAttribute('simulator', 'select', 'dateFormat', 'Date format', simulator.dateFormat, true, 'Select a format', { 'd/m/Y':'d/m/Y', 'm/d/Y':'m/d/Y', 'd-m-Y':'d-m-Y', 'm-d-Y':'m-d-Y', 'Y-m-d':'Y-m-d' }) }}									
+										{{ _self.showAttribute('simulator', 'text', 'decimalPoint', 'Decimal point', simulator.decimalPoint, true, 'Decimal point') }}									
+										{{ _self.showAttribute('simulator', 'select', 'moneySymbol', 'Currency symbol', simulator.moneySymbol, true, 'Select a symbol', {'฿':'฿', 'B/.':'B/.', '₵':'₵', '¢':'¢', '₡':'₡', 'Kč':'Kč', '$':'$', '₫':'₫', '€':'€', 'ƒ':'ƒ', 'Ft':'Ft', '₲':'₲', '₴':'₴', '₭':'₭', 'L':'L', '£ / ₤':'£ / ₤', '₺':'₺', '₥':'₥', '₦':'₦', 'S/.':'S/.', '₱':'₱', 'P':'P', 'R':'R', 'RM':'RM', '₹ / ₨':'₹ / ₨', '৲':'৲', '৳':'৳', 'R$':'R$', '₪':'₪', '₮':'₮', '₩':'₩', '¥':'¥', 'Ұ':'Ұ', 'zł':'zł' }) }}									
+										{{ _self.showAttribute('simulator', 'select', 'symbolPosition', 'Symbol position', simulator.symbolPosition, true, 'Select a position', {'before':'before currency', 'after':'after currency'}) }}									
+										{{ _self.showAttribute('simulator', 'checkbox', 'dynamic', 'Interactive UI', simulator.dynamic, false, 'dynamic') }}									
+										</div>
+										<div class="optional-attributes panel panel-default">
+											<div class="panel-heading">
+												<h4 class="panel-title">Optional attributes</h4>
+											</div>
+											<ul class="list-group">
+												<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="dynamic"{%- if simulator.dynamic is not empty %} style="display: none;"{%- endif -%}>Interactive UI</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel panel-default" id="simulator-description-panel">
+								<div class="panel-heading">
+									Description
+								</div>
+								<div class="panel-body">
+									<textarea name="simulator-description" id="simulator-description" class="form-control">{{ simulator.description }}</textarea>
+								</div>
+							</div>
+							{% if simulator.globalConstraints is not empty %}
+							<div class="panel panel-default" id="simulator-globalConstraints-panel">
+								<div class="panel-heading">
+									Global constraints
+								</div>
+								<div class="panel-body">
+									{% for constraint in simulator.globalConstraints %}
+									<div class="panel panel-default" id="simulator-globalConstraint-{{ constraint.id }}-panel">
+										<div class="panel-body">
+										{{ _self.showExpressionAttribute('simulator-globalConstraint-'~constraint.id, 'constraint', 'Constraint', constraint.constraint, true, 'Constraint') }}									
+										{{ _self.showAttribute('simulator-globalConstraint-'~constraint.id, 'text', 'message', 'Constraint message', constraint.message, true, 'Constraint message') }}									
+										</div>
+									</div>
+									{% endfor %}
+								</div>
+							</div>
+							{% endif %}
+							<div class="panel panel-default" id="simulator-elements-panel">
+							{{ _self.showDatas ( simulator ) }}
+							{{ _self.showSteps ( simulator ) }}
+							{{ _self.showSources ( simulator ) }}
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+ 
+{% macro showDatas(simulator) %}
+{{ _self.openCollapsiblePanel('datas' , 'Datas', 'primary', '', 'sortable' ) }}
+{% for data in simulator.datas %}
+	{% if data.class == "DataGroup" %}
+	{{ _self.openCollapsiblePanel('datagroup-' ~ data.id , 'Group ' ~ data.label, 'success', loop.index == 1 ? 'in' : '', 'sortable' ) }}
+	<div class="panel panel-default" id="datagroup-{{ data.id }}-attributes-panel">
+		<div class="panel-body">
+			<div class="attributes-container">
+				<div>
+				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'name', 'Group Name', data.name, true, 'Group name') }}									
+				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'label', 'Group Label', data.label, true, 'Group label') }}									
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default" id="datagroup-{{ data.id }}-description-panel">
+		<div class="panel-heading">
+			Description
+		</div>
+		<div class="panel-body">
+			<textarea name="datagroup-{{ data.id }}-description" id="datagroup-{{ data.id }}-description" class="form-control">{{ data.description }}</textarea>
+		</div>
+	</div>
+	<div class="panel panel-default" id="datagroup-{{ data.id }}-datas-panel">
+		<div class="panel-body">
+		{% for gdata in data.datas %}
+			{{ _self.showData(gdata, loop.index == 1 ? 'in' : '') }}
+		{% endfor %}
+		</div>
+	</div>	
+	{% if data.constraints is not empty %}
+	<div class="panel panel-default" id="datagroup-{{ data.id }}-constraints-panel">
+		<div class="panel-heading">
+			Group Constraints
+		</div>
+		<div class="panel-body">
+			{% for constraint in data.constraints %}
+			<div class="panel panel-default" id="datagroup-{{ data.id }}-constraint-{{ constraint.id }}-panel">
+				<div class="panel-body">
+					{{ _self.showExpressionAttribute('data-'~data.id~'-constraint-'~constraint.id, 'constraint', 'Constraint', constraint.constraint, true, 'Constraint') }}									
+					{{ _self.showAttribute('data-'~data.id~'-constraint-'~constraint.id, 'text', 'message', 'Constraint message', constraint.message, true, 'Constraint message') }}									
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	{% endif %}		
+	{{ _self.closeCollapsiblePanel() }}  
+	{% else %}
+	{{ _self.showData(data, loop.index == 1 ? 'in' : '') }}
+	{% endif %}
+{% endfor %}
+{{ _self.closeCollapsiblePanel() }}  
+{% endmacro %}
+
+{% macro showSteps(simulator) %}
+{{ _self.openCollapsiblePanel('steps' , 'Steps', 'primary', '', 'sortable' ) }}	
+{% for step in simulator.steps %}
+	{{ _self.openCollapsiblePanel('step-' ~ step.id , step.label, 'info', loop.index == 1 ? 'in' : '', 'sortable' ) }}
+	<div class="panel panel-default" id="step-{{ step.id }}-attributes-panel">
+		<div class="panel-body">
+			<div class="attributes-container">
+				<div>
+				{{ _self.showAttribute('step-'~step.id, 'text', 'name', 'Step Name', step.name, true, 'Step name') }}									
+				{{ _self.showAttribute('step-'~step.id, 'text', 'label', 'Step Label', step.label, true, 'Step label') }}									
+				{{ _self.showAttribute('step-'~step.id, 'text', 'template', 'Step Template', step.template, true, 'Step label') }}									
+				{{ _self.showExpressionAttribute('step-'~step.id, 'condition', 'Step condition', step.condition, false, 'Step condition') }}	
+				{{ _self.showAttribute('step-'~step.id, 'select', 'output', 'Output', step.output, false, 'Select an output', {'normal':'Normal', 'inlinePDF':'Inline PDF', 'downloadablePDF':'Downloadable PDF', 'html':'html'}) }}	
+				{{ _self.showAttribute('step-'~step.id, 'checkbox', 'dynamic', 'Interactive UI', step.dynamic, false, 'dynamic') }}									
+				</div>
+				<div class="optional-attributes panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">Optional attributes</h4>
+					</div>
+					<ul class="list-group">
+						<li class="list-group-item" data-element="step-{{ step.id }}" data-type="text" data-name="condition" data-expression="true" data-placeholder="condition"{%- if step.condition is not empty %} style="display: none;"{%- endif -%}>Condition</li>
+						<li class="list-group-item" data-element="step-{{ step.id }}" data-type="text" data-name="output" data-placeholder="output"{%- if step.output is not empty %} style="display: none;"{%- endif -%}>Output</li>
+						<li class="list-group-item" data-element="step" data-type="checkbox" data-name="dynamic"{%- if step.dynamic is not empty %} style="display: none;"{%- endif -%}>Interactive UI</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default" id="step-{{ step.id }}-description-panel">
+		<div class="panel-heading">
+			Description
+		</div>
+		<div class="panel-body">
+			<textarea name="step-{{ step.id }}-description" id="step-{{ step.id }}-description" class="form-control">{{ step.description }}</textarea>
+		</div>
+	</div>
+	<div class="panel panel-default" id="step-{{ step.id }}-fieldsets-panel">
+		<div class="panel-body">
+		{% for fieldset in step.fieldSets %}
+			{{ _self.showFieldSet(step, fieldset, loop.index == 1 ? 'in' : '') }}
+		{% endfor %}
+		</div>
+	</div>
+	{{ _self.closeCollapsiblePanel() }}  
+{% endfor %}
+{{ _self.closeCollapsiblePanel() }}  
+{% endmacro %}
+
+{% macro showSources(simulator) %}
+{{ _self.openCollapsiblePanel('sources' , 'Sources', 'primary', '', 'sortable' ) }}	
+Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus labore sustainable VHS.
+{{ _self.closeCollapsiblePanel() }}  
+{% endmacro %}
+
+{% macro showFieldSet(step, fieldset, inClass) %}
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id , 'Fieldset #' ~ fieldset.id, 'info', inClass, '' ) }}
+<div class="panel panel-default" id="step-{{ step.id }}-fieldset-{{ fieldset.id }}-attributes-panel">
+	<div class="panel-body">
+		<div class="attributes-container">
+			<div>
+			{{ _self.showExpressionAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id, 'condition', 'Fieldset condition', fieldset.condition, false, 'Fieldset condition') }}	
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id, 'select', 'disposition', 'Disposition', fieldset.disposition, false, 'Select a Disposition', {'classic':'Classic', 'grid':'Grid'}) }}	
+			</div>
+			<div class="optional-attributes panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">Optional attributes</h4>
+				</div>
+				<ul class="list-group">
+					<li class="list-group-item" data-element="step-{{ step.id }}-fieldset-{{ fieldset.id }}" data-type="text" data-name="condition" data-expression="true" data-placeholder="condition"{%- if fieldset.condition is not empty %} style="display: none;"{%- endif -%}>Condition</li>
+					<li class="list-group-item" data-element="step-{{ step.id }}-fieldset-{{ fieldset.id }}" data-type="text" data-name="disposition" data-placeholder="disposition"{%- if fieldset.disposition is not empty %} style="display: none;"{%- endif -%}>Disposition</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default" id="step-{{ step.id }}}-fieldset-{{ fieldset.id }}-legend-panel">
+	<div class="panel-heading">
+		Legend
+	</div>
+	<div class="panel-body">
+		<textarea name="step-{{ step.id }}}-fieldset-{{ fieldset.id }}-legend" id="step-{{ step.id }}}-fieldset-{{ fieldset.id }}-legend" class="form-control">{{ fieldset.legend }}</textarea>
+	</div>
+</div>
+<div class="panel panel-default" id="step-{{ step.id }}}-fieldset-{{ fieldset.id }}-fieldsets-panel">
+	<div class="panel-body">
+	{% for column in fieldset.columns %}
+	{#	{{ _self.showFieldSetColumn(step, fieldset, column, loop.index == 1 ? 'in' : '') }} #}
+	{% endfor %}
+	</div>
+</div>
+{{ _self.closeCollapsiblePanel() }}  
+{% endmacro %}
+
+{% macro showAttribute(element, type, name, label, value, required, placeholder, options) %}
+{% if required or value is not empty %}
+<div class="form-group col-sm-12">
+	<label for="{{ element }}-{{ name }}" class="col-sm-4 control-label">{%- if not required -%}<span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;{%- endif -%}{{ label }}</label>
+	<div class="col-sm-8">
+		{% if type == 'text' %}
+		<input type="text" name="{{ element }}-{{ name }}" id="{{ element }}-{{ name }}" class="form-control simple-value" placeholder="{{ placeholder }}"  value="{{ value }}" />
+		{% elseif type == 'checkbox' %}
+		<input type="checkbox" name="{{ element }}-{{ name }}" id="{{ element }}-{{ name }}" class="form-control simple-value" value="1"{%- if value %} checked="checked"{%- endif -%} />
+		{% elseif type == 'select' %}
+		<select name="{{ element }}-{{ name }}" id="{{ element }}-{{ name }}" class="form-control simple-value"  data-placeholder="{{ placeholder }}">
+			{% for val, option in options %}
+			<option value="{{ val }}"{%- if value == val %} selected="selected"{%- endif -%}>{{ option }}</option>
+			{% endfor %}
+		</select>
+		{% endif %}								
+	</div>
+</div>
+{% endif %}	
+{% endmacro %}
+ 
+{% macro showExpressionAttribute(element, name, label, value, required, placeholder) %}
+{% if required or value is not empty %}
+<div class="form-group col-sm-12">
+	<label for="{{ element }}-{{ name }}" class="col-sm-4 control-label">{%- if not required -%}<span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;{%- endif -%}{{ label }}</label>
+	<div class="col-sm-8">
+		<select id="{{ element }}-{{ name }}-expression-type" class="form-control col-sm-4 expression-type">
+			<option value="1"{%- if not value matches '/[\\(\\)\\?\\<\\>\\=\\|\\&\\+\\-\\*\\/]/' %} selected="selected"{%- endif -%}>Constant</option>
+			<option value="2"{%- if value matches '/[\\(\\)\\<\\>\\=\\|\\&\\+\\-\\*\\/]/' and not value matches '/\\?/' %} selected="selected"{%- endif -%}>Simple expression</option>
+			<option value="3"{%- if value matches '/[\\(\\)\\<\\>\\=\\|\\&\\?\\+\\-\\*\\/]/' %} selected="selected"{%- endif -%}>Conditional expression</option>
+		</select>
+		<input type="text" name="{{ element }}-{{ name }}" id="{{ element }}-{{ name }}" class="form-control col-sm-4 expression-value" placeholder="{{ placeholder }}"  value="{{ value }}" />
+	</div>
+</div>
+{% endif %}	
+{% endmacro %}
+
+{% macro openCollapsiblePanel(id, header, style, in, sortable) %}
+<div class="panel-group" id="{{ id }}" role="tablist" aria-multiselectable="true">
+	<div class="panel panel-{{ style }}">
+		<div class="panel-heading" role="tab" id="{{ id }}-panel">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#{{ id }}" href="#collapse{{ id }}" aria-expanded="true" aria-controls="collapse{{ id }}">
+					{{ header }}
+				</a>
+			</h4>
+		</div>
+		<div id="collapse{{ id }}" class="panel-collapse collapse {{ in }}" role="tabpanel" aria-labelledby="{{ id }}-panel">
+			<div class="panel-body {{ sortable }}">
+{% endmacro %}
+
+{% macro closeCollapsiblePanel() %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endmacro %}
+
+{% macro showData(data, inClass) %}
+{{ _self.openCollapsiblePanel('data-' ~ data.id , '#'~data.id~' : '~data.label, 'info', inClass, '' ) }}
+<div class="panel panel-default" id="data-{{ data.id }}-attributes-panel">
+	<div class="panel-body">
+		<div class="attributes-container">
+			<div>
+			{{ _self.showAttribute('data-'~data.id, 'text', 'name', 'Name', data.name, true, 'Data name') }}	
+			{{ _self.showAttribute('data-'~data.id, 'text', 'label', 'Label', data.label, true, 'Data label') }}	
+			{{ _self.showAttribute('data-'~data.id, 'select', 'type', 'Type', data.type, true, 'Select a type', {'date':'date', 'day':'day', 'month':'month', 'year':'year', 'boolean':'boolean', 'integer':'integer', 'number':'number', 'text':'text', 'textarea':'textarea', 'money':'money', 'choice':'choice', 'percent':'percent', 'table':'table', 'department':'department', 'region':'region', 'country':'country'}) }}	
+			{{ _self.showExpressionAttribute('data-'~data.id, 'default', 'Default', data.default, false, 'default value') }}	
+			{{ _self.showExpressionAttribute('data-'~data.id, 'min', 'Min', data.unparsedMin, false, 'Minimum value') }}	
+			{{ _self.showExpressionAttribute('data-'~data.id, 'max', 'Max', data.unparsedMax, false, 'Maximum value') }}	
+			{{ _self.showExpressionAttribute('data-'~data.id, 'content', 'Content', data.content, false, 'Content') }}
+			{% if data.round != '2' %}		
+			{{ _self.showAttribute('data-'~data.id, 'number', 'round', 'Round', data.round, false, 'Round') }}
+			{% endif %}			
+			{{ _self.showAttribute('data-'~data.id, 'text', 'unit', 'Unit', data.unit, false, 'Unit') }}	
+			{{ _self.showExpressionAttribute('data-'~data.id, 'source', 'Source', data.source, false, 'Source') }}	
+			{{ _self.showExpressionAttribute('data-'~data.id, 'index', 'Index', data.index, false, 'Index') }}	
+			</div>
+			<div class="optional-attributes panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">Optional attributes</h4>
+				</div>
+				<ul class="list-group">
+					<li class="list-group-item" data-element="data-{{ data.id }}" data-type="text" data-name="default" data-expression="true" data-placeholder="default value"{%- if data.default is not empty %} style="display: none;"{%- endif -%}>Default</li>
+					<li class="list-group-item" data-element="data-{{ data.id }}" data-type="text" data-name="min" data-expression="true" data-placeholder="Minimum value"{%- if data.unparsedMin is not empty %} style="display: none;"{%- endif -%}>Min</li>
+					<li class="list-group-item" data-element="data-{{ data.id }}" data-type="text" data-name="max" data-expression="true" data-placeholder="Maximum value"{%- if data.unparsedMax is not empty %} style="display: none;"{%- endif -%}>Max</li>
+					<li class="list-group-item" data-element="data-{{ data.id }}" data-type="text" data-name="content" data-expression="true" data-placeholder="Content"{%- if data.content is not empty %} style="display: none;"{%- endif -%}>Content</li>
+					<li class="list-group-item" data-element="data-{{ data.id }}" data-type="number" data-name="round" data-placeholder="Round"{%- if data.round is not empty %} style="display: none;"{%- endif -%}>Round</li>
+					<li class="list-group-item" data-element="data-{{ data.id }}" data-type="text" data-name="unit" data-placeholder="Unit"{%- if data.unit is not empty %} style="display: none;"{%- endif -%}>Unit</li>
+					<li class="list-group-item" data-element="data-{{ data.id }}" data-type="text" data-name="source" data-expression="true" data-placeholder="Source"{%- if data.source is not empty %} style="display: none;"{%- endif -%}>Source</li>
+					<li class="list-group-item" data-element="data-{{ data.id }}" data-type="text" data-name="index" data-expression="true" data-placeholder="Index"{%- if data.index is not empty %} style="display: none;"{%- endif -%}>Index</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default" id="data-{{ data.id }}-description-panel">
+	<div class="panel-heading">
+		Description
+	</div>
+	<div class="panel-body">
+		<textarea name="data-{{ data.id }}-description" id="data-{{ data.id }}-description" class="form-control">{{ data.description }}</textarea>
+	</div>
+</div>
+{% if data.choices is not empty or data.choiceSource is not empty %}
+<div class="panel panel-default" id="data-{{ data.id }}-choices-panel">
+	<div class="panel-heading">
+		Choices
+	</div>
+	<div class="panel-body">
+		{% for choice in data.choices %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Choice {{ choice.id }}
+			</div>
+			<div class="panel-body" id="data-{{ data.id }}-choice-{{ choice.id }}-panel">
+				<div class="attributes-container">
+					<div>
+					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'value', 'Value', choice.value, true, 'Choice value') }}	
+					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'label', 'Label', choice.label, true, 'Choice label') }}	
+					{{ _self.showExpressionAttribute('data-'~data.id~'-choice-'~choice.id, 'condition', 'Condition', choice.condition, false, 'Choice condition') }}	
+					</div>
+					<div class="optional-attributes panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">Optional attributes</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endfor %}	
+		{% if data.choiceSource is not empty %}
+		<div class="attributes-container">
+			<div>
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'idColumn', 'Source column id', data.choiceSource.idColumn, false, 'Source column id') }}	
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'valueColumn', 'Source column value', data.choiceSource.valueColumn, true, 'Source column value') }}	
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'labelColumn', 'Source column label', data.choiceSource.labelColumn, true, 'Source column label') }}	
+			</div>
+			<div class="optional-attributes panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">Optional attributes</h4>
+				</div>
+			</div>
+		</div>
+		{% endif %}	
+	</div>
+</div>
+{% endif %}	
+{% if data.constraints is not empty %}
+<div class="panel panel-default" id="data-{{ data.id }}-constraints-panel">
+	<div class="panel-heading">
+		Constraints
+	</div>
+	<div class="panel-body">
+		{% for constraint in data.constraints %}
+		<div class="panel panel-default" id="data-{{ data.id }}-constraint-{{ constraint.id }}-panel">
+			<div class="panel-body">
+				{{ _self.showExpressionAttribute('data-'~data.id~'-constraint-'~constraint.id, 'constraint', 'Constraint', constraint.constraint, true, 'Constraint') }}									
+				{{ _self.showAttribute('data-'~data.id~'-constraint-'~constraint.id, 'text', 'message', 'Constraint message', constraint.message, true, 'Constraint message') }}									
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}
+{{ _self.closeCollapsiblePanel() }}
+
+{% endmacro %}
+
+

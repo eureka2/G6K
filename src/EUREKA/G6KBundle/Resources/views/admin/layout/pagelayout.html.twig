@@ -1,0 +1,35 @@
+{% extends 'EUREKAG6KBundle:base/layout:pagelayout.html.twig' %}
+
+{% block title %}G6K Admin{% endblock %}
+
+{% block metas %}
+{{ parent() }}<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+
+{% block bodyclass %}{% endblock %}
+
+{% block styles %}
+{% include 'EUREKAG6KBundle:admin/sections:styles.html.twig' %}
+{% endblock %}
+
+{% block body %}
+	<div id="wrapper">
+		{% include 'EUREKAG6KBundle:admin/sections:header.html.twig' %}
+		<div id="page" class="container-fluid">
+		{% block content %}{% endblock %}
+		</div>
+		{% include 'EUREKAG6KBundle:admin/sections:footer.html.twig' %}
+	</div>
+  {% block scripts %}
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-1.11.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-migrate-1.2.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.js') }}"></script>
+<script type="text/javascript">
+Admin.lang = '{{ app.request.locale }}';
+Admin.locale = '{{ app.request.locale }}-{{ app.request.locale|upper }}';
+</script>
+{% include 'EUREKAG6KBundle:admin/sections:scripts.html.twig' %}
+  {% endblock %}
+{% endblock %}
+

@@ -8,6 +8,7 @@ class Database {
 	private $id;
 	private $type;
 	private $name;
+	private $label;
 	private $host; // host or relative path if sqlite
 	private $port;
 	private $user;
@@ -48,6 +49,14 @@ class Database {
 	
 	public function setName($name) {
 		$this->name = $name;
+	}
+	
+	public function getLabel() {
+		return $this->label;
+	}
+	
+	public function setLabel($label) {
+		$this->label = $label;
 	}
 	
 	public function getHost() {
@@ -173,11 +182,38 @@ class Database {
 			case "mysqli":
 			case "sqlite":
 				$stmt = $this->link->query($sql);
-				$stmt->execute();
 				$query_result = $stmt->fetchAll();
 				break;
 		}
 		return $query_result;
+	}
+
+	public function quote($value) {
+		$query_result = false;
+		switch ($this->type) {
+			case "mysql":
+				return mysql_real_escape_string($value);
+			case "pgsl":
+				return pg_escape_string($this->link, $value);
+			case "mysqli":
+			case "sqlite":
+				return $this->link->quote($value);
+		}
+		return $value;
+	}
+
+	public function lastInsertId($tablename) {
+		switch ($this->type) {
+			case "mysql":
+				return mysql_insert_id($this->link);
+			case "pgsl":
+				$currval = $this->query("SELECT currval('" + $tablename + "_id_seq') AS lastinsertid");
+				return $currval[0];
+			case "mysqli":
+			case "sqlite":
+				return $this->link->lastInsertId();
+		}
+		return 0;
 	}
 
 }

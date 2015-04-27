@@ -1,0 +1,94 @@
+{% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
+
+{% block content %}
+<h2>Internal data sources management</h2>
+
+<div class="navbar-default navbar-side" role="navigation">
+	<div class="sidebar-collapse">
+		{% if tables is not empty %}
+		<div id="data-source" class="nav panel panel-primary">
+			<div class="panel-heading"><h3>Data source : <br /> {{ dbname }}</h3></div>
+			<div class="panel-body">
+				<button id="btnAddNewTable" class="btn btn-default">Add table <span class="glyphicon glyphicon-plus-sign"></span></button>
+				<h4>Tables :</h4>
+				<ul class="nav nav-pills nav-stacked">
+					{% for tbl in tables %}
+					<li><a href="{{ path('eureka_g6k_admin_datasources') }}/{{ dbname }}/{{ tbl.tbl_name }}">{{ tbl.label }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		{% endif %}
+		<div id="data-sources" class="nav panel panel-primary">
+			<div class="panel-heading"><h3>Data sources</h3></div>
+			<div class="panel-body">
+				<div>
+					<button id="btnAddNewDataSource" class="btn btn-default">Add Data source <span class="glyphicon glyphicon-plus-sign"></span></button>
+				</div>
+				<ul class="nav nav-pills nav-stacked">
+					{% for database in databases %}
+					<li><a href="{{ path('eureka_g6k_admin_datasources') }}/{{ database.file }}">{{ database.label }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="page-wrapper" class="content">
+	<div id="page-datasources">
+		<div class="row">
+			<div class="col-md-12">
+				{% if table is not empty %}
+				<div id="table" class="panel panel-primary">
+					<div class="panel-heading">{{ table.label }}</div>
+					<div class="panel-body">
+						<div class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only">Error:</span>
+							<ul></ul>
+						</div>
+						<div class="table-responsive">
+							{{ table.description }}
+							<button id="btnAddNewRow" class="btn btn-default">Add record <span class="glyphicon glyphicon-plus-sign"></span></button>
+							<table id="{{ table.name }}" class="table table-condensed table-striped table-bordered table-hover">
+								<thead>
+									<tr>
+										{% for info in tableinfos %}
+										<th data-resizable-column-id="{{ table.name }}_{{ info.name }}">{{ info.label }}</th>
+										{% endfor %}
+									</tr>
+								</thead>
+								<tbody>
+									{% for row in tabledatas %}
+									<tr>
+										{% for col, cell in row %}
+											<td class="{{ tableinfos[loop.index0].g6k_type }}">{{ cell }}</td>
+										{% endfor %}
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ parent() }}{% if table is not empty %}
+<script type="text/javascript">
+
+$(document).ready(function() {
+	var fields = [{%- for info in tableinfos -%}[{{ loop.index0 }}, '{{ info.name }}', '{{ info.label }}', '{{ info.notnull }}', '{{ info.g6k_type }}'{%- if info.choices -%}, '{ {%- for value, label in info.choices -%}"{{ value }}": "{{ label }}"{%- if not loop.last -%}, {%- endif -%}{%- endfor -%} }'{%- endif -%}]{%- if not loop.last -%},{%- endif -%}{%- endfor -%}];
+	Datasources.init('{{ table.name }}', fields, '{{ app.request.locale }}');
+});
+</script>
+{% endif %}
+
+ {% endblock %}
+

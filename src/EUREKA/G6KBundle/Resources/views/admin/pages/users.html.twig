@@ -1,0 +1,64 @@
+{% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
+
+{% block content %}
+<h2>Users management</h2>
+
+<div class="content">
+	<div id="page-users">
+		<div class="row">
+			<div class="col-md-12">
+				<div id="table" class="panel panel-primary">
+					<div class="panel-heading">Users list</div>
+					<div class="panel-body">
+						<div class="alert alert-danger" role="alert">
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="sr-only">Error:</span>
+							<ul></ul>
+						</div>
+						<div class="table-responsive">
+							<button id="btnAddNewRow" class="btn btn-default">Add user <span class="glyphicon glyphicon-plus-sign"></span></button>
+							<table id="users" class="table-condensed table-striped table-bordered table-hover">
+								<thead>
+									<tr>
+										<th data-resizable-column-id="users_id">Id</th>
+										<th data-resizable-column-id="users_userName">UserName</th>
+										<th data-resizable-column-id="users_email">Email</th>
+										<th data-resizable-column-id="users_password">Password</th>
+										<th data-resizable-column-id="users_enabled">Enabled</th>
+										<th data-resizable-column-id="users_locked">Locked</th>
+										<th data-resizable-column-id="users_expired">Expired</th>
+										<th data-resizable-column-id="users_expiresAt">Expires at</th>
+										<th data-resizable-column-id="users_credentialsExpired">Credentials expired</th>
+										<th data-resizable-column-id="users_credentialExpireAt">Credentials expire at</th>
+										<th data-resizable-column-id="users_roles">Roles</th>
+										<th data-resizable-column-id="users_lastLogin">Last Login</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for user in users %}
+									<tr>
+										<td class="integer">{{ user.id }}</td>
+										<td class="text">{{ user.userName }}</td>
+										<td class="text">{{ user.email }}</td>
+										<td class="password">{{ user.password }}</td>
+										<td class="boolean">{{ user.enabled == 0 ? 'No' : 'Yes' }}</td>
+										<td class="boolean">{{ user.locked == 0 ? 'No' : 'Yes' }}</td>
+										<td class="boolean">{{ user.expired == 0 ? 'No' : 'Yes' }}</td>
+										<td class="date">{{ user.expiresAt }}</td>
+										<td class="boolean">{{ user.credentialsExpired == 0 ? 'No' : 'Yes' }}</td>
+										<td class="date">{{ user.credentialExpireAt }}</td>
+										<td class="choice">{{ user.roles|join(', ')|replace({"ROLE_USER": "user", "ROLE_MANAGER": "manager", "ROLE_CONTRIBUTOR": "contributor", "ROLE_ADMIN": "admin", "ROLE_SUPER_ADMIN": "superadmin"}) }}</td>
+										<td class="date">{{ user.lastLogin|date("d/m/Y H:i:s") }}</td>
+								</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+

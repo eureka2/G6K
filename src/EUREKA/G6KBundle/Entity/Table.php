@@ -6,6 +6,7 @@ class Table {
 
 	private $data;
 	private $id;
+	private $name;
 	private $label = "";
 	private $description = "";
 	private $columns = array();
@@ -22,6 +23,14 @@ class Table {
 	
 	public function setId($id) {
 		$this->id = $id;
+	}
+	
+	public function getName() {
+		return $this->name;
+	}
+	
+	public function setName($name) {
+		$this->name = $name;
 	}
 	
 	public function getData() {

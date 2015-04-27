@@ -8,6 +8,10 @@ use EUREKA\G6KBundle\Entity\Simulator;
 use EUREKA\G6KBundle\Entity\ExpressionParser;
 use EUREKA\G6KBundle\Entity\Source;
 use EUREKA\G6KBundle\Entity\Choice;
+use EUREKA\G6KBundle\Entity\DataGroup;
+use EUREKA\G6KBundle\Entity\Data;
+use EUREKA\G6KBundle\Entity\FieldRow;
+use EUREKA\G6KBundle\Entity\Field;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -103,11 +107,23 @@ class DefaultController extends Controller {
 		foreach ($this->simu->getSteps() as $s) {
 			$steps[] = array('id' => $s->getId(), 'name' => $s->getName(), 'label' => $s->getLabel());
 			foreach ($s->getFieldSets() as $fieldset) {
-				foreach ($fieldset->getFields() as $field) {
-					if ($field->getUsage() == "input") {
-						$id = $field->getData();
-						$data = $this->simu->getDataById($id);
-						$data->setInputStepId($s->getId());
+				foreach ($fieldset->getFields() as $child) {
+					if ($child instanceof Field) {
+						$field = $child;
+						if ($field->getUsage() == "input") {
+							$id = $field->getData();
+							$data = $this->simu->getDataById($id);
+							$data->setInputStepId($s->getId());
+						}
+					} elseif ($child instanceof FieldRow) {
+						$fieldrow = $child;
+						foreach ($fieldrow->getFields() as $field) {
+							if ($field->getUsage() == "input") {
+								$id = $field->getData();
+								$data = $this->simu->getDataById($id);
+								$data->setInputStepId($s->getId());
+							}
+						}
 					}
 				}
 			}
@@ -115,8 +131,16 @@ class DefaultController extends Controller {
 			$this->variables['step'.$s->getId().'.output'] = $s->getOutput();
 		}
 		foreach ($this->simu->getDatas() as $data) {
-			if ($data->getInputStepId() < 0 && ($data->getContent() != "" || $data->getSource() != "")) {
-				$data->setValue("");
+			if ($data instanceof DataGroup) {
+				foreach ($data->getDatas() as $gdata) {
+					if ($gdata->getInputStepId() < 0 && ($gdata->getContent() != "" || $gdata->getSource() != "")) {
+						$gdata->setValue("");
+					}	
+				}
+			} elseif ($data instanceof Data) {
+				if ($data->getInputStepId() < 0 && ($data->getContent() != "" || $data->getSource() != "")) {
+					$data->setValue("");
+				}
 			}			
 		}
 		$direction = 0;
@@ -135,16 +159,36 @@ class DefaultController extends Controller {
 				}
 			}
 			foreach ($step->getFieldSets() as $fieldset) {
-				foreach ($fieldset->getFields() as $field) {
-					$this->checkField($field);
-				}
-				foreach ($fieldset->getFieldRows() as $fieldrow) {
-					foreach ($fieldrow->getFields() as $field) {
-						$this->checkField($field);
+				foreach ($fieldset->getFields() as $child) {
+					if ($child instanceof Field) {
+						$field = $child;
+						$this->checkField($field, $form, $skipValidation);
+					} elseif ($child instanceof FieldRow) {
+						$fieldrow = $child;
+						foreach ($fieldrow->getFields() as $field) {
+							$this->checkField($field, $form, $skipValidation);
+						}
 					}
 				}
 			}
 			$this->processDatas($istep);
+			$globalconstraints = $this->simu->getGlobalConstraints();
+			foreach ($globalconstraints as $constr) {
+				$constraint = $constr->getConstraint();
+				if ($constraint != "") {
+					try {
+						$result = $this->evaluate($constraint);
+						if ($result !== false) {
+							if ($result == 'false') {
+								$this->simu->setError(true);
+								$this->simu->addErrorMessage($this->replaceVariables($constr->getMessage()));
+								$this->error = true;
+							}
+						}
+					} catch (\Exception $e) {
+					}
+				}
+			}
 			if (! $this->error) {
 				foreach ($step->getActions() as $action) {
 					if (isset($form[$action->getName()])) {
@@ -183,14 +227,17 @@ class DefaultController extends Controller {
 						$fieldset->setDisplayable(false);
 					}
 				}
-				foreach ($fieldset->getFields() as $field) {
-					$field->setDisplayable($fieldset->isDisplayable());
-					$this->processField($field, $istep, $displayable); 
-				}
-				foreach ($fieldset->getFieldRows() as $fieldrow) {
-					foreach ($fieldrow->getFields() as $field) {
+				foreach ($fieldset->getFields() as $child) {
+					if ($child instanceof Field) {
+						$field = $child;
 						$field->setDisplayable($fieldset->isDisplayable());
 						$this->processField($field, $istep, $displayable); 
+					} elseif ($child instanceof FieldRow) {
+						$fieldrow = $child;
+						foreach ($fieldrow->getFields() as $field) {
+							$field->setDisplayable($fieldset->isDisplayable());
+							$this->processField($field, $istep, $displayable); 
+						}
 					}
 				}
 				$fieldset->setLegend($this->replaceVariables($fieldset->getLegend()));
@@ -218,15 +265,29 @@ class DefaultController extends Controller {
 		
 		$datas = array();
 		foreach ($this->simu->getDatas() as $data) {
-			foreach ($data->getChoices() as $choice) {
-				$condition = $choice->getCondition();
-				if ($condition != "") {
-					if ($this->evaluate($condition) == 'false') {
-						$choice->setSelected(false);
+			if ($data instanceof DataGroup) {
+				foreach ($data->getDatas() as $gdata) {
+					foreach ($gdata->getChoices() as $choice) {
+						$condition = $choice->getCondition();
+						if ($condition != "") {
+							if ($this->evaluate($condition) == 'false') {
+								$choice->setSelected(false);
+							}
+						}
+					}
+					$datas[$gdata->getName()] = $gdata->getValue();
+				}
+			} elseif ($data instanceof Data) {
+				foreach ($data->getChoices() as $choice) {
+					$condition = $choice->getCondition();
+					if ($condition != "") {
+						if ($this->evaluate($condition) == 'false') {
+							$choice->setSelected(false);
+						}
 					}
 				}
+				$datas[$data->getName()] = $data->getValue();
 			}
-			$datas[$data->getName()] = $data->getValue();
 		}
 		foreach ($this->simu->getSteps() as $s) {
 			$condition = $s->getCondition();
@@ -293,12 +354,16 @@ class DefaultController extends Controller {
 		}
 		$result = $this->processSource($source);
 		$response = new Response();
-		$response->setContent(json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES | JSON_HEX_APOS | JSON_HEX_QUOT));
+		if ($this->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
+			$response->setContent(json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES | JSON_HEX_APOS | JSON_HEX_QUOT));
+		} else {
+			$response->setContent(json_encode($result));
+		}
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
 	}
 	
-	protected function checkField($field) 
+	protected function checkField($field, $form, $skipValidation) 
 	{
 		$id = $field->getData();
 		$data = $this->simu->getDataById($id);
@@ -314,31 +379,31 @@ class DefaultController extends Controller {
 				if ($field->isRequired() && empty($value)) {
 					$data->setError(true);
 					if ($field->getLabel() != "") {
-						$data->setErrorMessage($this->get('translator')->trans("The '%field%' field is required", array('%field%' => $field->getLabel())));
+						$data->addErrorMessage($this->get('translator')->trans("The '%field%' field is required", array('%field%' => $field->getLabel())));
 					} else {
-						$data->setErrorMessage($this->get('translator')->trans("This field is required"));
+						$data->addErrorMessage($this->get('translator')->trans("This field is required"));
 					}
 					$this->error = true;
 				} elseif (! $data->check()) {
 					$data->setError(true);
 					switch ($data->getType()) {
 						case 'date':
-							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'jj/mm/aaaa')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'jj/mm/aaaa')));
 							break;
 						case 'number': 
-							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
 							break;
 						case 'integer': 
-							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
 							break;
 						case 'money': 
-							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'montant')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'montant')));
 							break;
 						case 'percent':
-							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'pourcentage')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'pourcentage')));
 							break;
 						default:
-							$data->setErrorMessage($this->get('translator')->trans("This value is not in the expected format"));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format"));
 					}
 					$this->error = true;
 					unset($this->variables[''.$data->getId()]);
@@ -390,8 +455,26 @@ class DefaultController extends Controller {
 					}
 				}
 			}
-			$field->setPreNote($this->replaceVariables($field->getPreNote()));
-			$field->setPostNote($this->replaceVariables($field->getPostNote()));
+			if ($field->getPreNote() !== null) {
+				$note = $field->getPreNote();
+				$condition = $note->getCondition();
+				if ($condition != "" && $istep > 0) {
+					if ($this->evaluate($condition) == 'false') {
+						$note->setDisplayable(false);
+					}
+				}
+				$note->setText($this->replaceVariables($note->getText()));
+			}
+			if ($field->getPostNote() !== null) {
+				$note = $field->getPostNote();
+				$condition = $note->getCondition();
+				if ($condition != "" && $istep > 0) {
+					if ($this->evaluate($condition) == 'false') {
+						$note->setDisplayable(false);
+					}
+				}
+				$note->setText($this->replaceVariables($note->getText()));
+			}
 		}
 	}
 	
@@ -403,16 +486,56 @@ class DefaultController extends Controller {
 		return $expr->evaluate();
 	}
 	
+	protected function evaluateDefault($data) 
+	{
+		$default = $data->getUnparsedDefault();
+		if ($default != "" && ! $data->isError()) {
+			$value = $this->evaluate($default);
+			if ($value !== false) {
+				$data->setDefault($value);
+				$data->setUnparsedDefault("");
+			}
+		}
+	}
+	
 	protected function evaluateDefaults() 
 	{
 		foreach ($this->simu->getDatas() as $data) {
-			$default = $data->getUnparsedDefault();
-			if ($default != "" && ! $data->isError()) {
-				$value = $this->evaluate($default);
-				if ($value !== false) {
-					$data->setDefault($value);
-					$data->setUnparsedDefault("");
+			if ($data instanceof DataGroup) {
+				foreach ($data->getDatas() as $gdata) {
+					$this->evaluateDefault($gdata);
 				}
+			} else {
+				$this->evaluateDefault($data);
+				$this->evaluateMax($data);
+			}
+		}
+	}
+	
+	protected function evaluateMin($data) 
+	{
+		$min = $data->getUnparsedMin();
+		if ($min != "") {
+			try {
+				$result = $this->evaluate($min);
+				if ($result !== false) {
+					$data->setMin($result);
+				}
+			} catch (\Exception $e) {
+			}
+		}
+	}
+	
+	protected function evaluateMax($data) 
+	{
+		$max = $data->getUnparsedMax();
+		if ($max != "") {
+			try {
+				$result = $this->evaluate($max);
+				if ($result !== false) {
+					$data->setMax($result);
+				}
+			} catch (\Exception $e) {
 			}
 		}
 	}
@@ -420,12 +543,79 @@ class DefaultController extends Controller {
 	protected function evaluateMinMax() 
 	{
 		foreach ($this->simu->getDatas() as $data) {
+			if ($data instanceof DataGroup) {
+				foreach ($data->getDatas() as $gdata) {
+					$this->evaluateMin($gdata);
+					$this->evaluateMax($gdata);
+				}
+			} else {
+				$this->evaluateMin($data);
+				$this->evaluateMax($data);
+			}
+		}
+	}
+
+    protected function processData($data, $istep) 
+	{
+		if (! $data->isError()) {
+			$default = $data->getUnparsedDefault();
+			if ($default != "") {
+				$value = $this->evaluate($default);
+				if ($value !== false) {
+					$data->setDefault($value);
+					$data->setUnparsedDefault("");
+					$this->processDatas($istep);
+				}
+			}
+			$content = $data->getContent();
+			if ($content != "") {
+				try {
+					$value = $this->evaluate($content);
+					if ($value !== false) {
+						$data->setValue($value);
+						$this->variables[''.$data->getId()] = $data->getValue();
+						$this->variables[$data->getName()] = $data->getValue();
+						$data->setContent("");
+						$this->processDatas($istep);						}
+				} catch (\Exception $e) {
+					if ($istep == 0 || $data->getInputStepId() == $istep) {
+						$data->setError(true);
+						$data->addErrorMessage($e->getMessage());
+						$this->error = true;
+					}
+				}
+			}
+			$index = $data->getUnparsedIndex();
+			if ($index != "") {
+				try {
+					$value = $this->evaluate($index);
+					if ($value !== false) {
+						$data->setIndex($value);
+					}
+				} catch (\Exception $e) {
+				}
+			}
+			$source = $data->getSource();
+			if ($source != "" && ($data->getInputStepId() < 0 || $data->getValue() == "")) {
+				$source = $this->evaluate($source);
+				if ($source !== false) {
+					if (!isset($this->sources[$source])) {
+						$this->sources[$source] = array();
+					}
+					$this->sources[$source][$data->getId()] = $data;
+				}
+			}
 			$min = $data->getUnparsedMin();
 			if ($min != "") {
 				try {
 					$result = $this->evaluate($min);
 					if ($result !== false) {
 						$data->setMin($result);
+						if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() != '' && $data->getValue() < $result) {
+							$data->setError(true);
+							$data->addErrorMessage($this->get('translator')->trans("This value can not be less than %min%", array('%min%', $result)));
+							$this->error = true;
+						}
 					}
 				} catch (\Exception $e) {
 				}
@@ -436,8 +626,30 @@ class DefaultController extends Controller {
 					$result = $this->evaluate($max);
 					if ($result !== false) {
 						$data->setMax($result);
+						if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() != '' && $data->getValue() > $result) {
+							$data->setError(true);
+							$data->addErrorMessage($this->get('translator')->trans("This value can not be greater than %max%", array('%max%', $result)));
+							$this->error = true;
+						}
 					}
 				} catch (\Exception $e) {
+				}
+			}
+			$constraints = $data->getConstraints();
+			foreach ($constraints as $constr) {
+				$constraint = $constr->getConstraint();
+				if ($constraint != "") {
+					try {
+						$result = $this->evaluate($constraint);
+						if ($result !== false) {
+							if ($result == 'false' && ($istep == 0 || $data->getInputStepId() == $istep)) {
+								$data->setError(true);
+								$data->addErrorMessage($this->replaceVariables($constr->getMessage()));
+								$this->error = true;
+							}
+						}
+					} catch (\Exception $e) {
+					}
 				}
 			}
 		}
@@ -445,103 +657,35 @@ class DefaultController extends Controller {
 
     protected function processDatas($istep) 
 	{
-		// if (++$this->recursion > 100) {
-			// return;
-		// }
 		$this->sources = array();
 		foreach ($this->simu->getDatas() as $data) {
-			if (! $data->isError()) {
-				$default = $data->getUnparsedDefault();
-				if ($default != "") {
-					$value = $this->evaluate($default);
-					if ($value !== false) {
-						$data->setDefault($value);
-						$data->setUnparsedDefault("");
-						$this->processDatas($istep);
+			if ($data instanceof DataGroup) {
+				$inputStepId = false;
+				foreach ($data->getDatas() as $gdata) {
+					$this->processData($gdata, $istep);
+					if ($gdata->getInputStepId() == $istep) {
+						$inputStepId = true;
 					}
 				}
-				$content = $data->getContent();
-				if ($content != "") {
-					try {
-						$value = $this->evaluate($content);
-						if ($value !== false) {
-							$data->setValue($value);
-							$this->variables[''.$data->getId()] = $data->getValue();
-							$this->variables[$data->getName()] = $data->getValue();
-							$data->setContent("");
-							$this->processDatas($istep);						}
-					} catch (\Exception $e) {
-						if ($istep == 0 || $data->getInputStepId() == $istep) {
-							$data->setError(true);
-							$data->setErrorMessage($e->getMessage());
-							$this->error = true;
-						}
-					}
-				}
-				$index = $data->getUnparsedIndex();
-				if ($index != "") {
-					try {
-						$value = $this->evaluate($index);
-						if ($value !== false) {
-							$data->setIndex($value);
-						}
-					} catch (\Exception $e) {
-					}
-				}
-				$source = $data->getSource();
-				if ($source != "" && ($data->getInputStepId() < 0 || $data->getValue() == "")) {
-					$source = $this->evaluate($source);
-					if ($source !== false) {
-						if (!isset($this->sources[$source])) {
-							$this->sources[$source] = array();
-						}
-						$this->sources[$source][$data->getId()] = $data;
-					}
-				}
-				$min = $data->getUnparsedMin();
-				if ($min != "") {
-					try {
-						$result = $this->evaluate($min);
-						if ($result !== false) {
-							$data->setMin($result);
-							if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() < $result) {
-								$data->setError(true);
-								$data->setErrorMessage($this->get('translator')->trans("This value can not be less than %min%", array('%min%' => $result)));
-								$this->error = true;
+				$constraints = $data->getConstraints();
+				foreach ($constraints as $constr) {
+					$constraint = $constr->getConstraint();
+					if ($constraint != "") {
+						try {
+							$result = $this->evaluate($constraint);
+							if ($result !== false) {
+								if ($result == 'false' && ($istep == 0 || $inputStepId)) {
+									$data->setError(true);
+									$data->addErrorMessage($this->replaceVariables($constr->getMessage()));
+									$this->error = true;
+								}
 							}
+						} catch (\Exception $e) {
 						}
-					} catch (\Exception $e) {
 					}
 				}
-				$max = $data->getUnparsedMax();
-				if ($max != "") {
-					try {
-						$result = $this->evaluate($max);
-						if ($result !== false) {
-							$data->setMax($result);
-							if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() > $result) {
-								$data->setError(true);
-								$data->setErrorMessage($this->get('translator')->trans("This value can not be greater than %max%", array('%max%' => $result)));
-								$this->error = true;
-							}
-						}
-					} catch (\Exception $e) {
-					}
-				}
-				$constraint = $data->getConstraint();
-				if ($constraint != "") {
-					try {
-						$result = $this->evaluate($constraint);
-						if ($result !== false) {
-							if ($result == 'false' && ($istep == 0 || $data->getInputStepId() == $istep)) {
-								$data->setError(true);
-								$data->setErrorMessage($data->getConstraintMessage());
-								$this->error = true;
-							}
-						}
-					} catch (\Exception $e) {
-					}
-				}
+			} elseif ($data instanceof Data) {
+				$this->processData($data, $istep);
 			}
 		}
 		if (count($this->sources) > 0) {
@@ -633,7 +777,8 @@ class DefaultController extends Controller {
     protected function processSource(Source $source) 
 	{
 		$params = $source->getParameters();
-		switch ($source->getType()) {
+		$datasource = $this->simu->getDatasourceById($source->getDatasource());
+		switch ($datasource->getType()) {
 			case 'uri':
 				$query = "";
 				$path = "";
@@ -648,7 +793,7 @@ class DefaultController extends Controller {
 						$query .= "&".$param->getName()."=".$value;
 					}
 				}
-				$uri = $source->getUri();
+				$uri = $datasource->getUri();
 				if ($path != "") {
 					$uri .= $path;
 				} 
@@ -663,6 +808,7 @@ class DefaultController extends Controller {
 				}
 				break;				
 			case 'database':
+			case 'internal':
 				$args = array();
 				$args[] = $source->getRequest();
 				foreach ($params as $param) {
@@ -673,7 +819,7 @@ class DefaultController extends Controller {
 					$args[] = $value;
 				}
 				$query = call_user_func_array('sprintf', $args);
-				$database = $this->simu->getDatabaseById($source->getDatabase());
+				$database = $this->simu->getDatabaseById($datasource->getDatabase());
 				$database->connect();
 				$result = $database->query($query);
 				break;				
@@ -731,6 +877,7 @@ class DefaultController extends Controller {
 			)
 		);
 		
+		// define('_MPDF_TTFONTDATAPATH', dirname($this->get('kernel')->getCacheDir()) . '/mpdf/ttfontdata/'); 
 		$mpdfService = $this->get('tfox.mpdfport');
 		$mpdf = $mpdfService->getMpdf();
 		$mpdf->PDFA = true;

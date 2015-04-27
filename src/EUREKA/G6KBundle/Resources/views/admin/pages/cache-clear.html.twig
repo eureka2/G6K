@@ -1,0 +1,10 @@
+{% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
+
+{% block content %}
+<h2>Caches management</h2>
+
+{% for l in log %}
+{{ l|raw }}
+{% endfor %}
+
+{% endblock %}

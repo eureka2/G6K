@@ -1,0 +1,43 @@
+eureka_g6k_admin:
+    path:     /admin
+    defaults: { _controller: EUREKAG6KBundle:HomeAdmin:index }
+
+eureka_g6k_admin_clear_cache:
+    path:     /admin/cache/clear
+    defaults: { _controller: EUREKAG6KBundle:CacheAdmin:clear }
+
+eureka_g6k_admin_clear_cache_env:
+    path:     /admin/cache/clear/{env}
+    defaults: { _controller: EUREKAG6KBundle:CacheAdmin:clear }
+
+eureka_g6k_admin_datasources:
+    path:     /admin/datasources
+    defaults: { _controller: EUREKAG6KBundle:DataSourcesAdmin:index }
+
+eureka_g6k_admin_datasource:
+    path:     /admin/datasources/{dbname}
+    defaults: { _controller: EUREKAG6KBundle:DataSourcesAdmin:index }
+
+eureka_g6k_admin_datasource_table:
+    path:     /admin/datasources/{dbname}/{table}
+    defaults: { _controller: EUREKAG6KBundle:DataSourcesAdmin:index }
+
+eureka_g6k_admin_datasource_table_crud:
+    path:     /admin/datasources/{dbname}/{table}/{crud}
+    defaults: { _controller: EUREKAG6KBundle:DataSourcesAdmin:index }
+
+eureka_g6k_admin_users:
+    path:     /admin/users
+    defaults: { _controller: EUREKAG6KBundle:UsersAdmin:index }
+
+eureka_g6k_admin_user_crud:
+    path:     /admin/users/{crud}
+    defaults: { _controller: EUREKAG6KBundle:UsersAdmin:index }
+
+eureka_g6k_admin_simulators:
+    path:     /admin/simulators
+    defaults: { _controller: EUREKAG6KBundle:SimulatorsAdmin:index }
+
+eureka_g6k_admin_simulator:
+    path:     /admin/simulators/{simulator}
+    defaults: { _controller: EUREKAG6KBundle:SimulatorsAdmin:index }

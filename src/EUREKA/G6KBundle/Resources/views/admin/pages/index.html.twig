@@ -1,0 +1,54 @@
+{% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
+
+{% block content %}
+<div class="jumbotron">
+  <h1>Welcome to G6K world!</h1>
+  <p>G6K is a calculation simulator engine</p>
+  <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+</div>
+
+<div class="row thumbnails">
+	{% if is_granted('ROLE_CONTRIBUTOR') %}
+   <div class="col-sm-6 col-md-3">
+      <a href="{{ path('eureka_g6k_admin_datasources') }}" class="thumbnail">
+         <img src="{{ asset('bundles/eurekag6k/admin/images/database1.png') }}" alt="Data sources">
+      <div class="caption">
+         <h3>{{ datasourcesCount }} Data sources</h3>
+         <p>Internal data sources management.</p>
+      </div>
+      </a>
+   </div>
+   {% endif %}
+	{% if is_granted('ROLE_MANAGER') %}
+   <div class="col-sm-6 col-md-3">
+      <a href="{{ path('eureka_g6k_admin_simulators') }}" class="thumbnail">
+         <img src="{{ asset('bundles/eurekag6k/admin/images/gear.png') }}" alt="Simulators">
+       <div class="caption">
+         <h3>{{ simulatorsCount }} Simulators</h3>
+         <p>Simulators definition.</p>
+      </div>
+     </a>
+	</div>
+	{% endif %}
+	{% if is_granted('ROLE_SUPER_ADMIN') %}
+   <div class="col-sm-6 col-md-3">
+      <a href="{{ path('eureka_g6k_admin_users') }}" class="thumbnail">
+         <img src="{{ asset('bundles/eurekag6k/admin/images/user.png') }}" alt="Users">
+      <div class="caption">
+         <h3>{{ usersCount }} Users</h3>
+         <p>Users management</p>
+      </div>
+      </a>
+   </div>
+   {% endif %}
+   <div class="col-sm-6 col-md-3">
+      <a href="#" class="thumbnail">
+         <img src="{{ asset('bundles/eurekag6k/admin/images/help.png') }}" alt="Help">
+      <div class="caption">
+         <h3>Help</h3>
+         <p>Tutorials</p>
+      </div>
+      </a>
+   </div>
+</div>
+{% endblock %}

@@ -19,8 +19,8 @@ class Field {
 	private $explanation = ""; //expression;
 	private $condition = ""; // expression = condition d'affichage
 	private $expanded = true;
-	private $preNote = "";
-	private $postNote = "";
+	private $preNote = null;
+	private $postNote = null;
 	private $displayable = true;
 	
 	public function __construct($fieldset, $position, $data, $label) {
@@ -168,6 +168,11 @@ class Field {
 	
 	public function setDisplayable($displayable) {
 		$this->displayable = $displayable;
+	}
+	
+	public function getClass() {
+		$classPath = explode('\\', get_class());
+		return end($classPath);
 	}
 	
 }

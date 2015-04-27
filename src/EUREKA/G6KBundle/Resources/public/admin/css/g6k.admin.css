@@ -1,0 +1,119 @@
+#authentification a {
+	display: inline !important;
+}
+#authentification  {
+	color : #ccc;
+	margin-top: 1em;
+}
+#page {
+	margin-top: 3em;
+}
+#page .thumbnails {
+	text-align: center;
+}
+#page .thumbnails a{
+	text-decoration: none;
+}
+
+.delete-attribute {
+	cursor: pointer;
+}
+
+
+.attributes-container {
+	display: table; 
+	width: 100%;
+}
+.attributes-container > div {
+	display: table-cell; 
+}
+.attributes-container > div:first-child {
+	width: 80%;
+}
+.attributes-container > div:last-child {
+	width: 20%;
+	border: 1px solid #ddd;
+	
+}
+.optional-attributes  {
+	vertical-align: top;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	max-height: 50px;
+	cursor: default;
+}
+.optional-attributes  li:hover{
+	background : #eee;
+}
+.nav-pills li:first-child {
+	margin-left: 0.1em;
+}
+.expression-type .select2-choice {
+	background: #DDD !important;
+}
+.alert {
+	display: none;
+}
+/*==============================================
+    MEDIA QUERIES     
+    =============================================*/
+ 
+ @media(min-width:768px) {
+     #page-wrapper{
+        margin: 0 0 0 260px;
+        padding: 0px 18px;
+        min-height: 1200px;
+    }
+		
+    .navbar-side {
+        z-index: 1;
+        position: absolute;
+        width: 260px;
+    }
+
+   .navbar {
+		border-radius: 0px; 
+	}
+}
+
+.navbar-side > div {
+	margin-bottom: 1em;
+}
+.navbar-side > div  > h3 {
+	margin: 0;
+	text-align: center;
+}
+.navbar-side > div  h4 {
+	font-style: italic;
+}
+.content table {
+	clear: both;
+}
+.navbar-side li {
+	margin-left: -2em;
+}
+.content th  span {
+	vertical-align: middle;
+	display: inline-block;
+	line-height:normal; 
+}
+.content th  span:nth-child(2) {
+	float: right;
+}
+.content td.integer, .content td.year {
+	width: 4em;
+	text-align: center;
+}
+.content td.money, .content td.number{
+	width: 5em;
+}
+.content td.date {
+	width: 6.5em;
+}
+#data-sources .panel-body > div {
+	width: 100%;
+	margin-bottom: 40px;
+}
+#btnAddNewRow, #btnAddNewTable, #btnAddNewDataSource {
+	float: right;
+}

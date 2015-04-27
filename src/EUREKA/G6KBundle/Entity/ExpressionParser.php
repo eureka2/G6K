@@ -736,6 +736,7 @@ class Expression {
 				}
 				break;
 		}
+		$this->guessType($result);
 		return $result;
 	}
 	
@@ -774,6 +775,138 @@ class Expression {
 		}
 		return $result;
 	}
+		
+	private function guessType(Token &$token) {
+		if ($token->type == Token::T_TEXT) {
+			if (is_numeric($token->value)) {
+				$token->type = Token::T_NUMBER;
+				$token->value = parseFloat($token->value);
+			} else if (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $token->value)) {
+                	$token->type = Token::T_DATE;
+					$date = \DateTime::createFromFormat("d/m/Y", $token->value, new \DateTimeZone( 'Europe/Paris' ));
+					$error = \DateTime::getLastErrors();
+					if ($error['error_count'] > 0) {
+						throw new \Exception($error['errors'][0]);
+					}
+					$date->setTime(0, 0, 0);
+					$token->value = $date;
+			} else if ($token->value === 'true' || $token->value === 'false') {
+				$token->type = Token::T_BOOLEAN;
+				$token->value = $token->value === 'true';
+			}
+		}
+	}
+	
+	private function easter($year) {
+		$days = easter_days($year);
+		$easter = \DateTime::createFromFormat('Y-m-d', $year.'-3-21');
+		$easter->setTime(0, 0, 0);	 
+		$easter->add(new \DateInterval('P'.$days.'D'));
+		$easter->setTime(0, 0, 0);	
+		return $easter;
+	}
+	
+	private function nthDayOfMonth($nth, $day, $month, $year) {
+
+
+	$dayname = array('sunday',  'monday',  'tuesday',  'wednesday',  'thursday',  'friday',  'saturday',  'sun',  'mon',  'tue',  'wed',  'thu',  'fri',  'sat',  'sun');		
+		$monthname = array('january',  'february',  'march',  'april',  'may',  'june',  'july',  'august',  'september',  'october',  'november',  'december',  'jan',  'feb',  'mar',  'apr',  'may',  'jun',  'jul',  'aug',  'sep',  'sept',  'oct',  'nov',  'dec');
+		$ordinal = array('first',  'second',  'third',  'fourth',  'fifth',  'sixth',  'seventh',  'eighth',  'ninth',  'tenth',  'eleventh',  'twelfth');
+		return new \DateTime($ordinal[$nth - 1]. " ".$dayname[$day]." of ".$monthname[$month - 1]." ".$year);
+	}
+	
+	private function lastDay($month, $year) {
+		$monthname = array('january',  'february',  'march',  'april',  'may',  'june',  'july',  'august',  'september',  'october',  'november',  'december',  'jan',  'feb',  'mar',  'apr',  'may',  'jun',  'jul',  'aug',  'sep',  'sept',  'oct',  'nov',  'dec');
+		$lastDate =  new \DateTime("last day of ".$monthname[$month - 1]." ".$year);
+		return (int)$lastDate->format('j');
+	}
+	
+	private function fixedHolidays($year, $lang = "en-US") {
+		$fholidays = array(
+			"US" => array(
+				"01-01", "07-04", "11-01", "12-25"
+			),
+			"FR" => array(
+				"01-01", "05-01", "05-08", "07-14", "08-15", "11-01", "11-11", "12-25"
+			),
+		);
+		$lg = explode("-", $lang);
+		$lg = strtoupper (end($lg));
+		if (!isset($fholidays[$lg])) $lg = "US";
+		$holidays = array();
+		foreach($fholidays[$lg] as $monthday) {
+			$holiday = \DateTime::createFromFormat('Y-m-d', $year.'-'.$monthday);
+			$holiday->setTime(0, 0, 0);	
+			$holidays[] = $holiday;
+		}
+		return $holidays;
+	}
+	
+	private function moveableHolidays($year, $lang = "en-US") {
+		$easter = $this->easter($year);
+		$holidays = array(
+			"US" => array(),
+			"FR" => array(
+				clone $easter, clone $easter->add(new \DateInterval('P1D')), clone $easter->add(new \DateInterval('P38D')), clone $easter->add(new \DateInterval('P10D')), clone $easter->add(new \DateInterval('P1D'))
+			),
+		);
+		$lg = explode("-", $lang);
+		$lg = strtoupper (end($lg));
+		if (!isset($holidays[$lg])) $lg = "US";
+		return $holidays[$lg];
+	}
+	
+	private function holidays($year, $lang = "en.US") {
+		$holidays =  $this->moveableHolidays($year, $lang);
+		$fixed =  $this->fixedHolidays($year, $lang);
+		foreach($fixed as $holiday) {
+			$holidays[] = $holiday;
+		}
+		return $holidays;
+	}
+	
+	private function workdays($startDate, $endDate) {
+	    // Validate input
+	    if ($endDate < $startDate)
+	        return 0;
+	    
+	    // Calculate days between dates
+	    $startDate->setTime(0,0,1);  // Start just after midnight
+	    $endDate->setTime(23,59,59);  // End just before midnight
+	    $days = $startDate->diff($endDate)->days + 1;  // days between datetime objects    
+	    // Subtract two weekend days for every week in between
+	    $weeks = floor($days / 7);
+	    $days = $days - ($weeks * 2);
+	
+	    // Handle special cases
+	    $startDay = ((int)$startDate->format('N')) % 7;
+	    $endDay = ((int)$endDate->format('N')) % 7;
+	    
+	    // Remove weekend not previously removed.   
+	    if ($startDay - $endDay > 1)         
+	        $days = $days - 2;      
+	    
+	    // Remove start day if span starts on Sunday but ends before Saturday
+	    if ($startDay == 0 && $endDay != 6)
+	        $days = $days - 1;
+	            
+	    // Remove end day if span ends on Saturday but starts after Sunday
+	    if ($endDay == 6 && $startDay != 0)
+	        $days = $days - 1;  
+		$lang = "fr-FR";
+		$startYear = (int)$startDate->format('Y');
+	    $endYear = (int)$endDate->format('Y');
+		$startDate->setTime(0, 0, 0);	
+		for ($y = $startYear; $y <= $endYear; $y++) {
+			$holidays = $this->holidays($y, $lang);
+			foreach($holidays as $holiday) {
+				$d = ((int)$holiday->format('N')) % 7;
+				if ($d != 0 && $d != 6 && $holiday >= $startDate && $holiday <= $endDate)
+					$days = $days - 1;
+			}
+		}
+	    return $days;
+	}
 	
 	private function func(Token $func, &$args) {
 		$functions = array(
@@ -795,6 +928,7 @@ class Expression {
 				$months = array("janvier", "février", "mars", "avril", "mai", "juin",  "juillet", "août", "septembre", "octobre", "novembre", "décembre");
 				return $months[(int)$a->format('m') - 1].' '.$a->format('Y');
 			}),
+			"lastday" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return $this->lastDay($b, $a); }),
 			"log" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log($a); }),
 			"log10" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log10($a); }),
 			"max" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return max($a, $b); }),
@@ -808,6 +942,7 @@ class Expression {
 			"sqrt" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return sqrt($a); }),
 			"tan" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return tan($a); }),
 			"tanh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return tanh($a); }),
+			"workdays" => array(2, array(Token::T_DATE, Token::T_DATE), Token::T_NUMBER, function($a, $b) { return $this->workdays($a, $b); }),
 			"year" => array(1, array(Token::T_DATE), Token::T_NUMBER, function($a) { return (float)$a->format('Y'); })
 		);
 		if ($func->value == "defined") {
@@ -1016,26 +1151,4 @@ class ExpressionParser {
 	}
 }
 
-$cli = false;
-if ($cli) {
-	try {
-		// $infix = "3 + #1 * 2 /  (1 - 5 ) ** 2 ** 3";
-		// $infix = "!(dateInitiale < now && 5° < #1)";
-		// $infix = "1 + (2 > 1 ? 2 : (4 > 10 ? 12 : 5 + 10)) * 2";
-		// $infix = '#1 >= 01/01/2005 ? \'tout a fait vrai\' : "tout a fait faux"';
-		$infix = "((#1 == 0) ? ((#2 == 1) ? 18.0 : ((#2 == 2) ? 15.5 : ((#2 == 3) ? 13.3 : ((#2 == 4) ? 11.7 : ((#2 == 5) ? 10.6 : 9.5))))) : ((#1 == 1) ? ((#2 == 1) ? 13.5 : ((#2 == 2) ? 11.5 : ((#2 == 3) ? 10.0 : ((#2 == 4) ? 8.8 : ((#2 == 5) ? 8.0 : 7.2)))))) : ((#2 == 1) ? 9.0 : ((#2 == 2) ? 7.8 : ((#2 == 3) ? 6.7 : ((#2 == 4) ? 5.9 : ((#2 == 5) ? 5.3 : 4.8))))))";
-		$parser = new ExpressionParser();
-		$expr = $parser->parse($infix);
-		$expr->postfix();
-		// $expr->setFields(array(4));
-		$expr->setVariables(array('1' => 0, '2' => 2));
-		$expr->setNamedFields(array('dateInitiale'=>'17/10/2014'));
-		foreach ($expr->get() as $token) {
-			echo "[".$token . "]\n";
-		}
-		echo $expr->evaluate();
-	} catch (\Exception $e) {
-		echo $e->getMessage();
-	}
-}
 ?>

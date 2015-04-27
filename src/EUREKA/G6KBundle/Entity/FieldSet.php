@@ -12,8 +12,6 @@ class FieldSet {
 	private $displayable = true;
 	private $fields = array();
 	private $columns = array();
-	private $fieldrows = array();
-	
 	
 	public function __construct($step, $id) {
 		$this->step = $step;
@@ -72,7 +70,7 @@ class FieldSet {
 		$this->fields = $fields;
 	}
 	
-	public function addField(Field $field) {
+	public function addField($field) {
 		$this->fields[] = $field;
 	}
 	
@@ -94,24 +92,7 @@ class FieldSet {
 	
 	public function removeColumn($index) {
 		$this->columns[$index] = null;
-	}
-	
-	public function getFieldRows() {
-		return $this->fieldrows;
-	}
-	
-	public function setFieldRows($fieldrows) {
-		$this->fieldrows = $fieldrows;
-	}
-	
-	public function addFieldRow(FieldRow $fieldrow) {
-		$this->fieldrows[] = $fieldrow;
-	}
-	
-	public function removeFieldRow($index) {
-		$this->fieldrows[$index] = null;
-	}
-	
+	}	
 }
 
 ?>

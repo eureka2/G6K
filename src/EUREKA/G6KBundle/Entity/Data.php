@@ -7,13 +7,13 @@ class Data {
 	private $simulator = null;
 	private $id = 0;
 	private $name = "";
+	private $label = "";
 	private $type = ""; // date, boolean, number, integer, text, textarea, money, choice, percent, table, department region, country
 	private $min = "";
 	private $unparsedMin = "";
 	private $max = "";
 	private $unparsedMax = "";
-	private $constraint = ""; // expression = contrôle du contenu
-	private $constraintMessage = ""; // Message d'erreur si la contrainte n'est pas respectée
+	private $constraints = array();
 	private $default = "";
 	private $unit = "";
 	private $unparsedDefault = "";
@@ -28,7 +28,7 @@ class Data {
 	private $description = "";
 	private $value = "";
 	private $error = false;
-	private $errorMessage = "";
+	private $errorMessages = array();
 	private $inputStepId = -1;
 	private $used = false;
 	
@@ -56,6 +56,14 @@ class Data {
 	
 	public function setName($name) {
 		$this->name = $name;
+	}
+	
+	public function getLabel() {
+		return $this->label;
+	}
+	
+	public function setLabel($label) {
+		$this->label = $label;
 	}
 	
 	public function getType() {
@@ -98,20 +106,20 @@ class Data {
 		$this->unparsedMax = $unparsedMax;
 	}
 	
-	public function getConstraint() {
-		return $this->constraint;
+	public function getConstraints() {
+		return $this->constraints;
 	}
 	
-	public function setConstraint($constraint) {
-		$this->constraint = $constraint;
+	public function setConstraints($constraints) {
+		$this->constraints = $constraints;
 	}
 	
-	public function getConstraintMessage() {
-		return $this->constraintMessage;
+	public function addConstraint(Constraint $constraint) {
+		$this->constraints[] = $constraint;
 	}
 	
-	public function setConstraintMessage($constraintMessage) {
-		$this->constraintMessage = $constraintMessage;
+	public function removeConstraint($index) {
+		$this->constraints[$index] = null;
 	}
 	
 	public function getDefault() {
@@ -273,12 +281,20 @@ class Data {
 		$this->error = $error;
 	}
 	
-	public function getErrorMessage() {
-		return $this->errorMessage;
+	public function getErrorMessages() {
+		return $this->errorMessages;
 	}
 	
-	public function setErrorMessage($errorMessage) {
-		$this->errorMessage = $errorMessage;
+	public function setErrorMessages($errorMessages) {
+		$this->errorMessages = $errorMessages;
+	}
+	
+	public function addErrorMessage($errorMessage) {
+		$this->errorMessages[] = $errorMessage;
+	}
+	
+	public function removeErrorMessage($index) {
+		$this->errorMessages[$index] = null;
 	}
 	
 	public function check() {
@@ -335,6 +351,11 @@ class Data {
 				break;
 		}
 		return true;
+	}
+	
+	public function getClass() {
+		$classPath = explode('\\', get_class());
+		return end($classPath);
 	}
 }
 

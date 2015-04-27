@@ -6,19 +6,17 @@ class Source {
 
 	private $simulator = null;
 	private $id = 0;
-	private $type = ""; // uri or database
-	private $uri = ""; // type = uri => url 
-	private $database = ""; // type = database => id database
+	private $datasource = ""; // id datasource
 	private $request = ""; // sql if type = database
 	private $returnType = ""; // json, xml or singleValue
 	private $returnPath = ""; // 
 	private $parameters = array();
 	
 	
-	public function __construct($simulator, $id, $type, $returnType) {
+	public function __construct($simulator, $id, $datasource, $returnType) {
 		$this->simulator = $simulator;
 		$this->id = $id;
-		$this->type = $type;
+		$this->datasource = $datasource;
 		$this->returnType = $returnType;
 	}
 	
@@ -34,28 +32,12 @@ class Source {
 		$this->id = $id;
 	}
 	
-	public function getType() {
-		return $this->type;
+	public function getDatasource() {
+		return $this->datasource;
 	}
 	
-	public function setType($type) {
-		$this->type = $type;
-	}
-	
-	public function getUri() {
-		return $this->uri;
-	}
-	
-	public function setUri($uri) {
-		$this->uri = $uri;
-	}
-	
-	public function getDatabase() {
-		return $this->database;
-	}
-	
-	public function setDatabase($database) {
-		$this->database = $database;
+	public function setDatasource($datasource) {
+		$this->datasource = $datasource;
 	}
 	
 	public function getRequest() {

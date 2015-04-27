@@ -13,12 +13,17 @@ class Simulator {
 	private $decimalPoint = "";
 	private $moneySymbol = "";
 	private $symbolPosition = "";
+	private $globalConstraints = array();
+	private $groupConstraints = array();
 	private $datas = array();
 	private $steps = array();
 	private $sites = array();
 	private $databases = array();
+	private $datasources = array();
 	private $sources = array();
 	private $dependencies = "";
+	private $error = false;
+	private $errorMessages = array();
 	
 	public function __construct($controller) {
 		$this->controller = $controller;
@@ -88,6 +93,38 @@ class Simulator {
 		$this->symbolPosition = $symbolPosition;
 	}
 	
+	public function getGlobalConstraints() {
+		return $this->globalConstraints;
+	}
+	
+	public function setGlobalConstraints($globalConstraints) {
+		$this->globalConstraints = $globalConstraints;
+	}
+	
+	public function addGlobalConstraint(Constraint $globalConstraint) {
+		$this->globalConstraints[] = $globalConstraint;
+	}
+	
+	public function removeGlobalConstraint($index) {
+		$this->globalConstraints[$index] = null;
+	}
+	
+	public function getGroupConstraints() {
+		return $this->groupConstraints;
+	}
+	
+	public function setGroupConstraints($groupConstraints) {
+		$this->groupConstraints = $groupConstraints;
+	}
+	
+	public function addGroupConstraint(Constraint $groupConstraint) {
+		$this->groupConstraints[] = $groupConstraint;
+	}
+	
+	public function removeGroupConstraint($index) {
+		$this->groupConstraints[$index] = null;
+	}
+
 	public function getDatas() {
 		return $this->datas;
 	}
@@ -96,7 +133,7 @@ class Simulator {
 		$this->datas = $datas;
 	}
 	
-	public function addData(Data $data) {
+	public function addData($data) {
 		$this->datas[] = $data;
 	}
 	
@@ -106,7 +143,11 @@ class Simulator {
 	
 	public function getDataById($id) {
 		foreach ($this->datas as $data) {
-			if ($data->getId() === $id) {
+			if ($data instanceof DataGroup) {
+				if (($gdata = $data->getDataById($id)) !== null) {
+					return $gdata;
+				}
+			} elseif ($data->getId() == $id) {
 				return $data;
 			}
 		}
@@ -115,7 +156,29 @@ class Simulator {
 	
 	public function getDataByName($name) {
 		foreach ($this->datas as $data) {
-			if ($data->getName() == $name) {
+			if ($data instanceof DataGroup) {
+				if (($gdata = $data->getDataByName($name)) !== null) {
+					return $gdata;
+				}
+			} elseif ($data->getName() == $name) {
+				return $data;
+			}
+		}
+		return null;
+	}
+	
+	public function getDataGroupById($id) {
+		foreach ($this->datas as $data) {
+			if (($data instanceof DataGroup) && $data->getId() == $id) {
+				return $data;
+			}
+		}
+		return null;
+	}
+	
+	public function getDataGroupByName($name) {
+		foreach ($this->datas as $data) {
+			if (($data instanceof DataGroup) && $data->getName() == $name) {
 				return $data;
 			}
 		}
@@ -181,6 +244,15 @@ class Simulator {
 		return null;
 	}
 	
+	public function getDatasourceById($id) {
+		foreach ($this->datasources as $datasource) {
+			if ($datasource->getId() == $id) {
+				return $datasource;
+			}
+		}
+		return null;
+	}
+	
 	public function getSourceById($id) {
 		foreach ($this->sources as $source) {
 			if ($source->getId() == $id) {
@@ -190,8 +262,100 @@ class Simulator {
 		return null;
 	}
 	
+	public function isError() {
+		return $this->error;
+	}
+	
+	public function setError($error) {
+		$this->error = $error;
+	}
+	
+	public function getErrorMessages() {
+		return $this->errorMessages;
+	}
+	
+	public function setErrorMessages($errorMessages) {
+		$this->errorMessages = $errorMessages;
+	}
+	
+	public function addErrorMessage($errorMessage) {
+		$this->errorMessages[] = $errorMessage;
+	}
+	
+	public function removeErrorMessage($index) {
+		$this->errorMessages[$index] = null;
+	}
+	
+	protected function loadData($data) {
+		$dataObj = new Data($this, (int)$data['id'], (string)$data['name']);
+		$dataObj->setLabel((string)$data['label']);
+		$dataObj->setType((string)$data['type']);
+		$dataObj->setUnparsedMin((string)$data['min']);
+		$dataObj->setUnparsedMax((string)$data['max']);
+		$dataObj->setUnparsedDefault((string)$data['default']);
+		$dataObj->setUnit((string)$data['unit']);
+		$dataObj->setRound(isset($data['round']) ? (int)$data['round'] : 2);
+		$dataObj->setContent((string)$data['content']);
+		$dataObj->setSource((string)$data['source']);
+		$dataObj->setUnparsedIndex((string)$data['index']);
+		if ($data->Choices) {
+			foreach ($data->Choices->Choice as $choice) {
+				$choiceObj = new Choice($dataObj, (string)$choice['id'], (string)$choice['value'], (string)$choice['label']);
+				$choiceObj->setCondition((string)$choice['condition']);
+				$dataObj->addChoice($choiceObj);
+			}
+			if ($data->Choices->Source) {
+				$source = $data->Choices->Source;
+				$choiceSourceObj = new ChoiceSource($dataObj, (int)$source['id'], (string)$source['valueColumn'], (string)$source['labelColumn']);
+				$choiceSourceObj->setIdColumn((string)$source['idColumn']);
+				$dataObj->setChoiceSource($choiceSourceObj);
+			}
+		}
+		if ($data->Table) {
+			$table = $data->Table;
+			$tableObj = new Table($dataObj, (string)$table['id']);
+			$tableObj->setName((string)$table['name']);
+			$tableObj->setLabel((string)$table['label']);
+			$tableObj->setDescription($table->Description);
+			foreach ($table->Column as $column) {
+				$columnObj = new Column($tableObj, (int)$column['id'], (string)$column['name'], (string)$column['type']);
+				$columnObj->setLabel((string)$column['label']);
+				$columnObj->setCondition((string)$column['condition']);
+				$tableObj->addColumn($columnObj);
+			}
+			$dataObj->setTable($tableObj);
+		}
+		if ($data->Constraints) {
+			foreach ($data->Constraints->Constraint as $constraint) {
+				$constraintObj = new Constraint((int)$constraint['id'], (string)$constraint['constraint'], (string)$constraint['constraintMessage']);
+				$dataObj->addConstraint($constraintObj);
+			}
+		}
+		$dataObj->setDescription($data->Description);
+		return $dataObj;
+	}
+	
 	public function load($url) {
 		$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
+		$datasources = new \SimpleXMLElement(dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml', LIBXML_NOWARNING, true);
+		foreach ($datasources->DataSource as $datasource) {
+			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
+			$datasourceObj->setUri((string)$datasource['uri']);
+			$datasourceObj->setDatabase((int)$datasource['database']);
+			$datasourceObj->setDescription($datasource->Description);
+			$this->datasources[] = $datasourceObj;
+		}
+		if ($datasources->Databases) {
+			foreach ($datasources->Databases->Database as $database) {
+				$databaseObj = new Database($this, (int)$database['id'], (string)$database['type'], (string)$database['name']);
+				$databaseObj->setLabel((string)$database['label']);
+				$databaseObj->setHost((string)$database['host']);
+				$databaseObj->setPort((int)$database['port']);
+				$databaseObj->setUser((string)$database['user']);
+				$databaseObj->setPassword((string)$database['password']);
+				$this->databases[] = $databaseObj;
+			}
+		}
 		$this->setName((string)$simulator["name"]);
 		$this->setLabel((string)$simulator["label"]);
 		$this->setDynamic((string)$simulator['dynamic'] == '1');
@@ -201,46 +365,30 @@ class Simulator {
 		$this->setMoneySymbol((string)($simulator->DataSet['moneySymbol']));
 		$this->setSymbolPosition((string)($simulator->DataSet['symbolPosition']));
 		if ($simulator->DataSet) {
-			foreach ($simulator->DataSet->Data as $data) {
-				$dataObj = new Data($this, (int)$data['id'], (string)$data['name']);
-				$dataObj->setType((string)$data['type']);
-				$dataObj->setUnparsedMin((string)$data['min']);
-				$dataObj->setUnparsedMax((string)$data['max']);
-				$dataObj->setConstraint((string)$data['constraint']);
-				$dataObj->setConstraintMessage((string)$data['constraintMessage']);
-				$dataObj->setUnparsedDefault((string)$data['default']);
-				$dataObj->setUnit((string)$data['unit']);
-				$dataObj->setRound(isset($data['round']) ? (int)$data['round'] : 2);
-				$dataObj->setContent((string)$data['content']);
-				$dataObj->setSource((string)$data['source']);
-				$dataObj->setUnparsedIndex((string)$data['index']);
-				if ($data->Choices) {
-					foreach ($data->Choices->Choice as $choice) {
-						$choiceObj = new Choice($dataObj, (string)$choice['id'], (string)$choice['value'], (string)$choice['label']);
-						$choiceObj->setCondition((string)$choice['condition']);
-						$dataObj->addChoice($choiceObj);
+			foreach ($simulator->DataSet->children() as $child) {
+				if ($child->getName() == "DataGroup") {
+					$datagroup = $child;
+					$dataGroupObj = new DataGroup($this, (int)$datagroup['id'], (string)$datagroup['name']);
+					$dataGroupObj->setLabel((string)$datagroup['label']);
+					if ($datagroup->Constraints) {
+						foreach ($datagroup->Constraints->Constraint as $constraint) {
+							$constraintObj = new Constraint((int)$constraint['id'], (string)$constraint['constraint'], (string)$constraint['constraintMessage']);
+							$dataGroupObj->addConstraint($constraintObj);
+						}
 					}
-					if ($data->Choices->Source) {
-						$source = $data->Choices->Source;
-						$choiceSourceObj = new ChoiceSource($dataObj, (int)$source['id'], (string)$source['valueColumn'], (string)$source['labelColumn']);
-						$choiceSourceObj->setIdColumn((string)$source['idColumn']);
-						$dataObj->setChoiceSource($choiceSourceObj);
+					$dataGroupObj->setDescription($datagroup->Description);
+					foreach ($datagroup->Data as $data) {
+						$dataGroupObj->addData( $this->loadData($data));
+					}
+					$this->datas[] = $dataGroupObj;
+				} elseif ($child->getName() == "Data") {
+					$this->datas[] = $this->loadData($child);
+				} elseif ($child->getName() == "GlobalConstraints") {
+					foreach ($child->Constraint as $constraint) {
+						$constraintObj = new Constraint((int)$constraint['id'], (string)$constraint['constraint'], (string)$constraint['constraintMessage']);
+						$this->globalConstraints[] = $constraintObj;
 					}
 				}
-				if ($data->Table) {
-					$table = $data->Table;
-					$tableObj = new Table($dataObj, (string)$table['id']);
-					$tableObj->setLabel((string)$table['label']);
-					$tableObj->setDescription($table->Description);
-					foreach ($table->Column as $column) {
-						$columnObj = new Column($tableObj, (int)$column['id'], (string)$column['name'], (string)$column['label']);
-						$columnObj->setCondition((string)$column['condition']);
-						$tableObj->addColumn($columnObj);
-					}
-					$dataObj->setTable($tableObj);
-				}
-				$dataObj->setDescription($data->Description);
-				$this->datas[] = $dataObj;
 			}
 		}
 		if ($simulator->Steps) {
@@ -261,32 +409,50 @@ class Simulator {
 					if ((string)$fieldset['disposition'] != "") {
 						$fieldsetObj->setDisposition((string)$fieldset['disposition']);
 					}
-					foreach ($fieldset->Field as $field) {
-						$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
-						$fieldObj->setUsage((string)$field['usage']);
-						$fieldObj->setPrompt((string)$field['prompt']);
-						$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');					
-						$fieldObj->setRequired((string)$field['required'] == '1');					
-						$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');					
-						$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');					
-						$fieldObj->setHelp((string)$field['help'] == '1');					
-						$fieldObj->setEmphasize((string)$field['emphasize'] == '1');					
-						$fieldObj->setExplanation((string)$field['explanation']);
-						$fieldObj->setCondition((string)$field['condition']);
-						$fieldObj->setExpanded((string)$field['expanded'] == '1');					
-						$fieldObj->setPreNote($field->PreNote);
-						$fieldObj->setPostNote($field->PostNote);
-						$fieldsetObj->addField($fieldObj);
-					}
-					if ($fieldset->Columns) {
-						foreach ($fieldset->Columns->Column as $column) {
-							$columnObj = new Column(null, (int)$column['id'], (string)$column['name'], (string)$column['label']);
-							$fieldsetObj->addColumn($columnObj);
-						}
-					}
-					foreach ($fieldset->FieldRow as $fieldrow) {
-						$fieldRowObj = new FieldRow($fieldsetObj, (string)$fieldrow['label']);
-						foreach ($fieldrow as $field) {
+					foreach ($fieldset->children() as $child) {
+						if ($child->getName() == "Columns") {
+							foreach ($child->Column as $column) {
+								$columnObj = new Column(null, (int)$column['id'], (string)$column['name'], (string)$column['type']);
+								$columnObj->setLabel((string)$column['label']);	
+								$fieldsetObj->addColumn($columnObj);
+							}
+						} elseif ($child->getName() == "FieldRow") {
+							$fieldrow = $child;
+							$fieldRowObj = new FieldRow($fieldsetObj, (string)$fieldrow['label']);
+							$fieldRowObj->setColon((string)$fieldrow['colon'] == '' || (string)$fieldrow['colon'] == '1');					
+							$fieldRowObj->setHelp((string)$fieldrow['help'] == '1');					
+							$fieldRowObj->setEmphasize((string)$fieldrow['emphasize'] == '1');					
+							$fieldRowObj->setDataGroup((string)$fieldrow['datagroup']);					
+							foreach ($fieldrow->Field as $field) {
+								$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
+								$fieldObj->setUsage((string)$field['usage']);
+								$fieldObj->setPrompt((string)$field['prompt']);
+								$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');					
+								$fieldObj->setRequired((string)$field['required'] == '1');					
+								$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');					
+								$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');					
+								$fieldObj->setHelp((string)$field['help'] == '1');					
+								$fieldObj->setEmphasize((string)$field['emphasize'] == '1');					
+								$fieldObj->setExplanation((string)$field['explanation']);
+								$fieldObj->setCondition((string)$field['condition']);
+								$fieldObj->setExpanded((string)$field['expanded'] == '1');
+								if ($field->PreNote) {
+									$noteObj = new FieldNote($this);
+									$noteObj->setText($field->PreNote);
+									$noteObj->setCondition((string)$field->PreNote['condition']);
+									$fieldObj->setPreNote($noteObj);
+								}
+								if ($field->PostNote) {
+									$noteObj = new FieldNote($this);
+									$noteObj->setText($field->PostNote);
+									$noteObj->setCondition((string)$field->PostNote['condition']);
+									$fieldObj->setPostNote($noteObj);
+								}
+								$fieldRowObj->addField($fieldObj);
+							}
+							$fieldsetObj->addField($fieldRowObj);
+						} elseif ($child->getName() == "Field") {						
+							$field = $child;
 							$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
 							$fieldObj->setUsage((string)$field['usage']);
 							$fieldObj->setPrompt((string)$field['prompt']);
@@ -299,11 +465,20 @@ class Simulator {
 							$fieldObj->setExplanation((string)$field['explanation']);
 							$fieldObj->setCondition((string)$field['condition']);
 							$fieldObj->setExpanded((string)$field['expanded'] == '1');					
-							$fieldObj->setPreNote($field->PreNote);
-							$fieldObj->setPostNote($field->PostNote);
-							$fieldRowObj->addField($fieldObj);
+							if ($field->PreNote) {
+								$noteObj = new FieldNote($this);
+								$noteObj->setText($field->PreNote);
+								$noteObj->setCondition((string)$field->PreNote['condition']);
+								$fieldObj->setPreNote($noteObj);
+							}
+							if ($field->PostNote) {
+								$noteObj = new FieldNote($this);
+								$noteObj->setText($field->PostNote);
+								$noteObj->setCondition((string)$field->PostNote['condition']);
+								$fieldObj->setPostNote($noteObj);
+							}
+							$fieldsetObj->addField($fieldObj);
 						}
-						$fieldsetObj->addFieldRow($fieldRowObj);
 					}
 					$stepObj->addFieldSet($fieldsetObj);
 				}
@@ -343,21 +518,9 @@ class Simulator {
 				$this->sites[] = $siteObj;
 			}
 		}
-		if ($simulator->Databases) {
-			foreach ($simulator->Databases->Database as $database) {
-				$databaseObj = new Database($this, (int)$database['id'], (string)$database['type'], (string)$database['name']);
-				$databaseObj->setHost((string)$database['host']);
-				$databaseObj->setPort((int)$database['port']);
-				$databaseObj->setUser((string)$database['user']);
-				$databaseObj->setPassword((string)$database['password']);
-				$this->databases[] = $databaseObj;
-			}
-		}
 		if ($simulator->Sources) {
 			foreach ($simulator->Sources->Source as $source) {
-				$sourceObj = new Source($this, (int)$source['id'], (string)$source['type'], (string)$source['returnType']);
-				$sourceObj->setUri((string)$source['uri']);
-				$sourceObj->setDatabase((int)$source['database']);
+				$sourceObj = new Source($this, (int)$source['id'], (int)$source['datasource'], (string)$source['returnType']);
 				$sourceObj->setRequest((string)$source['request']);
 				$sourceObj->setReturnPath((string)$source['returnPath']);
 				foreach ($source->Parameter as $parameter) {
@@ -374,16 +537,18 @@ class Simulator {
 	
 	public function loadForSource($url) {
 		$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
-		if ($simulator->DataSet) {
-			foreach ($simulator->DataSet->Data as $data) {
-				$dataObj = new Data($this, (int)$data['id'], (string)$data['name']);
-				$dataObj->setType((string)$data['type']);
-				$this->datas[] = $dataObj;
-			}
+		$datasources = new \SimpleXMLElement(dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml', LIBXML_NOWARNING, true);
+		foreach ($datasources->DataSource as $datasource) {
+			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
+			$datasourceObj->setUri((string)$datasource['uri']);
+			$datasourceObj->setDatabase((int)$datasource['database']);
+			$datasourceObj->setDescription($datasource->Description);
+			$this->datasources[] = $datasourceObj;
 		}
-		if ($simulator->Databases) {
-			foreach ($simulator->Databases->Database as $database) {
+		if ($datasources->Databases) {
+			foreach ($datasources->Databases->Database as $database) {
 				$databaseObj = new Database($this, (int)$database['id'], (string)$database['type'], (string)$database['name']);
+				$databaseObj->setLabel((string)$database['label']);
 				$databaseObj->setHost((string)$database['host']);
 				$databaseObj->setPort((int)$database['port']);
 				$databaseObj->setUser((string)$database['user']);
@@ -391,11 +556,26 @@ class Simulator {
 				$this->databases[] = $databaseObj;
 			}
 		}
+		if ($simulator->DataSet) {
+			foreach ($simulator->DataSet->children() as $child) {
+				if ($child->getName() == "DataGroup") {
+					foreach ($child->Data as $data) {
+						$dataObj = new Data($this, (int)$data['id'], (string)$data['name']);
+						$dataObj->setLabel((string)$data['label']);
+						$dataObj->setType((string)$data['type']);
+						$this->datas[] = $dataObj;
+					}
+				} elseif ($child->getName() == "Data") {
+					$dataObj = new Data($this, (int)$child['id'], (string)$child['name']);
+					$dataObj->setLabel((string)$child['label']);
+					$dataObj->setType((string)$child['type']);
+					$this->datas[] = $dataObj;
+				}
+			}
+		}
 		if ($simulator->Sources) {
 			foreach ($simulator->Sources->Source as $source) {
-				$sourceObj = new Source($this, (int)$source['id'], (string)$source['type'], (string)$source['returnType']);
-				$sourceObj->setUri((string)$source['uri']);
-				$sourceObj->setDatabase((int)$source['database']);
+				$sourceObj = new Source($this, (int)$source['id'], (int)$source['datasource'], (string)$source['returnType']);
 				$sourceObj->setRequest((string)$source['request']);
 				$sourceObj->setReturnPath((string)$source['returnPath']);
 				foreach ($source->Parameter as $parameter) {
@@ -429,6 +609,18 @@ class Simulator {
 		return "#(".$this->addDependency ($matches).")";
 	}
 	
+	private function replaceDataIdByName($matches) {
+		$id = $matches[1];
+		return $this->datas[$id] ? "#(" . $this->datas[$id]['name'] . ")" : "#" . $id;
+	}
+	
+	private function replaceIdByName($target) {
+		return preg_replace_callback(
+			"/#(\d+)/", 
+			array($this, 'replaceDataIdByName'),
+			$target
+		);
+	}
 	private function paragraphs ($text) {
 		$result = "";
 		$paras = explode("\n", trim($text));
@@ -470,108 +662,196 @@ class Simulator {
 			);
 		}
 		$this->dependencies = 'noteDependencies';
-		if ((string)$field->PreNote != "") {
+		if ($field->PreNote) {
 			$nfield['prenote'] = $this->paragraphs(preg_replace_callback(
 				"/#(\d+)/", 
 				array($this, 'addNoteDependency'), 
 				(string)$field->PreNote
 			));
+			if ((string)$field->PreNote['condition'] != "") {
+				$this->datas[$id]['unparsedPreNoteCondition'] = preg_replace_callback(
+					"/#(\d+)/", 
+					array($this, 'addDependency'),
+					(string)$field->PreNote['condition']
+				);
+			}
 		}
-		if ((string)$field->PostNote != "") {
+		if ($field->PostNote) {
 			$nfield['postnote'] = $this->paragraphs(preg_replace_callback(
 				"/#(\d+)/", 
 				array($this, 'addNoteDependency'),
 				(string)$field->PostNote
 			));
+			if ((string)$field->PostNote['condition'] != "") {
+				$this->datas[$id]['unparsedPostNoteCondition'] = preg_replace_callback(
+					"/#(\d+)/", 
+					array($this, 'addDependency'),
+					(string)$field->PostNote['condition']
+				);
+			}
 		}
 		return $nfield;
+	}
+	
+	protected function toJSONData($data, &$sources) {
+		$id = (int)$data['id'];
+		$this->datas[$id]['id'] = $id;
+		$this->datas[$id]['name'] = (string)$data['name'];
+		$this->datas[$id]['type'] = (string)$data['type'];
+		$this->name = $this->datas[$id]['name'];
+		$this->dependencies = 'dataDependencies';
+		if ((string)$data['default'] != "") {
+			$this->datas[$id]['unparsedDefault'] = preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addDependency'),
+				(string)$data['default']
+			);
+		}
+		if ((string)$data['min'] != "") {
+			$this->datas[$id]['unparsedMin'] = preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addDependency'),
+				(string)$data['min']
+			);
+		}
+		if ((string)$data['max'] != "") {
+			$this->datas[$id]['unparsedMax'] = preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addDependency'),
+				(string)$data['max']
+			);
+		}
+		if ((string)$data['content'] != "") {
+			$this->datas[$id]['unparsedContent'] = preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addDependency'),
+				(string)$data['content']
+			);
+		}
+		if ((string)$data['source'] != "") {
+			$this->datas[$id]['unparsedSource'] = preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addDependency'),
+				(string)$data['source']
+			);
+		}
+		if ((string)$data['index'] != "") {
+			$this->datas[$id]['unparsedIndex'] = preg_replace_callback(
+				"/#(\d+)/", 
+				array($this, 'addDependency'),
+				(string)$data['index']
+			);
+		}
+		if ($data->Constraints) {
+			$constraints = array();
+			foreach ($data->Constraints->Constraint as $constraint) {
+				$constraints[(int)$constraint['id']]['unparsedConstraint'] = preg_replace_callback(
+					"/#(\d+)/", 
+					array($this, 'addDependency'),
+					(string)$constraint['constraint']
+				);
+				$constraints[(int)$constraint['id']]['constraintMessage'] = $this->replaceIdByName((string)$constraint['constraintMessage']);
+			}
+			$this->datas[$id]['constraints'] = $constraints;
+		}
+		if ($data->Choices) {
+			$choices = array();
+			foreach ($data->Choices->Choice as $choice) {
+				$choices[] = array(
+					(string)$choice['value'] => (string)$choice['label']
+				);
+			}
+			if (count($choices) > 0) {
+				$this->datas[$id]['choices'] = $choices;
+			}
+			if ($data->Choices->Source) {
+				$source = $data->Choices->Source;
+				$sid = (int)$source['id'];
+				$this->datas[$id]['choices']['source'] = array (
+					'id' => $sid,
+					'valueColumn' => (string)$source['valueColumn'],
+					'labelColumn' => (string)$source['labelColumn']
+				);
+				if (! isset($sources[$sid]['choiceDependencies'])) {
+					$sources[$sid]['choiceDependencies'] = array();
+				}
+				$sources[$sid]['choiceDependencies'][] = $this->datas[$id]['name'];
+			}
+		}
 	}
 	
 	public function toJSON($url, $stepId = 0) {		
 		$json = array();
 		$datas = array();
+		$constraints = array();
 		$sources = array();
+		$dataIdMax = 0;
 		$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
 		if ($simulator->DataSet) {
-			foreach ($simulator->DataSet->Data as $data) {
-				$id = (int)$data['id'];
-				$this->datas[$id]['id'] = $id;
-				$this->datas[$id]['name'] = (string)$data['name'];
-				$this->datas[$id]['type'] = (string)$data['type'];
-				$this->name = $this->datas[$id]['name'];
-				$this->dependencies = 'dataDependencies';
-				if ((string)$data['default'] != "") {
-					$this->datas[$id]['unparsedDefault'] = preg_replace_callback(
-						"/#(\d+)/", 
-						array($this, 'addDependency'),
-						(string)$data['default']
-					);
-				}
-				if ((string)$data['constraint'] != "") {
-					$this->datas[$id]['unparsedConstraint'] = preg_replace_callback(
-						"/#(\d+)/", 
-						array($this, 'addDependency'),
-						(string)$data['constraint']
-					);
-					$this->datas[$id]['constraintMessage'] = (string)$data['constraintMessage'];
-				}
-				if ((string)$data['min'] != "") {
-					$this->datas[$id]['unparsedMin'] = preg_replace_callback(
-						"/#(\d+)/", 
-						array($this, 'addDependency'),
-						(string)$data['min']
-					);
-				}
-				if ((string)$data['max'] != "") {
-					$this->datas[$id]['unparsedMax'] = preg_replace_callback(
-						"/#(\d+)/", 
-						array($this, 'addDependency'),
-						(string)$data['max']
-					);
-				}
-				if ((string)$data['content'] != "") {
-					$this->datas[$id]['unparsedContent'] = preg_replace_callback(
-						"/#(\d+)/", 
-						array($this, 'addDependency'),
-						(string)$data['content']
-					);
-				}
-				if ((string)$data['source'] != "") {
-					$this->datas[$id]['unparsedSource'] = preg_replace_callback(
-						"/#(\d+)/", 
-						array($this, 'addDependency'),
-						(string)$data['source']
-					);
-				}
-				if ((string)$data['index'] != "") {
-					$this->datas[$id]['unparsedIndex'] = preg_replace_callback(
-						"/#(\d+)/", 
-						array($this, 'addDependency'),
-						(string)$data['index']
-					);
-				}
-				if ($data->Choices) {
-					$choices = array();
-					foreach ($data->Choices->Choice as $choice) {
-						$choices[] = array(
-							(string)$choice['value'] => (string)$choice['label']
-						);
-					}
-					if (count($choices) > 0) {
-						$this->datas[$id]['choices'] = $choices;
-					}
-					if ($data->Choices->Source) {
-						$source = $data->Choices->Source;
-						$sid = (int)$source['id'];
-						$this->datas[$id]['choices']['source'] = array (
-							'id' => $sid,
-							'valueColumn' => (string)$source['valueColumn'],
-							'labelColumn' => (string)$source['labelColumn']
-						);
-						if (! isset($sources[$sid]['choiceDependencies'])) {
-							$sources[$sid]['choiceDependencies'] = array();
+			foreach ($simulator->DataSet->children() as $child) {
+				if ($child->getName() == "DataGroup") {
+					foreach ($child->Data as $data) {
+						$this->toJSONData($data, $sources);
+						$id = (int)$data['id'];
+						$this->datas[$id]['datagroup'] = (string)$child['name'];
+						if ((int)$data['id'] > $dataIdMax) {
+							$dataIdMax = (int)$data['id'];
 						}
-						$sources[$sid]['choiceDependencies'][] = $this->datas[$id]['name'];
+					}
+					if ((string)$child['constraint'] != "") {
+						$id = (int)$child['id'];
+						$this->groupConstraints[$id]['id'] = $id;
+						$this->name = "GroupConstraint-" . $id;
+						$this->groupConstraints[$id]['name'] = $this->name;
+						$this->groupConstraints[$id]['type'] = "group";
+						$this->groupConstraints[$id]['group'] = (string)$child['name'];
+						$this->dependencies = 'constraintDependencies';
+						$this->groupConstraints[$id]['unparsedConstraint'] = preg_replace_callback(
+							"/#(\d+)/", 
+							array($this, 'addDependency'),
+							(string)$child['constraint']
+						);
+						$this->groupConstraints[$id]['constraintMessage'] = $this->replaceIdByName((string)$child['constraintMessage']);
+					}
+					
+					if ($child->Constraints) {
+						$constraints = array();
+						foreach ($child->Constraints->Constraint as $constraint) {
+							$id = (int)$child['id'].'-'.(int)$constraint['id'];
+							$this->groupConstraints[$id]['id'] = $id;
+							$this->name = "GroupConstraint-" . $id;
+							$this->groupConstraints[$id]['name'] = $this->name;
+							$this->groupConstraints[$id]['type'] = "group";
+							$this->groupConstraints[$id]['group'] = (string)$child['name'];
+							$this->dependencies = 'constraintDependencies';
+							$this->groupConstraints[$id]['unparsedConstraint'] = preg_replace_callback(
+								"/#(\d+)/", 
+								array($this, 'addDependency'),
+								(string)$constraint['constraint']
+							);
+							$this->groupConstraints[$id]['constraintMessage'] = $this->replaceIdByName((string)$constraint['constraintMessage']);
+						}
+					}
+					
+				} elseif ($child->getName() == "Data") {
+					$this->toJSONData($child, $sources);
+					if ((int)$child['id'] > $dataIdMax) {
+						$dataIdMax = (int)$child['id'];
+					}
+				} elseif ($child->getName() == "GlobalConstraints") {
+					foreach ($child->Constraint as $constraint) {
+						$id = (int)$constraint['id'];
+						$this->globalConstraints[$id]['id'] = $id;
+						$this->name = "GlobalConstraint-" . $id;
+						$this->globalConstraints[$id]['name'] = $this->name;
+						$this->globalConstraints[$id]['type'] = "global";
+						$this->dependencies = 'constraintDependencies';
+						$this->globalConstraints[$id]['unparsedConstraint'] = preg_replace_callback(
+							"/#(\d+)/", 
+							array($this, 'addDependency'),
+							(string)$constraint['constraint']
+						);
+						$this->globalConstraints[$id]['constraintMessage'] = $this->replaceIdByName((string)$constraint['constraintMessage']);
 					}
 				}
 			}
@@ -593,23 +873,27 @@ class Simulator {
 					);
 					foreach ($step->FieldSet as $fieldset) {
 						$fields = array();
-						foreach ($fieldset->Field as $field) {
-							$id = (int)$field['data'];
-							$data = $this->datas[$id];
-							if (!isset($usages[$data['name']])) {
-								$usages[$data['name']] = (string)$field['usage'];
-								$this->name = $data['name'];
-								if ((string)$field['usage'] == 'input') {
-									$this->datas[$id]['inputField'] = array(
-										(string)$step['name']."-fieldset-".$fieldset['id'],
-										count($fields)
-									);
+						
+						foreach ($fieldset->children() as $child) {
+							if ($child->getName() == "FieldRow") {
+								$fieldrow = $child;
+								foreach ($fieldrow->Field as $field) {
+									$id = (int)$field['data'];
+									$data = $this->datas[$id];
+									if (!isset($usages[$data['name']])) {
+										$usages[$data['name']] = (string)$field['usage'];
+										$this->name = $data['name'];
+										if ((string)$field['usage'] == 'input') {
+											$this->datas[$id]['inputField'] = array(
+												(string)$step['name']."-fieldset-".$fieldset['id'],
+												count($fields)
+											);
+										}
+										$fields[] = $this->fieldProperties($field);
+									}
 								}
-								$fields[] = $this->fieldProperties($field);
-							}
-						}
-						foreach ($fieldset->FieldRow as $fieldrow) {
-							foreach ($fieldrow->Field as $field) {
+							} elseif ($child->getName() == "Field") {
+								$field = $child;
 								$id = (int)$field['data'];
 								$data = $this->datas[$id];
 								if (!isset($usages[$data['name']])) {
@@ -706,7 +990,22 @@ class Simulator {
 				$datas[$name][$key] = $value;
 			}
 		}
+		foreach ($this->groupConstraints as $id => $groupConstraint) {
+			$name = $groupConstraint['name'];
+			unset($groupConstraint['name']);
+			foreach($groupConstraint as $key => $value) {
+				$constraints[$name][$key] = $value;
+			}
+		}
+		foreach ($this->globalConstraints as $id => $globalConstraint) {
+			$name = $globalConstraint['name'];
+			unset($globalConstraint['name']);
+			foreach($globalConstraint as $key => $value) {
+				$constraints[$name][$key] = $value;
+			}
+		}
 		$json["datas"] = $datas;
+		$json["constraints"] = $constraints;
 		$json["step"] = $nstep;
 		$json["sources"] = $sources;
 		if ($this->controller->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {

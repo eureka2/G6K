@@ -80,7 +80,7 @@ $(document).ready(function(){
 		{% endfor %}
 	{% endif %}
 
-	var g6k = new G6k({%- if step.dynamic or (step.simulator.dynamic and step.id == 0) -%}true{%- else -%}false{%- endif -%}, {%- if ua.mobile -%}true{%- else -%}false{%- endif -%});
+	var g6k = new G6k({%- if step.dynamic or (step.simulator.dynamic and step.id == 0) -%}true{%- else -%}false{%- endif %}, {% if ua.mobile -%}true{%- else -%}false{%- endif -%}, "{{ app.request.locale }}");
 	g6k.run();
 });
 </script>
