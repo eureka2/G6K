@@ -9,7 +9,6 @@ class Step {
 	private $name = "";
 	private $label = "";
 	private $template = "";
-	private $condition = ""; // expression = condition d'affichage
 	private $output = "";
 	private $description = "";
 	private $dynamic = false;
@@ -52,14 +51,6 @@ class Step {
 	
 	public function setTemplate($template) {
 		$this->template = $template;
-	}
-	
-	public function getCondition() {
-		return $this->condition;
-	}
-	
-	public function setCondition($condition) {
-		$this->condition = $condition;
 	}
 	
 	public function getOutput() {
@@ -108,6 +99,15 @@ class Step {
 	
 	public function removeFieldSet($index) {
 		$this->fieldsets[$index] = null;
+	}
+	
+	public function getFieldSetById($id) {
+		foreach ($this->fieldsets as $fieldset) {
+			if ($fieldset->getId() == $id) {
+				return $fieldset;
+			}
+		}
+		return null;
 	}
 	
 	public function getActions() {

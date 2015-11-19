@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2012 (http://www.altova.com) by ARCHIMEDE (DILA) -->
+<!-- edited with XMLSpy v2015 rel. 3 (http://www.altova.com) by DILA (DILA) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="DataSources">
 		<xs:annotation>
@@ -9,7 +9,7 @@
 			<xs:sequence>
 				<xs:element name="DataSource" maxOccurs="unbounded">
 					<xs:complexType>
-						<xs:sequence>
+						<xs:sequence minOccurs="0">
 							<xs:element name="Description" type="xs:string" minOccurs="0"/>
 							<xs:element name="Table" maxOccurs="unbounded">
 								<xs:complexType>

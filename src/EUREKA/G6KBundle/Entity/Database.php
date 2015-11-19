@@ -122,23 +122,15 @@ class Database {
 					$this->link->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 					$this->link->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 					break;
-				case "pgsl":
-					if (strpos($this->host, ':') !== false) {
+				case "pgsql":
+					if (strpos($this->host, ':') !== false)
 						list($this->host, $this->port) = explode(':', $this->host);
-						$connect_str[] = 'host='.$this->host.' port='.$this->port;
-					} else {
-						if ($this->host != 'localhost')
-							$connect_str[] = 'host='.$this->host;
-					}
-					if ($this->name)
-						$connect_str[] = 'dbname='.$this->name;
-					if ($this->user != '')
-						$connect_str[] = 'user='.$this->user;
-					if ($this->password != '')
-						$connect_str[] = 'password='.$this->password;
-					$this->link = @pg_connect(implode(' ', $connect_str));
-					if (!$this->link)
-						throw new \Exception('Unable to connect to PostgreSQL server');
+					if (isset($this->port))
+						$this->link = new \PDO(sprintf('pgsql:host=%s;port=%s;dbname=%s',$this->host, $this->port, $this->name), $this->user, $this->password);
+					else
+						$this->link = new \PDO(sprintf('pgsql:host=%s;dbname=%s',$this->host, $this->name), $this->user, $this->password);
+					$this->link->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+					$this->link->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 					break;
 				case "sqlite":
 					$this->link = new \PDO('sqlite:'.dirname(dirname(__FILE__)).'/Resources/data/databases/'.$this->name);
@@ -169,16 +161,7 @@ class Database {
 					}
 				}
 				break;
-			case "pgsl":
-				if (strrpos($sql, 'LIMIT') !== false)
-					$sql = preg_replace('#LIMIT ([0-9]+),([ 0-9]+)#', 'LIMIT \\2 OFFSET \\1', $sql);
-				@pg_send_query($this->link, $sql);
-				$query_result = @pg_get_result($this->link);
-				if (!pg_result_status($query_result) != PGSQL_FATAL_ERROR) {
-					throw new \Exception(@pg_result_error($query_result));
-					$query_result = false;
-				}
-				break;
+			case "pgsql":
 			case "mysqli":
 			case "sqlite":
 				$stmt = $this->link->query($sql);
@@ -193,8 +176,7 @@ class Database {
 		switch ($this->type) {
 			case "mysql":
 				return mysql_real_escape_string($value);
-			case "pgsl":
-				return pg_escape_string($this->link, $value);
+			case "pgsql":
 			case "mysqli":
 			case "sqlite":
 				return $this->link->quote($value);
@@ -206,9 +188,7 @@ class Database {
 		switch ($this->type) {
 			case "mysql":
 				return mysql_insert_id($this->link);
-			case "pgsl":
-				$currval = $this->query("SELECT currval('" + $tablename + "_id_seq') AS lastinsertid");
-				return $currval[0];
+			case "pgsql":
 			case "mysqli":
 			case "sqlite":
 				return $this->link->lastInsertId();

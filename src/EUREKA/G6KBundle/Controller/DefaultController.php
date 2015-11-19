@@ -38,17 +38,6 @@ class DefaultController extends Controller {
 		$this->simu = new Simulator($this);
 		$this->parser = new ExpressionParser();
 		$this->uricache = array();
-		if (! $view) {
-			$domain = $request->getHost();
-			$domainview = $this->container->getParameter('domainview');
-			$view = "Default";
-			foreach ($domainview as $d => $v) {
-				if (preg_match("/".$d."$/", $domain)) {
-					$view = $v;
-					break;
-				}
-			}
-		}
 		try {
 			$this->simu->load(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml');
 		} catch (\Exception $e) {
@@ -61,6 +50,25 @@ class DefaultController extends Controller {
 			} else {
 				throw $this->createNotFoundException($this->get('translator')->trans("This simulator does not exist"));
 			}
+		}
+		if (! $view) {
+			$view = $this->simu->getDefaultView();
+			if ($view == '') {
+				$domain = $request->getHost();
+				$domainview = $this->container->getParameter('domainview');
+				$view = "Default";
+				foreach ($domainview as $d => $v) {
+					if (preg_match("/".$d."$/", $domain)) {
+						$view = $v;
+						break;
+					}
+				}
+			}
+		}
+		$viewpath = $this->container->getParameter('viewpath');
+		$path = $request->getScheme().'://'.$request->getHttpHost();
+		if (isset($viewpath[$view])) {
+			$path = $viewpath[$view];
 		}
 		$istep = -1;
 		$this->error = false;
@@ -114,6 +122,7 @@ class DefaultController extends Controller {
 							$id = $field->getData();
 							$data = $this->simu->getDataById($id);
 							$data->setInputStepId($s->getId());
+							$fieldset->setInputFields(true);
 						}
 					} elseif ($child instanceof FieldRow) {
 						$fieldrow = $child;
@@ -122,6 +131,7 @@ class DefaultController extends Controller {
 								$id = $field->getData();
 								$data = $this->simu->getDataById($id);
 								$data->setInputStepId($s->getId());
+								$fieldset->setInputFields(true);
 							}
 						}
 					}
@@ -144,6 +154,7 @@ class DefaultController extends Controller {
 			}			
 		}
 		$direction = 0;
+		$this->processRules($istep);
 		if ($istep >= 0) {
 			$skipValidation = false;
 			$step = $this->simu->getStepById($istep);
@@ -172,23 +183,6 @@ class DefaultController extends Controller {
 				}
 			}
 			$this->processDatas($istep);
-			$globalconstraints = $this->simu->getGlobalConstraints();
-			foreach ($globalconstraints as $constr) {
-				$constraint = $constr->getConstraint();
-				if ($constraint != "") {
-					try {
-						$result = $this->evaluate($constraint);
-						if ($result !== false) {
-							if ($result == 'false') {
-								$this->simu->setError(true);
-								$this->simu->addErrorMessage($this->replaceVariables($constr->getMessage()));
-								$this->error = true;
-							}
-						}
-					} catch (\Exception $e) {
-					}
-				}
-			}
 			if (! $this->error) {
 				foreach ($step->getActions() as $action) {
 					if (isset($form[$action->getName()])) {
@@ -214,29 +208,25 @@ class DefaultController extends Controller {
 				}
 			}
 		} else {
+			$this->processDatas($istep);
 			$istep = $this->simu->isDynamic() ? 0 : 1;
 		}
 		$stepCount = count($steps);
 		do {
 			$step = $this->simu->getStepById($istep);
-			$displayable = false;
+			$stepDisplayable = false;
 			foreach ($step->getFieldSets() as $fieldset) {
-				$condition = $fieldset->getCondition();
-				if ($condition != "" && $istep > 0) {
-					if ($this->evaluate($condition) == 'false') {
-						$fieldset->setDisplayable(false);
-					}
-				}
+				$fieldset->setDisplayable($fieldset->isDisplayable() && $step->isDisplayable());
 				foreach ($fieldset->getFields() as $child) {
 					if ($child instanceof Field) {
 						$field = $child;
-						$field->setDisplayable($fieldset->isDisplayable());
-						$this->processField($field, $istep, $displayable); 
+						$field->setDisplayable($field->isDisplayable() && $fieldset->isDisplayable());
+						$this->processField($field, $step, $stepDisplayable); 
 					} elseif ($child instanceof FieldRow) {
 						$fieldrow = $child;
 						foreach ($fieldrow->getFields() as $field) {
-							$field->setDisplayable($fieldset->isDisplayable());
-							$this->processField($field, $istep, $displayable); 
+							$field->setDisplayable($field->isDisplayable() && $fieldset->isDisplayable());
+							$this->processField($field, $step, $stepDisplayable); 
 						}
 					}
 				}
@@ -246,12 +236,6 @@ class DefaultController extends Controller {
 			if ($footnotes !== null) {
 				$disp = false;
 				foreach ($footnotes->getFootNotes() as $footnote) {
-					$condition = $footnote->getCondition();
-					if ($condition != "" && $istep > 0) {
-						if ($this->evaluate($condition) == 'false') {
-							$footnote->setDisplayable(false);
-						}
-					}
 					if ($footnote->isDisplayable()) {
 						$footnote->setText($this->replaceVariables($footnote->getText()));
 						$disp = true;
@@ -260,43 +244,19 @@ class DefaultController extends Controller {
 				$footnotes->setDisplayable($disp);
 			}
 			$istep += $direction;
-		} while (!$displayable && $istep > 0 && $istep <= $stepCount);
+		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
 		$step->setDescription($this->replaceVariables($step->getDescription()));
 		
 		$datas = array();
 		foreach ($this->simu->getDatas() as $data) {
 			if ($data instanceof DataGroup) {
 				foreach ($data->getDatas() as $gdata) {
-					foreach ($gdata->getChoices() as $choice) {
-						$condition = $choice->getCondition();
-						if ($condition != "") {
-							if ($this->evaluate($condition) == 'false') {
-								$choice->setSelected(false);
-							}
-						}
-					}
 					$datas[$gdata->getName()] = $gdata->getValue();
 				}
 			} elseif ($data instanceof Data) {
-				foreach ($data->getChoices() as $choice) {
-					$condition = $choice->getCondition();
-					if ($condition != "") {
-						if ($this->evaluate($condition) == 'false') {
-							$choice->setSelected(false);
-						}
-					}
-				}
 				$datas[$data->getName()] = $data->getValue();
 			}
 		}
-		foreach ($this->simu->getSteps() as $s) {
-			$condition = $s->getCondition();
-			if ($condition != "") {
-				if ($this->evaluate($condition) == 'false') {
-					$s->setDisplayable(false);
-				}
-			}
-		}			
 		if ( ! $this->error && ($step->getOutput() == 'inlinePDF' || $step->getOutput() == 'downloadablePDF')) {
 			return $this->pdfOutput($request, $step, $datas, $view);
 		}
@@ -307,6 +267,7 @@ class DefaultController extends Controller {
 		$hiddens['view'] = $view;
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
+		header('Access-Control-Allow-Origin: https://www.service-public-2016.fr.qualif.ext.dila.fr');
 		try {
 			return $this->render(
 				'EUREKAG6KBundle:'.$view.'/'.$step->getTemplate(),
@@ -314,7 +275,7 @@ class DefaultController extends Controller {
 					'view' => $view,
 					'script' => $script,
 					'ua' => $silex["mobile_detect"],
-					'path' => $request->getScheme().'://'.$request->getHttpHost(),
+					'path' => $path,
 					'log' => $this->log,
 					'step' => $step,
 					'data' => $datas,
@@ -351,6 +312,9 @@ class DefaultController extends Controller {
 			if ($data !== null) {
 				$data->setValue($value);
 			}
+		}
+		if (isset($form['returnPath'])) {
+			$source->setReturnPath($form['returnPath']);
 		}
 		$result = $this->processSource($source);
 		$response = new Response();
@@ -413,17 +377,11 @@ class DefaultController extends Controller {
 		}
 	}
 	
-	protected function processField($field, $istep, &$displayable) 
+	protected function processField($field, $step, &$displayable) 
 	{
 		$id = $field->getData();
 		$data = $this->simu->getDataById($id);
 		$data->setUsed(false);
-		$condition = $field->getCondition();
-		if ($condition != "" && $istep > 0) {
-			if ($this->evaluate($condition) == 'false') {
-				$field->setDisplayable(false);
-			}
-		}
 		if ($field->isDisplayable()) {
 			$displayable = true;
 			$explanation = $field->getExplanation();
@@ -436,45 +394,46 @@ class DefaultController extends Controller {
 			if ($field->getUsage() == 'input') {
 				$data->setUsed(true);
 			}
-			$choiceSource = $data->getChoiceSource();
-			if ($choiceSource != null) {
-				$source = $choiceSource->getId();
-				if ($source != "") {
-					$source = $this->evaluate($source);
-					if ($source !== false) {
-						$source = $this->simu->getSourceById($source);
-						$result = $this->processSource($source);
-						if ($result !== null) {
-							$n = 0;
-							foreach ($result as $row) {
-								$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
-								$choice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
-								$data->addChoice($choice);
-							}
+			$this->populateChoiceWithSource($data);
+			$this->replaceFieldNotes($field);
+		} elseif ($step->getId() == 0 || $step->isDynamic()) {
+			$this->populateChoiceWithSource($data);
+			$this->replaceFieldNotes($field);
+		}
+	}
+	
+	protected function populateChoiceWithSource($data) 
+	{
+		$choiceSource = $data->getChoiceSource();
+		if ($choiceSource != null) {
+			$source = $choiceSource->getId();
+			if ($source != "") {
+				$source = $this->evaluate($source);
+				if ($source !== false) {
+					$source = $this->simu->getSourceById($source);
+					$result = $this->processSource($source);
+					if ($result !== null) {
+						$n = 0;
+						foreach ($result as $row) {
+							$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
+							$choice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
+							$data->addChoice($choice);
 						}
 					}
 				}
 			}
-			if ($field->getPreNote() !== null) {
-				$note = $field->getPreNote();
-				$condition = $note->getCondition();
-				if ($condition != "" && $istep > 0) {
-					if ($this->evaluate($condition) == 'false') {
-						$note->setDisplayable(false);
-					}
-				}
-				$note->setText($this->replaceVariables($note->getText()));
-			}
-			if ($field->getPostNote() !== null) {
-				$note = $field->getPostNote();
-				$condition = $note->getCondition();
-				if ($condition != "" && $istep > 0) {
-					if ($this->evaluate($condition) == 'false') {
-						$note->setDisplayable(false);
-					}
-				}
-				$note->setText($this->replaceVariables($note->getText()));
-			}
+		}
+	}
+	
+	protected function replaceFieldNotes($field) 
+	{
+		if ($field->getPreNote() !== null) {
+			$note = $field->getPreNote();
+			$note->setText($this->replaceVariables($note->getText()));
+		}
+		if ($field->getPostNote() !== null) {
+			$note = $field->getPostNote();
+			$note->setText($this->replaceVariables($note->getText()));
 		}
 	}
 	
@@ -564,6 +523,9 @@ class DefaultController extends Controller {
 				if ($value !== false) {
 					$data->setDefault($value);
 					$data->setUnparsedDefault("");
+					foreach ($data->getRulesDependency() as $ruleId) {
+						$this->processRule($this->simu->getBusinessRuleById($ruleId), $istep); 
+					}
 					$this->processDatas($istep);
 				}
 			}
@@ -576,7 +538,11 @@ class DefaultController extends Controller {
 						$this->variables[''.$data->getId()] = $data->getValue();
 						$this->variables[$data->getName()] = $data->getValue();
 						$data->setContent("");
-						$this->processDatas($istep);						}
+						foreach ($data->getRulesDependency() as $ruleId) {
+							$this->processRule($this->simu->getBusinessRuleById($ruleId), $istep); 
+						}
+						$this->processDatas($istep);
+					}
 				} catch (\Exception $e) {
 					if ($istep == 0 || $data->getInputStepId() == $istep) {
 						$data->setError(true);
@@ -635,23 +601,132 @@ class DefaultController extends Controller {
 				} catch (\Exception $e) {
 				}
 			}
-			$constraints = $data->getConstraints();
-			foreach ($constraints as $constr) {
-				$constraint = $constr->getConstraint();
-				if ($constraint != "") {
-					try {
-						$result = $this->evaluate($constraint);
-						if ($result !== false) {
-							if ($result == 'false' && ($istep == 0 || $data->getInputStepId() == $istep)) {
+		}
+	}
+	
+    protected function processActions($actions, $istep) 
+	{
+		foreach ($actions as $action) {
+			switch ($action->getName()) {
+				case 'notifyError':
+					switch ($action->getTarget()) {
+						case 'data':
+							$data =  $this->simu->getDataById($action->getData());
+							if ($istep == 0 || $data->getInputStepId() == $istep) {
 								$data->setError(true);
-								$data->addErrorMessage($this->replaceVariables($constr->getMessage()));
+								$data->addErrorMessage($this->replaceVariables($action->getValue()));
 								$this->error = true;
 							}
-						}
-					} catch (\Exception $e) {
+							break;
+						case 'datagroup':
+							$datagroup =  $this->simu->getDataGroupById($action->getDatagroup());
+							$inputStepId = false;
+							foreach ($datagroup->getDatas() as $data) {
+								if ($data->getInputStepId() == $istep) {
+									$inputStepId = true;
+								}
+							}
+							if ($istep == 0 || $inputStepId) {
+								$datagroup->setError(true);
+								$datagroup->addErrorMessage($this->replaceVariables($action->getValue()));
+								$this->error = true;
+							}
+							break;
+						case 'dataset':
+							$$this->simu->setError(true);
+							$$this->simu->addErrorMessage($this->replaceVariables($action->getValue()));
+							$this->error = true;
+							break;
 					}
-				}
+					break;
+				case 'hideObject':
+				case 'showObject':
+					$stepId = $action->getStep();
+					$step = $this->simu->getStepById($stepId);
+					switch ($action->getTarget()) {
+						case 'step':
+							$step->setDisplayable($action->getName() == 'showObject');
+							break;
+						case 'fieldset':
+							$fieldset = $step->getFieldSetById($action->getFieldset());
+							$fieldset->setDisplayable($action->getName() == 'showObject');
+							break;
+						case 'field':
+							$fieldset = $step->getFieldSetById($action->getFieldset());
+							$field = $fieldset->getFieldByPosition($action->getField());
+							$field->setDisplayable($action->getName() == 'showObject');
+							break;
+						case 'prenote':
+							$fieldset = $step->getFieldSetById($action->getFieldset());
+							$field = $fieldset->getFieldByPosition($action->getField());
+							// TODO : que faire ?
+							break;
+						case 'postnote':
+							$fieldset = $step->getFieldSetById($action->getFieldset());
+							$field = $fieldset->getFieldByPosition($action->getField());
+							// TODO : que faire ?
+							break;
+						case 'footnote':
+							$footnotes = $step->getFootNotes();
+							$footnote = $footnotes->getFootNoteById($action->getFootnote());
+							$footnote->setDisplayable($action->getName() == 'showObject');
+							break;
+						case 'action':
+							$actionButton = $step->getActionByName($action->getAction());
+							$actionButton->setDisplayable($action->getName() == 'showObject');
+							break;
+						case 'choice':
+							$data =  $this->simu->getDataById($action->getData());
+							$choice = $data->getChoiceById($action->getChoice());
+							$choice->setSelected($action->getName() == 'showObject');
+							break;
+					}
+					break;
+				case 'setAttribute':
+					$data =  $this->simu->getDataById($action->getData());
+					switch ($action->getTarget()) {
+						case 'content':
+							$data->setContent($action->getValue());
+							break;
+						case 'default':
+							$data->setUnparsedDefault($action->getValue());
+							break;
+						case 'explanation':
+							break;
+						case 'index':
+							$data->setUnparsedIndex($action->getValue());
+							break;
+						case 'min':
+							$data->setUnparsedMin($action->getValue());
+							break;
+						case 'max':
+							$data->setUnparsedMax($action->getValue());
+							break;
+						case 'source':
+							$data->setSource($action->getValue());
+							break;
+					}
+					break;
 			}
+		}
+	}
+	
+    protected function processRule($businessrule, $istep) 
+	{
+		$conditions = $businessrule->getConditions();
+		$result = $this->evaluate($conditions);
+		if ($result == 'true') {
+			$this->processActions($businessrule->getIfActions(), $istep);
+		} else if ($result == 'false') {	
+			$this->processActions($businessrule->getElseActions(), $istep);
+		}
+	}
+	
+    protected function processRules($istep) 
+	{
+		$businessrules = $this->simu->getBusinessRules();
+		foreach ($businessrules as $businessrule) {
+			$result = $this->processRule($businessrule, $istep) ;
 		}
 	}
 
@@ -667,23 +742,6 @@ class DefaultController extends Controller {
 						$inputStepId = true;
 					}
 				}
-				$constraints = $data->getConstraints();
-				foreach ($constraints as $constr) {
-					$constraint = $constr->getConstraint();
-					if ($constraint != "") {
-						try {
-							$result = $this->evaluate($constraint);
-							if ($result !== false) {
-								if ($result == 'false' && ($istep == 0 || $inputStepId)) {
-									$data->setError(true);
-									$data->addErrorMessage($this->replaceVariables($constr->getMessage()));
-									$this->error = true;
-								}
-							}
-						} catch (\Exception $e) {
-						}
-					}
-				}
 			} elseif ($data instanceof Data) {
 				$this->processData($data, $istep);
 			}
@@ -696,7 +754,7 @@ class DefaultController extends Controller {
 					$result = $this->processSource($source);
 					if ($result !== null) {
 						$datas = $this->sources[$id];
-						foreach ($datas as $d) {							
+						foreach ($datas as $d) {
 							if (is_array($result)) { 
 								switch (count($result)) {
 									case 0:
@@ -708,7 +766,7 @@ class DefaultController extends Controller {
 									default:
 										$index = $d->getIndex();
 										if ($index != "") {
-											$value = $result[$index];
+											$value = isset($result[$index]) ? $result[$index] : $result[strtolower($index)];
 										} else {
 											$value = "";
 										}
@@ -718,7 +776,7 @@ class DefaultController extends Controller {
 							}
 							if ($d->getType() == "date" && preg_match("/^\d\d\d\d-\d{1,2}-\d{1,2}$/", $value)) {
 								$value = $this->parseDate("Y-m-d", $value)->format("d/m/Y");
-							}						
+							}
 							$d->setValue($value);
 							$d->setSource("");
 							$this->variables[''.$d->getId()] = $d->getValue();
@@ -738,7 +796,7 @@ class DefaultController extends Controller {
 	{
 		$data = $this->simu->getDataById($param->getData());
 		$value = $data->getValue();
-		if ($value == "") {
+		if (strlen($value) == 0) {
 			return null;
 		}
 		switch ($data->getType()) {
@@ -806,7 +864,7 @@ class DefaultController extends Controller {
 					$result = file_get_contents($uri);
 					$this->uricache[$uri] = $result;
 				}
-				break;				
+				break;
 			case 'database':
 			case 'internal':
 				$args = array();
@@ -822,29 +880,49 @@ class DefaultController extends Controller {
 				$database = $this->simu->getDatabaseById($datasource->getDatabase());
 				$database->connect();
 				$result = $database->query($query);
-				break;				
+				break;
 		}
 		switch ($source->getReturnType()) {
 			case 'singleValue':
 				return $result;
 			case 'json':
-				$json = json_decode($result, true);
 				$returnPath = $source->getReturnPath();
-				$keys = explode("/", $returnPath);
-				foreach ($keys as $key) {
-					if (ctype_digit($key)) {
-						$key = (int)$key;
-					}
-					if (! isset($json[$key])) {
-						break;
-					}
-					$json = $json[$key];
-				}
-				return $json;
+				$returnPath = $this->replaceVariables($returnPath);
+				$json = json_decode($result, true);
+				// $keys = explode("/", $returnPath);
+				// foreach ($keys as $key) {
+					// if (preg_match("/^([^\[]+)\[([^\]]+)\]$/", $key, $matches)) {
+						// $key1 = $matches[1];
+						// if (! isset($json[$key1])) {
+							// break;
+						// }
+						// $json = $json[$key1];
+						// $key = $matches[2];
+					// }
+					// if (ctype_digit($key)) {
+						// $key = (int)$key;
+					// }
+					// if (! isset($json[$key])) {
+						// break;
+					// }
+					// $json = $json[$key];
+				// }
+				// return $json;
+				$result = $this->xPathFilter( "json", $json, $returnPath);
+				return $result;
 			case 'assocArray':
 				$returnPath = $source->getReturnPath();
+				$returnPath = $this->replaceVariables($returnPath);
 				$keys = explode("/", $returnPath);
 				foreach ($keys as $key) {
+					if (preg_match("/^([^\[]+)\[([^\]]+)\]$/", $key, $matches)) {
+						$key1 = $matches[1];
+						if (! isset($json[$key1])) {
+							break;
+						}
+						$json = $json[$key1];
+						$key = $matches[2];
+					}
 					if (ctype_digit($key)) {
 						$key = (int)$key;
 					}
@@ -855,8 +933,10 @@ class DefaultController extends Controller {
 				}
 				return $result;
 			case 'xml':
+				$returnPath = $source->getReturnPath();
+				$returnPath = $this->replaceVariables($returnPath);
 				$xml = new SimpleXMLElement($result);
-				return $xml->xpath($source->getReturnPath());
+				return $xml->xpath($returnPath);
 		}
 		return null;
 	}
@@ -870,6 +950,7 @@ class DefaultController extends Controller {
 			array(
 				'view' => $view,
 				'ua' => $silex["mobile_detect"],
+				// 'path' => 'http://www.service-public.fr',
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'log' => $this->log,
 				'step' => $step,
@@ -896,10 +977,154 @@ class DefaultController extends Controller {
 		$mpdf->Output($this->simu->getName().".pdf", $step->getOutput() == 'inlinePDF' ? 'I' : 'D'); // I = inline, D = download
 		return false;
 	}
-	
-	private function replaceVariable($matches) {
-		$id = (int)$matches[1];
-		$data = $this->simu->getDataById($id);
+
+	protected function createXML($node_name, $arr=array())
+	{
+		$this->xml = new \DomDocument('1.0', 'UTF-8');
+		$this->xml->formatOutput = true;
+		$this->xml->appendChild($this->convertToXML($node_name, $arr));
+		return $this->xml;
+	}
+
+	protected function bool2str($v)
+	{
+		$v = $v === true ? 'true' : $v;
+		$v = $v === false ? 'false' : $v;
+		return $v;
+	}
+
+	protected function isValidTagName($tag)
+	{
+		$pattern = '/^[a-z_]+[a-z0-9\:\-\.\_]*[^:]*$/i';
+		return preg_match($pattern, $tag, $matches) && $matches[0] == $tag;
+	}
+
+	protected function &convertToXML($node_name, $arr=array())
+	{
+		$node = $this->xml->createElement($node_name);
+		if(is_array($arr)){
+			if(isset($arr['@attributes'])) {
+				foreach($arr['@attributes'] as $key => $value) {
+					if(!$this->isValidTagName($key)) {
+						throw new \Exception('[Array2XML] Illegal character in attribute name. attribute: '.$key.' in node: '.$node_name);
+					}
+					$node->setAttribute($key, $this->bool2str($value));
+				}
+				unset($arr['@attributes']); 
+			}
+			if(isset($arr['@value'])) {
+				$node->appendChild($this->xml->createTextNode($this->bool2str($arr['@value'])));
+				unset($arr['@value']);
+				return $node;
+			} else if(isset($arr['@cdata'])) {
+				$node->appendChild($this->xml->createCDATASection($this->bool2str($arr['@cdata'])));
+				unset($arr['@cdata']);
+				return $node;
+			}
+		}
+		if(is_array($arr)){
+			foreach($arr as $key=>$value){
+				$attr = false;
+				if (preg_match("/^@(.+)$/", $key, $matches) && !is_array($value)) {
+					$key = $matches[1];
+					$attr = true;
+				}
+				if(!$this->isValidTagName($key)) {
+					throw new \Exception('[Array2XML] Illegal character in tag name. tag: '.$key.' in node: '.$node_name);
+				}
+				if ($attr) {
+					$node->setAttribute($key, $this->bool2str($value));
+				} elseif (is_array($value) && is_numeric(key($value))) {
+					foreach($value as $k=>$v){
+						if (is_array($v) && is_numeric(key($v))) {
+							$subnode = $this->xml->createElement($key);
+							foreach($v as $k1=>$v1){
+								$subnode->appendChild($this->convertToXML('sub-'.$key, $v1));
+							}
+							$node->appendChild($subnode);
+						} else {
+							$node->appendChild($this->convertToXML($key, $v));
+						}
+					}
+				} else {
+					$node->appendChild($this->convertToXML($key, $value));
+				}
+				unset($arr[$key]);
+			}
+		}
+		if(!is_array($arr)) {
+			$node->appendChild($this->xml->createTextNode($this->bool2str($arr)));
+		}
+		return $node;
+	}
+
+	protected function createArray($xml)
+	{
+		$result = $this->convertToArray($xml);
+		if (count($result) == 1 && is_array($result[0])) {
+			$result = $result[0];
+		}
+		if (count($result) == 1 && is_array($result)) {
+			$keys = array_keys($result);
+			if (count($keys) == 1 && $keys[0] == '#text') {
+				$result = $result[$keys[0]];
+			}
+		}
+		return $result;
+	}
+
+	protected function nodeHasChild( $node )
+	{
+		if ( $node->hasChildNodes() ) {
+			foreach ( $node->childNodes as $child ) {
+				if ( $child->nodeType == XML_ELEMENT_NODE ) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	protected function &convertToArray( $xml )
+	{
+		if ( $xml instanceOf \DOMNodeList ) {
+			$items = array();
+			foreach ( $xml as $item ) {
+				$items[] = $this->convertToArray( $item );
+			}
+			return $items;
+		}
+		$itemData = array();
+		foreach ( $xml->childNodes as $node ) {
+			if ( $this->nodeHasChild( $node ) ) {
+				$itemData[$node->nodeName] = $this->convertToArray( $node );
+			} else{
+				$itemData[$node->nodeName] = $node->nodeValue;
+			}
+		}
+		return $itemData;
+	}
+
+	protected function &xPathFilter( $root, $array, $returnPath )
+	{
+		$doc = $this->createXML($root, $array);
+		$xPath = new \DOMXPath($doc);
+		$xPath->registerNamespace("php", "http://php.net/xpath");
+		$xPath->registerPHPFunctions();
+		$filtered = $xPath->query($returnPath);
+		$result = $this->createArray($filtered);
+		return $result;
+	}
+
+	private function replaceVariable($matches)
+	{
+		if (preg_match("/^\d+$/", $matches[1])) {
+			$id = (int)$matches[1];
+			$data = $this->simu->getDataById($id);
+		} else {
+			$name = $matches[3];
+			$data = $this->simu->getDataByName($name);
+		}
 		if ($data === null) {
 			return $matches[0];
 		}
@@ -919,16 +1144,18 @@ class DefaultController extends Controller {
 		}
 	}
 	
-	private function replaceVariables($target) {
+	private function replaceVariables($target)
+	{
 		$result = preg_replace_callback(
-			"|#(\d+)(L?)|",
+			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
 			array($this, 'replaceVariable'),
 			$target
 		);
 		return $result;
 	}
 	
-	private function parseDate($format, $dateStr) {
+	private function parseDate($format, $dateStr)
+	{
 		if (empty($dateStr)) {
 			return null;
 		}
@@ -940,8 +1167,9 @@ class DefaultController extends Controller {
 		return $date;
 	}
 
-	public function isDevelopmentEnvironment() {
+	public function isDevelopmentEnvironment()
+	{
 		return in_array($this->get('kernel')->getEnvironment(), array('test', 'dev'));
 	}
-	
+
 }

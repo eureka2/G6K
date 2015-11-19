@@ -8,7 +8,6 @@ class Choice {
 	private $id;
 	private $value = "";
 	private $label = "";
-	private $condition = "";
 	private $selected = true;
 	
 	public function __construct($data, $id, $value, $label) {
@@ -44,14 +43,6 @@ class Choice {
 	
 	public function setLabel($label) {
 		$this->label = $label;
-	}
-	
-	public function getCondition() {
-		return $this->condition;
-	}
-	
-	public function setCondition($condition) {
-		$this->condition = $condition;
 	}
 	
 	public function isSelected() {

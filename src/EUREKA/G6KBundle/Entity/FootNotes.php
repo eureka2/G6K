@@ -37,6 +37,15 @@ class FootNotes {
 		$this->footnotes[] = $footnote;
 	}
 	
+	public function getFootNoteById($id) {
+		foreach ($this->footnotes as $footnote) {
+			if ($footnote->getId() == $id) {
+				return $footnote;
+			}
+		}
+		return null;
+	}
+	
 	public function removeFootNote($index) {
 		$this->footnotes[$index] = null;
 	}

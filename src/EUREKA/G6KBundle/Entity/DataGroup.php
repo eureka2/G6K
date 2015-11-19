@@ -8,7 +8,6 @@ class DataGroup {
 	private $id = 0;
 	private $name = "";
 	private $label = "";
-	private $constraint = array(); 
 	private $description = "";
 	private $datas = array();
 	private $error = false;
@@ -47,22 +46,6 @@ class DataGroup {
 	
 	public function setLabel($label) {
 		$this->label = $label;
-	}
-	
-	public function getConstraints() {
-		return $this->constraints;
-	}
-	
-	public function setConstraints($constraints) {
-		$this->constraints = $constraints;
-	}
-	
-	public function addConstraint(Constraint $constraint) {
-		$this->constraints[] = $constraint;
-	}
-	
-	public function removeConstraint($index) {
-		$this->constraints[$index] = null;
 	}
 	
 	public function getDescription() {
@@ -132,7 +115,9 @@ class DataGroup {
 	}
 	
 	public function addErrorMessage($errorMessage) {
-		$this->errorMessages[] = $errorMessage;
+		if (! in_array($errorMessage, $this->errorMessages)) {
+			$this->errorMessages[] = $errorMessage;
+		}
 	}
 	
 	public function removeErrorMessage($index) {

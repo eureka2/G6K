@@ -372,7 +372,7 @@ class Expression {
 		foreach ($this->tokens as $token) {
 			if ($token->type == Token::T_FIELD && isset($variables[''.$token->value])) {
 				$value = $variables[''.$token->value];
-				if ($value == "") {
+				if (strlen($value) == 0) {
 					$completed = false;
 				} else if (is_numeric($value)) {
 					$token->type = Token::T_NUMBER;
@@ -395,7 +395,7 @@ class Expression {
 				}
 			} else if ($token->type == Token::T_IDENT && isset($variables[$token->value])) {
 				$value = $variables[$token->value];
-				if ($value == "") {
+				if (strlen($value) == 0) {
 					$completed = false;
 				} else if (is_numeric($value)) {
 					$token->type = Token::T_NUMBER;
@@ -797,7 +797,7 @@ class Expression {
 		}
 	}
 	
-	private function easter($year) {
+	private static function easter($year) {
 		$days = easter_days($year);
 		$easter = \DateTime::createFromFormat('Y-m-d', $year.'-3-21');
 		$easter->setTime(0, 0, 0);	 
@@ -815,13 +815,13 @@ class Expression {
 		return new \DateTime($ordinal[$nth - 1]. " ".$dayname[$day]." of ".$monthname[$month - 1]." ".$year);
 	}
 	
-	private function lastDay($month, $year) {
+	public static function lastDay($month, $year) {
 		$monthname = array('january',  'february',  'march',  'april',  'may',  'june',  'july',  'august',  'september',  'october',  'november',  'december',  'jan',  'feb',  'mar',  'apr',  'may',  'jun',  'jul',  'aug',  'sep',  'sept',  'oct',  'nov',  'dec');
 		$lastDate =  new \DateTime("last day of ".$monthname[$month - 1]." ".$year);
 		return (int)$lastDate->format('j');
 	}
 	
-	private function fixedHolidays($year, $lang = "en-US") {
+	private static function fixedHolidays($year, $lang = "en-US") {
 		$fholidays = array(
 			"US" => array(
 				"01-01", "07-04", "11-01", "12-25"
@@ -842,8 +842,8 @@ class Expression {
 		return $holidays;
 	}
 	
-	private function moveableHolidays($year, $lang = "en-US") {
-		$easter = $this->easter($year);
+	private static function moveableHolidays($year, $lang = "en-US") {
+		$easter = self::easter($year);
 		$holidays = array(
 			"US" => array(),
 			"FR" => array(
@@ -856,16 +856,16 @@ class Expression {
 		return $holidays[$lg];
 	}
 	
-	private function holidays($year, $lang = "en.US") {
-		$holidays =  $this->moveableHolidays($year, $lang);
-		$fixed =  $this->fixedHolidays($year, $lang);
+	private static function holidays($year, $lang = "en.US") {
+		$holidays =  self::moveableHolidays($year, $lang);
+		$fixed =  self::fixedHolidays($year, $lang);
 		foreach($fixed as $holiday) {
 			$holidays[] = $holiday;
 		}
 		return $holidays;
 	}
 	
-	private function workdays($startDate, $endDate) {
+	public static function workdays($startDate, $endDate) {
 	    // Validate input
 	    if ($endDate < $startDate)
 	        return 0;
@@ -898,7 +898,7 @@ class Expression {
 	    $endYear = (int)$endDate->format('Y');
 		$startDate->setTime(0, 0, 0);	
 		for ($y = $startYear; $y <= $endYear; $y++) {
-			$holidays = $this->holidays($y, $lang);
+			$holidays = self::holidays($y, $lang);
 			foreach($holidays as $holiday) {
 				$d = ((int)$holiday->format('N')) % 7;
 				if ($d != 0 && $d != 6 && $holiday >= $startDate && $holiday <= $endDate)
@@ -906,6 +906,29 @@ class Expression {
 			}
 		}
 	    return $days;
+	}
+	
+	private static function isWorkingDay($date) {
+	    $day = ((int)$date->format('N')) % 7;
+		if ($day == 0 || $day == 6) {
+			return false; 
+		}
+		$lang = "fr-FR";
+		$holidays = self::holidays((int)$date->format('Y'), $lang);
+		foreach($holidays as $holiday) {
+			if ($holiday == $date) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static function nextWorkingDay($date) {
+		$d = $date;
+		while (! self::isWorkingDay($d)) {
+			$d->add(new \DateInterval('P1D'));
+		}
+		return $d;
 	}
 	
 	private function func(Token $func, &$args) {
@@ -921,6 +944,15 @@ class Expression {
 			"ceil" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return ceil($a); }),
 			"cos" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return cos($a); }),
 			"cosh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return cosh($a); }),
+			"count" => array(-1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { 
+				$c = 0;
+				foreach ($a as $v) {
+					if (isset($v)) {
+						$c += 1;
+					}
+				};
+				return $c;
+			}),
 			"day" => array(1, array(Token::T_DATE), Token::T_NUMBER, function($a) { return (float)$a->format('d'); }),
 			"exp" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return exp($a); }),
 			"floor" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return floor($a); }),
@@ -928,21 +960,32 @@ class Expression {
 				$months = array("janvier", "février", "mars", "avril", "mai", "juin",  "juillet", "août", "septembre", "octobre", "novembre", "décembre");
 				return $months[(int)$a->format('m') - 1].' '.$a->format('Y');
 			}),
-			"lastday" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return $this->lastDay($b, $a); }),
+			"lastday" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return Expression::lastDay($b, $a); }),
 			"log" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log($a); }),
 			"log10" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log10($a); }),
 			"max" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return max($a, $b); }),
 			"min" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return min($a, $b); }),
+			"money" => array(1, array(Token::T_NUMBER), Token::T_TEXT, function($a) { return (string)number_format($a , 2 , "," , " "); }),
 			"month" => array(1, array(Token::T_DATE), Token::T_NUMBER, function($a) { return (float)$a->format('m'); }),
+			"nextWorkDay" => array(1, array(Token::T_DATE), Token::T_DATE, function($a) { return Expression::nextWorkingDay($a); }),
 			"pow" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return pow($a, $b); }),
 			"rand" => array(0, array(), Token::T_NUMBER, function() { return rand(); }),
 			"round" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return round($a); }),
 			"sin" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return sin($a); }),
 			"sinh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return sinh($a); }),
 			"sqrt" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return sqrt($a); }),
+			"sum" => array(-1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { 
+				$s = 0;
+				foreach ($a as $v) {
+					if (isset($v)) {
+						$s += $v;
+					}
+				};
+				return $s;
+			}),
 			"tan" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return tan($a); }),
 			"tanh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return tanh($a); }),
-			"workdays" => array(2, array(Token::T_DATE, Token::T_DATE), Token::T_NUMBER, function($a, $b) { return $this->workdays($a, $b); }),
+			"workdays" => array(2, array(Token::T_DATE, Token::T_DATE), Token::T_NUMBER, function($a, $b) { return Expression::workdays($a, $b); }),
 			"year" => array(1, array(Token::T_DATE), Token::T_NUMBER, function($a) { return (float)$a->format('Y'); })
 		);
 		if ($func->value == "defined") {
@@ -962,35 +1005,49 @@ class Expression {
 			throw new \Exception("Unknown function : " . $func);
 		}
 		$argc = $functions[$func->value][0];
+		$variableArgsCount = false;
+		if ($argc == -1) {
+			$argc = count($args);
+			$variableArgsCount = true;
+		}
 		if (count($args) < $argc) {
 			throw new \Exception("Illegal number (".count($args).") of operands for function" . $func);
 		}
 		$argv = array();
 		for (; $argc > 0; --$argc) {
 			$arg = array_pop($args);
-			if ($arg->isVariable()) {
-				return new Token(Token::T_UNDEFINED, array($arg));
-			}
-			$type = $functions[$func->value][1][$argc - 1];
-			if ($arg->type != $type) { 
-				$expected = "";
-				switch ($type) {
-					case Token::T_NUMBER:
-						$expected = "number";
-						break;
-					case Token::T_DATE: 
-						$expected = "date";
-						break;
-					case Token::T_BOOLEAN:
-						$expected = "boolean";
-						break;
-					case Token::T_TEXT: 
-						$expected = "text";
-						break;
+			if (! $variableArgsCount) {
+				if ($arg->isVariable()) {
+					return new Token(Token::T_UNDEFINED, array($arg));
 				}
-				throw new \Exception("Illegal type for argument '".$arg."' : operand must be a ".$expected." for ".$func);
+				$type = $functions[$func->value][1][$argc - 1];
+				if ($arg->type != $type) { 
+					$expected = "";
+					switch ($type) {
+						case Token::T_NUMBER:
+							$expected = "number";
+							break;
+						case Token::T_DATE: 
+							$expected = "date";
+							break;
+						case Token::T_BOOLEAN:
+							$expected = "boolean";
+							break;
+						case Token::T_TEXT: 
+							$expected = "text";
+							break;
+					}
+					throw new \Exception("Illegal type for argument '".$arg."' : operand must be a ".$expected." for ".$func);
+				}
+				array_unshift($argv, $arg->value); 
+			} else if ($arg->isVariable()) {
+				unset($arg->value);
+			} else {
+				array_unshift($argv, $arg->value); 
 			}
-			array_unshift($argv, $arg->value); 
+		}
+		if ($variableArgsCount) {
+			$argv = array($argv);
 		}
 		return new Token($functions[$func->value][2], call_user_func_array($functions[$func->value][3], $argv));
 	}

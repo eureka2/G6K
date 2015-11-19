@@ -8,8 +8,8 @@ class FieldSet {
 	private $id = 0;
 	private $legend = "";
 	private $disposition = "classic";
-	private $condition = "";
 	private $displayable = true;
+	private $inputFields = false;
 	private $fields = array();
 	private $columns = array();
 	
@@ -38,14 +38,6 @@ class FieldSet {
 		$this->legend = $legend;
 	}
 	
-	public function getCondition() {
-		return $this->condition;
-	}
-	
-	public function setCondition($condition) {
-		$this->condition = $condition;
-	}
-	
 	public function getDisposition() {
 		return $this->disposition;
 	}
@@ -62,6 +54,14 @@ class FieldSet {
 		$this->displayable = $displayable;
 	}
 	
+	public function hasInputFields() {
+		return $this->inputFields;
+	}
+	
+	public function setInputFields($inputFields) {
+		$this->inputFields = $inputFields;
+	}
+	
 	public function getFields() {
 		return $this->fields;
 	}
@@ -76,6 +76,15 @@ class FieldSet {
 	
 	public function removeField($index) {
 		$this->fields[$index] = null;
+	}
+	
+	public function getFieldByPosition($position) {
+		foreach ($this->fields as $field) {
+			if ($field->getPosition() == $position) {
+				return $field;
+			}
+		}
+		return null;
 	}
 	
 	public function getColumns() {

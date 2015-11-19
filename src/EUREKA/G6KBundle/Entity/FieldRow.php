@@ -6,9 +6,9 @@ class FieldRow {
 
 	private $fieldset = null;
 	private $label = "";
-	private $help = "";
-	private $colon = "";
-	private $emphasize = "";
+	private $help = false;
+	private $colon = true;
+	private $emphasize = false;
 	private $datagroup = "";
 	private $fields = array();
 	

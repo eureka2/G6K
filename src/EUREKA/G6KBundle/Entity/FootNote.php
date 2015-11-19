@@ -6,7 +6,6 @@ class FootNote {
 
 	private $step = null;
 	private $id = 0;
-	private $condition = "";
 	private $displayable = true;
 	private $text = "";
 
@@ -26,14 +25,6 @@ class FootNote {
 	
 	public function setId($id) {
 		$this->id = $id;
-	}
-	
-	public function getCondition() {
-		return $this->condition;
-	}
-	
-	public function setCondition($condition) {
-		$this->condition = $condition;
 	}
 	
 	public function isDisplayable() {

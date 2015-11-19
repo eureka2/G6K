@@ -21,6 +21,13 @@
 		{% include 'EUREKAG6KBundle:admin/sections:footer.html.twig' %}
 	</div>
   {% block scripts %}
+{% if simulator is not empty %}
+<script type="text/javascript">
+var dataset = {{ dataset|raw }}
+var actions = {{ actions|raw }}
+var rules = {{ rules|raw }}
+</script>
+{% endif %}				
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-1.11.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-migrate-1.2.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.js') }}"></script>

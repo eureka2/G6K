@@ -7,11 +7,11 @@ class Action {
 	private $step = null;
 	private $name = "";
 	private $label = "";
-	private $condition = ""; // expression = condition d'affichage (dynamic only)
 	private $clazz = "";
 	private $what = ""; // submit, reset
 	private $for = ""; // currentStep (only for what=reset), priorStep, nextStep, pdfOutput, htmlOutput, externalPage
 	private $uri = ""; //url for externalPage
+	private $displayable = true;
 	
 	
 	public function __construct($step, $name, $label) {
@@ -38,14 +38,6 @@ class Action {
 	
 	public function setLabel($label) {
 		$this->label = $label;
-	}
-	
-	public function getCondition() {
-		return $this->condition;
-	}
-	
-	public function setCondition($condition) {
-		$this->condition = $condition;
 	}
 	
 	public function getClass() {
@@ -78,6 +70,14 @@ class Action {
 	
 	public function setUri($uri) {
 		$this->uri = $uri;
+	}
+	
+	public function isDisplayable() {
+		return $this->displayable;
+	}
+	
+	public function setDisplayable($displayable) {
+		$this->displayable = $displayable;
 	}
 	
 }

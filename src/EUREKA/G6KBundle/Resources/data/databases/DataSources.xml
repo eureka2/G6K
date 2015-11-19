@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSources xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<DataSource id="1" type="internal" name="demo" database="1">
+		<Description>Reference data for the calculation of child support</Description>
+		<Table id="1" name="tauxPA" label="Alimony rate">
+			<Description>Maintenance rate based on the access and accommodation and the number of children</Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description>internal identifier</Description>
+			</Column>
+			<Column id="2" name="droitVH" type="choice" label="Droit de visite et d'hébergement">
+				<Description>Visitation and accommodation (1: reduced , 2 : classic, 3: alternated)</Description>
+				<Choices>
+					<Choice id="1" value="1" label="reduced"/>
+					<Choice id="2" value="2" label="classic"/>
+					<Choice id="3" value="3" label="alternated"/>
+				</Choices>
+			</Column>
+			<Column id="3" name="nbEnfant" type="integer" label="Number of children">
+				<Description>Number of children</Description>
+			</Column>
+			<Column id="4" name="taux" type="percent" label="Taux">
+				<Description>Alimony rate</Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<DataSource id="2" name="openfisca" type="uri" uri="http://api-test.openfisca.fr/api/1/parameters" />
+	<Databases>
+		<Database id="1" type="sqlite" name="demo.db" label="Alimony calculation elements" />
+	</Databases>
+</DataSources>

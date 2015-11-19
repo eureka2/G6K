@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2015 rel. 3 (x64) (http://www.altova.com) by Jacques ARCHIMEDE (DILA) -->
+<!-- edited with XMLSpy v2015 rel. 3 (http://www.altova.com) by DILA (DILA) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="Simulator">
 		<xs:annotation>
@@ -18,13 +18,6 @@
 										<xs:sequence>
 											<xs:element name="Description" minOccurs="0"/>
 											<xs:element name="Data" type="DataType" maxOccurs="unbounded"/>
-											<xs:element name="Constraints" minOccurs="0">
-												<xs:complexType>
-													<xs:sequence>
-														<xs:element name="Constraint" type="ConstraintType" maxOccurs="unbounded"/>
-													</xs:sequence>
-												</xs:complexType>
-											</xs:element>
 										</xs:sequence>
 										<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
 										<xs:attribute name="name" type="xs:string" use="required"/>
@@ -32,13 +25,6 @@
 									</xs:complexType>
 								</xs:element>
 							</xs:sequence>
-							<xs:element name="GlobalConstraints" minOccurs="0">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="Constraint" type="ConstraintType" maxOccurs="unbounded"/>
-									</xs:sequence>
-								</xs:complexType>
-							</xs:element>
 						</xs:sequence>
 						<xs:attribute name="dateFormat" type="xs:string" use="required"/>
 						<xs:attribute name="decimalPoint" type="xs:string" use="required"/>
@@ -88,7 +74,6 @@
 													</xs:sequence>
 												</xs:sequence>
 												<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
-												<xs:attribute name="condition" type="xs:string"/>
 												<xs:attribute name="disposition">
 													<xs:simpleType>
 														<xs:restriction base="xs:NMTOKEN">
@@ -106,7 +91,6 @@
 														<xs:complexType>
 															<xs:attribute name="name" type="xs:string" use="required"/>
 															<xs:attribute name="label" type="xs:string" use="required"/>
-															<xs:attribute name="condition" type="xs:string"/>
 															<xs:attribute name="what" use="required">
 																<xs:simpleType>
 																	<xs:restriction base="xs:NMTOKEN">
@@ -139,7 +123,6 @@
 													<xs:element name="FootNote" maxOccurs="unbounded">
 														<xs:complexType mixed="true">
 															<xs:attribute name="id" type="xs:positiveInteger"/>
-															<xs:attribute name="condition" type="xs:string"/>
 														</xs:complexType>
 													</xs:element>
 												</xs:sequence>
@@ -158,7 +141,6 @@
 									<xs:attribute name="name" type="xs:string" use="required"/>
 									<xs:attribute name="label" type="xs:string" use="required"/>
 									<xs:attribute name="template" type="xs:string" use="required"/>
-									<xs:attribute name="condition" type="xs:string"/>
 									<xs:attribute name="output">
 										<xs:simpleType>
 											<xs:restriction base="xs:NMTOKEN">
@@ -175,7 +157,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="Sites">
+				<xs:element name="Sites" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="Site" maxOccurs="unbounded">
@@ -230,10 +212,53 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="BusinessRules" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="BusinessRule" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Conditions">
+											<xs:complexType>
+												<xs:attribute name="value" type="xs:string" use="required"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="IfActions">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Action" minOccurs="0" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:complexContent>
+																<xs:extension base="ActionType"/>
+															</xs:complexContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="ElseActions">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Action" type="ActionType" minOccurs="0" maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="label" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="RelatedInformations" minOccurs="0"/>
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" use="required"/>
 			<xs:attribute name="label" type="xs:string" use="required"/>
+			<xs:attribute name="defaultView" type="xs:string"/>
 			<xs:attribute name="dynamic" type="xs:boolean" default="0"/>
+			<xs:attribute name="referer"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="ColumnType">
@@ -262,25 +287,20 @@
 			</xs:simpleType>
 		</xs:attribute>
 		<xs:attribute name="label" type="xs:string" use="required"/>
-		<xs:attribute name="condition" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="FieldType">
 		<xs:choice minOccurs="0">
 			<xs:element name="PreNote">
 				<xs:complexType>
 					<xs:simpleContent>
-						<xs:extension base="xs:string">
-							<xs:attribute name="condition" type="xs:string"/>
-						</xs:extension>
+						<xs:extension base="xs:string"/>
 					</xs:simpleContent>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="PostNote">
 				<xs:complexType>
 					<xs:simpleContent>
-						<xs:extension base="xs:string">
-							<xs:attribute name="condition" type="xs:string"/>
-						</xs:extension>
+						<xs:extension base="xs:string"/>
 					</xs:simpleContent>
 				</xs:complexType>
 			</xs:element>
@@ -304,7 +324,6 @@
 		<xs:attribute name="help" type="xs:boolean"/>
 		<xs:attribute name="emphasize" type="xs:boolean"/>
 		<xs:attribute name="explanation" type="xs:string"/>
-		<xs:attribute name="condition" type="xs:string"/>
 		<xs:attribute name="expanded" type="xs:boolean" default="1"/>
 	</xs:complexType>
 	<xs:complexType name="DataType">
@@ -318,7 +337,6 @@
 								<xs:attribute name="id" type="xs:string" use="required"/>
 								<xs:attribute name="value" type="xs:string" use="required"/>
 								<xs:attribute name="label" type="xs:string" use="required"/>
-								<xs:attribute name="condition" type="xs:string"/>
 							</xs:complexType>
 						</xs:element>
 						<xs:element name="Source">
@@ -341,13 +359,6 @@
 					<xs:attribute name="id" type="xs:string"/>
 					<xs:attribute name="name" type="xs:string"/>
 					<xs:attribute name="label" type="xs:string"/>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="Constraints" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Constraint" type="ConstraintType" maxOccurs="unbounded"/>
-					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
@@ -384,6 +395,52 @@
 		<xs:attribute name="unit" type="xs:string"/>
 		<xs:attribute name="source" type="xs:string"/>
 		<xs:attribute name="index" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="ActionType">
+		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+		<xs:attribute name="name" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKENS">
+					<xs:enumeration value="notifyError"/>
+					<xs:enumeration value="setAttribute"/>
+					<xs:enumeration value="hideObject"/>
+					<xs:enumeration value="showObject"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="target" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKENS">
+					<xs:enumeration value="data"/>
+					<xs:enumeration value="datagroup"/>
+					<xs:enumeration value="dataset"/>
+					<xs:enumeration value="step"/>
+					<xs:enumeration value="fieldset"/>
+					<xs:enumeration value="field"/>
+					<xs:enumeration value="prenote"/>
+					<xs:enumeration value="postnote"/>
+					<xs:enumeration value="action"/>
+					<xs:enumeration value="footnote"/>
+					<xs:enumeration value="choice"/>
+					<xs:enumeration value="content"/>
+					<xs:enumeration value="min"/>
+					<xs:enumeration value="max"/>
+					<xs:enumeration value="index"/>
+					<xs:enumeration value="default"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="data" type="xs:positiveInteger"/>
+		<xs:attribute name="datagroup" type="xs:string"/>
+		<xs:attribute name="step" type="xs:nonNegativeInteger"/>
+		<xs:attribute name="fieldset" type="xs:positiveInteger"/>
+		<xs:attribute name="field" type="xs:positiveInteger"/>
+		<xs:attribute name="prenote" type="xs:positiveInteger"/>
+		<xs:attribute name="postnote" type="xs:positiveInteger"/>
+		<xs:attribute name="action" type="xs:string"/>
+		<xs:attribute name="footnote" type="xs:positiveInteger"/>
+		<xs:attribute name="choice"/>
+		<xs:attribute name="value" type="xs:string"/>
 	</xs:complexType>
 	<xs:attributeGroup name="constraintGroup">
 		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>

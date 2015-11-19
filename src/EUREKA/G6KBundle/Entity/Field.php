@@ -17,7 +17,6 @@ class Field {
 	private $help = true; // false, true
 	private $emphasize = false; // false, true
 	private $explanation = ""; //expression;
-	private $condition = ""; // expression = condition d'affichage
 	private $expanded = true;
 	private $preNote = null;
 	private $postNote = null;
@@ -128,14 +127,6 @@ class Field {
 	
 	public function setExplanation($explanation) {
 		$this->explanation = $explanation;
-	}
-	
-	public function getCondition() {
-		return $this->condition;
-	}
-	
-	public function setCondition($condition) {
-		$this->condition = $condition;
 	}
 	
 	public function isExpanded() {

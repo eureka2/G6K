@@ -13,7 +13,6 @@ class Data {
 	private $unparsedMin = "";
 	private $max = "";
 	private $unparsedMax = "";
-	private $constraints = array();
 	private $default = "";
 	private $unit = "";
 	private $unparsedDefault = "";
@@ -27,6 +26,7 @@ class Data {
 	private $table = null; 
 	private $description = "";
 	private $value = "";
+	private $rulesDependency = array(); 
 	private $error = false;
 	private $errorMessages = array();
 	private $inputStepId = -1;
@@ -78,6 +78,10 @@ class Data {
 		return $this->min;
 	}
 	
+	public function getPlainMin() {
+		return $this->replaceByDataLabel($this->unparsedMin);
+	}
+	
 	public function setMin($min) {
 		$this->min = $min;
 	}
@@ -94,6 +98,10 @@ class Data {
 		return $this->max;
 	}
 	
+	public function getPlainMax() {
+		return $this->replaceByDataLabel($this->unparsedMax);
+	}
+	
 	public function setMax($max) {
 		$this->max = $max;
 	}
@@ -106,24 +114,12 @@ class Data {
 		$this->unparsedMax = $unparsedMax;
 	}
 	
-	public function getConstraints() {
-		return $this->constraints;
-	}
-	
-	public function setConstraints($constraints) {
-		$this->constraints = $constraints;
-	}
-	
-	public function addConstraint(Constraint $constraint) {
-		$this->constraints[] = $constraint;
-	}
-	
-	public function removeConstraint($index) {
-		$this->constraints[$index] = null;
-	}
-	
 	public function getDefault() {
 		return $this->default;
+	}
+	
+	public function getPlainDefault() {
+		return $this->replaceByDataLabel($this->unparsedDefault);
 	}
 	
 	public function setDefault($default) {
@@ -158,6 +154,10 @@ class Data {
 		return $this->content;
 	}
 	
+	public function getPlainContent() {
+		return $this->replaceByDataLabel($this->content);
+	}
+	
 	public function setContent($content) {
 		$this->content = $content;
 	}
@@ -166,12 +166,20 @@ class Data {
 		return $this->source;
 	}
 	
+	public function getPlainSource() {
+		return $this->replaceByDataLabel($this->source);
+	}
+	
 	public function setSource($source) {
 		$this->source = $source;
 	}
 	
 	public function getIndex() {
 		return $this->index;
+	}
+	
+	public function getPlainIndex() {
+		return $this->replaceByDataLabel($this->unparsedIndex);
 	}
 	
 	public function setIndex($index) {
@@ -209,6 +217,15 @@ class Data {
 	
 	public function addChoice(Choice $choice) {
 		$this->choices[] = $choice;
+	}
+	
+	public function getChoiceById($id) {
+		foreach ($this->choices as $choice) {
+			if ($choice->getId() == $id) {
+				return $choice;
+			}
+		}
+		return null;
 	}
 	
 	public function getChoiceSource() {
@@ -290,11 +307,31 @@ class Data {
 	}
 	
 	public function addErrorMessage($errorMessage) {
-		$this->errorMessages[] = $errorMessage;
+		if (! in_array($errorMessage, $this->errorMessages)) {
+			$this->errorMessages[] = $errorMessage;
+		}
 	}
 	
 	public function removeErrorMessage($index) {
 		$this->errorMessages[$index] = null;
+	}
+	
+	public function getRulesDependency() {
+		return $this->rulesDependency;
+	}
+	
+	public function setRulesDependency($rulesDependency) {
+		$this->rulesDependency = $rulesDependency;
+	}
+	
+	public function addRuleDependency($ruleId) {
+		if (! in_array($ruleId, $this->rulesDependency)) {
+			$this->rulesDependency[] = $ruleId;
+		}
+	}
+	
+	public function removeRuleDependency($index) {
+		$this->rulesDependency[$index] = null;
 	}
 	
 	public function check() {
@@ -351,6 +388,20 @@ class Data {
 				break;
 		}
 		return true;
+	}
+	
+	private function replaceIdByDataLabel($matches) {
+		$id = $matches[1];
+		$data = $this->simulator->getDataById($id);
+		return $data !== null ? $data->getLabel() : "#" . $id;
+	}
+	
+	private function replaceByDataLabel($target) {
+		return preg_replace_callback(
+			"/#(\d+)/", 
+			array($this, 'replaceIdByDataLabel'),
+			$target
+		);
 	}
 	
 	public function getClass() {

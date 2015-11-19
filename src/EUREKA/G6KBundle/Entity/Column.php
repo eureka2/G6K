@@ -10,7 +10,6 @@ class Column {
 	private $type = ""; // date, boolean, number, integer, text, textarea, money, choice, percent, table, department region, country
 	private $label = "";
 	private $description = "";
-	private $condition = "";
 	private $selected = true;
 	
 	public function __construct($table, $id, $name, $type) {
@@ -62,14 +61,6 @@ class Column {
 	
 	public function setDescription($description) {
 		$this->description = $description;
-	}
-	
-	public function getCondition() {
-		return $this->condition;
-	}
-	
-	public function setCondition($condition) {
-		$this->condition = $condition;
 	}
 	
 	public function isSelected() {
