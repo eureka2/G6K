@@ -1,0 +1,79 @@
+#business-rules .conditions, #business-rules .actions {
+	margin: 20px 0;
+}
+
+#business-rules .conditions > .conditional > .remove, #business-rules .actions > .conditional > .remove {
+	display: none;
+}
+#business-rules .error {
+	border: 1px solid red;
+}
+
+#business-rules .form-control, #datas .attribute-expression .form-control {
+	display: inline;
+	width: auto;
+	height: 30px;
+}
+
+#business-rules .conditional {
+	padding-left: 60px;
+}
+
+#business-rules .conditional .all-any-none-wrapper {
+	margin: 5px 20px 5px -60px;
+	display: -moz-inline-stack;
+	display: inline-block;
+}
+
+#business-rules .all-any-none {
+	margin-right: 10px;
+}
+
+#business-rules .all-any-none-wrapper, #business-rules .conditional, #business-rules .rule-container {
+	margin: 10px 0;
+}
+
+#business-rules .rule-container input {
+	width: 250px;
+}
+
+#business-rules .rule-container select {
+	margin-right: 10px;
+}
+
+#business-rules .rule-container .delete-rule {
+	margin-top: -8px;
+}
+
+#business-rules .action-buttons {
+	margin: 20px 0;
+}
+
+#business-rules .action {
+	margin: 10px 0;
+}
+
+#business-rules .action .subfields, #business-rules .action .subfields .field {
+	display: inline-block;
+}
+
+#business-rules .action select, #business-rules .action input, #business-rules .action textarea {
+	margin-right: 10px;
+}
+
+#business-rules .action textarea, #business-rules .action input {
+	width: 250px;
+}
+
+#business-rules .action textarea {
+	margin-top: -6px;
+	vertical-align: top;
+	height: 50px;
+}
+
+#business-rules .remove, #business-rules .add, #business-rules .add-condition, #business-rules .add-sub-condition {
+	height: 24px;
+	margin: auto 5px;
+}
+
+

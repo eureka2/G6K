@@ -1,0 +1,1165 @@
+/*
+The MIT License (MIT)
+
+Copyright (c) 2015 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+
+if (typeof jQuery === 'undefined') {
+  throw new Error('jquery.expressionbuilder requires jQuery library.');
+}
+
+var ExpressionBuilder_I18N = {
+	en: {
+		'menu-action-change': 'Change this operand',
+		'menu-action-add': 'Add operand after',
+		'menu-action-insert': 'Insert operand before',
+		'menu-action-nested': 'Change to nested expression',
+		'menu-action-delete': 'Delete this operand',
+		'literal-label': 'Literal',
+		'literal-placeholder': 'Enter a value',
+		'fields-label': 'Fields',
+		'constants-label': 'Constants',
+		'functions-label': 'Functions',
+		'miscellaneous-label': 'Miscellaneous',
+		'nested-expression-label': 'Nested expression',
+		'operand-holder-tip': 'Click to change this operand or right-click for more actions',
+		'operator-holder-tip': 'Click to change this operator',
+		'nested-expression-delete-tip': 'Click to change this this nested expression',
+		'missing-left-parenthesis': 'Missing left parenthesis',
+		'missing-right-parenthesis': 'Missing right parenthesis'
+	}
+};
+
+(function( jQuery ){
+	"use strict";
+  
+	var methods = {
+		init : function( options ) {
+		
+			var settings = {
+				fields: {},
+				constants: {},
+				functions: {},
+				operators: ['+', '-', '*', '%', '/', '&', '|'],
+				initial: null,
+				onCompleted: function(type) {},
+				onEditing: function() {},
+				onError: function(error) {},
+				language: 'en',
+				operandHolder: { classes: ['label', 'label-primary'] },
+				operatorHolder: { classes: ['label', 'label-primary'] },
+				nestedExpression: { classes: ['label', 'label-primary'] }
+			};
+	
+			return this.each(function() { 
+			
+				var expression = jQuery(this);
+				var expressionId = Math.floor(Math.random() * 100000);
+				var lastevent = 0; // 0 = none, 1 = editing, 2 = completion
+				
+				var holderCSS;
+
+				if ( options ) { 
+					jQuery.extend( settings, options );
+				}
+			
+				expression.data('settings', settings);
+				
+				var i18n = jQuery.extend(
+					{}, 
+					ExpressionBuilder_I18N['en'], 
+					ExpressionBuilder_I18N[settings.language]
+				);
+				if (typeof i18n === 'undefined') {
+					throw new Error("jquery.expressionbuilder requires a script file for '" + settings.language + "' language");
+				}
+				
+				expression.append(createHolderContextMenu());
+				
+				if (settings.initial && ! jQuery.isArray(settings.initial)) {
+					settings.initial = parse(settings.initial);
+				}
+				
+				initialize();
+				
+				function createHolderContextMenu() {
+					var contextMenu = jQuery('<div id="holder-menu' + expressionId + '" class="context-menu-holder"></div>');
+					var items = jQuery('<ul class="dropdown-menu" role="menu"></ul>');
+					contextMenu.append(items);
+					items.append('<li><a tabindex="-1" menu-action="change"><span class="pull-right">Ctrl+C</span>' + i18n['menu-action-change'] + '</a></li>');
+					items.append('<li class="divider"></li>');
+					items.append('<li><a tabindex="-1" menu-action="add"><span class="pull-right">Ctrl+Insert</span>' + i18n['menu-action-add'] + '</a></li>');
+					items.append('<li><a tabindex="-1" menu-action="insert"><span class="pull-right">Insert</span>' + i18n['menu-action-insert'] + '</a></li>');
+					items.append('<li class="divider"></li>');
+					items.append('<li><a tabindex="-1" menu-action="nested"><span class="pull-right">Ctrl+N</span>' + i18n['menu-action-nested'] + '</a></li>');
+					items.append('<li class="divider"></li>');
+					items.append('<li><a tabindex="-1" menu-action="delete"><span class="pull-right">del</span>' + i18n['menu-action-delete'] + '</a></li>');
+					return contextMenu;
+				}
+				
+				function createOperand() {
+					var operandWrapper = jQuery('<span class="operand-wrapper"></span>');
+					expression.append(operandWrapper);
+					addOperand(operandWrapper);
+					return operandWrapper;
+				}
+				
+				function addOperand(operandWrapper) {
+					var choices = jQuery('<select class="form-control"></select>');
+					choices.append('<option operand-type="none" value=""></option>');					
+					var gMiscellaneous = jQuery('<optgroup label="' + i18n['miscellaneous-label'] + '"></optgroup>');
+					gMiscellaneous.append('<option operand-type="literal" value="' + i18n['literal-label'] + '">' + i18n['literal-label'] + '</option>');
+					gMiscellaneous.append('<option operand-type="nested" value="nested">' + i18n['nested-expression-label'] + '</option>');
+					choices.append(gMiscellaneous);
+					var gfields = jQuery('<optgroup label="' + i18n['fields-label'] + '">');
+					jQuery.each(settings.fields, function(name, field) {
+						gfields.append('<option operand-type="field" value="' + name + '">' + field.label + '</option>');
+					});
+					choices.append(gfields);
+					
+					var gconstants = jQuery('<optgroup label="' + i18n['constants-label'] + '">');
+					jQuery.each(settings.constants, function(name, funct) {
+						gconstants.append('<option operand-type="constant" value="' + name + '">' + name + '</option>');
+					});
+					choices.append(gconstants);
+					
+					var gfunctions = jQuery('<optgroup label="' + i18n['functions-label'] + '">');
+					jQuery.each(settings.functions, function(name, funct) {
+						gfunctions.append('<option operand-type="function" value="' + name + '">' + name + '</option>');
+					});
+					choices.append(gfunctions);
+					
+					// Create Input Element
+					var input = jQuery('<input class="form-control"></input>');
+					
+					// Create operand holder Element
+					var holder = jQuery('<button class="operand-holder form-control"></button>');
+					jQuery.each(settings.operandHolder.classes, function(c, clazz) {
+						holder.addClass(clazz);
+					});
+					
+					// put holder, input and select element in wrapper element
+					operandWrapper.append(holder).append(input).append(choices);
+					
+					input.css({
+						position : "relative",
+						display : "none"
+					}).attr('placeholder', i18n['literal-placeholder']);
+										
+					choices.css({
+					});
+					if (! holderCSS) {
+						holderCSS = {
+							"font-family": input.css('font-family'),
+							"font-size": input.css('font-size'),
+							border: "1px solid #CCC",
+							position : "relative",
+							height: input.css('height'),
+							'line-height': input.css('height'),
+							'min-height': input.css('height'),
+							cursor: "pointer",
+							"border-radius": 0,
+							margin: "0 1px 0 0",
+							padding: "0 2px 0 2px",
+							"min-width": "20px"
+						};
+					}
+					
+					holder.attr('title', i18n['operand-holder-tip']).css(jQuery.extend( {}, holderCSS, { display : "none" } ));
+					holder.contextmenu({
+						target: '#holder-menu' + expressionId,
+						onItem: function (context, e) {
+							var action = jQuery(e.target).attr('menu-action');
+							var wrapper = jQuery(context).parent('span');
+							switch (action) {
+								case 'change':
+									jQuery(context).trigger('click');
+									break;
+								case 'add':
+									addOperandAfter(wrapper);
+									break;
+								case 'insert':
+									insertOperandBefore(wrapper);
+									break;
+								case 'nested':
+									nestedExpression(wrapper);
+									break;
+								case 'delete':
+									deleteOperand(wrapper);
+									break;
+							}
+						}
+					});
+					
+					resizeOperand(operandWrapper);
+					
+					holder.on ('click', function(e) {						
+						e.preventDefault();
+						showOperandChoices(jQuery(this).parent('span'));
+						resizeOperand(jQuery(this).parent('span'));
+					});
+			  
+					holder.on('keydown',null, 'Ctrl+c', function (e) {
+						var holder = jQuery(this);
+						setTimeout(function() {
+							holder.trigger('click');
+						}, 0);
+						return false;
+					});
+			  
+					holder.on('keydown',null, 'Ctrl+insert', function (e) {
+						var wrapper = jQuery(this).parent('span');
+						setTimeout(function() {
+							addOperandAfter(wrapper);
+						}, 0);
+						return false;
+					});
+			  
+					holder.on('keydown',null, 'insert', function (e) {
+						var wrapper = jQuery(this).parent('span');
+						setTimeout(function() {
+							insertOperandBefore(wrapper);
+						}, 0);
+						return false;
+					});
+			  
+					holder.on('keydown', null, 'Ctrl+n', function (e) {
+						var wrapper = jQuery(this).parent('span');
+						setTimeout(function() {
+							nestedExpression(wrapper);
+						}, 0);
+						return false;
+					});
+			  
+					holder.on('keydown', null, 'del', function (e) {
+						var wrapper = jQuery(this).parent('span');
+						setTimeout(function() {
+							deleteOperand(wrapper);
+						}, 0);
+						return false;
+					});
+					
+					choices.on ('keydown', function(e){
+						if (e.keyCode >= 37 && e.keyCode <=40) // arrow buttons
+							return ;
+						if (e.keyCode == 13) { // arrow buttons or enter button
+							setTimeout(function() {
+								jQuery(this).trigger('blur');
+							}, 0);
+							return;
+						}
+							
+						var chosen = jQuery(this).val();
+						if ( chosen == i18n['literal-label'] ) {
+							var text = jQuery(this).find("option[operand-type='literal']").text();
+							var val = text != i18n['literal-label'] ? text : '';
+							literalOperand(jQuery(this).parent('span'), val);
+						}
+					});
+						
+					choices.on ('change blur', function(e){
+						var chosen = jQuery(this).val();
+						var text = jQuery(this).find('option:selected').text();
+						var type = jQuery(this).find('option:selected').attr('operand-type');
+						var literal = jQuery(this).find("option[operand-type='literal']").text();
+						var val = literal != i18n['literal-label'] ? literal : '';
+						if (type === 'literal'){
+							literalOperand(jQuery(this).parent('span'), val);
+						} else if (type === 'constant') {
+							constantOperand(jQuery(this).parent('span'), chosen);
+						} else if (type === 'function') {
+							functionExpression(jQuery(this).parent('span'), chosen);
+						} else if (type === 'nested') {
+							nestedExpression(jQuery(this).parent('span'));
+						} else if (type === 'field') {
+							fieldOperand(jQuery(this).parent('span'), chosen, text);
+						} else if (type === 'none') {
+							noneOperand(jQuery(this).parent('span'));
+						}
+					});
+					
+					choices.find('option').on('click', function(e){
+						if (jQuery(this).val() == jQuery(this).parent().parent().val()) {
+							jQuery(this).parent().parent().trigger('change');
+						}
+					});
+					
+					input.autoGrowInput({ maxWidth: 500, minWidth: choices.width(), comfortZone: 1 });
+					
+					input.on ('keyup', function(e){
+						if (e.keyCode == 13) { //enter
+							e.preventDefault();
+							e.stopImmediatePropagation();
+							if (jQuery(this).val() === '') {
+								showOperandChoices(jQuery(this).parent('span'));
+								jQuery(this).parent('span').find('select option:eq(0)').prop('selected', true);
+							} else {
+								showHolder(jQuery(this).parent('span'), jQuery(this).val(), jQuery(this).val(), 'literal');
+							}
+							resizeOperand(jQuery(this).parent('span'));
+							return false;
+						}
+					});
+					
+					input.on ('blur', function(e){
+						if (jQuery(this).val() === '') {
+							showOperandChoices(jQuery(this).parent('span'));
+							jQuery(this).parent('span').find('select option:eq(0)').prop('selected', true);
+						} else {
+							showHolder(jQuery(this).parent('span'), jQuery(this).val(), jQuery(this).val(), 'literal');
+						}
+						resizeOperand(jQuery(this).parent('span'));
+					});
+					
+					holder.data('operand-type', 'none');
+					holder.data('operand-value', '');
+					holder.data('operand-completed', false);
+					checkState();
+					return holder;
+				}
+				
+				function addOperandAfter(wrapper) {
+					var holder = wrapper.children('button.operand-holder');
+					var operator = addOperator();
+					wrapper.after(operator);
+					holder.data('right-operator', operator);
+					operator.css({"display":"inline"});
+					if (! operator.is(':last-child')) {
+						var operandWrapper = jQuery('<span class="operand-wrapper"></span>');
+						operator.after(operandWrapper);
+						addOperand(operandWrapper);
+					}
+					operator.children('select').focus();
+				}
+				
+				function insertOperandBefore(wrapper) {
+					var holder = wrapper.children('button.operand-holder');
+					var operator = addOperator();
+					wrapper.before(operator);
+					holder.data('left-operator', operator);
+					operator.css({"display":"inline"});
+					var operandWrapper = jQuery('<span class="operand-wrapper"></span>');
+					operator.before(operandWrapper);
+					addOperand(operandWrapper);
+					operandWrapper.children('select').focus();
+				}
+				
+				
+				function deleteOperand(wrapper) {
+					var holder = wrapper.children('button.operand-holder');
+					if (wrapper.is(':nth-child(2)')) { //first child is context-menu
+						if (wrapper.is(':last-child')) {
+							var choices = showOperandChoices(wrapper);
+							choices.val('');
+						} else {
+							if (holder.data('right-operator')) {
+								holder.data('right-operator').remove();
+								wrapper.remove();
+							}
+						}
+					} else {
+						if (holder.data('left-operator')) {
+							holder.data('left-operator').remove();
+							wrapper.remove();
+						}
+					}
+				}
+				
+				function createOperator() {
+					var operatorWrapper = addOperator();
+					expression.append(operatorWrapper);
+					return operatorWrapper;
+				}
+				
+				function addOperator() {
+					var operatorWrapper = jQuery('<span class="operator-wrapper"></span>');
+					var choices = jQuery('<select class="form-control"></select>');  
+					choices.append('<option value=""></option>');
+					jQuery.each(settings.operators, function(o, operator) {
+						choices.append('<option value="' + operator + '">' + operator + '</option>');
+					});
+					var holder = jQuery('<button class="operator-holder form-control"></button>');
+					jQuery.each(settings.operatorHolder.classes, function(c, clazz) {
+						holder.addClass(clazz);
+					});
+					operatorWrapper.append(holder).append(choices);
+										
+					choices.css({
+						width: '43px'
+					});
+					
+					holder.attr('title', i18n['operator-holder-tip']).css(jQuery.extend( {}, holderCSS, { display : "none", 'text-align': 'center' } ));
+					operatorWrapper.css({
+						display : "none",
+					});
+					
+					holder.on ('click', function(e) {
+						e.preventDefault();
+						showOperatorChoices(jQuery(this).parent('span'));
+					});
+					choices.on ('change blur', function(e){
+						if (jQuery(this).val() !== '') {
+							showOperatorHolder(jQuery(this).parent('span'), jQuery(this).val());
+						}
+					});
+					return operatorWrapper;
+				}
+			
+				function guessType(value) {
+					if (/^\d+$/.test(value)) {
+						return 'integer'
+					} else if (jQuery.isNumeric(value)) {
+						return 'number';
+					} else if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(value)) {
+						return 'date';
+					} else if (value === 'true' || value === 'false') {
+						return 'boolean';
+					} else {
+						return 'text';
+					}
+				}
+				
+				function combineTypes(type1, op, type2) {
+					var type;
+					switch (type1) {
+						case '':
+							type = type2;
+							break;
+						case 'text':
+							if (op === '+') {
+								type = 'text';
+							} else {
+								type = 'unknown';
+							}
+							break;
+						case 'integer':
+							if (op === '+') {
+								if (type2 === 'text') {
+									type = 'text';
+								} else if (type2 === 'integer') {
+									type = 'integer';
+								} else if (type2 === 'number') {
+									type = 'number';
+								} else if (type2 === 'date') {
+									type = 'date';
+								} else {
+									type = 'unknown';
+								}
+							} else {
+								if (type2 === 'integer') {
+									type = 'integer';
+								} else if (type2 === 'number') {
+									type = 'number';
+								} else {
+									type = 'unknown';
+								}
+							}
+							break;
+						case 'number':
+						case 'money':
+						case 'percent':
+							if (op === '+') {
+								if (type2 === 'text') {
+									type = 'text';
+								} else if (type2 === 'integer') {
+									type = 'number';
+								} else if (type2 === 'number') {
+									type = 'number';
+								} else {
+									type = 'unknown';
+								}
+							} else {
+								if (type2 === 'integer') {
+									type = 'number';
+								} else if (type2 === 'number') {
+									type = 'number';
+								} else {
+									type = 'unknown';
+								}
+							}
+							break;
+						case 'day':
+						case 'month':
+						case 'year':
+							if (op === '+') {
+								if (type2 === 'text') {
+									type = 'text';
+								} else if (type2 === 'integer') {
+									type = 'integer';
+								} else {
+									type = 'unknown';
+								}
+							} else {
+								if (type2 === 'integer') {
+									type = 'integer';
+								} else {
+									type = 'unknown';
+								}
+							}
+							break;
+						case 'date':
+							if (op === '+') {
+								if (type2 === 'text') {
+									type = 'text';
+								} else if (type2 === 'integer') {
+									type = 'date';
+								} else {
+									type = 'unknown';
+								}
+							} else if (op === '-') {
+								if (type2 === 'integer') {
+									type = 'date';
+								} else if (type2 === 'date') {
+									type = 'integer';
+								} else {
+									type = 'unknown';
+								}
+							}
+							break;
+						default:
+							type = 'unknown';
+					}
+					return type;
+				}
+				
+				function showHolder(wrapper, val, label, operandType) {
+					var holder = wrapper.children('button.operand-holder');
+					var choices = wrapper.children('select');
+					var input = wrapper.children('input');
+					input.hide();
+					choices.hide();
+					holder.data('operand-type', operandType);
+					holder.data('operand-value', val);
+					if (holder.data('right-operator')) {
+						holder.data('right-operator').css({"display":"inline"});
+					}
+					switch  (operandType) {
+						case 'literal':
+							holder.data('data-type', guessType(val));
+							break;
+						case 'constant':
+							holder.data('data-type', settings.constants[val].type);
+							break;
+						case 'field':
+							holder.data('data-type', settings.fields[val].type);
+							break;
+						case 'function':
+							holder.data('data-type', settings.functions[val].type);
+							break;
+						case 'nested':
+							break;
+						default:
+							holder.data('data-type', 'unknown');
+					}
+					holder.text(label).css({"display":"inline-block"});
+					holder.data('operand-completed', true);
+					checkState();
+					return holder.focus();
+				}
+				
+				function showInput(wrapper, val) {
+					if (wrapper.hasClass('function-operand-wrapper')) {
+						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
+						wrapper.children('span.function-wrapper').remove();
+					}
+					var holder = wrapper.children('button.operand-holder');
+					var choices = wrapper.children('select');
+					var input = wrapper.children('input');
+					holder.hide();
+					choices.hide();
+					input.val(val).css({"display":"inline"}).focus();
+					return input;
+				}
+
+				function showOperandChoices(wrapper) {
+					var choices = wrapper.children('select');
+					var input = wrapper.children('input');
+					var holder = wrapper.children('button.operand-holder');
+					var chosen = choices.val();
+					if (chosen == i18n['literal-label'] ){
+						if ( input.val() !== "" ){
+							choices.find("option[operand-type='literal']").text(jQuery.trim(input.val())).prop('selected', true);
+							choices.val(chosen);
+						}
+					} else {
+						if ( input.val() === "" ) {
+							choices.find("option[operand-type='literal']").remove();
+						} else {
+							choices.find("option[operand-type='literal']").text(input.val()).prop('selected', true);
+						}
+					}
+					holder.hide();
+					input.hide();
+					choices.css({"display":"inline"}).focus();
+					return choices;
+				}
+
+				function showOperatorChoices(wrapper) {
+					var choices = wrapper.children('select');
+					var holder = wrapper.children('button.operator-holder');
+					holder.hide();
+					choices.css({"display":"inline"}).focus();
+					return choices;
+				}
+				
+				function showOperatorHolder(wrapper, val) {
+					var holder = wrapper.children('button.operator-holder');
+					var choices = wrapper.children('select');
+					choices.val(val);
+					holder.data('operator-value', val).text(choices.find('option:selected').text()).css({"display":"inline-block"});
+					choices.hide();
+					if (wrapper.is(':last-child')) {
+						var operand = createOperand();
+						operand.children('button.operand-holder').data('left-operator', wrapper);
+						operand.children('select').focus();
+					}
+				}
+				
+				function resizeOperand(wrapper){
+					var width = wrapper.children('select').outerWidth();
+					var input = wrapper.children('input');
+					var holder = wrapper.children('button.operand-holder');
+					wrapper.css({
+						"width" : width
+					});
+					input.css({
+						"width" : width
+					});
+				 
+				}
+				
+				function noneOperand(wrapper) {
+					if (wrapper.hasClass('function-operand-wrapper')) {
+						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
+						wrapper.children('span.function-wrapper').remove();
+					}
+					var holder = wrapper.children('button.operand-holder');
+					holder.data('operand-value', '');
+					if (holder.data('right-operator') && holder.data('right-operator').is(':last-child')) {
+						holder.data('right-operator').remove();
+						holder.data('right-operator', null);
+					}
+					holder.data('operand-completed', false);
+					checkState();
+				}
+				
+				function literalOperand(wrapper, literal) {
+					if (wrapper.hasClass('function-operand-wrapper')) {
+						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
+						wrapper.children('span.function-wrapper').remove();
+					}
+					showInput(wrapper, literal);
+				}
+				
+				function fieldOperand(wrapper, fieldName, fieldLabel) {
+					if (wrapper.hasClass('function-operand-wrapper')) {
+						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
+						wrapper.children('span.function-wrapper').remove();
+					}
+					showHolder(wrapper, fieldName, fieldLabel, 'field');
+				}
+				
+				function constantOperand(wrapper, constant) {
+					if (wrapper.hasClass('function-operand-wrapper')) {
+						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
+						wrapper.children('span.function-wrapper').remove();
+					}
+					showHolder(wrapper, constant, constant, 'constant');
+				}
+				
+				function functionExpression(wrapper, funcName, initial) {
+					var holder = wrapper.children('button.operand-holder');
+					if (wrapper.hasClass('function-operand-wrapper')) {
+						if (holder.data('operand-value') == funcName) {
+							return;
+						} else {
+							wrapper.children('span.function-wrapper').remove();
+						}
+					}
+					wrapper.removeClass('operand-wrapper').removeClass('nested-operand-wrapper').addClass('function-operand-wrapper');
+					var func = settings.functions[funcName];
+					showHolder(wrapper, funcName, funcName, 'function');
+					var functionWrapper = jQuery('<span class="function-wrapper"></span>');
+					wrapper.append(functionWrapper);
+					var leftParenthesis = jQuery('<button class="left-parenthesis-holder form-control">(</button>');
+					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
+						leftParenthesis.addClass(clazz);
+					});
+					functionWrapper.append(leftParenthesis);
+					var nested = jQuery('<span class="nested-expression"></span>');
+					functionWrapper.append(nested);
+					var initargs = null;
+					if (initial) {
+						initargs = [];
+						var npar = 0;
+						while (initial.length > 0) {
+							var op = initial.shift();
+							if (op === ',' && npar == 0) {
+								break;
+							}
+							if (op === '(') {
+								npar++;
+							} else if (op === ')') {
+								npar--;
+							}
+							initargs.push(op);
+						}
+					}
+					nested.expressionbuilder(
+						jQuery.extend({}, settings, {
+							onCompleted: function(type) { checkState(); },
+							onEditing: function() { checkState(); },
+							initial: initargs
+						})
+					);
+					// TODO : if arity = -1 function has illimited arguments add option 'add arguments' to contextmenu'
+					for (var i = 1; i < func.arity; i++) {
+						var comma = jQuery('<button class="comma-holder form-control">,</button>');
+						comma.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
+						jQuery.each(settings.operatorHolder.classes, function(c, clazz) {
+							comma.addClass(clazz);
+						});
+						functionWrapper.append(comma);
+						var nested = jQuery('<span class="nested-expression"></span>');
+						functionWrapper.append(nested);
+						var initargs = null;
+						if (initial) {
+							initargs = [];
+							while (initial.length > 0) {
+								var op = initial.shift();
+								if (op === ',') {
+									break;
+								}
+								initargs.push(op);
+							}
+						}
+						nested.expressionbuilder(
+							jQuery.extend({}, settings, {
+								onCompleted: function(type) { checkState(); },
+								onEditing: function() { checkState(); },
+								initial: initargs
+							})
+						);
+					}
+					var rightParenthesis = jQuery('<button class="right-parenthesis-holder form-control">)</button>');
+					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
+						rightParenthesis.addClass(clazz);
+					});
+					functionWrapper.append(rightParenthesis);
+					leftParenthesis.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
+					rightParenthesis.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
+					holder.data('operand-completed', false);
+					checkState();
+				}
+				
+				function removeNestedExpression(wrapper) {
+					wrapper.children('span.nested-expression').expressionbuilder('destroy');
+					wrapper.empty();
+					wrapper.removeClass('nested-operand-wrapper').addClass('operand-wrapper');
+					var holder = addOperand(wrapper);
+					var rightOperator = wrapper.next();
+					if (rightOperator && rightOperator.hasClass('operator-wrapper')) {
+						holder.data('right-operator', rightOperator);
+						if (rightOperator.is(':last-child')) {
+							rightOperator.hide();
+						}
+					} else {
+						holder.data('right-operator', addOperator()); // TODO ; verify opportunity to do that
+					}
+					var leftOperator = wrapper.prev();
+					if (leftOperator && leftOperator.hasClass('operator-wrapper')) {
+						holder.data('left-operator', leftOperator);
+					}
+					checkState();
+				}
+				
+				function nestedExpression(wrapper, initial) {
+					var holder = wrapper.children('button.operand-holder');
+					var leftOperator = holder.data('left-operator');
+					var rightOperator = holder.data('right-operator');
+					if (rightOperator) {
+						rightOperator.css({"display":"inline"});
+					}
+					wrapper.empty();
+					wrapper.removeClass('operand-wrapper').addClass('nested-operand-wrapper');
+					var leftParenthesis = jQuery('<button class="left-parenthesis-holder operand-holder form-control">(</button>');
+					leftParenthesis.data('operand-type', 'nested');
+					leftParenthesis.data('operand-value', '');
+					leftParenthesis.data('data-type', 'unknown');
+					leftParenthesis.data('operand-completed', false);
+					if (leftOperator) {
+						leftParenthesis.data('left-operator', leftOperator);
+					}
+					if (rightOperator) {
+						leftParenthesis.data('right-operator', rightOperator);
+					}
+					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
+						leftParenthesis.addClass(clazz);
+					});
+					wrapper.append(leftParenthesis);
+					leftParenthesis.contextmenu({
+						target: '#holder-menu' + expressionId,
+						onItem: function (context, e) {
+							var action = jQuery(e.target).attr('menu-action');
+							var holder = jQuery(context);
+							var wrapper = holder.parent('span');
+							switch (action) {
+								case 'change':
+									break;
+								case 'add':
+									var operator = addOperator();
+									wrapper.after(operator);
+									holder.data('right-operator', operator);
+									operator.css({"display":"inline"});
+									if (! operator.is(':last-child')) {
+										var operandWrapper = jQuery('<span class="operand-wrapper"></span>');
+										operator.after(operandWrapper);
+										addOperand(operandWrapper);
+									}
+									break;
+								case 'insert':
+									break;
+								case 'nested':
+									break;
+								case 'delete':
+									removeNestedExpression(wrapper);
+									break;
+							}
+						}
+					});
+					var nested = jQuery('<span class="nested-expression"></span>');
+					wrapper.append(nested);
+					var rightParenthesis = jQuery('<button class="right-parenthesis-holder form-control">)</button>');
+					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
+						rightParenthesis.addClass(clazz);
+					});
+					wrapper.append(rightParenthesis);
+					nested.expressionbuilder(
+						jQuery.extend({}, settings, {
+							onCompleted: function(type) { leftParenthesis.data('data-type', type); checkState(); },
+							onEditing: function() { checkState(); },
+							initial: initial
+						})
+					);
+					leftParenthesis.css(jQuery.extend( {}, holderCSS, { 'text-align': 'center' } ));
+					rightParenthesis.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
+					checkState();
+				}
+
+				function checkState() {
+					var completed = expression.expressionbuilder('completed');
+					if (completed) {
+						if (lastevent != 2) {
+							var type = '';
+							expression.children('span').each(function(o) {
+								if (! jQuery(this).hasClass('operator-wrapper')) {
+									var wrapper = jQuery(this);
+									var holder = wrapper.children('button.operand-holder');
+									var dataType = holder.data('data-type');
+									var op =  holder.data('left-operator') ? holder.data('left-operator').children('button.operator-holder').data('operator-value') : '';
+									type = combineTypes(type, op, dataType);
+								}
+							});
+							settings.onCompleted(type); 
+							lastevent = 2;
+						}
+					} else {
+						if (lastevent != 1) {
+							settings.onEditing();
+							lastevent = 1;
+						}
+					}
+				}
+				
+				function notifyError(error) {
+					if (i18n[error]) {
+						error = i18n[error];
+					}
+					settings.onError(error);
+					throw new Error(error);;
+				}
+				
+				function findFieldName (id) {
+					var fieldName = 'unknown';
+					jQuery.each(settings.fields, function( name, field ) {
+						if ( field.id == id) {
+							fieldName = name;
+							return false; // break;
+						}
+					});
+					return fieldName;
+				}
+				
+				function parse(expr) {
+					
+					var result = [];
+					var text = [];
+					
+					var PATTERN = new RegExp('([\\s!,\\(\\)\\' + settings.operators.join('\\') + '])', 'g');
+					
+					expr = expr.replace(/('[^']*')/g, function (match, m1, str) {
+						text.push(m1.substr(1, m1.length - 2));
+						return "¤" + text.length;
+					});
+					expr = expr.replace(/("[^"]*")/g, function (match, m1, str) {
+						text.push(m1.substr(1, m1.length - 2));
+						return "¤" + text.length;
+					});
+					expr = expr.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, "D$1.$2.$3");
+					var toks = expr.split(PATTERN);
+					var prev = '';
+					var unarySign = '';
+					jQuery.each(toks, function( t, value ) {
+						value = value.replace(/^\s+|\s+$/g, '');
+						if (value !== '') {
+							var matches;
+							if (jQuery.isNumeric(value)) {
+				                result.push(prev = parseFloat(unarySign + value));
+				            } else if (value.match(/^#\d+/)) {
+								var id = parseInt(value.substr(1));
+				                result.push(prev = unarySign + findFieldName (id));
+				            } else if (matches = value.match(/^¤(\d+)/)) {
+								var i = parseInt(matches[1]);
+				                result.push(prev = text[i - 1]);
+				            } else if (matches = value.match(/^D(\d{1,2})\.(\d{1,2})\.(\d{4})/)) {
+				                result.push(prev = unarySign + matches[1] + "/" + matches[2] + "/" + matches[3]);
+							} else if (value ==='+' || value === '-') {
+								if (jQuery.inArray(prev, settings.operators) >= 0 || prev === '(' || prev === ',' || prev === '') {
+									unarySign = value;
+									return true; // continue
+								} else {
+									result.push(prev = unarySign + value);
+								}
+							} else if (jQuery.inArray(value, settings.operators) >= 0 || value === '(' || value === ',' || value === ')' ) {
+								result.push(prev = value);
+							} else {
+								result.push(prev = unarySign + value);
+							}
+							unarySign = '';
+						}
+					});
+					return result;
+				}
+				
+				function getInitialSubExpression(from, initial) {
+					var i = from;
+					var n = settings.initial.length;
+					var value = settings.initial[i];
+					if (value === '(') {
+						var npar = 1;
+						i++;
+						while ( i < n ) {
+							value = settings.initial[i];
+							if (value === ')') {
+								npar--;
+								if (npar == 0) {
+									break;;
+								}
+							}
+							initial.push(value);
+							if (value === '(') {
+								npar++;
+							}
+							i++;
+						}
+						if (value !== ')') {
+							notifyError("missing-right-parenthesis");
+						}
+					}
+					return i;
+				}
+
+				function initialize() {
+					if (settings.initial) {
+						var n = settings.initial.length;
+						var i = 0;
+						var operandWrapper = null;
+						var operatorWrapper = null;
+						while ( i < n ) {
+							var value = settings.initial[i];
+							if (value === '(') {
+								var initial = [];
+								i = getInitialSubExpression(i, initial);
+								operandWrapper = createOperand();
+								nestedExpression(operandWrapper, initial);
+								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
+							} else if (value === ')') {
+								notifyError("missing-left-parenthesis");
+								return;
+							} else if (jQuery.inArray(value, settings.operators) >= 0) {
+								operatorWrapper = createOperator();
+								operatorWrapper.css({"display":"inline"});
+								var holder = operatorWrapper.children('button.operator-holder');
+								var choices = operatorWrapper.children('select');
+								choices.find("option[value='"+value+"']").prop('selected', true);
+								choices.val(value);
+								holder.data('operator-value', value).text(value).css({"display":"inline-block"});
+								choices.hide();
+								if (operandWrapper) {
+									operandWrapper.children('button.operand-holder').data('right-operator', operatorWrapper);
+								}
+							} else if (settings.constants[value]) {
+								operandWrapper = createOperand();
+								showHolder(operandWrapper, value, value, 'constant');
+								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
+							} else if (settings.fields[value]) {
+								operandWrapper = createOperand();
+								var choices = operandWrapper.children('select');
+								choices.val(value);
+								showHolder(operandWrapper, value, settings.fields[value].label, 'field');
+								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
+							} else if (settings.functions[value]) {
+								var funcName = value;
+								i++;
+								if (settings.initial[i] !== '(') {
+									notifyError("missing-left-parenthesis");
+								}
+								var initial = [];
+								i = getInitialSubExpression(i, initial);
+								operandWrapper = createOperand();
+								var choices = operandWrapper.children('select');
+								choices.val(funcName);
+								functionExpression(operandWrapper, funcName, initial);
+								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
+							} else {
+								operandWrapper = createOperand();
+								var input = operandWrapper.children('input');
+								input.val(value).trigger('blur');
+								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
+							}
+							i++;
+						}
+					} else {
+						operandWrapper = createOperand();
+						operandWrapper.children('select').focus();
+					}
+				}
+			  
+			}); 
+		},
+		
+		destroy : function() {
+			jQuery(this).remove();
+		},
+		
+		completed: function() {
+			var expression = jQuery(this);
+			var settings = expression.data('settings');
+			var isCompleted = true;
+
+			expression.children('span').each(function(o) {
+				var wrapper = jQuery(this);
+				if (wrapper.hasClass('nested-operand-wrapper')) {
+					var nested = wrapper.children('span.nested-expression');
+					if (! nested.expressionbuilder('completed')) {
+						isCompleted = false;
+					}
+				} else if (wrapper.hasClass('function-operand-wrapper')) {
+					var holder = wrapper.children('button.operand-holder');
+					var funcName = holder.data('operand-value');
+					var func = settings.functions[funcName];
+					var functionWrapper = wrapper.children('span.function-wrapper');
+					var args = functionWrapper.children('span.nested-expression');
+					// TODO : deal with func.arity = -1
+					for (var i = 0; i < func.arity; i++) {
+						if (! args.eq(i).expressionbuilder('completed')) {
+							isCompleted = false;
+							break;
+						}
+					}
+				} else if (wrapper.hasClass('operand-wrapper')) {
+					var holder = wrapper.children('button.operand-holder');
+					if (! holder.data('operand-completed')) {
+						isCompleted = false;
+					}
+				}
+			});
+			return isCompleted;
+		},
+		
+		val : function(value) {
+			var settings = jQuery(this).data('settings');
+			if (value) {
+				settings.initial = value;
+				jQuery(this).empty();
+				jQuery(this).expressionbuilder(settings);
+			} else {
+				var expr = function (container) {
+					var expression = "";
+					container.children('span').each(function() {
+						var self = jQuery(this);
+						if (self.hasClass('operand-wrapper')) {
+							var holder = self.children('button.operand-holder');
+							var operandValue = holder.data('operand-value');
+							if (settings.fields[operandValue]) {
+								expression += '#' + settings.fields[operandValue].id;
+							} else if (holder.data('operand-type') === 'literal' && ! jQuery.isNumeric(holder.data('operand-value'))) {
+								expression += "'" + operandValue.replace(/'/g, "\\'") + "'";
+							} else {
+								expression += operandValue;
+							}
+						} else if (self.hasClass('function-operand-wrapper')) {
+							var holder = self.children('button.operand-holder');
+							var funcName = holder.data('operand-value');
+							var func = settings.functions[funcName];
+							var functionWrapper = self.children('span.function-wrapper');
+							var args = functionWrapper.children('span.nested-expression');
+							expression += funcName + '(' + args.eq(0).expressionbuilder('val');
+							// TODO : deal with func.arity = -1
+							if (func.arity == -1) {
+								console.log("function : " + funcName + " args.length = " + args.length);
+							}
+							for (var i = 1; i < func.arity; i++) {
+								expression += ', ' + args.eq(i).expressionbuilder('val');
+							}
+							expression += ')';
+						} else if (self.hasClass('operator-wrapper')) {
+							var holder = self.children('button.operator-holder');
+							expression += ' ' + holder.text() + ' ';
+						} else if (self.hasClass('nested-operand-wrapper')) {
+							var nested = self.children('span.nested-expression');
+							expression += '(' + nested.expressionbuilder('val') + ')';
+						}
+					});
+					return expression;
+				};
+				return expr(jQuery(this));
+			}
+		},
+		
+        getVersion: function() {
+            return "1.0.0";
+        }
+		
+	};
+
+	jQuery.fn.expressionbuilder = function( method ) {    
+		if ( methods[method] ) {
+			return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+		} else if ( typeof method === 'object' || ! method ) {
+			return methods.init.apply( this, arguments );
+		} else {
+			jQuery.error( 'Method ' +  method + ' does not exist on jQuery.expressionbuilder' );
+		}    
+	};
+
+})( jQuery );

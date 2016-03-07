@@ -1,0 +1,131 @@
+@charset "utf-8";
+
+.listbox {
+	padding: 0;
+	display: inline-block;
+}
+.listbox:focus  {
+  border-color: #66AFE9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+.listbox .listbox-edit {
+	cursor: default;
+	margin: 1px 4px 1px 4px;
+	display: inline-block;
+	overflow-x: hidden;
+	height: 100%;
+	width: 100%;
+}
+.listbox .listbox-button {
+	cursor: default;
+}
+.listbox .listbox-items {
+	clear: both;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	z-index: 300;
+	width: 100%;
+}
+.listbox .listbox-item {
+	width: 100%;
+	cursor: default;
+	margin: 0 1px 0 0;
+	padding: 1px 5px;
+}
+.listbox .listbox-itemgroup {
+	font-weight: bold;
+	font-size: 1.2em;
+	margin-left: 0.2em;
+}
+.listbox .listbox-item-nested {
+	margin-left: 1em;
+}
+.listbox .listbox-item.selected {
+	border: none;
+}
+.listbox .listbox-item:hover {
+}
+
+/**************
+ * theme colors
+ */
+.listbox.default .listbox-edit {
+	color: #A63950;
+}
+.listbox.default a.listbox-button {
+	color: #FFF;
+	background-color: #A63950;
+}
+.listbox.default a.listbox-button:hover,
+.listbox.default a.listbox-button:focus {
+	color: #FFF;
+	background-color: #802C3E;
+}
+.listbox.default .listbox-items {
+	border: 1px solid #999;
+	background-color: #fff;
+}
+.listbox.default .listbox-item.selected {
+	background-color: #ddd;
+	color: #000;
+}
+.listbox.default .listbox-item:hover {
+	background-color: #A63950;
+	color: #fff;
+}
+
+.listbox.maroon .listbox-edit {
+	color: #A63950;
+}
+.listbox.maroon a.listbox-button {
+	color: #FFF;
+	background-color: #A63950;
+}
+.listbox.maroon a.listbox-button:hover,
+.listbox.maroon a.listbox-button:focus {
+	color: #FFF;
+	background-color: #802C3E;
+}
+.listbox.maroon .listbox-items {
+	border: 1px solid #999;
+	background-color: #fff;
+}
+.listbox.maroon .listbox-item.selected {
+	background-color: #ddd;
+	color: #000;
+}
+.listbox.maroon .listbox-item:hover {
+	background-color: #A63950;
+	color: #fff;
+}
+
+
+
+.listbox.blue .listbox-edit {
+	color: #0B6BA8;
+}
+.listbox.blue a.listbox-button {
+	color: #FFF;
+	background-color: #0B6BA8;
+}
+.listbox.blue a.listbox-button:hover,
+.listbox.blue a.listbox-button:focus {
+	color: #FFF;
+	background-color: #802C3E;
+}
+.listbox.blue .listbox-items {
+	border: 1px solid #999;
+	background-color: #fff;
+}
+.listbox.blue .listbox-item.selected {
+	background-color: #ddd;
+	color: #000;
+}
+.listbox.blue .listbox-item:hover {
+	background-color: #0B6BA8;
+	color: #fff;
+}
