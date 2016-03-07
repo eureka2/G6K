@@ -1,5 +1,29 @@
 <?php
 
+/*
+The MIT License (MIT)
+
+Copyright (c) 2015 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
 namespace EUREKA\G6KBundle\Entity;
 
 class Simulator {
@@ -10,6 +34,7 @@ class Simulator {
 	private $defaultView = "";
 	private $referer = "";
 	private $dynamic = false;
+	private $memo = false;
 	private $description = "";
 	private $dateFormat = "";
 	private $decimalPoint = "";
@@ -18,6 +43,7 @@ class Simulator {
 	private $globalConstraints = array();
 	private $groupConstraints = array();
 	private $datas = array();
+	private $profiles = null;
 	private $steps = array();
 	private $sites = array();
 	private $databases = array();
@@ -28,87 +54,101 @@ class Simulator {
 	private $dependencies = "";
 	private $error = false;
 	private $errorMessages = array();
-	
+	private $warning = false;
+	private $warningMessages = array();
+
 	public function __construct($controller) {
 		$this->controller = $controller;
 	}
-	
+
 	public function getName() {
 		return $this->name;
 	}
-	
+
 	public function setName($name) {
 		$this->name = $name;
 	}
-	
+
 	public function getLabel() {
 		return $this->label;
 	}
-	
+
 	public function setLabel($label) {
 		$this->label = $label;
 	}
-	
+
 	public function getReferer() {
 		return $this->referer;
 	}
-	
+
 	public function setReferer($referer) {
 		$this->referer = $referer;
 	}
-		
+
 	public function getDefaultView() {
 		return $this->defaultView;
 	}
-	
+
 	public function setDefaultView($defaultView) {
 		$this->defaultView = $defaultView;
 	}
-	
+
 	public function isDynamic() {
 		return $this->dynamic;
 	}
-	
+
 	public function setDynamic($dynamic) {
 		$this->dynamic = $dynamic;
 	}
-	
+
+	public function isMemo() {
+		return $this->memo;
+	}
+
+	public function hasMemo() {
+		return $this->memo;
+	}
+
+	public function setMemo($memo) {
+		$this->memo = $memo;
+	}
+
 	public function getDescription() {
 		return $this->description;
 	}
-	
+
 	public function setDescription($description) {
 		$this->description = $description;
 	}
-	
+
 	public function getDateFormat() {
 		return $this->dateFormat;
 	}
-	
+
 	public function setDateFormat($dateFormat) {
 		$this->dateFormat = $dateFormat;
 	}
-	
+
 	public function getDecimalPoint() {
 		return $this->decimalPoint;
 	}
-	
+
 	public function setDecimalPoint($decimalPoint) {
 		$this->decimalPoint = $decimalPoint;
 	}
-	
+
 	public function getMoneySymbol() {
 		return $this->moneySymbol;
 	}
-	
+
 	public function setMoneySymbol($moneySymbol) {
 		$this->moneySymbol = $moneySymbol;
 	}
-	
+
 	public function getSymbolPosition() {
 		return $this->symbolPosition;
 	}
-	
+
 	public function setSymbolPosition($symbolPosition) {
 		$this->symbolPosition = $symbolPosition;
 	}
@@ -116,19 +156,19 @@ class Simulator {
 	public function getDatas() {
 		return $this->datas;
 	}
-	
+
 	public function setDatas($datas) {
 		$this->datas = $datas;
 	}
-	
+
 	public function addData($data) {
 		$this->datas[] = $data;
 	}
-	
+
 	public function removeData($index) {
 		$this->datas[$index] = null;
 	}
-	
+
 	public function getDataById($id) {
 		foreach ($this->datas as $data) {
 			if ($data instanceof DataGroup) {
@@ -141,7 +181,7 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
 	public function getDataByName($name) {
 		foreach ($this->datas as $data) {
 			if ($data instanceof DataGroup) {
@@ -154,7 +194,7 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
 	public function getDataGroupById($id) {
 		foreach ($this->datas as $data) {
 			if (($data instanceof DataGroup) && $data->getId() == $id) {
@@ -163,7 +203,7 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
 	public function getDataGroupByName($name) {
 		foreach ($this->datas as $data) {
 			if (($data instanceof DataGroup) && $data->getName() == $name) {
@@ -172,23 +212,31 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
+	public function getProfiles() {
+		return $this->profiles;
+	}
+
+	public function setProfiles($profiles) {
+		$this->profiles = $profiles;
+	}
+
 	public function getSteps() {
 		return $this->steps;
 	}
-	
+
 	public function setSteps($steps) {
 		$this->steps = $steps;
 	}
-	
+
 	public function addStep(Step $step) {
 		$this->steps[] = $step;
 	}
-	
+
 	public function removeStep($index) {
 		$this->steps[$index] = null;
 	}
-	
+
 	public function getStepById($id) {
 		foreach ($this->steps as $step) {
 			if ($step->getId() == $id) {
@@ -197,39 +245,39 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
 	public function getSources() {
 		return $this->sources;
 	}
-	
+
 	public function setSources($sources) {
 		$this->sources = $sources;
 	}
-	
+
 	public function addSource(Source $source) {
 		$this->sources[] = $source;
 	}
-	
+
 	public function removeSource($index) {
 		$this->sources[$index] = null;
 	}
-	
+
 	public function getBusinessRules() {
 		return $this->businessrules;
 	}
-	
+
 	public function setBusinessRules($businessrules) {
 		$this->businessrules = $businessrules;
 	}
-	
+
 	public function addBusinessRule(BusinessRule $businessrules) {
 		$this->businessrules[] = $businessrules;
 	}
-	
+
 	public function removeBusinessRule($index) {
 		$this->businessrules[$index] = null;
 	}
-	
+
 	public function getBusinessRuleById($id) {
 		foreach ($this->businessrules as $businessrule) {
 			if ($businessrule->getId() == $id) {
@@ -238,15 +286,15 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
 	public function getRelatedInformations() {
 		return $this->relatedInformations;
 	}
-	
+
 	public function setRelatedInformations($relatedInformations) {
 		$this->relatedInformations = $relatedInformations;
 	}
-	
+
 	public function getSiteById($id) {
 		foreach ($this->sites as $site) {
 			if ($site->getId() == $id) {
@@ -255,7 +303,7 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
 	public function getDatabaseById($id) {
 		foreach ($this->databases as $database) {
 			if ($database->getId() == $id) {
@@ -264,7 +312,7 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
 	public function getDatasourceById($id) {
 		foreach ($this->datasources as $datasource) {
 			if ($datasource->getId() == $id) {
@@ -273,7 +321,7 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
 	public function getSourceById($id) {
 		foreach ($this->sources as $source) {
 			if ($source->getId() == $id) {
@@ -282,39 +330,65 @@ class Simulator {
 		}
 		return null;
 	}
-	
+
+	public function isWarning() {
+		return $this->warning;
+	}
+
+	public function setWarning($warning) {
+		$this->warning = $warning;
+	}
+
+	public function getWarningMessages() {
+		return $this->warningMessages;
+	}
+
+	public function setWarningMessages($warningMessages) {
+		$this->warningMessages = $warningMessages;
+	}
+
+	public function addWarningMessage($warningMessage) {
+		if (! in_array($warningMessage, $this->warningMessages)) {
+			$this->warningMessages[] = $warningMessage;
+		}
+	}
+
+	public function removeWarningMessage($index) {
+		$this->warningMessages[$index] = null;
+	}
+
 	public function isError() {
 		return $this->error;
 	}
-	
+
 	public function setError($error) {
 		$this->error = $error;
 	}
-	
+
 	public function getErrorMessages() {
 		return $this->errorMessages;
 	}
-	
+
 	public function setErrorMessages($errorMessages) {
 		$this->errorMessages = $errorMessages;
 	}
-	
+
 	public function addErrorMessage($errorMessage) {
 		if (! in_array($errorMessage, $this->errorMessages)) {
 			$this->errorMessages[] = $errorMessage;
 		}
 	}
-	
+
 	public function removeErrorMessage($index) {
 		$this->errorMessages[$index] = null;
 	}
-	
+
 	private function replaceIdByDataLabel($matches) {
 		$id = $matches[1];
 		$data = $this->getDataById($id);
 		return $data !== null ? '«' . $data->getLabel() . '»' : "#" . $id;
 	}
-	
+
 	public function replaceByDataLabel($target) {
 		return preg_replace_callback(
 			"/#(\d+)/", 
@@ -322,7 +396,7 @@ class Simulator {
 			$target
 		);
 	}
-	
+
 	protected function loadData($data) {
 		$dataObj = new Data($this, (int)$data['id'], (string)$data['name']);
 		$dataObj->setLabel((string)$data['label']);
@@ -335,16 +409,34 @@ class Simulator {
 		$dataObj->setContent((string)$data['content']);
 		$dataObj->setSource((string)$data['source']);
 		$dataObj->setUnparsedIndex((string)$data['index']);
+		$dataObj->setMemorize((string)$data['memorize'] == '1');
 		if ($data->Choices) {
-			foreach ($data->Choices->Choice as $choice) {
-				$choiceObj = new Choice($dataObj, (string)$choice['id'], (string)$choice['value'], (string)$choice['label']);
-				$dataObj->addChoice($choiceObj);
-			}
-			if ($data->Choices->Source) {
-				$source = $data->Choices->Source;
-				$choiceSourceObj = new ChoiceSource($dataObj, (int)$source['id'], (string)$source['valueColumn'], (string)$source['labelColumn']);
-				$choiceSourceObj->setIdColumn((string)$source['idColumn']);
-				$dataObj->setChoiceSource($choiceSourceObj);
+			foreach ($data->Choices->children() as $child) {
+				if ($child->getName() == "ChoiceGroup") {
+					$choicegroup = $child;
+					$choiceGroupObj = new ChoiceGroup((string)$choicegroup['label']);
+					foreach ($choicegroup->Choice as $choice) {
+						$choiceObj = new Choice($dataObj, (string)$choice['id'], (string)$choice['value'], (string)$choice['label']);
+						$choiceGroupObj->addChoice($choiceObj);
+					}
+					if ($choicegroup->Source) {
+						$source = $choicegroup->Source;
+						$choiceSourceObj = new ChoiceSource($dataObj, (int)$source['id'], (string)$source['valueColumn'], (string)$source['labelColumn']);
+						$choiceSourceObj->setIdColumn((string)$source['idColumn']);
+						$choiceGroupObj->setChoiceSource($choiceSourceObj);
+					}
+					$dataObj->addChoice($choiceGroupObj);
+				} elseif ($child->getName() == "Choice") {
+					$choice = $child;
+					$choiceObj = new Choice($dataObj, (string)$choice['id'], (string)$choice['value'], (string)$choice['label']);
+					$dataObj->addChoice($choiceObj);
+				} elseif ($child->getName() == "Source") {
+					$source = $child;
+					$choiceSourceObj = new ChoiceSource($dataObj, (int)$source['id'], (string)$source['valueColumn'], (string)$source['labelColumn']);
+					$choiceSourceObj->setIdColumn((string)$source['idColumn']);
+					$dataObj->setChoiceSource($choiceSourceObj);
+					break; // only one source
+				}
 			}
 		}
 		if ($data->Table) {
@@ -363,10 +455,18 @@ class Simulator {
 		$dataObj->setDescription($data->Description);
 		return $dataObj;
 	}
-	
+
 	public function load($url) {
-		$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
-		$datasources = new \SimpleXMLElement(dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml', LIBXML_NOWARNING, true);
+		$datasrc = dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml';
+		if(extension_loaded('apc') && ini_get('apc.enabled')) {
+			$xml = $this->loadFileFromCache($url);
+			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
+			$xml = $this->loadFileFromCache($datasrc);
+			$datasources = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
+		} else {
+			$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
+			$datasources = new \SimpleXMLElement($datasrc, LIBXML_NOWARNING, true);
+		}
 		foreach ($datasources->DataSource as $datasource) {
 			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
 			$datasourceObj->setUri((string)$datasource['uri']);
@@ -400,6 +500,7 @@ class Simulator {
 		$this->setDefaultView((string)$simulator["defaultView"]);
 		$this->setReferer((string)$simulator["referer"]);
 		$this->setDynamic((string)$simulator['dynamic'] == '1');
+		$this->setMemo((string)$simulator['memo'] == '1');
 		$this->setDescription($simulator->Description);
 		$this->setRelatedInformations($simulator->RelatedInformations);
 		$this->setDateFormat((string)($simulator->DataSet['dateFormat']));
@@ -422,6 +523,19 @@ class Simulator {
 				} 
 			}
 		}
+		if ($simulator->Profiles) {
+			$this->profiles = new Profiles($this);
+			$this->profiles->setLabel((string)$simulator->Profiles['label']);
+			foreach ($simulator->Profiles->Profile as $profile) {
+				$profileObj = new Profile((int)$profile['id'], (string)$profile['name']);
+				$profileObj->setLabel((string)$profile['label']);
+				$profileObj->setDescription($profile->Description);
+				foreach ($profile->Data as $data) {
+					$profileObj->addData((int)$data['id'], (string)$data['default']);
+				}
+				$this->profiles->addProfile($profileObj);
+			}
+		}
 		if ($simulator->Steps) {
 			$step0 = false;
 			foreach ($simulator->Steps->Step as $step) {
@@ -432,78 +546,117 @@ class Simulator {
 				$stepObj->setOutput((string)$step['output']);
 				$stepObj->setDescription($step->Description);
 				$stepObj->setDynamic((string)$step['dynamic'] == '1');
-				foreach ($step->FieldSet as $fieldset) {
-					$fieldsetObj = new FieldSet($stepObj, (int)$fieldset['id']);
-					$fieldsetObj->setLegend($fieldset->Legend);
-					if ((string)$fieldset['disposition'] != "") {
-						$fieldsetObj->setDisposition((string)$fieldset['disposition']);
-					}
-					foreach ($fieldset->children() as $child) {
-						if ($child->getName() == "Columns") {
-							foreach ($child->Column as $column) {
-								$columnObj = new Column(null, (int)$column['id'], (string)$column['name'], (string)$column['type']);
-								$columnObj->setLabel((string)$column['label']);	
-								$fieldsetObj->addColumn($columnObj);
+				foreach ($step->Panels->Panel as $panel) {
+					$panelObj = new Panel($stepObj, (int)$panel['id']);
+					$panelObj->setName((string)$panel['name']);
+					$panelObj->setLabel((string)$panel['label']);
+					foreach ($panel->children() as $block) {
+						if ($block->getName() == "FieldSet") {
+							$fieldset = $block;
+							$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
+							$fieldsetObj->setLegend($fieldset->Legend);
+							if ((string)$fieldset['disposition'] != "") {
+								$fieldsetObj->setDisposition((string)$fieldset['disposition']);
 							}
-						} elseif ($child->getName() == "FieldRow") {
-							$fieldrow = $child;
-							$fieldRowObj = new FieldRow($fieldsetObj, (string)$fieldrow['label']);
-							$fieldRowObj->setColon((string)$fieldrow['colon'] == '' || (string)$fieldrow['colon'] == '1');					
-							$fieldRowObj->setHelp((string)$fieldrow['help'] == '1');					
-							$fieldRowObj->setEmphasize((string)$fieldrow['emphasize'] == '1');					
-							$fieldRowObj->setDataGroup((string)$fieldrow['datagroup']);					
-							foreach ($fieldrow->Field as $field) {
-								$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
-								$fieldObj->setUsage((string)$field['usage']);
-								$fieldObj->setPrompt((string)$field['prompt']);
-								$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');					
-								$fieldObj->setRequired((string)$field['required'] == '1');					
-								$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');					
-								$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');					
-								$fieldObj->setHelp((string)$field['help'] == '1');					
-								$fieldObj->setEmphasize((string)$field['emphasize'] == '1');					
-								$fieldObj->setExplanation((string)$field['explanation']);
-								$fieldObj->setExpanded((string)$field['expanded'] == '1');
-								if ($field->PreNote) {
-									$noteObj = new FieldNote($this);
-									$noteObj->setText($field->PreNote);
-									$fieldObj->setPreNote($noteObj);
+							if ((string)$fieldset['display'] != "") {
+								$fieldsetObj->setDisplay((string)$fieldset['display']);
+							}
+							if ((string)$fieldset['popinLink'] != "") {
+								$fieldsetObj->setPopinLink((string)$fieldset['popinLink']);
+							}
+							foreach ($fieldset->children() as $child) {
+								if ($child->getName() == "Columns") {
+									foreach ($child->Column as $column) {
+										$columnObj = new Column(null, (int)$column['id'], (string)$column['name'], (string)$column['type']);
+										$columnObj->setLabel((string)$column['label']);
+										$fieldsetObj->addColumn($columnObj);
+									}
+								} elseif ($child->getName() == "FieldRow") {
+									$fieldrow = $child;
+									$fieldRowObj = new FieldRow($fieldsetObj, (string)$fieldrow['label']);
+									$fieldRowObj->setColon((string)$fieldrow['colon'] == '' || (string)$fieldrow['colon'] == '1');
+									$fieldRowObj->setHelp((string)$fieldrow['help'] == '1');
+									$fieldRowObj->setEmphasize((string)$fieldrow['emphasize'] == '1');
+									$fieldRowObj->setDataGroup((string)$fieldrow['datagroup']);
+									foreach ($fieldrow->Field as $field) {
+										$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
+										$fieldObj->setUsage((string)$field['usage']);
+										$fieldObj->setPrompt((string)$field['prompt']);
+										$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');
+										$fieldObj->setRequired((string)$field['required'] == '1');
+										$fieldObj->setVisibleRequired((string)$field['visibleRequired'] == '1');
+										$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');
+										$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');
+										$fieldObj->setHelp((string)$field['help'] == '1');
+										$fieldObj->setEmphasize((string)$field['emphasize'] == '1');
+										$fieldObj->setExplanation((string)$field['explanation']);
+										$fieldObj->setExpanded((string)$field['expanded'] == '1');
+										if ($field->PreNote) {
+											$noteObj = new FieldNote($this);
+											$noteObj->setText($field->PreNote);
+											$fieldObj->setPreNote($noteObj);
+										}
+										if ($field->PostNote) {
+											$noteObj = new FieldNote($this);
+											$noteObj->setText($field->PostNote);
+											$fieldObj->setPostNote($noteObj);
+										}
+										$fieldRowObj->addField($fieldObj);
+									}
+									$fieldsetObj->addField($fieldRowObj);
+								} elseif ($child->getName() == "Field") {
+									$field = $child;
+									$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
+									$fieldObj->setUsage((string)$field['usage']);
+									$fieldObj->setPrompt((string)$field['prompt']);
+									$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');
+									$fieldObj->setRequired((string)$field['required'] == '1');
+									$fieldObj->setVisibleRequired((string)$field['visibleRequired'] == '1');
+									$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');
+									$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');
+									$fieldObj->setHelp((string)$field['help'] == '1');
+									$fieldObj->setEmphasize((string)$field['emphasize'] == '1');
+									$fieldObj->setExplanation((string)$field['explanation']);
+									$fieldObj->setExpanded((string)$field['expanded'] == '1');
+									if ($field->PreNote) {
+										$noteObj = new FieldNote($this);
+										$noteObj->setText($field->PreNote);
+										$fieldObj->setPreNote($noteObj);
+									}
+									if ($field->PostNote) {
+										$noteObj = new FieldNote($this);
+										$noteObj->setText($field->PostNote);
+										$fieldObj->setPostNote($noteObj);
+									}
+									$fieldsetObj->addField($fieldObj);
 								}
-								if ($field->PostNote) {
-									$noteObj = new FieldNote($this);
-									$noteObj->setText($field->PostNote);
-									$fieldObj->setPostNote($noteObj);
+							}
+							$panelObj->addFieldSet($fieldsetObj);
+						} elseif ($block->getName() == "BlockInfo") {
+							$blockinfo = $block;
+							$blockinfoObj = new BlockInfo($panelObj, (int)$blockinfo['id']);
+							$blockinfoObj->setName((string)$blockinfo['name']);
+							$blockinfoObj->setLabel((string)$blockinfo['label']);
+							foreach ($blockinfo->Chapter as $chapter) {
+								$chapterObj = new Chapter($blockinfoObj, (int)$chapter['id']);
+								$chapterObj->setName((string)$chapter['name']);
+								$chapterObj->setLabel((string)$chapter['label']);
+								$chapterObj->setIcon((string)$chapter['icon']);
+								$chapterObj->setCollapsible((string)$chapter['collapsible'] == '1');
+								foreach ($chapter->Section as $section) {
+									$sectionObj = new Section($chapterObj, (int)$section['id']);
+									$sectionObj->setName((string)$section['name']);
+									$sectionObj->setLabel((string)$section['label']);
+									$sectionObj->setContent((string)$section->Content);
+									$sectionObj->setAnnotations((string)$section->Annotations);
+									$chapterObj->addSection($sectionObj);
 								}
-								$fieldRowObj->addField($fieldObj);
+								$blockinfoObj->addChapter($chapterObj);
 							}
-							$fieldsetObj->addField($fieldRowObj);
-						} elseif ($child->getName() == "Field") {						
-							$field = $child;
-							$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
-							$fieldObj->setUsage((string)$field['usage']);
-							$fieldObj->setPrompt((string)$field['prompt']);
-							$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');					
-							$fieldObj->setRequired((string)$field['required'] == '1');					
-							$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');					
-							$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');					
-							$fieldObj->setHelp((string)$field['help'] == '1');					
-							$fieldObj->setEmphasize((string)$field['emphasize'] == '1');					
-							$fieldObj->setExplanation((string)$field['explanation']);
-							$fieldObj->setExpanded((string)$field['expanded'] == '1');					
-							if ($field->PreNote) {
-								$noteObj = new FieldNote($this);
-								$noteObj->setText($field->PreNote);
-								$fieldObj->setPreNote($noteObj);
-							}
-							if ($field->PostNote) {
-								$noteObj = new FieldNote($this);
-								$noteObj->setText($field->PostNote);
-								$fieldObj->setPostNote($noteObj);
-							}
-							$fieldsetObj->addField($fieldObj);
+							$panelObj->addFieldSet($blockinfoObj);
 						}
 					}
-					$stepObj->addFieldSet($fieldsetObj);
+					$stepObj->addPanel($panelObj);
 				}
 				foreach ($step->ActionList as $actionList) {
 					foreach ($actionList as $action) {
@@ -554,7 +707,7 @@ class Simulator {
 				$this->sources[] = $sourceObj;
 			}
 		}
-		
+
 		if ($simulator->BusinessRules) {
 			foreach ($simulator->BusinessRules->BusinessRule as $brule) {
 				$businessRuleObj = new BusinessRule($this, 'rule-'.mt_rand(), (int)$brule['id'], (string)$brule['name']);
@@ -572,8 +725,12 @@ class Simulator {
 					$ruleActionObj->setData((string)$action['data']);
 					$ruleActionObj->setDatagroup((string)$action['datagroup']);
 					$ruleActionObj->setStep((string)$action['step']);
+					$ruleActionObj->setPanel((string)$action['panel']);
 					$ruleActionObj->setFieldset((string)$action['fieldset']);
 					$ruleActionObj->setField((string)$action['field']);
+					$ruleActionObj->setBlockinfo((string)$action['blockinfo']);
+					$ruleActionObj->setChapter((string)$action['chapter']);
+					$ruleActionObj->setSection((string)$action['section']);
 					$ruleActionObj->setPrenote((string)$action['prenote']);
 					$ruleActionObj->setPostnote((string)$action['postnote']);
 					$ruleActionObj->setFootnote((string)$action['footnote']);
@@ -581,6 +738,12 @@ class Simulator {
 					$ruleActionObj->setChoice((string)$action['choice']);
 					$ruleActionObj->setValue((string)$action['value']);
 					$businessRuleObj->addIfAction($ruleActionObj);
+					if ((string)$action['name'] == "setAttribute" && preg_match_all("/#(\d+)/", (string)$action['value'], $matches)) {
+						foreach($matches[1] as $id) {
+							$data = $this->getDataById($id);
+							$data->addRuleDependency((int)$brule['id']);
+						}
+					}
 				}
 				foreach ($brule->ElseActions->Action as $action) {
 					$ruleActionObj = new RuleAction((int)$action['id'], (string)$action['name']);
@@ -588,8 +751,12 @@ class Simulator {
 					$ruleActionObj->setData((string)$action['data']);
 					$ruleActionObj->setDatagroup((string)$action['datagroup']);
 					$ruleActionObj->setStep((string)$action['step']);
+					$ruleActionObj->setPanel((string)$action['panel']);
 					$ruleActionObj->setFieldset((string)$action['fieldset']);
 					$ruleActionObj->setField((string)$action['field']);
+					$ruleActionObj->setBlockinfo((string)$action['blockinfo']);
+					$ruleActionObj->setChapter((string)$action['chapter']);
+					$ruleActionObj->setSection((string)$action['section']);
 					$ruleActionObj->setPrenote((string)$action['prenote']);
 					$ruleActionObj->setPostnote((string)$action['postnote']);
 					$ruleActionObj->setFootnote((string)$action['footnote']);
@@ -597,15 +764,29 @@ class Simulator {
 					$ruleActionObj->setChoice((string)$action['choice']);
 					$ruleActionObj->setValue((string)$action['value']);
 					$businessRuleObj->addElseAction($ruleActionObj);
+					if ((string)$action['name'] == "setAttribute" && preg_match_all("/#(\d+)/", (string)$action['value'], $matches)) {
+						foreach($matches[1] as $id) {
+							$data = $this->getDataById($id);
+							$data->addRuleDependency((int)$brule['id']);
+						}
+					}
 				}
 				$this->businessrules[] = $businessRuleObj;
 			}
 		}
 	}
-	
+
 	public function loadForSource($url) {
-		$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
-		$datasources = new \SimpleXMLElement(dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml', LIBXML_NOWARNING, true);
+		$datasrc = dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml';
+		if(extension_loaded('apc') && ini_get('apc.enabled')) {
+			$xml = $this->loadFileFromCache($url);
+			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
+			$xml = $this->loadFileFromCache($datasrc);
+			$datasources = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
+		} else {
+			$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
+			$datasources = new \SimpleXMLElement($datasrc, LIBXML_NOWARNING, true);
+		}
 		foreach ($datasources->DataSource as $datasource) {
 			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
 			$datasourceObj->setUri((string)$datasource['uri']);
@@ -682,16 +863,16 @@ class Simulator {
 		$this->datas[$id][$this->dependencies][] = $dependency;
 		return $this->datas[$id]['name'];
 	}
-	
+
 	private function addNoteDependency ($matches) {
 		return "#(".$this->addDependency ($matches).")";
 	}
-	
+
 	private function replaceDataIdByName($matches) {
 		$id = $matches[1];
 		return $this->datas[$id] ? "#(" . $this->datas[$id]['name'] . ")" : "#" . $id;
 	}
-	
+
 	private function replaceIdByName($target) {
 		return preg_replace_callback(
 			"/#(\d+)/", 
@@ -699,12 +880,12 @@ class Simulator {
 			$target
 		);
 	}
-	
+
 	private function replaceIdByDataName($matches) {
 		$id = $matches[1];
 		return $this->datas[$id] ? $this->datas[$id]['name']: "#" . $id;
 	}
-	
+
 	private function replaceByDataName($target) {
 		return preg_replace_callback(
 			"/#(\d+)/", 
@@ -712,7 +893,7 @@ class Simulator {
 			$target
 		);
 	}
-	
+
 	private function paragraphs ($text) {
 		$result = "";
 		$paras = explode("\n", trim($text));
@@ -724,7 +905,7 @@ class Simulator {
 		}
 		return $result;
 	}
-	
+
 	private function fieldProperties ($field) {
 		$id = (int)$field['data'];
 		$nfield = array(
@@ -737,6 +918,9 @@ class Simulator {
 		}
 		if ((string)$field['required'] == '1') {
 			$nfield['required'] = '1';
+		}
+		if ((string)$field['visibleRequired'] == '1') {
+			$nfield['visibleRequired'] = '1';
 		}
 		$this->dependencies = 'fieldDependencies';
 		if ((string)$field['explanation'] != "") {
@@ -763,12 +947,15 @@ class Simulator {
 		}
 		return $nfield;
 	}
-	
+
 	protected function toJSONData($data, &$sources) {
 		$id = (int)$data['id'];
 		$this->datas[$id]['id'] = $id;
 		$this->datas[$id]['name'] = (string)$data['name'];
 		$this->datas[$id]['type'] = (string)$data['type'];
+		if ((string)$data['memorize'] != "") {
+			$this->datas[$id]['memorize'] = (string)$data['memorize'];
+		}
 		$this->name = $this->datas[$id]['name'];
 		$this->dependencies = 'dataDependencies';
 		if ((string)$data['default'] != "") {
@@ -815,26 +1002,49 @@ class Simulator {
 		}
 		if ($data->Choices) {
 			$choices = array();
-			foreach ($data->Choices->Choice as $choice) {
-				$choices[] = array(
-					(string)$choice['value'] => (string)$choice['label']
-				);
+			foreach ($data->Choices->children() as $child) {
+				if ($child->getName() == "ChoiceGroup") {
+					$choicegroup = $child;
+					foreach ($choicegroup->Choice as $choice) {
+						$choices[] = array(
+							(string)$choice['value'] => (string)$choice['label']
+						);
+					}
+					if ($choicegroup->Source) {
+						$source = $choicegroup->Source;
+						$sid = (int)$source['id'];
+						$this->datas[$id]['choices']['source'] = array (
+							'id' => $sid,
+							'valueColumn' => (string)$source['valueColumn'],
+							'labelColumn' => (string)$source['labelColumn']
+						);
+						if (! isset($sources[$sid]['choiceDependencies'])) {
+							$sources[$sid]['choiceDependencies'] = array();
+						}
+						$sources[$sid]['choiceDependencies'][] = $this->datas[$id]['name'];
+					}
+				} elseif ($child->getName() == "Choice") {
+					$choice = $child;
+					$choices[] = array(
+						(string)$choice['value'] => (string)$choice['label']
+					);
+				} elseif ($child->getName() == "Source") {
+					$source = $child;
+					$sid = (int)$source['id'];
+					$this->datas[$id]['choices']['source'] = array (
+						'id' => $sid,
+						'valueColumn' => (string)$source['valueColumn'],
+						'labelColumn' => (string)$source['labelColumn']
+					);
+					if (! isset($sources[$sid]['choiceDependencies'])) {
+						$sources[$sid]['choiceDependencies'] = array();
+					}
+					$sources[$sid]['choiceDependencies'][] = $this->datas[$id]['name'];
+					break; // only one source
+				}
 			}
 			if (count($choices) > 0) {
 				$this->datas[$id]['choices'] = $choices;
-			}
-			if ($data->Choices->Source) {
-				$source = $data->Choices->Source;
-				$sid = (int)$source['id'];
-				$this->datas[$id]['choices']['source'] = array (
-					'id' => $sid,
-					'valueColumn' => (string)$source['valueColumn'],
-					'labelColumn' => (string)$source['labelColumn']
-				);
-				if (! isset($sources[$sid]['choiceDependencies'])) {
-					$sources[$sid]['choiceDependencies'] = array();
-				}
-				$sources[$sid]['choiceDependencies'][] = $this->datas[$id]['name'];
 			}
 		}
 	}
@@ -844,6 +1054,30 @@ class Simulator {
 		foreach ($actions->Action as $action) {
 			$target = (string)$action['target'];
 			switch ((string)$action['name']) {
+				case 'notifyWarning':
+					$clause = array(
+						'name' => 'action-select',
+						'value' => 'notifyWarning',
+						'fields' => array(
+							array('name' => 'message', 'value' => $this->replaceIdByName((string)$action['value'])),
+							array('name' => 'target', 'value' => $target)
+						)
+					);
+					switch ($target) {
+						case 'data':
+							$clause['fields'][1]['fields'] = array(
+								array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'])
+							);
+							break;
+						case 'datagroup':
+							$clause['fields'][1]['fields'] = array(
+								array('name' => 'datagroupName', 'value' => (string)$action['datagroup'])
+							);
+							break;
+						case 'dataset':
+							break;
+					}
+					break;
 				case 'notifyError':
 					$clause = array(
 						'name' => 'action-select',
@@ -877,8 +1111,50 @@ class Simulator {
 							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
 									array('name' => 'objectId',	'value' => $target, 'fields' => array(
 											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
-															array('name' => 'fieldId', 'value' => (string)$action[$target])
+													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+															array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
+																	array('name' => 'fieldId', 'value' => (string)$action[$target])
+																)
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							);
+							break;
+						case 'section':
+							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+									array('name' => 'objectId',	'value' => $target, 'fields' => array(
+											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+															array('name' => 'blockinfoId', 'value' => (string)$action['blockinfo'], 'fields' => array(
+																	array('name' => 'chapterId', 'value' => (string)$action['chapter'], 'fields' => array(
+																			array('name' => 'sectionId', 'value' => (string)$action[$target])
+																		)
+																	)
+																)
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							);
+							break;
+						case 'chapter':
+							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+									array('name' => 'objectId',	'value' => $target, 'fields' => array(
+											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+															array('name' => 'blockinfoId', 'value' => (string)$action['blockinfo'], 'fields' => array(
+																	array('name' => 'chapterId', 'value' => (string)$action[$target])
+																)
+															)
 														)
 													)
 												)
@@ -892,7 +1168,37 @@ class Simulator {
 							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
 									array('name' => 'objectId', 'value' => $target, 'fields' => array(
 											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'fieldsetId', 'value' => (string)$action[$target])
+													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+															array('name' => 'fieldsetId', 'value' => (string)$action[$target])
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							);
+							break;
+						case 'blockinfo':
+							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+									array('name' => 'objectId', 'value' => $target, 'fields' => array(
+											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+															array('name' => 'blockinfoId', 'value' => (string)$action[$target])
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							);
+							break;
+						case 'panel':
+							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+									array('name' => 'objectId', 'value' => $target, 'fields' => array(
+											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+													array('name' => 'panelId', 'value' => (string)$action[$target])
 												)
 											)
 										)
@@ -961,15 +1267,21 @@ class Simulator {
 		}
 		return $datas;
 	}
-	
-	public function toJSON($url, $stepId = 0) {		
+
+	public function toJSON($url, $stepId = 0) {
 		$json = array();
 		$datas = array();
+		$profiles = array();
 		$constraints = array();
 		$sources = array();
 		$rules = array();
 		$dataIdMax = 0;
-		$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
+		if(extension_loaded('apc') && ini_get('apc.enabled')) {
+			$xml = $this->loadFileFromCache($url);
+			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
+		} else {
+			$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
+		}
 		if ($simulator->DataSet) {
 			foreach ($simulator->DataSet->children() as $child) {
 				if ($child->getName() == "DataGroup") {
@@ -980,7 +1292,7 @@ class Simulator {
 						if ((int)$data['id'] > $dataIdMax) {
 							$dataIdMax = (int)$data['id'];
 						}
-					}					
+					}
 				} elseif ($child->getName() == "Data") {
 					$this->toJSONData($child, $sources);
 					if ((int)$child['id'] > $dataIdMax) {
@@ -993,8 +1305,34 @@ class Simulator {
 		$json["label"] = (string)$simulator["label"];
 		$json["defaultView"] = (string)$simulator["defaultView"];
 		$json["referer"] = (string)$simulator["referer"];
+		if ((string)$simulator["memo"] != "") {
+			$json["memo"] = (string)$simulator["memo"];
+		}
 		$json["description"] = $this->paragraphs($simulator->Description);
-		$fieldsets = array();
+		if ($simulator->Profiles) {
+			$profiles['label'] = (string)$simulator->Profiles['label'];
+			$profs = array();
+			foreach ($simulator->Profiles->Profile as $profile) {
+				$pdatas = array();
+				foreach ($profile->Data as $data) {
+					$id = (int)$data['id'];
+					$pdatas[] = array(
+						'id' => $id,
+						'name' => $this->datas[$id]['name'],
+						'default' => (string)$data['default']
+					);
+				}
+				$profs[] = array(
+					'id' => (int)$profile['id'],
+					'name' => (string)$profile['name'],
+					'label' => (string)$profile['label'],
+					'description' => $this->paragraphs($profile->Description),
+					'datas' => $pdatas
+				);
+			}
+			$profiles['profiles'] = $profs;
+		}
+		$panels = array();
 		$actions = array();
 		$footnotes = array();
 		$usages = array();
@@ -1006,53 +1344,90 @@ class Simulator {
 						'name' => (string)$step['name'],
 						'label' => (string)$step['label']
 					);
-					foreach ($step->FieldSet as $fieldset) {
-						$fields = array();
-						
-						foreach ($fieldset->children() as $child) {
-							if ($child->getName() == "FieldRow") {
-								$fieldrow = $child;
-								foreach ($fieldrow->Field as $field) {
-									$id = (int)$field['data'];
-									$data = $this->datas[$id];
-									if (!isset($usages[$data['name']])) {
-										$usages[$data['name']] = (string)$field['usage'];
-										$this->name = $data['name'];
-										if ((string)$field['usage'] == 'input') {
-											$this->datas[$id]['inputField'] = array(
-												(string)$step['name']."-fieldset-".$fieldset['id'],
-												count($fields)
-											);
+					foreach ($step->Panels->Panel as $panel) {
+						foreach ($panel->children() as $block) {
+							if ($block->getName() == "FieldSet") {
+								$fieldset = $block;
+								$fields = array();
+								foreach ($fieldset->children() as $child) {
+									if ($child->getName() == "FieldRow") {
+										$fieldrow = $child;
+										foreach ($fieldrow->Field as $field) {
+											$id = (int)$field['data'];
+											$data = $this->datas[$id];
+											if (!isset($usages[$data['name']])) {
+												$usages[$data['name']] = (string)$field['usage'];
+												$this->name = $data['name'];
+												if ((string)$field['usage'] == 'input') {
+													$this->datas[$id]['inputField'] = array(
+														(string)$step['name']."-panel-".$panel['id']."-fieldset-".$fieldset['id'],
+														count($fields)
+													);
+												}
+												$fields[] = $this->fieldProperties($field);
+											}
 										}
-										$fields[] = $this->fieldProperties($field);
+									} elseif ($child->getName() == "Field") {
+										$field = $child;
+										$id = (int)$field['data'];
+										$data = $this->datas[$id];
+										if (!isset($usages[$data['name']])) {
+											$usages[$data['name']] = (string)$field['usage'];
+											$this->name = $data['name'];
+											if ((string)$field['usage'] == 'input') {
+												$this->datas[$id]['inputField'] = array(
+													(string)$step['name']."-panel-".$panel['id']."-fieldset-".$fieldset['id'],
+													count($fields)
+												);
+											}
+											$fields[] = $this->fieldProperties($field);
+										}
 									}
 								}
-							} elseif ($child->getName() == "Field") {
-								$field = $child;
-								$id = (int)$field['data'];
-								$data = $this->datas[$id];
-								if (!isset($usages[$data['name']])) {
-									$usages[$data['name']] = (string)$field['usage'];
-									$this->name = $data['name'];
-									if ((string)$field['usage'] == 'input') {
-										$this->datas[$id]['inputField'] = array(
-											(string)$step['name']."-fieldset-".$fieldset['id'],
-											count($fields)
-										);
+								$nfieldset = array(
+									'id'	 => (int)$fieldset['id'],
+									'legend' => (string)$fieldset->Legend,
+									'display' => (string)$fieldset['display'],
+									'popinLink' => (string)$fieldset['popinLink'],
+									'fields' => $fields
+								);
+								$this->name = (string)$step['name']."-panel-".$panel['id']."-fieldset-".$fieldset['id'];
+								$panels[$this->name] = $nfieldset;
+							} elseif ($block->getName() == "BlockInfo") {
+								$blockinfo = $block;
+								$chapters = array();
+								foreach ($blockinfo->Chapter as $chapter) {
+									$sections = array();
+									foreach ($chapter->Section as $section) {
+										$sections[] = array(
+											'id'	 => (int)$section['id'],
+											'name' => (string)$section['name'],
+											'label' => (string)$section['label'],
+											'content' => (string)$section->Content,
+											'annotations' => (string)$section->Annotations
+										); 
 									}
-									$fields[] = $this->fieldProperties($field);
+									$chapters[] = array(
+										'id'	 => (int)$chapter['id'],
+										'name' => (string)$chapter['name'],
+										'label' => (string)$chapter['label'],
+										'icon' => (string)$chapter['icon'],
+										'collapsible' => (string)$chapter['collapsible'],
+										'sections' => $sections
+									); 
 								}
+								$nfieldset = array(
+									'id'	 => (int)$blockinfo['id'],
+									'name' => (string)$blockinfo['name'],
+									'label' => (string)$blockinfo['label'],
+									'chapters' => $chapters
+								);
+								$this->name = (string)$step['name']."-panel-".$panel['id']."-blockinfo-".$blockinfo['id'];
+								$panels[$this->name] = $nfieldset;
 							}
 						}
-						$nfieldset = array(
-							'id'	 => (int)$fieldset['id'],
-							'legend' => (string)$fieldset->Legend,
-							'fields' => $fields
-						);
-						$this->name = (string)$step['name']."-fieldset-".$fieldset['id'];
-						$fieldsets[$this->name] = $nfieldset;
 					}
-					$nstep["fieldsets"] = $fieldsets;
+					$nstep["panels"] = $panels;
 					foreach ($step->ActionList as $actionList) {
 						foreach ($actionList as $action) {
 							$this->name = (string)$action['name'];
@@ -1136,6 +1511,7 @@ class Simulator {
 			}
 		}
 		$json["datas"] = $datas;
+		$json["profiles"] = $profiles;
 		$json["step"] = $nstep;
 		$json["sources"] = $sources;
 		$json["rules"] = $rules;
@@ -1146,11 +1522,11 @@ class Simulator {
 			// return json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES);
 		}
 	}
-	
+
 	public function save($file) {
 		$xml = array();
 		$xml[] = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . $this->getLabel() . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer()  . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '">';
+		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . $this->getLabel() . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '">';
 		$xml[] = '	<Description><![CDATA[';
 		$xml[] = trim($this->getDescription());
 		$xml[] = '	]]></Description>';
@@ -1184,6 +1560,9 @@ class Simulator {
 					if ($gdata->getUnit() != '') {
 						$attrs .= ' unit="' . $gdata->getUnit() . '"'; 
 					}
+					if ($gdata->isMemorize()) {
+						$attrs .= ' memorize="1"'; 
+					}
 					if ($gdata->getDescription() != '' || $gdata->getType() == 'choice') {
 						$xml[] = '			<Data ' . $attrs . '>';
 						if ($gdata->getDescription() != '') {
@@ -1195,7 +1574,24 @@ class Simulator {
 							$xml[] = '				<Choices>';
 							$options = array();
 							foreach ($gdata->getChoices() as $choice) {
-								$xml[] = '					<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . $choice->getLabel() . '" />';
+								if ($choice instanceof Choice) {
+									$xml[] = '					<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . $choice->getLabel() . '" />';
+								} elseif ($choice instanceof ChoiceGroup) {
+									$xml[] = '					<ChoiceGroup label="' . $choice->getLabel() . '">';
+									foreach ($choice->getChoices() as $gchoice) {
+										$xml[] = '						<Choice id="' . $gchoice->getId() . '" value="' . $gchoice->getValue() . '" label="' . $gchoice->getLabel() . '" />';
+									}
+									if ($choice->getChoiceSource() !== null) {
+										$source = $choice->getChoiceSource();
+										$attrs = 'id="' . $source->getId() . '"';
+										if ($source->getIdColumn() != '') {
+											$attrs .= ' idColumn="' . $source->getIdColumn() . '"';
+										}
+										$attrs .= ' valueColumn="' . $source->getValueColumn() . '" labelColumn="' . $source->getLabelColumn() . '"';
+										$xml[] = '						<Source ' . $attrs . ' />';
+									}
+									$xml[] = '					</ChoiceGroup>';
+								}
 							}
 							if ($gdata->getChoiceSource() !== null) {
 								$source = $gdata->getChoiceSource();
@@ -1240,6 +1636,9 @@ class Simulator {
 				if ($data->getUnit() != '') {
 					$attrs .= ' unit="' . $data->getUnit() . '"'; 
 				}
+				if ($data->isMemorize()) {
+					$attrs .= ' memorize="1"'; 
+				}
 				if ($data->getDescription() != '' || $data->getType() == 'choice') {
 					$xml[] = '		<Data ' . $attrs . '>';
 					if ($data->getDescription() != '') {
@@ -1251,7 +1650,24 @@ class Simulator {
 						$xml[] = '			<Choices>';
 						$options = array();
 						foreach ($data->getChoices() as $choice) {
-							$xml[] = '				<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . $choice->getLabel() . '" />';
+							if ($choice instanceof Choice) {
+								$xml[] = '				<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . $choice->getLabel() . '" />';
+							} elseif ($choice instanceof ChoiceGroup) {
+								$xml[] = '				<ChoiceGroup label="' . $choice->getLabel() . '">';
+								foreach ($choice->getChoices() as $gchoice) {
+									$xml[] = '					<Choice id="' . $gchoice->getId() . '" value="' . $gchoice->getValue() . '" label="' . $gchoice->getLabel() . '" />';
+								}
+								if ($choice->getChoiceSource() !== null) {
+									$source = $choice->getChoiceSource();
+									$attrs = 'id="' . $source->getId() . '"';
+									if ($source->getIdColumn() != '') {
+										$attrs .= ' idColumn="' . $source->getIdColumn() . '"';
+									}
+									$attrs .= ' valueColumn="' . $source->getValueColumn() . '" labelColumn="' . $source->getLabelColumn() . '"';
+									$xml[] = '					<Source ' . $attrs . ' />';
+								}
+								$xml[] = '				</ChoiceGroup>';
+							}
 						}
 						if ($data->getChoiceSource() !== null) {
 							$source = $data->getChoiceSource();
@@ -1268,9 +1684,25 @@ class Simulator {
 				} else {
 					$xml[] = '		<Data ' . $attrs . ' />';
 				}
-			}			
+			}
 		}
 		$xml[] = '	</DataSet>';
+		if ($profiles !== null) {
+			$xml[] = '	<Profiles label="' . $profiles->getLabel() . '">';
+			foreach ($profiles->getProfiles() as $profile) {
+				$xml[] = '		<Profile id="' . $profile->getId() . '" name="' . $profile->getName() . '" label="' . $profile->getLabel() . '">';
+				if ($profile->getDescription() != '') {
+					$xml[] = '			<Description><![CDATA[';
+					$xml[] = trim($profile->getDescription());
+					$xml[] = '			]]></Description>';
+				}
+				foreach ($profile->getDatas() as $data) {
+					$xml[] = '			<Data id="' . $data[0] . '" default="' . $data[1] . '" />';
+				}
+				$xml[] = '		</Profile>';
+			}
+			$xml[] = '	</Profiles>';
+		}
 		if (count($this->getSteps()) > 0) {
 			$xml[] = '	<Steps>';
 			foreach ($this->getSteps() as $step) {
@@ -1287,143 +1719,200 @@ class Simulator {
 					$xml[] = trim($step->getDescription());
 					$xml[] = '			]]></Description>';
 				}
-				foreach ($step->getFieldSets() as $fieldset) {
-					$attrs = 'id="' . $fieldset->getId() . '"';
-					if ($fieldset->getDisposition() != '' && $fieldset->getDisposition() != 'classic') {
-						$attrs .= ' disposition="' . $fieldset->getDisposition() . '"'; 
-					}
-					$xml[] = '			<FieldSet ' . $attrs . '>';
-					if ($fieldset->getLegend() != '') {
-						$xml[] = '				<Legend><![CDATA[';
-						$xml[] = trim($fieldset->getLegend());
-						$xml[] = '				]]></Legend>';
-					}
-					if (count($fieldset->getColumns()) > 0) {
-						$xml[] = '				<Columns>';
-						foreach ($fieldset->getColumns() as $column) {
-							$attrs = 'id="' . $column->getId() . '" name="' . $column->getName() . '" type="' . $column->getType() . '" label="' . $column->getLabel() . '"';
-							$xml[] = '					<Column ' . $attrs . ' />';
-						}
-						$xml[] = '				</Columns>';
-					}
-					foreach ($fieldset->getFields() as $child) {
-						if ($child instanceof FieldRow) {
-							$fieldrow = $child;
-							$attrs = 'datagroup="' . $fieldrow->getDataGroup() . '"';
-							if ($fieldrow->getLabel() != '') {
-								$attrs .= ' label="' . $fieldrow->getLabel() . '"'; 
+				$xml[] = '			<Panels>';
+				foreach ($step->getPanels() as $panel) {
+					$attrs = 'id="' . $panel->getId() . '"';
+					$attrs .= ' name="' . $panel->getName() . '"';
+					$attrs .= ' label="' . $panel->getLabel() . '"';
+					$xml[] = '				<Panel ' . $attrs . '>';
+					foreach ($panel->getFieldSets() as $block) {
+						if ($block instanceof FieldSet) {
+							$fieldset = $block;
+							$attrs = 'id="' . $fieldset->getId() . '"';
+							if ($fieldset->getDisposition() != '' && $fieldset->getDisposition() != 'classic') {
+								$attrs .= ' disposition="' . $fieldset->getDisposition() . '"'; 
 							}
-							if ($fieldrow->hasHelp()) {
-								$attrs .= ' help="1"'; 
+							if ($fieldset->getDisplay() != '' && $fieldset->getDisplay() != 'inline') {
+								$attrs .= ' display="' . $fieldset->getDisplay() . '"'; 
 							}
-							if (! $fieldrow->hasColon()) {
-								$attrs .= ' colon="0"'; 
+							if ($fieldset->getPopinLink() != '') {
+								$attrs .= ' popinLink="' . $fieldset->getPopinLink() . '"'; 
 							}
-							if ($fieldrow->isEmphasized()) {
-								$attrs .= ' emphasize="1"'; 
+							$xml[] = '			<FieldSet ' . $attrs . '>';
+							if ($fieldset->getLegend() != '') {
+								$xml[] = '				<Legend><![CDATA[';
+								$xml[] = trim($fieldset->getLegend());
+								$xml[] = '				]]></Legend>';
 							}
-							$xml[] = '				<FieldRow ' . $attrs . '>';
-							foreach ($fieldrow->getFields() as $field) {
-								$attrs = 'position="' . $field->getPosition() . '" data="' . $field->getData() . '" usage="' . $field->getUsage() . '"';
-								if (! $field->isNewline()) {
-									$attrs .= ' newline="0"'; 
+							if (count($fieldset->getColumns()) > 0) {
+								$xml[] = '				<Columns>';
+								foreach ($fieldset->getColumns() as $column) {
+									$attrs = 'id="' . $column->getId() . '" name="' . $column->getName() . '" type="' . $column->getType() . '" label="' . $column->getLabel() . '"';
+									$xml[] = '					<Column ' . $attrs . ' />';
 								}
-								if ($field->getLabel() != '') {
-									$attrs .= ' label="' . $field->getLabel() . '"'; 
-								}
-								if ($field->getPrompt() != '') {
-									$attrs .= ' prompt="' . $field->getPrompt() . '"'; 
-								}
-								if (! $field->isRequired()) {
-									$attrs .= ' required="0"'; 
-								}
-								if (! $field->hasColon()) {
-									$attrs .= ' colon="0"'; 
-								}
-								if ($field->isUnderlabel()) {
-									$attrs .= ' underlabel="1"'; 
-								}
-								if (! $field->hasHelp()) {
-									$attrs .= ' help="0"'; 
-								}
-								if ($field->isEmphasized()) {
-									$attrs .= ' emphasize="1"'; 
-								}
-								if ($field->getExplanation() != '') {
-									$attrs .= ' explanation="' . $field->getExplanation() . '"'; 
-								}
-								if (! $field->isExpanded()) {
-									$attrs .= ' expanded="0"'; 
-								}
-								if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
-									$xml[] = '					<Field ' . $attrs . '>';
-									if ($field->getPreNote() !== null) {
-										$xml[] = '						<PreNote><![CDATA[';
-										$xml[] = trim($field->getPreNote()->getText());
-										$xml[] = '						]]></PreNote>';
+								$xml[] = '				</Columns>';
+							}
+							foreach ($fieldset->getFields() as $child) {
+								if ($child instanceof FieldRow) {
+									$fieldrow = $child;
+									$attrs = 'datagroup="' . $fieldrow->getDataGroup() . '"';
+									if ($fieldrow->getLabel() != '') {
+										$attrs .= ' label="' . $fieldrow->getLabel() . '"'; 
 									}
-									if ($field->getPostNote() !== null) {
-										$xml[] = '						<PostNote><![CDATA[';
-										$xml[] = trim($field->getPostNote()->getText());
-										$xml[] = '						]]></PostNote>';
+									if ($fieldrow->hasHelp()) {
+										$attrs .= ' help="1"'; 
 									}
-									$xml[] = '					</Field>';
-								} else {
-									$xml[] = '					<Field ' . $attrs . ' />';
+									if (! $fieldrow->hasColon()) {
+										$attrs .= ' colon="0"'; 
+									}
+									if ($fieldrow->isEmphasized()) {
+										$attrs .= ' emphasize="1"'; 
+									}
+									$xml[] = '				<FieldRow ' . $attrs . '>';
+									foreach ($fieldrow->getFields() as $field) {
+										$attrs = 'position="' . $field->getPosition() . '" data="' . $field->getData() . '" usage="' . $field->getUsage() . '"';
+										if (! $field->isNewline()) {
+											$attrs .= ' newline="0"'; 
+										}
+										if ($field->getLabel() != '') {
+											$attrs .= ' label="' . $field->getLabel() . '"'; 
+										}
+										if ($field->getPrompt() != '') {
+											$attrs .= ' prompt="' . $field->getPrompt() . '"'; 
+										}
+										if (! $field->isRequired()) {
+											$attrs .= ' required="0"'; 
+										}
+										if (! $field->isVisibleRequired()) {
+											$attrs .= ' visibleRequired="0"'; 
+										}
+										if (! $field->hasColon()) {
+											$attrs .= ' colon="0"'; 
+										}
+										if ($field->isUnderlabel()) {
+											$attrs .= ' underlabel="1"'; 
+										}
+										if (! $field->hasHelp()) {
+											$attrs .= ' help="0"'; 
+										}
+										if ($field->isEmphasized()) {
+											$attrs .= ' emphasize="1"'; 
+										}
+										if ($field->getExplanation() != '') {
+											$attrs .= ' explanation="' . $field->getExplanation() . '"'; 
+										}
+										if (! $field->isExpanded()) {
+											$attrs .= ' expanded="0"'; 
+										}
+										if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
+											$xml[] = '					<Field ' . $attrs . '>';
+											if ($field->getPreNote() !== null) {
+												$xml[] = '						<PreNote><![CDATA[';
+												$xml[] = trim($field->getPreNote()->getText());
+												$xml[] = '						]]></PreNote>';
+											}
+											if ($field->getPostNote() !== null) {
+												$xml[] = '						<PostNote><![CDATA[';
+												$xml[] = trim($field->getPostNote()->getText());
+												$xml[] = '						]]></PostNote>';
+											}
+											$xml[] = '					</Field>';
+										} else {
+											$xml[] = '					<Field ' . $attrs . ' />';
+										}
+									}
+									$xml[] = '				</FieldRow>';
+								} elseif ($child instanceof Field) {
+									$field = $child;
+									$attrs = 'position="' . $field->getPosition() . '" data="' . $field->getData() . '" usage="' . $field->getUsage() . '"';
+									if (! $field->isNewline()) {
+										$attrs .= ' newline="0"'; 
+									}
+									if ($field->getLabel() != '') {
+										$attrs .= ' label="' . $field->getLabel() . '"'; 
+									}
+									if ($field->getPrompt() != '') {
+										$attrs .= ' prompt="' . $field->getPrompt() . '"'; 
+									}
+									if (! $field->isRequired()) {
+										$attrs .= ' required="0"'; 
+									}
+									if (! $field->isVisibleRequired()) {
+										$attrs .= ' visibleRequired="0"'; 
+									}
+									if (! $field->hasColon()) {
+										$attrs .= ' colon="0"'; 
+									}
+									if ($field->isUnderlabel()) {
+										$attrs .= ' underlabel="1"'; 
+									}
+									$attrs .= $field->hasHelp() ? ' help="1"' : ' help="0"'; 
+									if ($field->isEmphasized()) {
+										$attrs .= ' emphasize="1"'; 
+									}
+									if ($field->getExplanation() != '') {
+										$attrs .= ' explanation="' . $field->getExplanation() . '"'; 
+									}
+									if (! $field->isExpanded()) {
+										$attrs .= ' expanded="0"'; 
+									}
+									if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
+										$xml[] = '				<Field ' . $attrs . '>';
+										if ($field->getPreNote() !== null) {
+											$xml[] = '					<PreNote><![CDATA[';
+											$xml[] = trim($field->getPreNote()->getText());
+											$xml[] = '					]]></PreNote>';
+										}
+										if ($field->getPostNote() !== null) {
+											$xml[] = '					<PostNote><![CDATA[';
+											$xml[] = trim($field->getPostNote()->getText());
+											$xml[] = '					]]></PostNote>';
+										}
+										$xml[] = '				</Field>';
+									} else {
+										$xml[] = '				<Field ' . $attrs . ' />';
+									}
 								}
 							}
-							$xml[] = '				</FieldRow>';
-						} elseif ($child instanceof Field) {
-							$field = $child;
-							$attrs = 'position="' . $field->getPosition() . '" data="' . $field->getData() . '" usage="' . $field->getUsage() . '"';
-							if (! $field->isNewline()) {
-								$attrs .= ' newline="0"'; 
-							}
-							if ($field->getLabel() != '') {
-								$attrs .= ' label="' . $field->getLabel() . '"'; 
-							}
-							if ($field->getPrompt() != '') {
-								$attrs .= ' prompt="' . $field->getPrompt() . '"'; 
-							}
-							if (! $field->isRequired()) {
-								$attrs .= ' required="0"'; 
-							}
-							if (! $field->hasColon()) {
-								$attrs .= ' colon="0"'; 
-							}
-							if ($field->isUnderlabel()) {
-								$attrs .= ' underlabel="1"'; 
-							}
-							$attrs .= $field->hasHelp() ? ' help="1"' : ' help="0"'; 
-							if ($field->isEmphasized()) {
-								$attrs .= ' emphasize="1"'; 
-							}
-							if ($field->getExplanation() != '') {
-								$attrs .= ' explanation="' . $field->getExplanation() . '"'; 
-							}
-							if (! $field->isExpanded()) {
-								$attrs .= ' expanded="0"'; 
-							}
-							if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
-								$xml[] = '				<Field ' . $attrs . '>';
-								if ($field->getPreNote() !== null) {
-									$xml[] = '					<PreNote><![CDATA[';
-									$xml[] = trim($field->getPreNote()->getText());
-									$xml[] = '					]]></PreNote>';
+							$xml[] = '			</FieldSet>';
+						} elseif ($block instanceof BlockInfo) {
+							$blocinfo = $block;
+							$attrs = 'id="' . $blocinfo->getId() . '"';
+							$attrs .= ' name="' . $blocinfo->getName() . '"';
+							$attrs .= ' label="' . $blocinfo->getLabel() . '"';
+							$xml[] = '			<BlockInfo ' . $attrs . '>';
+							foreach ($blocinfo->getChapters() as $chapter) {
+								$attrs = 'id="' . $chapter->getId() . '"';
+								$attrs .= ' name="' . $chapter->getName() . '"';
+								$attrs .= ' label="' . $chapter->getLabel() . '"';
+								if ($chapter->getIcon() != '') {
+									$attrs .= ' icon="' . $chapter->getIcon() . '"'; 
 								}
-								if ($field->getPostNote() !== null) {
-									$xml[] = '					<PostNote><![CDATA[';
-									$xml[] = trim($field->getPostNote()->getText());
-									$xml[] = '					]]></PostNote>';
+								if ($chapter->isCollapsible()) {
+									$attrs .= ' collapsible="1"'; 
 								}
-								$xml[] = '				</Field>';
-							} else {
-								$xml[] = '				<Field ' . $attrs . ' />';
+								$xml[] = '				<Chapter ' . $attrs . '>';
+								foreach ($chapter->getSections() as $section) {
+									$attrs = 'id="' . $section->getId() . '"';
+									$attrs .= ' name="' . $section->getName() . '"';
+									$attrs .= ' label="' . $section->getLabel() . '"';
+									$xml[] = '					<Section ' . $attrs . '>';
+									$xml[] = '						<Content><![CDATA[';
+									$xml[] = trim($section->getContent());
+									$xml[] = '						]]></Content>';
+									$xml[] = '						<Annotations><![CDATA[';
+									$xml[] = trim($section->getAnnotations());
+									$xml[] = '						]]></Annotations>';
+									$xml[] = '					</Section>';
+								}
+								$xml[] = '				</Chapter>';
 							}
+							$xml[] = '			</BlockInfo>';
 						}
 					}
-					$xml[] = '			</FieldSet>';
+					$xml[] = '				</Panel>';
 				}
+				$xml[] = '			</Panels>';
 				if (count($step->getActions()) > 0) {
 					$xml[] = '			<ActionList>';
 					foreach ($step->getActions() as $action) {
@@ -1471,20 +1960,20 @@ class Simulator {
 					$attrs .= ' returnType="' . $source->getReturnType() . '"'; 
 				}
 				if ($source->getReturnPath() != '') {
-					$attrs .= ' returnPath="' . $source->getReturnPath() . '"'; 
+					$attrs .= ' returnPath="' . $source->getReturnPath() . '"';
 				}
 				if (count($source->getParameters()) > 0) {
 					$xml[] = '		<Source ' . $attrs . '>';
 					foreach ($source->getParameters() as $parameter) {
 						$attrs = 'type="' . $parameter->getType() . '"';
 						if ($parameter->getName() != '') {
-							$attrs .= ' name="' . $parameter->getName() . '"'; 
+							$attrs .= ' name="' . $parameter->getName() . '"';
 						}
 						if ($parameter->getFormat() != '') {
-							$attrs .= ' format="' . $parameter->getFormat() . '"'; 
+							$attrs .= ' format="' . $parameter->getFormat() . '"';
 						}
 						if ($parameter->getData() != '') {
-							$attrs .= ' data="' . $parameter->getData() . '"'; 
+							$attrs .= ' data="' . $parameter->getData() . '"';
 						}
 						$xml[] = '			<Parameter ' . $attrs . ' />';
 					}
@@ -1505,37 +1994,49 @@ class Simulator {
 				foreach ($rule->getIfActions() as $action) {
 					$attrs = 'id="' . $action->getId() . '" name="' . $action->getName() . '" target="' . $action->getTarget() . '"';
 					if ($action->getData() != '') {
-						$attrs .= ' data="' . $action->getData() . '"'; 
+						$attrs .= ' data="' . $action->getData() . '"';
 					}
 					if ($action->getDatagroup() != '') {
-						$attrs .= ' datagroup="' . $action->getDatagroup() . '"'; 
+						$attrs .= ' datagroup="' . $action->getDatagroup() . '"';
 					}
 					if ($action->getStep() != '') {
-						$attrs .= ' step="' . $action->getStep() . '"'; 
+						$attrs .= ' step="' . $action->getStep() . '"';
+					}
+					if ($action->getPanel() != '') {
+						$attrs .= ' panel="' . $action->getPanel() . '"';
 					}
 					if ($action->getFieldset() != '') {
-						$attrs .= ' fieldset="' . $action->getFieldset() . '"'; 
+						$attrs .= ' fieldset="' . $action->getFieldset() . '"';
 					}
 					if ($action->getField() != '') {
-						$attrs .= ' field="' . $action->getField() . '"'; 
+						$attrs .= ' field="' . $action->getField() . '"';
+					}
+					if ($action->getBlockinfo() != '') {
+						$attrs .= ' blockinfo="' . $action->getBlockinfo() . '"';
+					}
+					if ($action->getChapter() != '') {
+						$attrs .= ' chapter="' . $action->getChapter() . '"';
+					}
+					if ($action->getSection() != '') {
+						$attrs .= ' section="' . $action->getSection() . '"';
 					}
 					if ($action->getPrenote() != '') {
-						$attrs .= ' prenote="' . $action->getPrenote() . '"'; 
+						$attrs .= ' prenote="' . $action->getPrenote() . '"';
 					}
 					if ($action->getPostnote() != '') {
-						$attrs .= ' postnote="' . $action->getPostnote() . '"'; 
+						$attrs .= ' postnote="' . $action->getPostnote() . '"';
 					}
 					if ($action->getAction() != '') {
-						$attrs .= ' action="' . $action->getAction() . '"'; 
+						$attrs .= ' action="' . $action->getAction() . '"';
 					}
 					if ($action->getFootnote() != '') {
-						$attrs .= ' footnote="' . $action->getFootnote() . '"'; 
+						$attrs .= ' footnote="' . $action->getFootnote() . '"';
 					}
 					if ($action->getChoice() != '') {
-						$attrs .= ' choice="' . $action->getChoice() . '"'; 
+						$attrs .= ' choice="' . $action->getChoice() . '"';
 					}
 					if ($action->getValue() != '') {
-						$attrs .= ' value="' . $action->getValue() . '"'; 
+						$attrs .= ' value="' . $action->getValue() . '"';
 					}
 					$xml[] = '				<Action ' . $attrs . ' />';
 				}
@@ -1544,31 +2045,43 @@ class Simulator {
 				foreach ($rule->getElseActions() as $action) {
 					$attrs = 'id="' . $action->getId() . '" name="' . $action->getName() . '" target="' . $action->getTarget() . '"';
 					if ($action->getData() != '') {
-						$attrs .= ' data="' . $action->getData() . '"'; 
+						$attrs .= ' data="' . $action->getData() . '"';
 					}
 					if ($action->getDatagroup() != '') {
-						$attrs .= ' datagroup="' . $action->getDatagroup() . '"'; 
+						$attrs .= ' datagroup="' . $action->getDatagroup() . '"';
 					}
 					if ($action->getStep() != '') {
-						$attrs .= ' step="' . $action->getStep() . '"'; 
+						$attrs .= ' step="' . $action->getStep() . '"';
+					}
+					if ($action->getPanel() != '') {
+						$attrs .= ' panel="' . $action->getPanel() . '"';
 					}
 					if ($action->getFieldset() != '') {
-						$attrs .= ' fieldset="' . $action->getFieldset() . '"'; 
+						$attrs .= ' fieldset="' . $action->getFieldset() . '"';
 					}
 					if ($action->getField() != '') {
-						$attrs .= ' field="' . $action->getField() . '"'; 
+						$attrs .= ' field="' . $action->getField() . '"';
+					}
+					if ($action->getBlockinfo() != '') {
+						$attrs .= ' blockinfo="' . $action->getBlockinfo() . '"';
+					}
+					if ($action->getChapter() != '') {
+						$attrs .= ' chapter="' . $action->getChapter() . '"';
+					}
+					if ($action->getSection() != '') {
+						$attrs .= ' section="' . $action->getSection() . '"';
 					}
 					if ($action->getPrenote() != '') {
-						$attrs .= ' prenote="' . $action->getPrenote() . '"'; 
+						$attrs .= ' prenote="' . $action->getPrenote() . '"';
 					}
 					if ($action->getPostnote() != '') {
-						$attrs .= ' postnote="' . $action->getPostnote() . '"'; 
+						$attrs .= ' postnote="' . $action->getPostnote() . '"';
 					}
 					if ($action->getAction() != '') {
-						$attrs .= ' action="' . $action->getAction() . '"'; 
+						$attrs .= ' action="' . $action->getAction() . '"';
 					}
 					if ($action->getFootnote() != '') {
-						$attrs .= ' footnote="' . $action->getFootnote() . '"'; 
+						$attrs .= ' footnote="' . $action->getFootnote() . '"';
 					}
 					if ($action->getChoice() != '') {
 						$attrs .= ' choice="' . $action->getChoice() . '"'; 
@@ -1590,6 +2103,20 @@ class Simulator {
 		$xmlstring = implode("\r\n", $xml);
 		$xmlstring = str_replace('&gt;', '>', $xmlstring);
 		file_put_contents($file, $xmlstring);
+	}
+
+	private function loadFileFromCache($url) {
+		$mtimekey = $url . "-mtime";
+		$mtime = filemtime($url);
+		if (apc_exists($mtimekey)) {
+			if ($mtime <= apc_fetch($mtimekey)) {
+				return apc_fetch($url);
+			}
+		} 
+		$file = file_get_contents($url);
+		apc_add($url, $file);
+		apc_add($mtimekey, $mtime);
+		return $file;
 	}
 }
 

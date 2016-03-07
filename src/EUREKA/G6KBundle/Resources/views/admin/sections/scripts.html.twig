@@ -1,6 +1,6 @@
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap/js/bootstrap.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
-<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap-datepicker/locales/bootstrap-datepicker.') }}{{ app.request.locale }}.js"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap-datepicker/locales/bootstrap-datepicker.' ~ app.request.locale ~ '.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/Tabledit/jquery.tabledit.js') }}"></script>
 
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap-datatable/js/vendor/jquery.sortelements.js') }}"></script>
@@ -10,10 +10,10 @@
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/jquery-resizable-columns/jquery.resizableColumns.min.js') }}"></script>
 
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/select2/select2.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/select2/select2_locale_') }}{{ app.request.locale }}.js"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/select2/select2_locale_' ~ app.request.locale ~ '.js') }}"></script>
 
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap3-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap3-wysihtml5/locales/bootstrap-wysihtml5.') }}{{ app.request.locale }}-{{ app.request.locale|upper }}.js"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap3-wysihtml5/locales/bootstrap-wysihtml5.' ~ app.request.locale ~ '-' ~ app.request.locale|upper ~ '.js') }}"></script>
 
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/jquery-ui/jquery-ui.min.js') }}"></script>
 
@@ -32,5 +32,5 @@
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap-datepicker/locales/bootstrap-datepicker.fr.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/jquery.expressionbuilder/jquery.expressionbuilder.js') }}"></script>
-<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/jquery.expressionbuilder/lang/fr.js') }}"></script>	
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/jquery.expressionbuilder/lang/fr.js') }}"></script>
 {% endif %}	

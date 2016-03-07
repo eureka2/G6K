@@ -1,5 +1,29 @@
 <?php
 
+/*
+The MIT License (MIT)
+
+Copyright (c) 2015 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
 namespace EUREKA\G6KBundle\Entity;
 
 class Token {
@@ -11,34 +35,37 @@ class Token {
 			T_TEXT		       	= 4, 
 			T_IDENT       		= 5,  
 			T_FUNCTION    		= 6,  
-			T_POPEN       		= 7,  
-			T_PCLOSE      		= 8, 
-			T_COMMA       		= 9, 
-			T_NOOP	    		= 10, 
-			T_PLUS        		= 11, 
-			T_MINUS       		= 12, 
-			T_TIMES      	 	= 13, 
-			T_DIV         		= 14, 
-			T_MOD         		= 15, 
-			T_POW         		= 16, 
-			T_UNARY_PLUS  		= 17, 
-			T_UNARY_MINUS 		= 18, 
-			T_NOT         		= 19, 
-			T_FIELD       		= 20, 
-			T_EQUAL				= 21,
-			T_NOT_EQUAL			= 22,
-			T_LESS_THAN			= 23,
-			T_LESS_OR_EQUAL		= 24,
-			T_GREATER_THAN		= 25,
-			T_GREATER_OR_EQUAL	= 26,
-			T_BITWISE_AND		= 27,
-			T_BITWISE_OR		= 28,
-			T_BITWISE_XOR		= 29,
-			T_LOGICAL_AND		= 30,
-			T_LOGICAL_OR		= 31,
-			T_TERNARY			= 32,
-			T_TERNARY_ELSE		= 33,
-			T_DEGRE				= 34;
+			T_ARRAY	    		= 7,  
+			T_POPEN       		= 8,  
+			T_PCLOSE      		= 9, 
+			T_COMMA       		= 10, 
+			T_NOOP	    		= 11, 
+			T_PLUS        		= 12, 
+			T_MINUS       		= 13, 
+			T_TIMES      	 	= 14, 
+			T_DIV         		= 15, 
+			T_MOD         		= 16, 
+			T_POW         		= 17, 
+			T_UNARY_PLUS  		= 18, 
+			T_UNARY_MINUS 		= 19, 
+			T_NOT         		= 20, 
+			T_FIELD       		= 21, 
+			T_EQUAL				= 22,
+			T_NOT_EQUAL			= 23,
+			T_LESS_THAN			= 24,
+			T_LESS_OR_EQUAL		= 25,
+			T_GREATER_THAN		= 26,
+			T_GREATER_OR_EQUAL	= 27,
+			T_CONTAINS			= 28,
+			T_NOT_CONTAINS		= 29,
+			T_BITWISE_AND		= 30,
+			T_BITWISE_OR		= 31,
+			T_BITWISE_XOR		= 32,
+			T_LOGICAL_AND		= 33,
+			T_LOGICAL_OR		= 34,
+			T_TERNARY			= 35,
+			T_TERNARY_ELSE		= 36,
+			T_DEGRE				= 37;
 
 	const	A_NONE				= 0,
 			A_LEFT				= 1,
@@ -103,7 +130,9 @@ class Token {
             case self::T_LESS_OR_EQUAL:
             case self::T_GREATER_THAN:
             case self::T_GREATER_OR_EQUAL:
-                return true;
+            case self::T_CONTAINS:
+            case self::T_NOT_CONTAINS:
+               return true;
         }
 		return false;
 	}
@@ -157,7 +186,9 @@ class Token {
                return 6;
             case self::T_EQUAL:
             case self::T_NOT_EQUAL:
-               return 7;
+            case self::T_CONTAINS:
+            case self::T_NOT_CONTAINS:
+              return 7;
             case self::T_BITWISE_AND:
                return 8;
             case self::T_BITWISE_XOR:
@@ -198,6 +229,8 @@ class Token {
             case self::T_GREATER_OR_EQUAL:
             case self::T_EQUAL:
             case self::T_NOT_EQUAL:
+            case self::T_CONTAINS:
+            case self::T_NOT_CONTAINS:
             case self::T_BITWISE_AND:
             case self::T_BITWISE_XOR:
              case self::T_BITWISE_OR:
@@ -224,6 +257,9 @@ class Token {
 				break;
 			case self::T_FUNCTION:
 				return $this->value;
+				break;
+			case self::T_ARRAY:
+				return json_encode($this->value);
 				break;
 			default:
 				return (string)$this->value;
@@ -269,6 +305,7 @@ class Expression {
 				case Token::T_TEXT:
 				case Token::T_IDENT:
 				case Token::T_FIELD:
+				case Token::T_ARRAY:
 				case Token::T_UNDEFINED:
 					$rpn[] = $token;
 					break;
@@ -317,7 +354,10 @@ class Expression {
 		foreach ($this->tokens as $token) {
 			if ($token->type == Token::T_FIELD && count($fields) >= $token->value) {
 				$value = $fields[$token->value - 1];
-				if (is_numeric($value)) {
+				if (is_array($value)) {
+					$token->type = Token::T_ARRAY;
+					$token->value = $value;
+				} elseif (is_numeric($value)) {
 					$token->type = Token::T_NUMBER;
 					$token->value = $value;
 				} else if (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
@@ -344,7 +384,10 @@ class Expression {
 		foreach ($this->tokens as $token) {
 			if ($token->type == Token::T_IDENT && isset($fields[$token->value])) {
 				$value = $fields[$token->value];
-				if (is_numeric($value)) {
+				if (is_array($value)) {
+					$token->type = Token::T_ARRAY;
+					$token->value = $value;
+				} elseif (is_numeric($value)) {
 					$token->type = Token::T_NUMBER;
 					$token->value = $value;
 				} else if (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
@@ -372,12 +415,15 @@ class Expression {
 		foreach ($this->tokens as $token) {
 			if ($token->type == Token::T_FIELD && isset($variables[''.$token->value])) {
 				$value = $variables[''.$token->value];
-				if (strlen($value) == 0) {
+				if ((is_array($value) && count($value) == 0) || (is_string($value) && strlen($value) == 0)) {
 					$completed = false;
-				} else if (is_numeric($value)) {
+				} elseif (is_array($value)) {
+					$token->type = Token::T_ARRAY;
+					$token->value = $value;
+				} elseif (is_numeric($value)) {
 					$token->type = Token::T_NUMBER;
 					$token->value = $value;
-				} else if (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
+				} elseif (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
                 	$token->type = Token::T_DATE;
 					$date = \DateTime::createFromFormat("d/m/Y", $value, new \DateTimeZone( 'Europe/Paris' ));
 					$error = \DateTime::getLastErrors();
@@ -395,12 +441,15 @@ class Expression {
 				}
 			} else if ($token->type == Token::T_IDENT && isset($variables[$token->value])) {
 				$value = $variables[$token->value];
-				if (strlen($value) == 0) {
+				if ((is_array($value) && count($value) == 0) || (is_string($value) && strlen($value) == 0)) {
 					$completed = false;
-				} else if (is_numeric($value)) {
+				} elseif (is_array($value)) {
+					$token->type = Token::T_ARRAY;
+					$token->value = $value;
+				} elseif (is_numeric($value)) {
 					$token->type = Token::T_NUMBER;
 					$token->value = $value;
-				} else if (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
+				} elseif (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
                 	$token->type = Token::T_DATE;
 					$date = \DateTime::createFromFormat("d/m/Y", $value, new \DateTimeZone( 'Europe/Paris' ));
 					$error = \DateTime::getLastErrors();
@@ -439,6 +488,7 @@ class Expression {
 						case Token::T_TEXT:
 						case Token::T_IDENT:
 						case Token::T_FIELD:
+						case Token::T_ARRAY:
 						case Token::T_UNDEFINED:
 							$ops[] = $token;
 							break;
@@ -748,8 +798,10 @@ class Expression {
 		$arg1 = array_pop($args);
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result = new Token(Token::T_UNDEFINED, array($arg1, $arg2));
-		} elseif ($arg1->type != $arg2->type) { 
+		} elseif ($op->type != Token::T_CONTAINS && $arg1->type != $arg2->type) { 
 			throw new \Exception("operand types for '" . $op. "' are not identical");
+		} elseif ($op->type == Token::T_CONTAINS && $arg1->type != Token::T_ARRAY) { 
+			throw new \Exception("first operand type for '" . $op. "' is not an array");
 		} else {
 			$result = new Token(Token::T_BOOLEAN, false);
 			switch ($op->type) {
@@ -770,6 +822,12 @@ class Expression {
 					break;
 				case Token::T_GREATER_OR_EQUAL:
 					$result->value = ($arg1->value >= $arg2->value);
+					break;
+				case Token::T_CONTAINS:
+					$result->value = is_array($arg1->value) && in_array($arg2->value, $arg1->value);
+					break;
+				case Token::T_NOT_CONTAINS:
+					$result->value = ! is_array($arg1->value) || ! in_array($arg2->value, $arg1->value);
 					break;
 			}
 		}
@@ -1056,7 +1114,7 @@ class Expression {
 
 class ExpressionParser {
 
-	const PATTERN = '/([\s!,\+\-\*\/\^%\(\)=\<\>\&\^\|\?\:°])/u';
+	const PATTERN = '/([\s!,\+\-\*\/\^%\(\)=\<\>\~\&\^\|\?\:°])/u';
 
     protected $lookup = array(
         '+' => Token::T_PLUS,
@@ -1071,6 +1129,7 @@ class ExpressionParser {
         '=' => Token::T_EQUAL,
         '<' => Token::T_LESS_THAN,
         '>' => Token::T_GREATER_THAN,
+        '~' => Token::T_CONTAINS,
         '&' => Token::T_BITWISE_AND,
         '^' => Token::T_BITWISE_XOR,
         '|' => Token::T_BITWISE_OR,
@@ -1151,8 +1210,15 @@ class ExpressionParser {
 								$type = Token::T_GREATER_OR_EQUAL;
 								$value = ">=";
 								break;
-						}						
+						}
 						break;
+					case Token::T_CONTAINS:
+						if ($prev->type == Token::T_NOT) {
+							$expr->pop();
+							$type = Token::T_NOT_CONTAINS;
+							$value = "!~";
+							break;
+						}
 					case Token::T_BITWISE_AND:
 						if ($prev->type === Token::T_BITWISE_AND) {
 							$expr->pop();
@@ -1194,6 +1260,7 @@ class ExpressionParser {
 							case Token::T_DATE:
 							case Token::T_BOOLEAN:
 							case Token::T_TEXT:
+							case Token::T_ARRAY:
 							case Token::T_PCLOSE:
 								$expr->push(new Token(Token::T_TIMES, '*'));
 								break;
@@ -1204,7 +1271,7 @@ class ExpressionParser {
 				$expr->push($prev = new Token($type, $value));
 			}
 		}
-		return $expr;	
+		return $expr;
 	}
 }
 

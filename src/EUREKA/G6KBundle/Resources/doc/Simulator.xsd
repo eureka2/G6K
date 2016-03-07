@@ -11,7 +11,7 @@
 				<xs:element name="DataSet">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:sequence maxOccurs="unbounded">
+							<xs:choice maxOccurs="unbounded">
 								<xs:element name="Data" type="DataType" minOccurs="0"/>
 								<xs:element name="DataGroup" minOccurs="0">
 									<xs:complexType>
@@ -19,12 +19,10 @@
 											<xs:element name="Description" minOccurs="0"/>
 											<xs:element name="Data" type="DataType" maxOccurs="unbounded"/>
 										</xs:sequence>
-										<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
-										<xs:attribute name="name" type="xs:string" use="required"/>
-										<xs:attribute name="label" type="xs:string" use="required"/>
+										<xs:attributeGroup ref="IdGroup"/>
 									</xs:complexType>
 								</xs:element>
-							</xs:sequence>
+							</xs:choice>
 						</xs:sequence>
 						<xs:attribute name="dateFormat" type="xs:string" use="required"/>
 						<xs:attribute name="decimalPoint" type="xs:string" use="required"/>
@@ -39,6 +37,29 @@
 						</xs:attribute>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="Profiles" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Profile" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Description" minOccurs="0"/>
+										<xs:element name="Data" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+												<xs:attribute name="default" type="xs:string" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="label" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="label" type="xs:string"/>
+					</xs:complexType>
+				</xs:element>
 				<xs:element name="Steps">
 					<xs:complexType>
 						<xs:sequence>
@@ -46,42 +67,89 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="Description" type="xs:string" minOccurs="0"/>
-										<xs:element name="FieldSet" maxOccurs="unbounded">
+										<xs:element name="Panels">
 											<xs:complexType>
 												<xs:sequence>
-													<xs:element name="Legend" type="xs:string" minOccurs="0"/>
-													<xs:element name="Columns" minOccurs="0">
+													<xs:element name="Panel" maxOccurs="unbounded">
 														<xs:complexType>
-															<xs:sequence>
-																<xs:element name="Column" type="ColumnType" maxOccurs="unbounded"/>
-															</xs:sequence>
+															<xs:choice maxOccurs="unbounded">
+																<xs:element name="FieldSet">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="Legend" type="xs:string" minOccurs="0"/>
+																			<xs:element name="Columns" minOccurs="0">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="Column" type="ColumnType" maxOccurs="unbounded"/>
+																					</xs:sequence>
+																				</xs:complexType>
+																			</xs:element>
+																			<xs:sequence maxOccurs="unbounded">
+																				<xs:element name="Field" type="FieldType" minOccurs="0"/>
+																				<xs:element name="FieldRow" minOccurs="0">
+																					<xs:complexType>
+																						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+																							<xs:element name="Field" type="FieldType"/>
+																						</xs:sequence>
+																						<xs:attribute name="label" type="xs:string"/>
+																						<xs:attribute name="help" type="xs:boolean" default="0"/>
+																						<xs:attribute name="colon" type="xs:boolean" default="1"/>
+																						<xs:attribute name="emphasize" type="xs:boolean"/>
+																						<xs:attribute name="datagroup" type="xs:positiveInteger" use="required"/>
+																					</xs:complexType>
+																				</xs:element>
+																			</xs:sequence>
+																		</xs:sequence>
+																		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+																		<xs:attribute name="disposition">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:NMTOKEN">
+																					<xs:enumeration value="classic"/>
+																					<xs:enumeration value="grid"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:attribute>
+																		<xs:attribute name="display">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:NMTOKEN">
+																					<xs:enumeration value="inline"/>
+																					<xs:enumeration value="pop-in"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:attribute>
+																		<xs:attribute name="popinLink" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="BlockInfo">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="Chapter" maxOccurs="unbounded">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="Section" maxOccurs="unbounded">
+																							<xs:complexType>
+																								<xs:sequence>
+																									<xs:element name="Content" type="xs:string"/>
+																									<xs:element name="Annotations" minOccurs="0"/>
+																								</xs:sequence>
+																								<xs:attributeGroup ref="IdGroup"/>
+																							</xs:complexType>
+																						</xs:element>
+																					</xs:sequence>
+																					<xs:attributeGroup ref="IdGroup"/>
+																					<xs:attribute name="icon" type="xs:anyURI"/>
+																					<xs:attribute name="collapsible" type="xs:boolean"/>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attributeGroup ref="IdGroup"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:choice>
+															<xs:attributeGroup ref="IdGroup"/>
 														</xs:complexType>
 													</xs:element>
-													<xs:sequence maxOccurs="unbounded">
-														<xs:element name="Field" type="FieldType" minOccurs="0"/>
-														<xs:element name="FieldRow" minOccurs="0">
-															<xs:complexType>
-																<xs:sequence minOccurs="0" maxOccurs="unbounded">
-																	<xs:element name="Field" type="FieldType"/>
-																</xs:sequence>
-																<xs:attribute name="label" type="xs:string"/>
-																<xs:attribute name="help" type="xs:boolean" default="0"/>
-																<xs:attribute name="colon" type="xs:boolean" default="1"/>
-																<xs:attribute name="emphasize" type="xs:boolean"/>
-																<xs:attribute name="datagroup" type="xs:positiveInteger" use="required"/>
-															</xs:complexType>
-														</xs:element>
-													</xs:sequence>
 												</xs:sequence>
-												<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
-												<xs:attribute name="disposition">
-													<xs:simpleType>
-														<xs:restriction base="xs:NMTOKEN">
-															<xs:enumeration value="classic"/>
-															<xs:enumeration value="grid"/>
-														</xs:restriction>
-													</xs:simpleType>
-												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="ActionList" minOccurs="0">
@@ -106,6 +174,7 @@
 																		<xs:enumeration value="currentStep"/>
 																		<xs:enumeration value="nextStep"/>
 																		<xs:enumeration value="jumpToStep"/>
+																		<xs:enumeration value="newSimulation"/>
 																		<xs:enumeration value="externalPage"/>
 																	</xs:restriction>
 																</xs:simpleType>
@@ -259,11 +328,11 @@
 			<xs:attribute name="defaultView" type="xs:string"/>
 			<xs:attribute name="dynamic" type="xs:boolean" default="0"/>
 			<xs:attribute name="referer"/>
+			<xs:attribute name="memo" type="xs:boolean"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="ColumnType">
-		<xs:attribute name="id" type="xs:string" use="required"/>
-		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attributeGroup ref="IdGroup"/>
 		<xs:attribute name="type" use="required">
 			<xs:simpleType>
 				<xs:restriction base="xs:NMTOKEN">
@@ -286,7 +355,6 @@
 				</xs:restriction>
 			</xs:simpleType>
 		</xs:attribute>
-		<xs:attribute name="label" type="xs:string" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="FieldType">
 		<xs:choice minOccurs="0">
@@ -319,6 +387,7 @@
 		</xs:attribute>
 		<xs:attribute name="prompt"/>
 		<xs:attribute name="required" type="xs:boolean"/>
+		<xs:attribute name="visibleRequired" type="xs:boolean"/>
 		<xs:attribute name="colon" type="xs:boolean" default="1"/>
 		<xs:attribute name="underlabel" type="xs:boolean" default="0"/>
 		<xs:attribute name="help" type="xs:boolean"/>
@@ -332,21 +401,21 @@
 			<xs:element name="Choices" minOccurs="0">
 				<xs:complexType>
 					<xs:choice>
-						<xs:element name="Choice" maxOccurs="unbounded">
-							<xs:complexType>
-								<xs:attribute name="id" type="xs:string" use="required"/>
-								<xs:attribute name="value" type="xs:string" use="required"/>
-								<xs:attribute name="label" type="xs:string" use="required"/>
-							</xs:complexType>
-						</xs:element>
-						<xs:element name="Source">
-							<xs:complexType>
-								<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
-								<xs:attribute name="idColumn" type="xs:string"/>
-								<xs:attribute name="valueColumn" type="xs:string" use="required"/>
-								<xs:attribute name="labelColumn" type="xs:string" use="required"/>
-							</xs:complexType>
-						</xs:element>
+						<xs:element name="Source" type="SourceType"/>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:choice>
+								<xs:element name="Choice" type="ChoiceType"/>
+								<xs:element name="ChoiceGroup">
+									<xs:complexType>
+										<xs:choice>
+											<xs:element name="Source" type="SourceType"/>
+											<xs:element name="Choice" type="ChoiceType" maxOccurs="unbounded"/>
+										</xs:choice>
+										<xs:attribute name="label" type="xs:string" use="required"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:choice>
+						</xs:sequence>
 					</xs:choice>
 				</xs:complexType>
 			</xs:element>
@@ -362,9 +431,7 @@
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
-		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attributeGroup ref="IdGroup"/>
 		<xs:attribute name="type" use="required">
 			<xs:simpleType>
 				<xs:restriction base="xs:NMTOKEN">
@@ -379,6 +446,7 @@
 					<xs:enumeration value="textarea"/>
 					<xs:enumeration value="money"/>
 					<xs:enumeration value="choice"/>
+					<xs:enumeration value="multichoice"/>
 					<xs:enumeration value="percent"/>
 					<xs:enumeration value="table"/>
 					<xs:enumeration value="department"/>
@@ -395,6 +463,7 @@
 		<xs:attribute name="unit" type="xs:string"/>
 		<xs:attribute name="source" type="xs:string"/>
 		<xs:attribute name="index" type="xs:string"/>
+		<xs:attribute name="memorize" type="xs:boolean"/>
 	</xs:complexType>
 	<xs:complexType name="ActionType">
 		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
@@ -402,6 +471,7 @@
 			<xs:simpleType>
 				<xs:restriction base="xs:NMTOKENS">
 					<xs:enumeration value="notifyError"/>
+					<xs:enumeration value="notifyWarning"/>
 					<xs:enumeration value="setAttribute"/>
 					<xs:enumeration value="hideObject"/>
 					<xs:enumeration value="showObject"/>
@@ -415,8 +485,12 @@
 					<xs:enumeration value="datagroup"/>
 					<xs:enumeration value="dataset"/>
 					<xs:enumeration value="step"/>
+					<xs:enumeration value="panel"/>
 					<xs:enumeration value="fieldset"/>
 					<xs:enumeration value="field"/>
+					<xs:enumeration value="blockinfo"/>
+					<xs:enumeration value="chapter"/>
+					<xs:enumeration value="section"/>
 					<xs:enumeration value="prenote"/>
 					<xs:enumeration value="postnote"/>
 					<xs:enumeration value="action"/>
@@ -433,8 +507,12 @@
 		<xs:attribute name="data" type="xs:positiveInteger"/>
 		<xs:attribute name="datagroup" type="xs:string"/>
 		<xs:attribute name="step" type="xs:nonNegativeInteger"/>
+		<xs:attribute name="panel"/>
 		<xs:attribute name="fieldset" type="xs:positiveInteger"/>
 		<xs:attribute name="field" type="xs:positiveInteger"/>
+		<xs:attribute name="blockinfo" type="xs:positiveInteger"/>
+		<xs:attribute name="chapter"/>
+		<xs:attribute name="section"/>
 		<xs:attribute name="prenote" type="xs:positiveInteger"/>
 		<xs:attribute name="postnote" type="xs:positiveInteger"/>
 		<xs:attribute name="action" type="xs:string"/>
@@ -442,12 +520,20 @@
 		<xs:attribute name="choice"/>
 		<xs:attribute name="value" type="xs:string"/>
 	</xs:complexType>
-	<xs:attributeGroup name="constraintGroup">
-		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
-		<xs:attribute name="constraint" type="xs:string" use="required"/>
-		<xs:attribute name="constraintMessage" type="xs:string" use="required"/>
-	</xs:attributeGroup>
-	<xs:complexType name="ConstraintType">
-		<xs:attributeGroup ref="constraintGroup"/>
+	<xs:complexType name="ChoiceType">
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="required"/>
 	</xs:complexType>
+	<xs:complexType name="SourceType">
+		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+		<xs:attribute name="idColumn" type="xs:string"/>
+		<xs:attribute name="valueColumn" type="xs:string" use="required"/>
+		<xs:attribute name="labelColumn" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:attributeGroup name="IdGroup">
+		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="optional"/>
+	</xs:attributeGroup>
 </xs:schema>

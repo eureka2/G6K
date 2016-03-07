@@ -19,7 +19,6 @@
 	cursor: pointer;
 }
 
-
 .attributes-container {
 	display: table; 
 	width: 100%;
@@ -34,6 +33,9 @@
 	width: 20%;
 	border: 1px solid #ddd;
 	
+}
+.attributes-container label {
+	margin-top: 0.6em;
 }
 .optional-attributes  {
 	vertical-align: top;
@@ -51,8 +53,26 @@
 .expression-type .select2-choice {
 	background: #DDD !important;
 }
+.attribute-expression {
+	margin-left: 15px;
+}
+.attribute-expression, .attribute-expression .form-control {
+	max-width: 250px !important;
+	overflow-x: hidden;
+}
 .alert {
 	display: none;
+	width: 80%;
+}
+.context-menu-holder {
+	display: inline-block;
+}
+.context-menu-holder li {
+	min-width: 300px;
+}
+ul.rule-conditions > li {
+	list-style-type: none;
+	margin-left: -35px;
 }
 /*==============================================
     MEDIA QUERIES     
@@ -117,3 +137,25 @@
 #btnAddNewRow, #btnAddNewTable, #btnAddNewDataSource {
 	float: right;
 }
+.edit-simulator, .add-data, .edit-data, .delete-data, .add-datagroup, .edit-datagroup, .delete-datagroup, .add-rule, .edit-rule, .add-step, .edit-step, .add-choice, .add-source, .add-choice-source, .edit-choice-source, .delete-choice, .delete-choice-source, .expand-all, .collapse-all {
+	margin-top: -9px;
+}
+button.save-simulator {
+	position: fixed;
+	top: 60px;
+	z-index: 10000;
+	right: 0px;
+	display: none;
+}
+
+.bootstrap-wysihtml5-insert-link-modal .checkbox {
+	margin-left: 25px;
+}
+#toTop{
+	position: fixed;
+	bottom: 5px;
+	right: 0px;
+	cursor: pointer;
+	display: none;
+}
+#toTop .fa {margin-right: 5px;}

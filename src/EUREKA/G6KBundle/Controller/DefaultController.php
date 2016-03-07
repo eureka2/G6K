@@ -1,5 +1,29 @@
 <?php
 
+/*
+The MIT License (MIT)
+
+Copyright (c) 2015 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
 namespace EUREKA\G6KBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -7,15 +31,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use EUREKA\G6KBundle\Entity\Simulator;
 use EUREKA\G6KBundle\Entity\ExpressionParser;
 use EUREKA\G6KBundle\Entity\Source;
+use EUREKA\G6KBundle\Entity\ChoiceGroup;
 use EUREKA\G6KBundle\Entity\Choice;
 use EUREKA\G6KBundle\Entity\DataGroup;
 use EUREKA\G6KBundle\Entity\Data;
+use EUREKA\G6KBundle\Entity\Panel;
+use EUREKA\G6KBundle\Entity\FieldSet;
 use EUREKA\G6KBundle\Entity\FieldRow;
 use EUREKA\G6KBundle\Entity\Field;
+use EUREKA\G6KBundle\Entity\BlockInfo;
+use EUREKA\G6KBundle\Entity\Chapter;
+use EUREKA\G6KBundle\Entity\Section;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Cookie;
 
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
@@ -27,6 +58,7 @@ class DefaultController extends Controller {
 	protected $error;
 	protected $recursion = 0;
 	protected $variables = array();
+	protected $memo = array();
 	protected $sources = null;
 	protected $uricache = array();
 	protected $log = array();
@@ -35,10 +67,10 @@ class DefaultController extends Controller {
 	{
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
-		$this->simu = new Simulator($this);
 		$this->parser = new ExpressionParser();
 		$this->uricache = array();
 		try {
+			$this->simu = new Simulator($this);
 			$this->simu->load(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml');
 		} catch (\Exception $e) {
 			$page404Url = $request->getScheme() . '://' . $request->getHttpHost() . $this->container->getParameter('page404');
@@ -75,7 +107,7 @@ class DefaultController extends Controller {
 		$sequence = array();
 		$script = $no_js == 1 ? 0 : 1;
 		$dates = array();
-		
+
 		$this->evaluateDefaults();
 		$this->evaluateMinMax();
 		foreach ($form as $name => $value) {
@@ -110,28 +142,43 @@ class DefaultController extends Controller {
 		$this->simu->setDynamic($dynamic);
 		$this->variables['script'] = $script;
 		$this->variables['dynamic'] = $dynamic;
-		
+
 		$steps = array();
 		foreach ($this->simu->getSteps() as $s) {
 			$steps[] = array('id' => $s->getId(), 'name' => $s->getName(), 'label' => $s->getLabel());
-			foreach ($s->getFieldSets() as $fieldset) {
-				foreach ($fieldset->getFields() as $child) {
-					if ($child instanceof Field) {
-						$field = $child;
-						if ($field->getUsage() == "input") {
-							$id = $field->getData();
-							$data = $this->simu->getDataById($id);
-							$data->setInputStepId($s->getId());
-							$fieldset->setInputFields(true);
-						}
-					} elseif ($child instanceof FieldRow) {
-						$fieldrow = $child;
-						foreach ($fieldrow->getFields() as $field) {
-							if ($field->getUsage() == "input") {
-								$id = $field->getData();
-								$data = $this->simu->getDataById($id);
-								$data->setInputStepId($s->getId());
-								$fieldset->setInputFields(true);
+			foreach ($s->getPanels() as $panel) {
+				foreach ($panel->getFieldSets() as $block) {
+					if ($block instanceof FieldSet) {
+						$fieldset = $block;
+						foreach ($fieldset->getFields() as $child) {
+							if ($child instanceof Field) {
+								$field = $child;
+								if ($field->getUsage() == "input") {
+									$id = $field->getData();
+									$data = $this->simu->getDataById($id);
+									$data->setInputStepId($s->getId());
+									$fieldset->setInputFields(true);
+									if ($data->getType() == 'boolean' && $s->getId() == $istep && !isset($form[$data->getName()])) {
+										$data->setValue('false');
+										$this->variables[''.$data->getId()] = $data->getValue();
+										$this->variables[$name] = $data->getValue();
+									}
+								}
+							} elseif ($child instanceof FieldRow) {
+								$fieldrow = $child;
+								foreach ($fieldrow->getFields() as $field) {
+									if ($field->getUsage() == "input") {
+										$id = $field->getData();
+										$data = $this->simu->getDataById($id);
+										$data->setInputStepId($s->getId());
+										$fieldset->setInputFields(true);
+										if ($data->getType() == 'boolean' && $s->getId() == $istep && !isset($form[$data->getName()])) {
+											$data->setValue('false');
+											$this->variables[''.$data->getId()] = $data->getValue();
+											$this->variables[$name] = $data->getValue();
+										}
+									}
+								}
 							}
 						}
 					}
@@ -145,13 +192,13 @@ class DefaultController extends Controller {
 				foreach ($data->getDatas() as $gdata) {
 					if ($gdata->getInputStepId() < 0 && ($gdata->getContent() != "" || $gdata->getSource() != "")) {
 						$gdata->setValue("");
-					}	
+					}
 				}
 			} elseif ($data instanceof Data) {
 				if ($data->getInputStepId() < 0 && ($data->getContent() != "" || $data->getSource() != "")) {
 					$data->setValue("");
 				}
-			}			
+			}
 		}
 		$direction = 0;
 		$this->processRules($istep);
@@ -169,15 +216,20 @@ class DefaultController extends Controller {
 					break;
 				}
 			}
-			foreach ($step->getFieldSets() as $fieldset) {
-				foreach ($fieldset->getFields() as $child) {
-					if ($child instanceof Field) {
-						$field = $child;
-						$this->checkField($field, $form, $skipValidation);
-					} elseif ($child instanceof FieldRow) {
-						$fieldrow = $child;
-						foreach ($fieldrow->getFields() as $field) {
-							$this->checkField($field, $form, $skipValidation);
+			foreach ($step->getPanels() as $panel) {
+				foreach ($panel->getFieldSets() as $block) {
+					if ($block instanceof FieldSet) {
+						$fieldset = $block;
+						foreach ($fieldset->getFields() as $child) {
+							if ($child instanceof Field) {
+								$field = $child;
+								$this->checkField($field, $form, $skipValidation);
+							} elseif ($child instanceof FieldRow) {
+								$fieldrow = $child;
+								foreach ($fieldrow->getFields() as $field) {
+									$this->checkField($field, $form, $skipValidation);
+								}
+							}
 						}
 					}
 				}
@@ -202,7 +254,14 @@ class DefaultController extends Controller {
 							$direction = ($toStep - $istep) / abs($toStep - $istep);
 							array_push($sequence, $istep);
 							$istep = $toStep;
-						}
+						} elseif ($action->getFor() == 'newSimulation') {
+							$route = $request->get('_route');
+							if ($route == 'eureka_g6k_calcul_view') {
+								return $this->redirect($this->generateUrl($route, array('simu' => $simu, 'view' => $view)));
+							} else {
+								return $this->redirect($this->generateUrl($route, array('simu' => $simu)));
+							}
+				}
 						break;
 					}
 				}
@@ -215,22 +274,48 @@ class DefaultController extends Controller {
 		do {
 			$step = $this->simu->getStepById($istep);
 			$stepDisplayable = false;
-			foreach ($step->getFieldSets() as $fieldset) {
-				$fieldset->setDisplayable($fieldset->isDisplayable() && $step->isDisplayable());
-				foreach ($fieldset->getFields() as $child) {
-					if ($child instanceof Field) {
-						$field = $child;
-						$field->setDisplayable($field->isDisplayable() && $fieldset->isDisplayable());
-						$this->processField($field, $step, $stepDisplayable); 
-					} elseif ($child instanceof FieldRow) {
-						$fieldrow = $child;
-						foreach ($fieldrow->getFields() as $field) {
-							$field->setDisplayable($field->isDisplayable() && $fieldset->isDisplayable());
-							$this->processField($field, $step, $stepDisplayable); 
+			foreach ($step->getPanels() as $panel) {
+				$panel->setDisplayable($panel->isDisplayable() && $step->isDisplayable());
+				foreach ($panel->getFieldSets() as $block) {
+					if ($block instanceof FieldSet) {
+						$fieldset = $block;
+						$fieldset->setDisplayable($fieldset->isDisplayable() && $panel->isDisplayable());
+						foreach ($fieldset->getFields() as $child) {
+							if ($child instanceof Field) {
+								$field = $child;
+								$field->setDisplayable($field->isDisplayable() && $fieldset->isDisplayable());
+								$this->processField($field, $step, $stepDisplayable); 
+							} elseif ($child instanceof FieldRow) {
+								$fieldrow = $child;
+								foreach ($fieldrow->getFields() as $field) {
+									$field->setDisplayable($field->isDisplayable() && $fieldset->isDisplayable());
+									$this->processField($field, $step, $stepDisplayable); 
+								}
+							}
 						}
+						$fieldset->setLegend($this->replaceVariables($fieldset->getLegend()));
+					} elseif ($block instanceof BlockInfo) {
+						$blocinfo = $block;
+						$blocinfo->setDisplayable($blocinfo->isDisplayable() && $panel->isDisplayable());
+						$chapterDisplayables = 0;
+						foreach ($blocinfo->getChapters() as $chapter) {
+							$chapter->setDisplayable($chapter->isDisplayable() && $blocinfo->isDisplayable());
+							$sectionDisplayables = 0;
+							foreach ($chapter->getSections() as $section) {
+								$section->setDisplayable($section->isDisplayable() && $chapter->isDisplayable());
+								if ($section->isDisplayable()) {
+									$sectionDisplayables++;
+								}
+								$section->setContent($this->replaceVariables($section->getContent()));
+							}
+							$chapter->setDisplayable($chapter->isDisplayable() && $sectionDisplayables > 0);
+							if ($chapter->isDisplayable()) {
+								$chapterDisplayables++;
+							}
+						}
+						$blocinfo->setDisplayable($blocinfo->isDisplayable() && $chapterDisplayables > 0);
 					}
 				}
-				$fieldset->setLegend($this->replaceVariables($fieldset->getLegend()));
 			}
 			$footnotes = $step->getFootNotes();
 			if ($footnotes !== null) {
@@ -246,30 +331,36 @@ class DefaultController extends Controller {
 			$istep += $direction;
 		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
 		$step->setDescription($this->replaceVariables($step->getDescription()));
-		
+
 		$datas = array();
 		foreach ($this->simu->getDatas() as $data) {
 			if ($data instanceof DataGroup) {
 				foreach ($data->getDatas() as $gdata) {
 					$datas[$gdata->getName()] = $gdata->getValue();
+					if ($this->simu->hasMemo() && $gdata->isMemorize()) {
+						$this->memo[$gdata->getName()] = $gdata->getValue();
+					}
 				}
 			} elseif ($data instanceof Data) {
 				$datas[$data->getName()] = $data->getValue();
+				if ($this->simu->hasMemo() && $data->isMemorize()) {
+					$this->memo[$data->getName()] = $data->getValue();
+				}
 			}
 		}
 		if ( ! $this->error && ($step->getOutput() == 'inlinePDF' || $step->getOutput() == 'downloadablePDF')) {
 			return $this->pdfOutput($request, $step, $datas, $view);
 		}
- 		$hiddens = array();		
+ 		$hiddens = array();
 		$hiddens['step'] = $step->getId();
 		$hiddens['sequence'] = implode('|', $sequence);
 		$hiddens['script'] = $script;
 		$hiddens['view'] = $view;
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
-		header('Access-Control-Allow-Origin: https://www.service-public-2016.fr.qualif.ext.dila.fr');
+		header('Access-Control-Allow-Origin: https://www.service-public.fr.qualif.ext.dila.fr');
 		try {
-			return $this->render(
+			$response =  $this->render(
 				'EUREKAG6KBundle:'.$view.'/'.$step->getTemplate(),
 				array(
 					'view' => $view,
@@ -281,12 +372,16 @@ class DefaultController extends Controller {
 					'data' => $datas,
 					'hiddens' => $hiddens
 				)
-		);
+			);
+			foreach($this->memo as $name => $value) {
+				$response->headers->setCookie(new Cookie($name, $value, time() + (86400 * 365), $request->getBasePath(), null, false, false));
+			}
+			return $response;
 		} catch (\Exception $e) {
 			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
 		}
 	}
-	
+
 	public function fieldsAction(Request $request, $simu)
 	{
 		$form = $request->request->all();
@@ -297,7 +392,7 @@ class DefaultController extends Controller {
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
 	}
-	
+
 	public function sourceAction(Request $request, $simu)
 	{
 		$form = $request->request->all();
@@ -326,7 +421,7 @@ class DefaultController extends Controller {
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
 	}
-	
+
 	protected function checkField($field, $form, $skipValidation) 
 	{
 		$id = $field->getData();
@@ -376,7 +471,7 @@ class DefaultController extends Controller {
 			}
 		}
 	}
-	
+
 	protected function processField($field, $step, &$displayable) 
 	{
 		$id = $field->getData();
@@ -397,11 +492,14 @@ class DefaultController extends Controller {
 			$this->populateChoiceWithSource($data);
 			$this->replaceFieldNotes($field);
 		} elseif ($step->getId() == 0 || $step->isDynamic()) {
+			if ($field->getUsage() == 'input') {
+				$data->setUsed(true);
+			}
 			$this->populateChoiceWithSource($data);
 			$this->replaceFieldNotes($field);
 		}
 	}
-	
+
 	protected function populateChoiceWithSource($data) 
 	{
 		$choiceSource = $data->getChoiceSource();
@@ -423,8 +521,33 @@ class DefaultController extends Controller {
 				}
 			}
 		}
+		foreach ($data->getChoices() as $choice) {
+			if ($choice instanceof ChoiceGroup) {
+				if ($choice->getChoiceSource() !== null) {
+					$choiceSource = $choice->getChoiceSource();
+					if ($choiceSource != null) {
+						$source = $choiceSource->getId();
+						if ($source != "") {
+							$source = $this->evaluate($source);
+							if ($source !== false) {
+								$source = $this->simu->getSourceById($source);
+								$result = $this->processSource($source);
+								if ($result !== null) {
+									$n = 0;
+									foreach ($result as $row) {
+										$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
+										$gchoice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
+										$choice->addChoice($gchoice);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
-	
+
 	protected function replaceFieldNotes($field) 
 	{
 		if ($field->getPreNote() !== null) {
@@ -436,7 +559,7 @@ class DefaultController extends Controller {
 			$note->setText($this->replaceVariables($note->getText()));
 		}
 	}
-	
+
 	protected function evaluate($condition) 
 	{
 		$expr = $this->parser->parse($condition);
@@ -444,7 +567,7 @@ class DefaultController extends Controller {
 		$expr->setVariables($this->variables);
 		return $expr->evaluate();
 	}
-	
+
 	protected function evaluateDefault($data) 
 	{
 		$default = $data->getUnparsedDefault();
@@ -456,7 +579,7 @@ class DefaultController extends Controller {
 			}
 		}
 	}
-	
+
 	protected function evaluateDefaults() 
 	{
 		foreach ($this->simu->getDatas() as $data) {
@@ -470,7 +593,7 @@ class DefaultController extends Controller {
 			}
 		}
 	}
-	
+
 	protected function evaluateMin($data) 
 	{
 		$min = $data->getUnparsedMin();
@@ -484,7 +607,7 @@ class DefaultController extends Controller {
 			}
 		}
 	}
-	
+
 	protected function evaluateMax($data) 
 	{
 		$max = $data->getUnparsedMax();
@@ -498,7 +621,7 @@ class DefaultController extends Controller {
 			}
 		}
 	}
-	
+
 	protected function evaluateMinMax() 
 	{
 		foreach ($this->simu->getDatas() as $data) {
@@ -514,7 +637,7 @@ class DefaultController extends Controller {
 		}
 	}
 
-    protected function processData($data, $istep) 
+	protected function processData($data, $istep) 
 	{
 		if (! $data->isError()) {
 			$default = $data->getUnparsedDefault();
@@ -603,8 +726,8 @@ class DefaultController extends Controller {
 			}
 		}
 	}
-	
-    protected function processActions($actions, $istep) 
+
+	protected function processActions($actions, $istep) 
 	{
 		foreach ($actions as $action) {
 			switch ($action->getName()) {
@@ -639,6 +762,34 @@ class DefaultController extends Controller {
 							break;
 					}
 					break;
+				case 'notifyWarning':
+					switch ($action->getTarget()) {
+						case 'data':
+							$data =  $this->simu->getDataById($action->getData());
+							if ($istep == 0 || $data->getInputStepId() == $istep) {
+								$data->setWarning(true);
+								$data->addWarningMessage($this->replaceVariables($action->getValue()));
+							}
+							break;
+						case 'datagroup':
+							$datagroup =  $this->simu->getDataGroupById($action->getDatagroup());
+							$inputStepId = false;
+							foreach ($datagroup->getDatas() as $data) {
+								if ($data->getInputStepId() == $istep) {
+									$inputStepId = true;
+								}
+							}
+							if ($istep == 0 || $inputStepId) {
+								$datagroup->setWarning(true);
+								$datagroup->addWarningMessage($this->replaceVariables($action->getValue()));
+							}
+							break;
+						case 'dataset':
+							$$this->simu->setWarning(true);
+							$$this->simu->addWarningMessage($this->replaceVariables($action->getValue()));
+							break;
+					}
+					break;
 				case 'hideObject':
 				case 'showObject':
 					$stepId = $action->getStep();
@@ -647,22 +798,48 @@ class DefaultController extends Controller {
 						case 'step':
 							$step->setDisplayable($action->getName() == 'showObject');
 							break;
+						case 'panel':
+							$panel = $step->getPanelById($action->getpanel());
+							$panel->setDisplayable($action->getName() == 'showObject');
+							break;
 						case 'fieldset':
-							$fieldset = $step->getFieldSetById($action->getFieldset());
+							$panel = $step->getPanelById($action->getpanel());
+							$fieldset = $panel->getFieldSetById($action->getFieldset());
 							$fieldset->setDisplayable($action->getName() == 'showObject');
 							break;
 						case 'field':
-							$fieldset = $step->getFieldSetById($action->getFieldset());
+							$panel = $step->getPanelById($action->getpanel());
+							$fieldset = $panel->getFieldSetById($action->getFieldset());
 							$field = $fieldset->getFieldByPosition($action->getField());
 							$field->setDisplayable($action->getName() == 'showObject');
 							break;
+						case 'blocinfo':
+							$panel = $step->getPanelById($action->getpanel());
+							$blocinfo = $panel->getFieldSetById($action->getBlockinfo());
+							$blocinfo->setDisplayable($action->getName() == 'showObject');
+							break;
+						case 'chapter':
+							$panel = $step->getPanelById($action->getpanel());
+							$blocinfo = $panel->getFieldSetById($action->getBlockinfo());
+							$chapter = $blocinfo->getChapterById($action->getChapter());
+							$chapter->setDisplayable($action->getName() == 'showObject');
+							break;
+						case 'section':
+							$panel = $step->getPanelById($action->getpanel());
+							$blocinfo = $panel->getFieldSetById($action->getBlockinfo());
+							$chapter = $blocinfo->getChapterById($action->getChapter());
+							$section = $chapter->getSectionById($action->getSection());
+							$section->setDisplayable($action->getName() == 'showObject');
+							break;
 						case 'prenote':
-							$fieldset = $step->getFieldSetById($action->getFieldset());
+							$panel = $step->getPanelById($action->getpanel());
+							$fieldset = $panel->getFieldSetById($action->getFieldset());
 							$field = $fieldset->getFieldByPosition($action->getField());
 							// TODO : que faire ?
 							break;
 						case 'postnote':
-							$fieldset = $step->getFieldSetById($action->getFieldset());
+							$panel = $step->getPanelById($action->getpanel());
+							$fieldset = $panel->getFieldSetById($action->getFieldset());
 							$field = $fieldset->getFieldByPosition($action->getField());
 							// TODO : que faire ?
 							break;
@@ -710,19 +887,19 @@ class DefaultController extends Controller {
 			}
 		}
 	}
-	
-    protected function processRule($businessrule, $istep) 
+
+	protected function processRule($businessrule, $istep) 
 	{
 		$conditions = $businessrule->getConditions();
 		$result = $this->evaluate($conditions);
 		if ($result == 'true') {
 			$this->processActions($businessrule->getIfActions(), $istep);
-		} else if ($result == 'false') {	
+		} else if ($result == 'false') {
 			$this->processActions($businessrule->getElseActions(), $istep);
 		}
 	}
-	
-    protected function processRules($istep) 
+
+	protected function processRules($istep) 
 	{
 		$businessrules = $this->simu->getBusinessRules();
 		foreach ($businessrules as $businessrule) {
@@ -730,7 +907,7 @@ class DefaultController extends Controller {
 		}
 	}
 
-    protected function processDatas($istep) 
+	protected function processDatas($istep) 
 	{
 		$this->sources = array();
 		foreach ($this->simu->getDatas() as $data) {
@@ -832,7 +1009,7 @@ class DefaultController extends Controller {
 		return $value;
 	}
 
-    protected function processSource(Source $source) 
+	protected function processSource(Source $source) 
 	{
 		$params = $source->getParameters();
 		$datasource = $this->simu->getDatasourceById($source->getDatasource());
@@ -940,9 +1117,9 @@ class DefaultController extends Controller {
 		}
 		return null;
 	}
-	
-    protected function pdfOutput(Request $request, $step, $datas, $view = "Default")
-    {
+
+	protected function pdfOutput(Request $request, $step, $datas, $view = "Default")
+	{
  		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
         $page = $this->render(
@@ -950,14 +1127,13 @@ class DefaultController extends Controller {
 			array(
 				'view' => $view,
 				'ua' => $silex["mobile_detect"],
-				// 'path' => 'http://www.service-public.fr',
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'log' => $this->log,
 				'step' => $step,
 				'data' => $datas
 			)
 		);
-		
+
 		// define('_MPDF_TTFONTDATAPATH', dirname($this->get('kernel')->getCacheDir()) . '/mpdf/ttfontdata/'); 
 		$mpdfService = $this->get('tfox.mpdfport');
 		$mpdf = $mpdfService->getMpdf();
@@ -1129,9 +1305,13 @@ class DefaultController extends Controller {
 			return $matches[0];
 		}
 		if ($matches[2] == 'L') { 
-			return $data->getChoiceLabel();
+			$value = $data->getChoiceLabel();
+			if ($data->getType() == 'multichoice') {
+				$value = implode(',', $value);
+			}
+			return $value;
 		} else {
-			$value = $data->getValue();	
+			$value = $data->getValue();
 			switch ($data->getType()) {
 				case 'money': 
 					$value = number_format ( (float)$value , 2 , "." , " "); 
@@ -1139,11 +1319,14 @@ class DefaultController extends Controller {
 				case 'number': 
 					$value = str_replace('.', ',', $value);
 					break;
+				case 'multichoice': 
+					$value = implode(',', $value);
+					break;
 			}
 			return $value;
 		}
 	}
-	
+
 	private function replaceVariables($target)
 	{
 		$result = preg_replace_callback(
@@ -1153,7 +1336,7 @@ class DefaultController extends Controller {
 		);
 		return $result;
 	}
-	
+
 	private function parseDate($format, $dateStr)
 	{
 		if (empty($dateStr)) {
