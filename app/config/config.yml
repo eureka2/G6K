@@ -72,3 +72,8 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: EUREKA\G6KBundle\Entity\User
+
+# fix 'You have requested a non-existent service "fos_user.doctrine_registry"'
+services:
+    fos_user.doctrine_registry:
+        alias: doctrine
