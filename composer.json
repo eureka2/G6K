@@ -28,7 +28,7 @@
 		"jbinfo/mobile-detect-service-provider": "~1",
         "silex/silex": "~1",
         "willdurand/js-translation-bundle": "@stable",
-        "friendsofsymfony/user-bundle": "@stable"
+        "friendsofsymfony/user-bundle": "~2.0@dev"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
