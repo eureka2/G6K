@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="demo" label="France: Maintenance allowance calculation simulator" dynamic="1">
-	<Description>The amount of the pension by child is calculated in proportion to the income, net by a minimum living wage (€ 483), by a debtor parent. This proportion is different according to the total number of children chargeable to the debtor parent (whatever is the union from which they were born) and the amplitude of the right of access and the accommodation (reduced, classic, or alternated without spontaneous sharing of expenses).</Description>
-	<DataSet dateFormat="d/m/Y" decimalPoint="," moneySymbol="€" symbolPosition="after">
+	<Description>The amount of the pension by child is calculated in proportion to the income, net by a minimum living wage (€ 524.16), by a debtor parent. This proportion is different according to the total number of children chargeable to the debtor parent (whatever is the union from which they were born) and the amplitude of the right of access and the accommodation (reduced, classic, or alternated without spontaneous sharing of expenses).</Description>
+	<DataSet dateFormat="d/m/Y" decimalPoint="." moneySymbol="€" symbolPosition="before">
 		<Data id="1" name="income" type="money">
 			<Description><![CDATA[
 The personal resources of the debtor are taken into account which are taxable as well as the social-security benefits, with the exception of those to improve the standard of living of the children (ex: family benefits).
@@ -9,13 +9,13 @@ The personal resources of the debtor are taken into account which are taxable as
 		</Data>
 		<Data id="2" name="AARight" type="choice" default="2">
 			<Description><![CDATA[
-Right of access and residence:
+<strong>Right of access and residence:</strong>
 
-reduced: the residence of the child is mainly fixed at one of the parents and the time of residence at the other parent is lower than 1/4 of the time of global residence. It can consist of a right of access and infrequent hosting because of the unavailability of the parent, or in a simple right of access, without hosting, if the parent does not arrange condition of adequate hosting or if this hosting would not be in accordance with the interest of the child;
+<strong>reduced</strong>: the residence of the child is mainly fixed at one of the parents and the time of residence at the other parent is lower than 1/4 of the time of global residence. It can consist of a right of access and infrequent hosting because of the unavailability of the parent, or in a simple right of access, without hosting, if the parent does not arrange condition of adequate hosting or if this hosting would not be in accordance with the interest of the child;
 
-classic: the residence is mainly fixed at one of the parents and the time of residence at the other parent is equivalent to 1/4 of the time( of global residence (ex: a weekend on two and half of the school holidays).;
+<strong>classic</strong>: the residence is mainly fixed at one of the parents and the time of residence at the other parent is equivalent to 1/4 of the time( of global residence (ex: a weekend on two and half of the school holidays).;
 
-alternated: the children live alternately in the residence of each of the parents. The alternated residence can give rise to contribution  to the education of the children when the parents did not agree on the sharing of expenses bound to the child according to their resources or when one of the parents cannot assume only the financial charge of the alternated residence.
+<strong>alternated</strong>: the children live alternately in the residence of each of the parents. The alternated residence can give rise to contribution  to the education of the children when the parents did not agree on the sharing of expenses bound to the child according to their resources or when one of the parents cannot assume only the financial charge of the alternated residence.
 			]]></Description>
 			<Choices>
 				<Choice id="1" value="1" label="reduced"/>
@@ -31,33 +31,40 @@ Total number of children chargeable to the debtor parent (whatever is the union 
 		<Data id="4" name="MARate" type="percent" source="1">
 			<Description><![CDATA[
 The rate is established according to a table of reference published annually by the Ministry of Justice:
-Right of access and reduced accommodation
-    1 child: 18,0% 
-	2 children: 15,5% 
-	3 children: 13,3% 
-	4 children: 11,7% 
-	5 children: 10,6 %
-	6 children: 9,5%
+<strong>Right of access and reduced accommodation</strong>
+<ul>
+<li>1 child : 18.0%</li>
+<li>2 children : 15.5%</li>
+<li>3 children : 13.3%</li>
+<li>4 children : 11.7%</li>
+<li>5 children : 10.6%</li>
+<li>6 children : 9.5%</li>
+</ul>
 
-Right of access and classic accommodation
-    1 child : 13,5%
-    2 children : 11,5%
-    3 children : 10,0%
-    4 children : 8,8%
-    5 children : 8,0%
-    6 children : 7,2%
+<strong>Right of access and classic accommodation</strong>
+<ul>
+<li>1 child : 13.5%</li>
+<li>2 children : 11.5%</li>
+<li>3 children : 10.0%</li>
+<li>4 children : 8.8%</li>
+<li>5 children : 8.0%</li>
+<li>6 children : 7.2%</li>
+</ul>
 
-Right of access and alternated accommodation
-    1 child : 9,0%
-    2 children : 7,8%
-    3 children : 6,7%
-    4 children : 5,9%
-    5 children : 5,3%
-    6 children : 4,8%
+<strong>Right of access and alternated accommodation</strong>
+<ul>
+<li>1 child : 9.0%</li>
+<li>2 children : 7.8%</li>
+<li>3 children : 6.7%</li>
+<li>4 children : 5.9%</li>
+<li>5 children : 5.3%</li>
+<li>6 children : 4.8%</li>
+</ul>
 			]]></Description>
 		</Data>
 		<!--Data id="5" name="lumpAmountRSA" label="Lump amount of the French RSA" type="money" source="2" index="'value'"-->
-		<Data id="5" name="lumpAmountRSA" label="Lump amount of the French RSA" type="money" source="2">
+		<!--Data id="5" name="lumpAmountRSA" label="Lump amount of the French RSA" type="money" source="2"-->
+		<Data id="5" name="lumpAmountRSA" label="Lump amount of the French RSA" type="money" content="524.16">
 			<Description><![CDATA[
 Lump amount of the RSA for a household made up of a single person.
 
@@ -122,7 +129,7 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 				</Panel>
 			</Panels>
 			<ActionList>
-				<Action name="reset" label="Reset" class="" what="reset" for="currentStep"/>
+				<Action name="reset" label="Reset" class="btn-primary" what="reset" for="currentStep"/>
 				<Action name="calculate" label="Calculate" class="" what="submit" for="currentStep"/>
 			</ActionList>
 		</Step>
@@ -132,9 +139,9 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 			<Parameter type="columnValue" name="AARight" data="2"/>
 			<Parameter type="columnValue" name="nChildren" data="3"/>
 		</Source>
-		<Source id="2" datasource="3" returnType="json" returnPath="//values/rsa_socle">
+		<!--Source id="2" datasource="3" returnType="json" returnPath="//values/rsa_socle">
 			<Parameter name="name" type="path" data="9" />
-		</Source>
+		</Source-->
 		<!--Source id="2" datasource="2" returnType="json" returnPath="//parameters/values[php:functionString('strtotime', start) &lt;= php:functionString('strtotime', translate('#(dateDuJour)', '/', '-')) and php:functionString('strtotime', stop) >= php:functionString('strtotime', translate('#(dateDuJour)', '/', '-'))]">
 			<Parameter name="name" type="queryString" data="9"/>
 		</Source-->

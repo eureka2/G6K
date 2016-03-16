@@ -1,21 +1,22 @@
-body {
-	padding: 0;
-	margin: 0;
-}
-
 header {
 	background-image: url(images/g6k-logo.png);
 	background-position: top left;
 	background-repeat: no-repeat;
 	background-color: black;
 	height: 99px;
-	margin: 0;
 	padding: 0;
 	vertical-align: middle;
+	width: 100%;
+	position: fixed;
+	z-index: 10;
 }
 header h1 {
+	margin-top: 0;
 	margin-left: 186px;
 	padding-top: 30px;
+}
+main {
+	padding-top: 100px;
 }
 h1, footer span {
 	color: #2B4E6B;
@@ -72,12 +73,12 @@ h1, footer span {
 	display: block;
 	float: left;
 	margin-bottom: 2px;
+	font-size: 100%;
 }
 .step-page label, .step-page .label {
 	text-align: right;
 	padding-right: 10px;
-	min-width: 25em;
-	width: 25em;
+	width: 35em;
 	color: #000;
 }
 .step-page label.choice {
@@ -98,28 +99,55 @@ h1, footer span {
   height: 20px;
   font-size: 1.4em;
   border: none; 
+  background: transparent;
 }
 @font-face { font-family: 'fonticon'; src: url("../webfonts/fonticon/fonticon.eot?-765im2"); src: url("../webfonts/fonticon/fonticon.eot?#iefixe-765im2") format("embedded-opentype"), url("../webfonts/fonticon/fonticon.woff?-765im2") format("woff"), url("../webfonts/fonticon/fonticon.ttf?-765im2") format("truetype"), url("../webfonts/fonticon/fonticon.svg?-765im2#fonticon") format("svg"); font-weight: normal; font-style: normal; }
 
 .icon { font-family: 'fonticon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; /* Better Font Rendering =========== */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-.icon-help:before { content: "\e603"; }
-
+.icon-help:before { 
+	content: "\e603"; 
+	color: #2B4E6B;
+}
+.listbox.blue a.listbox-button {
+    background-color: transparent;
+    color: #2B4E6B;
+}
+.listbox.blue a.listbox-button:hover, .listbox.blue a.listbox-button:focus {
+    background-color: #2B4E6B;
+    color: #fff;
+}
+.listbox.blue .listbox-edit {
+    color: #2B4E6B;
+}
 .step-page .btn-help .blank {
 	display: none;
 }
 .step-page .input-group ~ .btn-help {
-  margin: -1.5em 0.5em 0;
+  margin: 0 0.5em 0;
 }
 .step-page .output ~ .btn-help {
-  margin: -0.5em 0.5em 0;
+  margin: 0 0.5em 0;
 }
 
 .step-page .help-panel {
-  clear: both; }
-  .step-page .help-panel:before, .step-page .help-panel:after {
-    display: none; }
-
-
+  clear: both; 
+}
+.step-page .help-panel:before, .step-page .help-panel:after {
+    display: none; 
+}
+.step-page .help-panel dt {
+    display: none; 
+}
+.step-page .help-panel dd {
+    border: 1px solid #CCC; 
+}
+.step-page .legend {
+	font-weight: bold;
+	font-size: 1.5em;
+}
+.step-page input {
+	color: #2B4E6B;
+}
 .step-page input.has-error {
   font-weight: normal;
   border: 1px solid #c60000;
@@ -133,11 +161,11 @@ h1, footer span {
 	font-weight: bold;
 }
 .step-page .emphasized {
-	color: blue;
+	color: #2B4E6B;
 	font-weight: bold;
 }
 .step-page .explanation {
-	color: blue;
+	color: #2B4E6B;
 	font-weight: bold;
 	width: 25em;
 	float:right;
@@ -305,4 +333,4 @@ h1, footer span {
 }
 
 .help-panel { margin-top: -3px; }
-.help-panel p { margin-bottom:0.5em; width:534px}
+.help-panel p { margin-bottom:0.5em;}
