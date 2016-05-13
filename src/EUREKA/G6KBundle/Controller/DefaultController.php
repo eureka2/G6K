@@ -358,7 +358,6 @@ class DefaultController extends Controller {
 		$hiddens['view'] = $view;
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
-		header('Access-Control-Allow-Origin: https://www.service-public.fr.qualif.ext.dila.fr');
 		try {
 			$response =  $this->render(
 				'EUREKAG6KBundle:'.$view.'/'.$step->getTemplate(),
