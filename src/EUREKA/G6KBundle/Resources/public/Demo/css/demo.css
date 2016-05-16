@@ -35,6 +35,24 @@ h1, footer span {
 .step-page label .asterisk:nth-child(2) {
 	display: none;
 }
+.step-page input {
+	height: 1.3em;
+}
+.step-page input[type=text],
+.step-page input[type=date],
+.step-page input.date,
+.step-page input[type=number],
+.step-page input[type=money] {
+	box-sizing: border-box;
+	margin-top: 0;
+	margin-right: 0.5em;
+	padding-left: 0.2em;
+	height: auto;
+	line-height: 2em;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-color: #fff;
+}
 .step-page input[type=money]  {
 	max-width: 8em;
 	width: 8em;
@@ -51,6 +69,10 @@ h1, footer span {
 }
 .step-page .form-group[data-type=date]  .input-group {
 	max-width: 5.5em;
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+	width: 5.5em; /* useful only for safari < 5.1 */
 }
 
 .step-page input[type=number]  {
@@ -76,10 +98,12 @@ h1, footer span {
 	font-size: 100%;
 }
 .step-page label, .step-page .label {
-	text-align: right;
-	padding-right: 10px;
-	width: 35em;
+	padding: 0 0 0.3em;
+	width: 100%;
+	font-size: 1em;
 	color: #000;
+	text-align: left;
+	white-space:  normal;
 }
 .step-page label.choice {
 	text-align: left;
@@ -92,7 +116,29 @@ h1, footer span {
 }
 
 /*********************************************************
- * Bouton aide                                           *
+ * Money and percent symbol                                          *
+ *********************************************************/
+.step-page .input-group + span.money-symbol {
+	display: inline-block;
+	margin-top: -1.7em;
+	padding: 0;
+	vertical-align: middle;
+}
+.step-page .input-group + span.percent-symbol {
+	display: inline-block;
+	margin-top: -1.7em;
+	padding: 0;
+	vertical-align: middle;
+}
+.step-page .field-container[data-type=percent] input {
+	max-width: 3.5em;
+}
+.step-page .output span.money-symbol {
+	margin-top: 0;
+}
+
+/*********************************************************
+ * Help button                                          *
  *********************************************************/
 .step-page .btn-help {
   width: 20px;
@@ -107,6 +153,9 @@ h1, footer span {
 .icon-help:before { 
 	content: "\e603"; 
 	color: #2B4E6B;
+}
+.listbox {
+	max-width: 10em;
 }
 .listbox.blue a.listbox-button {
     background-color: transparent;
@@ -123,24 +172,40 @@ h1, footer span {
 	display: none;
 }
 .step-page .input-group ~ .btn-help {
-  margin: 0 0.5em 0;
+	margin: -1.9em 0.5em 0;
+}
+.step-page .form-group[data-type=money] .input-group ~ .btn-help {
+	margin: -0.5em 0.5em 0;
+}
+.step-page .listbox ~ .btn-help {
+	margin: -2.1em 0.5em 0;
+}
+.step-page .form-group[data-type=boolean] .input-group ~ .btn-help {
+	margin: -.5em 0.5em 0;
+}
+body.iOS .step-page .form-group[data-type=date] .input-group  ~ button.btn-help {
+	margin: -1.5em 0.5em 0 3em;
 }
 .step-page .output ~ .btn-help {
-  margin: 0 0.5em 0;
+	margin: -1em 0.5em 0;
 }
-
 .step-page .help-panel {
-  clear: both; 
+	clear: both;
 }
 .step-page .help-panel:before, .step-page .help-panel:after {
-    display: none; 
+	display: none;
 }
+
 .step-page .help-panel dt {
     display: none; 
 }
 .step-page .help-panel dd {
     border: 1px solid #CCC; 
 }
+.step-page fieldset legend {
+    display: none; 
+}
+
 .step-page .legend {
 	font-weight: bold;
 	font-size: 1.5em;
@@ -266,6 +331,14 @@ h1, footer span {
     border-left: 25px solid #fff; 
   } 
 }
+@media (min-width: 37em) {
+	.step-page label,
+	.step-page .label {
+		padding-right: 10px;
+		width: 50%;
+		text-align: right;
+	}
+}
 /*********************************************************
  * Grid                                                  *
  *********************************************************/
@@ -334,3 +407,7 @@ h1, footer span {
 
 .help-panel { margin-top: -3px; }
 .help-panel p { margin-bottom:0.5em;}
+
+#totalMA-container {
+	font-size: 1.5em;
+}
