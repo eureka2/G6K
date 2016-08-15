@@ -40,7 +40,7 @@ class ScriptHandler
 		$configDir = $symfonyDir . DIRECTORY_SEPARATOR . $extras['symfony-app-dir'] . DIRECTORY_SEPARATOR  .'config';
 		$databasesDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
 		try {
-			$config = Yaml::parse(file_get_contents($configDir . DIRECTORY_SEPARATOR . 'parameters.yml', false, true));
+			$config = Yaml::parse(file_get_contents($configDir . DIRECTORY_SEPARATOR . 'parameters.yml'), false, true);
 		} catch (ParseException $e) {
 			$event->getIO()->write(sprintf("Unable to parse parameters.yml: %s", $e->getMessage()));
 			return;
