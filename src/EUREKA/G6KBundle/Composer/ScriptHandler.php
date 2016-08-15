@@ -48,7 +48,7 @@ class ScriptHandler
 		$driver = $config->parameters->database_driver;
 		switch ($driver) {
 			case 'pdo_mysql':
-				$database = new Database(null, 1, 'mysqli', $config->parameters->database_name));
+				$database = new Database(null, 1, 'mysqli', $config->parameters->database_name);
 				$database->setHost($config->parameters->database_name);
 				if (isset($config->parameters->database_port)) {
 					$database->setPort($config->parameters->database_port);
@@ -59,7 +59,7 @@ class ScriptHandler
 				}
 				break;
 			case 'pdo_pgsql':
-				$database = new Database(null, 1, 'pgsql', $config->parameters->database_name));
+				$database = new Database(null, 1, 'pgsql', $config->parameters->database_name);
 				$database->setHost($config->parameters->database_name);
 				if (isset($config->parameters->database_port)) {
 					$database->setPort($config->parameters->database_port);
@@ -70,7 +70,7 @@ class ScriptHandler
 				}
 				break;
 			case 'pdo_sqlite':
-				$database = new Database(null, 1, 'pgsl', $config->parameters->database_path));
+				$database = new Database(null, 1, 'pgsl', $config->parameters->database_path);
 				break;
 			default:
 				$event->getIO()->write(sprintf("Unsupported database driver: %s", $driver));
