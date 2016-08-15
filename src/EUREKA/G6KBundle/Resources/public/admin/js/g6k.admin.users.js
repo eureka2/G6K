@@ -1,0 +1,140 @@
+/**
+The MIT License (MIT)
+
+Copyright (c) 2015 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+(function (global) {
+	'use strict';
+
+	function Users() {
+	};
+
+	Users.doeditable = function() {
+		$('#users').Tabledit({
+			url: 'users',
+			editButton: true,
+			deleteButton: true,
+			saveButton: true,
+			restoreButton: true,
+			autoFocus: false,
+			hideIdentifier: true,
+			buttons: {
+				save: {
+					html: 'Enregistrer'
+				},
+				confirm: {
+					html: 'Confirmer'
+				}
+			},
+			columns: {
+				identifier: [0, 'id'],
+				editable: [
+					[1, 'userName'], [2, 'email', 'email'], [3, 'password', 'password'], [4, 'enabled', 'checkbox', '{"1": "Yes", "0": "No"}', '1'], [5, 'locked', 'checkbox', '{"1": "Yes", "0": "No"}', '1'], [6, 'expired', 'checkbox', '{"1": "Yes", "0": "No"}', '1'], [7, 'expiresAt'], [8, 'credentialsExpired', 'checkbox', '{"1": "Yes", "0": "No"}', '1'], [9, 'credentialExpireAt'], [10, 'roles', 'multiple', '{ "ROLE_USER": "user", "ROLE_MANAGER": "manager", "ROLE_CONTRIBUTOR": "contributor", "ROLE_ADMIN": "admin", "ROLE_SUPER_ADMIN": "superadmin" }']
+				]
+			},
+			onDraw: function() {
+				$('td.date input').datepicker({
+					format: 'dd/mm/yyyy',
+					autoclose: true,
+					language: Admin.lang
+				});
+			},
+			onReset: function() {
+				$('.alert').hide();
+			},
+			onRowEdited: function(row) {
+				var errors = [];
+				var userName = row.find('input[name=userName]');
+				var email = row.find('input[name=email]');
+				var password = row.find('input[name=password]');
+				var expiresAt = row.find('input[name=expiresAt]');
+				var credentialExpireAt = row.find('input[name=credentialExpireAt]').val();
+				if (userName.val() == '' || userName.val().length < 3) {
+					errors.push('Please enter a valid user name (3 car. min).');
+				}
+				if (email.val() == '' || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.val())) {
+					errors.push('Please enter a valid email address.');
+				}
+				if (password.val() == '' || password.val().length < 6) {
+					errors.push('Please enter a valid password (6 car. min).');
+				}
+				var alert = $('.alert ul');
+				alert.empty();
+				if (errors.length > 0) {
+					$.each(errors, function (i, error) { alert.append('<li>' + error + '</li>'); });
+					$('.alert').show();
+					return false;
+				}
+				$('.alert').hide();
+				return true; 
+			},
+			onRowDeleted: function(row) {
+				// TODO: row validation here, if error returns false
+				return true; 
+			},
+			onSuccess: function(data, row, textStatus, jqXHR) {
+				if (data.error) {
+					setTimeout(function() {
+						row.find( 'button.tabledit-edit-button').trigger( "click" );;
+						var alert = $('.alert ul');
+						alert.empty();
+						alert.append('<li>' +data.error + '</li>');
+						$('.alert').show();
+					}, 1500);
+				} else if (data.action = 'edit' && data.id > 0) {
+					$('#users').find('.tabledit-input.tabledit-identifier').val(data.id);
+				}
+				return; 
+			},
+		});
+	}
+	global.Users = Users;
+}(this));
+
+$(document).ready(function() {
+	if ( $( "#page-users" ).length ) {
+		$('#page-users #btnAddNewRow').click(function() {
+			$('#page-users .tabledit-toolbar-column').remove();
+			$('#users tbody td').each(function() {
+				var text = $(this).find('.tabledit-span').text();
+				$(this).empty();
+				$(this).text(text);
+			});
+			$('#users tbody').prepend('<tr><td class="integer">0</td><td class="text"></td><td class="text"></td><td class="password"></td><td class="boolean">Yes</td><td class="boolean">No</td><td class="boolean">No</td><td class="date"></td><td class="boolean">No</td><td class="date"></td><td class="choice"></td><td class="date"></td></tr>');
+			Users.doeditable();
+			$('#users tbody tr:first-child').find('.tabledit-edit-button').trigger( "click" );
+		});
+		Users.doeditable();
+		$('#users').bdt({
+			pageRowCount: 20,
+			arrowDown: 'fa-angle-down',
+			arrowUp: 'fa-angle-up',
+			entriesPerPageText : 'Lignes par page',
+			previousText: 'Précédent',
+			nextText: 'Suivant',
+			searchText: 'Recherche...'
+		});
+		$('#users').resizableColumns({
+			store: store
+		});
+	}
+});

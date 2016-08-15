@@ -15,15 +15,15 @@ eureka_g6k_admin_datasources:
     defaults: { _controller: EUREKAG6KBundle:DataSourcesAdmin:index }
 
 eureka_g6k_admin_datasource:
-    path:     /admin/datasources/{dbname}
+    path:     /admin/datasources/{dsid}
     defaults: { _controller: EUREKAG6KBundle:DataSourcesAdmin:index }
 
 eureka_g6k_admin_datasource_table:
-    path:     /admin/datasources/{dbname}/{table}
+    path:     /admin/datasources/{dsid}/{table}
     defaults: { _controller: EUREKAG6KBundle:DataSourcesAdmin:index }
 
-eureka_g6k_admin_datasource_table_crud:
-    path:     /admin/datasources/{dbname}/{table}/{crud}
+eureka_g6k_admin_datasource_crud:
+    path:     /admin/datasources/{dsid}/{table}/{crud}
     defaults: { _controller: EUREKAG6KBundle:DataSourcesAdmin:index }
 
 eureka_g6k_admin_users:

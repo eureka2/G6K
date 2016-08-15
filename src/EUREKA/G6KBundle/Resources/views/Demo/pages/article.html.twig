@@ -1,51 +1,22 @@
-{# DO NOT MODIFY THIS FILE #}	
+{% extends "EUREKAG6KBundle:Demo/layout:pagelayout.html.twig" %}
 
-{% extends 'EUREKAG6KBundle:demo/layout:pagelayout.html.twig' %}
-
-{% block title %}{{ parent() }} - {{ step.label }}{% endblock %}
+{% block title %}{{step.simulator.label }} - {{ step.label }} - {{ parent() }}{% endblock %}
 
 {% block styles %}
-{{ parent() }}<link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/demo/css') }}/{{ step.simulator.name }}.css" />
+{{ parent() }}<link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/Demo/css/' ~ step.simulator.name ~ '.css') }}" />
 {% endblock %}
 
 {% block content %}
-<article>
-	<div id="step{{ step.id }}" class="step-page">
-	
-	<h1>{% block page_title %}{{ step.simulator.label }}{% endblock %}</h1>
-	{{ form.paragraphs(step.simulator.description|raw) }}
-	
-	{{ form.breadcrumb(_context) }}
-	
-	{% set simu = step.simulator %}
-	
-	<div class="step-description">
-		{{ form.paragraphs(step.description) }}
-	</div>
-	<div class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|raw }}</div>
-	
-	<form method="post" action="#main" enctype="multipart/form-data" id="g6k_form">
-	{{ form.row(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control') }}
-	</form>
-	
-	{%- for data in simu.datas -%}
-	{%- if data.class == "DataGroup" -%}
-		{%- for gdata in data.datas -%}
-			{%- if gdata.error -%}
-				Error on {{ gdata.name }}  : {{ gdata.errorMessage }}<br />
-			{% endif %}
-		{% endfor %}	
-	{% else %}		
-		{%- if data.error -%}
-			Error on {{ data.name }}  : {{ data.errorMessage }}<br />
-		{% endif %}
-	{% endif %}
-	{% endfor %}
-	{%- if simu.error -%}
-	{%- for gerror in simu.errorMessages -%}
-	Global error  : {{ gerror }}<br />
-	{% endfor %}
-	{% endif %}
-	</div>
-</article>
+	    <h1>{% block page_title %}{{ step.simulator.label }}{% endblock %}</h1>
+		{{ form.paragraphs(step.simulator.description|raw) }}
+		{{ form.breadcrumb(_context) }}
+
+		<div id="step{{ step.id }}" class="step-page step-container{% if step.simulator.dynamic %} dynamic{%- endif -%}{% if script == 0 %} no-js{%- endif -%}">
+			{{ form.heading(step.description, 2, "step-description legend") }}
+			<div class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|raw }}</div>
+			<form method="post" action="#main" enctype="multipart/form-data" id="g6k_form">
+			{{ form.row(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control', 'panel panel-default', 'panel-heading', 'panel-body') }}
+			</form>
+		</div>
+
 {% endblock %}

@@ -252,6 +252,7 @@
 														<xs:restriction base="xs:NMTOKEN">
 															<xs:enumeration value="queryString"/>
 															<xs:enumeration value="path"/>
+															<xs:enumeration value="data"/>
 															<xs:enumeration value="columnValue"/>
 														</xs:restriction>
 													</xs:simpleType>
@@ -272,10 +273,14 @@
 												<xs:enumeration value="xml"/>
 												<xs:enumeration value="singleValue"/>
 												<xs:enumeration value="assocArray"/>
+												<xs:enumeration value="html"/>
+												<xs:enumeration value="csv"/>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:attribute>
 									<xs:attribute name="returnPath" type="xs:string"/>
+									<xs:attribute name="separator" type="xs:string"/>
+									<xs:attribute name="delimiter" type="xs:string"/>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
@@ -452,6 +457,7 @@
 					<xs:enumeration value="department"/>
 					<xs:enumeration value="region"/>
 					<xs:enumeration value="country"/>
+					<xs:enumeration value="array"/>
 				</xs:restriction>
 			</xs:simpleType>
 		</xs:attribute>

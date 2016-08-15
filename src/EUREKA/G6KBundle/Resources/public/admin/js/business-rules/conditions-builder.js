@@ -106,6 +106,7 @@ THE SOFTWARE.
 						self.fields[name].operators = numericOperators;
 						break;
 					case 'choice':
+					case 'multichoice':
 						self.fields[name].operators = choiceOperators;
 						break;
 					case 'boolean':

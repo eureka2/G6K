@@ -11,7 +11,13 @@
 					<xs:complexType>
 						<xs:sequence minOccurs="0">
 							<xs:element name="Description" type="xs:string" minOccurs="0"/>
-							<xs:element name="Table" maxOccurs="unbounded">
+							<xs:element name="Namespace" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="prefix" type="xs:string"/>
+									<xs:attribute name="uri" type="xs:anyURI"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Table" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="Description" type="xs:string" minOccurs="0"/>
@@ -98,6 +104,14 @@
 							</xs:simpleType>
 						</xs:attribute>
 						<xs:attribute name="uri" type="xs:string"/>
+						<xs:attribute name="method" default="GET">
+							<xs:simpleType>
+								<xs:restriction base="xs:NMTOKEN">
+									<xs:enumeration value="GET"/>
+									<xs:enumeration value="POST"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
 						<xs:attribute name="database" type="xs:positiveInteger"/>
 					</xs:complexType>
 				</xs:element>

@@ -42,6 +42,8 @@ use EUREKA\G6KBundle\Entity\Field;
 use EUREKA\G6KBundle\Entity\BlockInfo;
 use EUREKA\G6KBundle\Entity\Chapter;
 use EUREKA\G6KBundle\Entity\Section;
+use EUREKA\G6KBundle\Entity\DOMClient as Client;
+use EUREKA\G6KBundle\Entity\ResultFilter;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -411,6 +413,12 @@ class DefaultController extends Controller {
 			$source->setReturnPath($form['returnPath']);
 		}
 		$result = $this->processSource($source);
+		if ($source->getReturnType() == 'xml') {
+			$result =  ResultFilter::xml2array($result);
+			if (count($result) == 1 && is_array($result[0])) {
+				$result = $result[0];
+			}
+		}
 		$response = new Response();
 		if ($this->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
 			$response->setContent(json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES | JSON_HEX_APOS | JSON_HEX_QUOT));
@@ -852,7 +860,10 @@ class DefaultController extends Controller {
 							$actionButton->setDisplayable($action->getName() == 'showObject');
 							break;
 						case 'choice':
-							$data =  $this->simu->getDataById($action->getData());
+							$panel = $step->getPanelById($action->getpanel());
+							$fieldset = $panel->getFieldSetById($action->getFieldset());
+							$field = $fieldset->getFieldByPosition($action->getField());
+							$data =  $this->simu->getDataById($field->getData());
 							$choice = $data->getChoiceById($action->getChoice());
 							$choice->setSelected($action->getName() == 'showObject');
 							break;
@@ -1016,6 +1027,7 @@ class DefaultController extends Controller {
 			case 'uri':
 				$query = "";
 				$path = "";
+				$datas = array();
 				foreach ($params as $param) {
 					$value = $this->formatParamValue($param);
 					if ($value === null) {
@@ -1023,6 +1035,13 @@ class DefaultController extends Controller {
 					}
 					if ($param->getType() == 'path') {
 						$path .= "/".$value;
+					} elseif ($param->getType() == 'data') {
+						$name = $param->getName();
+						if (isset($datas[$name])) {
+							$datas[$name][] = $value;
+						}  else {
+							$datas[$name] = array($value);
+						}
 					} else {
 						$query .= "&".$param->getName()."=".$value;
 					}
@@ -1037,7 +1056,12 @@ class DefaultController extends Controller {
 				if (isset($this->uricache[$uri])) {
 					$result = $this->uricache[$uri];
 				} else {
-					$result = file_get_contents($uri);
+					$client = Client::createClient();
+					if ($datasource->getMethod() == "GET") {
+						$result = $client->get($uri);
+					} else {
+						$result = $client->post($uri, $data);
+					}
 					$this->uricache[$uri] = $result;
 				}
 				break;
@@ -1065,26 +1089,7 @@ class DefaultController extends Controller {
 				$returnPath = $source->getReturnPath();
 				$returnPath = $this->replaceVariables($returnPath);
 				$json = json_decode($result, true);
-				// $keys = explode("/", $returnPath);
-				// foreach ($keys as $key) {
-					// if (preg_match("/^([^\[]+)\[([^\]]+)\]$/", $key, $matches)) {
-						// $key1 = $matches[1];
-						// if (! isset($json[$key1])) {
-							// break;
-						// }
-						// $json = $json[$key1];
-						// $key = $matches[2];
-					// }
-					// if (ctype_digit($key)) {
-						// $key = (int)$key;
-					// }
-					// if (! isset($json[$key])) {
-						// break;
-					// }
-					// $json = $json[$key];
-				// }
-				// return $json;
-				$result = $this->xPathFilter( "json", $json, $returnPath);
+				$result = ResultFilter::filter("json", $json, $returnPath);
 				return $result;
 			case 'assocArray':
 				$returnPath = $source->getReturnPath();
@@ -1093,10 +1098,10 @@ class DefaultController extends Controller {
 				foreach ($keys as $key) {
 					if (preg_match("/^([^\[]+)\[([^\]]+)\]$/", $key, $matches)) {
 						$key1 = $matches[1];
-						if (! isset($json[$key1])) {
+						if (! isset($result[$key1])) {
 							break;
 						}
-						$json = $json[$key1];
+						$result = $result[$key1];
 						$key = $matches[2];
 					}
 					if (ctype_digit($key)) {
@@ -1108,11 +1113,21 @@ class DefaultController extends Controller {
 					$result = $result[$key];
 				}
 				return $result;
+			case 'html':
+				$returnPath = $source->getReturnPath();
+				$returnPath = $this->replaceVariables($returnPath);
+				$result = ResultFilter::filter("html", $result, $returnPath, $datasource->getNamespaces());
+				return $result;
 			case 'xml':
 				$returnPath = $source->getReturnPath();
 				$returnPath = $this->replaceVariables($returnPath);
-				$xml = new SimpleXMLElement($result);
-				return $xml->xpath($returnPath);
+				$result = ResultFilter::filter("xml", $result, $returnPath, $datasource->getNamespaces());
+				return $result;
+			case 'csv':
+				$returnPath = $source->getReturnPath();
+				$returnPath = $this->replaceVariables($returnPath);
+				$result = ResultFilter::filter("csv", $result, $returnPath, null, $source->getSeparator(), $source->getDelimiter());
+				return $result;
 		}
 		return null;
 	}
@@ -1153,144 +1168,6 @@ class DefaultController extends Controller {
 		return false;
 	}
 
-	protected function createXML($node_name, $arr=array())
-	{
-		$this->xml = new \DomDocument('1.0', 'UTF-8');
-		$this->xml->formatOutput = true;
-		$this->xml->appendChild($this->convertToXML($node_name, $arr));
-		return $this->xml;
-	}
-
-	protected function bool2str($v)
-	{
-		$v = $v === true ? 'true' : $v;
-		$v = $v === false ? 'false' : $v;
-		return $v;
-	}
-
-	protected function isValidTagName($tag)
-	{
-		$pattern = '/^[a-z_]+[a-z0-9\:\-\.\_]*[^:]*$/i';
-		return preg_match($pattern, $tag, $matches) && $matches[0] == $tag;
-	}
-
-	protected function &convertToXML($node_name, $arr=array())
-	{
-		$node = $this->xml->createElement($node_name);
-		if(is_array($arr)){
-			if(isset($arr['@attributes'])) {
-				foreach($arr['@attributes'] as $key => $value) {
-					if(!$this->isValidTagName($key)) {
-						throw new \Exception('[Array2XML] Illegal character in attribute name. attribute: '.$key.' in node: '.$node_name);
-					}
-					$node->setAttribute($key, $this->bool2str($value));
-				}
-				unset($arr['@attributes']); 
-			}
-			if(isset($arr['@value'])) {
-				$node->appendChild($this->xml->createTextNode($this->bool2str($arr['@value'])));
-				unset($arr['@value']);
-				return $node;
-			} else if(isset($arr['@cdata'])) {
-				$node->appendChild($this->xml->createCDATASection($this->bool2str($arr['@cdata'])));
-				unset($arr['@cdata']);
-				return $node;
-			}
-		}
-		if(is_array($arr)){
-			foreach($arr as $key=>$value){
-				$attr = false;
-				if (preg_match("/^@(.+)$/", $key, $matches) && !is_array($value)) {
-					$key = $matches[1];
-					$attr = true;
-				}
-				if(!$this->isValidTagName($key)) {
-					throw new \Exception('[Array2XML] Illegal character in tag name. tag: '.$key.' in node: '.$node_name);
-				}
-				if ($attr) {
-					$node->setAttribute($key, $this->bool2str($value));
-				} elseif (is_array($value) && is_numeric(key($value))) {
-					foreach($value as $k=>$v){
-						if (is_array($v) && is_numeric(key($v))) {
-							$subnode = $this->xml->createElement($key);
-							foreach($v as $k1=>$v1){
-								$subnode->appendChild($this->convertToXML('sub-'.$key, $v1));
-							}
-							$node->appendChild($subnode);
-						} else {
-							$node->appendChild($this->convertToXML($key, $v));
-						}
-					}
-				} else {
-					$node->appendChild($this->convertToXML($key, $value));
-				}
-				unset($arr[$key]);
-			}
-		}
-		if(!is_array($arr)) {
-			$node->appendChild($this->xml->createTextNode($this->bool2str($arr)));
-		}
-		return $node;
-	}
-
-	protected function createArray($xml)
-	{
-		$result = $this->convertToArray($xml);
-		if (count($result) == 1 && is_array($result[0])) {
-			$result = $result[0];
-		}
-		if (count($result) == 1 && is_array($result)) {
-			$keys = array_keys($result);
-			if (count($keys) == 1 && $keys[0] == '#text') {
-				$result = $result[$keys[0]];
-			}
-		}
-		return $result;
-	}
-
-	protected function nodeHasChild( $node )
-	{
-		if ( $node->hasChildNodes() ) {
-			foreach ( $node->childNodes as $child ) {
-				if ( $child->nodeType == XML_ELEMENT_NODE ) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	protected function &convertToArray( $xml )
-	{
-		if ( $xml instanceOf \DOMNodeList ) {
-			$items = array();
-			foreach ( $xml as $item ) {
-				$items[] = $this->convertToArray( $item );
-			}
-			return $items;
-		}
-		$itemData = array();
-		foreach ( $xml->childNodes as $node ) {
-			if ( $this->nodeHasChild( $node ) ) {
-				$itemData[$node->nodeName] = $this->convertToArray( $node );
-			} else{
-				$itemData[$node->nodeName] = $node->nodeValue;
-			}
-		}
-		return $itemData;
-	}
-
-	protected function &xPathFilter( $root, $array, $returnPath )
-	{
-		$doc = $this->createXML($root, $array);
-		$xPath = new \DOMXPath($doc);
-		$xPath->registerNamespace("php", "http://php.net/xpath");
-		$xPath->registerPHPFunctions();
-		$filtered = $xPath->query($returnPath);
-		$result = $this->createArray($filtered);
-		return $result;
-	}
-
 	private function replaceVariable($matches)
 	{
 		if (preg_match("/^\d+$/", $matches[1])) {
@@ -1318,6 +1195,7 @@ class DefaultController extends Controller {
 				case 'number': 
 					$value = str_replace('.', ',', $value);
 					break;
+				case 'array': 
 				case 'multichoice': 
 					$value = implode(',', $value);
 					break;
