@@ -1,8 +1,8 @@
 parameters:
     database_driver: pdo_sqlite
-    database_host: ~
+    database_host: 127.0.0.1
     database_port: ~
-    database_name: ~
+    database_name: g6k
     database_user: ~
     database_password: ~
     database_path: %kernel.root_dir%/../src/EUREKA/G6KBundle/Resources/data/databases/g6k.db
