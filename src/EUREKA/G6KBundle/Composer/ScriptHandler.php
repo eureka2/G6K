@@ -94,6 +94,7 @@ class ScriptHandler
 		foreach($script as $i => $sql) {
 			try {
 				if ($i == 1) {
+					$database->setConnected(false);
 					$database->connect();
 				}
 				$database->exec($sql);
