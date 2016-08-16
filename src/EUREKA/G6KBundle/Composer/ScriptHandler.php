@@ -35,6 +35,7 @@ use EUREKA\G6KBundle\Entity\Database;
 class ScriptHandler
 {
 	public static function installUsers(Event $event) {
+		$event->getIO()->write("Installing the users of the administration interface");
 		$extras = $event->getComposer()->getPackage()->getExtra();
 		$symfonyDir = dirname(dirname(dirname(dirname(__DIR__))));
 		$appDir = $symfonyDir . DIRECTORY_SEPARATOR . $extras['symfony-app-dir'];
@@ -84,14 +85,17 @@ class ScriptHandler
 			return;
 		}
 		try {
-			$database->connect();
+			$database->connect(false);
 		} catch (\Exception $e) {
 			$event->getIO()->write("Can't connect to database : " . $e->getMessage());
 			return;
 		}
 		$script = preg_split ("/;\n/", $script, -1,  PREG_SPLIT_NO_EMPTY);
-		foreach($script as $sql) {
+		foreach($script as $i => $sql) {
 			try {
+				if ($i == 1) {
+					$database->connect();
+				}
 				$database->exec($sql);
 			} catch (\Exception $e) {
 				$event->getIO()->write("Can't execute install users script : " . $e->getMessage());
