@@ -5,3 +5,7 @@ services:
         class: EUREKA\G6KBundle\EventListener\G6KExceptionListener
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    g6k.file_uploader:
+        class: EUREKA\G6KBundle\Services\FileUploader
+        arguments: ['%g6k_upload_directory%']

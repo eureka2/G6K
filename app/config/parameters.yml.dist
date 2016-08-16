@@ -18,3 +18,5 @@ parameters:
     debug_toolbar:          true
     debug_redirects:        false
     use_assetic_controller: true
+
+    g6k_upload_directory: '%kernel.root_dir%/../calcul/uploads'
