@@ -39,7 +39,35 @@ class Database {
 	private $password;
 	private $connected = false;
 	private $link = null;
-	
+
+	private $myformat = array(
+		'd' => '%d',
+		'f' => '%f',
+		'H' => '%H',
+		'j' => '%j',
+		'J' => '%J',
+		'm' => '%m',
+		'M' => '%i',
+		'S' => '%S',
+		'w' => '%w',
+		'W' => '%U',
+		'Y' => '%Y'
+	);
+
+	private $pgformat = array(
+		'd' => 'DD',
+		'f' => 'SS.SSS',
+		'H' => 'HH24',
+		'j' => 'DDD',
+		'J' => 'J',
+		'm' => 'MM',
+		'M' => 'MI',
+		'S' => 'SS',
+		'w' => 'D',
+		'W' => 'WW',
+		'Y' => 'YYYY'
+	);
+
 	public function __construct($simulator, $id, $type, $name) {
 		$this->simulator = $simulator;
 		$this->id = $id;
@@ -115,6 +143,10 @@ class Database {
 		$this->password = $password;
 	}
 	
+	public function getConnection() {
+		return $this->link;
+	}
+	
 	public function isConnected() {
 		return $this->connected;
 	}
@@ -123,43 +155,68 @@ class Database {
 		$this->connected = $connected;
 	}
 	
-	public function connect() {
+	public function connect($withDbName = true) {
 		if (! $this->isConnected()) {
 			switch ($this->type) {
 				case "mysql":
 					$this->link = @mysql_connect($this->host, $this->user, $this->password);
-					if ($this->link) {
-						if (@mysql_select_db($this->name, $this->link))
-							return $this->link;
-						else
-							throw new \Exception ('Unable to select database. MySQL reported: '.mysql_error());
-					} else
-						throw new \Exception('Unable to connect to MySQL server. MySQL reported: '.mysql_error());
+					if ($withDbName) {
+						if ($this->link) {
+							if (@mysql_select_db(str_replace('-', '_', $this->name), $this->link)) {
+								@mysql_query("SET NAMES UTF8", $this->link);
+								return $this->link;
+							} else
+								throw new \Exception ('Unable to select database. MySQL reported: '.mysql_error());
+						} else
+							throw new \Exception('Unable to connect to MySQL server. MySQL reported: '.mysql_error());
+					}
 					break;
 				case "mysqli":
 					if (strpos($this->host, ':') !== false)
 						list($this->host, $this->port) = explode(':', $this->host);
-					if (isset($this->port))
-						$this->link = new \PDO(sprintf('mysql:host=%s;port=%s;dbname=%s',$this->host, $this->port, $this->name), $this->user, $this->password);
-					else
-						$this->link = new \PDO(sprintf('mysql:host=%s;dbname=%s',$this->host, $this->name), $this->user, $this->password);
+					$dsn = array(
+						'host=' . $this->host
+					);
+					if (isset($this->port)) {
+						$dsn[] = 'port=' . $this->port;
+					}
+					if (isset($this->name) && $withDbName) {
+						$dsn[] = 'dbname=' . str_replace('-', '_', $this->name);
+					}
+					$this->link = new \PDO('mysql:' . implode(';', $dsn), 
+						$this->user, 
+						$this->password,
+						array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
+					);
 					$this->link->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 					$this->link->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+					$this->link->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
 					break;
 				case "pgsql":
 					if (strpos($this->host, ':') !== false)
 						list($this->host, $this->port) = explode(':', $this->host);
-					if (isset($this->port))
-						$this->link = new \PDO(sprintf('pgsql:host=%s;port=%s;dbname=%s',$this->host, $this->port, $this->name), $this->user, $this->password);
-					else
-						$this->link = new \PDO(sprintf('pgsql:host=%s;dbname=%s',$this->host, $this->name), $this->user, $this->password);
+					$dsn = array(
+						'host=' . $this->host
+					);
+					if (isset($this->port)) {
+						$dsn[] = 'port=' . $this->port;
+					}
+					if (isset($this->name) && $withDbName) {
+						$dsn[] = 'dbname=' . str_replace('-', '_', $this->name);
+					}
+					$this->link = new \PDO('pgsql:' . implode(';', $dsn), $this->user, $this->password);
 					$this->link->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 					$this->link->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+					$this->link->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
 					break;
 				case "sqlite":
 					$this->link = new \PDO('sqlite:'.dirname(dirname(__FILE__)).'/Resources/data/databases/'.$this->name);
 					$this->link->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 					$this->link->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+					$this->link->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+					break;
+				case "jsonsql":
+					$this->link = JsonSQL::open(dirname(dirname(__FILE__)).'/Resources/data/databases/'.$this->name, true);
 					break;
 			}
 			$this->setConnected(true);
@@ -168,6 +225,7 @@ class Database {
 	}
 
 	public function query($sql, $unbuffered = false) {
+		$sql = $this->convertSQLFunctions($sql);
 		$query_result = false;
 		switch ($this->type) {
 			case "mysql":
@@ -181,18 +239,140 @@ class Database {
 				} else {
 					$query_result = array();
 					while ($row = @mysql_fetch_assoc($stmt)) {
-						$query_result[] = $row;						
+						$query_result[] = $row;
 					}
 				}
 				break;
 			case "pgsql":
 			case "mysqli":
 			case "sqlite":
+			case "jsonsql":
 				$stmt = $this->link->query($sql);
 				$query_result = $stmt->fetchAll();
 				break;
 		}
 		return $query_result;
+	}
+
+	public function prepare($sql) {
+		$sql = $this->convertSQLFunctions($sql);
+		$stmt = false;
+		switch ($this->type) {
+			case "mysql":
+				throw new \Exception ('prepare is not implemented for this driver');
+				break;
+			case "pgsql":
+			case "mysqli":
+			case "sqlite":
+			case "jsonsql":
+				$stmt = $this->link->prepare($sql);
+				break;
+		}
+		return $stmt;
+	}
+
+	public function bindParam($stmt, $parameter, &$variable, $type='text') {
+		$result = false;
+		switch ($this->type) {
+			case "mysql":
+				throw new \Exception ('bindParam is not implemented for this driver');
+				break;
+			case "pgsql":
+			case "mysqli":
+			case "sqlite":
+			case "jsonsql":
+				switch ($type) {
+					case 'number':
+					case 'integer':
+					case 'money':
+					case 'percent':
+					case 'month':
+					case 'year':
+						$data_type = \PDO::PARAM_INT;
+					case 'boolean':
+						$data_type = \PDO::PARAM_BOOL;
+					default:
+						$data_type = \PDO::PARAM_STR;
+				}
+				$result = $stmt->bindParam($parameter, $variable, $data_type);
+				break;
+		}
+		return $result;
+	}
+
+	public function bindValue($stmt, $parameter, $value, $type='text') {
+		$result = false;
+		switch ($this->type) {
+			case "mysql":
+				throw new \Exception ('bindValue is not implemented for this driver');
+				break;
+			case "pgsql":
+			case "mysqli":
+			case "sqlite":
+			case "jsonsql":
+				switch ($type) {
+					case 'number':
+					case 'integer':
+					case 'money':
+					case 'percent':
+					case 'month':
+					case 'year':
+						$data_type = \PDO::PARAM_INT;
+					case 'boolean':
+						$data_type = \PDO::PARAM_BOOL;
+					default:
+						$data_type = \PDO::PARAM_STR;
+				}
+				$result = $stmt->bindValue($parameter, $value, $data_type);
+				break;
+		}
+		return $result;
+	}
+
+	public function execute($stmt) {
+		$query_result = false;
+		switch ($this->type) {
+			case "mysql":
+				throw new \Exception ('execute is not implemented for this driver');
+				break;
+			case "pgsql":
+			case "mysqli":
+			case "sqlite":
+			case "jsonsql":
+				if ($stmt->execute()) {
+					$query_result = $stmt->fetchAll();
+				}
+				break;
+		}
+		return $query_result;
+	}
+
+	public function exec($sql) {
+		$affected = false;
+		switch ($this->type) {
+			case "mysql":
+				$result = @mysql_query($sql, $this->link);
+				if ($result) {
+					$affected = mysql_affected_rows($this->link);
+				} else if (mysql_errno()) {
+					throw new \Exception(mysql_errno().": ".mysql_error());
+				} 
+				break;
+			case "pgsql":
+			case "mysqli":
+			case "sqlite":
+			case "jsonsql":
+				$affected = $this->link->exec($sql);
+				if ($affected === false) {
+					$err = $this->pdo->errorInfo();
+					if ($err[0] === '00000' || $err[0] === '01000') {
+						return 1;
+					}
+					throw new \Exception(implode(' - ', $err));
+				}
+				break;
+		}
+		return $affected;
 	}
 
 	public function quote($value) {
@@ -203,6 +383,7 @@ class Database {
 			case "pgsql":
 			case "mysqli":
 			case "sqlite":
+			case "jsonsql":
 				return $this->link->quote($value);
 		}
 		return $value;
@@ -215,11 +396,40 @@ class Database {
 			case "pgsql":
 			case "mysqli":
 			case "sqlite":
+			case "jsonsql":
 				return $this->link->lastInsertId();
 		}
 		return 0;
 	}
 
+	private function convertSQLFunctions($sql) {
+		switch ($this->type) {
+			case "mysql":
+			case "mysqli":
+				$myformat = &$this->myformat;
+				$sql = preg_replace_callback("/\bstrftime\s*\(((?>[^()]+)|(?R))*\)/i", function ($r) use ($myformat) {
+					$args = explode(',', $r[1]);
+					$format = trim($args[0]);
+					$args[0] = preg_replace_callback("/\%(\w)/", function ($m) use ($myformat) {
+						return $myformat[$m[1]];
+					}, $format);
+					return 'DATE_FORMAT('.trim(implode(', ', array_reverse ($args))).')';
+				}, $sql);
+				break;
+			case "pgsql":
+				$pgformat = &$this->pgformat;
+				$sql = preg_replace_callback("/\bstrftime\s*\(((?>[^()]+)|(?R))*\)/i", function ($r) use ($pgformat) {
+					$args = explode(',', $r[1]);
+					$format = trim($args[0]);
+					$args[0] = preg_replace_callback("/\%(\w)/", function ($m) use ($pgformat) {
+						return $pgformat[$m[1]];
+					}, $format);
+					return 'to_char('.trim(implode(', ', array_reverse ($args))).')';
+				}, $sql);
+				break;
+		}
+		return $sql;
+	}
 }
 
 ?>

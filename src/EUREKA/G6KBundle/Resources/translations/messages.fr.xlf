@@ -62,54 +62,62 @@
                 <source>Year</source>
                 <target>Année</target>
             </trans-unit>
-            <trans-unit id="16">
+             <trans-unit id="16">
+                <source>Steps of your simulation</source>
+                <target>Les étapes de votre simulation</target>
+            </trans-unit>
+           <trans-unit id="17">
                 <source>Current step</source>
                 <target>Etape courante</target>
             </trans-unit>
-            <trans-unit id="17">
+            <trans-unit id="18">
                 <source>Fields marked with an %asterisk% are required.</source>
                 <target>Les champs marqués d'un %asterisk% sont obligatoires.</target>
             </trans-unit>
-            <trans-unit id="18">
+            <trans-unit id="19">
                 <source>This simulator does not exist</source>
                 <target>Ce simulateur n'existe pas</target>
             </trans-unit>
-            <trans-unit id="19">
+            <trans-unit id="20">
                 <source>The '%field%' field is required</source>
                 <target>Le champ '%field%' est requis</target>
             </trans-unit>
-            <trans-unit id="20">
+            <trans-unit id="21">
                 <source>This field is required</source>
                 <target>Ce champ est requis</target>
             </trans-unit>
-            <trans-unit id="21">
+            <trans-unit id="22">
                 <source>This value is not in the expected format</source>
                 <target>Cette donnée n'est pas au format attendu</target>
             </trans-unit>
-            <trans-unit id="22">
+            <trans-unit id="23">
                 <source>This value is not in the expected format (%format%)</source>
                 <target>Cette donnée n'est pas au format attendu (%format%)</target>
             </trans-unit>
-            <trans-unit id="23">
+            <trans-unit id="24">
                 <source>This template does not exist</source>
                 <target>Ce template n'existe pas</target>
             </trans-unit>
-            <trans-unit id="24">
+            <trans-unit id="25">
                 <source>This value can not be less than %min%</source>
                 <target>Cette donnée ne peut être inférieure à %min%</target>
             </trans-unit>
-            <trans-unit id="25">
+            <trans-unit id="26">
                 <source>This value can not be greater than %max%</source>
                 <target>Cette donnée ne peut être supérieure à %max%</target>
             </trans-unit>
-            <trans-unit id="26">
+            <trans-unit id="27">
                 <source>Simulation performed on %host% on %date%</source>
                 <target>Simulation réalisée sur %host% le %date%</target>
             </trans-unit>
-            <trans-unit id="27">
+            <trans-unit id="28">
                 <source>Page %pageno% of %numberofpages%</source>
                 <target>Page %pageno%/%numberofpages%</target>
             </trans-unit>
-     </body>
+             <trans-unit id="29">
+                <source>Data to continue this simulation are not accessible. Please try again later.</source>
+                <target>Les données permettant de continuer cette simulation ne sont plus accessibles. Veuillez recommencer ultérieurement.</target>
+            </trans-unit>
+    </body>
     </file>
 </xliff>

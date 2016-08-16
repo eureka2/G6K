@@ -163,6 +163,10 @@ class DataSourcesAdminController extends BaseAdminController {
 			}
 			if ($crud == 'create-datasource') {
 				return $this->createDatasource ($form);
+			} elseif ($crud == 'import-datasource') {
+				return $this->showDatasources(0, null, "import");
+			} elseif ($crud == 'doimport-datasource') {
+				return $this->doImportDatasource($request->files->all());
 			} elseif ($crud == 'edit-datasource') {
 				return $this->showDatasources($dsid, null, "edit");
 			} elseif ($crud == 'doedit-datasource') {
@@ -276,25 +280,37 @@ class DataSourcesAdminController extends BaseAdminController {
 							break;
 					}
 				}
-				$datasource = array(
-					'action' => 'create',
-					'id' => 0,
-					'type' => 'internal',
-					'name' => 'New Datasource',
-					'label' => 'New Datasource',
-					'database' => array(
-						'id' => 0, 
-						'type' => $type, 
-						'name' => '', 
-						'label' => '', 
-						'host' => $this->get('kernel')->getContainer()->hasParameter('database_host') ? $this->get('kernel')->getContainer()->getParameter('database_host') : '', 
-						'port' => $this->get('kernel')->getContainer()->hasParameter('database_port') ? $this->get('kernel')->getContainer()->getParameter('database_port') : '',
-						'user' => $this->get('kernel')->getContainer()->hasParameter('database_user') ? $this->get('kernel')->getContainer()->getParameter('database_user') : '', 
-						'password' => ''
-					),
-					'uri' => '',
-					'description' => '',
-				);
+				if ($action == 'import') {
+					$datasource = array(
+						'action' => 'import',
+						'id' => 0,
+						'type' => 'internal',
+						'name' => 'Import Datasource',
+						'label' => 'Import Datasource',
+						'uri' => '',
+						'description' => '',
+					);
+				} else {
+					$datasource = array(
+						'action' => 'create',
+						'id' => 0,
+						'type' => 'internal',
+						'name' => 'New Datasource',
+						'label' => 'New Datasource',
+						'database' => array(
+							'id' => 0, 
+							'type' => $type, 
+							'name' => '', 
+							'label' => '', 
+							'host' => $this->get('kernel')->getContainer()->hasParameter('database_host') ? $this->get('kernel')->getContainer()->getParameter('database_host') : '', 
+							'port' => $this->get('kernel')->getContainer()->hasParameter('database_port') ? $this->get('kernel')->getContainer()->getParameter('database_port') : '',
+							'user' => $this->get('kernel')->getContainer()->hasParameter('database_user') ? $this->get('kernel')->getContainer()->getParameter('database_user') : '', 
+							'password' => ''
+						),
+						'uri' => '',
+						'description' => '',
+					);
+				}
 			} else {
 				$dss = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
 				$datasource = array(
@@ -412,6 +428,30 @@ class DataSourcesAdminController extends BaseAdminController {
 			echo $e->getMessage();
 			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
 		}
+	}
+	
+	protected function doImportDatasource($files) {
+		$uploadDir = str_replace("\\", "/", $this->get('kernel')->getContainer()->getParameter('g6k_upload_directory'));
+		$form = array();
+		$schema = null;
+		$data = null;
+		foreach ($files as $name => $file) {
+			$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+			$form[] = array(
+				'name' => $name,
+				'filePath' => $filePath
+			);
+			if ($name == 'datasource-schema-file') {
+				$schema = file_get_contents($filePath);
+			} elseif ($name == 'datasource-data-file') {
+				$data = file_get_contents($filePath);
+			}
+			unlink($filePath);
+		}
+		$response = new Response();
+		$response->setContent(json_encode($form));
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
 	}
 
 	protected function processSource($source) {

@@ -1022,7 +1022,12 @@ class DefaultController extends Controller {
 	protected function processSource(Source $source) 
 	{
 		$params = $source->getParameters();
-		$datasource = $this->simu->getDatasourceById($source->getDatasource());
+		$datasource = $source->getDatasource();
+		if (is_numeric($datasource)) {
+			$datasource = $this->simu->getDatasourceById((int)$datasource);
+		} else {
+			$datasource = $this->simu->getDatasourceByName($datasource);
+		}
 		switch ($datasource->getType()) {
 			case 'uri':
 				$query = "";

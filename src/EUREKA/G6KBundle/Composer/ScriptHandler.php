@@ -37,40 +37,43 @@ class ScriptHandler
 	public static function installUsers(Event $event) {
 		$extras = $event->getComposer()->getPackage()->getExtra();
 		$symfonyDir = dirname(dirname(dirname(dirname(__DIR__))));
-		$configDir = $symfonyDir . DIRECTORY_SEPARATOR . $extras['symfony-app-dir'] . DIRECTORY_SEPARATOR  .'config';
+		$appDir = $symfonyDir . DIRECTORY_SEPARATOR . $extras['symfony-app-dir'];
+		$configDir = $appDir . DIRECTORY_SEPARATOR  .'config';
 		$databasesDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
 		try {
-			$config = Yaml::parse(file_get_contents($configDir . DIRECTORY_SEPARATOR . 'parameters.yml'), false, true);
+			$config = Yaml::parse(file_get_contents($configDir . DIRECTORY_SEPARATOR . 'parameters.yml'));
+			$parameters = (object)$config['parameters'];
 		} catch (ParseException $e) {
 			$event->getIO()->write(sprintf("Unable to parse parameters.yml: %s", $e->getMessage()));
 			return;
 		}
-		$driver = $config->parameters->database_driver;
+		$driver = $parameters->database_driver;
 		switch ($driver) {
 			case 'pdo_mysql':
-				$database = new Database(null, 1, 'mysqli', $config->parameters->database_name);
-				$database->setHost($config->parameters->database_name);
-				if (isset($config->parameters->database_port)) {
-					$database->setPort($config->parameters->database_port);
+				$database = new Database(null, 1, 'mysqli', $parameters->database_name);
+				$database->setHost($parameters->database_name);
+				if (isset($parameters->database_port)) {
+					$database->setPort($parameters->database_port);
 				}
-				$database->setUser($config->parameters->database_user);
-				if (isset($config->parameters->database_password)) {
-					$database->setPort($config->parameters->database_password);
+				$database->setUser($parameters->database_user);
+				if (isset($parameters->database_password)) {
+					$database->setPort($parameters->database_password);
 				}
 				break;
 			case 'pdo_pgsql':
-				$database = new Database(null, 1, 'pgsql', $config->parameters->database_name);
-				$database->setHost($config->parameters->database_name);
-				if (isset($config->parameters->database_port)) {
-					$database->setPort($config->parameters->database_port);
+				$database = new Database(null, 1, 'pgsql', $parameters->database_name);
+				$database->setHost($parameters->database_name);
+				if (isset($parameters->database_port)) {
+					$database->setPort($parameters->database_port);
 				}
-				$database->setUser($config->parameters->database_user);
-				if (isset($config->parameters->database_password)) {
-					$database->setPort($config->parameters->database_password);
+				$database->setUser($parameters->database_user);
+				if (isset($parameters->database_password)) {
+					$database->setPort($parameters->database_password);
 				}
 				break;
 			case 'pdo_sqlite':
-				$database = new Database(null, 1, 'pgsl', $config->parameters->database_path);
+				$name = basename($parameters->database_path);
+				$database = new Database(null, 1, 'sqlite', $name);
 				break;
 			default:
 				$event->getIO()->write(sprintf("Unsupported database driver: %s", $driver));
@@ -80,12 +83,19 @@ class ScriptHandler
 			$event->getIO()->write(sprintf("Unable to read  %s", $databasesDir . DIRECTORY_SEPARATOR . 'fos_user.sql'));
 			return;
 		}
-		$script = preg_split ("/;\n/", $script);
+		try {
+			$database->connect();
+		} catch (\Exception $e) {
+			$event->getIO()->write("Can't connect to database : " . $e->getMessage());
+			return;
+		}
+		$script = preg_split ("/;\n/", $script, -1,  PREG_SPLIT_NO_EMPTY);
 		foreach($script as $sql) {
 			try {
 				$database->exec($sql);
-			} catch (Exception $e) {
-				return "Can't execute install users script : " . $e->getMessage();
+			} catch (\Exception $e) {
+				$event->getIO()->write("Can't execute install users script : " . $e->getMessage());
+				break;
 			}
 		}
 	}

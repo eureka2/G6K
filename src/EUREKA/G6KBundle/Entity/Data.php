@@ -32,7 +32,7 @@ class Data {
 	private $id = 0;
 	private $name = "";
 	private $label = "";
-	private $type = ""; // date, boolean, number, integer, text, textarea, money, choice, multichoice, percent, table, department region, country
+	private $type = ""; // date, boolean, number, integer, text, textarea, money, choice, multichoice, percent, table, department region, country, array
 	private $min = "";
 	private $unparsedMin = "";
 	private $max = "";
@@ -330,7 +330,7 @@ class Data {
 	}
 
 	public function getValue() {
-		if ($this->type == 'multichoice') {
+		if ($this->type == 'multichoice' || $this->type == 'array') {
 			return $this->value;
 		} else {
 			$value = isset($this->value) && $this->value != "" ? $this->value : $this->default;
@@ -342,7 +342,7 @@ class Data {
 	}
 
 	public function getPlainValue() {
-		if ($this->type == 'multichoice') {
+		if ($this->type == 'multichoice' || $this->type == 'array') {
 			return json_encode($this->value);
 		} else {
 			return $this->value;
@@ -359,6 +359,7 @@ class Data {
 			case 'number': 
 				$value = str_replace(',', '.', $value);
 				break;
+			case 'array': 
 			case 'multichoice': 
 				if (! is_array($value)) {
 					if (preg_match("/^\[.*\]$/", $value)) {
@@ -459,7 +460,7 @@ class Data {
 	}
 
 	public function check() {
-		if ($this->type != 'multichoice' && $this->value == "") {
+		if ($this->type != 'multichoice' && $this->type != 'array' && $this->value == "") {
 			return true;
 		}
 		switch ($this->type) {

@@ -322,6 +322,15 @@ class Simulator {
 		return null;
 	}
 
+	public function getDatasourceByName($name) {
+		foreach ($this->datasources as $datasource) {
+			if ($datasource->getName() == $name) {
+				return $datasource;
+			}
+		}
+		return null;
+	}
+
 	public function getSourceById($id) {
 		foreach ($this->sources as $source) {
 			if ($source->getId() == $id) {
@@ -470,8 +479,12 @@ class Simulator {
 		foreach ($datasources->DataSource as $datasource) {
 			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
 			$datasourceObj->setUri((string)$datasource['uri']);
+			$datasourceObj->setMethod((string)$datasource['method']);
 			$datasourceObj->setDatabase((int)$datasource['database']);
 			$datasourceObj->setDescription($datasource->Description);
+			foreach ($datasource->Namespace as $namespace) {
+				$datasourceObj->addNamespace((string)$namespace['prefix'], (string)$namespace['uri']);
+			}
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {
@@ -694,8 +707,10 @@ class Simulator {
 		}
 		if ($simulator->Sources) {
 			foreach ($simulator->Sources->Source as $source) {
-				$sourceObj = new Source($this, (int)$source['id'], (int)$source['datasource'], (string)$source['returnType']);
+				$sourceObj = new Source($this, (int)$source['id'], (string)$source['datasource'], (string)$source['returnType']);
 				$sourceObj->setRequest((string)$source['request']);
+				$sourceObj->setSeparator((string)$source['separator']);
+				$sourceObj->setDelimiter((string)$source['delimiter']);
 				$sourceObj->setReturnPath((string)$source['returnPath']);
 				foreach ($source->Parameter as $parameter) {
 					$parameterObj = new Parameter($sourceObj, (string)$parameter['type']);
@@ -790,6 +805,7 @@ class Simulator {
 		foreach ($datasources->DataSource as $datasource) {
 			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
 			$datasourceObj->setUri((string)$datasource['uri']);
+			$datasourceObj->setMethod((string)$datasource['method']);
 			$datasourceObj->setDatabase((int)$datasource['database']);
 			$datasourceObj->setDescription($datasource->Description);
 			$this->datasources[] = $datasourceObj;
@@ -834,8 +850,10 @@ class Simulator {
 		}
 		if ($simulator->Sources) {
 			foreach ($simulator->Sources->Source as $source) {
-				$sourceObj = new Source($this, (int)$source['id'], (int)$source['datasource'], (string)$source['returnType']);
+				$sourceObj = new Source($this, (int)$source['id'], (string)$source['datasource'], (string)$source['returnType']);
 				$sourceObj->setRequest((string)$source['request']);
+				$sourceObj->setSeparator((string)$source['separator']);
+				$sourceObj->setDelimiter((string)$source['delimiter']);
 				$sourceObj->setReturnPath((string)$source['returnPath']);
 				foreach ($source->Parameter as $parameter) {
 					$parameterObj = new Parameter($sourceObj, (string)$parameter['type']);
@@ -1239,6 +1257,27 @@ class Simulator {
 								)
 							);
 							break;
+						case 'choice':
+							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+									array('name' => 'objectId', 'value' => $target, 'fields' => array(
+											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+															array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
+																	array('name' => 'fieldId', 'value' => (string)$action['field'], 'fields' => array(
+																			array('name' => 'choiceId', 'value' => (string)$action[$target])
+																		)
+																	)
+																)
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							);
+							break;
 					}
 					break;
 				case 'setAttribute':
@@ -1468,6 +1507,8 @@ class Simulator {
 					$parameters[(string)$parameter['name']] = $data['name'];
 					$this->addDependency(array(null, (int)$parameter['data']));
 				}
+				$sources[$id]['separator'] = (string)$source['separator'];
+				$sources[$id]['delimiter'] = (string)$source['delimiter'];
 				$sources[$id]['parameters'] = $parameters;
 				$sources[$id]['returnPath'] = $this->replaceIdByName((string)$source['returnPath']);
 			}
@@ -1958,6 +1999,12 @@ class Simulator {
 				}
 				if ($source->getReturnType() != '') {
 					$attrs .= ' returnType="' . $source->getReturnType() . '"'; 
+				}
+				if ($source->getSeparator() != '' && $source->getSeparator() != ';') {
+					$attrs .= ' separator="' . $source->getSeparator() . '"'; 
+				}
+				if ($source->getDelimiter() != '') {
+					$attrs .= ' delimiter="' . $source->getDelimiter() . '"'; 
 				}
 				if ($source->getReturnPath() != '') {
 					$attrs .= ' returnPath="' . $source->getReturnPath() . '"';

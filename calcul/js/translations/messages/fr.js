@@ -27,4 +27,5 @@
     Translator.add("This value can not be greater than %max%", "Cette donn\u00e9e ne peut \u00eatre sup\u00e9rieure \u00e0 %max%", "messages", "fr");
     Translator.add("Simulation performed on %host% on %date%", "Simulation r\u00e9alis\u00e9e sur %host% le %date%", "messages", "fr");
     Translator.add("Page %pageno% of %numberofpages%", "Page %pageno%\/%numberofpages%", "messages", "fr");
+    Translator.add("Data to continue this simulation are not accessible. Please try again later.", "Les donn\u00e9es permettant de continuer cette simulation ne sont plus accessibles. Veuillez recommencer ult\u00e9rieurement.", "messages", "fr");
 })(Translator);

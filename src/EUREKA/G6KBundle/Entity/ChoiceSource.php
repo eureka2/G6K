@@ -37,8 +37,8 @@ class ChoiceSource {
 	public function __construct($data, $id, $valueColumn, $labelColumn) {
 		$this->data = $data;
 		$this->id = $id;
-		$this->valueColumn = $valueColumn;
-		$this->labelColumn = $labelColumn;
+		$this->setValueColumn($valueColumn);
+		$this->setLabelColumn($labelColumn);
 	}
 	
 	public function getData() {
@@ -58,7 +58,7 @@ class ChoiceSource {
 	}
 	
 	public function setIdColumn($idColumn) {
-		$this->idColumn = $idColumn;
+		$this->idColumn = strtolower($idColumn);
 	}
 	
 	public function getValueColumn() {
@@ -66,7 +66,7 @@ class ChoiceSource {
 	}
 	
 	public function setValueColumn($valueColumn) {
-		$this->valueColumn = $valueColumn;
+		$this->valueColumn = strtolower($valueColumn);
 	}
 	
 	public function getLabelColumn() {
@@ -74,7 +74,7 @@ class ChoiceSource {
 	}
 	
 	public function setLabelColumn($labelColumn) {
-		$this->labelColumn = $labelColumn;
+		$this->labelColumn = strtolower($labelColumn);
 	}
 }
 
