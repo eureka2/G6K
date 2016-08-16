@@ -51,7 +51,7 @@ class ScriptHandler
 		switch ($driver) {
 			case 'pdo_mysql':
 				$database = new Database(null, 1, 'mysqli', $parameters->database_name);
-				$database->setHost($parameters->database_name);
+				$database->setHost($parameters->database_host);
 				if (isset($parameters->database_port)) {
 					$database->setPort($parameters->database_port);
 				}
@@ -62,7 +62,7 @@ class ScriptHandler
 				break;
 			case 'pdo_pgsql':
 				$database = new Database(null, 1, 'pgsql', $parameters->database_name);
-				$database->setHost($parameters->database_name);
+				$database->setHost($parameters->database_host);
 				if (isset($parameters->database_port)) {
 					$database->setPort($parameters->database_port);
 				}
