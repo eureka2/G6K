@@ -86,6 +86,18 @@ class ScriptHandler
 		}
 		try {
 			$database->connect(false);
+			switch($driver) {
+				case 'pdo_mysql':
+					$database->exec("create database if not exists " . $parameters->database_name . " character set utf8");
+					$database->setConnected(false);
+					$database->connect();
+					break;
+				case 'pdo_pgsql':
+					$database->exec("create database " . $parameters->database_name . " encoding 'UTF8'");
+					$database->setConnected(false);
+					$database->connect();
+					break;
+			}
 		} catch (\Exception $e) {
 			$event->getIO()->write("Can't connect to database : " . $e->getMessage());
 			return;
@@ -93,10 +105,6 @@ class ScriptHandler
 		$script = preg_split ("/;\n/", $script, -1,  PREG_SPLIT_NO_EMPTY);
 		foreach($script as $i => $sql) {
 			try {
-				if ($i == 1) {
-					$database->setConnected(false);
-					$database->connect();
-				}
 				$database->exec($sql);
 			} catch (\Exception $e) {
 				$event->getIO()->write("Can't execute install users script : " . $e->getMessage());
