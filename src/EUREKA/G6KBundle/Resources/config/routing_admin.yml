@@ -41,3 +41,15 @@ eureka_g6k_admin_simulators:
 eureka_g6k_admin_simulator:
     path:     /admin/simulators/{simulator}
     defaults: { _controller: EUREKAG6KBundle:SimulatorsAdmin:index }
+
+eureka_g6k_admin_simulator_crud:
+    path:     /admin/simulators/{simulator}/{crud}
+    defaults: { _controller: EUREKAG6KBundle:SimulatorsAdmin:index }
+
+eureka_g6k_admin_simulator_calcul:
+    path:     /{simu}
+    defaults: { _controller: EUREKAG6KBundle:Default:calcul }
+
+eureka_g6k_admin_simulator_validate:
+    path:     /admin/validate
+    defaults: { _controller: EUREKAG6KBundle:SimulatorsAdmin:validate }
