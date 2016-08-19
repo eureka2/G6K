@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use EUREKA\G6KBundle\Entity\Database;
+use EUREKA\G6KBundle\Entity\JSONToSQLConverter;
 
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
@@ -338,7 +339,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$datasource['database']['port'] = $database->getPort();
 					$datasource['database']['user'] = $database->getUser();
 					$datasource['database']['password'] = $database->getPassword();
-					if ($datasource['type'] == 'internal' && $table !== null) {
+					if ($datasource['type'] == 'internal' && $table !== null && $table != 'dummy') {
 						$tabledef['name'] = $table;
 						$tabledef['label'] = $table != 'new' ? $table : 'New Table';
 						$tabledef['description'] = '';
@@ -358,8 +359,8 @@ class DataSourcesAdminController extends BaseAdminController {
 										$source = $columns[0]->Choices->Source;
 										$result = $this->processSource($source);
 										if ($result !== null) {
-											$valueColumn = (string)$source['valueColumn'];
-											$labelColumn = (string)$source['labelColumn'];
+											$valueColumn = strtolower((string)$source['valueColumn']);
+											$labelColumn = strtolower((string)$source['labelColumn']);
 											foreach ($result as $row) {
 												$choices[$row[$valueColumn]] =  $row[$labelColumn];
 											}
@@ -429,33 +430,125 @@ class DataSourcesAdminController extends BaseAdminController {
 			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
 		}
 	}
-	
+
 	protected function doImportDatasource($files) {
-		$uploadDir = str_replace("\\", "/", $this->get('kernel')->getContainer()->getParameter('g6k_upload_directory'));
-		$form = array();
-		$schema = null;
-		$data = null;
-		foreach ($files as $name => $file) {
-			$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
-			$form[] = array(
-				'name' => $name,
-				'filePath' => $filePath
-			);
-			if ($name == 'datasource-schema-file') {
-				$schema = file_get_contents($filePath);
-			} elseif ($name == 'datasource-data-file') {
-				$data = file_get_contents($filePath);
+		$container = $this->get('kernel')->getContainer();
+		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
+		$name = '';
+		$schemafile = '';
+		$datafile = '';
+		foreach ($files as $fieldname => $file) {
+			if ($file && $file->isValid()) {
+				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+				if ($fieldname == 'datasource-schema-file') {
+					$schemafile = $filePath;
+				} elseif ($fieldname == 'datasource-data-file') {
+					$datafile = $filePath;
+					$name = $file->getClientOriginalName();
+					if (preg_match("/^(.+)\.json$/", $name, $m)) {
+						$name = trim($m[1]);
+					}
+				}
 			}
-			unlink($filePath);
 		}
-		$response = new Response();
-		$response->setContent(json_encode($form));
-		$response->headers->set('Content-Type', 'application/json');
-		return $response;
+		if ($name != '' && $schemafile != '' && $datafile != '') {
+			$driver = $container->getParameter('database_driver');
+			$parameters = array(
+				'database_driver' => $driver
+			);
+			if ($driver != 'pdo_sqlite') {
+				if ($container->hasParameter('database_host')) {
+					$parameters['database_host'] = $container->getParameter('database_host');
+				}
+				if ($container->hasParameter('database_port')) {
+					$parameters['database_port'] = $container->getParameter('database_port');
+				}
+				if ($container->hasParameter('database_user')) {
+					$parameters['database_user'] = $container->getParameter('database_user');
+				}
+				if ($container->hasParameter('database_password')) {
+					$parameters['database_password'] = $container->getParameter('database_password');
+				}
+			}
+			$converter = new JSONToSQLConverter($parameters);
+			$form = $converter->convert($name, $schemafile, $datafile);
+			$datasource = $this->doCreateDatasource($form);
+			$dom = $datasource->ownerDocument;
+			$tableid = 1;
+			foreach ($form['datasource-tables'] as $tbl) {
+				$table = $dom->createElement("Table");
+				$table->setAttribute('id', $tableid++);
+				$table->setAttribute('name', $tbl['name']);
+				$table->setAttribute('label', $tbl['label']);
+				$descr = $dom->createElement("Description");
+				$descr->appendChild($dom->createCDATASection($tbl['description']));
+				$table->appendChild($descr);
+				$columnid = 1;
+				foreach ($tbl['columns'] as $col) {
+					$column = $dom->createElement("Column");
+					$column->setAttribute('id', $columnid++);
+					$column->setAttribute('name', $col['name']);
+					$column->setAttribute('type', $col['type']);
+					$column->setAttribute('label', $col['label']);
+					$descr = $dom->createElement("Description");
+					$descr->appendChild($dom->createCDATASection($col['description']));
+					$column->appendChild($descr);
+					if (isset($col['choices'])) {
+						$choices = $dom->createElement("Choices");
+						$choiceid = 1;
+						foreach ($col['choices'] as $ch) {
+							$choice = $dom->createElement("Choice");
+							$choice->setAttribute('id', $choiceid++);
+							$choice->setAttribute('value', $ch['value']);
+							$choice->setAttribute('label', $ch['label']);
+							$choices->appendChild($choice);
+						}
+						$column->appendChild($choices);
+					} elseif (isset($col['source'])) {
+						$choices = $dom->createElement("Choices");
+						$source = $dom->createElement("Source");
+						$source->setAttribute('id', 1);
+						$source->setAttribute('datasource', $col['source']['datasource']);
+						if (isset($col['source']['request'])) {
+							$source->setAttribute('request', $col['source']['request']);
+						}
+						$source->setAttribute('returnType', $col['source']['returnType']);
+						if (isset($col['source']['returnPath'])) {
+							$source->setAttribute('returnPath', $col['source']['returnPath']);
+						}
+						$source->setAttribute('valueColumn', $col['source']['valueColumn']);
+						$source->setAttribute('labelColumn', $col['source']['labelColumn']);
+						$choices->appendChild($source);
+						$column->appendChild($choices);
+					}
+					$table->appendChild($column);
+				}
+				$datasource->appendChild($table);
+			}
+			$this->saveDatasources($dom);
+		}
+		if ($schemafile != '') {
+			unlink($schemafile);
+		}
+		if ($datafile != '') {
+			unlink($datafile);
+		}
+
+		// $response = new Response();
+		// $response->setContent(json_encode($form));
+		// $response->headers->set('Content-Type', 'application/json');
+		// return $response;
+
+		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
 	}
 
 	protected function processSource($source) {
-		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$source['datasource']."']");
+		$ds = $source['datasource'];
+		if (is_numeric($ds)) {
+			$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$ds."']");
+		} else {
+			$datasources = $this->datasources->xpath("/DataSources/DataSource[@name='".$ds."']");
+		}
 		switch ((string)$datasources[0]['type']) {
 			case 'uri':
 				$uri = (string)$datasources[0]['uri'] . (string)$source['request'];
@@ -712,8 +805,8 @@ class DataSourcesAdminController extends BaseAdminController {
 					$source = $columns[0]->Choices->Source;
 					$result = $this->processSource($source);
 					if ($result !== null) {
-						$valueColumn = (string)$source['valueColumn'];
-						$labelColumn = (string)$source['labelColumn'];
+						$valueColumn = strtolower((string)$source['valueColumn']);
+						$labelColumn = strtolower((string)$source['labelColumn']);
 						foreach ($result as $row) {
 							$choices[$row[$valueColumn]] =  $row[$labelColumn];
 						}
@@ -747,12 +840,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		);
 	}
 
-	protected function createDatasource ($form) {
-		// $response = new Response();
-		// $response->setContent(json_encode($form));
-		// $response->headers->set('Content-Type', 'application/json');
-		// return $response;
-
+	protected function doCreateDatasource ($form) {
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
 		$dss = $xpath->query("/DataSources");
@@ -787,10 +875,14 @@ class DataSourcesAdminController extends BaseAdminController {
 					}
 				}
 				$dbtype = $form['datasource-database-type'];
+				$dbname = $form['datasource-database-name'];
+				if ($dbtype == 'sqlite' && ! preg_match("/\.db$/", $dbname)) {
+					$dbname .= '.db';
+				}
 				$database = $dom->createElement("Database");
 				$database->setAttribute('id', $maxId + 1);
 				$database->setAttribute('type', $dbtype);
-				$database->setAttribute('name', $form['datasource-database-name']);
+				$database->setAttribute('name', $dbname);
 				$database->setAttribute('label', $form['datasource-database-label']);
 				if ($dbtype == 'mysqli' || $dbtype == 'pgsql') {
 					$database->setAttribute('host', $form['datasource-database-host']);
@@ -809,7 +901,17 @@ class DataSourcesAdminController extends BaseAdminController {
 				break;
 		}
 		$dss->item(0)->insertBefore($datasource, $dbs->item(0));
-		$this->saveDatasources($dom);
+		return $datasource;
+	}
+
+	protected function createDatasource($form) {
+		// $response = new Response();
+		// $response->setContent(json_encode($form));
+		// $response->headers->set('Content-Type', 'application/json');
+		// return $response;
+
+		$datasource = $this->doCreateDatasource($form);
+		$this->saveDatasources($datasource->ownerDocument);
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
 	}
 

@@ -2180,6 +2180,24 @@ THE SOFTWARE.
 		ui.hide();
 	}
 
+	Simulators.showErrors = function(errors, message) {
+		if (message) {
+			$('.alert .error-message').text(message);
+		}
+		var mess = $('.alert ul');
+		mess.empty();
+		$.each(errors, function( index, value ) {
+			mess.append('<li>' + value + '</li>');
+		});
+		$('.alert').show();
+	}
+
+	Simulators.hideErrors = function() {
+		$('.alert .error-message').empty();
+		$('.alert ul').empty();
+		$('.alert').hide();
+	}
+
 	global.Simulators = Simulators;
 }(this));
 
@@ -2440,5 +2458,84 @@ $(document).ready(function() {
 				$(this).addClass('expand-all').removeClass('collapse-all');
 			}
 		});
+		if ( $("#simulator-import-form" ).length) {
+			$( "#simulator-import-form" ).find('input, textarea').on("change propertychange", function (e) {
+				Admin.updated = true;
+			});
+			$("#simulator-import-form input[name='simulator-file'], #simulator-import-form input[name='simulator-stylesheet']").change(function (e) {
+				Simulators.hideErrors();
+				var files = e.target.files;
+				var $file = $(this);
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					$file.data('content', e.target.result);
+				};
+				reader.onerror  = function(e) {
+					$file.data('error', e.target.error.name);
+				};
+				reader.readAsText(files[0], "UTF-8");
+			});
+			$("#btnDoImportSimulator").click(function (e) {
+				e.preventDefault();
+				var errors = [];
+				var simulatorinput = $("#simulator-import-form input[name='simulator-file']");
+				var simulatorfile = simulatorinput.val();
+				if (simulatorfile == '') {
+					errors.push("Please, choose a simulator file");
+				} else if (! /\.xml$/.test(simulatorfile)) {
+					errors.push("The file extension of the simulator file must be '.xml'");
+				}
+				var stylesheetinput = $("#simulator-import-form input[name='simulator-stylesheet']");
+				var stylesheetfile = stylesheetinput.val();
+				if (stylesheetfile != '' && ! /\.css$/.test(stylesheetfile)) {
+					errors.push("The file extension of the stylesheet must be '.css'");
+				}
+				if (errors.length > 0) {
+					Simulators.showErrors(errors);
+					return false;
+				}
+				if (stylesheetfile != '') {
+					var css = stylesheetinput.data('content');
+					if (typeof CSSLint != "undefined") {
+						results = CSSLint.verify(css, {});
+						messages = results.messages;
+						$.each(results.messages, function (i, error) {
+							if (error.type == 'error') {
+								errors.push(stylesheetfile + ' => Line ' + error.line + ' Column ' + error.col + ' : ' + error.message);
+							}
+						});
+					}
+					if (errors.length > 0) {
+						Simulators.showErrors(errors, "CSS Validation errors : ");
+						return false;
+					}
+				}
+				$.post( 
+					'../../validate', 
+					{ xml : simulatorinput.data('content') }, 
+					function(data) {
+						if(data.status == 'Error') {
+							$.each(data.errors, function(index, error) {
+								errors.push(simulatorfile + ' => ' + error);
+							});
+						}
+					}, 
+					'json'
+				).fail(function() {
+					errors.push( "XML Validation against schema fail" );
+					Simulators.showErrors(errors);
+				}).done(function() {
+					if (errors.length > 0) {
+						Simulators.showErrors(errors, "XML Validation errors : ");
+					} else {
+						Simulators.hideErrors();
+						Admin.updated = false;
+						$("#simulator-import-form" ).submit();
+						return true;
+					}
+				});
+				return false;
+			});
+		}
 	}
 });

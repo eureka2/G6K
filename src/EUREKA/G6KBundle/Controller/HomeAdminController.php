@@ -43,17 +43,22 @@ class HomeAdminController extends BaseAdminController {
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
-		
+
 		$db_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/databases";
-		$this->datasources = new \SimpleXMLElement($db_dir."/DataSources.xml", LIBXML_NOWARNING, true);
-		
+		try {
+			$this->datasources = new \SimpleXMLElement($db_dir."/DataSources.xml", LIBXML_NOWARNING, true);
+			$datasourcesCount = $this->datasources->DataSource->count();
+		} catch (\Exception $e) {
+			$datasourcesCount = 0;
+		}
+
 		$userManager = $this->get('fos_user.user_manager');
 		$users = $userManager->findUsers();
 
 		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
 		$simus = array_filter(scandir($simu_dir), function ($simu) { return preg_match("/.xml$/", $simu); } );
 
- 		$hiddens = array();		
+ 		$hiddens = array();
 		$hiddens['script'] = $script;
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
@@ -64,7 +69,7 @@ class HomeAdminController extends BaseAdminController {
 					'ua' => $silex["mobile_detect"],
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'home',
-					'datasourcesCount' => $this->datasources->DataSource->count(),
+					'datasourcesCount' => $datasourcesCount,
 					'usersCount' => count($users),
 					'simulatorsCount' => count($simus),
 					'hiddens' => $hiddens

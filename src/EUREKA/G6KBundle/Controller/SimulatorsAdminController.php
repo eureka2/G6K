@@ -48,6 +48,8 @@ use EUREKA\G6KBundle\Entity\RuleAction;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 use EUREKA\G6KBundle\Entity\Database;
 
@@ -63,7 +65,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	private $actions = array();
 	private $rules = array();
 
-	public function indexAction(Request $request, $simulator = null)
+	public function indexAction(Request $request, $simulator = null, $crud = null)
 	{
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
@@ -72,7 +74,9 @@ class SimulatorsAdminController extends BaseAdminController {
 		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
 		$simus = array_filter(scandir($simu_dir), function ($simu) { return preg_match("/.xml$/", $simu); } );
 
-
+		$hiddens = array();
+		$hiddens['script'] = $script;
+		$hiddens['action'] = 'show';
 		$simulators = array();
 		foreach($simus as $simu) {
 			$s = new \SimpleXMLElement($simu_dir."/".$simu, LIBXML_NOWARNING, true);
@@ -101,9 +105,12 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 			}
 		}
+		if ($crud == 'import') {
+			$hiddens['action'] = 'import';
+		} elseif ($crud == 'doimport') {
+			return $this->doImportSimulator($request->files->all());
+		}
 
-		$hiddens = array();
-		$hiddens['script'] = $script;
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
 		try {
@@ -126,6 +133,41 @@ class SimulatorsAdminController extends BaseAdminController {
 			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
 		}
 	}
+
+	public function validateAction(Request $request) {
+		$form = $request->request->all();
+		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
+		$schema = $bundle->getPath()."/Resources/doc/Simulator.xsd";
+		$dom = new \DOMDocument();
+		$dom->preserveWhiteSpace  = false;
+		$dom->formatOutput = true;
+		$dom->loadXML($form['xml']);
+		libxml_use_internal_errors(true);
+		$result = array();
+		if (!$dom->schemaValidate($schema)) {
+			$result = array(
+				'status' => 'Error',
+				'errors' => array()
+			);
+			$errors = libxml_get_errors();
+			foreach ($errors as $error) {
+				$line = "Line ".$error->line;
+				$column = $error->column > 0 ? ' Column ' .  $error->column : '';
+				$result['errors'][] = $line . $column. ": " .  $error->message;
+			}
+			libxml_clear_errors();
+		} else {
+			$result = array(
+				'status' => 'Ok',
+				'errors' => array()
+			);
+		}
+		$response = new Response();
+		$response->setContent(json_encode($result));
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
+	}
+
 	public function getDataById($id) {
 		return $this->simu !== null ? $this->simu->getDataById($id) : null;
 	}
@@ -450,8 +492,98 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			$this->simu->addBusinessRule($businessRuleObj);
 		}
-
 		$this->simu->save($simu_dir."/work/".$simulator.".xml");
+	}
+
+	protected function doImportSimulator($files) {
+		$fs = new Filesystem();
+		$container = $this->get('kernel')->getContainer();
+		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
+		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
+		$simudir = $bundle->getPath()."/Resources/data/simulators";
+		$viewdir = $bundle->getPath()."/Resources/views";
+		$publicdir = $bundle->getPath()."/Resources/public";
+		$schema = $bundle->getPath()."/Resources/doc/Simulator.xsd";
+		$simu = '';
+		$simufile = '';
+		$stylesheet = '';
+		print_r($files);
+		foreach ($files as $fieldname => $file) {
+			if ($file && $file->isValid()) {
+				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+				if ($fieldname == 'simulator-file') {
+					$simufile = $filePath;
+					$simu = $file->getClientOriginalName();
+					if (preg_match("/^(.+)\.xml$/", $simu, $m)) {
+						$simu = trim($m[1]);
+					}
+				} elseif ($fieldname == 'simulator-stylesheet') {
+					$stylesheet = $filePath;
+				}
+			}
+		}
+		if ($simu != '' && $simufile != '') {
+			$dom = new \DOMDocument();
+			$dom->preserveWhiteSpace  = false;
+			$dom->formatOutput = true;
+			$dom->load($simufile);
+			libxml_use_internal_errors(true);
+			if (!$dom->schemaValidate($schema)) {
+				$errors = libxml_get_errors();
+				$mess = "";
+				foreach ($errors as $error) {
+					$mess .= "Line ".$error->line . '.' .  $error->column . ": " .  $error->message . "\n";
+				}
+				libxml_clear_errors();
+				$response = new Response();
+				$response->setContent("<html><head><title>XML Validation errors</title></head><body><pre>".$mess."</pre></body></html>");
+				$response->headers->set('Content-Type', 'text/html');
+				return $response;
+			}
+			$xpath = new \DOMXPath($dom);
+			$view = $dom->documentElement->getAttribute('defaultView');
+			if (! $fs->exists(array($viewdir.'/'.$view, $publicdir.'/'.$view))) {
+				$view = 'Demo';
+				$dom->documentElement->setAttribute('defaultView', $view);
+			}
+			$sources = $xpath->query("/Simulator/Sources/Source");
+			$len = $sources->length;
+			for($i = 0; $i < $len; $i++) {
+				$datasource = $sources->item($i)->getAttribute('datasource');
+				if (is_numeric($datasource)) {
+					$sources->item($i)->setAttribute('datasource', $simu);
+				}
+			}
+			$formatted = preg_replace_callback('/^( +)</m', function($a) { 
+				return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
+			}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
+			$fs->dumpFile($simudir.'/'.$simu.'.xml', $formatted);
+			if ($stylesheet != '') {
+				if (! $fs->exists($publicdir.'/'.$view.'/css')) {
+					$fs->mkdir($publicdir.'/'.$view.'/css');
+				}
+				$fs->copy($stylesheet, $publicdir.'/'.$view.'/css/'.$simu.'.css', true);
+			} else if (! $fs->exists($publicdir.'/'.$view.'/css/'.$simu.'.css')) {
+				if ($view == 'Demo') {
+					$fs->dumpFile($publicdir.'/'.$view.'/css/'.$simu.'.css', '@import "common.css";'."\n");
+				} else {
+					if (! $fs->exists($publicdir.'/'.$view.'/css')) {
+						$fs->mkdir($publicdir.'/'.$view.'/css');
+					}
+					$fs->copy($publicdir.'/Demo/css/common.css', $publicdir.'/'.$view.'/css/'.$simu.'.css');
+				}
+			}
+		}
+		try {
+			if ($simufile != '') {
+				$fs->remove($simufile);
+			}
+			if ($stylesheet != '') {
+				$fs->remove($stylesheet);
+			}
+		} catch (IOExceptionInterface $e) {
+		}
+		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
 	}
 
 	private function makeCond($val) {

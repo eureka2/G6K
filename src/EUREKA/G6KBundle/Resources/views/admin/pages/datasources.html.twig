@@ -29,7 +29,7 @@ THE SOFTWARE.
 
 <div class="navbar-default navbar-side" role="navigation">
 	<div class="sidebar-collapse">
-		{% if datasource is not empty and datasource.action != 'create' and datasource.type != 'uri' %}
+		{% if datasource is not empty and datasource.action != 'create' and datasource.action != 'import' and datasource.type != 'uri' %}
 		<div id="data-source" class="nav panel panel-primary">
 			<div class="panel-heading"><h3>Data source : <br /> {{ dbname }}</h3></div>
 			<div class="panel-body">
@@ -50,12 +50,12 @@ THE SOFTWARE.
 			<div class="panel-body">
 				<div>
 					<form action="{{ path('eureka_g6k_admin_datasource', {'dsid': 0}) }}">
-					<button id="btnAddNewDataSource" class="btn btn-default">Create Data source <span class="glyphicon glyphicon-plus-sign"></span></button>
+					<button id="btnAddNewDataSource" class="btn btn-default pull-right">Create Data source <span class="glyphicon glyphicon-plus-sign"></span></button>
 					</form>
 				</div>
 				<div>
 					<form action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': 0, 'table': 'dummy', 'crud': 'import-datasource'}) }}">
-					<button id="btnImportDataSource" class="btn btn-default">Import Data source <span class="glyphicon glyphicon-plus-sign"></span></button>
+					<button id="btnImportDataSource" class="btn btn-default pull-right">Import Data source <span class="glyphicon glyphicon-import"></span></button>
 					</form>
 				</div>
 				<ul class="nav nav-pills nav-stacked">
@@ -455,9 +455,9 @@ THE SOFTWARE.
 {% endblock %}
 
 {% block scripts %}
-{{ parent() }}<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.datasources.js') }}"></script>{% if table is not empty %}
+{{ parent() }}<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.datasources.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/json-validator/tv4.min.js') }}"></script>{% if table is not empty %}
 <script type="text/javascript">
-
 $(document).ready(function() {
 	var fields = [{%- for info in tableinfos -%}[{{ loop.index0 }}, '{{ info.name }}', '{{ info.label }}', '{{ info.notnull }}', '{{ info.g6k_type }}'{%- if info.choices -%}, '{ {%- for value, label in info.choices -%}"{{ value }}": "{{ label }}"{%- if not loop.last -%}, {%- endif -%}{%- endfor -%} }'{%- endif -%}]{%- if not loop.last -%},{%- endif -%}{%- endfor -%}];
 	Datasources.init('{{ table.name }}', fields, '{{ app.request.locale }}');

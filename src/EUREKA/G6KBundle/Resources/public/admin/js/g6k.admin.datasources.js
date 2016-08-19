@@ -676,7 +676,7 @@ $(document).ready(function() {
 			Datasources.toggleDatasourceFields(this.id);
 			Admin.updated = true;
 		});
-		$( "#datasource-creation-form, #datasource-edition-form" ).find('input, textarea').on("change propertychange", function (e) {
+		$( "#datasource-creation-form, #datasource-edition-form, #datasource-import-form" ).find('input, textarea').on("change propertychange", function (e) {
 			Admin.updated = true;
 		});
 		if ( $("#datasource-creation-form, #datasource-edition-form" ).length) {
@@ -697,6 +697,70 @@ $(document).ready(function() {
 			}
 			$("#datasource-creation-form, #datasource-edition-form").submit(function (e) {
 				var errors = Datasources.checkDatasource();
+				if (errors.length > 0) {
+					e.preventDefault();
+					Datasources.showErrors(errors);
+					return false;
+				}
+				Datasources.hideErrors();
+				Admin.updated = false;
+				return true;
+			});
+		}
+		if ( $("#datasource-import-form" ).length) {
+			$("#datasource-import-form input[name='datasource-schema-file'], #datasource-import-form input[name='datasource-data-file']").change(function (e) {
+			Datasources.hideErrors();
+			var files = e.target.files;
+				var $file = $(this);
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					$file.data('content', e.target.result);
+				};
+				reader.onerror  = function(e) {
+					$file.data('error', e.target.error.name);
+				};
+				reader.readAsText(files[0], "UTF-8");
+			});
+			$("#datasource-import-form").submit(function (e) {
+				var errors = [];
+				var name = '';
+				var schemainput = $("#datasource-import-form input[name='datasource-schema-file']");
+				var schemafile = schemainput.val();
+				if (schemafile == '') {
+					errors.push("Please, choose a JSON schema file");
+				} else if (! /\.schema\.json$/.test(schemafile)) {
+					errors.push("The JSON schema file extension must be '.schema.json'");
+				} else {
+					var m = schemafile.match(/^(.+)\.schema\.json$/);
+					name = m[1];
+				}
+				var datainput = $("#datasource-import-form input[name='datasource-data-file']");
+				var datafile = datainput.val();
+				if (datafile == '') {
+					errors.push("Please, choose a JSON data file");
+				} else if (! /\.json$/.test(datafile)) {
+					errors.push("The JSON data file extension must be '.json'");
+				} else if (name != '') {
+					var m = datafile.match(/^(.+)\.json$/);
+					if (name != m[1]) {
+						errors.push("The names of the two files without extension should be the same.");
+					} else {
+						var schema = schemainput.data('content');
+						var data = datainput.data('content');
+
+						var valid = tv4.validate(data, schema, true, true);
+						if (!valid) {
+							errors.push("Validation error : " + tv4.error.message); 
+						}
+						
+						// var ajv = new Ajv({ useDefaults: true });
+						// var valid = ajv.validate(schema, data);
+						// if (!valid) {
+							// errors.push("Validation error : " + ajv.errors); 
+						// }
+
+					}
+				}
 				if (errors.length > 0) {
 					e.preventDefault();
 					Datasources.showErrors(errors);

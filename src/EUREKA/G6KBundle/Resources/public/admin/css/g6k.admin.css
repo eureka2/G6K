@@ -137,9 +137,24 @@ ul.rule-conditions > li {
 	width: 100%;
 	margin-bottom: 40px;
 }
-#btnAddNewRow, #btnAddNewTable, #btnAddNewDataSource {
+#btnAddNewRow, #btnAddNewTable {
 	float: right;
 }
+
+#data-sources ul , #simulators ul {
+	margin-top: 6em;
+}
+
+#datasource-import-panel-holder .form-group input,
+#simulator-import-panel-holder .form-group input {
+	margin: 0;
+	padding: 0;
+}
+#datasource-import-panel-holder .form-group > div,
+#simulator-import-panel-holder .form-group > div {
+	line-height: 6em;
+}
+
 .edit-simulator, .add-data, .edit-data, .delete-data, 
 .add-datagroup, .edit-datagroup, .delete-datagroup, 
 .add-rule, .edit-rule, .add-step, .edit-step, 
@@ -147,7 +162,8 @@ ul.rule-conditions > li {
 .delete-choice, .delete-choice-source, 
 .expand-all, .collapse-all, 
 .edit-table-button, .drop-table-button,
-.edit-datasource-button, .drop-datasource-button {
+.edit-datasource-button, .drop-datasource-button,
+.view-button {
 	margin-top: -9px;
 }
 button.save-simulator {

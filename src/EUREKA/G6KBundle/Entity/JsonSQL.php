@@ -1658,8 +1658,10 @@ class JsonSQL  {
 					$val = $props->autoincrement + 1;
 				}
 				$props->autoincrement = $val;
-				if (isset($props->primarykey)) {
-					$title .= 'primarykey:'.$props->primarykey.', ';
+				foreach($props as $prop => $value) {
+					if ($prop != 'autoincrement') {
+						$title .= $prop.':'.$value.', ';
+					}
 				}
 				$title .= 'autoincrement:'.$props->autoincrement.']';
 				$column->title = $title;

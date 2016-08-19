@@ -31,6 +31,7 @@ use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 use EUREKA\G6KBundle\Entity\Database;
+use EUREKA\G6KBundle\Entity\JSONToSQLConverter;
 
 class ScriptHandler
 {
@@ -41,13 +42,10 @@ class ScriptHandler
 		$appDir = $symfonyDir . DIRECTORY_SEPARATOR . $extras['symfony-app-dir'];
 		$configDir = $appDir . DIRECTORY_SEPARATOR  .'config';
 		$databasesDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
-		try {
-			$config = Yaml::parse(file_get_contents($configDir . DIRECTORY_SEPARATOR . 'parameters.yml'));
-			$parameters = (object)$config['parameters'];
-		} catch (ParseException $e) {
-			$event->getIO()->write(sprintf("Unable to parse parameters.yml: %s", $e->getMessage()));
+		if (($parameters = self::getParameters($event, $configDir)) === false) {
 			return;
 		}
+		$parameters = (object)$parameters;
 		$driver = $parameters->database_driver;
 		switch ($driver) {
 			case 'pdo_mysql':
@@ -110,6 +108,34 @@ class ScriptHandler
 				$event->getIO()->write("Can't execute install users script : " . $e->getMessage());
 				break;
 			}
+		}
+	}
+
+	public static function installDemo(Event $event) {
+		$event->getIO()->write("Installing the demo database");
+		$extras = $event->getComposer()->getPackage()->getExtra();
+		$symfonyDir = dirname(dirname(dirname(dirname(__DIR__))));
+		$appDir = $symfonyDir . DIRECTORY_SEPARATOR . $extras['symfony-app-dir'];
+		$configDir = $appDir . DIRECTORY_SEPARATOR  .'config';
+		$databasesDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
+		if (($parameters = self::getParameters($event, $configDir)) === false) {
+			return;
+		}
+		$name = 'demo';
+		$schemafile = $databasesDir . DIRECTORY_SEPARATOR . $name . '.schema.json';
+		$datafile = $databasesDir . DIRECTORY_SEPARATOR . $name . '.json';
+		$converter = new JSONToSQLConverter($parameters);
+		$converter->convert($name, $schemafile, $datafile);
+	}
+
+	protected static function getParameters(Event $event, $configDir) {
+		try {
+			$config = Yaml::parse(file_get_contents($configDir . DIRECTORY_SEPARATOR . 'parameters.yml'));
+			return $config['parameters'];
+			 
+		} catch (ParseException $e) {
+			$event->getIO()->write(sprintf("Unable to parse parameters.yml: %s", $e->getMessage()));
+			return false;
 		}
 	}
 
