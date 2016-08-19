@@ -44,7 +44,8 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
-            "EUREKA\\G6KBundle\\Composer\\ScriptHandler::installUsers"
+            "EUREKA\\G6KBundle\\Composer\\ScriptHandler::installUsers",
+            "EUREKA\\G6KBundle\\Composer\\ScriptHandler::installDemo"
         ],
         "post-update-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
@@ -53,7 +54,8 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
-            "EUREKA\\G6KBundle\\Composer\\ScriptHandler::installUsers"
+            "EUREKA\\G6KBundle\\Composer\\ScriptHandler::installUsers",
+            "EUREKA\\G6KBundle\\Composer\\ScriptHandler::installDemo"
         ]
     },
     "config": {
