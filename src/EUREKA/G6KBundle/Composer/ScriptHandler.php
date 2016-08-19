@@ -125,7 +125,69 @@ class ScriptHandler
 		$schemafile = $databasesDir . DIRECTORY_SEPARATOR . $name . '.schema.json';
 		$datafile = $databasesDir . DIRECTORY_SEPARATOR . $name . '.json';
 		$converter = new JSONToSQLConverter($parameters);
-		$converter->convert($name, $schemafile, $datafile);
+		$form = $converter->convert($name, $schemafile, $datafile);
+		$datasource = self::doCreateDatasource($form);
+		$dom = $datasource->ownerDocument;
+		$tableid = 1;
+		foreach ($form['datasource-tables'] as $tbl) {
+			$table = $dom->createElement("Table");
+			$table->setAttribute('id', $tableid++);
+			$table->setAttribute('name', $tbl['name']);
+			$table->setAttribute('label', $tbl['label']);
+			$descr = $dom->createElement("Description");
+			$descr->appendChild($dom->createCDATASection($tbl['description']));
+			$table->appendChild($descr);
+			$columnid = 1;
+			foreach ($tbl['columns'] as $col) {
+				$column = $dom->createElement("Column");
+				$column->setAttribute('id', $columnid++);
+				$column->setAttribute('name', $col['name']);
+				$column->setAttribute('type', $col['type']);
+				$column->setAttribute('label', $col['label']);
+				$descr = $dom->createElement("Description");
+				$descr->appendChild($dom->createCDATASection($col['description']));
+				$column->appendChild($descr);
+				if (isset($col['choices'])) {
+					$choices = $dom->createElement("Choices");
+					$choiceid = 1;
+					foreach ($col['choices'] as $ch) {
+						$choice = $dom->createElement("Choice");
+						$choice->setAttribute('id', $choiceid++);
+						$choice->setAttribute('value', $ch['value']);
+						$choice->setAttribute('label', $ch['label']);
+						$choices->appendChild($choice);
+					}
+					$column->appendChild($choices);
+				} elseif (isset($col['source'])) {
+					$choices = $dom->createElement("Choices");
+					$source = $dom->createElement("Source");
+					$source->setAttribute('id', 1);
+					$source->setAttribute('datasource', $col['source']['datasource']);
+					if (isset($col['source']['request'])) {
+						$source->setAttribute('request', $col['source']['request']);
+					}
+					$source->setAttribute('returnType', $col['source']['returnType']);
+					if (isset($col['source']['returnPath'])) {
+						$source->setAttribute('returnPath', $col['source']['returnPath']);
+					}
+					$source->setAttribute('valueColumn', $col['source']['valueColumn']);
+					$source->setAttribute('labelColumn', $col['source']['labelColumn']);
+					$choices->appendChild($source);
+					$column->appendChild($choices);
+				}
+				$table->appendChild($column);
+			}
+			$datasource->appendChild($table);
+		}
+		$xml = $dom->saveXML(null, LIBXML_NOEMPTYTAG);
+		$dom = new \DOMDocument();
+		$dom->preserveWhiteSpace  = false;
+		$dom->formatOutput = true;
+		$dom->loadXml($xml);
+		$formatted = preg_replace_callback('/^( +)</m', function($a) { 
+			return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
+		}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
+		file_put_contents($databasesDir."/DataSources.xml", $formatted);
 	}
 
 	protected static function getParameters(Event $event, $configDir) {
@@ -137,6 +199,71 @@ class ScriptHandler
 			$event->getIO()->write(sprintf("Unable to parse parameters.yml: %s", $e->getMessage()));
 			return false;
 		}
+	}
+
+	protected static function doCreateDatasource ($form) {
+		$datasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd"><Databases></Databases></DataSources>', LIBXML_NOWARNING);
+		$dom = dom_import_simplexml($datasources)->ownerDocument;
+		$xpath = new \DOMXPath($dom);
+		$dss = $xpath->query("/DataSources");
+		$dbs = $xpath->query("/DataSources/Databases");
+		$type = $form['datasource-type'];
+		$ds = $dss->item(0)->getElementsByTagName('DataSource');
+		$len = $ds->length;
+		$maxId = 0;
+		for($i = 0; $i < $len; $i++) {
+			$id = (int)$ds->item($i)->getAttribute('id');
+			if ($id > $maxId) {
+				$maxId = $id;
+			}
+		}
+		$datasource = $dom->createElement("DataSource");
+		$datasource->setAttribute('id', $maxId + 1);
+		$datasource->setAttribute('type', $type);
+		$datasource->setAttribute('name', $form['datasource-name']);
+		$descr = $dom->createElement("Description");
+		$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['datasource-description'])));
+		$datasource->appendChild($descr);
+		switch($type) {
+			case 'internal':
+			case 'database':
+				$db = $dbs->item(0)->getElementsByTagName('Database');
+				$len = $db->length;
+				$maxId = 0;
+				for($i = 0; $i < $len; $i++) {
+					$id = (int)$db->item($i)->getAttribute('id');
+					if ($id > $maxId) {
+						$maxId = $id;
+					}
+				}
+				$dbtype = $form['datasource-database-type'];
+				$dbname = $form['datasource-database-name'];
+				if ($dbtype == 'sqlite' && ! preg_match("/\.db$/", $dbname)) {
+					$dbname .= '.db';
+				}
+				$database = $dom->createElement("Database");
+				$database->setAttribute('id', $maxId + 1);
+				$database->setAttribute('type', $dbtype);
+				$database->setAttribute('name', $dbname);
+				$database->setAttribute('label', $form['datasource-database-label']);
+				if ($dbtype == 'mysqli' || $dbtype == 'pgsql') {
+					$database->setAttribute('host', $form['datasource-database-host']);
+					$database->setAttribute('port', $form['datasource-database-port']);
+					$database->setAttribute('user', $form['datasource-database-user']);
+					if (isset($form['datasource-database-password'])) {
+						$database->setAttribute('password', $form['datasource-database-password']);
+					}
+				}
+				$dbs->item(0)->appendChild($database);
+				$datasource->setAttribute('database', $database->getAttribute('id'));
+				break;
+			case 'uri':
+				$datasource->setAttribute('uri', $form['datasource-name']);
+				$datasource->setAttribute('method', $form['datasource-method']);
+				break;
+		}
+		$dss->item(0)->insertBefore($datasource, $dbs->item(0));
+		return $datasource;
 	}
 
 }
