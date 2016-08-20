@@ -89,6 +89,7 @@ THE SOFTWARE.
 						<div class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 							<span class="sr-only">Error:</span>
+							<span class="error-message"></span>
 							<ul></ul>
 						</div>
 						{% if table.name == 'new' %}
@@ -175,6 +176,7 @@ THE SOFTWARE.
 						<div class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 							<span class="sr-only">Error:</span>
+							<span class="error-message"></span>
 							<ul></ul>
 						</div>
 						{% if datasource.action == 'show' %}
@@ -456,7 +458,8 @@ THE SOFTWARE.
 
 {% block scripts %}
 {{ parent() }}<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.datasources.js') }}"></script>
-<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/json-validator/tv4.min.js') }}"></script>{% if table is not empty %}
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/json-validator/tv4.min.js') }}"></script>
+{% if app.request.locale == 'de' or  app.request.locale == 'es' or app.request.locale == 'fr' %}<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/json-validator/lang/' ~ app.request.locale ~ '.js') }}"></script>{% endif %}{% if table is not empty %}
 <script type="text/javascript">
 $(document).ready(function() {
 	var fields = [{%- for info in tableinfos -%}[{{ loop.index0 }}, '{{ info.name }}', '{{ info.label }}', '{{ info.notnull }}', '{{ info.g6k_type }}'{%- if info.choices -%}, '{ {%- for value, label in info.choices -%}"{{ value }}": "{{ label }}"{%- if not loop.last -%}, {%- endif -%}{%- endfor -%} }'{%- endif -%}]{%- if not loop.last -%},{%- endif -%}{%- endfor -%}];
