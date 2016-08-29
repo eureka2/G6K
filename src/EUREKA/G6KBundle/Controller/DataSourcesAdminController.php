@@ -1135,7 +1135,6 @@ class DataSourcesAdminController extends BaseAdminController {
 			$create .= "\n";
 		}
 		$create .= ")";
-		print_r($create);
 		try {
 			$database->exec($create);
 			if ($form['table-label'] != '' && $database->getType() == 'jsonsql') {
@@ -1154,7 +1153,6 @@ class DataSourcesAdminController extends BaseAdminController {
 
 	protected function editDBTable($form, $table, $database) {
 		$infosColumns = $this->infosColumns($database, $table);
-		print_r($infosColumns);
 		if (strcasecmp($form['table-name'], $table) != 0) {
 			$rename = "ALTER TABLE $table RENAME TO {$form['table-name']}";
 			try {

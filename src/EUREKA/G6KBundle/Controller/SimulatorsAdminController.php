@@ -507,7 +507,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		$simu = '';
 		$simufile = '';
 		$stylesheet = '';
-		print_r($files);
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
 				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
