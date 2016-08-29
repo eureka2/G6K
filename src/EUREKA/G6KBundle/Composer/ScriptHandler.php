@@ -56,7 +56,7 @@ class ScriptHandler
 				}
 				$database->setUser($parameters->database_user);
 				if (isset($parameters->database_password)) {
-					$database->setPort($parameters->database_password);
+					$database->setPassword($parameters->database_password);
 				}
 				break;
 			case 'pdo_pgsql':
@@ -67,7 +67,7 @@ class ScriptHandler
 				}
 				$database->setUser($parameters->database_user);
 				if (isset($parameters->database_password)) {
-					$database->setPort($parameters->database_password);
+					$database->setPassword($parameters->database_password);
 				}
 				break;
 			case 'pdo_sqlite':
