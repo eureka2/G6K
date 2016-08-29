@@ -29,14 +29,22 @@ THE SOFTWARE.
 	};
 
 	Datasources.fields = {};
+	Datasources.datasources = {};
+	Datasources.datasourcesSelect = '';
 	Datasources.editFields = [];
 	Datasources.emptyRow = "";
 
-	Datasources.init = function(tablename, fields, locale) {
-		if (tablename === 'new') {
+	Datasources.init = function(action, tablename, fields, datasources, locale) {
+		var datasourcesSelect = {};
+		$.each(datasources, function(d, datasource) {
+			Datasources.datasources[datasource.name] = datasource.type;
+			datasourcesSelect[datasource.name] = datasource.name;
+		});
+		Datasources.datasourcesSelect = JSON.stringify(datasourcesSelect);
+		if (action === 'create-table') {
 			$("#page-datasources textarea[name='table-description']").wysihtml5(Admin.wysihtml5Options);
 			$('#btnAddNewColumn').click(function(e) {
-				Datasources.addNewColumn();
+				Datasources.addNewColumn([0, '', '', '', '', '']);
 				e.preventDefault();
 				return false;
 			});
@@ -51,27 +59,48 @@ THE SOFTWARE.
 				Admin.updated = false;
 				return true;
 			});
-			Datasources.addNewColumn();
+			Datasources.addNewColumn([0, '', '', '', '', '']);
+		} else if (action === 'edit-table') {
+			$("#page-datasources textarea[name='table-description']").wysihtml5(Admin.wysihtml5Options);
+			$('#btnAddNewColumn').click(function(e) {
+				Datasources.addNewColumn([0, '', '', '', '', '']);
+				e.preventDefault();
+				return false;
+			});
+			$("#edit-table-form").submit(function (e) {
+				var errors = Datasources.checkEditedTable();
+				if (errors.length > 0) {
+					e.preventDefault();
+					Datasources.showErrors(errors);
+					return false;
+				}
+				Datasources.hideErrors();
+				Admin.updated = false;
+				return true;
+			});
+			$.each(fields, function(index, field) {
+				Datasources.addNewColumn(field);
+			});
 		} else {
 			Datasources.fields = {};
 			Datasources.editFields = [];
 			var cells = "";
 			$.each(fields, function(k, v) {
 				if (v[1] !== 'id'){
-					var type = v[4] === 'choice' ? 'single' : v[4] === 'date' ? 'text' : v[4] === 'boolean' ? 'checkbox' : v[4] === 'textarea' ? 'text' : v[4] === 'integer' ? 'number' : v[4] === 'day' ? 'number' : v[4] === 'month' ? 'number' : v[4] === 'year' ? 'number' : v[4] === 'number' ? 'text' : v[4] === 'money' ? 'text' : v[4] === 'percent' ? 'text' : v[4];
+					var type = v[5] === 'choice' ? 'single' : v[5] === 'date' ? 'text' : v[5] === 'boolean' ? 'checkbox' : v[5] === 'textarea' ? 'text' : v[5] === 'integer' ? 'number' : v[5] === 'day' ? 'number' : v[5] === 'month' ? 'number' : v[5] === 'year' ? 'number' : v[5] === 'number' ? 'text' : v[5] === 'money' ? 'text' : v[5] === 'percent' ? 'text' : v[5];
 					var editField = [];
 					editField.push(v[0], v[1], type);
-					if (v[3]) {
-						editField.push(v[5]);
+					if (v[4]) {
+						editField.push(v[6]);
 					}
 					Datasources.editFields.push(editField);
 				}
-				var field = { type: v[4], label: v[2], required: v[3] == 1};
-				if (v[5]) {
-					field.choices = jQuery.parseJSON(v[5]);
+				var field = { type: v[5], label: v[2], required: v[4] == 1};
+				if (v[6]) {
+					field.choices = jQuery.parseJSON(v[6]);
 				}
 				Datasources.fields[v[1]] = field;
-				cells +='<td class="' + v[4] + '">';
+				cells +='<td class="' + v[5] + '">';
 				if (v[1] === 'id') {
 					cells += '0';
 				}
@@ -109,7 +138,7 @@ THE SOFTWARE.
 	}
 
 	Datasources.simpleAttributeForInput = function(id, type, name, label, value, required, placeholder, options) {
-		var attribute = '<div class="form-group col-sm-12">';
+		var attribute = '<div class="form-group col-sm-12" data-attribute="' + name + '">';
 		attribute    += '    <label for="' + id + '" class="col-sm-2 control-label">';
 		if (! required) {
 			attribute    += '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
@@ -201,6 +230,8 @@ THE SOFTWARE.
 				fieldId: fieldId - 1,
 				datasource: '',
 				returnType: 'assocArray',
+				separator: '',
+				delimiter: '',
 				valueColumn: '',
 				labelColumn: '',
 				request: '',
@@ -273,48 +304,112 @@ THE SOFTWARE.
 				Datasources.dropAttribute(ui.draggable, target);
 			}
 		});
+		choiceSourceContainer.find('div[data-attribute=datasource], div[data-attribute=returnType]').find('select').change(function (e) {
+			Datasources.fixShowingChoiceSourceForInput(choiceSourceContainer);
+		});
 	}
 
 	Datasources.drawChoiceSourceForInput = function(choiceSource) {
 		var attributesContainer = $('<div class="attributes-container choice-source-container" data-id="' + choiceSource.id + '"></div>');
 		var attributes = $('<div></div>');
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-datasource', 'number', 'datasource', 'Datasource', choiceSource.datasource, true, 'Datasource'));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-returnType', 'select', 'returnType', 'Return type', choiceSource.returnType, true, 'Select a return type', JSON.stringify({'json':'JSON format', 'xml':'XML format', 'singleValue':'Single value', 'assocArray':'Associative array'})));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-valueColumn', 'text', 'valueColumn', 'Source column value', choiceSource.valueColumn, true, 'Source column value'));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-labelColumn', 'text', 'labelColumn', 'Source column label', choiceSource.labelColumn, true, 'Source column label'));
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">Optional attributes</h4></div>');
-		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var requestAttribute = $('<li class="list-group-item" data-element="field" data-type="text" data-name="' + choiceSource.fieldId + '-choicesource-request" data-placeholder="SQL Request">Request</li>');
-		optionalAttributes.append(requestAttribute);
-		var returnPathAttribute = $('<li class="list-group-item" data-element="field" data-type="text" data-name="' + choiceSource.fieldId + '-choicesource-returnPath" data-placeholder="Return path value">Return path</li>');
-		optionalAttributes.append(returnPathAttribute);
-		optionalAttributesPanel.append(optionalAttributes);
-		if (choiceSource.request) {
-			attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-request', 'text', 'request', 'SQL Request', choiceSource.request, false, 'SQL Request'));
-			requestAttribute.hide();
-		}
-		if (choiceSource.returnPath) {
-			attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-returnPath', 'text', 'returnPath', 'Return path value', choiceSource.returnPath, false, 'Return path value'));
-			returnPathAttribute.hide();
-		}
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-datasource', 'select', 'datasource', 'Datasource', choiceSource.datasource, true, 'Select a datasource', Datasources.datasourcesSelect));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-returnType', 'select', 'returnType', 'Return format', choiceSource.returnType, true, 'Select a format', JSON.stringify({'json':'JSON format', 'xml':'XML format', 'assocArray':'Associative array', 'csv':'CSV format'})));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-request', 'text', 'request', 'SQL Request', choiceSource.request, true, 'SQL Request'));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-valueColumn', 'text', 'valueColumn', 'Value column', choiceSource.valueColumn, true, 'Value column'));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-labelColumn', 'text', 'labelColumn', 'Label column', choiceSource.labelColumn, true, 'Label column'));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-returnPath', 'text', 'returnPath', 'Return path value', choiceSource.returnPath, true, 'Return path value'));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-separator', 'text', 'separator', 'Separator', choiceSource.separator, true, 'Separator value'));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-delimiter', 'text', 'delimiter', 'Delimiter', choiceSource.delimiter, true, 'Delimiter value'));
 		attributesContainer.append(attributes);
-		attributesContainer.append(optionalAttributesPanel);
+		Datasources.fixShowingChoiceSourceForInput(attributesContainer);
 		return attributesContainer;
 	}
 
-	Datasources.addNewColumn = function() {
-		var num = Math.floor($('#new-table tbody tr').length / 3) + 1;
+	Datasources.fixShowingChoiceSourceForInput = function(attributesContainer) {
+		var datasourceAttribute = attributesContainer.find('div[data-attribute=datasource]');
+		var returnTypeAttribute = attributesContainer.find('div[data-attribute=returnType]');
+		var requestAttribute = attributesContainer.find('div[data-attribute=request]');
+		var valueColumnAttribute = attributesContainer.find('div[data-attribute=valueColumn]');
+		var labelColumnAttribute = attributesContainer.find('div[data-attribute=labelColumn]');
+		var returnPathAttribute = attributesContainer.find('div[data-attribute=returnPath]');
+		var separatorAttribute = attributesContainer.find('div[data-attribute=separator]');
+		var delimiterAttribute = attributesContainer.find('div[data-attribute=delimiter]');
+		var choiceSourceType = Datasources.datasources[datasourceAttribute.find('select').val()];
+		if (choiceSourceType == 'internal' || choiceSourceType == 'database') {
+			returnTypeAttribute.find('select').val('assocArray');
+			returnTypeAttribute.hide();
+			requestAttribute.show();
+			valueColumnAttribute.find('input').attr('type', 'text');
+			valueColumnAttribute.find('label').text('Value column');
+			valueColumnAttribute.find('input').attr('placeholder', 'column in the select list that corresponds to the value of the choice');
+			labelColumnAttribute.find('input').attr('type', 'text');
+			labelColumnAttribute.find('label').text('Label column');
+			labelColumnAttribute.find('input').attr('placeholder', 'column in the select list that corresponds to the label of the choice');
+			returnPathAttribute.hide();
+			separatorAttribute.hide();
+			delimiterAttribute.hide();
+		} else {
+			returnTypeAttribute.show();
+			requestAttribute.hide();
+			returnPathAttribute.show();
+			if (returnTypeAttribute.find('select').val() == 'csv') {
+				valueColumnAttribute.find('input').attr('type', 'number');
+				valueColumnAttribute.find('label').text('Value column');
+				valueColumnAttribute.find('input').attr('placeholder', 'column number of the csv data that corresponds to the value of the choice');
+				labelColumnAttribute.find('input').attr('type', 'number');
+				labelColumnAttribute.find('label').text('Label column');
+				labelColumnAttribute.find('input').attr('placeholder', 'column number of the csv data that corresponds to the label of the choice');
+				returnPathAttribute.find('label').text('Lines filter');
+				returnPathAttribute.find('input').attr('placeholder', 'example: 3-9/11/21-25 ...');
+				separatorAttribute.show();
+				delimiterAttribute.show();
+			} else {
+				valueColumnAttribute.find('input').attr('type', 'text');
+				labelColumnAttribute.find('input').attr('type', 'text');
+				separatorAttribute.hide();
+				delimiterAttribute.hide();
+				if (returnTypeAttribute.find('select').val() == 'json') {
+					valueColumnAttribute.find('label').text('Value property');
+					valueColumnAttribute.find('input').attr('placeholder', 'property of the json data that corresponds to the value of the choice');
+					labelColumnAttribute.find('label').text('Label property');
+					labelColumnAttribute.find('input').attr('placeholder', 'property of the json data that corresponds to the label of the choice');
+					returnPathAttribute.find('label').text('Path filter');
+					returnPathAttribute.find('input').attr('placeholder', 'JSONPath (see http://goessner.net/articles/JsonPath/) or XPath(see https://www.w3.org/TR/xpath/) filter');
+				} else if (returnTypeAttribute.find('select').val() == 'xml') {
+					valueColumnAttribute.find('label').text('Value node');
+					valueColumnAttribute.find('input').attr('placeholder', 'XML node or attribute that corresponds to the value of the choice');
+					labelColumnAttribute.find('label').text('Label node');
+					labelColumnAttribute.find('input').attr('placeholder', 'XML node or attribute that corresponds to the label of the choice');
+					returnPathAttribute.find('label').text('XPath filter');
+					returnPathAttribute.find('input').attr('placeholder', 'see https://www.w3.org/TR/xpath/');
+				} else { // assocArray
+					valueColumnAttribute.find('label').text('Value key');
+					valueColumnAttribute.find('input').attr('placeholder', 'key of the associative array that corresponds to the value of the choice');
+					labelColumnAttribute.find('label').text('Label key');
+					labelColumnAttribute.find('input').attr('placeholder', 'key of the associative array that corresponds to the label of the choice');
+					returnPathAttribute.find('label').text('Rows filter');
+					returnPathAttribute.find('input').attr('placeholder', 'example: 3-9/11/21-25 ...');
+				}
+			}
+		}
+	}
+
+	Datasources.addNewColumn = function(field) {
+		var num = Math.floor($('#edition-table tbody tr').length / 3) + 1;
 		var column = '<tr>' +
 			'<td class="new-field-id" rowspan="3">' + num + '</td>' +
 			'<td class="new-field-name">' +
-			'<input name="field[]" class="form-control input-sm">' +
+			'<input name="field[]" class="form-control input-sm" value="' + field[1] + '">' +
 			'</td>' +
 			'<td class="new-type">' +
 			'<select name="type[]" class="form-control input-sm">';
 		$.each(Admin.types, function(index, value) {
 			if (index != 'today' && index != 'table' && index != 'array') {
-				column += '<option value="' + index + '">' + value + '</option>'
+				column += '<option value="' + index + '"';
+				if (field[5] == index) {
+					column += ' selected="selected"';
+				}
+				column += '>' + value + '</option>'
 			}
 		})
 		column += 
@@ -322,17 +417,27 @@ THE SOFTWARE.
 			'</td>' +
 			'<td class="new-notnull">' +
 			'<select name="notnull[]" class="form-control input-sm">' +
-			'<option value="1">Yes</option>' +
-			'<option value="0">No</option>' +
+			'<option value="1"';
+		if (field[4] == '1') {
+			column += ' selected="selected"';
+		}
+		column += 
+			'>Yes</option>' +
+			'<option value="0"';
+		if (field[4] == '0') {
+			column += ' selected="selected"';
+		}
+		column += 
+			'>No</option>' +
 			'</select>' +
 			'</td>' +
 			'<td class="new-field-label">' +
-			'<input name="label[]" class="form-control input-sm">' +
+			'<input name="label[]" class="form-control input-sm" value="' + field[2] + '">' +
 			'</td>' +
 			'</tr>' +
 			'<tr>' +
 			'<td class="new-field-description" colspan="5">' +
-			'<textarea name="description[]" class="form-control input-sm" placeholder="Field description"></textarea>' +
+			'<textarea name="description[]" class="form-control input-sm" placeholder="Field description">' + field[3] + '</textarea>' +
 			'</td>' +
 			'</tr>' +
 			'<tr>' +
@@ -340,13 +445,49 @@ THE SOFTWARE.
 			'</td>' +
 			'</tr>';
 		var $column = $(column);
-		$column.appendTo($('#new-table tbody'));
+		$column.appendTo($('#edition-table tbody'));
 		$column.find('textarea').wysihtml5(Admin.wysihtml5Options);
 		$column.find('select').select2({
 			language: Admin.lang,
 			minimumResultsForSearch: 100
 		});
 		$column.next().next().find("td.new-field-choices").hide();
+		if (field[5] === 'choice' || field[5] === 'multichoice') {
+			var choicesPanel = Datasources.drawChoicesForInput(num);
+			choicesPanel.find('button.delete-choice-source').removeClass('update-button').hide();
+			choicesPanel.find('.edit-choice-source').removeClass('update-button').hide();
+			Datasources.bindChoices(choicesPanel);
+			$column.next().next().find("td.new-field-choices").append(choicesPanel).show();
+			if (field[7]) {
+				var choiceSource = JSON.parse(field[7]);
+				var choicesContainer = choicesPanel.find('> .panel-body');
+				var fieldId = choicesPanel.attr('id').match(/^field-(\d+)/)[1];
+				choiceSource['fieldId'] = fieldId - 1;
+				var choicePanel = Datasources.drawChoiceSourceForInput(choiceSource);
+				choicesPanel.find('button.add-choice').removeClass('update-button').hide();
+				choicesPanel.find('button.add-choice-source').removeClass('update-button').hide();
+				choicesPanel.find('button.delete-choice-source').addClass('update-button').show();
+				choicesContainer.append(choicePanel);
+				Datasources.bindChoiceSource(choicePanel);
+			} else if (field[6]) {
+				var choices = JSON.parse(field[6]);
+				var choicesContainer = choicesPanel.find('> .panel-body');
+				var fieldId = choicesPanel.attr('id').match(/^field-(\d+)/)[1];
+				$.each(choices, function(value, label) {
+					var id = choicesContainer.children('div.panel').length + 1;
+					var choice = {
+						id: id,
+						fieldId: fieldId - 1,
+						value: value,
+						label: label
+					};
+					var choicePanel = Datasources.drawChoiceForInput(choice);
+					choicesPanel.find('button.add-choice-source').removeClass('update-button').hide();
+					choicesContainer.append(choicePanel);
+					Datasources.bindChoice(choicePanel);
+				});
+			}
+		}
 		var type = $column.find("td.new-type").find("select");
 		type.data('previous', type.val());
 		type.change(function (e) {
@@ -357,13 +498,11 @@ THE SOFTWARE.
 					$column.next().next().find("td.new-field-choices").hide().empty();
 				}
 			} else if (curr === 'choice' || curr === 'multichoice') {
-				var choices = $('<td class="new-field-choices" colspan="5"></td>');
 				var choicesPanel = Datasources.drawChoicesForInput(num);
 				choicesPanel.find('button.delete-choice-source').removeClass('update-button').hide();
 				choicesPanel.find('.edit-choice-source').removeClass('update-button').hide();
-				choices.append(choicesPanel);
 				Datasources.bindChoices(choicesPanel);
-				$column.next().next().find("td.new-field-choices").append(choices).show();
+				$column.next().next().find("td.new-field-choices").append(choicesPanel).show();
 			}
 			$(this).data('previous', curr);
 		});
@@ -380,7 +519,43 @@ THE SOFTWARE.
 			errors.push("Missing table label");
 		}
 		var field = "";
-		$('#new-table tbody tr').each(function(index) {
+		$('#edition-table tbody tr').each(function(index) {
+			if (index % 2 == 0) {
+				field = $(this).find("input[name='field[]']").val();
+				var label = $(this).find("input[name='label[]']").val();
+				if (field !== '') {
+					if (! /^\w+$/.test(field)) {
+						errors.push("Incorrect field name for field " + (Math.floor(index / 3) + 1));
+					}
+					if (label === '') {
+						errors.push("incorrect label for field " + (Math.floor(index / 3) + 1));
+					}
+				} else if (label !== '') { 
+					errors.push("incorrect label for field " + (Math.floor(index / 3) + 1));
+				}
+			} else {
+				var description = $(this).find("textarea").val();
+				if (field === '' && description !== '') { 
+					errors.push("incorrect description for field " + (Math.floor(index / 3) + 1));
+				}
+			}
+			
+		});
+		return errors;
+	}
+
+	Datasources.checkEditedTable = function() {
+		var errors = [];
+		var tablename = $('#edit-table-form').find("input[name='table-name']").val();
+		if (tablename == '' || ! /^\w+$/.test(tablename)) {
+			errors.push("Incorrect table name");
+		}
+		var tablelabel = $('#new-table-form').find("input[name='table-label']").val();
+		if (tablelabel == '') {
+			errors.push("Missing table label");
+		}
+		var field = "";
+		$('#edition-table tbody tr').each(function(index) {
 			if (index % 2 == 0) {
 				field = $(this).find("input[name='field[]']").val();
 				var label = $(this).find("input[name='label[]']").val();
@@ -457,7 +632,11 @@ THE SOFTWARE.
 						Datasources.showErrors([data.error]);
 					}, 1500);
 				} else if (data.action = 'edit' && data.id > 0) {
-					$('#users').find('.tabledit-input.tabledit-identifier').val(data.id);
+					if (row.attr('id') == 0) {
+						row.find('.tabledit-input.tabledit-identifier').val(data.id);
+						row.find('.tabledit-span.tabledit-identifier').text(data.id);
+						row.attr('id', data.id);
+					}
 				}
 				return; 
 			},
@@ -680,7 +859,7 @@ $(document).ready(function() {
 			Datasources.toggleDatasourceFields(this.id);
 			Admin.updated = true;
 		});
-		$( "#datasource-creation-form, #datasource-edition-form, #datasource-import-form" ).find('input, textarea').on("change propertychange", function (e) {
+		$( "#datasource-creation-form, #datasource-edition-form, #datasource-import-form, #edit-table-form" ).find('input, textarea').on("change propertychange", function (e) {
 			Admin.updated = true;
 		});
 		if ( $("#datasource-creation-form, #datasource-edition-form" ).length) {

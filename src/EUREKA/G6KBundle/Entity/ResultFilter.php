@@ -158,7 +158,12 @@ class ResultFilter {
 	}
 
 	protected function filterJSON($json, $path) {
-		$result = $this->xPathFilter( "json", $json, $path);
+		if (preg_match("/^\\$/", $path)) { // jsonpath
+			$store = new JsonStore($json);
+			$result = $store->get($path);
+		} else { // xpath
+			$result = $this->xPathFilter( "json", $json, $path);
+		}
 		return $result;
 	}
 
@@ -166,17 +171,21 @@ class ResultFilter {
 		$result = array();
 		$lines = explode("\n", $csv);
 		foreach ($lines as $line) {
-			$cols = array_map(
-				function($l) {
-					return trim($l);
-				}, 
-				str_getcsv($line, $separator, $delimiter)
-			);
-			$result[] = $cols;
+			if (trim($line) != '') {
+				$cols = array_map(
+					function($l) {
+						return trim($l);
+					}, 
+					str_getcsv($line, $separator, $delimiter)
+				);
+				$result[] = $cols;
+			}
 		}
-		$indices = explode("/", $path);
-		foreach ($indices as $index) {
-			$result = $result[(int)$index - 1];
+		if ($path !== null && $path != '') {
+			$indices = explode("/", $path);
+			foreach ($indices as $index) {
+				$result = $result[(int)$index - 1];
+			}
 		}
 		return $result;
 	}
@@ -226,7 +235,7 @@ class ResultFilter {
 	protected function createXML($node_name, $arr=array()) {
 		$xml = new \DomDocument('1.0', 'UTF-8');
 		$xml->formatOutput = true;
-		$xml->appendChild($this->convertToXML($node_name, $arr));
+		$xml->appendChild($this->convertToXML($xml, $node_name, $arr));
 		$result = $xml;
 		return $result;
 	}
@@ -240,6 +249,64 @@ class ResultFilter {
 	protected function isValidTagName($tag) {
 		$pattern = '/^[a-z_]+[a-z0-9\:\-\.\_]*[^:]*$/i';
 		return preg_match($pattern, $tag, $matches) && $matches[0] == $tag;
+	}
+
+	protected function &convertToXML(&$dom, $node_name, $arr=array()) {
+		$node = $dom->createElement($node_name);
+		if(is_array($arr)){
+			if(isset($arr['@attributes'])) {
+				foreach($arr['@attributes'] as $key => $value) {
+					if(!$this->isValidTagName($key)) {
+						throw new \Exception('[Array2XML] Illegal character in attribute name. attribute: '.$key.' in node: '.$node_name);
+					}
+					$node->setAttribute($key, $this->bool2str($value));
+				}
+				unset($arr['@attributes']); 
+			}
+			if(isset($arr['@value'])) {
+				$node->appendChild($dom->createTextNode($this->bool2str($arr['@value'])));
+				unset($arr['@value']);
+				return $node;
+			} else if(isset($arr['@cdata'])) {
+				$node->appendChild($dom->createCDATASection($this->bool2str($arr['@cdata'])));
+				unset($arr['@cdata']);
+				return $node;
+			}
+		}
+		if(is_array($arr)){
+			foreach($arr as $key=>$value){
+				$attr = false;
+				if (preg_match("/^@(.+)$/", $key, $matches) && !is_array($value)) {
+					$key = $matches[1];
+					$attr = true;
+				}
+				if(!$this->isValidTagName($key)) {
+					throw new \Exception('[Array2XML] Illegal character in tag name. tag: '.$key.' in node: '.$node_name);
+				}
+				if ($attr) {
+					$node->setAttribute($key, $this->bool2str($value));
+				} elseif (is_array($value) && is_numeric(key($value))) {
+					foreach($value as $k=>$v){
+						if (is_array($v) && is_numeric(key($v))) {
+							$subnode = $dom->createElement($key);
+							foreach($v as $k1=>$v1){
+								$subnode->appendChild($this->convertToXML($dom, 'sub-'.$key, $v1));
+							}
+							$node->appendChild($subnode);
+						} else {
+							$node->appendChild($this->convertToXML($dom, $key, $v));
+						}
+					}
+				} else {
+					$node->appendChild($this->convertToXML($dom, $key, $value));
+				}
+				unset($arr[$key]);
+			}
+		}
+		if(!is_array($arr)) {
+			$node->appendChild($dom->createTextNode($this->bool2str($arr)));
+		}
+		return $node;
 	}
 
 	protected function createArray($xml) {
@@ -294,16 +361,20 @@ class ResultFilter {
 		}
 		$itemData = array();
 		foreach ( $xml->childNodes as $node ) {
-			if ( $this->nodeHasChild( $node ) ) {
-				$itemData[$node->nodeName] = $this->convertToArray( $node );
-			} else{
-				$itemData[$node->nodeName] = trim($node->nodeValue);
+			if ($node->nodeName == "sub-" . $xml->nodeName) {
+				$itemData[] = $this->convertToArray( $node );
+			} else {
+				if ( $this->nodeHasChild( $node ) ) {
+					$itemData[$node->nodeName] = $this->convertToArray( $node );
+				} else{
+					$itemData[$node->nodeName] = trim($node->nodeValue);
+				}
 			}
 		}
 		return $itemData;
 	}
 
-	protected function &xPathFilter( $root, $array, $path ) {
+	protected function xPathFilter( $root, $array, $path ) {
 		$doc = $this->createXML($root, $array);
 		return $this->xPathDOMFilter( $doc, $path );
 	}

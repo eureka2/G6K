@@ -34,6 +34,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use EUREKA\G6KBundle\Entity\Database;
 use EUREKA\G6KBundle\Entity\JSONToSQLConverter;
+use EUREKA\G6KBundle\Entity\DOMClient as Client;
+use EUREKA\G6KBundle\Entity\ResultFilter;
 
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
@@ -126,7 +128,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			'year' => 'INT'
 		),
 		'jsonsql' => array(
-			'array' => 'string',
+			'array' => 'array',
 			'boolean' => 'boolean',
 			'choice' => 'integer',
 			'country' => 'integer',
@@ -136,7 +138,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			'integer' => 'integer',
 			'money' => 'number',
 			'month' => 'integer',
-			'multichoice' => 'string',
+			'multichoice' => 'object',
 			'number' => 'number',
 			'percent' => 'number',
 			'region' => 'integer',
@@ -174,6 +176,8 @@ class DataSourcesAdminController extends BaseAdminController {
 				return $this->doEditDatasource ($dsid, $form);
 			} elseif ($crud == 'drop-datasource') {
 				return $this->dropDatasource ($dsid);
+			} elseif ($crud == 'edit') {
+				return $this->showDatasources($dsid, $table, 'edit-table');
 			} else {
 				$database = $this->getDatabase($dsid);
 				switch ($crud) {
@@ -185,8 +189,6 @@ class DataSourcesAdminController extends BaseAdminController {
 						return $this->deleteTableRow ($form, $table, $database);
 					case 'create':
 						return $this->createTable ($form, $database);
-					case 'edit':
-						return $this->editTable ($table, $database);
 					case 'doedit':
 						return $this->doEditTable ($form, $table, $database);
 					case 'drop':
@@ -315,7 +317,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			} else {
 				$dss = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
 				$datasource = array(
-					'action' => $action,
+					'action' => $action == 'edit-table' ? 'show' : $action,
 					'id' => (int)$dss[0]['id'],
 					'type' => (string)$dss[0]['type'],
 					'name' => (string)$dss[0]['name'],
@@ -340,30 +342,47 @@ class DataSourcesAdminController extends BaseAdminController {
 					$datasource['database']['user'] = $database->getUser();
 					$datasource['database']['password'] = $database->getPassword();
 					if ($datasource['type'] == 'internal' && $table !== null && $table != 'dummy') {
+						$tabledef['action'] = $table != 'new' ? $action : 'create-table';
 						$tabledef['name'] = $table;
-						$tabledef['label'] = $table != 'new' ? $table : 'New Table';
+						$tabledef['label'] = 'New Table';
 						$tabledef['description'] = '';
 						if ($table != 'new') {
 							$tableinfos = $this->tableInfos($database, $table);
 							foreach($tableinfos as $i => $info) {
-								$columns = $this->datasources->xpath("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']/Table[@name='".$table."']/Column[@name='".$info['name']."']");
-								$tableinfos[$i]['g6k_type'] = (count($columns) > 0) ? (string)$columns[0]['type'] : $info['type'];
-								$tableinfos[$i]['label'] = (count($columns) > 0) ? (string)$columns[0]['label'] : $info['name'];
-								$tableinfos[$i]['description'] = (count($columns) > 0) ? (string)$columns[0]->Description : '';
-								if ($tableinfos[$i]['g6k_type'] == 'choice' && count($columns) > 0 && $columns[0]->Choices) {
-									$choices = array();
-									foreach ($columns[0]->Choices->Choice as $choice) {
-										$choices[(string)$choice['value']] = (string)$choice['label'];
-									}
-									if ($columns[0]->Choices->Source) {
-										$source = $columns[0]->Choices->Source;
-										$result = $this->processSource($source);
-										if ($result !== null) {
-											$valueColumn = strtolower((string)$source['valueColumn']);
-											$labelColumn = strtolower((string)$source['labelColumn']);
-											foreach ($result as $row) {
-												$choices[$row[$valueColumn]] =  $row[$labelColumn];
+								$dss = $this->datasources->xpath("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']");
+								$column = null;
+								foreach ($dss[0]->children() as $child) {
+									if ($child->getName() == 'Table' && strcasecmp((string)$child['name'], $table) == 0) {
+										foreach ($child->children() as $grandson) {
+											if ($grandson->getName() == 'Column' && strcasecmp((string)$grandson['name'], $info['name']) == 0) {
+												$column = $grandson;
+												break;
 											}
+										}
+										break;
+									}
+								}
+								$tableinfos[$i]['g6k_type'] = ($column != null) ? (string)$column['type'] : $info['type'];
+								$tableinfos[$i]['label'] = ($column != null) ? (string)$column['label'] : $info['name'];
+								$tableinfos[$i]['description'] = ($column != null) ? (string)$column->Description : '';
+								if ($tableinfos[$i]['g6k_type'] == 'choice' && $column != null && $column->Choices) {
+									if ($column->Choices->Source) {
+										$source = $column->Choices->Source;
+										$result = $this->processSource($source);
+										$choices = $this->getChoicesFromSource($source, $result);
+										$tableinfos[$i]['choicesource']['id'] = (int)$source['id'];
+										$tableinfos[$i]['choicesource']['datasource'] = (string)$source['datasource'];
+										$tableinfos[$i]['choicesource']['request'] = (string)$source['request'];
+										$tableinfos[$i]['choicesource']['returnType'] = (string)$source['returnType'];
+										$tableinfos[$i]['choicesource']['separator'] = (string)$source['separator'];
+										$tableinfos[$i]['choicesource']['delimiter'] = (string)$source['delimiter'];
+										$tableinfos[$i]['choicesource']['returnPath'] = (string)$source['returnPath'];
+										$tableinfos[$i]['choicesource']['valueColumn'] = (string)$source['valueColumn'];
+										$tableinfos[$i]['choicesource']['labelColumn'] = (string)$source['labelColumn'];
+									} else {
+										$choices = array();
+										foreach ($column->Choices->Choice as $choice) {
+											$choices[(string)$choice['value']] = (string)$choice['label'];
 										}
 									}
 									$tableinfos[$i]['choices'] = $choices;
@@ -374,7 +393,7 @@ class DataSourcesAdminController extends BaseAdminController {
 								$i = 0;
 								foreach ($row as $c => $cell) {
 									if ($tableinfos[$i]['g6k_type'] == 'date' && $cell !== null) {
-										$date = $this->parseDate('Y-m-d', $cell);
+										$date = $this->parseDate('Y-m-d', substr($cell, 0, 10));
 										$tabledatas[$r][$c] = $date->format('d/m/Y');
 									} elseif ($tableinfos[$i]['g6k_type'] == 'money' || $tableinfos[$i]['g6k_type'] == 'percent') {
 										$tabledatas[$r][$c] = number_format ( (float) $cell, 2, ",", "" );
@@ -391,9 +410,17 @@ class DataSourcesAdminController extends BaseAdminController {
 					if ($datasource['type'] == 'internal') {
 						$tables = $this->tablesList($database);
 						foreach($tables as $i => $tbl) {
-							$tbls = $this->datasources->xpath("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']/Table[@name='".$tbl['name']."']");
-							$tables[$i]['label'] = (count($tbls) > 0) ? (string)$tbls[0]['label'] : $tbl['name'];
-							$tables[$i]['description'] = (count($tbls) > 0) ? (string)$tbls[0]->Description : '';
+							$dss = $this->datasources->xpath("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']");
+							$dstable = null;
+							foreach ($dss[0]->children() as $child) {
+								if ($child->getName() == 'Table' && strcasecmp((string)$child['name'], $tbl['name']) == 0) {
+									$dstable = $child;
+									break;
+								}
+							}
+						
+							$tables[$i]['label'] = ($dstable != null) ? (string)$dstable['label'] : $tbl['name'];
+							$tables[$i]['description'] = ($dstable != null) ? (string)$dstable->Description : '';
 							if ($table !== null && $tbl['name'] == $table) {
 								$tabledef['label'] = $tables[$i]['label'];
 								$tabledef['description'] = $tables[$i]['description'];
@@ -533,17 +560,64 @@ class DataSourcesAdminController extends BaseAdminController {
 		if ($datafile != '') {
 			unlink($datafile);
 		}
-
-		// $response = new Response();
-		// $response->setContent(json_encode($form));
-		// $response->headers->set('Content-Type', 'application/json');
-		// return $response;
-
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
 	}
 
+	protected function getChoicesFromSource($source, $result) {
+		$choices = array();
+		if ($result !== null) {
+			switch ((string)$source['returnType']) {
+				case 'json':
+					$valueColumn = (string)$source['valueColumn'];
+					if (is_numeric($valueColumn)) {
+						$valueColumn = (int)$valueColumn - 1;
+					}
+					$labelColumn = (string)$source['labelColumn'];
+					if (is_numeric($labelColumn)) {
+						$labelColumn = (int)$labelColumn - 1;
+					}
+					foreach ($result as $row) {
+						$choices[$row[$valueColumn]] =  $row[$labelColumn];
+					}
+					break;
+				case 'xml':
+					$valueColumn = (string)$source['valueColumn'];
+					$labelColumn = (string)$source['labelColumn'];
+					foreach ($result as $row) {
+						if (preg_match("/^@(.+)$", $valueColumn, $m1)) {
+							if (preg_match("/^@(.+)$", $labelColumn, $m2)) {
+								$choices[(string)$row[$m1[1]]] = (string)$row[$m2[1]];
+							} else {
+								$choices[(string)$row[$m1[1]]] = $row->$labelColumn;
+							}
+						} elseif (preg_match("/^@(.+)$", $labelColumn, $m2)) {
+							$choices[$row->$valueColumn] = (string)$row[$m2[1]];
+						} else {
+							$choices[$row->$valueColumn] = $row->$labelColumn;
+						}
+					}
+					break;
+				case 'assocArray':
+					$valueColumn = strtolower((string)$source['valueColumn']);
+					$labelColumn = strtolower((string)$source['labelColumn']);
+					foreach ($result as $row) {
+						$choices[$row[$valueColumn]] =  $row[$labelColumn];
+					}
+					break;
+				case 'csv':
+					$valueColumn = (int)$source['valueColumn'] - 1;
+					$labelColumn = (int)$source['labelColumn'] - 1;
+					foreach ($result as $row) {
+						$choices[$row[$valueColumn]] =  $row[$labelColumn];
+					}
+					break;
+			}
+		}
+		return $choices;
+	}
+
 	protected function processSource($source) {
-		$ds = $source['datasource'];
+		$ds = (string)$source['datasource'];
 		if (is_numeric($ds)) {
 			$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$ds."']");
 		} else {
@@ -551,8 +625,14 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		switch ((string)$datasources[0]['type']) {
 			case 'uri':
-				$uri = (string)$datasources[0]['uri'] . (string)$source['request'];
-				$result = file_get_contents($uri);
+				$uri = (string)$datasources[0]['uri'];
+				$client = Client::createClient();
+				$data = array(); // TODO : add parameters elements in DataSources.xsd
+				if ((string)$datasources[0]['method'] == "" || (string)$datasources[0]['method'] == "GET") {
+					$result = $client->get($uri);
+				} else {
+					$result = $client->post($uri, $data);
+				}
 				break;
 			case 'database':
 			case 'internal':
@@ -569,6 +649,16 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 				if ((string)$databases[0]['password'] != "") {
 					$database->setPassword((string)$databases[0]['password']);
+				} elseif ((string)$databases[0]['user'] != "") {
+					try {
+						$host = $this->get('kernel')->getContainer()->getParameter('database_host');
+						$port = $this->get('kernel')->getContainer()->getParameter('database_port');
+						$user = $this->get('kernel')->getContainer()->getParameter('database_user');
+						if ((string)$databases[0]['host'] == $host && (string)$databases[0]['port'] == $port && (string)$databases[0]['user'] == $user) {
+							$database->setPassword($this->get('kernel')->getContainer()->getParameter('database_password'));
+						}
+					} catch (\Exception $e) {
+					}
 				}
 				$query = (string)$source['request'];
 				$database->connect();
@@ -576,38 +666,45 @@ class DataSourcesAdminController extends BaseAdminController {
 				break;
 		}
 		switch ((string)$source['returnType']) {
-			case 'singleValue':
-				return $result;
 			case 'json':
 				$json = json_decode($result, true);
-				$keys = explode("/", (string)$source['returnPath']);
-				foreach ($keys as $key) {
-					if (ctype_digit($key)) {
-						$key = (int)$key;
-					}
-					if (! isset($json[$key])) {
-						break;
-					}
-					$json = $json[$key];
-				}
-				return $json;
+				return ResultFilter::filter("json", $json, (string)$source['returnPath']);
 			case 'assocArray':
-				$keys = explode("/", (string)$source['returnPath']);
-				foreach ($keys as $key) {
-					if (ctype_digit($key)) {
-						$key = (int)$key;
-					}
-					if (! isset($result[$key])) {
-						break;
-					}
-					$result = $result[$key];
-				}
-				return $result;
+				return $this->filterResultByLines($result, (string)$source['returnPath']);
 			case 'xml':
-				$xml = new SimpleXMLElement($result);
-				return $xml->xpath((string)$source['returnPath']);
+				return ResultFilter::filter("xml", $result, (string)$source['returnPath']);
+			case 'csv':
+				$result = ResultFilter::filter("csv", $result, "", null, (string)$source['separator'], (string)$source['delimiter']);
+				return $this->filterResultByLines($result, (string)$source['returnPath']);
 		}
 		return null;
+	}
+
+	protected function filterResultByLines($result, $filter) {
+		if ($filter == '') {
+			return $result;
+		}
+		$filtered = array();
+		$ranges = explode("/", $filter);
+		$len = count($result);
+		foreach ($ranges as $range) {
+			$lines = explode("-", trim($range));
+			if (count($lines) == 1) {
+				$line = (int)trim($lines[0]) - 1;
+				if ($line >= 0 && $line < $len) {
+					$filtered[] = $result[$line];
+				}
+			} elseif (count($lines) == 2) {
+				$from = max(0, (int)trim($lines[0]) - 1);
+				$to = (int)trim($lines[1]) - 1;
+				if ($from <= $to) {
+					for ($i = $from; $i <= $to && $i < $len; $i++) {
+						$filtered[] = $result[$i];
+					}
+				}
+			}
+		}
+		return $filtered;
 	}
 
 	protected function getDatabase($dsid, $withDbName = true) {
@@ -792,24 +889,40 @@ class DataSourcesAdminController extends BaseAdminController {
 		foreach($tableinfos as $i => $info) {
 			$infosColumns[$info['name']]['notnull'] = $info['notnull'];
 			$infosColumns[$info['name']]['dflt_value'] = $info['dflt_value'];
-			$columns = $this->datasources->xpath("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']/Table[@name='".$table."']/Column[@name='".$info['name']."']");
-			$infosColumns[$info['name']]['g6k_type'] = (count($columns) > 0) ? (string)$columns[0]['type'] : $info['type'];
-			$infosColumns[$info['name']]['type'] = $info['type'];
-			$infosColumns[$info['name']]['label'] = (count($columns) > 0) ? (string)$columns[0]['label'] : $info['name'];
-			if ($infosColumns[$info['name']]['g6k_type'] == 'choice' && count($columns) > 0 && $columns[0]->Choices) {
-				$choices = array();
-				foreach ($columns[0]->Choices->Choice as $choice) {
-					$choices[(string)$choice['value']] = (string)$choice['label'];
-				}
-				if ($columns[0]->Choices->Source) {
-					$source = $columns[0]->Choices->Source;
-					$result = $this->processSource($source);
-					if ($result !== null) {
-						$valueColumn = strtolower((string)$source['valueColumn']);
-						$labelColumn = strtolower((string)$source['labelColumn']);
-						foreach ($result as $row) {
-							$choices[$row[$valueColumn]] =  $row[$labelColumn];
+			$datasources = $this->datasources->xpath("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']");
+			$column = null;
+			foreach ($datasources[0]->children() as $child) {
+				if ($child->getName() == 'Table' && strcasecmp((string)$child['name'], $table) == 0) {
+					foreach ($child->children() as $grandson) {
+						if ($grandson->getName() == 'Column' && strcasecmp((string)$grandson['name'], $info['name']) == 0) {
+							$column = $grandson;
+							break;
 						}
+					}
+					break;
+				}
+			}
+			$infosColumns[$info['name']]['g6k_type'] = ($column != null) ? (string)$column['type'] : $info['type'];
+			$infosColumns[$info['name']]['type'] = $info['type'];
+			$infosColumns[$info['name']]['label'] = ($column != null) ? (string)$column['label'] : $info['name'];
+			$infosColumns[$info['name']]['description'] = ($column != null) ? (string)$column->Description : '';
+			if ($infosColumns[$info['name']]['g6k_type'] == 'choice' && $column != null && $column->Choices) {
+				if ($column->Choices->Source) {
+					$source = $column->Choices->Source;
+					$infosColumns[$info['name']]['choicesource']['datasource'] = (string)$source['datasource'];
+					$infosColumns[$info['name']]['choicesource']['returnType'] = (string)$source['returnType'];
+					$infosColumns[$info['name']]['choicesource']['request'] = (string)$source['request'];
+					$infosColumns[$info['name']]['choicesource']['valueColumn'] = (string)$source['valueColumn'];
+					$infosColumns[$info['name']]['choicesource']['labelColumn'] = (string)$source['labelColumn'];
+					$infosColumns[$info['name']]['choicesource']['returnPath'] = (string)$source['returnPath'];
+					$infosColumns[$info['name']]['choicesource']['separator'] = (string)$source['separator'];
+					$infosColumns[$info['name']]['choicesource']['delimiter'] = (string)$source['delimiter'];
+					$result = $this->processSource($source);
+					$choices = $this->getChoicesFromSource($source, $result);
+				} else {
+					$choices = array();
+					foreach ($column->Choices->Choice as $choice) {
+						$choices[(string)$choice['value']] = (string)$choice['label'];
 					}
 				}
 				$infosColumns[$info['name']]['choices'] = $choices;
@@ -896,7 +1009,8 @@ class DataSourcesAdminController extends BaseAdminController {
 				$datasource->setAttribute('database', $database->getAttribute('id'));
 				break;
 			case 'uri':
-				$datasource->setAttribute('uri', $form['datasource-name']);
+				$datasource->setAttribute('name', $form['datasource-name']);
+				$datasource->setAttribute('uri', $form['datasource-uri']);
 				$datasource->setAttribute('method', $form['datasource-method']);
 				break;
 		}
@@ -905,11 +1019,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	protected function createDatasource($form) {
-		// $response = new Response();
-		// $response->setContent(json_encode($form));
-		// $response->headers->set('Content-Type', 'application/json');
-		// return $response;
-
 		$datasource = $this->doCreateDatasource($form);
 		$this->saveDatasources($datasource->ownerDocument);
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
@@ -988,25 +1097,37 @@ class DataSourcesAdminController extends BaseAdminController {
 
 	protected function createDBTable($form, $database) {
 		$create = "create table " . $form['table-name'] . " (\n";
-		switch ($database->getType()) {
-			case 'jsonsql':
-				$create .= "id integer not null primary key autoincrement,\n";
-				break;
-			case 'sqlite':
-				$create .= "id INTEGER not null primary key autoincrement,\n";
-				break;
-			case 'pgsql':
-				$create .= "id serial primary key,\n";
-				break;
-			case 'mysql':
-			case 'mysqli':
-				$create .= "id INT not null primary key auto_increment,\n";
-				break;
+		if (!in_array('id', $form['field'])) {
+			switch ($database->getType()) {
+				case 'jsonsql':
+					$create .= "id integer not null primary key autoincrement,\n";
+					break;
+				case 'sqlite':
+					$create .= "id INTEGER not null primary key autoincrement,\n";
+					break;
+				case 'pgsql':
+					$create .= "id serial primary key,\n";
+					break;
+				case 'mysql':
+				case 'mysqli':
+					$create .= "id INT not null primary key auto_increment,\n";
+					break;
+			}
 		}
 		foreach ($form['field'] as $i => $field) {
-			$create .= $field . " " . $this->datatypes[$database->getType()][$form['type'][$i]];
+			if ($database->getType() == 'jsonsql') {
+				$create .= $field . " " . $form['type'][$i];
+			} else {
+				$create .= $field . " " . $this->datatypes[$database->getType()][$form['type'][$i]];
+			}
 			if ($form['notnull'][$i] == 1) {
 				$create .= " not null";
+			}
+			if ($database->getType() =='jsonsql' && $form['label'][$i] != '') {
+				$create .= " title " . $database->quote($form['label'][$i]);
+			}
+			if ($database->getType() =='jsonsql' && $form['description'][$i] != '') {
+				$create .= " comment " . $database->quote($form['description'][$i]);
 			}
 			if ($i < count($form['field']) - 1 ) {
 				$create .= ",";
@@ -1014,10 +1135,159 @@ class DataSourcesAdminController extends BaseAdminController {
 			$create .= "\n";
 		}
 		$create .= ")";
+		print_r($create);
 		try {
 			$database->exec($create);
+			if ($form['table-label'] != '' && $database->getType() == 'jsonsql') {
+				$alter = "alter table " . $form['table-name'] . " modify title  " . $database->quote($form['table-label']);
+				$database->exec($alter);
+			}
+			if ($form['table-description'] != '' && $database->getType() == 'jsonsql') {
+				$alter = "alter table " . $form['table-name'] . " modify comment  " . $database->quote($form['table-description']);
+				$database->exec($alter);
+			}
 		} catch (Exception $e) {
 			return "Can't create {$form['table-name']} : " . $e->getMessage();
+		}
+		return true;
+	}
+
+	protected function editDBTable($form, $table, $database) {
+		$infosColumns = $this->infosColumns($database, $table);
+		print_r($infosColumns);
+		if (strcasecmp($form['table-name'], $table) != 0) {
+			$rename = "ALTER TABLE $table RENAME TO {$form['table-name']}";
+			try {
+				$database->exec($rename);
+			} catch (Exception $e) {
+				return "Can't rename table $table : " . $e->getMessage();
+			}
+		}
+		$col = 0;
+		foreach($infosColumns as $name => $info) {
+			if (strcasecmp($form['field'][$col], $name) != 0 && $database->getType() != 'sqlite') {
+				$rename = "";
+				switch ($database->getType()) {
+					case 'mysql':
+					case 'mysqli':
+						$rename = "ALTER TABLE $table CHANGE COLUMN $name {$form['field'][$col]}";
+						break;
+					case 'jsonsql':
+					case 'pgsql':
+						$rename = "ALTER TABLE $table RENAME COLUMN $name TO {$form['field'][$col]}";
+						break;
+				}
+				try {
+					$database->exec($rename);
+				} catch (Exception $e) {
+					return "Can't rename column $name of table $table : " . $e->getMessage();
+				}
+			}
+			if ($form['type'][$col] != $info['g6k_type'] && $database->getType() != 'sqlite') {
+				$changetype = "";
+				if ($database->getType() == 'jsonsql') {
+					$changetype = "ALTER TABLE $table MODIFY COLUMN $name SET TYPE {$form['type'][$col]}";
+					try {
+						$database->exec($changetype);
+					} catch (Exception $e) {
+						return "Can't modify type of column $name of table $table : " . $e->getMessage();
+					}
+				} else {
+					$newDBType = $this->datatypes[$database->getType()][$form['type'][$col]];
+					if ($info['type'] != $newDBType) {
+						switch ($database->getType()) {
+							case 'mysql':
+							case 'mysqli':
+								$changetype = "ALTER TABLE $table MODIFY COLUMN $name $newDBType";
+								break;
+							case 'pgsql':
+								$changetype = "ALTER TABLE $table ALTER COLUMN $name SET DATA TYPE $newDBType";
+								break;
+						}
+						try {
+							$database->exec($changetype);
+						} catch (Exception $e) {
+							return "Can't modify type of column $name of table $table : " . $e->getMessage();
+						}
+					}
+				}
+			}
+			if ($form['notnull'][$col] != $info['notnull'] && $database->getType() != 'sqlite') {
+				$changenullable = "";
+				switch ($database->getType()) {
+					case 'jsonsql':
+						if ($form['notnull'][$col] == 1) {
+							$changenullable = "ALTER TABLE $table MODIFY COLUMN $name SET NOT NULL";
+						} else {
+							$changenullable = "ALTER TABLE $table MODIFY COLUMN $name REMOVE NOT NULL";
+						}
+						break;
+					case 'mysql':
+					case 'mysqli':
+						$newDBType = $this->datatypes[$database->getType()][$form['type'][$col]];
+						$newNullable = $form['notnull'][$col] == 1 ? 'NOT NULL' : 'NULL';
+						$changenullable = "ALTER TABLE $table MODIFY COLUMN $name $newDBType $newNullable";
+						break;
+					case 'pgsql':
+						if ($form['notnull'][$col] == 1) {
+							$changenullable = "ALTER TABLE $table ALTER COLUMN $name SET NOT NULL";
+						} else {
+							$changenullable = "ALTER TABLE $table ALTER COLUMN $name DROP NOT NULL";
+						}
+						break;
+				}
+				try {
+					$database->exec($changenullable);
+				} catch (Exception $e) {
+					return "Can't alter 'NOT NULL' property of column $name of table $table : " . $e->getMessage();
+				}
+			}
+			if ($form['label'][$col] != $info['label'] && $database->getType() == 'jsonsql') {
+				$changelabel = "ALTER TABLE $table MODIFY COLUMN $name SET TITLE " . $database->quote($form['label'][$col]);
+				try {
+					$database->exec($changelabel);
+				} catch (Exception $e) {
+					return "Can't modify title of column $name of table $table : " . $e->getMessage();
+				}
+			}
+			if ($form['description'][$col] != $info['description'] && $database->getType() == 'jsonsql') {
+				$changedescription = "ALTER TABLE $table MODIFY COLUMN $name SET COMMENT " . $database->quote($form['description'][$col]);
+				try {
+					$database->exec($changedescription);
+				} catch (Exception $e) {
+					return "Can't modify description of column $name of table $table : " . $e->getMessage();
+				}
+			}
+			$col++;
+		}
+		for ($i = $col; $i < count($form['field']); $i++) {
+			$name = $form['field'][$i];
+			$type = $form['type'][$i];
+			$label = $form['label'][$i];
+			$description = $form['description'][$i];
+			$notnull = $form['notnull'][$i] == 1 ? 'NOT NULL' : '';
+			$dbype = $this->datatypes[$database->getType()][$type];
+			$addcolumn = "";
+			switch ($database->getType()) {
+				case 'jsonsql':
+					$addcolumn = "ALTER TABLE $table ADD COLUMN $name $type $notnull TITLE " . $database->quote($label) . " COMMENT " . $database->quote($description);
+					break;
+				case 'sqlite':
+					$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
+					break;
+				case 'mysql':
+				case 'mysqli':
+					$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
+					break;
+				case 'pgsql':
+					$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
+					break;
+			}
+			try {
+				$database->exec($addcolumn);
+			} catch (Exception $e) {
+				return "Can't add the column '$name' into table '$table' : " . $e->getMessage();
+			}
 		}
 		return true;
 	}
@@ -1036,7 +1306,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				if ($value === null || $value == '') {
 					$insertValues[] = "NULL";
 				} else if ($info['g6k_type'] == 'date') {
-					$insertValues[] = $this->parseDate('d/m/Y', $value)->format('Y-m-d');
+					$insertValues[] = $database->quote($this->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d'));
 				} else if ($info['g6k_type'] == 'multichoice') {
 					$insertValues[] = $database->quote(json_encode($value));
 				} else if ( $info['g6k_type'] == 'text' || preg_match("/^(text|char|varchar)/i", $info['type'])) {
@@ -1067,7 +1337,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				if ($value === null || $value == '') {
 					$updateFields[] = $name . "=NULL";
 				} else if ($info['g6k_type'] == 'date') {
-					$updateFields[] = $name . "='" . $this->parseDate('d/m/Y', $value)->format('Y-m-d') . "'";
+					$updateFields[] = $name . "='" . $this->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d') . "'";
 				} else if ($info['g6k_type'] == 'multichoice') {
 					$updateFields[] = $name . "='" . $database->quote(json_encode($value)) . "'";
 				} else if ( $info['g6k_type'] == 'text' || preg_match("/^(text|char|varchar)/i", $info['type'])) {
@@ -1106,12 +1376,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	protected function createTable($form, $database) {
-		// print_r($form);
-		// $response = new Response();
-		// $response->setContent(json_encode($form));
-		// $response->headers->set('Content-Type', 'application/json');
-		// return $response;
-		
 		if (($result = $this->createDBTable($form, $database)) !== true) {
 			return $this->errorResponse($form, $result);
 		}
@@ -1152,11 +1416,20 @@ class DataSourcesAdminController extends BaseAdminController {
 					$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
 					$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
 					$source->setAttribute('labelColumn', $form['field-'.$i.'-choicesource-labelColumn']);
-					if (isset($form['field-'.$i.'-choicesource-request'])) {
+					if (($form['field-'.$i.'-choicesource-datasource'] == 'internal' || $form['field-'.$i.'-choicesource-datasource'] == 'database')) {
 						$source->setAttribute('request', $form['field-'.$i.'-choicesource-request']);
-					}
-					if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
-						$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
+					} else {
+						if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
+							$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
+						}
+						if ($form['field-'.$i.'-choicesource-returnType'] == 'csv') {
+							if (isset($form['field-'.$i.'-choicesource-separator'])) {
+								$source->setAttribute('separator', $form['field-'.$i.'-choicesource-separator']);
+							}
+							if (isset($form['field-'.$i.'-choicesource-delimiter'])) {
+								$source->setAttribute('delimiter', $form['field-'.$i.'-choicesource-delimiter']);
+							}
+						}
 					}
 					$choices->appendChild($source);
 				} else{
@@ -1229,14 +1502,90 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $response;
 	}
 
-	protected function editTable($table, $database) {
-	}
-
 	protected function doEditTable($form, $table, $database) {
-		$response = new Response();
-		$response->setContent(json_encode($form));
-		$response->headers->set('Content-Type', 'application/json');
-		return $response;
+		if (($result = $this->editDBTable($form, $table, $database)) !== true) {
+			return $this->errorResponse($form, $result);
+		}
+		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
+		$xpath = new \DOMXPath($dom);
+		$datasource = $xpath->query("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']")->item(0);
+		$tables = $datasource->getElementsByTagName('Table');
+		$len = $tables->length;
+		for($i = 0; $i < $len; $i++) {
+			$name = $tables->item($i)->getAttribute('name');
+			if ($name == $table) {
+				$theTable = $tables->item($i);
+				$theTable->setAttribute('name', $form['table-name']);
+				$theTable->setAttribute('label', $form['table-label']);
+				$descr = $dom->createElement("Description");
+				$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['table-description'])));
+				$oldDescr = $theTable->getElementsByTagName('Description');
+				if ($oldDescr->length > 0) {
+					$theTable->replaceChild ($descr, $oldDescr->item(0));
+				} else {
+					$children = $theTable->getElementsByTagName('*');
+					if ($children->length > 0) {
+						$theTable->insertBefore($descr, $children->item(0));
+					} else {
+						$theTable->appendChild($descr);
+					}
+				}
+				$columns = $theTable->getElementsByTagName('Column');
+				foreach ($columns as $column) {
+					$theTable->removeChild($column);
+				}
+				foreach ($form['field'] as $i => $field) {
+					$column = $dom->createElement("Column");
+					$column->setAttribute('id', $i + 1);
+					$column->setAttribute('name', $field);
+					$column->setAttribute('type', $form['type'][$i]);
+					$column->setAttribute('label', $form['label'][$i]);
+					$descr = $dom->createElement("Description");
+					$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['description'][$i])));
+					$column->appendChild($descr);
+					if ($form['type'][$i] == 'choice' || $form['type'][$i] == 'multichoice') {
+						$choices = $dom->createElement("Choices");
+						if (isset($form['field-'.$i.'-choicesource-datasource'])) {
+							$source = $dom->createElement("Source");
+							$source->setAttribute('id', 1);
+							$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
+							$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
+							$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
+							$source->setAttribute('labelColumn', $form['field-'.$i.'-choicesource-labelColumn']);
+							if (($form['field-'.$i.'-choicesource-datasource'] == 'internal' || $form['field-'.$i.'-choicesource-datasource'] == 'database')) {
+								$source->setAttribute('request', $form['field-'.$i.'-choicesource-request']);
+							} else {
+								if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
+									$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
+								}
+								if ($form['field-'.$i.'-choicesource-returnType'] == 'csv') {
+									if (isset($form['field-'.$i.'-choicesource-separator'])) {
+										$source->setAttribute('separator', $form['field-'.$i.'-choicesource-separator']);
+									}
+									if (isset($form['field-'.$i.'-choicesource-delimiter'])) {
+										$source->setAttribute('delimiter', $form['field-'.$i.'-choicesource-delimiter']);
+									}
+								}
+							}
+							$choices->appendChild($source);
+						} else{
+							foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
+								$choice = $dom->createElement("Choice");
+								$choice->setAttribute('id', $c + 1);
+								$choice->setAttribute('value', $value);
+								$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
+								$choices->appendChild($choice);
+							}
+						}
+						$column->appendChild($choices);
+					}
+					$theTable->appendChild($column);
+				}
+				break;
+			}
+		}
+		$this->saveDatasources($dom);
+		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource_table', array('dsid' => $datasource->getAttribute('id'), 'table' => $table)));
 	}
 
 	protected function dropTable($table, $database) {
@@ -1261,10 +1610,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	protected function doEditDatasource($dsid, $form) {
-		// $response = new Response();
-		// $response->setContent(json_encode($form));
-		// $response->headers->set('Content-Type', 'application/json');
-		// return $response;
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
 		$datasource = $xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0);
@@ -1293,11 +1638,11 @@ class DataSourcesAdminController extends BaseAdminController {
 			} else if ($database->getAttribute('name') != $form['datasource-database-name']) {
 				$sameDatabase = false;
 			} else if ($database->getAttribute('type') == 'mysqli' || $database->getAttribute('type') == 'pgsql') {
-				if ($database->setAttribute('host') != $form['datasource-database-host']) {
+				if ($database->getAttribute('host') != $form['datasource-database-host']) {
 					$sameDatabase = false;
-				} else if ($database->setAttribute('port') != $form['datasource-database-port']) {
+				} else if ($database->getAttribute('port') != $form['datasource-database-port']) {
 					$sameDatabase = false;
-				} else if ($database->setAttribute('user') != $form['datasource-database-user']) {
+				} else if ($database->getAttribute('user') != $form['datasource-database-user']) {
 					$sameDatabase = false;
 				}
 			}
@@ -1384,11 +1729,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	protected function dropDatasource ($dsid) {
-		// $response = new Response();
-		// $response->setContent(json_encode($dsid));
-		// $response->headers->set('Content-Type', 'application/json');
-		// return $response;
-
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
 		$datasource = $xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0);

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2015 rel. 3 (http://www.altova.com) by DILA (DILA) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="DataSources">
 		<xs:annotation>
@@ -39,20 +38,22 @@
 																	<xs:complexType>
 																		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
 																		<xs:attribute name="datasource" type="xs:string" use="required"/>
-																		<xs:attribute name="request" type="xs:string"/>
 																		<xs:attribute name="returnType" use="required">
 																			<xs:simpleType>
 																				<xs:restriction base="xs:NMTOKEN">
 																					<xs:enumeration value="json"/>
 																					<xs:enumeration value="xml"/>
-																					<xs:enumeration value="singleValue"/>
 																					<xs:enumeration value="assocArray"/>
+																					<xs:enumeration value="csv"/>
 																				</xs:restriction>
 																			</xs:simpleType>
 																		</xs:attribute>
-																		<xs:attribute name="returnPath" type="xs:string"/>
+																		<xs:attribute name="request" type="xs:string"/>
 																		<xs:attribute name="valueColumn" type="xs:string" use="required"/>
 																		<xs:attribute name="labelColumn" type="xs:string" use="required"/>
+																		<xs:attribute name="returnPath" type="xs:string"/>
+																		<xs:attribute name="separator" type="xs:string"/>
+																		<xs:attribute name="delimiter" type="xs:string"/>
 																	</xs:complexType>
 																</xs:element>
 															</xs:choice>

@@ -253,15 +253,20 @@ class JsonSQL  {
 	 * @access private
 	 */
 	private $datatypes = array(
+		'array' => 'array',
 		'bigint' =>'integer',
 		'binary' =>'string',
 		'blob' =>'string',
 		'boolean' =>'boolean',
 		'char' =>'string',
 		'character' =>'string',
+		'choice' => 'integer',
+		'country' => 'integer',
 		'date' =>'date',
 		'datetime' =>'datetime',
+		'day' => 'integer',
 		'decimal' =>'number',
+		'department' => 'string',
 		'double' =>'number',
 		'float' =>'number',
 		'int' =>'integer',
@@ -270,17 +275,24 @@ class JsonSQL  {
 		'longtext' =>'string',
 		'mediumblob' =>'string',
 		'mediumtext' =>'string',
+		'money' => 'number',
+		'month' => 'integer',
+		'multichoice' => 'object',
 		'number' =>'number',
 		'numeric' =>'number',
+		'percent' => 'number',
 		'real' =>'number',
+		'region' => 'integer',
 		'smallint' =>'integer',
 		'string' =>'string',
 		'text' =>'string',
+		'textarea' => 'string',
 		'time' =>'time',
 		'timestamp' =>'integer',
 		'tinytext' =>'string',
 		'varbinary' =>'string',
-		'varchar' =>'string'
+		'varchar' =>'string',
+		'year' => 'integer'
 	);
 
 	/**
@@ -623,6 +635,8 @@ class JsonSQL  {
 			return $this->parseDelete($sql);
 		} elseif (preg_match('/^\s*create\s+/i', $sql)) {
 			return $this->parseCreate($sql);
+		} elseif (preg_match('/^\s*alter\s+/i', $sql)) {
+			return $this->parseAlter($sql);
 		} elseif (preg_match('/^\s*truncate\s+/i', $sql)) {
 			return $this->parseTruncate($sql);
 		} elseif (preg_match('/^\s*drop\s+/i', $sql)) {
@@ -666,7 +680,7 @@ class JsonSQL  {
 	 * @throws JsonSQLException
 	 */
 	protected function parseCreate($sql) {
-		$clauses = $this->splitKeywords($sql, array("create", "local", "global", "table", "if\s+not\s+exists", "as\s+select", "with"));
+		$clauses = $this->splitKeywords($sql, array("create", "local", "global", "table", "if\s+not\s+exists", "with", "as\s+select", "with"));
 		$ifnotexists = false;
 		$withdata = false;
 		if (isset($clauses['ifnotexists'])) {
@@ -745,13 +759,14 @@ class JsonSQL  {
 				}
 				$props = array();
 				if ($m[4] != '') {
-					$chunks = preg_split("/(constraint|not\s+null|nullable|default|primary\s+key|autoincrement|auto_increment|serial)/i", $m[4] . ' ', -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+					$colDef = $this->encodeLiteral($m[4]);
+					$chunks = preg_split("/(constraint|not\s+null|nullable|default|primary\s+key|autoincrement|auto_increment|serial|title|comment)/i", $colDef . ' ', -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 					if (count($chunks) % 2 > 0) {
 						throw new JsonSQLException("syntax error near : " . $m[4]);
 					}
 					for ($i = 0; $i < count($chunks); $i += 2) {
 						$prop = strtolower(preg_replace('/\s+/', '', $chunks[$i]));
-						$val = trim($chunks[$i+1]);
+						$val = trim($this->decodeLiteral($chunks[$i+1]));
 						if ($prop == 'default') {
 							$val = $this->normalizeValue($type, $val);
 						} elseif ($val == '') {
@@ -766,7 +781,9 @@ class JsonSQL  {
 					"primarykey" => 0,
 					"autoincrement" => false,
 					"auto_increment" => false,
-					"serial" => false
+					"serial" => false,
+					'title' =>  $column,
+					'comment' =>  $column
 				), $props);
 				if ($props['primarykey']) {
 					$primarykeys[$column] = 0;
@@ -776,8 +793,9 @@ class JsonSQL  {
 				}
 				$columns[$column] = (object)array(
 					'type' => $type,
-					'title' => $column,
-					'description' => $column
+					'datatype' => $datatype,
+					'title' =>  $props['title'],
+					'description' =>  $props['comment']
 				);
 				if ($type == 'date') {
 					$columns[$column]->type = 'string';
@@ -807,9 +825,8 @@ class JsonSQL  {
 			if (isset($autoincrement[$column])) {
 				$extra[] = "autoincrement:0";
 			}
-			if (count($extra) > 0) {
-				$props->title .= ' [' . implode(', ', $extra) . ']';
-			}
+			$extra[] = "type:".$props->datatype;
+			$props->title .= ' [' . implode(', ', $extra) . ']';
 		}
 		$request = (object)array (
 			'statement' => 'create table',
@@ -901,6 +918,300 @@ class JsonSQL  {
 				$request->columns = (object)$scolumns;
 			}
 		}
+		return $request;
+	}
+
+	/**
+	 * Parses a sql alter table statement according to this two BNF syntax :
+	 *
+	 *    ALTER TABLE table_name [ 
+	 *      RENAME TO new_table_name | 
+	 *      RENAME COLUMN column_name TO new_column_name | 
+	 *      DROP [ COLUMN ] [IF EXISTS] column_name | 
+	 *      DROP COMMENT | 
+	 *      MODIFY COMMENT comment | 
+	 *      MODIFY [ COLUMN ] column_name  [ SET TYPE datatype | [ SET | REMOVE ] NOT NULL | [ SET DEFAULT default ] | REMOVE DEFAULT | [ SET | REMOVE ] PRIMARY KEY | [ SET | REMOVE ] [ AUTOINCREMENT|AUTO_INCREMENT|SERIAL ] | [ SET COMMENT comment ] | REMOVE COMMENT ] | [ SET TITLE title ] | REMOVE TITLE ] |
+	 *      ADD [ COLUMN ] column_name
+	 *        datatype [ NOT NULL|NULLABLE ] [ DEFAULT default ]  [ PRIMARY KEY ] [ AUTOINCREMENT|AUTO_INCREMENT|SERIAL ] [ COMMENT comment ]
+	 *    ]
+	 *
+	 * or eBNF syntax :
+	 *
+	 *    'ALTER' 'TABLE' table_name (
+	 *      'RENAME TO' new_table_name | 
+	 *      'RENAME COLUMN' column_name 'TO' new_column_name | 
+	 *      'DROP' 'COLUMN' ? 'IF EXISTS' ? column_name |
+	 *      'DROP' 'COMMENT' |
+	 *      'MODIFY' 'COMMENT' comment |
+	 *      'MODIFY' 'COLUMN' ? column_name ( 'SET TYPE' datatype | ( ('SET' | 'REMOVE' ) 'NOT NULL' ) | ( 'SET DEFAULT' default ) | 'REMOVE DEFAULT' | ( 'SET' | 'REMOVE' ) 'PRIMARY KEY' | ( 'SET' | 'REMOVE' ) ('AUTOINCREMENT'|'AUTO_INCREMENT'|'SERIAL') | ( 'SET TITLE' title ) | 'REMOVE TITLE') | 
+	 *      'ADD' 'COLUMN' ? column_name
+	 *        datatype 'NOT NULL' ? ( 'DEFAULT' default ) ? ( 'PRIMARY KEY' ) ? ( 'AUTOINCREMENT' | 'AUTO_INCREMENT' | 'SERIAL' ) ? ( 'TITLE' title ) ? ( 'COMMENT' comment ) ?
+	 *    )
+	 *
+	 * @access protected
+	 * @param string $sql the create alter statement
+	 * @return array the parsed request
+	 * @throws JsonSQLException
+	 */
+	protected function parseAlter($sql) {
+		$clauses = $this->splitKeywords($sql, array("alter\s+table", "rename\s+to", "rename\s+column", "modify", "add", "drop"));
+		if (!isset($clauses['altertable'])) {
+			throw new JsonSQLException("syntax error near : " . substr($sql, 0, 11));
+		}
+		$table = $clauses['altertable'];
+		$alter = '';
+		$newtable = "";
+		$comment = "";
+		$column = array();
+		$required = array();
+		$alter;
+		if (isset($clauses['renameto'])) {
+			$alter = 'rename table';
+			$newtable = $clauses['renameto'];
+			if (isset($clauses['renamecolumn'])) {
+				throw new JsonSQLException("syntax error near : rename column");
+			} elseif (isset($clauses['drop'])) {
+				throw new JsonSQLException("syntax error near : drop");
+			} elseif (isset($clauses['modify'])) {
+				throw new JsonSQLException("syntax error near : modify");
+			} elseif (isset($clauses['add'])) {
+				throw new JsonSQLException("syntax error near : add");
+			} 
+		} elseif (isset($clauses['renamecolumn'])) {
+			$alter = 'rename column';
+			if (isset($clauses['drop'])) {
+				throw new JsonSQLException("syntax error near : drop");
+			} elseif (isset($clauses['modify'])) {
+				throw new JsonSQLException("syntax error near : modify");
+			} elseif (isset($clauses['add'])) {
+				throw new JsonSQLException("syntax error near : add");
+			} 
+			if (preg_match("/^(\w+)\s+to\s+(\w+)$/i", $clauses['renamecolumn'], $m)) {
+				$column = (object)array(
+					'name' => $m[1],
+					'newname' => $m[2]
+				);
+			} else {
+				throw new JsonSQLException("syntax error near : " . $clauses['renamecolumn']);
+			}
+		} elseif (isset($clauses['drop'])) {
+			$alter = 'drop column';
+			if (isset($clauses['modify'])) {
+				throw new JsonSQLException("syntax error near : modify");
+			} elseif (isset($clauses['add'])) {
+				throw new JsonSQLException("syntax error near : add");
+			} 
+			if (preg_match("/^(column\s+)?(if\s+exists\s+)?(\w+)$/i", $clauses['drop'], $m)) {
+				$column = (object)array(
+					'name' => $m[3],
+					'ifexists' => isset($m[2])
+				);
+			} elseif ($clauses['drop'] == 'title') {
+				$alter = 'drop title';
+			} elseif ($clauses['drop'] == 'comment') {
+				$alter = 'drop comment';
+			} else {
+				throw new JsonSQLException("syntax error near : " . $clauses['drop']);
+			}
+		} elseif (isset($clauses['modify'])) {
+			if (isset($clauses['add'])) {
+				throw new JsonSQLException("syntax error near : add");
+			}
+			if (preg_match("/^(column\s+)?(\w+)\s+(.+)$/i", $clauses['modify'], $m)) {
+				$alter = 'modify column';
+				$columnName= $m[2];
+				$subclauses = $m[3];
+			} elseif (preg_match("/^title\s(.+)$/i", $clauses['modify'], $m)) {
+				$alter = 'modify title';
+				$comment= $m[1];
+			} elseif (preg_match("/^comment\s(.+)$/i", $clauses['modify'], $m)) {
+				$alter = 'modify comment';
+				$comment= $m[1];
+			} else {
+				throw new JsonSQLException("syntax error near : " . $clauses['modify']);
+			}
+			if ($alter == 'modify column') {
+				$subclauses = $this->encodeLiteral($subclauses);
+				$subclauses = $this->splitKeywords($subclauses, array("set", "remove"));
+				if (isset($subclauses['set'])) {
+					if (preg_match("/^type\s+(\w+)$/i", $subclauses['set'], $m)) {
+						$datatype = strtolower($m[1]);
+						if (isset($this->datatypes[$datatype])) {
+							$type = $this->datatypes[$datatype];
+						} else {
+							throw new JsonSQLException("syntax error near : " . $m[1]);
+						}
+						$column = (object)array(
+							'action' => 'set type',
+							'name' => $columnName,
+							'type' => $type,
+							'datatype' => $datatype,
+							'format' => ''
+						);
+						if ($type == 'date') {
+							$column->type = 'string';
+							$column->format = 'date';
+						} elseif ($type == 'datetime') {
+							$column->type = 'string';
+							$column->format = 'date-time';
+						} elseif ($type == 'time') {
+							$column->type = 'string';
+							$column->format = 'time';
+						}
+					} elseif (preg_match("/^not\s+null$/i", $subclauses['set'])) {
+						$column = (object)array(
+							'action' => 'set not null',
+							'name' => $columnName
+						);
+					} elseif (preg_match("/^primary\s+key$/i", $subclauses['set'])) {
+						$column = (object)array(
+							'action' => 'set primary key',
+							'name' => $columnName
+						);
+					} elseif (preg_match("/^(autoincrement|auto_increment|serial)$/i", $subclauses['set'])) {
+						$column = (object)array(
+							'action' => 'set autoincrement',
+							'name' => $columnName
+						);
+					} elseif (preg_match("/^default\s+(.+)$/i", $subclauses['set'], $m)) {
+						$column = (object)array(
+							'action' => 'set default',
+							'name' => $columnName,
+							'default' => $this->decodeLiteral($m[1])
+						);
+					} elseif (preg_match("/^title\s+(.+)$/i", $subclauses['set'], $m)) {
+						$column = (object)array(
+							'action' => 'set title',
+							'name' => $columnName,
+							'title' => $this->decodeLiteral($m[1])
+						);
+					} elseif (preg_match("/^comment\s+(.+)$/i", $subclauses['set'], $m)) {
+						$column = (object)array(
+							'action' => 'set comment',
+							'name' => $columnName,
+							'comment' => $this->decodeLiteral($m[1])
+						);
+					}
+				} elseif (isset($subclauses['remove'])) {
+					if (preg_match("/^not\s+null$/i", $subclauses['remove'])) {
+						$column = (object)array(
+							'action' => 'remove not null',
+							'name' => $columnName
+						);
+					} elseif (preg_match("/^primary\s+key$/i", $subclauses['remove'])) {
+						$column = (object)array(
+							'action' => 'remove primary key',
+							'name' => $columnName
+						);
+					} elseif (preg_match("/^(autoincrement|auto_increment|serial)$/i", $subclauses['remove'])) {
+						$column = (object)array(
+							'action' => 'remove autoincrement',
+							'name' => $columnName
+						);
+					} elseif (preg_match("/^default$/i", $subclauses['remove'])) {
+						$column = (object)array(
+							'action' => 'remove default',
+							'name' => $columnName
+						);
+					} elseif (preg_match("/^title$/i", $subclauses['remove'])) {
+						$column = (object)array(
+							'action' => 'remove title',
+							'name' => $columnName
+						);
+					} elseif (preg_match("/^comment$/i", $subclauses['remove'])) {
+						$column = (object)array(
+							'action' => 'remove comment',
+							'name' => $columnName
+						);
+					}
+				}
+			}
+		} elseif (isset($clauses['add'])) {
+			$alter = 'add column';
+			if (preg_match("/^(column\s+)?(\w+)\s+(\w+)\s*(.+)?$/i", $clauses['add'], $m)) {
+				$columnName= $m[2];
+				$datatype = strtolower($m[3]);
+				$columnDef = isset($m[4]) ? $m[4] : '';
+				if (isset($this->datatypes[$datatype])) {
+					$type = $this->datatypes[$datatype];
+				} else {
+					throw new JsonSQLException("syntax error near : " . $m[3]);
+				}
+			} else {
+				throw new JsonSQLException("syntax error near : " . $clauses['add']);
+			}
+			$props = array();
+			if ($columnDef != '') {
+				$columnDef = $this->encodeLiteral($columnDef);
+				$chunks = preg_split("/(not\s+null|nullable|default|primary\s+key|autoincrement|auto_increment|serial|title|comment)/i", $columnDef . ' ', -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+				if (count($chunks) % 2 > 0) {
+					throw new JsonSQLException("syntax error near : " . $clauses['modify']);
+				}
+				for ($i = 0; $i < count($chunks); $i += 2) {
+					$prop = strtolower(preg_replace('/\s+/', '', $chunks[$i]));
+					$val = trim($this->decodeLiteral($chunks[$i+1]));
+					if ($prop == 'default') {
+						$val = $this->normalizeValue($type, $val);
+					} elseif ($val == '') {
+						$val = true;
+					}
+					$props[$prop] = $val;
+				}
+			}
+			$props = array_merge(array(
+				"notnull" => false,
+				"default" => null,
+				"primarykey" => 0,
+				"autoincrement" => false,
+				"auto_increment" => false,
+				"serial" => false,
+				"title" => $columnName,
+				"comment" => $columnName
+			), $props);
+			$columnDef = (object)array(
+				'type' => $type,
+				'title' => $props['title'],
+				'description' => $props['comment']
+			);
+			$extra = array();
+			if ($props['primarykey']) {
+				$extra[] = "primarykey:1";
+			}
+			if ($props['autoincrement'] || $props['auto_increment'] || $props['serial']) {
+				$extra[] = "autoincrement:0";
+			}
+			$extra[] = "type:".$datatype;
+			$columnDef->title .= ' [' . implode(', ', $extra) . ']';
+			if ($type == 'date') {
+				$columnDef->type = 'string';
+				$columnDef->format = 'date';
+			} elseif ($type == 'datetime') {
+				$columnDef->type = 'string';
+				$columnDef->format = 'date-time';
+			} elseif ($type == 'time') {
+				$columnDef->type = 'string';
+				$columnDef->format = 'time';
+			}
+			if ($props['default'] != null) {
+				$columnDef->default = $props['default'];
+			}
+			if ($props['notnull']) {
+				$required[] = $columnName;
+			}
+			$column = (object)array(
+				'name' => $columnName,
+				'definition' => $columnDef
+			);
+		}
+		$request = (object)array (
+			'statement' => 'alter table',
+			'alter' => $alter, 
+			'table' => $table,
+			'newtable' => $newtable,
+			'comment' => $comment,
+			'column' => $column,
+			'required' => $required
+		);
 		return $request;
 	}
 
@@ -1727,9 +2038,8 @@ class JsonSQL  {
 		$vrow = array();
 		$primarykeys = array();
 		foreach($this->db->schema->properties->{$table}->items->properties as $name => $column) {
-			if (preg_match('/^(.*)\[([^\]]+)\]$/', $column->title, $m)) {
-				$title = $m[1].'[';
-				$props = $this->properties($m[2]);
+			if (preg_match('/^.*\[([^\]]+)\]$/', $column->title, $m)) {
+				$props = $this->properties($m[1]);
 			} else {
 				$props = (object)array();
 			}
@@ -1848,6 +2158,687 @@ class JsonSQL  {
 		$this->beginTransaction();
 		unset($this->db->data->{$table});
 		unset($this->db->schema->properties->{$table});
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Renames a table
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $newname new name of the table
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function renameTable($table, $newname) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (isset($this->db->schema->properties->{$newname})) {
+			throw new JsonSQLException("table '$newname' already exists");
+		}
+		$this->beginTransaction();
+		$this->db->data->{$newname} = $this->db->data->{$table};
+		$this->db->schema->properties->{$newname} = $this->db->schema->properties->{$table};
+		unset($this->db->data->{$table});
+		unset($this->db->schema->properties->{$table});
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Adds a column in a table of the database
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column the name of the new column
+	 * @param object $columnDef column definition 
+	 * @param array $required an array with the column name if required
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function addColumn($table, $column, $columnDef, $required = array()) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' already exists in $table");
+		}
+		if (in_array($column, $required) && !isset($columnDef->default)) {
+			throw new JsonSQLException("column '$column' in $table can't be required if there is no default value");
+		}
+		$this->beginTransaction();
+		$this->db->schema->properties->{$table}->items->properties->$column = $columnDef;
+		$this->db->schema->properties->{$table}->items->required = array_merge($this->db->schema->properties->{$table}->items->required, $required);
+		$newval = isset($columnDef->default) ? $columnDef->default : null;
+		foreach ($this->db->data->{$table} as &$row) {
+			$row->$column = $newval;
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Renames a column
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column actual column name in the table
+	 * @param string $newname new name of the column
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function renameColumn($table, $column, $newname) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
+		if (isset($this->db->schema->properties->{$table}->items->properties->$newname)) {
+			throw new JsonSQLException("column '$newname' already exists in $table");
+		}
+		$this->beginTransaction();
+		$this->db->schema->properties->{$table}->items->properties->$newname = $this->db->schema->properties->{$table}->items->properties->$column;
+		unset($this->db->schema->properties->{$table}->items->properties->$column);
+		if (($requiredpos = array_search($column, $this->db->schema->properties->{$table}->items->required)) !== false) {
+			array_splice($this->db->schema->properties->{$table}->items->required, $requiredpos, 1, $newname);
+		}
+		foreach ($this->db->data->{$table} as &$row) {
+			$row->$newname = $row->$column;
+			unset($row->$column);
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Drops a column
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column actual column name to drop in the table
+	 * @param bool $ifexists if TRUE, don't throw an error if the table or the column doesn't exists
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function dropColumn($table, $column, $ifexists = false) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			if ($ifexists) {
+				return;
+			}
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			if ($ifexists) {
+				return;
+			}
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
+		$this->beginTransaction();
+		unset($this->db->schema->properties->{$table}->items->properties->$column);
+		if (($requiredpos = array_search($column, $this->db->schema->properties->{$table}->items->required)) !== false) {
+			array_splice($this->db->schema->properties->{$table}->items->required, $requiredpos, 1);
+		}
+		foreach ($this->db->data->{$table} as &$row) {
+			unset($row->$column);
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Changes the type of a column
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column actual column name
+	 * @param bool $ifexists if TRUE, don't throw an error if the table or the column doesn't exists
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function setColumnType($table, $column, $type, $format = '', $datatype = '') {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
+		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
+		if (preg_match('/^(.*)\[([^\]]+)\]$/', $columnSchema->title, $m)) {
+			$title = $m[1];
+			$props = $this->properties($m[2]);
+		} else {
+			$title = $columnSchema->title;
+			$props = (object)array();
+		}
+		if ($datatype == '') {
+			$datatype = $type;
+		}
+		if ($type == $columnSchema->type && $datatype == $props->type && ((! isset($columnSchema->format) && $format == '' ) || (isset($columnSchema->format) && $format == $columnSchema->format))) {
+			return; // nothing to do
+		}
+		$this->beginTransaction();
+		if (count($this->db->data->{$table}) == 0) {
+			$columnSchema->type = $type;
+			if ($format != '') {
+				$columnSchema->format = $format;
+			} elseif (isset($columnSchema->format)) {
+				unset($columnSchema->format);
+			}
+			if (isset($columnSchema->default)) {
+				$columnSchema->default = $this->normalizeValue($type, $columnSchema->default); 
+			}
+		} elseif ($type == 'string' && $format == '') {
+			$columnSchema->type = $type;
+			if (isset($columnSchema->format)) {
+				unset($columnSchema->format);
+			}
+			foreach ($this->db->data->{$table} as &$row) {
+				$row->$column = $this->normalizeValue($type, $row->$column); 
+			}
+			if (isset($columnSchema->default)) {
+				$columnSchema->default = $this->normalizeValue($type, $columnSchema->default); 
+			}
+		} else {
+			switch ($columnSchema->type) {
+				case 'string':
+					if (isset($columnSchema->format)) {
+						switch ($columnSchema->format) {
+							case 'date':
+								if ($type != 'string') {
+									throw new JsonSQLException("can't convert date to $type");
+								} elseif ($format == 'time') {
+									throw new JsonSQLException("can't convert date to time");
+								} elseif ($format != 'date') {
+									$columnSchema->format = $format;
+									if ($format == 'datetime') {
+										foreach ($this->db->data->{$table} as &$row) {
+											$row->$column = $row->$column . 'T00:00:00.0Z'; 
+										}
+									} else {
+										unset($columnSchema->format);
+									}
+								}
+								break;
+							case 'datetime':
+								if ($type != 'string') {
+									throw new JsonSQLException("can't convert datetime to $type");
+								} elseif ($format == 'date') {
+									$columnSchema->format = $format;
+									foreach ($this->db->data->{$table} as &$row) {
+										$row->$column = substr($row->$column, 0, 10); 
+									}
+								} elseif ($format == 'time') {
+									$columnSchema->format = $format;
+									foreach ($this->db->data->{$table} as &$row) {
+										$row->$column = substr($row->$column, 11); 
+									}
+								} elseif ($format != 'datetime') {
+									unset($columnSchema->format);
+								}
+								break;
+							case 'time':
+								if ($type != 'string' || $format != 'time') {
+									if ($format == '') {
+										throw new JsonSQLException("can't convert time to $type");
+									} else {
+										throw new JsonSQLException("can't convert time to $format");
+									}
+								}
+								break;
+						}
+					} elseif ($type == 'number') {
+						foreach ($this->db->data->{$table} as $row) {
+							if (! is_numeric($row->$column)) {
+								throw new JsonSQLException("can't convert string to $type");
+							}
+						}
+						$columnSchema->type = $type;
+						foreach ($this->db->data->{$table} as &$row) {
+							$row->$column = (float)$row->$column; 
+						}
+						if (isset($columnSchema->default)) {
+							$columnSchema->default = (float)$columnSchema->default; 
+						}
+					} elseif ($type == 'integer') {
+						foreach ($this->db->data->{$table} as $row) {
+							if (! is_int($row->$column)) {
+								throw new JsonSQLException("can't convert string to $type");
+							}
+						}
+						$columnSchema->type = $type;
+						foreach ($this->db->data->{$table} as &$row) {
+							$row->$column = (int)$row->$column; 
+						}
+						if (isset($columnSchema->default)) {
+							$columnSchema->default = (int)$columnSchema->default; 
+						}
+					} elseif ($type == 'boolean') {
+						foreach ($this->db->data->{$table} as $row) {
+							if (! is_bool($row->$column)) {
+								throw new JsonSQLException("can't convert string to $type");
+							}
+						}
+						$columnSchema->type = $type;
+						foreach ($this->db->data->{$table} as &$row) {
+							$row->$column == boolval($row->$column); 
+						}
+						if (isset($columnSchema->default)) {
+							$columnSchema->default = boolval($columnSchema->default); 
+						}
+					} elseif ($type != 'string' || $format != '') { 
+						if ($format == '') {
+							throw new JsonSQLException("can't convert string to $type");
+						} else {
+							throw new JsonSQLException("can't convert string to $format");
+						}
+					}
+					break;
+				case 'number':
+					if ($type == 'integer') {
+						$columnSchema->type = $type;
+						foreach ($this->db->data->{$table} as &$row) {
+							$row->$column = (int)$row->$column; 
+						}
+						if (isset($columnSchema->default)) {
+							$columnSchema->default = (int)$columnSchema->default; 
+						}
+					} elseif ($type == 'boolean') {
+						$columnSchema->type = $type;
+						foreach ($this->db->data->{$table} as &$row) {
+							$row->$column == boolval($row->$column); 
+						}
+						if (isset($columnSchema->default)) {
+							$columnSchema->default = boolval($columnSchema->default); 
+						}
+					} elseif ($type != 'number') {
+						if ($format == '') {
+							throw new JsonSQLException("can't convert number to $type");
+						} else {
+							throw new JsonSQLException("can't convert number to $format");
+						}
+					}
+					break;
+				case 'integer':
+					if ($type == 'number') {
+						$columnSchema->type = $type;
+						foreach ($this->db->data->{$table} as &$row) {
+							$row->$column = (float)$row->$column; 
+						}
+						if (isset($columnSchema->default)) {
+							$columnSchema->default = (float)$columnSchema->default; 
+						}
+					} elseif ($type == 'boolean') {
+						$columnSchema->type = $type;
+						foreach ($this->db->data->{$table} as &$row) {
+							$row->$column == boolval($row->$column); 
+						}
+						if (isset($columnSchema->default)) {
+							$columnSchema->default = boolval($columnSchema->default); 
+						}
+					} elseif ($type != 'integer') {
+						if ($format == '') {
+							throw new JsonSQLException("can't convert integer to $type");
+						} else {
+							throw new JsonSQLException("can't convert integer to $format");
+						}
+					}
+					break;
+				case 'boolean':
+					if ($type == 'number' || $type == 'integer') {
+						$columnSchema->type = $type;
+						foreach ($this->db->data->{$table} as &$row) {
+							$row->$column = $row->$column ? 1 : 0; 
+						}
+						if (isset($columnSchema->default)) {
+							$columnSchema->default = $columnSchema->default ? 1 : 0; 
+						}
+					} elseif ($type != 'boolean') {
+						if ($format == '') {
+							throw new JsonSQLException("can't convert boolean to $type");
+						} else {
+							throw new JsonSQLException("can't convert boolean to $format");
+						}
+					}
+					break;
+			}
+		}
+		$props->type = $datatype;
+		$extra = array();
+		foreach ($props as $prop => $value) {
+			$extra[] = $prop . ":" . $value;
+		}
+		$columnSchema->title = $title;
+		if (count($extra) > 0) {
+			$columnSchema->title .= ' [' . implode(', ', $extra) . ']';
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Changes whether a column is marked to allow null values or to reject null values
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column actual column name 
+	 * @param bool $allownull if TRUE, the column allow null value
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function setNotNull($table, $column, $allownull = false) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
+		$required = &$this->db->schema->properties->{$table}->items->required;
+		$requiredpos = array_search($column, $required);
+		if ($allownull && $requiredpos === false) {
+			return; // nothing to do
+		}
+		if (!$allownull && $requiredpos !== false) {
+			return; // nothing to do
+		}
+		$this->beginTransaction();
+		if ($allownull && $requiredpos !== false) {
+			array_splice($required, $requiredpos, 1);
+		} elseif (! $allownull && $requiredpos === false) {
+			array_push($required, $column);
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Set or remove the default value for a column.
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column actual column name 
+	 * @param mixed $default the default value. If FALSE, remove the default
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function setDefault($table, $column, $default = false) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
+		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
+		if (!isset($columnSchema->default) && $default === false) {
+			return; // nothing to do
+		}
+		$this->beginTransaction();
+		if ($default === false) {
+			unset($columnSchema->default);
+		} else {
+			$columnSchema->default = $this->normalizeValue($columnSchema->type, $default); 
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Set or remove primary key for a column.
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column actual column name 
+	 * @param bool $remove if TRUE, remove the primary key
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function setPrimaryKey($table, $column, $remove = false) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
+		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
+		if (preg_match('/^(.*)\[([^\]]+)\]$/', $columnSchema->title, $m)) {
+			$title = $m[1];
+			$props = $this->properties($m[2]);
+		} else {
+			$title = $columnSchema->title;
+			$props = (object)array();
+		}
+		if (isset($props->primarykey) && ! $remove) {
+			return; // nothing to do
+		}
+		if (!isset($props->primarykey) && $remove) {
+			return; // nothing to do
+		}
+		$this->beginTransaction();
+		if ($remove) {
+			unset($props->primarykey);
+		} else {
+			$maxkey = 0;
+			foreach($this->db->schema->properties->{$table}->items->properties as $col) {
+				if (preg_match('/^.*\[([^\]]+)\]$/', $col->title, $m)) {
+					$colprops = $this->properties($m[1]);
+					if (isset($colprops->primarykey)) {
+						if ($colprops->primarykey > $maxkey) {
+							$maxkey = $colprops->primarykey;
+						}
+					}
+				}
+			}
+			$props->primarykey = $maxkey + 1;
+		}
+		$extra = array();
+		foreach ($props as $prop => $value) {
+			$extra[] = $prop . ":" . $value;
+		}
+		$columnSchema->title = $title;
+		if (count($extra) > 0) {
+			$columnSchema->title .= ' [' . implode(', ', $extra) . ']';
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Set or remove autoincrement for a column.
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column actual column name 
+	 * @param bool $remove if TRUE, remove the primary key
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function setAutoincrement($table, $column, $remove = false) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
+		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
+		if ($columnSchema->type != 'integer') {
+			throw new JsonSQLException("column '$column' in '$table' as type '{$columnSchema->type}', only integer can have the autoincrement property");
+		}
+		if (preg_match('/^(.*)\[([^\]]+)\]$/', $columnSchema->title, $m)) {
+			$title = $m[1];
+			$props = $this->properties($m[2]);
+		} else {
+			$title = $columnSchema->title;
+			$props = (object)array();
+		}
+		if (isset($props->autoincrement) && ! $remove) {
+			return; // nothing to do
+		}
+		if (!isset($props->autoincrement) && $remove) {
+			return; // nothing to do
+		}
+		$this->beginTransaction();
+		if ($remove) {
+			unset($props->autoincrement);
+		} else {
+			$maxid = 0;
+			foreach ($this->db->data->{$table} as $row) {
+				if ($row->$column > $maxid) {
+					$maxid = $row->$column;
+				}
+			}
+			$props->autoincrement = $maxid;
+		}
+		$extra = array();
+		foreach ($props as $prop => $value) {
+			$extra[] = $prop . ":" . $value;
+		}
+		$columnSchema->title = $title;
+		if (count($extra) > 0) {
+			$columnSchema->title .= ' [' . implode(', ', $extra) . ']';
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Set or remove the title of a table.
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param mixed $title the title content. If FALSE, remove the title
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function setTableTitle($table, $title = false) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		$tableSchema = &$this->db->schema->properties->{$table};
+		if ((!isset($tableSchema->title) || $tableSchema->title == '') && $title === false) {
+			return; // nothing to do
+		}
+		if (isset($tableSchema->title) && $tableSchema->title == $title) {
+			return; // nothing to do
+		}
+		$this->beginTransaction();
+		if ($title === false) {
+			$tableSchema->title == '';
+		} else {
+			$tableSchema->title = $title; 
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Set or remove the description of a table.
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param mixed $description the description content. If FALSE, remove the description
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function setTableDescription($table, $description = false) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		$tableSchema = &$this->db->schema->properties->{$table};
+		if ((!isset($tableSchema->description) || $tableSchema->description == '') && $description === false) {
+			return; // nothing to do
+		}
+		if (isset($tableSchema->description) && $tableSchema->description == $description) {
+			return; // nothing to do
+		}
+		$this->beginTransaction();
+		if ($description === false) {
+			$tableSchema->description == '';
+		} else {
+			$tableSchema->description = $description; 
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Set or remove the title of a column.
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column actual column name 
+	 * @param mixed $title the title content. If FALSE, remove the title
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function setColumnTitle($table, $column, $title = false) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
+		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
+		if ((!isset($columnSchema->title) || $columnSchema->title == '') && $title === false) {
+			return; // nothing to do
+		}
+		if (isset($columnSchema->title) && $columnSchema->title == $title) {
+			return; // nothing to do
+		}
+		$this->beginTransaction();
+		if ($title === false) {
+			$columnSchema->title == '';
+		} else {
+			$columnSchema->title = $title; 
+		}
+		$this->schemaModified = true;
+		$this->modified = true;
+		$this->commit();
+	}
+
+	/**
+	 * Set or remove the description of a column.
+	 *
+	 * @access public
+	 * @param string $table table name
+	 * @param string $column actual column name 
+	 * @param mixed $description the description content. If FALSE, remove the description
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public function setColumnDescription($table, $column, $description = false) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
+		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
+		if ((!isset($columnSchema->description) || $columnSchema->description == '') && $description === false) {
+			return; // nothing to do
+		}
+		if (isset($columnSchema->description) && $columnSchema->description == $description) {
+			return; // nothing to do
+		}
+		$this->beginTransaction();
+		if ($description === false) {
+			$columnSchema->description == '';
+		} else {
+			$columnSchema->description = $description; 
+		}
 		$this->schemaModified = true;
 		$this->modified = true;
 		$this->commit();
@@ -1986,7 +2977,47 @@ class JsonSQL  {
 	}
 
 	/**
-	 * Tokenizes a list of comma separated internal properties and returns and object with these properties.
+	 * Encode text between quote with base64
+	 *
+	 * @access private
+	 * @param string $text to encode
+	 * @return string encoded text.
+	 */
+	private function encodeLiteral($text) {
+		$encoded = "";
+		$p = mb_strpos($text, "'", 0, 'UTF-8');
+		while ($p !== false ) { // $p = quote ouvrante
+			$encoded .= mb_substr($text, 0, $p, 'UTF-8'); // partie non encodée avant la quote
+			$text = mb_substr($text, $p + 1, null, 'UTF-8'); // partie après la quote
+			$p = mb_strpos($text, "'", 0, 'UTF-8'); // $p = quote fermante
+			if ($p !== false ) {
+				$toencode = mb_substr($text, 0, $p, 'UTF-8');
+				$encoded .= "base64_encoded:" . base64_encode($toencode) . ":base64_encoded";
+				$text = mb_substr($text, $p + 1, null, 'UTF-8');
+				$p = mb_strpos($text, "'", 0, 'UTF-8');
+			} else {
+				$text = "'" . $text;
+			}
+		}
+		return $encoded . $text;
+	}
+
+	/**
+	 * Decode text encoded with base64
+	 *
+	 * @access private
+	 * @param string $text to decode
+	 * @return string decoded text.
+	 */
+	private function decodeLiteral($text, $withQuotes = false) {
+		return preg_replace_callback("/base64_encoded\:(.*)\:base64_encoded/", function ($m) use ($withQuotes) {
+			$decoded = base64_decode($m[1]);
+			return $withQuotes ? "'" . $decoded . "'" : $decoded;
+		}, $text);
+	}
+
+	/**
+	 * Tokenizes a list of comma separated internal properties and returns an object with these properties.
 	 * Internal properties are stored into the title property of the column definition in the database schema.
 	 * Actually, only 'primarykey' and 'autoincrement' are used.
 	 *
@@ -2156,6 +3187,8 @@ class JsonSQLStatement  {
 			return $this->executeDelete();
 		} elseif ($this->request->statement == 'create table') {
 			return $this->executeCreateTable();
+		} elseif ($this->request->statement == 'alter table') {
+			return $this->executeAlterTable();
 		} elseif ($this->request->statement == 'truncate') {
 			return $this->executeTruncate();
 		} elseif ($this->request->statement == 'drop table') {
@@ -2407,6 +3440,89 @@ class JsonSQLStatement  {
 			$this->rowCount = $stmt->rowCount();
 		} else {
 			$this->rowCount = 0;
+		}
+		return true;
+	}
+
+	/**
+	 * Executes a prepared 'alter table' statement.
+	 *
+	 * @access protected
+	 * @return bool TRUE.
+	 */
+	protected function executeAlterTable() {
+		switch ($this->request->alter) {
+			case 'rename table':
+				$this->jsonsql->renameTable($this->request->table, $this->request->newtable);
+				break;
+			case 'rename column':
+				$this->jsonsql->renameColumn($this->request->table, $this->request->column->name, $this->request->column->newname);
+				break;
+			case 'drop column':
+				$this->jsonsql->dropColumn($this->request->table, $this->request->column->name, $this->request->column->ifexists);
+				break;
+			case 'modify title':
+				$this->jsonsql->setTableTitle($this->request->table, $this->request->title);
+				break;
+			case 'drop title':
+				$this->jsonsql->setTableTitle($this->request->table, false);
+				break;
+			case 'modify comment':
+				$this->jsonsql->setTableDescription($this->request->table, $this->request->comment);
+				break;
+			case 'drop comment':
+				$this->jsonsql->setTableDescription($this->request->table, false);
+				break;
+			case 'modify column':
+				switch ($this->request->column->action) {
+					case 'set type':
+						$this->jsonsql->setColumnType($this->request->table, $this->request->column->name, $this->request->column->type, $this->request->column->format, $this->request->column->datatype);
+						break;
+					case 'set not null':
+						$this->jsonsql->setNotNull($this->request->table, $this->request->column->name, false);
+						break;
+					case 'set primary key':
+						$this->jsonsql->setPrimaryKey($this->request->table, $this->request->column->name, false);
+						break;
+					case 'set autoincrement':
+						$this->jsonsql->setAutoincrement($this->request->table, $this->request->column->name, false);
+						break;
+					case 'set default':
+						$this->jsonsql->setDefault($this->request->table, $this->request->column->name, $this->request->column->default);
+						break;
+					case 'set title':
+						$this->jsonsql->setColumnTitle($this->request->table, $this->request->column->name, $this->request->column->title);
+						break;
+					case 'set comment':
+						$this->jsonsql->setColumnDescription($this->request->table, $this->request->column->name, $this->request->column->comment);
+						break;
+					case 'remove not null':
+						$this->jsonsql->setNotNull($this->request->table, $this->request->column->name, true);
+						break;
+					case 'remove primary key':
+						$this->jsonsql->setPrimaryKey($this->request->table, $this->request->column->name, true);
+						break;
+					case 'remove autoincrement':
+						$this->jsonsql->setAutoincrement($this->request->table, $this->request->column->name, true);
+						break;
+					case 'remove default':
+						$this->jsonsql->setDefault($this->request->table, $this->request->column->name, false);
+						break;
+					case 'remove title':
+						$this->jsonsql->setColumnTitle($this->request->table, $this->request->column->name, false);
+						break;
+					case 'remove comment':
+						$this->jsonsql->setColumnDescription($this->request->table, $this->request->column->name, false);
+						break;
+					default:
+						return false;
+				}
+				break;
+			case 'add column':
+				$this->jsonsql->addColumn($this->request->table, $this->request->column->name, $this->request->column->definition, $this->request->required);
+				break;
+			default:
+				return false;
 		}
 		return true;
 	}

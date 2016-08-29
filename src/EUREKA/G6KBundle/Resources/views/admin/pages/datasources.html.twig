@@ -79,8 +79,10 @@ THE SOFTWARE.
 				{% if table is not empty %}
 				<div id="table" class="panel panel-primary">
 					<div class="panel-heading">
-					{% if table.name != 'new' %}
+					{% if table.action != 'create-table' %}
 					<a class="btn btn-primary pull-right drop-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'drop'}) }}" data-confirm="Are you sure you want to drop the table '{{ table.label }}' ?">Drop table <span class="glyphicon glyphicon-minus-sign"></span></a>
+					{% endif %}
+					{% if table.action != 'create-table' and table.action != 'edit-table'  %}
 					<a class="btn btn-primary pull-right edit-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'edit'}) }}" data-confirm="Are you sure you want to edit the structure of  the table '{{ table.label }}' ?">Edit table structure <span class="glyphicon glyphicon-pencil"></span></a>
 					{% endif %}
 					<h4 class="panel-title">{{ table.label }}</h4>
@@ -92,21 +94,25 @@ THE SOFTWARE.
 							<span class="error-message"></span>
 							<ul></ul>
 						</div>
-						{% if table.name == 'new' %}
+						{% if table.action == 'create-table' or table.action == 'edit-table' %}
+						{% if table.action == 'create-table' %}
 						<form id="new-table-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': 'new', 'crud': 'create'}) }}">
+						{% else %}
+						<form id="edit-table-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'doedit'}) }}">
+						{% endif %}
 						<div class="panel-body">
 							<div class="attributes-container">
 								<div>
 									<div class="form-group col-sm-12">
 										<label class="col-sm-2 control-label" for="table-name">Name</label>    
 										<div class="col-sm-10">        
-											<input type="text" value="" placeholder="name" class="form-control simple-value" data-attribute="name" id="table-name" name="table-name">    
+											<input type="text" value="{{ table.name }}" placeholder="name" class="form-control simple-value" data-attribute="name" id="table-name" name="table-name">    
 										</div>
 									</div>
 									<div class="form-group col-sm-12">    
 										<label class="col-sm-2 control-label" for="table-label">Label</label>    
 										<div class="col-sm-10">        
-											<input type="text" value="" placeholder="label" class="form-control simple-value" data-attribute="label" id="table-label" name="table-label">    
+											<input type="text" value="{{ table.label }}" placeholder="label" class="form-control simple-value" data-attribute="label" id="table-label" name="table-label">    
 										</div>
 									</div>
 								</div>
@@ -114,14 +120,14 @@ THE SOFTWARE.
 							<div id="table-description-panel" class="panel panel-default">
 								<div class="panel-heading">Description</div>
 								<div class="panel-body table-description">
-									<textarea name="table-description" class="form-control input-sm"></textarea>
+									<textarea name="table-description" class="form-control input-sm">{{ table.description }}</textarea>
 								</div>
 							</div>
 						</div>
 						<div class="table-responsive">
 							<span class="table-caption">Fields</span>
 							<button id="btnAddNewColumn" class="btn btn-default pull-right">Add column <span class="glyphicon glyphicon-plus-sign"></span></button>
-							<table id="new-table" class="table table-condensed table-striped table-bordered table-hover">
+							<table id="edition-table" class="table table-condensed table-striped table-bordered table-hover">
 								<thead>
 									<tr>
 										<th></th>
@@ -135,7 +141,11 @@ THE SOFTWARE.
 								</tbody>
 							</table>
 						</div>
+						{% if table.action == 'create-table' %}
 						<button id="btnSaveNewTable" class="btn btn-primary pull-right">Save</button>
+						{% else %}
+						<button id="btnSaveEditedTable" class="btn btn-primary pull-right">Save</button>
+						{% endif %}
 						</form>
 						{% else %}
 						<div class="table-responsive">
@@ -462,8 +472,9 @@ THE SOFTWARE.
 {% if app.request.locale == 'de' or  app.request.locale == 'es' or app.request.locale == 'fr' %}<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/json-validator/lang/' ~ app.request.locale ~ '.js') }}"></script>{% endif %}{% if table is not empty %}
 <script type="text/javascript">
 $(document).ready(function() {
-	var fields = [{%- for info in tableinfos -%}[{{ loop.index0 }}, '{{ info.name }}', '{{ info.label }}', '{{ info.notnull }}', '{{ info.g6k_type }}'{%- if info.choices -%}, '{ {%- for value, label in info.choices -%}"{{ value }}": "{{ label }}"{%- if not loop.last -%}, {%- endif -%}{%- endfor -%} }'{%- endif -%}]{%- if not loop.last -%},{%- endif -%}{%- endfor -%}];
-	Datasources.init('{{ table.name }}', fields, '{{ app.request.locale }}');
+	var fields = [{%- for info in tableinfos -%}[{{ loop.index0 }}, '{{ info.name }}', '{{ info.label }}', '{{ info.description }}', '{{ info.notnull }}', '{{ info.g6k_type }}'{%- if info.choices -%}, '{ {%- for value, label in info.choices -%}"{{ value }}": "{{ label }}"{%- if not loop.last -%}, {%- endif -%}{%- endfor -%} }'{%- endif -%}{%- if info.choicesource -%}, '{ "id": {{ info.choicesource.id }}, "datasource": "{{ info.choicesource.datasource }}", "request": "{{ info.choicesource.request }}", "returnType": "{{ info.choicesource.returnType }}", "separator": "{{ info.choicesource.separator }}", "delimiter": "{{ info.choicesource.delimiter }}", "returnPath": "{{ info.choicesource.returnPath }}", "valueColumn": "{{ info.choicesource.valueColumn }}", "labelColumn": "{{ info.choicesource.labelColumn }}" }'{%- endif -%}]{%- if not loop.last -%},{%- endif -%}{%- endfor -%}];
+	var datasources = [{% for datasource in datasources %}{type: "{{ datasource.type }}", name: "{{ datasource.name }}"{%- if datasource.database -%}, dbtype: "{{ datasource.database.type }}"{%- endif -%}}{%- if not loop.last -%}, {%- endif -%}{%- endfor -%}];
+	Datasources.init('{{ table.action }}', '{{ table.name }}', fields, datasources, '{{ app.request.locale }}');
 });
 </script>
 {% endif %}

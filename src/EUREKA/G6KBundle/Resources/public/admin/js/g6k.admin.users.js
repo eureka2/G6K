@@ -39,10 +39,10 @@ THE SOFTWARE.
 			hideIdentifier: true,
 			buttons: {
 				save: {
-					html: 'Enregistrer'
+					html: 'Save'
 				},
 				confirm: {
-					html: 'Confirmer'
+					html: 'Confirm'
 				}
 			},
 			columns: {
@@ -101,7 +101,11 @@ THE SOFTWARE.
 						$('.alert').show();
 					}, 1500);
 				} else if (data.action = 'edit' && data.id > 0) {
-					$('#users').find('.tabledit-input.tabledit-identifier').val(data.id);
+					if (row.attr('id') == 0) {
+						row.find('.tabledit-input.tabledit-identifier').val(data.id);
+						row.find('.tabledit-span.tabledit-identifier').text(data.id);
+						row.attr('id', data.id);
+					}
 				}
 				return; 
 			},

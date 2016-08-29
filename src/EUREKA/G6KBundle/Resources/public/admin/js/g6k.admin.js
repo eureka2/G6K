@@ -43,6 +43,14 @@ THE SOFTWARE.
 		'image': false,
 		'shortcuts': {
 		   '83': 'small'     // S
+		},
+		'events': {
+			'change': function(e) {
+				var val = this.getValue();
+				val = val.replace(/^(\<br\>)+/i, '');
+				val = val.replace(/(\<br\>)+$/i, '');
+				this.setValue(val);
+			}
 		}
 	};
 

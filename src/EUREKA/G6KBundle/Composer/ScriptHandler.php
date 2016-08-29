@@ -102,12 +102,45 @@ class ScriptHandler
 		}
 		$script = preg_split ("/;\n/", $script, -1,  PREG_SPLIT_NO_EMPTY);
 		foreach($script as $i => $sql) {
+			if (preg_match("/^CREATE TABLE/i", $sql)) {
+				switch ($driver) {
+					case 'pdo_mysql':
+						$sql = preg_replace("/id INTEGER NOT NULL,/i", "id INT NOT NULL AUTO_INCREMENT,", $sql);
+						break;
+					case 'pdo_pgsql':
+						$sql = preg_replace("/id INTEGER NOT NULL,/i", "id SERIAL NOT NULL,", $sql);
+						$sql = preg_replace("/\s+DATETIME\s+/i", " TIMESTAMP ", $sql);
+						break;
+					case 'pdo_sqlite':
+						$sql = preg_replace("/id INTEGER NOT NULL,/i", "id INTEGER NOT NULL AUTOINCREMENT,", $sql);
+						break;
+				}
+			}
 			try {
 				$database->exec($sql);
 			} catch (\Exception $e) {
 				$event->getIO()->write("Can't execute install users script : " . $e->getMessage());
 				break;
 			}
+		}
+		switch ($driver) {
+			case 'pdo_mysql':
+				$sql = 'alter table fos_user auto_increment = 3';
+				break;
+			case 'pdo_pgsql':
+				$sql = "alter sequence fos_user_id_seq restart with 3";
+				break;
+			case 'pdo_sqlite':
+				$sql = "update sqlite_sequence set seq = 2 where name = 'fos_user'";
+				break;
+			default:
+				return;
+		}
+		try {
+			$database->exec($sql);
+		} catch (\Exception $e) {
+			$event->getIO()->write("Can't set sequence for table fos_user : " . $e->getMessage());
+			break;
 		}
 	}
 

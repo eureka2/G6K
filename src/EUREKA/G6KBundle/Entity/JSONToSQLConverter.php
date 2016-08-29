@@ -143,19 +143,19 @@ class JSONToSQLConverter {
 				$dbschema = $name;
 				$this->database = new Database(null, 1, $dbtype, str_replace('-', '_', $dbschema));
 				if ($this->parameters['database_host'] != "") {
-					$database->setHost($this->parameters['database_host']);
+					$this->database->setHost($this->parameters['database_host']);
 				}
 				if ($this->parameters['database_port'] != "") {
-					$database->setPort((int)$this->parameters['database_port']);
+					$this->database->setPort((int)$this->parameters['database_port']);
 				}
 				if ($this->parameters['database_user'] != "") {
-					$database->setUser($this->parameters['database_user']);
+					$this->database->setUser($this->parameters['database_user']);
 				}
 				if ($this->parameters['database_password'] != "") {
-					$database->setPassword($this->parameters['database_password']);
+					$this->database->setPassword($this->parameters['database_password']);
 				}
 				$this->database->connect(false);
-				$this->database->exec("create database if not exists " . $dbschema . " character set utf8");
+				$this->database->exec("create database if not exists " . str_replace('-', '_', $dbschema) . " character set utf8");
 				$this->database->setConnected(false);
 				break;
 			case 'pdo_pgsql':
@@ -163,24 +163,25 @@ class JSONToSQLConverter {
 				$dbschema = $name;
 				$this->database = new Database(null, 1, $dbtype, str_replace('-', '_', $dbschema));
 				if ($this->parameters['database_host'] != "") {
-					$database->setHost($this->parameters['database_host']);
+					$this->database->setHost($this->parameters['database_host']);
 				}
 				if ($this->parameters['database_port'] != "") {
-					$database->setPort((int)$this->parameters['database_port']);
+					$this->database->setPort((int)$this->parameters['database_port']);
 				}
 				if ($this->parameters['database_user'] != "") {
-					$database->setUser($this->parameters['database_user']);
+					$this->database->setUser($this->parameters['database_user']);
 				}
 				if ($this->parameters['database_password'] != "") {
-					$database->setPassword($this->parameters['database_password']);
+					$this->database->setPassword($this->parameters['database_password']);
 				}
 				$this->database->connect(false);
-				$this->database->exec("create database " . $dbschema. " encoding 'UTF8'");
+				$this->database->exec("create database " . str_replace('-', '_', $dbschema) . " encoding 'UTF8'");
 				$this->database->setConnected(false);
 				break;
 		}
 		$this->database->connect();
 		$tables = array();
+		$autoincremented = '';
 		foreach ($schema->properties as $table => $descr) {
 			$columns = array();
 			$primarykeys = array();
@@ -196,6 +197,9 @@ class JSONToSQLConverter {
 					$type = 'serial';
 				} else {
 					$type = $this->get_type($coldef);
+				}
+				if (isset($props->autoincrement)) {
+					$autoincremented = $col;
 				}
 				$create_table .= "\t" . $col . " " . $type;
 				if (in_array($col, $descr->items->required)) {
@@ -258,21 +262,40 @@ class JSONToSQLConverter {
 			$create_table = preg_replace("/,$/", "", $create_table);
 			$create_table .= ")\n";
 			$this->database->exec($create_table);
+			$maxvalue = 0;
 			foreach ($data->$table as $row) {
 				$cols = array();
 				$values = array();
 				foreach ($row as $col => $value) {
+					if ($col == $autoincremented) {
+						if ((int)$value > $maxvalue) {
+							$maxvalue = (int)$value;
+						}
+					}
 					$type = $descr->items->properties->$col->type;
 					$cols[] = $col;
 					$values[] = $this->get_value($type, $value);
 				}
-				$arow = (array)$row;
 				$insert_row = "insert into $table (";
 				$insert_row .= implode(", ", $cols);
 				$insert_row .= ") values (" ;
 				$insert_row .= implode(", ", $values);
 				$insert_row .= ")\n";
 				$this->database->exec($insert_row);
+			}
+			if ($maxvalue > 0) {
+				switch ($this->parameters['database_driver']) {
+					case 'pdo_mysql':
+						$sql = "alter table $table auto_increment = " . ($maxvalue + 1);
+						break;
+					case 'pdo_pgsql':
+						$sql = "alter sequence {$table}_id_seq restart with " . ($maxvalue + 1);
+						break;
+					case 'pdo_sqlite':
+						$sql = "update sqlite_sequence set seq = $maxvalue where name = '$table'";
+						break;
+				}
+				$this->database->exec($sql);
 			}
 			$tables[] = array(
 				'name' => $table,

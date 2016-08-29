@@ -49,7 +49,7 @@ class BaseAdminController extends Controller {
 		$date = \DateTime::createFromFormat($format, $dateStr);
 		$errors = \DateTime::getLastErrors();
 		if ($errors['error_count'] > 0) {
-			throw new \Exception($errors['errors'][0]);
+			throw new \Exception("Error on date '$dateStr', expected format '$format' : " . implode(" ", $errors['errors']));
 		}
 		return $date;
 	}
