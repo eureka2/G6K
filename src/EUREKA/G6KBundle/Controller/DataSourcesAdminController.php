@@ -1295,7 +1295,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$insertNames = array();
 		$insertValues = array();
 		foreach($infosColumns as $name => $info) {
-			$value = isset($form[$name]) ? $form[$name] : null;
+			$value = isset($form[$name]) ? $form[$name] : ($info['g6k_type'] == 'boolean' ? '0' : null);
 			if (($check = $this->checkValue($name, $info, $value)) !== true) {
 				return $check;
 			}
@@ -1327,7 +1327,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$infosColumns = $this->infosColumns($database, $table);
 		$updateFields = array();
 		foreach($infosColumns as $name => $info) {
-			$value = isset($form[$name]) ? $form[$name] : null;
+			$value = isset($form[$name]) ? $form[$name] : ($info['g6k_type'] == 'boolean' ? '0' : null);
 			if (($check = $this->checkValue($name, $info, $value)) !== true) {
 				return $check;
 			}

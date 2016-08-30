@@ -163,7 +163,13 @@ THE SOFTWARE.
 									{% for row in tabledatas %}
 									<tr>
 										{% for col, cell in row %}
-											<td class="{{ tableinfos[loop.index0].g6k_type }}">{{ cell }}</td>
+											<td class="{{ tableinfos[loop.index0].g6k_type }}">{% spaceless %}
+											{% if tableinfos[loop.index0].g6k_type == 'boolean' %}
+											{% if cell == '0' %}No{% else %}Yes{% endif %}
+											{% else -%}
+											{{ cell }}
+											{%- endif %}
+											{% endspaceless %}</td>
 										{% endfor %}
 									</tr>
 									{% endfor %}

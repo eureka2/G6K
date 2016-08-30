@@ -90,7 +90,9 @@ THE SOFTWARE.
 					var type = v[5] === 'choice' ? 'single' : v[5] === 'date' ? 'text' : v[5] === 'boolean' ? 'checkbox' : v[5] === 'textarea' ? 'text' : v[5] === 'integer' ? 'number' : v[5] === 'day' ? 'number' : v[5] === 'month' ? 'number' : v[5] === 'year' ? 'number' : v[5] === 'number' ? 'text' : v[5] === 'money' ? 'text' : v[5] === 'percent' ? 'text' : v[5];
 					var editField = [];
 					editField.push(v[0], v[1], type);
-					if (v[4]) {
+					if (v[5] == 'boolean') {
+						editField.push('{"1": "Yes", "0": "No"}', '1');
+					} else if (v[6]) {
 						editField.push(v[6]);
 					}
 					Datasources.editFields.push(editField);
@@ -591,10 +593,10 @@ THE SOFTWARE.
 			hideIdentifier: true,
 		    buttons: {
 		        save: {
-		             html: 'Enregistrer'
+		             html: 'Save'
 		        },
 		        confirm: {
-		            html: 'Confirmer'
+		            html: 'Confirm'
 		        }
 		    },
 			columns: {

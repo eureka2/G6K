@@ -159,7 +159,6 @@ if (typeof jQuery === 'undefined') {
 											if (text == value) {
 												checked = ' checked="checked"';
 											}
-											text = value;
 											data['checked-value'] = index;
 											data['checked-text'] = value;
 										} else {
