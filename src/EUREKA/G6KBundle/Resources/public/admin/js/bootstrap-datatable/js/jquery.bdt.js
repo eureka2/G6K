@@ -4,7 +4,7 @@
  * @copyright 2014 Patric Gutersohn
  * @author Patric Gutersohn
  * @example index.html BDT in action.
- * @link http://bdt.gutersohn.biz Documentation
+ * @link http://bdt.pguso.de Documentation
  * @version 1.0.0
  *
  * @summary BDT - Bootstrap Data Tables
@@ -46,6 +46,18 @@
      * @type {string}
      */
     var arrowDown = '';
+    /**
+     * @type {string}
+     */
+    var searchFormClass = '';
+    /**
+     * @type {string}
+     */
+    var pageFieldText = '';
+    /**
+     * @type {string}
+     */
+    var searchFieldText = '';
 
     $.fn.bdt = function (options, callback) {
 
@@ -53,10 +65,13 @@
             pageRowCount: 10,
             arrowDown: 'fa-angle-down',
             arrowUp: 'fa-angle-up',
-			entriesPerPageText : 'Entries per Page',
-			previousText: 'Previous',
-			nextText: 'Next',
-			searchText: 'Search...'
+            searchFormClass: 'pull-left search-form',
+            pageFieldText: 'Entries per Page:',
+            searchFieldText: 'Search',
+            showSearchForm: 1,
+            showEntriesPerPageField: 1,
+            nextText: 'Next',
+            previousText: 'Previous'
         }, options);
 
         /**
@@ -70,13 +85,18 @@
             pageRowCount = settings.pageRowCount;
             arrowDown = settings.arrowDown;
             arrowUp = settings.arrowUp;
+            searchFormClass = settings.searchFormClass;
+            pageFieldText = settings.pageFieldText;
+            searchFieldText = settings.searchFieldText;
+            
+            var searchForm, entriesPerPageField;
 
             /**
              * search input field
              */
-            obj.before(
-                $('<form/>')
-                    .addClass('pull-right')
+            if(settings.showSearchForm == 1) {
+                searchForm = $('<form/>')
+                    .addClass(searchFormClass)
                     .attr('role', 'form')
                     .append(
                         $('<div/>')
@@ -85,7 +105,101 @@
                                 $('<input/>')
                                     .addClass('form-control')
                                     .attr('id', 'search')
-                                    .attr('placeholder', settings.searchText)
+                                    .attr('placeholder', searchFieldText)
+                            )
+                    );
+            }
+
+            if(settings.showEntriesPerPageField == 1) {
+                entriesPerPageField = $('<form/>')
+                    .addClass('form-horizontal')
+                    .attr('id', 'page-rows-form')
+                    .append($('<label/>')
+                        .addClass('pull-left control-label')
+                        .text(pageFieldText)
+                    )
+                    .append(
+                        $('<div/>')
+                            .addClass('pull-left')
+                            .append(
+                                $('<select/>')
+                                    .addClass('form-control')
+                                    .append(
+                                        $('<option>', {
+                                            value: 5,
+                                            text: 5
+                                        })
+                                    )
+                                    .append(
+                                        $('<option>', {
+                                            value: 10,
+                                            text: 10,
+                                        })
+                                    )
+                                    .append(
+                                        $('<option>', {
+                                            value: 15,
+                                            text: 15
+                                        })
+                                    )
+                                    .append(
+                                        $('<option>', {
+                                            value: 20,
+                                            text: 20
+                                        })
+                                    )
+                                    .append(
+                                        $('<option>', {
+                                            value: 25,
+                                            text: 25
+                                        })
+                                    )
+                                   .append(
+                                        $('<option>', {
+                                            value: 30,
+                                            text: 30
+                                        })
+                                    )
+                                   .append(
+                                        $('<option>', {
+                                            value: 35,
+                                            text: 35
+                                        })
+                                    )
+                                   .append(
+                                        $('<option>', {
+                                            value: 40,
+                                            text: 40
+                                        })
+                                    )
+                                   .append(
+                                        $('<option>', {
+                                            value: 45,
+                                            text: 45
+                                        })
+                                    )
+                                   .append(
+                                        $('<option>', {
+                                            value: 50,
+                                            text: 50
+                                        })
+                                    )
+                            )
+                    );
+					entriesPerPageField.find("option[value='" + pageRowCount + "']").attr("selected", "selected");
+            }
+            
+            obj.before(
+                $('<div/>')
+                    .addClass('table-header')
+                    .append(
+                        searchForm
+                    )
+                    .append(
+                        $('<div/>')
+                            .addClass('pull-left')
+                            .append(
+                                entriesPerPageField
                             )
                     )
             );
@@ -98,57 +212,12 @@
                     .attr('id', 'table-footer')
                     .append(
                         $('<div/>')
-                            .addClass('pull-left')
-                            .append(
-                                $('<form/>')
-                                    .addClass('form-horizontal')
-                                    .attr('id', 'page-rows-form')
-                                    .append($('<label/>')
-                                        .addClass('pull-left control-label')
-                                        .text(settings.entriesPerPageText)
-                                    )
-                                    .append(
-                                        $('<div/>')
-                                            .addClass('pull-left')
-                                            .append(
-                                                $('<select/>')
-                                                    .addClass('form-control')
-                                                    .append(
-                                                        $('<option>', {
-                                                            value: 5,
-                                                            text: 5
-                                                        })
-                                                    )
-                                                    .append(
-                                                        $('<option>', {
-                                                            value: 10,
-                                                            text: 10
-														})
-                                                    )
-                                                    .append(
-                                                        $('<option>', {
-                                                            value: 15,
-                                                            text: 15
-                                                        })
-                                                    )
-                                                    .append(
-                                                        $('<option>', {
-                                                            value: 20,
-                                                            text: 20
-                                                        })
-                                                    )
-                                                    .append(
-                                                        $('<option>', {
-                                                            value: 25,
-                                                            text: 25
-                                                        })
-                                                    )
-                                            )
-                                    )
-                            )
+                            .addClass('pull-left table-info')
+                            //.text('Showing 1 to 10 of 100 entries')
                     )
+                    
             );
-			$('#page-rows-form select').val(pageRowCount);
+
             if (tableBody.children('tr').length > pageRowCount) {
                 setPageCount(tableBody);
                 addPages();
@@ -172,6 +241,8 @@
                 if (!listItem.hasClass("disabled") && !listItem.hasClass("active")) {
                     paginate(tableBody, page);
                 }
+
+                event.preventDefault();
             });
 
             $('#page-rows-form').on('change', function () {
@@ -210,95 +281,54 @@
                     var addOrRemove = true;
 
                     th.click(function () {
+                        if(!$(this).hasClass('disable-sorting')) {
+                            if($(this).find('.sort-icon').hasClass(arrowDown)) {
+                                $(this)
+                                    .find('.sort-icon')
+                                    .removeClass( arrowDown )
+                                    .addClass(arrowUp);
 
-                        if($(this).find('.sort-icon').hasClass(arrowDown)) {
-                            $(this)
-                                .find('.sort-icon')
-                                .removeClass( arrowDown )
-                                .addClass(arrowUp);
+                            } else {
+                                $(this)
+                                    .find('.sort-icon')
+                                    .removeClass( arrowUp )
+                                    .addClass(arrowDown);
+                            }
 
-                        } else {
-                            $(this)
-                                .find('.sort-icon')
-                                .removeClass( arrowUp )
-                                .addClass(arrowDown);
+                            if(oldIndex != thIndex) {
+                                obj.find('.sort-icon').removeClass(arrowDown);
+                                obj.find('.sort-icon').removeClass(arrowUp);
+
+                                $(this)
+                                    .find('.sort-icon')
+                                    .toggleClass( arrowDown, addOrRemove );
+                            }
+
+                            table.find('td').filter(function () {
+
+                                return $(this).index() === thIndex;
+
+                            }).sortElements(function (a, b) {
+
+                                return $.text([a]) > $.text([b]) ?
+                                    inverse ? -1 : 1
+                                    : inverse ? 1 : -1;
+
+                            }, function () {
+
+                                // parentNode is the element we want to move
+                                return this.parentNode;
+
+                            });
+
+                            inverse = !inverse;
+                            oldIndex = thIndex;
                         }
-
-                        if(oldIndex != thIndex) {
-                            obj.find('.sort-icon').removeClass(arrowDown);
-                            obj.find('.sort-icon').removeClass(arrowUp);
-
-                            $(this)
-                                .find('.sort-icon')
-                                .toggleClass( arrowDown, addOrRemove );
-                        }
-
-                        table.find('td').filter(function () {
-
-                            return $(this).index() === thIndex;
-
-                        }).sortElements(function (a, b) {
-                            return compare(a, b, inverse);
-
-                        }, function () {
-
-                            // parentNode is the element we want to move
-                            return this.parentNode;
-
-                        });
-
-                        inverse = !inverse;
-                        oldIndex = thIndex;
                     });
 
                 });
         }
 
-		function compare(cell1, cell2, inverse) {
-			var a = $.text([cell1]);
-			var b = $.text([cell2]);
-			if ($(cell1).hasClass("integer") && $(cell2).hasClass("integer") && $.isNumeric(a) && $.isNumeric(b)) {
-				a = parseInt(a);
-				b = parseInt(b);
-			} else if ($(cell1).hasClass("day") && $(cell2).hasClass("day") && $.isNumeric(a) && $.isNumeric(b)) {
-				a = parseInt(a);
-				b = parseInt(b);
-			} else if ($(cell1).hasClass("month") && $(cell2).hasClass("month") && $.isNumeric(a) && $.isNumeric(b)) {
-				a = parseInt(a);
-				b = parseInt(b);
-			} else if ($(cell1).hasClass("year") && $(cell2).hasClass("year") && $.isNumeric(a) && $.isNumeric(b)) {
-				a = parseInt(a);
-				b = parseInt(b);
-			} else if ($(cell1).hasClass("number") && $(cell2).hasClass("number") && $.isNumeric(a) && $.isNumeric(b)) {
-				a = parseFloat(a);
-				b = parseFloat(b);
-			} else if ($(cell1).hasClass("money") && $(cell2).hasClass("money")) {
-				a = parseFloat(a.replace(',', '.'));
-				b = parseFloat(b.replace(',', '.'));
-			} else if ($(cell1).hasClass("percent") && $(cell2).hasClass("percent")) {
-				a = parseFloat(a.replace(',', '.'));
-				b = parseFloat(b.replace(',', '.'));
-			} else if ($(cell1).hasClass("date") && $(cell2).hasClass("date")) {
-				a = toTime(a);
-				b = toTime(b);
-			}
-			return a > b ? 
-                inverse ? -1 : 1
-                : inverse ? 1 : -1;
-		}
-		
-		function toTime(dateString) {
-			var date = null, matches;
-			if (matches = dateString.match(/^(\d{1,2}).(\d{1,2}).(\d{4})/)) {
-				date = Date.createFromFormat("j/n/Y", matches[1] + "/" + matches[2] + "/" + matches[3]);
-			    console.log("date : [" + dateString + "] = " + date);
-			} else if (matches = dateString.match(/^(\d{4}).(\d{1,2}).(\d{1,2})/)) {
-				date = Date.createFromFormat("Y/n/j", matches[1] + "/" + matches[2] + "/" + matches[3]);
-			    console.log("date : [" + dateString + "] = " + date);
-			}
-			return date !== null ? date.getTime() : date;
-		}
-		
         /**
          * create li elements for pages
          */
@@ -422,9 +452,9 @@
          */
         function setPageCount(tableBody) {
             if (activeSearch) {
-                pageCount = Math.round(tableBody.children('.search-item').length / pageRowCount);
+                pageCount = Math.ceil(tableBody.children('.search-item').length / pageRowCount);
             } else {
-                pageCount = Math.round(tableBody.children('tr').length / pageRowCount);
+                pageCount = Math.ceil(tableBody.children('tr').length / pageRowCount);
             }
 
             if (pageCount == 0) {

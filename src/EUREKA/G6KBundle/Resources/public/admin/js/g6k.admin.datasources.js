@@ -125,13 +125,14 @@ THE SOFTWARE.
 			});
 			Datasources.doeditable(tablename, locale);
 			$('#page-datasources #' + tablename).bdt({
-			    pageRowCount: 20,
+			    pageRowCount: 25,
 			    arrowDown: 'fa-angle-down',
 			    arrowUp: 'fa-angle-up',
-				entriesPerPageText : 'Lignes par page',
-				previousText: 'Précédent',
-				nextText: 'Suivant',
-				searchText: 'Recherche...'
+				pageFieldText : 'Lines per page',
+				previousText: 'Next',
+				nextText: 'Previous',
+				searchFieldText: 'Search...',
+				showSearchForm : 0
 			});
 			$('#page-datasources #' + tablename).resizableColumns({
 				store: store
