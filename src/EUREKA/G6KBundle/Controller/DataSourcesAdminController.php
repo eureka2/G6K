@@ -28,6 +28,9 @@ namespace EUREKA\G6KBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -1734,13 +1737,42 @@ class DataSourcesAdminController extends BaseAdminController {
 		$descr = $datasource->getElementsByTagName('Description');
 		if ($type == 'internal' || $type == 'database') {
 			$dbs = $xpath->query("/DataSources/Databases");
-			$database = $xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0);
-			$dbtype = $database->getAttribute('type');
-			if ($type == 'internal' && ($dbtype == 'jsonsql' || $dbtype == 'sqlite')) {
-				$dbname = $database->getAttribute('name');
-				// TODO : faut-il effacer les fichiers bases de données ?
+			$db = $xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0);
+			$dbtype = $db->getAttribute('type');
+			if ($type == 'internal') { 
+				$dbname = $db->getAttribute('name');
+				switch ($dbtype) { 
+					case 'jsonsql':
+						try {
+							$database = dirname(dirname(__FILE__)).'/Resources/data/databases/' . $dbname;
+							$fs = new Filesystem();
+							$fs->remove($database . ".json");
+							$fs->remove($database . ".schema.json");
+						} catch (IOExceptionInterface $ioe) {
+						}
+						break;
+					case'sqlite':
+						try {
+							$database = dirname(dirname(__FILE__)).'/Resources/data/databases/' . $dbname;
+							$fs = new Filesystem();
+							$fs->remove($database );
+						} catch (IOExceptionInterface $ioe) {
+						}
+						break;
+					case 'pgsql':
+					case 'mysqli':
+						$database = $this->getDatabase($dsid);
+						$tables = $datasource->getElementsByTagName('Table');
+						foreach ($tables as $table) {
+							$this->dropDBTable($table->getAttribute("name"), $database);
+							if (($result = $this->dropDBTable($table->getAttribute("name"), $database)) !== true) {
+								// Do something ????
+							}
+						}
+						break;
+				}
 			}
-			$dbs->item(0)->removeChild($database);
+			$dbs->item(0)->removeChild($db);
 		}
 		$dss = $xpath->query("/DataSources");
 		$dss->item(0)->removeChild ($datasource);
