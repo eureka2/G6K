@@ -54,28 +54,26 @@ THE SOFTWARE.
 		}
 	};
 
-	Admin.wysihtml5Options.locale = Admin.locale;
-
 	Admin.types = { 
-		array: 'array', 
-		date: 'date', 
-		day: 'day', 
-		today: 'today', 
-		month: 'month', 
-		year: 'year', 
-		'boolean': 'boolean', 
-		integer: 'integer', 
-		number: 'number', 
-		text: 'text', 
-		textarea: 'textarea', 
-		money: 'money', 
-		choice: 'choice', 
-		multichoice: 'multichoice', 
-		percent: 'percent', 
-		table: 'table', 
-		department: 'department', 
-		region: 'region', 
-		country: 'country'
+		array: Translator.trans('array'), 
+		date: Translator.trans('date'), 
+		day: Translator.trans('day'), 
+		today: Translator.trans('today'), 
+		month: Translator.trans('month'), 
+		year: Translator.trans('year'), 
+		'boolean': Translator.trans('boolean'), 
+		integer: Translator.trans('integer'), 
+		number: Translator.trans('number'), 
+		text: Translator.trans('text'), 
+		textarea: Translator.trans('textarea'), 
+		money: Translator.trans('money'), 
+		choice: Translator.trans('choice'), 
+		multichoice: Translator.trans('multichoice'), 
+		percent: Translator.trans('percent'), 
+		table: Translator.trans('table'), 
+		department: Translator.trans('department'), 
+		region: Translator.trans('region'), 
+		country: Translator.trans('country')
 	};
 
 	Admin.updated = false;
@@ -88,6 +86,9 @@ $(document).ready(function() {
 	bootbox.setDefaults({
 		locale: Admin.lang
 	});
+
+	Admin.wysihtml5Options.locale = Admin.locale;
+
 	function centerModal() {
 		$('.modal').find('.modal-dialog').each(function(index) {
 			$(this).css({
@@ -105,7 +106,7 @@ $(document).ready(function() {
 	$('a[data-confirm]').click(function(ev) {
 		var href = $(this).attr('href');
 		if (!$('#dataConfirmModal').length) {
-			$('body').append('<div id="dataConfirmModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 id="dataConfirmLabel" class="modal-title">Please Confirm</h4></div><div class="modal-body"></div><div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div></div></div>');
+			$('body').append('<div id="dataConfirmModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="' + Translator.trans('Close') + '"><span aria-hidden="true">&times;</span></button><h4 id="dataConfirmLabel" class="modal-title">' + Translator.trans('Please Confirm') + '</h4></div><div class="modal-body"></div><div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" aria-hidden="true">' + Translator.trans('Cancel') + '</button><a class="btn btn-primary" id="dataConfirmOK">' + Translator.trans('OK') + '</a></div></div></div></div>');
 		} 
 		$('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
 		$('#dataConfirmOK').attr('href', href);
@@ -115,7 +116,7 @@ $(document).ready(function() {
 	$(window).on("resize", function () {
 		$('.modal:visible').each(centerModal);
 	});
-    $('body').append('<div id="toTop" class="btn btn-default"><i class="fa fa-arrow-up"></i>Back to Top</div>');
+    $('body').append('<div id="toTop" class="btn btn-default"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
     $(window).scroll(function () {
 		if ($(this).scrollTop() != 0) {
 			$('#toTop').fadeIn();
@@ -128,13 +129,13 @@ $(document).ready(function() {
 		$(window).trigger(e); // let other modules determine whether to prevent closing
 		if(e.isDefaultPrevented()) {
 			// e.message is optional
-			return e.message || 'You have unsaved stuff. Are you sure to leave?';
+			return e.message || Translator.trans("You have unsaved stuff. Are you sure to leave?");
 		}
 	});
 	$(window).on('webapp:page:closing', function(e) {
 		if(Admin.updated) {
 			e.preventDefault();
-			e.message = 'Your update are not saved. Sure to leave?';
+			e.message = Translator.trans('Your update are not saved. Sure to leave?');
 		}
 	});
     $('#toTop').click(function(){

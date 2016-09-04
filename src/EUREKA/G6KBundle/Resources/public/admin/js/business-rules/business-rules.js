@@ -203,13 +203,13 @@ THE SOFTWARE.
 		var businessRules = $("#business-rules");
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
 		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
-		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right delete-rule">Delete <span class="glyphicon glyphicon-minus-sign"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> Rule <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
+		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right delete-rule">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> ' + Translator.trans('Rule') + ' <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
 		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse', role: 'tabpanel' });
 		ruleContainer.append(ruleBody);
-		ruleBody.append('<div class="panel panel-default"><div class="panel-body form-inline"><div class="form-group"><label>Name</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>Label</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>When ...</h4></div><div class="panel-body"><div class="conditions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>then do ...</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>else do ...</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');		
+		ruleBody.append('<div class="panel panel-default"><div class="panel-body form-inline"><div class="form-group"><label>' + Translator.trans('Name') + '</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>' + Translator.trans('Label') + '</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div><div class="panel-body"><div class="conditions"></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('then do ...') + '</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('else do ...') + '</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');		
 		businessRules.append(ruleContainer);
 		return ruleContainer;
 	}

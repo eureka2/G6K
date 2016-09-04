@@ -36,6 +36,7 @@ class BusinessRule {
 	private $conditions = "";
 	private $ifActions = array();
 	private $elseActions = array();	
+	private $translator = null;
 	
 		
 	private $inverseOperators = array(
@@ -55,6 +56,7 @@ class BusinessRule {
 
 	public function __construct($simulator, $elementId, $id, $name) {
 		$this->simulator = $simulator;
+		$this->translator = $simulator->getController()->get('translator');
 		$this->elementId = $elementId;
 		$this->id = $id;
 		$this->name = $name;
@@ -135,42 +137,60 @@ class BusinessRule {
 		return $extended;
 	}
 	
-	protected function getPlainOperator($operator) {
+	protected function getPlainOperator($operator, $type) {
 		$operators = array(
-			'=' => 'is equal to',
-			'!=' => 'is not equal to',
-			'>' => 'is greater than',
-			'>=' => 'is greater than or equal to',
-			'<' => 'is less than',
-			'<=' => 'is less than or equal to',
-			'isTrue' => 'is true',
-			'isFalse' => 'is false',
-			'~' => 'contains',
-			'!~' => 'not contains',
-			'matches' => 'matches',
-			'present' => 'is present',
-			'blank' => 'is not present'
+			'=' => $this->translator->trans('is equal to'),
+			'!=' => $this->translator->trans('is not equal to'),
+			'>' => $this->translator->trans('is greater than'),
+			'>=' => $this->translator->trans('is greater than or equal to'),
+			'<' => $this->translator->trans('is less than'),
+			'<=' => $this->translator->trans('is less than or equal to'),
+			'isTrue' => $this->translator->trans('is true'),
+			'isFalse' => $this->translator->trans('is false'),
+			'~' => $this->translator->trans('contains'),
+			'!~' => $this->translator->trans('not contains'),
+			'matches' => $this->translator->trans('matches'),
+			'present' => $this->translator->trans('is present'),
+			'blank' => $this->translator->trans('is not present')
 		);
-		return isset($operators[$operator]) ? $operators[$operator] : $operator;
+		$dateOperators = array(
+			'=' => $this->translator->trans('is'),
+			'!=' => $this->translator->trans('is not'),
+			'>' => $this->translator->trans('is after'),
+			'>=' => $this->translator->trans('is not before'),
+			'<' => $this->translator->trans('is before'),
+			'<=' => $this->translator->trans('is not after'),
+			'~' => $this->translator->trans('contains'),
+			'!~' => $this->translator->trans('not contains'),
+			'present' => $this->translator->trans('is present'),
+			'blank' => $this->translator->trans('is not present')
+		);
+		if ($type == 'date' || $type == 'day' || $type == 'month' || $type == 'year') {
+			return isset($dateOperators[$operator]) ? $dateOperators[$operator] : $operator;
+		} else {
+			return isset($operators[$operator]) ? $operators[$operator] : $operator;
+		}
 	}
 	
 	protected function plainConditions(&$ruleData) {
 		if ($ruleData !== array_values($ruleData)) {
 			if (isset($ruleData["name"])) {
+				$type = 'boolean';
 				if ($ruleData["name"] == 'script') {
-					$ruleData["name"] = 'Javascript';
-					$ruleData["operator"] = 'is';
-					$ruleData["value"] = $ruleData["value"] == 1 ? 'enabled' : 'disabled';
+					$ruleData["name"] = $this->translator->trans('Javascript');
+					$ruleData["operator"] = $this->translator->trans('is');
+					$ruleData["value"] = $ruleData["value"] == 1 ? $this->translator->trans('enabled') : $this->translator->trans('disabled');
 				} elseif ($ruleData["name"] == 'dynamic') {
-					$ruleData["name"] = 'User Interface';
-					$ruleData["operator"] =  $ruleData["value"] == 1 ? 'is' : 'is not';
-					$ruleData["value"] = 'interactive';
+					$ruleData["name"] = $this->translator->trans('User Interface');
+					$ruleData["operator"] =  $ruleData["value"] == 1 ? $this->translator->trans('is') : $this->translator->trans('is not');
+					$ruleData["value"] = $this->translator->trans('interactive');
 				} elseif (preg_match("/step(\d+)\.dynamic$/", $ruleData["name"], $matches)) {
-					$ruleData["name"] = 'User Interface for step ' . $matches[1];
-					$ruleData["operator"] =  $ruleData["value"] == 1 ? 'is' : 'is not';
-					$ruleData["value"] = 'interactive';
+					$ruleData["name"] = $this->translator->trans('User Interface for step %id%', array('%id%' => $matches[1]));
+					$ruleData["operator"] =  $ruleData["value"] == 1 ? $this->translator->trans('is') : $this->translator->trans('is not');
+					$ruleData["value"] = $this->translator->trans('interactive');
 				} elseif (preg_match("/^#(\d+)$/", $ruleData["name"], $matches)) {
 					$data = $this->simulator->getDataById($matches[1]);
+					$type = $data->getType();
 					$ruleData["name"] = $data->getLabel();
 					if ($data->getType() == 'choice') {
 						$data->setValue($ruleData["value"]);
@@ -181,10 +201,11 @@ class BusinessRule {
 					}
 				} else {
 					$data = $this->simulator->getDataByName($ruleData["name"]);
+					$type = $data->getType();
 					$ruleData["name"] = $data->getLabel();
 				}
 				if (isset($ruleData["operator"])) {
-					$ruleData["operator"] = $this->getPlainOperator($ruleData["operator"]);
+					$ruleData["operator"] = $this->getPlainOperator($ruleData["operator"], $type);
 				}
 				if (isset($ruleData["value"])) {
 					$ruleData["value"] = $this->simulator->replaceByDataLabel($ruleData["value"]);

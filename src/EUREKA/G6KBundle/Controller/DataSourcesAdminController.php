@@ -165,7 +165,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		if ($crud !== null) {
 			if (! $this->get('security.context')->isGranted('ROLE_CONTRIBUTOR')) {
-				return $this->errorResponse($form, "Access denied!");
+				return $this->errorResponse($form, $this->get('translator')->trans("Access denied!"));
 			}
 			if ($crud == 'create-datasource') {
 				return $this->createDatasource ($form);
@@ -291,8 +291,8 @@ class DataSourcesAdminController extends BaseAdminController {
 						'action' => 'import',
 						'id' => 0,
 						'type' => 'internal',
-						'name' => 'Import Datasource',
-						'label' => 'Import Datasource',
+						'name' => $this->get('translator')->trans('Import Datasource'),
+						'label' => $this->get('translator')->trans('Import Datasource'),
 						'uri' => '',
 						'description' => '',
 					);
@@ -301,8 +301,8 @@ class DataSourcesAdminController extends BaseAdminController {
 						'action' => 'create',
 						'id' => 0,
 						'type' => 'internal',
-						'name' => 'New Datasource',
-						'label' => 'New Datasource',
+						'name' => $this->get('translator')->trans('New Datasource'),
+						'label' => $this->get('translator')->trans('New Datasource'),
 						'database' => array(
 							'id' => 0, 
 							'type' => $type, 
@@ -347,7 +347,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					if ($datasource['type'] == 'internal' && $table !== null && $table != 'dummy') {
 						$tabledef['action'] = $table != 'new' ? $action : 'create-table';
 						$tabledef['name'] = $table;
-						$tabledef['label'] = 'New Table';
+						$tabledef['label'] = $this->get('translator')->trans('New Table');
 						$tabledef['description'] = '';
 						if ($table != 'new') {
 							$tableinfos = $this->tableInfos($database, $table);
@@ -749,7 +749,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	protected function checkValue($name, $info, $value) {
 		if ($value === null || $value == '') {
 			if ($info['notnull'] == 1) { 
-				return sprintf("The field '%s' is required", $info['label']);
+				return $this->get('translator')->trans("The field '%field%' is required", array('%field%' => $info['label']));
 			} else {
 				return true;
 			}
@@ -757,38 +757,38 @@ class DataSourcesAdminController extends BaseAdminController {
 		switch ($info['g6k_type']) {
 			case 'date':
 				if (! preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
-					return sprintf("The field '%s' is not a valid date", $info['label']);
+					return $this->get('translator')->trans("The field '%field%' is not a valid date", array('%field%' => $info['label']));
 				}
 				break;
 			case 'boolean':
 				if ( ! in_array($value, array('0', '1', 'false', 'true'))) {
-					return sprintf("The field '%s' is invalid", $info['label']);
+					return $this->get('translator')->trans("The field '%field%' is invalid", array('%field%' => $info['label']));
 				}
 				break;
 			case 'number': 
 				$value = str_replace(",", ".", $value);
 				if (! is_numeric($value)) {
-					return sprintf("The field '%s' is not a number", $info['label']);
+					return $this->get('translator')->trans("The field '%field%' is not a number", array('%field%' => $info['label']));
 				}
 				break;
 			case 'integer': 
 				if (! ctype_digit ( $value )) {
-					return sprintf("The field '%s' is not a number", $info['label']);
+					return $this->get('translator')->trans("The field '%field%' is not a number", array('%field%' => $info['label']));
 				}
 				break;
 			case 'day': 
 				if (! ctype_digit ( $value ) || (int)$value > 31) {
-					return sprintf("The field '%s' is invalid", $info['label']);
+					return $this->get('translator')->trans("The field '%field%' is invalid", array('%field%' => $info['label']));
 				}
 				break;
 			case 'month': 
 				if (! ctype_digit ( $value ) || (int)$value > 12 ) {
-					return sprintf("The field '%s' is invalid", $info['label']);
+					return $this->get('translator')->trans("The field '%field%' is invalid", array('%field%' => $info['label']));
 				}
 				break;
 			case 'year': 
 				if (! ctype_digit ( $value ) || strlen($value) != 4 ) {
-					return sprintf("The field '%s' is not a valid year", $info['label']);
+					return $this->get('translator')->trans("The field '%field%' is not a valid year", array('%field%' => $info['label']));
 				}
 				break;
 			case 'text': 
@@ -797,7 +797,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			case 'money': 
 				$value = str_replace(",", ".", $value);
 				if (! preg_match("/^\d+(\.\d{1,2})?$/", $value)) {
-					return sprintf("The field '%s' is not a valid currency", $info['label']);
+					return $this->get('translator')->trans("The field '%field%' is not a valid currency", array('%field%' => $info['label']));
 				}
 				break;
 			case 'choice':
@@ -806,11 +806,11 @@ class DataSourcesAdminController extends BaseAdminController {
 						return true;
 					}
 				}
-				return sprintf("The field '%s' is invalid", $info['label']);
+				return $this->get('translator')->trans("The field '%field%' is invalid", array('%field%' => $info['label']));
 			case 'percent':
 				$value = str_replace(",", ".", $value);
 				if (! is_numeric($value)) {
-					return sprintf("The field '%s' is not numeric", $info['label']);
+					return $this->get('translator')->trans("The field '%field%' is not numeric", array('%field%' => $info['label']));
 				}
 				break;
 		}
@@ -1036,7 +1036,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$database = $this->getDatabase($dsid, false);
 			}
 		} catch (Exception $e) {
-			return "Can't get database : " . $e->getMessage();
+			return $this->get('translator')->trans("Can't get database : %error%", array('%error%' => $e->getMessage()));
 		}
 		switch ($database->getType()) {
 			case 'pgsql':
@@ -1046,7 +1046,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$database->setConnected(false);
 					$database->connect();
 				} catch (Exception $e) {
-					return "Can't create database $dbschema : " . $e->getMessage();
+					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
 				}
 				break;
 			case 'mysql':
@@ -1057,7 +1057,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$database->setConnected(false);
 					$database->connect();
 				} catch (Exception $e) {
-					return "Can't create database $dbschema : " . $e->getMessage();
+					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
 				}
 				break;
 		}
@@ -1087,7 +1087,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					try {
 						$database->exec($insert);
 					} catch (Exception $e) {
-						return "Can't insert to $table of database $dbschema : " . $e->getMessage();
+						return $this->get('translator')->trans("Can't insert into %table% of database %database% : %error%", array('%table%' => $table, '%database%' => $dbschema, '%error%' => $e->getMessage()));
 					}
 				}
 			}
@@ -1149,7 +1149,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$database->exec($alter);
 			}
 		} catch (Exception $e) {
-			return "Can't create {$form['table-name']} : " . $e->getMessage();
+			return $this->get('translator')->trans("Can't create table %table% : %error%", array('%table%' => $form['table-name'], '%error%' => $e->getMessage()));
 		}
 		return true;
 	}
@@ -1161,7 +1161,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			try {
 				$database->exec($rename);
 			} catch (Exception $e) {
-				return "Can't rename table $table : " . $e->getMessage();
+				return $this->get('translator')->trans("Can't rename table %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 			}
 		}
 		$col = 0;
@@ -1181,7 +1181,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				try {
 					$database->exec($rename);
 				} catch (Exception $e) {
-					return "Can't rename column $name of table $table : " . $e->getMessage();
+					return $this->get('translator')->trans("Can't rename column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 				}
 			}
 			if ($form['type'][$col] != $info['g6k_type'] && $database->getType() != 'sqlite') {
@@ -1191,7 +1191,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					try {
 						$database->exec($changetype);
 					} catch (Exception $e) {
-						return "Can't modify type of column $name of table $table : " . $e->getMessage();
+						return $this->get('translator')->trans("Can't modify type of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 					}
 				} else {
 					$newDBType = $this->datatypes[$database->getType()][$form['type'][$col]];
@@ -1208,7 +1208,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						try {
 							$database->exec($changetype);
 						} catch (Exception $e) {
-							return "Can't modify type of column $name of table $table : " . $e->getMessage();
+							return $this->get('translator')->trans("Can't modify type of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 						}
 					}
 				}
@@ -1240,7 +1240,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				try {
 					$database->exec($changenullable);
 				} catch (Exception $e) {
-					return "Can't alter 'NOT NULL' property of column $name of table $table : " . $e->getMessage();
+					return $this->get('translator')->trans("Can't alter 'NOT NULL' property of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 				}
 			}
 			if ($form['label'][$col] != $info['label'] && $database->getType() == 'jsonsql') {
@@ -1248,7 +1248,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				try {
 					$database->exec($changelabel);
 				} catch (Exception $e) {
-					return "Can't modify title of column $name of table $table : " . $e->getMessage();
+					return $this->get('translator')->trans("Can't modify title of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 				}
 			}
 			if ($form['description'][$col] != $info['description'] && $database->getType() == 'jsonsql') {
@@ -1256,7 +1256,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				try {
 					$database->exec($changedescription);
 				} catch (Exception $e) {
-					return "Can't modify description of column $name of table $table : " . $e->getMessage();
+					return $this->get('translator')->trans("Can't modify description of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 				}
 			}
 			$col++;
@@ -1287,7 +1287,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			try {
 				$database->exec($addcolumn);
 			} catch (Exception $e) {
-				return "Can't add the column '$name' into table '$table' : " . $e->getMessage();
+				return $this->get('translator')->trans("Can't add the column '%column%' into table '%table%' : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 			}
 		}
 		return true;
@@ -1321,7 +1321,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		try {
 			$database->exec($sql);
 		} catch (Exception $e) {
-			return "Can't insert to $table : " . $e->getMessage();
+			return $this->get('translator')->trans("Can't insert into %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 		}
 		return true;
 	}
@@ -1353,7 +1353,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		try {
 			$database->exec($sql);
 		} catch (Exception $e) {
-			return "Can't update $table : " . $e->getMessage();
+			return $this->get('translator')->trans("Can't update %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 		}
 		return true;
 	}
@@ -1362,7 +1362,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		try {
 			$database->exec("DELETE FROM ".$table." WHERE id=".$form['id']);
 		} catch (Exception $e) {
-			return "Can't delete from $table : " . $e->getMessage();
+			return $this->get('translator')->trans("Can't delete from %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 		}
 		return true;
 	}
@@ -1371,7 +1371,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		try {
 			$database->exec("DROP TABLE ".$table);
 		} catch (Exception $e) {
-			return "Can't drop $table : " . $e->getMessage();
+			return $this->get('translator')->trans("Can't drop %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 		}
 		return true;
 	}
@@ -1465,7 +1465,7 @@ class DataSourcesAdminController extends BaseAdminController {
 
 	protected function addTableRow($form, $table, $database) {
 		if ($form['id'] > 0) {
-			return $this->errorResponse($form, "This record already exists.");
+			return $this->errorResponse($form, $this->get('translator')->trans("This record already exists."));
 		}
 		if (($result = $this->addDBTableRow($form, $table, $database)) !== true) {
 			return $this->errorResponse($form, $result);
@@ -1492,7 +1492,7 @@ class DataSourcesAdminController extends BaseAdminController {
 
 	protected function deleteTableRow($form, $table, $database) {
 		if ($form['id'] == 0) {
-			return $this->errorResponse($form, "There's no record with id 0.");
+			return $this->errorResponse($form, $this->get('translator')->trans("There's no record with id 0."));
 		}
 		if (($result = $this->deleteDBTableRow($form, $table, $database)) !== true) {
 			return $this->errorResponse($form, $result);

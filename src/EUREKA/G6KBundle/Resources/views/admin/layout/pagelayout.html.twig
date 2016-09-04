@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 {% extends 'EUREKAG6KBundle:base/layout:pagelayout.html.twig' %}
 
-{% block title %}G6K Admin{% endblock %}
+{% block title %}{{ 'G6K Admin'|trans }}{% endblock %}
 
 {% block metas %}
 {{ parent() }}<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,6 +54,9 @@ var rules = {{ rules|raw }}
 {% endif %}				
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-1.11.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-migrate-1.2.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/translations/config.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.js') }}"></script>
 <script type="text/javascript">

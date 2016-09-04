@@ -91,7 +91,7 @@ THE SOFTWARE.
 					var editField = [];
 					editField.push(v[0], v[1], type);
 					if (v[5] == 'boolean') {
-						editField.push('{"1": "Yes", "0": "No"}', '1');
+						editField.push('{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1');
 					} else if (v[6]) {
 						editField.push(v[6]);
 					}
@@ -128,10 +128,10 @@ THE SOFTWARE.
 			    pageRowCount: 25,
 			    arrowDown: 'fa-angle-down',
 			    arrowUp: 'fa-angle-up',
-				pageFieldText : 'Lines per page',
-				previousText: 'Next',
-				nextText: 'Previous',
-				searchFieldText: 'Search...',
+				pageFieldText : Translator.trans('Lines per page'),
+				previousText: Translator.trans('Next'),
+				nextText: Translator.trans('Previous'),
+				searchFieldText: Translator.trans('Search') + '...',
 				showSearchForm : 0
 			});
 			$('#page-datasources #' + tablename).resizableColumns({
@@ -201,7 +201,7 @@ THE SOFTWARE.
 
 	Datasources.drawChoicesForInput = function(fieldId) {
 		var choicesPanel = $('<div>', { 'class': 'panel panel-default choices-panel', id: 'field-' + fieldId + '-choices-panel' });
-		choicesPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice-source">Delete source <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice-source">Add source <span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice">Add choice <span class="glyphicon glyphicon-plus-sign"></span></button>Choices</div>');
+		choicesPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice-source">' + Translator.trans('Delete source') + '<span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice-source">' + Translator.trans('Add source') + '<span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice">' + Translator.trans('Add choice') + '<span class="glyphicon glyphicon-plus-sign"></span></button>' + Translator.trans('Choices') + '</div>');
 		var choicesPanelBody = $('<div class="panel-body"></div>');
 		choicesPanel.append(choicesPanelBody);
 		return choicesPanel;
@@ -259,12 +259,12 @@ THE SOFTWARE.
 
 	Datasources.drawChoiceForInput = function(choice) {
 		var choicePanel = $('<div>', { 'class': 'panel panel-default choice-panel',  'data-id': choice.id  });
-		choicePanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice">Delete <span class="glyphicon glyphicon-minus-sign"></span></button>Choice ' + choice.id + '</div>');
+		choicePanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice">' + Translator.trans('Delete') + '<span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Choice %id%', { 'id' : choice.id }) + '</div>');
 		var choicePanelBody = $('<div>', { 'class': 'panel-body', id: 'field-' + choice.fieldId + '-choice-' + choice.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
-		attributes.append('<div class="form-group col-sm-12"><label for="field-' + choice.fieldId + '-choice-' + choice.id + '-value" class="col-sm-4 control-label">Value</label><div class="col-sm-8"><input type="text" name="field-' + choice.fieldId + '-choice-value[]" id="field-' + choice.fieldId + '-choice-' + choice.id + '-value" class="form-control simple-value" placeholder="Choice value"  value="' + choice.value + '" /></div></div>');
-		attributes.append('<div class="form-group col-sm-12"><label for="field-' + choice.fieldId + '-choice-' + choice.id + '-label" class="col-sm-4 control-label">Label</label><div class="col-sm-8"><input type="text" name="field-' + choice.fieldId + '-choice-label[]" id="field-' + choice.fieldId + '-choice-' + choice.id + '-label" class="form-control simple-value" placeholder="Choice label"  value="' + choice.label + '" /></div></div>');
+		attributes.append('<div class="form-group col-sm-12"><label for="field-' + choice.fieldId + '-choice-' + choice.id + '-value" class="col-sm-4 control-label">' + Translator.trans('Value') + '</label><div class="col-sm-8"><input type="text" name="field-' + choice.fieldId + '-choice-value[]" id="field-' + choice.fieldId + '-choice-' + choice.id + '-value" class="form-control simple-value" placeholder="Choice value"  value="' + choice.value + '" /></div></div>');
+		attributes.append('<div class="form-group col-sm-12"><label for="field-' + choice.fieldId + '-choice-' + choice.id + '-label" class="col-sm-4 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-8"><input type="text" name="field-' + choice.fieldId + '-choice-label[]" id="field-' + choice.fieldId + '-choice-' + choice.id + '-label" class="form-control simple-value" placeholder="Choice label"  value="' + choice.label + '" /></div></div>');
 		attributesContainer.append(attributes);
 		choicePanelBody.append(attributesContainer);
 		choicePanel.append(choicePanelBody);
@@ -315,14 +315,14 @@ THE SOFTWARE.
 	Datasources.drawChoiceSourceForInput = function(choiceSource) {
 		var attributesContainer = $('<div class="attributes-container choice-source-container" data-id="' + choiceSource.id + '"></div>');
 		var attributes = $('<div></div>');
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-datasource', 'select', 'datasource', 'Datasource', choiceSource.datasource, true, 'Select a datasource', Datasources.datasourcesSelect));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-returnType', 'select', 'returnType', 'Return format', choiceSource.returnType, true, 'Select a format', JSON.stringify({'json':'JSON format', 'xml':'XML format', 'assocArray':'Associative array', 'csv':'CSV format'})));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-request', 'text', 'request', 'SQL Request', choiceSource.request, true, 'SQL Request'));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-valueColumn', 'text', 'valueColumn', 'Value column', choiceSource.valueColumn, true, 'Value column'));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-labelColumn', 'text', 'labelColumn', 'Label column', choiceSource.labelColumn, true, 'Label column'));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-returnPath', 'text', 'returnPath', 'Return path value', choiceSource.returnPath, true, 'Return path value'));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-separator', 'text', 'separator', 'Separator', choiceSource.separator, true, 'Separator value'));
-		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-delimiter', 'text', 'delimiter', 'Delimiter', choiceSource.delimiter, true, 'Delimiter value'));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-datasource', 'select', 'datasource', Translator.trans('Datasource'), choiceSource.datasource, true, Translator.trans('Select a datasource'), Datasources.datasourcesSelect));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-returnType', 'select', 'returnType', Translator.trans('Return format'), choiceSource.returnType, true, Translator.trans('Select a format'), JSON.stringify({'json':'JSON format', 'xml':'XML format', 'assocArray':'Associative array', 'csv':'CSV format'})));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-request', 'text', 'request', Translator.trans('SQL Request'), choiceSource.request, true, Translator.trans('SQL Request')));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-valueColumn', 'text', 'valueColumn', Translator.trans('Value column'), choiceSource.valueColumn, true, Translator.trans('Value column')));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-labelColumn', 'text', 'labelColumn', Translator.trans('Label column'), choiceSource.labelColumn, true, Translator.trans('Label column')));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-returnPath', 'text', 'returnPath', Translator.trans('Return path value'), choiceSource.returnPath, true, Translator.trans('Return path value')));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-separator', 'text', 'separator', Translator.trans('Separator'), choiceSource.separator, true, Translator.trans('Separator value')));
+		attributes.append(Datasources.simpleAttributeForInput('field-' + choiceSource.fieldId + '-choicesource-delimiter', 'text', 'delimiter', Translator.trans('Delimiter'), choiceSource.delimiter, true, Translator.trans('Delimiter value')));
 		attributesContainer.append(attributes);
 		Datasources.fixShowingChoiceSourceForInput(attributesContainer);
 		return attributesContainer;
@@ -343,11 +343,11 @@ THE SOFTWARE.
 			returnTypeAttribute.hide();
 			requestAttribute.show();
 			valueColumnAttribute.find('input').attr('type', 'text');
-			valueColumnAttribute.find('label').text('Value column');
-			valueColumnAttribute.find('input').attr('placeholder', 'column in the select list that corresponds to the value of the choice');
+			valueColumnAttribute.find('label').text(Translator.trans('Value column'));
+			valueColumnAttribute.find('input').attr('placeholder', Translator.trans('column in the select list that corresponds to the value of the choice'));
 			labelColumnAttribute.find('input').attr('type', 'text');
-			labelColumnAttribute.find('label').text('Label column');
-			labelColumnAttribute.find('input').attr('placeholder', 'column in the select list that corresponds to the label of the choice');
+			labelColumnAttribute.find('label').text(Translator.trans('Label column'));
+			labelColumnAttribute.find('input').attr('placeholder', Translator.trans('column in the select list that corresponds to the label of the choice'));
 			returnPathAttribute.hide();
 			separatorAttribute.hide();
 			delimiterAttribute.hide();
@@ -357,13 +357,13 @@ THE SOFTWARE.
 			returnPathAttribute.show();
 			if (returnTypeAttribute.find('select').val() == 'csv') {
 				valueColumnAttribute.find('input').attr('type', 'number');
-				valueColumnAttribute.find('label').text('Value column');
-				valueColumnAttribute.find('input').attr('placeholder', 'column number of the csv data that corresponds to the value of the choice');
+				valueColumnAttribute.find('label').text(Translator.trans('Value column'));
+				valueColumnAttribute.find('input').attr('placeholder', Translator.trans('column number of the csv data that corresponds to the value of the choice'));
 				labelColumnAttribute.find('input').attr('type', 'number');
-				labelColumnAttribute.find('label').text('Label column');
-				labelColumnAttribute.find('input').attr('placeholder', 'column number of the csv data that corresponds to the label of the choice');
-				returnPathAttribute.find('label').text('Lines filter');
-				returnPathAttribute.find('input').attr('placeholder', 'example: 3-9/11/21-25 ...');
+				labelColumnAttribute.find('label').text(Translator.trans('Label column'));
+				labelColumnAttribute.find('input').attr('placeholder', Translator.trans('column number of the csv data that corresponds to the label of the choice'));
+				returnPathAttribute.find('label').text(Translator.trans('Lines filter'));
+				returnPathAttribute.find('input').attr('placeholder', Translator.trans('example: 3-9/11/21-25 ...'));
 				separatorAttribute.show();
 				delimiterAttribute.show();
 			} else {
@@ -372,26 +372,26 @@ THE SOFTWARE.
 				separatorAttribute.hide();
 				delimiterAttribute.hide();
 				if (returnTypeAttribute.find('select').val() == 'json') {
-					valueColumnAttribute.find('label').text('Value property');
-					valueColumnAttribute.find('input').attr('placeholder', 'property of the json data that corresponds to the value of the choice');
-					labelColumnAttribute.find('label').text('Label property');
-					labelColumnAttribute.find('input').attr('placeholder', 'property of the json data that corresponds to the label of the choice');
-					returnPathAttribute.find('label').text('Path filter');
-					returnPathAttribute.find('input').attr('placeholder', 'JSONPath (see http://goessner.net/articles/JsonPath/) or XPath(see https://www.w3.org/TR/xpath/) filter');
+					valueColumnAttribute.find('label').text(Translator.trans('Value property'));
+					valueColumnAttribute.find('input').attr('placeholder', Translator.trans('property of the json data that corresponds to the value of the choice'));
+					labelColumnAttribute.find('label').text(Translator.trans('Label property'));
+					labelColumnAttribute.find('input').attr('placeholder', Translator.trans('property of the json data that corresponds to the label of the choice'));
+					returnPathAttribute.find('label').text(Translator.trans('Path filter'));
+					returnPathAttribute.find('input').attr('placeholder', Translator.trans('JSONPath (see http://goessner.net/articles/JsonPath/) or XPath(see https://www.w3.org/TR/xpath/) filter'));
 				} else if (returnTypeAttribute.find('select').val() == 'xml') {
-					valueColumnAttribute.find('label').text('Value node');
-					valueColumnAttribute.find('input').attr('placeholder', 'XML node or attribute that corresponds to the value of the choice');
-					labelColumnAttribute.find('label').text('Label node');
-					labelColumnAttribute.find('input').attr('placeholder', 'XML node or attribute that corresponds to the label of the choice');
-					returnPathAttribute.find('label').text('XPath filter');
-					returnPathAttribute.find('input').attr('placeholder', 'see https://www.w3.org/TR/xpath/');
+					valueColumnAttribute.find('label').text(Translator.trans('Value node'));
+					valueColumnAttribute.find('input').attr('placeholder', Translator.trans('XML node or attribute that corresponds to the value of the choice'));
+					labelColumnAttribute.find('label').text(Translator.trans('Label node'));
+					labelColumnAttribute.find('input').attr('placeholder', Translator.trans('XML node or attribute that corresponds to the label of the choice'));
+					returnPathAttribute.find('label').text(Translator.trans('XPath filter'));
+					returnPathAttribute.find('input').attr('placeholder', Translator.trans('see https://www.w3.org/TR/xpath/'));
 				} else { // assocArray
-					valueColumnAttribute.find('label').text('Value key');
-					valueColumnAttribute.find('input').attr('placeholder', 'key of the associative array that corresponds to the value of the choice');
-					labelColumnAttribute.find('label').text('Label key');
-					labelColumnAttribute.find('input').attr('placeholder', 'key of the associative array that corresponds to the label of the choice');
-					returnPathAttribute.find('label').text('Rows filter');
-					returnPathAttribute.find('input').attr('placeholder', 'example: 3-9/11/21-25 ...');
+					valueColumnAttribute.find('label').text(Translator.trans('Value key'));
+					valueColumnAttribute.find('input').attr('placeholder', Translator.trans('key of the associative array that corresponds to the value of the choice'));
+					labelColumnAttribute.find('label').text(Translator.trans('Label key'));
+					labelColumnAttribute.find('input').attr('placeholder', Translator.trans('key of the associative array that corresponds to the label of the choice'));
+					returnPathAttribute.find('label').text(Translator.trans('Rows filter'));
+					returnPathAttribute.find('input').attr('placeholder', Translator.trans('example: 3-9/11/21-25 ...'));
 				}
 			}
 		}
@@ -425,13 +425,13 @@ THE SOFTWARE.
 			column += ' selected="selected"';
 		}
 		column += 
-			'>Yes</option>' +
+			'>' + Translator.trans('Yes') + '</option>' +
 			'<option value="0"';
 		if (field[4] == '0') {
 			column += ' selected="selected"';
 		}
 		column += 
-			'>No</option>' +
+			'>' + Translator.trans('No') + '</option>' +
 			'</select>' +
 			'</td>' +
 			'<td class="new-field-label">' +
@@ -440,7 +440,7 @@ THE SOFTWARE.
 			'</tr>' +
 			'<tr>' +
 			'<td class="new-field-description" colspan="5">' +
-			'<textarea name="description[]" class="form-control input-sm" placeholder="Field description">' + field[3] + '</textarea>' +
+			'<textarea name="description[]" class="form-control input-sm" placeholder="' + Translator.trans('Field description') + '">' + field[3] + '</textarea>' +
 			'</td>' +
 			'</tr>' +
 			'<tr>' +
@@ -515,11 +515,11 @@ THE SOFTWARE.
 		var errors = [];
 		var tablename = $('#new-table-form').find("input[name='table-name']").val();
 		if (tablename == '' || ! /^\w+$/.test(tablename)) {
-			errors.push("Incorrect table name");
+			errors.push(Translator.trans("Incorrect table name"));
 		}
 		var tablelabel = $('#new-table-form').find("input[name='table-label']").val();
 		if (tablelabel == '') {
-			errors.push("Missing table label");
+			errors.push(Translator.trans("Missing table label"));
 		}
 		var field = "";
 		$('#edition-table tbody tr').each(function(index) {
@@ -528,18 +528,18 @@ THE SOFTWARE.
 				var label = $(this).find("input[name='label[]']").val();
 				if (field !== '') {
 					if (! /^\w+$/.test(field)) {
-						errors.push("Incorrect field name for field " + (Math.floor(index / 3) + 1));
+						errors.push(Translator.trans("Incorrect field name for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 					}
 					if (label === '') {
-						errors.push("incorrect label for field " + (Math.floor(index / 3) + 1));
+						errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 					}
 				} else if (label !== '') { 
-					errors.push("incorrect label for field " + (Math.floor(index / 3) + 1));
+					errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 				}
 			} else {
 				var description = $(this).find("textarea").val();
 				if (field === '' && description !== '') { 
-					errors.push("incorrect description for field " + (Math.floor(index / 3) + 1));
+					errors.push(Translator.trans("incorrect description for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 				}
 			}
 			
@@ -551,11 +551,11 @@ THE SOFTWARE.
 		var errors = [];
 		var tablename = $('#edit-table-form').find("input[name='table-name']").val();
 		if (tablename == '' || ! /^\w+$/.test(tablename)) {
-			errors.push("Incorrect table name");
+			errors.push(Translator.trans("Incorrect table name"));
 		}
 		var tablelabel = $('#new-table-form').find("input[name='table-label']").val();
 		if (tablelabel == '') {
-			errors.push("Missing table label");
+			errors.push(Translator.trans("Missing table label"));
 		}
 		var field = "";
 		$('#edition-table tbody tr').each(function(index) {
@@ -564,18 +564,18 @@ THE SOFTWARE.
 				var label = $(this).find("input[name='label[]']").val();
 				if (field !== '') {
 					if (! /^\w+$/.test(field)) {
-						errors.push("Incorrect field name for field " + (Math.floor(index / 3) + 1));
+						errors.push(Translator.trans("Incorrect field name for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 					}
 					if (label === '') {
-						errors.push("incorrect label for field " + (Math.floor(index / 3) + 1));
+						errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 					}
 				} else if (label !== '') { 
-					errors.push("incorrect label for field " + (Math.floor(index / 3) + 1));
+					errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 				}
 			} else {
 				var description = $(this).find("textarea").val();
 				if (field === '' && description !== '') { 
-					errors.push("incorrect description for field " + (Math.floor(index / 3) + 1));
+					errors.push(Translator.trans("incorrect description for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 				}
 			}
 			
@@ -594,10 +594,10 @@ THE SOFTWARE.
 			hideIdentifier: true,
 		    buttons: {
 		        save: {
-		             html: 'Save'
+		             html: Translator.trans('Save')
 		        },
 		        confirm: {
-		            html: 'Confirm'
+		            html: Translator.trans('Confirm')
 		        }
 		    },
 			columns: {
@@ -650,7 +650,7 @@ THE SOFTWARE.
 		var info = Datasources.fields[name];
 		if (typeof value === "undefined" || $.trim(value).length == 0) {
 			if (info.required) {
-				return "The field '%s' is required".replace('%s', info.label);
+				return Translator.trans("The field '%field%' is required", { 'field' : info.label});
 			} else {
 				return true;
 			}
@@ -658,38 +658,38 @@ THE SOFTWARE.
 		switch (info.type) {
 			case 'date':
 				if (! /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(value)) {
-					return "The field '%s' is not a valid date".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is not a valid date", { 'field' : info.label});
 				}
 				break;
 			case 'boolean':
 				if ( $.inArray(value, ['0', '1', 'false', 'true'] ) == -1) {
-					return "The field '%s' is invalid".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is invalid", { 'field' : info.label});
 				}
 				break;
 			case 'number': 
 				value = value.replace(",", ".");
 				if (! $.isNumeric(value)) {
-					return "The field '%s' is not a number".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is not a number", { 'field' : info.label});
 				}
 				break;
 			case 'integer': 
 				if (! /^\d+$/.test(value)) {
-					return "The field '%s' is not a number".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is not a number", { 'field' : info.label});
 				}
 				break;
 			case 'day': 
 				if (! /^\d+$/.test(value) || parseInt(value, 10) > 31 ) {
-					return "The field '%s' is invalid".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is invalid", { 'field' : info.label});
 				}
 				break;
 			case 'month': 
 				if (! /^\d+$/.test(value) || parseInt(value, 10) > 12 ) {
-					return "The field '%s' is invalid".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is invalid", { 'field' : info.label});
 				}
 				break;
 			case 'year': 
 				if (! /^\d+$/.test(value) || value.length != 4 ) {
-					return "The field '%s' is not a valid year".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is not a valid year", { 'field' : info.label});
 				}
 				break;
 			case 'text': 
@@ -698,7 +698,7 @@ THE SOFTWARE.
 			case 'money': 
 				value = value.replace(",", ".");
 				if (! /^\d+(\.\d{1,2})?$/.test(value)) {
-					return "The field '%s' is not a valid currency".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is not a valid currency", { 'field' : info.label});
 				}
 				break;
 			case 'choice':
@@ -710,7 +710,7 @@ THE SOFTWARE.
 					}
 	            });
 				if (! ok) {
-					return "The field '%s' is invalid".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is invalid", { 'field' : info.label});
 				}
 				break;
 			case 'multichoice':
@@ -724,13 +724,13 @@ THE SOFTWARE.
 					});
 				});
 				if (nbNOK > 0) {
-					return "The field '%s' is invalid".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is invalid", { 'field' : info.label});
 				}
 				break;
 			case 'percent':
 				value = value.replace(",", ".");
 				if (! $.isNumeric(value)) {
-					return "The field '%s' is not numeric".replace('%s', info.label);
+					return Translator.trans("The field '%field%' is not numeric", { 'field' : info.label});
 				}
 				break;
 			case 'array':
@@ -753,8 +753,8 @@ THE SOFTWARE.
 	Datasources.checkDatasource = function() {
 		var errors = [];
 		var name = $("#datasource-name").val();
-		if (name == '' | name == 'New Datasource') {
-			errors.push("The datasource name is required");
+		if (name == '' | name == Translator.trans('New Datasource')) {
+			errors.push(Translator.trans("The datasource name is required"));
 		}
 		var type = $("#datasource-type").val();
 		switch (type) {
@@ -762,43 +762,43 @@ THE SOFTWARE.
 			case 'database':
 				var dbname = $("#datasource-database-name").val();
 				if (dbname == '') {
-					errors.push("The database name is required");
+					errors.push(Translator.trans("The database name is required"));
 				} else if (! /^\w+(\.db)?$/.test(uri)) {
-					errors.push("Incorrect database name");
+					errors.push(Translator.trans("Incorrect database name"));
 				}
 				var dblabel = $("#datasource-database-label").val();
 				if (dblabel == '') {
-					errors.push("The database label is required");
+					errors.push(Translator.trans("The database label is required"));
 				}
 				var dbtype = $("#datasource-database-type").val();
 				if (dbtype == 'mysqli' || dbtype == 'pgsl') {
 					if ($("#datasource-database-host").val() == '') {
-						errors.push("The database host is required");
+						errors.push(Translator.trans("The database host is required"));
 					} 
 					if ($("#datasource-database-port").val() == '') {
-						errors.push("The database port is required");
+						errors.push(Translator.trans("The database port is required"));
 					}
 					if ($("#datasource-database-user").val() == '') {
-						errors.push("The database user is required");
+						errors.push(Translator.trans("The database user is required"));
 					}
 					if ($("#datasource-database-password").val() != '') {
 						var dbconfirm = $("#datasource-database-confirm-password").val();
 						if (dbconfirm == '') {
-							errors.push("Please confirm the database password");
+							errors.push(Translator.trans("Please confirm the database password"));
 						} else if (dbconfirm != $("#datasource-database-password").val()) {
-							errors.push("The two passwords do not match !");
+							errors.push(Translator.trans("The two passwords do not match !"));
 						}
 					} else if ($("#datasource-database-confirm-password").val() != '') {
-						errors.push("The two passwords do not match !");
+						errors.push(Translator.trans("The two passwords do not match !"));
 					}
 				}
 				break;
 			case 'uri':
 				var uri = $("#datasource-uri").val();
 				if (uri == '') {
-					errors.push("The Web Service URI is required");
+					errors.push(Translator.trans("The Web Service URI is required"));
 				} else if (! /^(?:https?:\/\/)?(?:([\w-]+)\.)?([\w-]+)\.([\w]+)\/?(?:([^?#$]+))?(?:\?([^#$]+))?(?:#(.*))?$/.test(uri)) {
-					errors.push("Incorrect Web Service URI");
+					errors.push(Translator.trans("Incorrect Web Service URI"));
 				}
 		}
 		return errors;
@@ -917,9 +917,9 @@ $(document).ready(function() {
 				var schemafile = schemainput.val();
 				messageheader = '';
 				if (schemafile == '') {
-					errors.push("Please, choose a JSON schema file");
+					errors.push(Translator.trans("Please, choose a JSON schema file"));
 				} else if (! /\.schema\.json$/.test(schemafile)) {
-					errors.push("The JSON schema file extension must be '.schema.json'");
+					errors.push(Translator.trans("The JSON schema file extension must be '.schema.json'"));
 				} else {
 					var m = schemafile.match(/^(.+)\.schema\.json$/);
 					name = m[1];
@@ -927,13 +927,13 @@ $(document).ready(function() {
 				var datainput = $("#datasource-import-form input[name='datasource-data-file']");
 				var datafile = datainput.val();
 				if (datafile == '') {
-					errors.push("Please, choose a JSON data file");
+					errors.push(Translator.trans("Please, choose a JSON data file"));
 				} else if (! /\.json$/.test(datafile)) {
-					errors.push("The JSON data file extension must be '.json'");
+					errors.push(Translator.trans("The JSON data file extension must be '.json'"));
 				} else if (name != '') {
 					var m = datafile.match(/^(.+)\.json$/);
 					if (name != m[1]) {
-						errors.push("The names of the two files without extension should be the same.");
+						errors.push(Translator.trans("The names of the two files without extension should be the same."));
 					} else {
 						var metaschema = JSON.parse('{"id": "http://json-schema.org/draft-04/schema#", "$schema": "http://json-schema.org/draft-04/schema#", "description": "Core schema meta-schema", "definitions": {"schemaArray": {"type": "array", "minItems": 1, "items": {"$ref": "#"}}, "positiveInteger": {"type": "integer", "minimum": 0}, "positiveIntegerDefault0": {"allOf": [{"$ref": "#/definitions/positiveInteger"}, {"default": 0}]}, "simpleTypes": {"enum": ["array", "boolean", "integer", "null", "number", "object", "string"]}, "stringArray": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}}, "type": "object", "properties": {"id": {"type": "string", "format": "uri"}, "$schema": {"type": "string", "format": "uri"}, "title": {"type": "string"}, "description": {"type": "string"}, "default": {}, "multipleOf": {"type": "number", "minimum": 0, "exclusiveMinimum": true}, "maximum": {"type": "number"}, "exclusiveMaximum": {"type": "boolean", "default": false}, "minimum": {"type": "number"}, "exclusiveMinimum": {"type": "boolean", "default": false}, "maxLength": {"$ref": "#/definitions/positiveInteger"}, "minLength": {"$ref": "#/definitions/positiveIntegerDefault0"}, "pattern": {"type": "string", "format": "regex"}, "additionalItems": {"anyOf": [{"type": "boolean"}, {"$ref": "#"}], "default": {}}, "items": {"anyOf": [{"$ref": "#"}, {"$ref": "#/definitions/schemaArray"}], "default": {}}, "maxItems": {"$ref": "#/definitions/positiveInteger"}, "minItems": {"$ref": "#/definitions/positiveIntegerDefault0"}, "uniqueItems": {"type": "boolean", "default": false}, "maxProperties": {"$ref": "#/definitions/positiveInteger"}, "minProperties": {"$ref": "#/definitions/positiveIntegerDefault0"}, "required": {"$ref": "#/definitions/stringArray"}, "additionalProperties": {"anyOf": [{"type": "boolean"}, {"$ref": "#"}], "default": {}}, "definitions": {"type": "object", "additionalProperties": {"$ref": "#"}, "default": {}}, "properties": {"type": "object", "additionalProperties": {"$ref": "#"}, "default": {}}, "patternProperties": {"type": "object", "additionalProperties": {"$ref": "#"}, "default": {}}, "dependencies": {"type": "object", "additionalProperties": {"anyOf": [{"$ref": "#"}, {"$ref": "#/definitions/stringArray"}]}}, "enum": {"type": "array", "minItems": 1, "uniqueItems": true}, "type": {"anyOf": [{"$ref": "#/definitions/simpleTypes"}, {"type": "array", "items": {"$ref": "#/definitions/simpleTypes"}, "minItems": 1, "uniqueItems": true}]}, "allOf": {"$ref": "#/definitions/schemaArray"}, "anyOf": {"$ref": "#/definitions/schemaArray"}, "oneOf": {"$ref": "#/definitions/schemaArray"}, "not": {"$ref": "#"}}, "dependencies": {"exclusiveMaximum": ["maximum"], "exclusiveMinimum": ["minimum"]}, "default": {}}');
 						var schema = JSON.parse(schemainput.data('content'));
@@ -941,7 +941,7 @@ $(document).ready(function() {
 
 						var result = tv4.validateMultiple(data, schema, true, true);
 						if (!result.valid) {
-							messageheader = 'Validation errors : ';
+							messageheader = Translator.trans('Validation errors') + ' : ';
 							$.each(result.errors, function (e, error) {
 								var dataPath = "";
 								if (error.dataPath) {
@@ -953,15 +953,15 @@ $(document).ready(function() {
 										switch (p) {
 											case 1:
 												table = path;
-												dataPath += "Table '" + table + "'";
+												dataPath += Translator.trans("Table") + " '" + table + "'";
 												break;
 											case 2:
 												row = parseInt(path);
-												dataPath += "Row " + (row + 1);
+												dataPath += Translator.trans("Row") + " " + (row + 1);
 												break;
 											case 3:
-												dataPath += "Field '" + path + "', ";
-												dataPath += "Data '" + data[table][row][path] + "'";
+												dataPath += Translator.trans("Field") + " '" + path + "', ";
+												dataPath += Translator.trans("Data") + " '" + data[table][row][path] + "'";
 												break;
 										}
 										dataPath += p == 0 || p == len - 1 ? '' : ', ';

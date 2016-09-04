@@ -61,6 +61,10 @@ class Simulator {
 		$this->controller = $controller;
 	}
 
+	public function getController() {
+		return $this->controller;
+	}
+
 	public function getName() {
 		return $this->name;
 	}

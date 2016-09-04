@@ -25,23 +25,23 @@ THE SOFTWARE.
 {% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
 
 {% block content %}
-<h2>Simulators definition</h2>
+<h2>{{ 'Simulators definition'|trans }}</h2>
 {% if simulator is not empty %}
-<button class="btn btn-warning update-button save-simulator">Save <span class="glyphicon glyphicon-save"></span></button>
+<button class="btn btn-warning update-button save-simulator">{{ 'Save'|trans }} <span class="glyphicon glyphicon-save"></span></button>
 {% endif %}
 <div class="navbar-default navbar-side" role="navigation">
 	<div class="sidebar-collapse">
 		<div id="simulators" class="nav panel panel-primary">
-			<div class="panel-heading"><h3>Simulators</h3></div>
+			<div class="panel-heading"><h3>{{ 'Simulators'|trans }}</h3></div>
 			<div class="panel-body">
 				<div>
 					<form action="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': 'new', 'crud': 'create'}) }}">
-					<button id="btnAddNewSimulator" class="btn btn-default pull-right">Create Simulator <span class="glyphicon glyphicon-plus-sign"></span></button>
+					<button id="btnAddNewSimulator" class="btn btn-default pull-right">{{ 'Create simulator'|trans }} <span class="glyphicon glyphicon-plus-sign"></span></button>
 					</form>
 				</div>
 				<div>
 					<form action="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': 'new', 'crud': 'import'}) }}">
-					<button id="btnImportSimulator" class="btn btn-default pull-right">Import Simulator <span class="glyphicon glyphicon-import"></span></button>
+					<button id="btnImportSimulator" class="btn btn-default pull-right">{{ 'Import simulator'|trans }} <span class="glyphicon glyphicon-import"></span></button>
 					</form>
 				</div>
 				<ul class="nav nav-pills nav-stacked">
@@ -63,8 +63,8 @@ THE SOFTWARE.
 				<div class="panel-group" id="simulator" role="tablist" aria-multiselectable="true">
 					<div class="panel panel-primary">
 						<div class="panel-heading" role="tab">
-							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name }) }}" class="btn btn-primary pull-right view-button" target="_blank">Try it <span class="glyphicon glyphicon-eye-open"></span></a>
-							<button class="btn btn-primary pull-right update-button edit-simulator">Edit <span class="glyphicon glyphicon-pencil"></span></button>
+							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name }) }}" class="btn btn-primary pull-right view-button" target="_blank">{{ 'Try it'|trans }} <span class="glyphicon glyphicon-eye-open"></span></a>
+							<button class="btn btn-primary pull-right update-button edit-simulator">{{ 'Edit'|trans }} <span class="glyphicon glyphicon-pencil"></span></button>
 							<form id="save-form" action="" method="post">
 							<input type="hidden" name="simulator" value="" />
 							<input type="hidden" name="datas" value="" />
@@ -72,7 +72,7 @@ THE SOFTWARE.
 							<input type="hidden" name="steps" value="" />
 							<input type="hidden" name="sources" value="" />
 							<input type="hidden" name="update" value="true" />
-							<h4 class="panel-title">Simulator : {{ simulator.label }}</h4>
+							<h4 class="panel-title">{{ simulator.label }}</h4>
 							</form>
 						</div>
 						<div class="panel-body">
@@ -80,23 +80,23 @@ THE SOFTWARE.
 								<div class="panel-body">
 									<div class="attributes-container">
 										<div>
-										{{ _self.showAttribute('simulator', 'text', 'name', 'Name', simulator.name, true, 'name') }}
-										{{ _self.showAttribute('simulator', 'text', 'label', 'Label', simulator.label, true, 'label') }}
-										{{ _self.showAttribute('simulator', 'text', 'defaultView', 'Default view', simulator.defaultView, true, 'defaultView') }}
-										{{ _self.showAttribute('simulator', 'text', 'referer', 'Main referer', simulator.referer, true, 'referer') }}
-										{{ _self.showAttribute('simulator', 'select', 'dateFormat', 'Date format', simulator.dateFormat, true, 'Select a format', { 'd/m/Y':'d/m/Y', 'm/d/Y':'m/d/Y', 'd-m-Y':'d-m-Y', 'm-d-Y':'m-d-Y', 'Y-m-d':'Y-m-d' }) }}
-										{{ _self.showAttribute('simulator', 'text', 'decimalPoint', 'Decimal point', simulator.decimalPoint, true, 'Decimal point') }}
-										{{ _self.showAttribute('simulator', 'select', 'moneySymbol', 'Currency symbol', simulator.moneySymbol, true, 'Select a symbol', {'฿':'฿', 'B/.':'B/.', '₵':'₵', '¢':'¢', '₡':'₡', 'Kč':'Kč', '$':'$', '₫':'₫', '€':'€', 'ƒ':'ƒ', 'Ft':'Ft', '₲':'₲', '₴':'₴', '₭':'₭', 'L':'L', '£ / ₤':'£ / ₤', '₺':'₺', '₥':'₥', '₦':'₦', 'S/.':'S/.', '₱':'₱', 'P':'P', 'R':'R', 'RM':'RM', '₹ / ₨':'₹ / ₨', '৲':'৲', '৳':'৳', 'R$':'R$', '₪':'₪', '₮':'₮', '₩':'₩', '¥':'¥', 'Ұ':'Ұ', 'zł':'zł' }) }}
-										{{ _self.showAttribute('simulator', 'select', 'symbolPosition', 'Symbol position', simulator.symbolPosition, true, 'Select a position', {'before':'before currency', 'after':'after currency'}) }}
-										{{ _self.showAttribute('simulator', 'checkbox', 'dynamic', 'Interactive UI', simulator.dynamic, true, 'dynamic') }}
-										{{ _self.showAttribute('simulator', 'checkbox', 'memo', 'Data memo ?', simulator.memo, true, 'memo') }}
+										{{ _self.showAttribute('simulator', 'text', 'name', 'Name'|trans, simulator.name, true, 'name') }}
+										{{ _self.showAttribute('simulator', 'text', 'label', 'Label'|trans, simulator.label, true, 'label') }}
+										{{ _self.showAttribute('simulator', 'text', 'defaultView', 'Default view'|trans, simulator.defaultView, true, 'defaultView') }}
+										{{ _self.showAttribute('simulator', 'text', 'referer', 'Main referer'|trans, simulator.referer, true, 'referer') }}
+										{{ _self.showAttribute('simulator', 'select', 'dateFormat', 'Date format'|trans, simulator.dateFormat, true, 'Select a format'|trans, { 'd/m/Y':'d/m/Y', 'm/d/Y':'m/d/Y', 'd-m-Y':'d-m-Y', 'm-d-Y':'m-d-Y', 'Y-m-d':'Y-m-d' }) }}
+										{{ _self.showAttribute('simulator', 'text', 'decimalPoint', 'Decimal point'|trans, simulator.decimalPoint, true, 'Decimal point'|trans) }}
+										{{ _self.showAttribute('simulator', 'select', 'moneySymbol', 'Currency symbol'|trans, simulator.moneySymbol, true, 'Select a symbol'|trans, {'฿':'฿', 'B/.':'B/.', '₵':'₵', '¢':'¢', '₡':'₡', 'Kč':'Kč', '$':'$', '₫':'₫', '€':'€', 'ƒ':'ƒ', 'Ft':'Ft', '₲':'₲', '₴':'₴', '₭':'₭', 'L':'L', '£ / ₤':'£ / ₤', '₺':'₺', '₥':'₥', '₦':'₦', 'S/.':'S/.', '₱':'₱', 'P':'P', 'R':'R', 'RM':'RM', '₹ / ₨':'₹ / ₨', '৲':'৲', '৳':'৳', 'R$':'R$', '₪':'₪', '₮':'₮', '₩':'₩', '¥':'¥', 'Ұ':'Ұ', 'zł':'zł' }) }}
+										{{ _self.showAttribute('simulator', 'select', 'symbolPosition', 'Symbol position'|trans, simulator.symbolPosition, true, 'Select a position'|trans, {'before':'before currency'|trans, 'after':'after currency'|trans}) }}
+										{{ _self.showAttribute('simulator', 'checkbox', 'dynamic', 'Interactive UI'|trans, simulator.dynamic, true, 'dynamic') }}
+										{{ _self.showAttribute('simulator', 'checkbox', 'memo', 'Data memo ?'|trans, simulator.memo, true, 'memo') }}
 										</div>
 									</div>
 								</div>
 							</div>
 							<div class="panel panel-default" id="simulator-description-panel-holder">
 								<div class="panel-heading">
-									Description
+									{{ 'Description'|trans }}
 								</div>
 								<div class="panel-body simulator-description">
 									{{ _self.paragraphs(simulator.description) }}
@@ -104,7 +104,7 @@ THE SOFTWARE.
 							</div>
 							<div class="panel panel-default" id="simulator-related-informations-panel-holder">
 								<div class="panel-heading">
-									Related informations
+									{{ 'Related informations'|trans }}
 								</div>
 								<div class="panel-body simulator-related-informations">
 									{{ _self.paragraphs(simulator.relatedInformations) }}
@@ -122,36 +122,36 @@ THE SOFTWARE.
 				{% elseif hiddens.action == 'import' %}
 				<div id="simulator" class="panel panel-primary">
 					<div class="panel-heading">
-					<h4 class="panel-title">Simulator : import</h4>
+					<h4 class="panel-title">{{ 'Simulator : import'|trans }}</h4>
 					</div>
 					<div class="panel-body">
 						<div class="alert alert-danger" role="alert">
 							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-							<span class="sr-only">Error:</span>
+							<span class="sr-only">{{ 'Error'|trans }} :</span>
 							<span class="error-message"></span>
 							<ul></ul>
 						</div>
 						<form id="simulator-import-form" method="post" action="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': 'new', 'crud': 'doimport'}) }}" enctype="multipart/form-data">
 						<div class="panel panel-default" id="simulator-import-panel-holder">
 							<div class="panel-heading">
-								Import simulator
+								{{ 'Import simulator'|trans }}
 							</div>
 							<div class="panel-body simulator-file">
 								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="simulator-file">Simulator file</label>    
+									<label class="col-sm-2 control-label" for="simulator-file">{{ 'Simulator file'|trans }}</label>    
 									<div class="col-sm-10">        
 										<input type="file" name="simulator-file" class="form-control input-sm" />
 									</div>
 								</div>
 								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="simulator-stylesheet">Stylesheet (optional)</label>    
+									<label class="col-sm-2 control-label" for="simulator-stylesheet">{{ 'Stylesheet (optional)'|trans }}</label>    
 									<div class="col-sm-10">        
 										<input type="file" name="simulator-stylesheet" class="form-control input-sm" />
 									</div>
 								</div>
 							</div>
 						</div>
-						<button id="btnDoImportSimulator" class="btn btn-primary pull-right">Import</button>
+						<button id="btnDoImportSimulator" class="btn btn-primary pull-right">{{ 'Import'|trans }}</button>
 						</form>
 					</div>
 				</div>
@@ -168,23 +168,23 @@ THE SOFTWARE.
 {% endblock %}
  
 {% macro showDatas(simulator) %}
-{{ _self.openCollapsiblePanel('datas' , 'Datas', 'primary', '', 'sortable', [{ 'class': 'add-data', 'label': 'Add data', 'icon': 'glyphicon-plus-sign' }, { 'class': 'add-datagroup', 'label': 'Add datagroup', 'icon': 'glyphicon-plus-sign' }] ) }}
+{{ _self.openCollapsiblePanel('datas' , 'Datas'|trans, 'primary', '', 'sortable', [{ 'class': 'add-data', 'label': 'Add data'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'add-datagroup', 'label': 'Add datagroup'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
 {% for data in simulator.datas %}
 	{% if data.class == "DataGroup" %}
-	{{ _self.openCollapsiblePanel('datagroup-' ~ data.id , 'Group ' ~ data.label, 'success', loop.index == 1 ? 'in' : '', 'sortable', [{ 'class': 'delete-datagroup', 'label': 'Delete' , 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-data', 'label': 'Add data', 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-datagroup', 'label': 'Edit datagroup', 'icon': 'glyphicon-pencil' }] ) }}
+	{{ _self.openCollapsiblePanel('datagroup-' ~ data.id , 'Group ' ~ data.label, 'success', loop.index == 1 ? 'in' : '', 'sortable', [{ 'class': 'delete-datagroup', 'label': 'Delete'|trans , 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-data', 'label': 'Add data'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-datagroup', 'label': 'Edit datagroup'|trans, 'icon': 'glyphicon-pencil' }] ) }}
 	<div class="panel panel-default data-container datagroup" id="datagroup-{{ data.id }}-attributes-panel" data-id="{{ data.id }}">
 		<div class="panel-body">
 			<div class="attributes-container">
 				<div>
-				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'name', 'Group Name', data.name, true, 'Group name') }}
-				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'label', 'Group Label', data.label, true, 'Group label') }}
+				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'name', 'Group Name'|trans, data.name, true, 'Group name'|trans) }}
+				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'label', 'Group Label'|trans, data.label, true, 'Group label'|trans) }}
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="panel panel-default description-panel" id="datagroup-{{ data.id }}-description-panel">
 		<div class="panel-heading">
-			Description
+			{{ 'Description'|trans }}
 		</div>
 		<div class="panel-body  datagroup-description">
 			{{ _self.paragraphs(data.description) }}
@@ -206,20 +206,20 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro showBusinessRules(simulator) %}
-{{ _self.openCollapsiblePanel('businessrules' , 'Business rules', 'primary', '', 'sortable', [{ 'class': 'add-rule', 'label': 'Add', 'icon': 'glyphicon-plus-sign' }] ) }}
+{{ _self.openCollapsiblePanel('businessrules' , 'Business rules'|trans, 'primary', '', 'sortable', [{ 'class': 'add-rule', 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
 <div id="business-rules">
 {% for rule in simulator.businessRules %}
 	<div id="{{ rule.elementId }}" class="panel panel-info sortable rule-container">
 		<div class="panel-heading" role="tab">
-			<button class="btn btn-info pull-right update-button delete-rule" data-parent="#{{ rule.elementId }}">Delete <span class="glyphicon glyphicon-minus-sign"></span></button>
-			<button class="btn btn-info pull-right update-button edit-rule" data-parent="#{{ rule.elementId }}">Edit <span class="glyphicon glyphicon-pencil"></span></button>
+			<button class="btn btn-info pull-right update-button delete-rule" data-parent="#{{ rule.elementId }}">{{ 'Delete'|trans }} <span class="glyphicon glyphicon-minus-sign"></span></button>
+			<button class="btn btn-info pull-right update-button edit-rule" data-parent="#{{ rule.elementId }}">{{ 'Edit'|trans }} <span class="glyphicon glyphicon-pencil"></span></button>
 			<h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#business-rules" href="#collapse{{ rule.elementId }}" aria-expanded="true" aria-controls="collapse{{ rule.elementId }}">#<span class="rule-id">{{ rule.id }}</span> Rule <span class="rule-name">{{ rule.name }}</span> : <span class="rule-label">{{ rule.label }}</span></a>
+				<a data-toggle="collapse" data-parent="#business-rules" href="#collapse{{ rule.elementId }}" aria-expanded="true" aria-controls="collapse{{ rule.elementId }}">#<span class="rule-id">{{ rule.id }}</span> {{ 'Rule'|trans }} <span class="rule-name">{{ rule.name }}</span> : <span class="rule-label">{{ rule.label }}</span></a>
 			</h4>
 		</div>
 		<div id="collapse{{ rule.elementId }}" class="panel-body panel-collapse collapse" role="tabpanel">
 			<div class="panel panel-default conditions-panel">
-				<div class="panel-heading"><h4>When ...</h4></div>
+				<div class="panel-heading"><h4>{{ 'When ...'|trans }}</h4></div>
 				<div class="panel-body">
 					<ul class="rule-conditions" data-value="{{ rule.conditions }}">
 					{{ _self.showCondition(rule.extendedConditions) }}
@@ -228,7 +228,7 @@ THE SOFTWARE.
 			</div>
 			{% if rule.ifActions is not empty %}
 			<div class="panel panel-default if-actions-panel">
-				<div class="panel-heading"><h4>then do ...</h4></div>
+				<div class="panel-heading"><h4>{{ 'then do ...'|trans }}</h4></div>
 				<div class="panel-body">
 					{% for action in rule.ifActions %}
 					{{ _self.showRuleAction(action, simulator) }}
@@ -238,7 +238,7 @@ THE SOFTWARE.
 			{% endif %}
 			{% if rule.elseActions is not empty %}
 			<div class="panel panel-default else-actions-panel">
-				<div class="panel-heading"><h4>else do ...</h4></div>
+				<div class="panel-heading"><h4>{{ 'else do ...'|trans }}</h4></div>
 				<div class="panel-body">
 					{% for action in rule.elseActions %}
 					{{ _self.showRuleAction(action, simulator) }}
@@ -256,7 +256,7 @@ THE SOFTWARE.
 {% macro showRuleAction(action, simulator) %}
 <div class="rule-action" data-id="{{ action.id }}" data-name="{{ action.name }}" data-target="{{ action.target }}" data-data="{{ action.data }}" data-datagroup="{{ action.datagroup }}" data-step="{{ action.step }}" data-fieldset="{{ action.fieldset }}" data-field="{{ action.field }}" data-blockinfo="{{ action.blockinfo }}" data-chapter="{{ action.chapter }}" data-section="{{ action.section }}" data-prenote="{{ action.prenote }}" data-postnote="{{ action.postnote }}" data-action="{{ action.action }}" data-footnote="{{ action.footnote }}" data-choice="{{ action.choice }}" data-value="{{ action.value }}">
 {% if action.name == 'notifyError' or action.name == 'notifyWarning' %}
-	<span class="action-name">notify {{ action.name == 'notifyError' ? 'Error' : 'Warning' }} : </span> <span class="action-value">«{{ action.value }}»</span> <span class="action-target"> to {{ action.target }} </span>
+	<span class="action-name">{{ action.name == 'notifyError' ? 'notify Error'|trans : 'notify Warning'|trans }} : </span> <span class="action-value">«{{ action.value }}»</span> <span class="action-target"> {{ 'for'|trans }} {{ action.target|trans }} </span>
 	{% if action.target == 'data' %}
 		<span class="action-data">«{{ simulator.getDataById(action.data).label }}»</span>
 	{% elseif action.target == 'datagroup' %}
@@ -264,84 +264,84 @@ THE SOFTWARE.
 	{% endif %}
 {% elseif action.name == 'hideObject' or action.name == 'showObject' %}
 	{% set step = simulator.getStepById(action.step) %}
-	<span class="action-name">{{ action.name == 'hideObject' ? 'hide' : 'show' }}</span> <span class="action-target">{{ action.target }}</span>
+	<span class="action-name">{{ action.name == 'hideObject' ? 'hide'|trans : 'show'|trans }}</span> <span class="action-target">{{ action.target|trans }}</span>
 	{% if action.target == 'step' %}
 		<span class="action-step">«{{ step.label }}»</span>
 	{% elseif action.target == 'panel' %}
 		<span class="action-panel">«{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'fieldset' %}
 		<span class="action-fieldset">«{{ action.fieldset }}»</span>
-		<span class="action-panel"> in panel «{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'field' %}
-		<span class="action-field">«{{ step.getFieldSetById(action.fieldset).getFieldByPosition(action.field).label }}»</span>
-		<span class="action-fieldset"> in fieldset «{{ action.fieldset }}»</span>
-		<span class="action-panel"> of panel «{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-field">«{{ step.panelById(action.panel).fieldSetById(action.fieldset).fieldByPosition(action.field).label }}»</span>
+		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': action.fieldset}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'blockinfo' %}
 		<span class="action-blockinfo">«{{ action.blockinfo }}»</span>
-		<span class="action-panel"> in panel «{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'chapter' %}
-		<span class="action-chapter">«{{ step.getFieldSetById(action.blockinfo).getChapterById(action.chapter).label }}»</span>
-		<span class="action-blockinfo"> in blockinfo «{{ action.blockinfo }}»</span>
-		<span class="action-panel"> of panel «{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-chapter">«{{ step.panelById(action.panel).blockInfoById(action.blockinfo).chapterById(action.chapter).label }}»</span>
+		<span class="action-blockinfo"> {{ 'in blockinfo «%blockinfo%»'|trans({'%blockinfo%': action.blockinfo}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'section' %}
-		<span class="action-section">«{{ step.getFieldSetById(action.blockinfo).getChapterById(action.chapter).getSectionById(action.section).label }}»</span>
-		<span class="action-chapter"> in «{{ step.getFieldSetById(action.blockinfo).getChapterById(action.chapter).label }}»</span>
-		<span class="action-blockinfo"> of blockinfo «{{ action.blockinfo }}»</span>
-		<span class="action-panel"> of panel «{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-section">«{{ step.panelById(action.panel).blockInfoById(action.blockinfo).chapterById(action.chapter).sectionById(action.section).label }}»</span>
+		<span class="action-chapter"> {{ 'in'|trans }} «{{ step.panelById(action.panel).blockInfoById(action.blockinfo).chapterById(action.chapter).label }}»</span>
+		<span class="action-blockinfo"> {{ 'of blockinfo «%blockinfo%»'|trans({'%blockinfo%': action.blockinfo}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'prenote' %}
-		<span class="action-prenote"> of field «{{ step.getFieldSetById(action.fieldset).getFieldByPosition(action.prenote).label }}»</span>
-		<span class="action-fieldset"> in fieldset «{{ action.fieldset }}»</span>
-		<span class="action-panel"> of panel «{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-prenote"> {{ 'of field «%label%»'|trans({'%label%': step.panelById(action.panel).fieldSetById(action.fieldset).fieldByPosition(action.prenote).label}) }}</span>
+		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': action.fieldset}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'postnote' %}
-		<span class="action-postnote"> of field «{{ step.getFieldSetById(action.fieldset).getFieldByPosition(action.postnote).label }}»</span>
-		<span class="action-fieldset"> in «{{ action.fieldset }}»</span>
-		<span class="action-panel"> of panel «{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-postnote"> {{ 'of field «%label%»'|trans({'%label%': step.panelById(action.panel).fieldSetById(action.fieldset).fieldByPosition(action.postnote).label}) }}</span>
+		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': action.fieldset}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'footnote' %}
 		<span class="action-footnote">«{{ action.footnote }}»</span>
-		<span class="action-panel"> in panel «{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'action' %}
 		<span class="action-action">«{{ action.action }}»</span>
-		<span class="action-panel"> in panel «{{ action.panel }}»</span>
-		<span class="action-step"> of step «{{ step.label }}»</span>
+		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'choice' %}
 		<span class="action-choice">«{{ action.choice }}»</span>
-		<span class="action-data"> of data «{{ simulator.replaceByDataLabel(action.data).label }}»</span>
+		<span class="action-data"> {{ 'of data «%label%»'|trans({'%label%': simulator.replaceByDataLabel(action.data).label}) }}</span>
 	{% endif %}
 {% elseif action.name == 'setAttribute' %}
-	<span class="action-name">set</span> <span class="action-target">{{ action.target }}</span> <span class="action-data"> of «{{ simulator.getDataById(action.data).label }}»</span> <span class="action-value"> to {{ simulator.replaceByDataLabel(action.value) }}</span>
+	<span class="action-name">{{ 'set'|trans }}</span> <span class="action-target">{{ action.target|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span> <span class="action-value"> {{ 'to'|trans }} {{ simulator.replaceByDataLabel(action.value)|trans }}</span>
 {% endif %}
 </div>
 {% endmacro %}
 
 {% macro showSteps(simulator) %}
-{{ _self.openCollapsiblePanel('steps' , 'Steps', 'primary', '', 'sortable', [{ 'class': 'add-step', 'label': 'Add', 'icon': 'glyphicon-plus-sign' }] ) }}
+{{ _self.openCollapsiblePanel('steps' , 'Steps'|trans, 'primary', '', 'sortable', [{ 'class': 'add-step', 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
 {% for step in simulator.steps %}
 	{{ _self.openCollapsiblePanel('step-' ~ step.id , step.label, 'info', loop.index == 1 ? 'in' : '', 'sortable' ) }}
 	<div class="panel panel-default step-container" id="step-{{ step.id }}-attributes-panel" data-id="{{ step.id }}">
 		<div class="panel-body">
 			<div class="attributes-container">
 				<div>
-				{{ _self.showAttribute('step-'~step.id, 'text', 'name', 'Step Name', step.name, true, 'Step name') }}
-				{{ _self.showAttribute('step-'~step.id, 'text', 'label', 'Step Label', step.label, true, 'Step label') }}
-				{{ _self.showAttribute('step-'~step.id, 'text', 'template', 'Step Template', step.template, true, 'Step label') }}
-				{{ _self.showAttribute('step-'~step.id, 'select', 'output', 'Output', step.output, false, 'Select an output', {'normal':'Normal', 'inlinePDF':'Inline PDF', 'downloadablePDF':'Downloadable PDF', 'html':'html'}) }}
-				{{ _self.showAttribute('step-'~step.id, 'checkbox', 'dynamic', 'Interactive UI', step.dynamic, false, 'dynamic') }}
+				{{ _self.showAttribute('step-'~step.id, 'text', 'name', 'Step Name'|trans, step.name, true, 'Step Name'|trans) }}
+				{{ _self.showAttribute('step-'~step.id, 'text', 'label', 'Step Label'|trans, step.label, true, 'Step Label'|trans) }}
+				{{ _self.showAttribute('step-'~step.id, 'text', 'template', 'Step Template'|trans, step.template, true, 'Step Template'|trans) }}
+				{{ _self.showAttribute('step-'~step.id, 'select', 'output', 'Output'|trans, step.output, false, 'Select an output', {'normal':'Normal'|trans, 'inlinePDF':'Inline PDF'|trans, 'downloadablePDF':'Downloadable PDF'|trans, 'html':'html'}) }}
+				{{ _self.showAttribute('step-'~step.id, 'checkbox', 'dynamic', 'Interactive UI'|trans, step.dynamic, false, 'dynamic') }}
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="panel panel-default description-panel" id="step-{{ step.id }}-description-panel">
 		<div class="panel-heading">
-			Description
+			{{ 'Description'|trans }}
 		</div>
 		<div class="panel-body step-description">
 			{{ _self.paragraphs(step.description) }}
@@ -364,7 +364,7 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro showSources(simulator) %}
-{{ _self.openCollapsiblePanel('sources' , 'Sources', 'primary', '', 'sortable', [{ 'class': 'add-source', 'label': 'Add', 'icon': 'glyphicon-plus-sign' }] ) }}
+{{ _self.openCollapsiblePanel('sources' , 'Sources'|trans, 'primary', '', 'sortable', [{ 'class': 'add-source', 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus labore sustainable VHS.
 {{ _self.closeCollapsiblePanel() }}  
 {% endmacro %}
@@ -375,7 +375,7 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id, 'select', 'disposition', 'Disposition', fieldset.disposition, false, 'Select a Disposition', {'classic':'Classic', 'grid':'Grid'}) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id, 'select', 'disposition', 'Disposition'|trans, fieldset.disposition, false, 'Select a Disposition'|trans, {'classic':'Classic'|trans, 'grid':'Grid'|trans}) }}
 			</div>
 		</div>
 	</div>
@@ -407,19 +407,19 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'text', 'data', 'Data', field.fieldset.step.simulator.getDataById(field.data).label, true, 'Field data') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'text', 'label', 'Label', field.label, false, 'Field label') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'select', 'usage', 'Usage', field.usage, true, 'Select an usage', {'input':'input', 'output':'output'}) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'text', 'prompt', 'Prompt', field.prompt, false, 'Field prompt') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'required', 'Required', field.required, false, 'required') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'visibleRequired', 'Required if visible', field.visibleRequired, false, 'visibleRequired') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'newline', 'Newline before field ?', field.newline, false, 'newline') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'colon', 'Show colon after field label ?', field.colon, false, 'colon') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'underlabel', 'Place the field under the label ?', field.underlabel, false, 'underlabel') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'help', 'Show data description as help ?', field.help, false, 'help') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'emphasize', 'Emphasize the text label ?', field.emphasize, false, 'emphasize') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'expanded', 'Show choices as radio buttons ?', field.expanded, false, 'expanded') }}
-			{{ _self.showExpressionAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'explanation', 'Explanation', field.explanation, field.explanation, false, 'Explanation') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'text', 'data', 'Data'|trans, field.fieldset.step.simulator.getDataById(field.data).label, true, 'Field data'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'text', 'label', 'Label'|trans, field.label, false, 'Field label'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'select', 'usage', 'Usage'|trans, field.usage, true, 'Select an usage'|trans, {'input':'input', 'output':'output'}) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'text', 'prompt', 'Prompt'|trans, field.prompt, false, 'Field prompt'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'required', 'Required'|trans, field.required, false, 'required') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'visibleRequired', 'Required if visible'|trans, field.visibleRequired, false, 'visibleRequired') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'newline', 'Newline before field ?'|trans, field.newline, false, 'newline') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'colon', 'Show colon after field label ?'|trans, field.colon, false, 'colon') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'underlabel', 'Place the field under the label ?'|trans, field.underlabel, false, 'underlabel') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'help', 'Show data description as help ?'|trans, field.help, false, 'help') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'emphasize', 'Emphasize the text label ?'|trans, field.emphasize, false, 'emphasize') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'expanded', 'Show choices as radio buttons ?'|trans, field.expanded, false, 'expanded') }}
+			{{ _self.showExpressionAttribute('step-' ~ step.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'explanation', 'Explanation'|trans, field.explanation, field.explanation, false, 'Explanation'|trans) }}
 			</div>
 		</div>
 	</div>
@@ -433,8 +433,8 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'name', 'Name', blockinfo.name, true, 'Blockinfo name') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'label', 'Label', blockinfo.label, true, 'Blockinfo label') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'name', 'Name'|trans, blockinfo.name, true, 'Blockinfo name'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'label', 'Label'|trans, blockinfo.label, true, 'Blockinfo label'|trans) }}
 			</div>
 		</div>
 	</div>
@@ -453,10 +453,10 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'name', 'Name', chapter.name, true, 'Chapter name') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'label', 'Label', chapter.label, true, 'Chapter label') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'icon', 'Icon', chapter.icon, false, 'Chapter icon') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'checkbox', 'collapsible', 'Allow collapse/expand ?', chapter.collapsible, false, 'collapsible') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'name', 'Name'|trans, chapter.name, true, 'Chapter name'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'label', 'Label'|trans, chapter.label, true, 'Chapter label'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'icon', 'Icon'|trans, chapter.icon, false, 'Chapter icon'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'checkbox', 'collapsible', 'Allow collapse/expand ?'|trans, chapter.collapsible, false, 'collapsible') }}
 			</div>
 		</div>
 	</div>
@@ -476,8 +476,8 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id, 'text', 'name', 'Name', section.name, true, 'Section name') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id, 'text', 'label', 'Label', section.label, false, 'Section label') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id, 'text', 'name', 'Name'|trans, section.name, true, 'Section name'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id, 'text', 'label', 'Label'|trans, section.label, false, 'Section label'|trans) }}
 			</div>
 		</div>
 	</div>
@@ -502,7 +502,7 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 		{% if type == 'text' or type == 'number' %}
 		<p data-attribute="{{ name }}" data-value="{{ value }}" class="form-control-static simple-value">{{ value }}</p>
 		{% elseif type == 'checkbox' %}
-		<p data-attribute="{{ name }}" class="form-control-static simple-value" data-value="{%- if value -%}1{%- else -%}0{%- endif -%}">{%- if value -%}Yes{%- else -%}No{%- endif -%}</p>
+		<p data-attribute="{{ name }}" class="form-control-static simple-value" data-value="{%- if value -%}1{%- else -%}0{%- endif -%}">{%- if value -%}{{ 'Yes'|trans }}{%- else -%}{{ 'No'|trans }}{%- endif -%}</p>
 		{% elseif type == 'select' %}
 			{% for val, option in options %}
 			{%- if value == val %}
@@ -534,7 +534,7 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 			{% endfor %}
 			{% endif %}
 			{% if style == 'primary' %}
-			<button class="btn btn-{{ style }} pull-right expand-all toggle-collapse-all" data-parent="#{{ id }}">Expand all <span class="glyphicon glyphicon-expand"></span></button>
+			<button class="btn btn-{{ style }} pull-right expand-all toggle-collapse-all" data-parent="#{{ id }}">{{'Expand all'|trans }} <span class="glyphicon glyphicon-expand"></span></button>
 			{% endif %}
 			<h4 class="panel-title">
 				<a data-toggle="collapse" data-parent="#{{ id }}" href="#collapse{{ id }}" aria-expanded="true" aria-controls="collapse{{ id }}">
@@ -554,32 +554,32 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 {% endmacro %}
 
 {% macro showData(data, containerType, inClass) %}
-{{ _self.openCollapsiblePanel('data-' ~ data.id , '#'~data.id~' : '~data.label, 'info', inClass, '', [{ 'class': 'delete-data', 'label': 'Delete', 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-data', 'label': 'Edit', 'icon': 'glyphicon-pencil' } ] ) }}
+{{ _self.openCollapsiblePanel('data-' ~ data.id , '#'~data.id~' : '~data.label, 'info', inClass, '', [{ 'class': 'delete-data', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-data', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 <div class="panel panel-default {{ containerType }}-container" id="data-{{ data.id }}-attributes-panel" data-id="{{ data.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('data-'~data.id, 'text', 'name', 'Name', data.name, true, 'Data name') }}
-			{{ _self.showAttribute('data-'~data.id, 'text', 'label', 'Label', data.label, true, 'Data label') }}
-			{{ _self.showAttribute('data-'~data.id, 'select', 'type', 'Type', data.type, true, 'Select a type', {'date':'date', 'day':'day', 'month':'month', 'year':'year', 'boolean':'boolean', 'integer':'integer', 'number':'number', 'text':'text', 'textarea':'textarea', 'money':'money', 'choice':'choice', 'multichoice':'multichoice', 'percent':'percent', 'table':'table', 'department':'department', 'region':'region', 'country':'country'}) }}
-			{{ _self.showExpressionAttribute('data-'~data.id, 'default', 'Default', data.unparsedDefault, data.plainDefault, false, 'default value') }}
-			{{ _self.showExpressionAttribute('data-'~data.id, 'min', 'Min', data.unparsedMin, data.plainMin, false, 'Minimum value') }}
-			{{ _self.showExpressionAttribute('data-'~data.id, 'max', 'Max', data.unparsedMax, data.plainMax, false, 'Maximum value') }}
-			{{ _self.showExpressionAttribute('data-'~data.id, 'content', 'Content', data.content, data.plainContent, false, 'Content') }}
+			{{ _self.showAttribute('data-'~data.id, 'text', 'name', 'Name'|trans, data.name, true, 'Data name'|trans) }}
+			{{ _self.showAttribute('data-'~data.id, 'text', 'label', 'Label'|trans, data.label, true, 'Data label'|trans) }}
+			{{ _self.showAttribute('data-'~data.id, 'select', 'type', 'Type'|trans, data.type, true, 'Select a type'|trans, {'array':'liste'|trans, 'date':'date'|trans, 'day':'day'|trans, 'month':'month'|trans, 'year':'year'|trans, 'boolean':'boolean'|trans, 'integer':'integer'|trans, 'number':'number'|trans, 'text':'text'|trans, 'textarea':'textarea'|trans, 'money':'money'|trans, 'choice':'choice'|trans, 'multichoice':'multichoice'|trans, 'percent':'percent'|trans, 'table':'table'|trans, 'department':'department'|trans, 'region':'region'|trans, 'country':'country'|trans}) }}
+			{{ _self.showExpressionAttribute('data-'~data.id, 'default', 'Default'|trans, data.unparsedDefault, data.plainDefault, false, 'default value'|trans) }}
+			{{ _self.showExpressionAttribute('data-'~data.id, 'min', 'Min'|trans, data.unparsedMin, data.plainMin, false, 'Minimum value'|trans) }}
+			{{ _self.showExpressionAttribute('data-'~data.id, 'max', 'Max'|trans, data.unparsedMax, data.plainMax, false, 'Maximum value'|trans) }}
+			{{ _self.showExpressionAttribute('data-'~data.id, 'content', 'Content'|trans, data.content, data.plainContent, false, 'Content'|trans) }}
 			{% if data.round != '2' %}
-			{{ _self.showAttribute('data-'~data.id, 'number', 'round', 'Round', data.round, false, 'Round') }}
+			{{ _self.showAttribute('data-'~data.id, 'number', 'round', 'Round'|trans, data.round, false, 'Round'|trans) }}
 			{% endif %}
-			{{ _self.showAttribute('data-'~data.id, 'text', 'unit', 'Unit', data.unit, false, 'Unit') }}
-			{{ _self.showExpressionAttribute('data-'~data.id, 'source', 'Source', data.source, data.plainSource, false, 'Source') }}
-			{{ _self.showExpressionAttribute('data-'~data.id, 'index', 'Index', data.unparsedIndex, data.plainIndex, false, 'Index') }}
-			{{ _self.showAttribute('data-'~data.id, 'checkbox', 'memorize', 'Memorize', data.memorize, false, 'Memorize') }}
+			{{ _self.showAttribute('data-'~data.id, 'text', 'unit', 'Unit'|trans, data.unit, false, 'Unit'|trans) }}
+			{{ _self.showExpressionAttribute('data-'~data.id, 'source', 'Source'|trans, data.source, data.plainSource, false, 'Source'|trans) }}
+			{{ _self.showExpressionAttribute('data-'~data.id, 'index', 'Index'|trans, data.unparsedIndex, data.plainIndex, false, 'Index'|trans) }}
+			{{ _self.showAttribute('data-'~data.id, 'checkbox', 'memorize', 'Memorize'|trans, data.memorize, false, 'Memorize'|trans) }}
 			</div>
 		</div>
 	</div>
 </div>
 <div class="panel panel-default description-panel" id="data-{{ data.id }}-description-panel">
 	<div class="panel-heading">
-		Description
+		{{ 'Description'|trans }}
 	</div>
 	<div class="panel-body data-description">
 		{{ _self.paragraphs(data.description) }}
@@ -588,19 +588,19 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 {% if data.choices is not empty or data.choiceSource is not empty %}
 <div class="panel panel-default choices-panel" id="data-{{ data.id }}-choices-panel">
 	<div class="panel-heading">
-		Choices
+		{{ 'Choices'|trans }}
 	</div>
 	<div class="panel-body">
 		{% for choice in data.choices %}
 		<div class="panel panel-default choice-container" data-id="{{ choice.id }}">
 			<div class="panel-heading">
-				Choice {{ choice.id }}
+				{{ 'Choice %id%'|trans({ '%id%' : choice.id }) }}
 			</div>
 			<div class="panel-body" id="data-{{ data.id }}-choice-{{ choice.id }}-panel">
 				<div class="attributes-container">
 					<div>
-					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'value', 'Value', choice.value, true, 'Choice value') }}
-					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'label', 'Label', choice.label, true, 'Choice label') }}
+					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'value', 'Value'|trans, choice.value, true, 'Choice value'|trans) }}
+					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'label', 'Label'|trans, choice.label, true, 'Choice label'|trans) }}
 					</div>
 				</div>
 			</div>
@@ -609,9 +609,9 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 		{% if data.choiceSource is not empty %}
 		<div class="attributes-container choice-source-container" data-id="{{ data.choiceSource.id }}">
 			<div>
-			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'idColumn', 'Source column id', data.choiceSource.idColumn, false, 'Source column id') }}
-			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'valueColumn', 'Source column value', data.choiceSource.valueColumn, true, 'Source column value') }}
-			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'labelColumn', 'Source column label', data.choiceSource.labelColumn, true, 'Source column label') }}
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'idColumn', 'Source column id'|trans, data.choiceSource.idColumn, false, 'Source column id'|trans) }}
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'valueColumn', 'Source column value'|trans, data.choiceSource.valueColumn, true, 'Source column value'|trans) }}
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'labelColumn', 'Source column label'|trans, data.choiceSource.labelColumn, true, 'Source column label'|trans) }}
 			</div>
 		</div>
 		{% endif %}
@@ -631,19 +631,19 @@ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richa
 
 {% macro showCondition(condition) %}
 {% if condition.all is not empty %}
-	<li class="condition">All of the following conditions are met : 
+	<li class="condition">{{ 'All of the following conditions are met'|trans }} : 
 	<ul>
 	{{ _self.showConditions(condition.all) }}
 	</ul>
 	</li>
 {% elseif condition.any is not empty %}
-	<li class="condition">Any of the following conditions is met : 
+	<li class="condition">{{ 'Any of the following conditions is met'|trans }} : 
 	<ul>
 	{{ _self.showConditions(condition.any) }}
 	</ul>
 	</li>
 {% elseif condition.none is not empty %}
-	<li class="condition">None of the following conditions is met : 
+	<li class="condition">{{ 'None of the following conditions is met'|trans }} : 
 	<ul>
 	{{ _self.showConditions(condition.none) }}
 	</ul>

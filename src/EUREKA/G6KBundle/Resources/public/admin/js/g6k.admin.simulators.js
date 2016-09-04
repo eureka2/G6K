@@ -84,15 +84,15 @@ THE SOFTWARE.
 	Simulators.moneySymbols = {'฿':'฿', 'B/.':'B/.', '₵':'₵', '¢':'¢', '₡':'₡', 'Kč':'Kč', '$':'$', '₫':'₫', '€':'€', 'ƒ':'ƒ', 'Ft':'Ft', '₲':'₲', '₴':'₴', '₭':'₭', 'L':'L', '£ / ₤':'£ / ₤', '₺':'₺', '₥':'₥', '₦':'₦', 'S/.':'S/.', '₱':'₱', 'P':'P', 'R':'R', 'RM':'RM', '₹ / ₨':'₹ / ₨', '৲':'৲', '৳':'৳', 'R$':'R$', '₪':'₪', '₮':'₮', '₩':'₩', '¥':'¥', 'Ұ':'Ұ', 'zł':'zł' };
 
 	Simulators.optionalAttributes = {
-		'default': { type : 'expression', label: 'default', placeholder: 'default value'},
-		'min': { type : 'expression', label: 'min', placeholder: 'min value'},
-		'max': { type : 'expression', label: 'max', placeholder: 'max value'},
-		'content': { type : 'expression', label: 'Content', placeholder: 'content'},
-		'round': { type : 'number', label: 'Round', placeholder: 'round'},
-		'unit': { type : 'text', label: 'Unit', placeholder: 'unit text'},
-		'source': { type : 'expression', label: 'Source', placeholder: 'source'},
-		'index': { type : 'expression', label: 'Index', placeholder: 'index name'},
-		'memorize': { type : 'checkbox', label: 'Memorize', placeholder: 'Store into memo'}
+		'default': { type : 'expression', label: Translator.trans('default'), placeholder: Translator.trans('default value')},
+		'min': { type : 'expression', label: Translator.trans('min'), placeholder: Translator.trans('min value')},
+		'max': { type : 'expression', label: Translator.trans('max'), placeholder: Translator.trans('max value')},
+		'content': { type : 'expression', label: Translator.trans('Content'), placeholder: Translator.trans('content')},
+		'round': { type : 'number', label: Translator.trans('Round'), placeholder: Translator.trans('round')},
+		'unit': { type : 'text', label: Translator.trans('Unit'), placeholder: Translator.trans('unit text')},
+		'source': { type : 'expression', label: Translator.trans('Source'), placeholder: Translator.trans('source')},
+		'index': { type : 'expression', label: Translator.trans('Index'), placeholder: Translator.trans('index name')},
+		'memorize': { type : 'checkbox', label: Translator.trans('Memorize'), placeholder: Translator.trans('Store into memo)')}
 	};
 
 	Simulators.expressionOptions = {
@@ -179,30 +179,30 @@ THE SOFTWARE.
 		});
 		Simulators.dataset['script'] = {
 			'id': 20000, 
-			'label': 'Script',
+			'label': Translator.trans('Script'),
 			'type': 'choice',
 			'options': [
 				{
-					'label': 'Disabled',
+					'label': Translator.trans('Disabled'),
 					'name': 0
 				},
 				{
-					'label': 'Enabled',
+					'label': Translator.trans('Enabled'),
 					'name': 1
 				}
 			]
 		};
 		Simulators.dataset['dynamic'] = {
 			'id': 20001, 
-			'label': 'Interactive UI',
+			'label': Translator.trans('Interactive UI'),
 			'type': 'choice',
 			'options': [
 				{
-					'label': 'No',
+					'label': Translator.trans('No'),
 					'name': 0
 				},
 				{
-					'label': 'Yes',
+					'label': Translator.trans('Yes'),
 					'name': 1
 				}
 			]
@@ -210,15 +210,15 @@ THE SOFTWARE.
 		$('#steps .step-container').each(function() {
 			Simulators.dataset['step' + $(this).attr('data-id') + '.dynamic'] = {
 				'id': 10000 + $(this).attr('data-id'), 
-				'label': 'Is step ' + $(this).attr('data-id') + ' interactive ?',
+				'label': Translator.trans('Is step %id% interactive ?', { 'id': $(this).attr('data-id') }),
 				'type': 'choice',
 				'options': [
 					{
-						'label': 'No',
+						'label': Translator.trans('No'),
 						'name': 0
 					},
 					{
-						'label': 'Yes',
+						'label': Translator.trans('Yes'),
 						'name': 1
 					}
 				]
@@ -805,10 +805,10 @@ THE SOFTWARE.
 		console.log(rule);
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
 		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
-		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule">Delete <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-rule">Edit <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> Rule <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
+		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-rule">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> Rule <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
 		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse in', role: 'tabpanel' });
 		var conditionsPanel = $('<div class="panel panel-default if-actions-panel"></div>');
-		conditionsPanel.append('<div class="panel-heading"><h4>When ...</h4></div>');
+		conditionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div>');
 		var conditionsPanelBody = $('<div class="panel-body"></div>');
 		if (rule.conditions.all && rule.conditions.all.length == 1) {
 			rule.conditions = rule.conditions.all[0];
@@ -821,7 +821,7 @@ THE SOFTWARE.
 		ruleBody.append(conditionsPanel);
 		if (rule.ifActions.length > 0) {
 			var actionsPanel = $('<div class="panel panel-default conditions-panel"></div>');
-			actionsPanel.append('<div class="panel-heading"><h4>then do ...</h4></div>');
+			actionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('then do ...') + '</h4></div>');
 			var actionsPanelBody = $('<div class="panel-body"></div>');
 			$.each(rule.ifActions, function(a, action) {
 				var actionContainer = Simulators.drawRuleActionForDisplay(action);
@@ -832,7 +832,7 @@ THE SOFTWARE.
 		}
 		if (rule.elseActions.length > 0) {
 			var actionsPanel = $('<div class="panel panel-default else-actions-panel"></div>');
-			actionsPanel.append('<div class="panel-heading"><h4>else do ...</h4></div>');
+			actionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('else do ...') + '</h4></div>');
 			var actionsPanelBody = $('<div class="panel-body"></div>');
 			$.each(rule.elseActions, function(a, action) {
 				var actionContainer = Simulators.drawRuleActionForDisplay(action);
@@ -856,54 +856,72 @@ THE SOFTWARE.
 	Simulators.drawConditionForDisplay = function(condition) {
 		var conditionContainer = "";
 		if (condition.all) {
-			conditionContainer = '<li class="condition">All of the following conditions are met :<ul>' + Simulators.drawConditionsForDisplay(condition.all) + '</ul></li>';
+			conditionContainer = '<li class="condition">' + Translator.trans('All of the following conditions are met') + ' :<ul>' + Simulators.drawConditionsForDisplay(condition.all) + '</ul></li>';
 		} else if (condition.any) {
-			conditionContainer = '<li class="condition">Any of the following conditions is met :<ul>' + Simulators.drawConditionsForDisplay(condition.any) + '</ul></li>';
+			conditionContainer = '<li class="condition">' + Translator.trans('Any of the following conditions is met') + ' :<ul>' + Simulators.drawConditionsForDisplay(condition.any) + '</ul></li>';
 		} else if (condition.none) {
-			conditionContainer = '<li class="condition">None of the following conditions is met :<ul>' + Simulators.drawConditionsForDisplay(condition.none) + '</ul></li>';
+			conditionContainer = '<li class="condition">' + Translator.trans('None of the following conditions is met') + ' :<ul>' + Simulators.drawConditionsForDisplay(condition.none) + '</ul></li>';
 		} else {
 			conditionContainer = '<li class="condition">«' + condition.name + '» ' + condition.operator + ' ' + condition.value + '</li>';
 		}
 		return conditionContainer;
 	}
 
-	Simulators.getPlainOperator = function(operator) {
+	Simulators.getPlainOperator = function(operator, type) {
 		var operators = {
-			'=': 'is equal to',
-			'!=': 'is not equal to',
-			'>': 'is greater than',
-			'>=': 'is greater than or equal to',
-			'<': 'is less than',
-			'<=': 'is less than or equal to',
-			'isTrue': 'is true',
-			'isFalse': 'is false',
-			'~': 'contains',
-			'!~': 'not contains',
-			'matches': 'matches',
-			'present': 'is present',
-			'blank': 'is not present'
+			'=': Translator.trans('is equal to'),
+			'!=': Translator.trans('is not equal to'),
+			'>': Translator.trans('is greater than'),
+			'>=': Translator.trans('is greater than or equal to'),
+			'<': Translator.trans('is less than'),
+			'<=': Translator.trans('is less than or equal to'),
+			'isTrue': Translator.trans('is true'),
+			'isFalse': Translator.trans('is false'),
+			'~': Translator.trans('contains'),
+			'!~': Translator.trans('not contains'),
+			'matches': Translator.trans('matches'),
+			'present': Translator.trans('is present'),
+			'blank': Translator.trans('is not present')
 		};
-		return operators[operator] ? operators[operator] : operator;
+		var dateOperators = {
+			'=': Translator.trans('is'),
+			'!=': Translator.trans('is not'),
+			'>': Translator.trans('is after'),
+			'>=': Translator.trans('is not before'),
+			'<': Translator.trans('is before'),
+			'<=': Translator.trans('is not after'),
+			'~': Translator.trans('contains'),
+			'!~': Translator.trans('not contains'),
+			'present': Translator.trans('is present'),
+			'blank': Translator.trans('is not present')
+		};
+		if (type == 'date' || type == 'day' || type == 'month' || type == 'year') {
+			return dateOperators[operator] ? dateOperators[operator] : operator;
+		} else {
+			return operators[operator] ? operators[operator] : operator;
+		}
 	}
 
 	Simulators.plainConditions = function(ruleData) {
 		if (! $.isArray(ruleData)) {
 			if (ruleData.name) {
 				var matches;
+				var type = 'boolean';
 				if (ruleData.name === 'script') {
-					ruleData["name"] = 'Javascript';
-					ruleData["operator"] = 'is';
-					ruleData["value"] = ruleData.value == 1 ? 'enabled' : 'disabled';
+					ruleData["name"] = Translator.trans('Javascript');
+					ruleData["operator"] = Translator.trans('is');
+					ruleData["value"] = ruleData.value == 1 ? Translator.trans('enabled') : Translator.trans('disabled');
 				} else if (ruleData.name === 'dynamic') {
-					ruleData["name"] = 'User Interface';
-					ruleData["operator"] =  ruleData.value == 1 ? 'is' : 'is not';
-					ruleData["value"] = 'interactive';
+					ruleData["name"] = Translator.trans('User Interface');
+					ruleData["operator"] =  ruleData.value == 1 ? Translator.trans('is') : Translator.trans('is not');
+					ruleData["value"] = Translator.trans('interactive');
 				} else if (matches = ruleData.name.match(/step(\d+)\.dynamic$/)) {
-					ruleData["name"] = 'User Interface for step ' + matches[1];
-					ruleData["operator"] =  ruleData.value == 1 ? 'is' : 'is not';
-					ruleData["value"] = 'interactive';
+					ruleData["name"] = Translator.trans('User Interface for step %id%', { 'id': matches[1] });
+					ruleData["operator"] =  ruleData.value == 1 ? Translator.trans('is') : Translator.trans('is not');
+					ruleData["value"] = Translator.trans('interactive');
 				} else if (matches = ruleData.name.match(/^#(\d+)$/)) {
 					var data = Simulators.findDataById(matches[1]);
+					type = data.type;
 					ruleData["name"] = data.label;
 					if (data.type === 'choice') {
 						var label = Simulators.getChoiceLabel(data, ruleData.value);
@@ -913,10 +931,11 @@ THE SOFTWARE.
 					}
 				} else {
 					var data = Simulators.dataset[ruleData.name];
+					type = data.type;
 					ruleData["name"] = data.label;
 				}
 				if (ruleData.operator) {
-					ruleData["operator"] = Simulators.getPlainOperator(ruleData.operator);
+					ruleData["operator"] = Simulators.getPlainOperator(ruleData.operator, type);
 				}
 				if (ruleData.value) {
 					ruleData["value"] = Simulators.replaceByDataLabel(ruleData.value);
@@ -1031,14 +1050,14 @@ THE SOFTWARE.
 		}
 		var actionContainer = $('<div>', { 'class': 'rule-action', 'data-id': '', 'data-name': name, 'data-target': target, 'data-data': data, 'data-datagroup': datagroup, 'data-step': step, 'data-panel': panel, 'data-fieldset': fieldset, 'data-field': field, 'data-blockinfo': blockinfo, 'data-chapter': chapter, 'data-section': section, 'data-prenote': prenote, 'data-postnote': postnote, 'data-action': action, 'data-footnote': footnote, 'data-choice': choice, 'data-value': value });
 		if (name === 'notifyError') {
-			actionContainer.append('<span class="action-name">notify Error : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> to ' + target + ' </span>');
+			actionContainer.append('<span class="action-name">' + Translator.trans('notify Error') + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('for') + ' ' + Translator.trans(target) + ' </span>');
 			if (target === 'data') {
 				actionContainer.append('<span class="action-data">«' + data.label + '»</span>');
 			} else if (target === 'datagroup') {
 				actionContainer.append('<span class="action-datagroup">«' + datagroup.label + '»</span>');
 			}
 		} else if (name === 'notifyWarning') {
-			actionContainer.append('<span class="action-name">notify Warning : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> to ' + target + ' </span>');
+			actionContainer.append('<span class="action-name">' + Translator.trans('notify Warning') + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('for') + ' ' + Translator.trans(target) + ' </span>');
 			if (target === 'data') {
 				actionContainer.append('<span class="action-data">«' + data.label + '»</span>');
 			} else if (target === 'datagroup') {
@@ -1047,59 +1066,70 @@ THE SOFTWARE.
 		} else if (name === 'hideObject' || name === 'showObject') {
 			switch (target) {
 				case 'step':
-					actionContainer.append('');
+					actionContainer.append('<span class="action-step">«»</span>');
 					break;
 				case 'panel':
-					actionContainer.append('');
-					actionContainer.append('');
+					actionContainer.append('<span class="action-panel">«»</span>');
+					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'fieldset':
+					actionContainer.append('<span class="action-fieldset">«»</span>');
+					actionContainer.append('<span class="action-panel"> </span>');
+					actionContainer.append('<span class="action-step"> </span>');
+					break;
 				case 'blockinfo':
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
+					actionContainer.append('<span class="action-blockinfo">«»</span>');
+					actionContainer.append('<span class="action-panel"> </span>');
+					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'field':
+					actionContainer.append('<span class="action-field">«»</span>');
+					actionContainer.append('<span class="action-fieldset"> </span>');
+					actionContainer.append('<span class="action-panel"> </span>');
+					actionContainer.append('<span class="action-step"> </span>');
+					break;
 				case 'chapter':
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
+					actionContainer.append('<span class="action-chapter">«»</span>');
+					actionContainer.append('<span class="action-blockinfo"> </span>');
+					actionContainer.append('<span class="action-panel"> </span>');
+					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'section':
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
+					actionContainer.append('<span class="action-section">«»</span>');
+					actionContainer.append('<span class="action-chapter">«»</span>');
+					actionContainer.append('<span class="action-blockinfo"> </span>');
+					actionContainer.append('<span class="action-panel"> </span>');
+					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'prenote':
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
+					actionContainer.append('<span class="action-prenote"></span>');
+					actionContainer.append('<span class="action-fieldset"> </span>');
+					actionContainer.append('<span class="action-panel"> </span>');
+					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'postnote':
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
-					actionContainer.append('');
+					actionContainer.append('<span class="action-postnote"></span>');
+					actionContainer.append('<span class="action-fieldset"> </span>');
+					actionContainer.append('<span class="action-panel"> </span>');
+					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'footnote':
-					actionContainer.append('')
-					actionContainer.append('');
+					actionContainer.append('<span class="action-footnote">«»</span>')
+					actionContainer.append('<span class="action-panel"> </span>');
+					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'action':
-					actionContainer.append('');
-					actionContainer.append('');
+					actionContainer.append('<span class="action-action">«»</span>');
+					actionContainer.append('<span class="action-panel"> </span>');
+					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'choice':
-					actionContainer.append('');
-					actionContainer.append('');
+					actionContainer.append('<span class="action-choice">«»</span>');
+					actionContainer.append('<span class="action-data"> </span>');
 					break;
 			}
 		} else if (target === 'setAttribute') {
-			actionContainer.append('<span class="action-name">set</span> <span class="action-target">' + target + '</span> <span class="action-data"> of «' + data.label + '»</span> <span class="action-value"> to ' + Simulators.replaceByDataLabel(value) + '</span>');
+			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans(target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': data.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByDataLabel(value)) + '</span>');
 		}
 		return actionContainer;
 	}
@@ -1107,18 +1137,18 @@ THE SOFTWARE.
 	Simulators.drawRuleForInput = function(rule) {
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
 		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
-		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule">Delete <span class="glyphicon glyphicon-minus-sign"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> Rule <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
+		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> ' + Translator.trans('Rule') + ' <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
 		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse', role: 'tabpanel' });
 		ruleContainer.append(ruleBody);
-		ruleBody.append('<div class="panel panel-default"><div class="panel-body form-inline"><div class="form-group"><label>Name</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>Label</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>When ...</h4></div><div class="panel-body"><div class="conditions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>then do ...</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>else do ...</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-body form-inline"><div class="form-group"><label>' + Translator.trans('Name') + '</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>' + Translator.trans('Label') + '</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div><div class="panel-body"><div class="conditions"></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('then do ...') + '</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('else do ...') + '</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');
 		var ruleButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + ruleElementId + '-buttons-panel"></div>');
 		var ruleButtonsBody = $('<div class="panel-body rule-buttons"></div>');
-		ruleButtonsBody.append('<button class="btn btn-success pull-right validate-edit-rule">Validate <span class="glyphicon glyphicon-ok"></span></button>');
-		ruleButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-rule">Cancel</span></button>');
-		ruleButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> <span class="error-message"></span></div>');
+		ruleButtonsBody.append('<button class="btn btn-success pull-right validate-edit-rule">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
+		ruleButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-rule">' + Translator.trans('Cancel') + '</span></button>');
+		ruleButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		ruleButtonsPanel.append(ruleButtonsBody);
 		ruleBody.append(ruleButtonsPanel);
 		return ruleContainer;
@@ -1165,8 +1195,8 @@ THE SOFTWARE.
 	Simulators.deleteRule = function(ruleContainer) {
 		var ruleLabel = ruleContainer.find('.rule-label').text();
 		bootbox.confirm({
-			title: 'Deleting rule',
-			message: "Are you sure you want to delete the rule : " + ruleLabel + " ?", 
+			title: Translator.trans('Deleting rule'),
+			message: Translator.trans("Are you sure you want to delete the rule : %label% ?", { 'label': ruleLabel }), 
 			callback: function(confirmed) {
 				if (confirmed) {
 					ruleContainer.remove();
@@ -1179,17 +1209,17 @@ THE SOFTWARE.
 
 	Simulators.checkSimulatorOptions = function(simulatorContainer) {
 		if ($.trim($('#simulator-name').val()) === '') {
-			simulatorContainer.find('.error-message').text('The simulator name is required');
+			simulatorContainer.find('.error-message').text(Translator.trans('The simulator name is required'));
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
 		if ($.trim($('#simulator-label').val()) === '') {
-			simulatorContainer.find('.error-message').text('The simulator label is required');
+			simulatorContainer.find('.error-message').text(Translator.trans('The simulator label is required'));
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
 		if ($.trim($('#simulator-decimalPoint').val()) === '') {
-			simulatorContainer.find('.error-message').text('The simulator decimal point is required');
+			simulatorContainer.find('.error-message').text(Translator.trans('The simulator decimal point is required'));
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
@@ -1220,7 +1250,7 @@ THE SOFTWARE.
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='referer']").text($('#simulator-referer').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").attr('data-value', $('#simulator-defaultView').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").text($('#simulator-defaultView').val());
-				$('#simulator').find('.panel-heading h4.panel-title').text('Simulator : ' + $('#simulator-label').val());
+				$('#simulator').find('.panel-heading h4.panel-title').text($('#simulator-label').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").attr('data-value', $('#simulator-dateFormat').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").text($('#simulator-dateFormat option:selected').text());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").attr('data-value', $('#simulator-decimalPoint').val());
@@ -1231,17 +1261,17 @@ THE SOFTWARE.
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='symbolPosition']").text($('#simulator-symbolPosition option:selected').text());
 				if ($('#simulator-dynamic').is(':checked')) {
 					$('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").attr('data-value', '1');
-					$('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").text('Yes');
+					$('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").text(Translator.trans('Yes'));
 				} else {
 					$('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").attr('data-value', '0');
-					$('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").text('No');
+					$('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").text(Translator.trans('No'));
 				}
 				if ($('#simulator-memo').is(':checked')) {
 					$('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").attr('data-value', '1');
-					$('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").text('Yes');
+					$('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").text(Translator.trans('Yes'));
 				} else {
 					$('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").attr('data-value', '0');
-					$('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").text('No');
+					$('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").text(Translator.trans('No'));
 				}
 				$('#simulator-description-panel-holder').find(".simulator-description").html($('#simulator-description').val());
 				$('#simulator-related-informations-panel-holder').find(".simulator-related-informations").html($('#simulator-related-informations').val());
@@ -1296,32 +1326,32 @@ THE SOFTWARE.
 		var simulatorAttributesPanelBody = $('<div class="panel-body"></div>');
 		var simulatorAttributesContainer = $('<div class="attributes-container droppable"></div>');
 		var simulatorAttributes = $('<div></div>');
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-name', 'text', 'name', 'Name', simulator.name, true, 'name'));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-label', 'text', 'label', 'Label', simulator.label, true, 'label'));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-defaultView', 'text', 'defaultView', 'Default view', simulator.defaultView, false, 'defaultView'));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-referer', 'text', 'referer', ' Main referer', simulator.referer, false, 'referer'));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-dateFormat', 'select', 'dateFormat', 'Date format', simulator.dateFormat, true, 'Select a format', JSON.stringify(Simulators.dateFormats)));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'text', 'decimalPoint', 'Decimal point', simulator.decimalPoint, true, 'Decimal point'));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-moneySymbol', 'select', 'moneySymbol', 'Currency symbol', simulator.moneySymbol, true, 'Select a symbol', JSON.stringify(Simulators.moneySymbols)));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-symbolPosition', 'select', 'symbolPosition', 'Symbol position', simulator.symbolPosition, true, 'Select a position', JSON.stringify({'before':'before currency', 'after':'after currency'})));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-name', 'text', 'name', Translator.trans('Name'), simulator.name, true, 'name'));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-label', 'text', 'label', Translator.trans('Label'), simulator.label, true, 'label'));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-defaultView', 'text', 'defaultView', Translator.trans('Default view'), simulator.defaultView, false, 'defaultView'));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-referer', 'text', 'referer', Translator.trans('Main referer'), simulator.referer, false, 'referer'));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-dateFormat', 'select', 'dateFormat', Translator.trans('Date format'), simulator.dateFormat, true, Translator.trans('Select a format'), JSON.stringify(Simulators.dateFormats)));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'text', 'decimalPoint', Translator.trans('Decimal point'), simulator.decimalPoint, true, Translator.trans('Decimal point')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-moneySymbol', 'select', 'moneySymbol', Translator.trans('Currency symbol'), simulator.moneySymbol, true, Translator.trans('Select a symbol'), JSON.stringify(Simulators.moneySymbols)));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-symbolPosition', 'select', 'symbolPosition', Translator.trans('Symbol position'), simulator.symbolPosition, true, Translator.trans('Select a position'), JSON.stringify({ 'before': Translator.trans('before currency'), 'after': Translator.trans('after currency') })));
 		if (simulator.dynamic == 1) {
-			simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-dynamic', 'checkbox', 'dynamic', 'Interactive UI', simulator.dynamic, false, 'dynamic'));
+			simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-dynamic', 'checkbox', 'dynamic', Translator.trans('Interactive UI'), simulator.dynamic, false, 'dynamic'));
 		}
 		if (simulator.memo == 1) {
-			simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-memo', 'checkbox', 'memo', 'Data memo ?', simulator.memo, false, 'memo'));
+			simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-memo', 'checkbox', 'memo', Translator.trans('Data memo ?'), simulator.memo, false, 'memo'));
 		}
 		simulatorAttributesContainer.append(simulatorAttributes);
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">Optional attributes</h4></div>');
+		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		optionalAttributes.append('<li class="list-group-item" data-element="simulator" data-type="text" data-name="defaultView" data-placeholder="Default View value">Default View</li>');
-		optionalAttributes.append('<li class="list-group-item" data-element="simulator" data-type="text" data-name="referer" data-placeholder="Main referer value">Main referer</li>');
-		var dynamicAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="dynamic" data-placeholder="">Interactive UI</li>');
+		optionalAttributes.append('<li class="list-group-item" data-element="simulator" data-type="text" data-name="defaultView" data-placeholder="' + Translator.trans('Default View value') + '">' + Translator.trans('Default view') + '</li>');
+		optionalAttributes.append('<li class="list-group-item" data-element="simulator" data-type="text" data-name="referer" data-placeholder="' + Translator.trans('Main referer value') + '">' + Translator.trans('Main referer') + '</li>');
+		var dynamicAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="dynamic" data-placeholder="">' + Translator.trans('Interactive UI') + '</li>');
 		optionalAttributes.append(dynamicAttribute);
 		if (simulator.dynamic == 1) {
 			dynamicAttribute.hide();
 		}
-		var memoAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="memo" data-placeholder="">Data memo ?</li>');
+		var memoAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="memo" data-placeholder="">' + Translator.trans('Data memo ?') + '</li>');
 		optionalAttributes.append(memoAttribute);
 		if (simulator.memo == 1) {
 			memoAttribute.hide();
@@ -1331,20 +1361,20 @@ THE SOFTWARE.
 		simulatorAttributesPanelBody.append(simulatorAttributesContainer);
 		simulatorAttributesPanel.append(simulatorAttributesPanelBody);
 		var simulatorDescriptionPanel = $('<div class="panel panel-default" id="simulator-description-panel"></div>');
-		simulatorDescriptionPanel.append('<div class="panel-heading">Description</div>');
+		simulatorDescriptionPanel.append('<div class="panel-heading">' + Translator.trans('Description') + '</div>');
 		var simulatorDescriptionBody = $('<div class="panel-body simulator-description"></div>');
 		simulatorDescriptionBody.append('<textarea rows="10" name="simulator-description" id="simulator-description" wrap="hard" class="form-control">' + simulator.description + '</textarea>');
 		simulatorDescriptionPanel.append(simulatorDescriptionBody);
 		var simulatorRelatedInformationsPanel = $('<div class="panel panel-default" id="simulator-related-informations-panel"></div>');
-		simulatorRelatedInformationsPanel.append('<div class="panel-heading">Related informations</div>');
+		simulatorRelatedInformationsPanel.append('<div class="panel-heading">' + Translator.trans('Related informations') + '</div>');
 		var simulatorRelatedInformationsBody = $('<div class="panel-body simulator-related-informations"></div>');
 		simulatorRelatedInformationsBody.append('<textarea rows="10" name="simulator-related-informations" id="simulator-related-informations" wrap="hard" class="form-control">' + simulator.relatedInformations + '</textarea>');
 		simulatorRelatedInformationsPanel.append(simulatorRelatedInformationsBody);
 		var simulatorButtonsPanel = $('<div class="panel panel-default" id="simulator-buttons-panel"></div>');
 		var simulatorButtonsBody = $('<div class="panel-body simulator-buttons"></div>');
-		simulatorButtonsBody.append('<button class="btn btn-success pull-right validate-edit-simulator">Validate <span class="glyphicon glyphicon-ok"></span></button>');
-		simulatorButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-simulator">Cancel</span></button>');
-		simulatorButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> <span class="error-message"></span></div>');
+		simulatorButtonsBody.append('<button class="btn btn-success pull-right validate-edit-simulator">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
+		simulatorButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-simulator">' + Translator.trans('Cancel') + '</span></button>');
+		simulatorButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		simulatorButtonsPanel.append(simulatorButtonsBody);
 		var simulatorOptions = $('<div class="panel-body"></div>');
 		simulatorOptions.append(simulatorAttributesPanel);
@@ -1633,7 +1663,7 @@ THE SOFTWARE.
 
 	Simulators.drawChoicesForDisplay = function(dataId) {
 		var choicesPanel = $('<div>', { 'class': 'panel panel-default choices-panel', id: 'data-' + dataId + '-choices-panel' });
-		choicesPanel.append('<div class="panel-heading">Choices</div>');
+		choicesPanel.append('<div class="panel-heading">' + Translator.trans('Choices') + '</div>');
 		var choicesPanelBody = $('<div class="panel-body"></div>');
 		choicesPanel.append(choicesPanelBody);
 		return choicesPanel;
@@ -1641,7 +1671,7 @@ THE SOFTWARE.
 
 	Simulators.drawChoicesForInput = function(dataId) {
 		var choicesPanel = $('<div>', { 'class': 'panel panel-default choices-panel', id: 'data-' + dataId + '-choices-panel' });
-		choicesPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice-source">Delete source <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice-source">Add source <span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice">Add choice <span class="glyphicon glyphicon-plus-sign"></span></button>Choices</div>');
+		choicesPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice-source">' + Translator.trans('Delete source') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice-source">' + Translator.trans('Add source') + ' <span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice">' + Translator.trans('Add choice') + ' <span class="glyphicon glyphicon-plus-sign"></span></button>' + Translator.trans('Choices') + '</div>');
 		var choicesPanelBody = $('<div class="panel-body"></div>');
 		choicesPanel.append(choicesPanelBody);
 		return choicesPanel;
@@ -1660,12 +1690,12 @@ THE SOFTWARE.
 
 	Simulators.drawChoiceForDisplay = function(choice) {
 		var choicePanel = $('<div>', { 'class': 'panel panel-default choice-container',  'data-id': choice.id });
-		choicePanel.append('<div class="panel-heading">Choice ' + choice.id + '</div>');
+		choicePanel.append('<div class="panel-heading">' + Translator.trans('Choice %id%', { 'id': choice.id }) + '</div>');
 		var choicePanelBody = $('<div>', { 'class': 'panel-body', id: 'data-' + choice.dataId + '-choice-' + choice.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choice.dataId + '-choice-' + choice.id, 'text', 'value', 'Value', choice.value, true, 'Choice value'));
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choice.dataId + '-choice-' + choice.id, 'text', 'label', 'Label', choice.label, true, 'Choice label'));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choice.dataId + '-choice-' + choice.id, 'text', 'value', Translator.trans('Value'), choice.value, true, Translator.trans('Choice value')));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choice.dataId + '-choice-' + choice.id, 'text', 'label', Translator.trans('Label'), choice.label, true, Translator.trans('Choice label')));
 		attributesContainer.append(attributes);
 		choicePanelBody.append(attributesContainer);
 		choicePanel.append(choicePanelBody);
@@ -1674,12 +1704,12 @@ THE SOFTWARE.
 
 	Simulators.drawChoiceForInput = function(choice) {
 		var choicePanel = $('<div>', { 'class': 'panel panel-default choice-panel',  'data-id': choice.id  });
-		choicePanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice">Delete <span class="glyphicon glyphicon-minus-sign"></span></button>Choice ' + choice.id + '</div>');
+		choicePanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Choice %id%', {'id': choice.id}) + '</div>');
 		var choicePanelBody = $('<div>', { 'class': 'panel-body', id: 'data-' + choice.dataId + '-choice-' + choice.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
-		attributes.append('<div class="form-group col-sm-12"><label for="data-' + choice.dataId + '-choice-' + choice.id + '-value" class="col-sm-4 control-label">Value</label><div class="col-sm-8"><input type="text" name="data-' + choice.dataId + '-choice-' + choice.id + '-value" id="data-' + choice.dataId + '-choice-' + choice.id + '-value" class="form-control simple-value" placeholder="Choice value"  value="' + choice.value + '" /></div></div>');
-		attributes.append('<div class="form-group col-sm-12"><label for="data-' + choice.dataId + '-choice-' + choice.id + '-label" class="col-sm-4 control-label">Label</label><div class="col-sm-8"><input type="text" name="data-' + choice.dataId + '-choice-' + choice.id + '-label" id="data-' + choice.dataId + '-choice-' + choice.id + '-label" class="form-control simple-value" placeholder="Choice label"  value="' + choice.label + '" /></div></div>');
+		attributes.append('<div class="form-group col-sm-12"><label for="data-' + choice.dataId + '-choice-' + choice.id + '-value" class="col-sm-4 control-label">' + Translator.trans('Value') + '</label><div class="col-sm-8"><input type="text" name="data-' + choice.dataId + '-choice-' + choice.id + '-value" id="data-' + choice.dataId + '-choice-' + choice.id + '-value" class="form-control simple-value" placeholder="' + Translator.trans('Choice value') + '"  value="' + choice.value + '" /></div></div>');
+		attributes.append('<div class="form-group col-sm-12"><label for="data-' + choice.dataId + '-choice-' + choice.id + '-label" class="col-sm-4 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-8"><input type="text" name="data-' + choice.dataId + '-choice-' + choice.id + '-label" id="data-' + choice.dataId + '-choice-' + choice.id + '-label" class="form-control simple-value" placeholder="' + Translator.trans('Choice label') + '"  value="' + choice.label + '" /></div></div>');
 		attributesContainer.append(attributes);
 		choicePanelBody.append(attributesContainer);
 		choicePanel.append(choicePanelBody);
@@ -1715,9 +1745,9 @@ THE SOFTWARE.
 	Simulators.drawChoiceSourceForDisplay = function(choiceSource) {
 		var attributesContainer = $('<div class="attributes-container choice-source-container" data-id="' + choiceSource.id + '"></div>');
 		var attributes = $('<div></div>');
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'idColumn', 'Source column id', choiceSource.idColumn, false, 'Source column id'));
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'valueColumn', 'Source column value', choiceSource.valueColumn, true, 'Source column value'));
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'labelColumn', 'Source column label', choiceSource.labelColumn, true, 'Source column label'));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'idColumn', Translator.trans('Source column id'), choiceSource.idColumn, false, Translator.trans('Source column id')));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'valueColumn', Translator.trans('Source column value'), choiceSource.valueColumn, true, Translator.trans('Source column value')));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'labelColumn', Translator.trans('Source column label'), choiceSource.labelColumn, true, Translator.trans('Source column label')));
 		attributesContainer.append(attributes);
 		return attributesContainer;
 	}
@@ -1725,16 +1755,16 @@ THE SOFTWARE.
 	Simulators.drawChoiceSourceForInput = function(choiceSource) {
 		var attributesContainer = $('<div class="attributes-container choice-source-container" data-id="' + choiceSource.id + '"></div>');
 		var attributes = $('<div></div>');
-		attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-valueColumn', 'text', 'valueColumn', 'Source column value', choiceSource.valueColumn, true, 'Source column value'));
-		attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-labelColumn', 'text', 'labelColumn', 'Source column label', choiceSource.labelColumn, true, 'Source column label'));
+		attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-valueColumn', 'text', 'valueColumn', Translator.trans('Source column value'), choiceSource.valueColumn, true, Translator.trans('Source column value')));
+		attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-labelColumn', 'text', 'labelColumn', Translator.trans('Source column label'), choiceSource.labelColumn, true, Translator.trans('Source column label')));
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">Optional attributes</h4></div>');
+		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '" data-type="text" data-name="idColumn" data-placeholder="Source column id value">Source column id</li>');
+		var optionalAttribute = $('<li class="list-group-item" data-element="data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '" data-type="text" data-name="idColumn" data-placeholder="' + Translator.trans('Source column id value') + '">' + Translator.trans('Source column id') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		optionalAttributesPanel.append(optionalAttributes);
 		if (choiceSource.idColumn) {
-			attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-idColumn', 'text', 'idColumn', 'Source column id', choiceSource.idColumn, false, 'Source column id'));
+			attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-idColumn', 'text', 'idColumn', Translator.trans('Source column id'), choiceSource.idColumn, false, Translator.trans('Source column id')));
 			optionalAttribute.hide();
 		}
 		attributesContainer.append(attributes);
@@ -1746,16 +1776,16 @@ THE SOFTWARE.
 		var dataElementId = 'data-' + data.id;
 		var dataPanelContainer = $('<div>', { 'class': 'panel-group', id: dataElementId, role: 'tablist', 'aria-multiselectable': 'true' });
 		var dataPanel = $('<div>', { 'class': 'panel panel-info' });
-		dataPanel.append('<div class="panel-heading" role="tab" id="' + dataElementId + '-panel"><button class="btn btn-info pull-right update-button delete-data" data-parent="#' + dataElementId + '">Delete <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-data" data-parent="#' + dataElementId + '">Edit <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + dataElementId + '" href="#collapse' + dataElementId + '" aria-expanded="true" aria-controls="collapse' + dataElementId + '">#' + data.id + ' : ' + data.label + '</a></h4></div>');
+		dataPanel.append('<div class="panel-heading" role="tab" id="' + dataElementId + '-panel"><button class="btn btn-info pull-right update-button delete-data" data-parent="#' + dataElementId + '">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-data" data-parent="#' + dataElementId + '">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + dataElementId + '" href="#collapse' + dataElementId + '" aria-expanded="true" aria-controls="collapse' + dataElementId + '">#' + data.id + ' : ' + data.label + '</a></h4></div>');
 		var dataPanelCollapse = $('<div id="collapse' + dataElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + dataElementId + '-panel"></div>');
 		var dataPanelBody = $('<div class="panel-body"></div>');
 		var dataContainer = $('<div class="panel panel-default data-container" id="' + dataElementId + '-attributes-panel" data-id="' + data.id + '"></div>');
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'name', 'Name', data.name, true, 'Data name'));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'label', 'Label', data.label, true, 'Data label'));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'select', 'type', 'Type', data.type, true, 'Select a data type', JSON.stringify(Admin.types)));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'name', Translator.trans('Name'), data.name, true, Translator.trans('Data name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'label', Translator.trans('Label'), data.label, true, Translator.trans('Data label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'select', 'type', Translator.trans('Type'), data.type, true, Translator.trans('Select a data type'), JSON.stringify(Admin.types)));
 		$.each(Simulators.optionalAttributes, function (name, attr) {
 			if (data[name]) {
 				var attribute = attr.type === 'expression' ?
@@ -1768,7 +1798,7 @@ THE SOFTWARE.
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default" id="' + dataElementId + '-description-panel"><div class="panel-heading">Description</div><div class="panel-body data-description">' + data.description + '</div></div>');
+		dataPanelBody.append('<div class="panel panel-default" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body data-description">' + data.description + '</div></div>');
 		dataPanelCollapse.append(dataPanelBody);
 		dataPanel.append(dataPanelCollapse);
 		dataPanelContainer.append(dataPanel);
@@ -1786,12 +1816,12 @@ THE SOFTWARE.
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-2 control-label">Name</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="Data name" value="' + data.name + '" /></div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-label" class="col-sm-2 control-label">Label</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-label" id="' + dataElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="Data label" value="' + data.label + '" /></div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForInput(dataElementId + '-type', 'select', 'type', 'Type', data.type, true, 'Select a data type', JSON.stringify(Admin.types)));
+		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-2 control-label">' + Translator.trans('Name') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="Data name" value="' + data.name + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-label" class="col-sm-2 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-label" id="' + dataElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="Data label" value="' + data.label + '" /></div></div>');
+		requiredAttributes.append(Simulators.simpleAttributeForInput(dataElementId + '-type', 'select', 'type', 'Type', data.type, true, Translator.trans('Select a data type'), JSON.stringify(Admin.types)));
 		attributesContainer.append(requiredAttributes);
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">Optional attributes</h4></div>');
+		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		$.each(Simulators.optionalAttributes, function (name, attr) {
 			var optionalAttribute = attr.type === 'expression' ?
@@ -1811,12 +1841,12 @@ THE SOFTWARE.
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">Description</div><div class="panel-body"><textarea rows="5" name="' + dataElementId + '-description" id="' + dataElementId + '-description" wrap="hard" class="form-control data-description">' + data.description + '</textarea></div></div>');
+		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + dataElementId + '-description" id="' + dataElementId + '-description" wrap="hard" class="form-control data-description">' + data.description + '</textarea></div></div>');
 		var dataButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + dataElementId + '-buttons-panel"></div>');
 		var dataButtonsBody = $('<div class="panel-body data-buttons"></div>');
-		dataButtonsBody.append('<button class="btn btn-success pull-right validate-edit-data">Validate <span class="glyphicon glyphicon-ok"></span></button>');
-		dataButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-data">Cancel</span></button>');
-		dataButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> <span class="error-message"></span></div>');
+		dataButtonsBody.append('<button class="btn btn-success pull-right validate-edit-data">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
+		dataButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-data">' + Translator.trans('Cancel') + '</span></button>');
+		dataButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		dataButtonsPanel.append(dataButtonsBody);
 		dataPanelBody.append(dataButtonsPanel);
 		dataPanelCollapse.append(dataPanelBody);
@@ -1829,20 +1859,20 @@ THE SOFTWARE.
 		var dataElementId = 'datagroup-' + datagroup.id;
 		var dataPanelContainer = $('<div>', { 'class': 'panel-group', id: dataElementId, role: 'tablist', 'aria-multiselectable': 'true' });
 		var dataPanel = $('<div>', { 'class': 'panel panel-success' });
-		dataPanel.append('<div class="panel-heading" role="tab" id="' + dataElementId + '-panel"><button class="btn btn-success pull-right update-button delete-datagroup" data-parent="#' + dataElementId + '">Delete <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-success pull-right update-button add-data" data-parent="#' + dataElementId + '">Add data <span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-success pull-right update-button edit-datagroup" data-parent="#' + dataElementId + '">Edit datagroup <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + dataElementId + '" href="#collapse' + dataElementId + '" aria-expanded="true" aria-controls="collapse' + dataElementId + '">Group ' + datagroup.label + '</a></h4></div>');
+		dataPanel.append('<div class="panel-heading" role="tab" id="' + dataElementId + '-panel"><button class="btn btn-success pull-right update-button delete-datagroup" data-parent="#' + dataElementId + '">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-success pull-right update-button add-data" data-parent="#' + dataElementId + '">' + Translator.trans('Add data') + ' <span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-success pull-right update-button edit-datagroup" data-parent="#' + dataElementId + '">' + Translator.trans('Edit datagroup') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + dataElementId + '" href="#collapse' + dataElementId + '" aria-expanded="true" aria-controls="collapse' + dataElementId + '">' + Translator.trans('Group') + ' ' + datagroup.label + '</a></h4></div>');
 		var dataPanelCollapse = $('<div id="collapse' + dataElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + dataElementId + '-panel"></div>');
 		var dataPanelBody = $('<div class="panel-body"></div>');
 		var dataContainer = $('<div class="panel panel-default data-container datagroup" id="' + dataElementId + '-attributes-panel" data-id="' + datagroup.id + '"></div>');
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'name', 'Group Name', datagroup.name, true, 'Group Name'));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'label', 'Group Label', datagroup.label, true, 'Group Label'));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'name', Translator.trans('Group Name'), datagroup.name, true, Translator.trans('Group Name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'label', Translator.trans('Group Label'), datagroup.label, true, Translator.trans('Group Label')));
 		attributesContainer.append(requiredAttributes);
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">Description</div><div class="panel-body datagroup-description">' + datagroup.description + '</div></div>');
+		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body datagroup-description">' + datagroup.description + '</div></div>');
 		dataPanelBody.append('<div class="panel panel-default datas-panel" id="' + dataElementId + '-datas-panel"><div class="panel-body sortable"></div></div>');
 		dataPanelCollapse.append(dataPanelBody);
 		dataPanel.append(dataPanelCollapse);
@@ -1854,25 +1884,25 @@ THE SOFTWARE.
 		var dataElementId = 'datagroup-' + datagroup.id;
 		var dataPanelContainer = $('<div>', { 'class': 'panel-group', id: dataElementId, role: 'tablist', 'aria-multiselectable': 'true' });
 		var dataPanel = $('<div>', { 'class': 'panel panel-success' });
-		dataPanel.append('<div class="panel-heading" role="tab" id="' + dataElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + dataElementId + '" href="#collapse' + dataElementId + '" aria-expanded="true" aria-controls="collapse' + dataElementId + '">Group ' + datagroup.label + '</a></h4></div>');
+		dataPanel.append('<div class="panel-heading" role="tab" id="' + dataElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + dataElementId + '" href="#collapse' + dataElementId + '" aria-expanded="true" aria-controls="collapse' + dataElementId + '">' + Translator.trans('Group') + ' ' + datagroup.label + '</a></h4></div>');
 		var dataPanelCollapse = $('<div id="collapse' + dataElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + dataElementId + '-panel"></div>');
 		var dataPanelBody = $('<div class="panel-body"></div>');
 		var dataContainer = $('<div class="panel panel-default data-container datagroup" id="' + dataElementId + '-attributes-panel" data-id="' + datagroup.id + '"></div>');
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-2 control-label">Group Name</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="Group name" value="' + datagroup.name + '" /></div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-label" class="col-sm-2 control-label">Group Label</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-label" id="' + dataElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="Group label" value="' + datagroup.label + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-2 control-label">' + Translator.trans('Group Name') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="' + Translator.trans('Group name') + '" value="' + datagroup.name + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-label" class="col-sm-2 control-label">' + Translator.trans('Group Label') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-label" id="' + dataElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="' + Translator.trans('Group label') + '" value="' + datagroup.label + '" /></div></div>');
 		attributesContainer.append(requiredAttributes);
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">Description</div><div class="panel-body"><textarea rows="5" name="' + dataElementId + '-description" id="' + dataElementId + '-description" wrap="hard" class="form-control datagroup-description">' + datagroup.description + '</textarea></div></div>');
+		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + dataElementId + '-description" id="' + dataElementId + '-description" wrap="hard" class="form-control datagroup-description">' + datagroup.description + '</textarea></div></div>');
 		var dataButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + dataElementId + '-buttons-panel"></div>');
 		var dataButtonsBody = $('<div class="panel-body datagroup-buttons"></div>');
-		dataButtonsBody.append('<button class="btn btn-success pull-right validate-edit-datagroup">Validate <span class="glyphicon glyphicon-ok"></span></button>');
-		dataButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-datagroup">Cancel</span></button>');
-		dataButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> <span class="error-message"></span></div>');
+		dataButtonsBody.append('<button class="btn btn-success pull-right validate-edit-datagroup">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
+		dataButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-datagroup">' + Translator.trans('Cancel') + '</span></button>');
+		dataButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		dataButtonsPanel.append(dataButtonsBody);
 		dataPanelBody.append(dataButtonsPanel);
 		dataPanelCollapse.append(dataPanelBody);
@@ -1988,8 +2018,8 @@ THE SOFTWARE.
 		var attributesContainer = dataContainer.find('.attributes-container');
 		var dataLabel = attributesContainer.find("p[data-attribute='label']").attr('data-value');
 		bootbox.confirm({
-			title: 'Deleting data',
-			message: "Are you sure you want to delete the data : " + dataLabel + " ?", 
+			title: Translator.trans('Deleting data'),
+		message: Translator.trans("Are you sure you want to delete the data : %label%", { 'label': dataLabel }), 
 			callback: function(confirmed) {
 				if (confirmed) {
 					var name = attributesContainer.find("p[data-attribute='name']").attr('data-value');
@@ -2057,8 +2087,8 @@ THE SOFTWARE.
 		var attributesContainer = dataContainer.find('.attributes-container');
 		var dataLabel = attributesContainer.find("p[data-attribute='label']").attr('data-value');
 		bootbox.confirm({
-			title: 'Deleting datagroup',
-			message: "Are you sure you want to delete the data group : " + dataLabel + " ?", 
+			title: Translator.trans('Deleting datagroup'),
+			message: Translator.trans("Are you sure you want to delete the data group : %label% ?", { 'label': dataLabel }), 
 			callback: function(confirmed) {
 				if (confirmed) {
 					// TODO : update dataset to delete all data in this datagroup
@@ -2078,7 +2108,7 @@ THE SOFTWARE.
 			if (type === 'text' || type === 'number') {
 				attribute    += '        <p data-attribute="' + name + '" data-value="' + value + '" class="form-control-static simple-value">' + value + '</p>';
 			} else if (type === 'checkbox') {
-				attribute    += '        <p data-attribute="' + name + '" class="form-control-static simple-value" data-value="' + (value !== '' ? 1 : 0) + '">' + (value !== '' ? 'Yes' : 'No') + '</p>';
+				attribute    += '        <p data-attribute="' + name + '" class="form-control-static simple-value" data-value="' + (value !== '' ? 1 : 0) + '">' + (value !== '' ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
 			} else if (type === 'select') {
 				options = jQuery.parseJSON(options);
 				$.each(options, function(ovalue, olabel) {
@@ -2431,12 +2461,12 @@ $(document).ready(function() {
 		});
 		$('.panel-collapse').on('hidden.bs.collapse', function () {
 			var butt = $(this).parent().find('button.toggle-collapse-all');
-			butt.html('Expand all <span class="glyphicon glyphicon-expand"></span>');
+			butt.html(Translator.trans('Expand all') + ' <span class="glyphicon glyphicon-expand"></span>');
 			butt.addClass('expand-all').removeClass('collapse-all');
 		});
 		$('.panel-collapse').on('shown.bs.collapse', function () {
 			var butt = $(this).parent().find('button.toggle-collapse-all');
-			butt.html('Collapse all <span class="glyphicon glyphicon-collapse-up"></span>');
+			butt.html(Translator.trans('Collapse all') + ' <span class="glyphicon glyphicon-collapse-up"></span>');
 			butt.addClass('collapse-all').removeClass('expand-all');
 		});
 		$('button.toggle-collapse-all').on('click',function() {
@@ -2447,14 +2477,14 @@ $(document).ready(function() {
 						$(objectID).collapse('show');
 					}
 				});
-				$(this).html('Collapse all <span class="glyphicon glyphicon-collapse-up"></span>');
+				$(this).html(Translator.trans('Collapse all') + ' <span class="glyphicon glyphicon-collapse-up"></span>');
 				$(this).addClass('collapse-all').removeClass('expand-all');
 			} else if ($(this).hasClass('collapse-all')) {
 				$(this).parent().find('a[data-toggle="collapse"]').each(function(){
 					var objectID=$(this).attr('href');
 					$(objectID).collapse('hide');
 				});
-				$(this).html('Expand all <span class="glyphicon glyphicon-expand"></span>');
+				$(this).html(Translator.trans('Expand all') + ' <span class="glyphicon glyphicon-expand"></span>');
 				$(this).addClass('expand-all').removeClass('collapse-all');
 			}
 		});
@@ -2481,14 +2511,14 @@ $(document).ready(function() {
 				var simulatorinput = $("#simulator-import-form input[name='simulator-file']");
 				var simulatorfile = simulatorinput.val();
 				if (simulatorfile == '') {
-					errors.push("Please, choose a simulator file");
+					errors.push(Translator.trans("Please, choose a simulator file"));
 				} else if (! /\.xml$/.test(simulatorfile)) {
-					errors.push("The file extension of the simulator file must be '.xml'");
+					errors.push(Translator.trans("The file extension of the simulator file must be '.xml'"));
 				}
 				var stylesheetinput = $("#simulator-import-form input[name='simulator-stylesheet']");
 				var stylesheetfile = stylesheetinput.val();
 				if (stylesheetfile != '' && ! /\.css$/.test(stylesheetfile)) {
-					errors.push("The file extension of the stylesheet must be '.css'");
+					errors.push(Translator.trans("The file extension of the stylesheet must be '.css'"));
 				}
 				if (errors.length > 0) {
 					Simulators.showErrors(errors);
@@ -2506,7 +2536,7 @@ $(document).ready(function() {
 						});
 					}
 					if (errors.length > 0) {
-						Simulators.showErrors(errors, "CSS Validation errors : ");
+						Simulators.showErrors(errors, Translator.trans("CSS Validation errors") + " : ");
 						return false;
 					}
 				}
@@ -2522,11 +2552,11 @@ $(document).ready(function() {
 					}, 
 					'json'
 				).fail(function() {
-					errors.push( "XML Validation against schema fail" );
+					errors.push( Translator.trans("XML Validation against schema fail" ) );
 					Simulators.showErrors(errors);
 				}).done(function() {
 					if (errors.length > 0) {
-						Simulators.showErrors(errors, "XML Validation errors : ");
+						Simulators.showErrors(errors, Translator.trans("XML Validation errors") + " : ");
 					} else {
 						Simulators.hideErrors();
 						Admin.updated = false;

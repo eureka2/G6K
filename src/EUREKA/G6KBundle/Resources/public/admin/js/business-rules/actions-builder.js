@@ -55,7 +55,7 @@ THE SOFTWARE.
 	    buildActions: function(data) {
 			var container = $("<div>", {"class": "actions"});
 			var buttons = $("<div>", {"class": "action-buttons"});
-			var addButton = $("<button>", {"class": "add btn-primary fa fa-plus-square", "text": "  Add Action"});
+			var addButton = $("<button>", {"class": "add btn-primary fa fa-plus-square", "text": "  " + Translator.trans("Add Action")});
 			var self = this;
 	
 			addButton.click(function(e) {
@@ -116,7 +116,7 @@ THE SOFTWARE.
 				div.attr("class", "action " + val);
 			});
 	
-			var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove", "text": " ", "title": "Remove this Action"});
+			var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove", "text": " ", "title": Translator.trans("Remove this Action")});
 			removeLink.click(function(e) {
 				e.preventDefault();
 				div.remove();
@@ -149,7 +149,7 @@ THE SOFTWARE.
 							label: fieldOptions.label,
 							name: name,
 							fields: [{
-										label: 'to', 
+										label: Translator.trans('to'), 
 										name: 'newValue',
 										fieldType: fieldType,
 										options: options

@@ -26,19 +26,19 @@ THE SOFTWARE.
 
 {% block content %}
 <div class="jumbotron">
-  <h1>Welcome to G6K world!</h1>
-  <p>G6K is a calculation simulator engine</p>
-  <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+  <h1>{{ 'Welcome to G6K world!'|trans }}</h1>
+  <p>{{ 'G6K is a calculation simulator engine'|trans }}</p>
+  <p><a class="btn btn-primary btn-lg" href="#" role="button">{{ 'Learn more'|trans }}</a></p>
 </div>
 
 <div class="row thumbnails">
 	{% if is_granted('ROLE_CONTRIBUTOR') %}
    <div class="col-sm-6 col-md-3">
       <a href="{{ path('eureka_g6k_admin_datasources') }}" class="thumbnail">
-         <img src="{{ asset('bundles/eurekag6k/admin/images/database1.png') }}" alt="Data sources">
+         <img src="{{ asset('bundles/eurekag6k/admin/images/database1.png') }}" alt="{{ 'Data sources'|trans }}">
       <div class="caption">
-         <h3>{{ datasourcesCount }} Data sources</h3>
-         <p>Data sources management.</p>
+         <h3>{{ datasourcesCount }} {{ 'Data sources'|trans }}</h3>
+         <p>{{ 'Data sources management'|trans }}</p>
       </div>
       </a>
    </div>
@@ -46,10 +46,10 @@ THE SOFTWARE.
 	{% if is_granted('ROLE_MANAGER') %}
    <div class="col-sm-6 col-md-3">
       <a href="{{ path('eureka_g6k_admin_simulators') }}" class="thumbnail">
-         <img src="{{ asset('bundles/eurekag6k/admin/images/gear.png') }}" alt="Simulators">
+         <img src="{{ asset('bundles/eurekag6k/admin/images/gear.png') }}" alt="{{ 'Simulators'|trans }}">
        <div class="caption">
-         <h3>{{ simulatorsCount }} Simulators</h3>
-         <p>Simulators definition.</p>
+         <h3>{{ simulatorsCount }} {{ 'Simulators'|trans }}</h3>
+         <p>{{ 'Simulators definition'|trans }}</p>
       </div>
      </a>
 	</div>
@@ -57,20 +57,20 @@ THE SOFTWARE.
 	{% if is_granted('ROLE_SUPER_ADMIN') %}
    <div class="col-sm-6 col-md-3">
       <a href="{{ path('eureka_g6k_admin_users') }}" class="thumbnail">
-         <img src="{{ asset('bundles/eurekag6k/admin/images/user.png') }}" alt="Users">
+         <img src="{{ asset('bundles/eurekag6k/admin/images/user.png') }}" alt="{{ 'Users'|trans }}">
       <div class="caption">
-         <h3>{{ usersCount }} Users</h3>
-         <p>Users management</p>
+         <h3>{{ usersCount }} {{ 'Users'|trans }}</h3>
+         <p>{{ 'Users management'|trans }}</p>
       </div>
       </a>
    </div>
    {% endif %}
    <div class="col-sm-6 col-md-3">
       <a href="#" class="thumbnail">
-         <img src="{{ asset('bundles/eurekag6k/admin/images/help.png') }}" alt="Help">
+         <img src="{{ asset('bundles/eurekag6k/admin/images/help.png') }}" alt="{{ 'Help'|trans }}">
       <div class="caption">
-         <h3>Help</h3>
-         <p>Tutorials</p>
+         <h3>{{ 'Help'|trans }}</h3>
+         <p>{{ 'Tutorials'|trans }}</p>
       </div>
       </a>
    </div>

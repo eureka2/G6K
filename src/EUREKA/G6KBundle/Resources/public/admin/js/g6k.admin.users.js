@@ -39,16 +39,16 @@ THE SOFTWARE.
 			hideIdentifier: true,
 			buttons: {
 				save: {
-					html: 'Save'
+					html: Translator.trans('Save')
 				},
 				confirm: {
-					html: 'Confirm'
+					html: Translator.trans('Confirm')
 				}
 			},
 			columns: {
 				identifier: [0, 'id'],
 				editable: [
-					[1, 'userName'], [2, 'email', 'email'], [3, 'password', 'password'], [4, 'enabled', 'checkbox', '{"1": "Yes", "0": "No"}', '1'], [5, 'locked', 'checkbox', '{"1": "Yes", "0": "No"}', '1'], [6, 'expired', 'checkbox', '{"1": "Yes", "0": "No"}', '1'], [7, 'expiresAt'], [8, 'credentialsExpired', 'checkbox', '{"1": "Yes", "0": "No"}', '1'], [9, 'credentialExpireAt'], [10, 'roles', 'multiple', '{ "ROLE_USER": "user", "ROLE_MANAGER": "manager", "ROLE_CONTRIBUTOR": "contributor", "ROLE_ADMIN": "admin", "ROLE_SUPER_ADMIN": "superadmin" }']
+					[1, 'userName'], [2, 'email', 'email'], [3, 'password', 'password'], [4, 'enabled', 'checkbox', '{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1'], [5, 'locked', 'checkbox', '{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1'], [6, 'expired', 'checkbox', '{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1'], [7, 'expiresAt'], [8, 'credentialsExpired', 'checkbox', '{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1'], [9, 'credentialExpireAt'], [10, 'roles', 'multiple', '{ "ROLE_USER": "user", "ROLE_MANAGER": "manager", "ROLE_CONTRIBUTOR": "contributor", "ROLE_ADMIN": "admin", "ROLE_SUPER_ADMIN": "superadmin" }']
 				]
 			},
 			onDraw: function() {
@@ -69,13 +69,13 @@ THE SOFTWARE.
 				var expiresAt = row.find('input[name=expiresAt]');
 				var credentialExpireAt = row.find('input[name=credentialExpireAt]').val();
 				if (userName.val() == '' || userName.val().length < 3) {
-					errors.push('Please enter a valid user name (3 car. min).');
+					errors.push(Translator.trans('Please enter a valid user name (3 car. min).'));
 				}
 				if (email.val() == '' || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.val())) {
-					errors.push('Please enter a valid email address.');
+					errors.push(Translator.trans('Please enter a valid email address.'));
 				}
 				if (password.val() == '' || password.val().length < 6) {
-					errors.push('Please enter a valid password (6 car. min).');
+					errors.push(Translator.trans('Please enter a valid password (6 car. min).'));
 				}
 				var alert = $('.alert ul');
 				alert.empty();
@@ -123,7 +123,7 @@ $(document).ready(function() {
 				$(this).empty();
 				$(this).text(text);
 			});
-			$('#users tbody').prepend('<tr><td class="integer">0</td><td class="text"></td><td class="text"></td><td class="password"></td><td class="boolean">Yes</td><td class="boolean">No</td><td class="boolean">No</td><td class="date"></td><td class="boolean">No</td><td class="date"></td><td class="choice"></td><td class="date"></td></tr>');
+			$('#users tbody').prepend('<tr><td class="integer">0</td><td class="text"></td><td class="text"></td><td class="password"></td><td class="boolean">' + Translator.trans('Yes') + '</td><td class="boolean">' + Translator.trans('No') + '</td><td class="boolean">' + Translator.trans('No') + '</td><td class="date"></td><td class="boolean">' + Translator.trans('No') + '</td><td class="date"></td><td class="choice"></td><td class="date"></td></tr>');
 			Users.doeditable();
 			$('#users tbody tr:first-child').find('.tabledit-edit-button').trigger( "click" );
 		});
@@ -132,10 +132,11 @@ $(document).ready(function() {
 			pageRowCount: 20,
 			arrowDown: 'fa-angle-down',
 			arrowUp: 'fa-angle-up',
-			entriesPerPageText : 'Lignes par page',
-			previousText: 'Précédent',
-			nextText: 'Suivant',
-			searchText: 'Recherche...'
+			pageFieldText : Translator.trans('Lines per page'),
+			previousText: Translator.trans('Next'),
+			nextText: Translator.trans('Previous'),
+			searchFieldText: Translator.trans('Search') + '...',
+			showSearchForm : 0
 		});
 		$('#users').resizableColumns({
 			store: store

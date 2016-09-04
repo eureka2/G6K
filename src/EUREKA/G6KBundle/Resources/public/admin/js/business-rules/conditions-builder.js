@@ -38,37 +38,48 @@ THE SOFTWARE.
 	};
   
 	var baseOperators = [
-		{label: "is present", name: "present", fieldType: "none"},
-		{label: "is not present", name: "blank", fieldType: "none"},
+		{label: Translator.trans("is present"), name: "present", fieldType: "none"},
+		{label: Translator.trans("is not present"), name: "blank", fieldType: "none"},
 	];
    
 	var textOperators = baseOperators.concat([
-		{label: "is equal to", name: "=", fieldType: "expression"},
-		{label: "is not equal to", name: "!=", fieldType: "expression"},
-		{label: "contains", name: "~", fieldType: "text"},
-		{label: "not contains", name: "!~", fieldType: "text"},
-		{label: "matches", name: "matches", fieldType: "text"}
+		{label: Translator.trans("is equal to"), name: "=", fieldType: "expression"},
+		{label: Translator.trans("is not equal to"), name: "!=", fieldType: "expression"},
+		{label: Translator.trans("contains"), name: "~", fieldType: "text"},
+		{label: Translator.trans("not contains"), name: "!~", fieldType: "text"},
+		{label: Translator.trans("matches"), name: "matches", fieldType: "text"}
 	]);
    
 	var numericOperators = baseOperators.concat([
-		{label: "is equal to", name: "=", fieldType: "expression"},
-		{label: "is not equal to", name: "!=", fieldType: "expression"},
-		{label: "is greater than", name: ">", fieldType: "expression"},
-		{label: "is greater than or equal to", name: ">=", fieldType: "expression"},
-		{label: "is less than", name: "<", fieldType: "expression"},
-		{label: "is less than or equal to", name: "<=", fieldType: "expression"},
-		{label: "contains", name: "~", fieldType: "expression"},
-		{label: "not contains", name: "!~", fieldType: "expression"},
+		{label: Translator.trans("is equal to"), name: "=", fieldType: "expression"},
+		{label: Translator.trans("is not equal to"), name: "!=", fieldType: "expression"},
+		{label: Translator.trans("is greater than"), name: ">", fieldType: "expression"},
+		{label: Translator.trans("is greater than or equal to"), name: ">=", fieldType: "expression"},
+		{label: Translator.trans("is less than"), name: "<", fieldType: "expression"},
+		{label: Translator.trans("is less than or equal to"), name: "<=", fieldType: "expression"},
+		{label: Translator.trans("contains"), name: "~", fieldType: "expression"},
+		{label: Translator.trans("not contains"), name: "!~", fieldType: "expression"},
+	]);
+   
+	var dateOperators = baseOperators.concat([
+		{label: Translator.trans("is"), name: "=", fieldType: "expression"},
+		{label: Translator.trans("is not"), name: "!=", fieldType: "expression"},
+		{label: Translator.trans("is after"), name: ">", fieldType: "expression"},
+		{label: Translator.trans("is not before"), name: ">=", fieldType: "expression"},
+		{label: Translator.trans("is before"), name: "<", fieldType: "expression"},
+		{label: Translator.trans("is not after"), name: "<=", fieldType: "expression"},
+		{label: Translator.trans("contains"), name: "~", fieldType: "expression"},
+		{label: Translator.trans("not contains"), name: "!~", fieldType: "expression"},
 	]);
    
 	var choiceOperators = baseOperators.concat([
-		{label: "is equal to", name: "=", fieldType: "select"},
-		{label: "is not equal to", name: "!=", fieldType: "select"},
+		{label: Translator.trans("is equal to"), name: "=", fieldType: "select"},
+		{label: Translator.trans("is not equal to"), name: "!=", fieldType: "select"},
 	]);
    
 	var booleanOperators = baseOperators.concat([
-		{label: "is true", name: "isTrue", fieldType: "checkbox"},
-		{label: "is false", name: "isFalse", fieldType: "checkbox"},
+		{label: Translator.trans("is true"), name: "isTrue", fieldType: "checkbox"},
+		{label: Translator.trans("is false"), name: "isFalse", fieldType: "checkbox"},
 	]);
 	
 	var inverseOperators = {
@@ -102,8 +113,11 @@ THE SOFTWARE.
 					case 'text': case 'textarea': case 'department': case 'country':
 						self.fields[name].operators = textOperators;
 						break;
-					case 'integer': case 'number': case 'money': case 'percent': case 'date': case 'day': case 'month': case 'year': case 'region':
+					case 'integer': case 'number': case 'money': case 'percent': case 'region':
 						self.fields[name].operators = numericOperators;
+						break;
+					case 'date': case 'day': case 'month': case 'year':
+						self.fields[name].operators = dateOperators;
 						break;
 					case 'choice':
 					case 'multichoice':
@@ -462,34 +476,34 @@ THE SOFTWARE.
 			var kind, text;
 			if (ruleData.all) { 
 				kind = "all";
-				text = "of the following conditions are met :";		
+				text = Translator.trans("of the following conditions are met") + " :";
 			} else if (ruleData.any) {
 				kind = "any"; 
-				text = "of the following conditions is met :";		
+				text = Translator.trans("of the following conditions is met") + " :";
 			} else if (ruleData.none) {
 				kind = "none"; 
-				text = "of the following conditions is met :";		
+				text = Translator.trans("of the following conditions is met") + " :";
 			}
 			if (!kind) { return; }
 			var div = $("<div>", {"class": "conditional " + kind});
 			var selectWrapper = $("<div>", {"class": "all-any-none-wrapper"});
 			var select = $("<select>", {"class": "all-any-none form-control"});
-			select.append($("<option>", {"value": "all", "text": "All", "selected": kind == "all"}));
-			select.append($("<option>", {"value": "any", "text": "Any", "selected": kind == "any"}));
-			select.append($("<option>", {"value": "none", "text": "None", "selected": kind == "none"}));
+			select.append($("<option>", {"value": "all", "text": Translator.trans("All"), "selected": kind == "all"}));
+			select.append($("<option>", {"value": "any", "text": Translator.trans("Any"), "selected": kind == "any"}));
+			select.append($("<option>", {"value": "none", "text": Translator.trans("None"), "selected": kind == "none"}));
 			selectWrapper.append(select);
 			selectWrapper.append($("<span>", {text: text}));
 			div.append(selectWrapper);
 			select.change(function() {
 				switch($(this).val()) {
 					case "all":
-						$(this).parent('div').children('span').text("of the following conditions are met :");  
+						$(this).parent('div').children('span').text(Translator.trans("of the following conditions are met") + " :");  
 						break;
 					case "any": case "none":
-						$(this).parent('div').children('span').text("of the following conditions is met :");  
+						$(this).parent('div').children('span').text(Translator.trans("of the following conditions is met") +" :");  
 				}
 			});
-			var addRuleLink = $("<button>", {"class": "add-condition btn-primary fa fa-plus-square", "text": "  Add Condition"});
+			var addRuleLink = $("<button>", {"class": "add-condition btn-primary fa fa-plus-square", "text": "  " + Translator.trans("Add Condition")});
 			var self = this;
 			addRuleLink.click(function(e) {
 				e.preventDefault();
@@ -499,7 +513,7 @@ THE SOFTWARE.
 			});
 			div.append(addRuleLink);
 	
-			var addConditionLink = $("<button>", {"class": "add-sub-condition btn-info  fa fa-plus-circle", "text": " Add Sub-Condition"});
+			var addConditionLink = $("<button>", {"class": "add-sub-condition btn-info  fa fa-plus-circle", "text": " " + Translator.trans("Add Sub-Condition")});
 			addConditionLink.click(function(e) {
 				e.preventDefault();
 				var f = self.fields[Object.keys(self.fields)[0]];
@@ -508,7 +522,7 @@ THE SOFTWARE.
 			});
 			div.append(addConditionLink);
 	
-			var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove", "text": " ", "title": "Remove this Sub-Condition"});
+			var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove", "text": " ", "title": Translator.trans("Remove this Sub-Condition")});
 			removeLink.click(function(e) {
 				e.preventDefault();
 				div.remove();
@@ -569,7 +583,7 @@ THE SOFTWARE.
 	}
 	
 	function removeLink() {
-	    var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove", "text": " ", "title": "Remove this Condition"});
+	    var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove", "text": " ", "title": Translator.trans("Remove this Condition")});
 	    removeLink.click(onRemoveLinkClicked);
 	    return removeLink;
 	}

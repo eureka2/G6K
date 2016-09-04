@@ -86,7 +86,16 @@ class Panel {
 
 	public function getFieldSetById($id) {
 		foreach ($this->fieldsets as $fieldset) {
-			if ($fieldset->getId() == $id) {
+			if ($fieldset instanceof FieldSet && $fieldset->getId() == $id) {
+				return $fieldset;
+			}
+		}
+		return null;
+	}
+
+	public function getBlockInfoById($id) {
+		foreach ($this->fieldsets as $fieldset) {
+			if ($fieldset instanceof BlockInfo && $fieldset->getId() == $id) {
 				return $fieldset;
 			}
 		}
