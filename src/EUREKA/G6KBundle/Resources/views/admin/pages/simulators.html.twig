@@ -254,7 +254,7 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro showRuleAction(action, simulator) %}
-<div class="rule-action" data-id="{{ action.id }}" data-name="{{ action.name }}" data-target="{{ action.target }}" data-data="{{ action.data }}" data-datagroup="{{ action.datagroup }}" data-step="{{ action.step }}" data-fieldset="{{ action.fieldset }}" data-field="{{ action.field }}" data-blockinfo="{{ action.blockinfo }}" data-chapter="{{ action.chapter }}" data-section="{{ action.section }}" data-prenote="{{ action.prenote }}" data-postnote="{{ action.postnote }}" data-action="{{ action.action }}" data-footnote="{{ action.footnote }}" data-choice="{{ action.choice }}" data-value="{{ action.value }}">
+<div class="rule-action" data-id="{{ action.id }}" data-name="{{ action.name }}" data-target="{{ action.target }}" data-data="{{ action.data }}" data-datagroup="{{ action.datagroup }}" data-step="{{ action.step }}" data-panel="{{ action.panel }}" data-fieldset="{{ action.fieldset }}" data-field="{{ action.field }}" data-blockinfo="{{ action.blockinfo }}" data-chapter="{{ action.chapter }}" data-section="{{ action.section }}" data-prenote="{{ action.prenote }}" data-postnote="{{ action.postnote }}" data-action="{{ action.action }}" data-footnote="{{ action.footnote }}" data-choice="{{ action.choice }}" data-value="{{ action.value }}">
 {% if action.name == 'notifyError' or action.name == 'notifyWarning' %}
 	<span class="action-name">{{ action.name == 'notifyError' ? 'notify Error'|trans : 'notify Warning'|trans }} : </span> <span class="action-value">«{{ action.value }}»</span> <span class="action-target"> {{ 'for'|trans }} {{ action.target|trans }} </span>
 	{% if action.target == 'data' %}
@@ -306,11 +306,9 @@ THE SOFTWARE.
 		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'footnote' %}
 		<span class="action-footnote">«{{ action.footnote }}»</span>
-		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
 		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'action' %}
 		<span class="action-action">«{{ action.action }}»</span>
-		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
 		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
 	{% elseif action.target == 'choice' %}
 		<span class="action-choice">«{{ action.choice }}»</span>

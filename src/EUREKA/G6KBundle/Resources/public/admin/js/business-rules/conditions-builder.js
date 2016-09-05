@@ -636,7 +636,7 @@ THE SOFTWARE.
 		        $this.after($("<textarea>", {"class": "value form-control"}));
 		    case "select":
 		        var select = $("<select>", {"class": "value form-control"});
-		        var options = fieldSelect.find("> :selected").data("options");
+		        var options = fieldSelect.find("> :selected").data("options") || [];
 		        for (var i=0; i < options.length; i++) {
 		          var opt = options[i];
 		          select.append($("<option>", {"text": opt.label || opt.name, "value": opt.name}));

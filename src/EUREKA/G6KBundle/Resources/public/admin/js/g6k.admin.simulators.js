@@ -106,7 +106,7 @@ THE SOFTWARE.
 			// console.log('Expression being changed'); 
 		},
 		onError: function(error) { console.log('error : ' + error); },
-		language: 'en',
+		language: Admin.lang,
 		operandHolder: { classes: ['button', 'button-default'] },
 		operatorHolder: { classes: ['button', 'button-default'] },
 		nestedExpression: { classes: ['button', 'button-default'] }
@@ -1115,12 +1115,10 @@ THE SOFTWARE.
 					break;
 				case 'footnote':
 					actionContainer.append('<span class="action-footnote">«»</span>')
-					actionContainer.append('<span class="action-panel"> </span>');
 					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'action':
 					actionContainer.append('<span class="action-action">«»</span>');
-					actionContainer.append('<span class="action-panel"> </span>');
 					actionContainer.append('<span class="action-step"> </span>');
 					break;
 				case 'choice':
@@ -1328,7 +1326,7 @@ THE SOFTWARE.
 		var simulatorAttributes = $('<div></div>');
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-name', 'text', 'name', Translator.trans('Name'), simulator.name, true, 'name'));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-label', 'text', 'label', Translator.trans('Label'), simulator.label, true, 'label'));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-defaultView', 'text', 'defaultView', Translator.trans('Default view'), simulator.defaultView, false, 'defaultView'));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-defaultView', 'select', 'defaultView', Translator.trans('Default view'), simulator.defaultView, false, Translator.trans('Select a view'), JSON.stringify(views)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-referer', 'text', 'referer', Translator.trans('Main referer'), simulator.referer, false, 'referer'));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-dateFormat', 'select', 'dateFormat', Translator.trans('Date format'), simulator.dateFormat, true, Translator.trans('Select a format'), JSON.stringify(Simulators.dateFormats)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'text', 'decimalPoint', Translator.trans('Decimal point'), simulator.decimalPoint, true, Translator.trans('Decimal point')));
