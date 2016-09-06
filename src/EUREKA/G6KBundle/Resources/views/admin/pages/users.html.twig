@@ -71,7 +71,7 @@ THE SOFTWARE.
 										<td class="date">{{ user.expiresAt }}</td>
 										<td class="boolean">{{ user.credentialsExpired == 0 ? 'No'|trans : 'Yes'|trans }}</td>
 										<td class="date">{{ user.credentialExpireAt }}</td>
-										<td class="choice">{{ user.roles|join(', ')|replace({"ROLE_USER": "user", "ROLE_MANAGER": "manager", "ROLE_CONTRIBUTOR": "contributor", "ROLE_ADMIN": "admin", "ROLE_SUPER_ADMIN": "superadmin"}) }}</td>
+										<td class="choice">{{ user.roles|join(', ')|replace({"ROLE_USER": "user"|trans, "ROLE_MANAGER": "manager"|trans, "ROLE_CONTRIBUTOR": "contributor"|trans, "ROLE_ADMIN": "admin"|trans, "ROLE_SUPER_ADMIN": "superadmin"|trans}) }}</td>
 										<td class="date">{{ user.lastLogin|date("d/m/Y H:i:s") }}</td>
 								</tr>
 									{% endfor %}

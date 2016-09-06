@@ -44,6 +44,8 @@ use EUREKA\G6KBundle\Entity\Chapter;
 use EUREKA\G6KBundle\Entity\Section;
 use EUREKA\G6KBundle\Entity\BusinessRule;
 use EUREKA\G6KBundle\Entity\RuleAction;
+use EUREKA\G6KBundle\Entity\DOMClient as Client;
+use EUREKA\G6KBundle\Entity\ResultFilter;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -724,6 +726,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'type' => $gdata->getType()
 					);
 					if ($gdata->getType() == 'choice' || $gdata->getType() == 'multichoice') {
+						$this->populateChoiceWithSource($gdata);
 						$options = array();
 						foreach ($gdata->getChoices() as $choice) {
 							if ($choice instanceof Choice) {
@@ -783,6 +786,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'type' => $data->getType()
 				);
 				if ($data->getType() == 'choice' || $data->getType() == 'multichoice') {
+					$this->populateChoiceWithSource($data);
 					$options = array();
 					foreach ($data->getChoices() as $choice) {
 						if ($choice instanceof Choice) {
@@ -2001,6 +2005,247 @@ class SimulatorsAdminController extends BaseAdminController {
 			$datas[] = $clause;
 		}
 		return $datas;
+	}
+
+	protected function formatParamValue($param) {
+		$data = $this->simu->getDataById($param->getData());
+		$value = $data->getValue();
+		if (strlen($value) == 0) {
+			return null;
+		}
+		switch ($data->getType()) {
+			case "date":
+				$format = $param->getFormat();
+				if ($format != "" && $value != "") {
+					$date = \DateTime::createFromFormat("j/n/Y", $value);
+					$value = $date->format($format);
+				}
+				break;
+			case "day":
+				$format = $param->getFormat();
+				if ($format != "" && $value != "") {
+					$date = \DateTime::createFromFormat("j/n/Y", $value."/1/2015");
+					$value = $date->format($format);
+				}
+				break;
+			case "month":
+				$format = $param->getFormat();
+				if ($format != "" && $value != "") {
+					$date = \DateTime::createFromFormat("j/n/Y", "1/".$value."/2015");
+					$value = $date->format($format);
+				}
+				break;
+			case "year":
+				$format = $param->getFormat();
+				if ($format != "" && $value != "") {
+					$date = \DateTime::createFromFormat("j/n/Y", "1/1/".$value);
+					$value = $date->format($format);
+				}
+				break;
+		}
+		return $value;
+	}
+
+	protected function populateChoiceWithSource($data) 
+	{
+		$choiceSource = $data->getChoiceSource();
+		if ($choiceSource != null) {
+			$source = $choiceSource->getId();
+			if ($source != "") {
+				$source = $this->simu->getSourceById($source);
+				if ($source !== null) {
+					$result = $this->processSource($source);
+					if ($result !== null) {
+						$n = 0;
+						foreach ($result as $row) {
+						$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
+							$choice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
+							$data->addChoice($choice);
+						}
+					}
+				}
+			}
+		}
+		foreach ($data->getChoices() as $choice) {
+			if ($choice instanceof ChoiceGroup) {
+				if ($choice->getChoiceSource() !== null) {
+					$choiceSource = $choice->getChoiceSource();
+					if ($choiceSource != null) {
+						$source = $choiceSource->getId();
+						if ($source != "") {
+							$source = $this->simu->getSourceById($source);
+							if ($source !== null) {
+								$result = $this->processSource($source);
+								if ($result !== null) {
+									$n = 0;
+									foreach ($result as $row) {
+										$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
+										$gchoice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
+										$choice->addChoice($gchoice);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	protected function processSource(Source $source) {
+		$params = $source->getParameters();
+		$datasource = $source->getDatasource();
+		if (is_numeric($datasource)) {
+			$datasource = $this->simu->getDatasourceById((int)$datasource);
+		} else {
+			$datasource = $this->simu->getDatasourceByName($datasource);
+		}
+		switch ($datasource->getType()) {
+			case 'uri':
+				$query = "";
+				$path = "";
+				$datas = array();
+				foreach ($params as $param) {
+					$value = $this->formatParamValue($param);
+					if ($value === null) {
+						return null;
+					}
+					if ($param->getType() == 'path') {
+						$path .= "/".$value;
+					} elseif ($param->getType() == 'data') {
+						$name = $param->getName();
+						if (isset($datas[$name])) {
+							$datas[$name][] = $value;
+						}  else {
+							$datas[$name] = array($value);
+						}
+					} else {
+						$query .= "&".$param->getName()."=".$value;
+					}
+				}
+				$uri = $datasource->getUri();
+				if ($path != "") {
+					$uri .= $path;
+				} 
+				if ($query != "") {
+					$uri .= "?".substr($query, 1);
+				}
+				$client = Client::createClient();
+				if ($datasource->getMethod() == "GET") {
+					$result = $client->get($uri);
+				} else {
+					$result = $client->post($uri, $data);
+				}
+				break;
+			case 'database':
+			case 'internal':
+				$args = array();
+				$args[] = $source->getRequest();
+				foreach ($params as $param) {
+					$value = $this->formatParamValue($param);
+					if ($value === null) {
+						return null;
+					}
+					$args[] = $value;
+				}
+				$query = call_user_func_array('sprintf', $args);
+				$database = $this->simu->getDatabaseById($datasource->getDatabase());
+				$database->connect();
+				$result = $database->query($query);
+				break;
+		}
+		switch ($source->getReturnType()) {
+			case 'singleValue':
+				return $result;
+			case 'json':
+				$returnPath = $source->getReturnPath();
+				$returnPath = $this->replaceVariables($returnPath);
+				$json = json_decode($result, true);
+				$result = ResultFilter::filter("json", $json, $returnPath);
+				return $result;
+			case 'assocArray':
+				$returnPath = $source->getReturnPath();
+				$returnPath = $this->replaceVariables($returnPath);
+				$keys = explode("/", $returnPath);
+				foreach ($keys as $key) {
+					if (preg_match("/^([^\[]+)\[([^\]]+)\]$/", $key, $matches)) {
+						$key1 = $matches[1];
+						if (! isset($result[$key1])) {
+							break;
+						}
+						$result = $result[$key1];
+						$key = $matches[2];
+					}
+					if (ctype_digit($key)) {
+						$key = (int)$key;
+					}
+					if (! isset($result[$key])) {
+						break;
+					}
+					$result = $result[$key];
+				}
+				return $result;
+			case 'html':
+				$returnPath = $source->getReturnPath();
+				$returnPath = $this->replaceVariables($returnPath);
+				$result = ResultFilter::filter("html", $result, $returnPath, $datasource->getNamespaces());
+				return $result;
+			case 'xml':
+				$returnPath = $source->getReturnPath();
+				$returnPath = $this->replaceVariables($returnPath);
+				$result = ResultFilter::filter("xml", $result, $returnPath, $datasource->getNamespaces());
+				return $result;
+			case 'csv':
+				$returnPath = $source->getReturnPath();
+				$returnPath = $this->replaceVariables($returnPath);
+				$result = ResultFilter::filter("csv", $result, $returnPath, null, $source->getSeparator(), $source->getDelimiter());
+				return $result;
+		}
+		return null;
+	}
+
+	private function replaceVariable($matches) {
+		if (preg_match("/^\d+$/", $matches[1])) {
+			$id = (int)$matches[1];
+			$data = $this->simu->getDataById($id);
+		} else {
+			$name = $matches[3];
+			$data = $this->simu->getDataByName($name);
+		}
+		if ($data === null) {
+			return $matches[0];
+		}
+		if ($matches[2] == 'L') { 
+			$value = $data->getChoiceLabel();
+			if ($data->getType() == 'multichoice') {
+				$value = implode(',', $value);
+			}
+			return $value;
+		} else {
+			$value = $data->getValue();
+			switch ($data->getType()) {
+				case 'money': 
+					$value = number_format ( (float)$value , 2 , "." , " "); 
+				case 'percent':
+				case 'number': 
+					$value = str_replace('.', ',', $value);
+					break;
+				case 'array': 
+				case 'multichoice': 
+					$value = implode(',', $value);
+					break;
+			}
+			return $value;
+		}
+	}
+
+	private function replaceVariables($target) {
+		$result = preg_replace_callback(
+			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
+			array($this, 'replaceVariable'),
+			$target
+		);
+		return $result;
 	}
 
 	private function paragraphs ($text) {

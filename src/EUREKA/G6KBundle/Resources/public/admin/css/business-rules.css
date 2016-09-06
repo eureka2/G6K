@@ -37,6 +37,10 @@
 	width: 250px;
 }
 
+#business-rules .rule-container input.input-rule-label {
+	min-width: 400px;
+}
+
 #business-rules .rule-container select {
 	margin-right: 10px;
 }
