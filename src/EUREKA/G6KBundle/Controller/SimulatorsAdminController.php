@@ -953,7 +953,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									"name" => $fieldset->getId(),
 									"fields" => array(
 										array(
-											"label" => " :  ",
+											"label" => $this->get('translator')->trans('whose label is'),
 											"name" => "fieldId",
 											"fieldType" => "select",
 											"options" => $ofields
@@ -1019,7 +1019,7 @@ class SimulatorsAdminController extends BaseAdminController {
 										"name" => $chapter->getId(),
 										"fields" => array(
 											array(
-												"label" => " :  ",
+												"label" => $this->get('translator')->trans('whose label is'),
 												"name" => "sectionId",
 												"fieldType" => "select",
 												"options" => $osections
@@ -1034,7 +1034,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									"name" => $blockinfo->getId(),
 									"fields" => array(
 										array(
-											"label" => " :  ",
+											"label" => $this->get('translator')->trans('whose label is'),
 											"name" => "chapterId",
 											"fieldType" => "select",
 											"options" => $ochapters
@@ -1064,7 +1064,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => " :  ",
+									"label" => $this->get('translator')->trans('whose label is'),
 									"name" => "fieldsetId",
 									"fieldType" => "select",
 									"options" => $ofieldsets
@@ -1120,7 +1120,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => " :  ",
+									"label" => $this->get('translator')->trans('whose label is'),
 									"name" => "blockinfoId",
 									"fieldType" => "select",
 									"options" => $oblockinfos
@@ -1163,7 +1163,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => " :  ",
+								"label" => $this->get('translator')->trans('whose label is'),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanels
@@ -1282,7 +1282,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'name' => $step->getId(),
 						'fields' => array(
 							array(
-								'label' => ' :  ',
+								'label' => $this->get('translator')->trans('whose label is'),
 								'name' => 'actionId',
 								'fieldType' => 'select',
 								'options' => $oactionbuttons
@@ -1306,7 +1306,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'name' => $step->getId(),
 						'fields' => array(
 							array(
-								'label' => ' :  ',
+								'label' => $this->get('translator')->trans('whose label is'),
 								'name' => 'footnoteId',
 								'fieldType' => 'select',
 								'options' => $ofootnotes
@@ -1478,7 +1478,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'name' => $name,
 					'fields' => array(
 						array(
-							'label' => ' :  ',
+							'label' => $this->get('translator')->trans('whose label is'),
 							'name' => 'choiceId',
 							'fieldType' => 'select',
 							'options' => $data['options']
@@ -1554,7 +1554,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'fieldType' => "textarea"
 					),
 					array(
-						'label' => $this->get('translator')->trans("for"),
+						'label' => $this->get('translator')->trans("on"),
 						'name'	=> "target",
 						'fieldType' => "select",
 						'options' => array(
@@ -1588,7 +1588,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'fieldType' => "textarea"
 					),
 					array(
-						'label' => $this->get('translator')->trans("for"),
+						'label' => $this->get('translator')->trans("on"),
 						'name'	=> "target",
 						'fieldType' => "select",
 						'options' => array(

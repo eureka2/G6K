@@ -48,28 +48,28 @@ THE SOFTWARE.
 			this.actions = this.options.actions;
 			this.fields = this.options.fields;
 			this.expressionOptions = this.options.expressionOptions;
+			this.addButton = this.options.addButton || null;
 			this.data = this.options.data || [];
 			this.element.html(this.buildActions(this.data));
 	    },
 	
 	    buildActions: function(data) {
-			var container = $("<div>", {"class": "actions"});
-			var buttons = $("<div>", {"class": "action-buttons"});
-			var addButton = $("<button>", {"class": "add btn-primary fa fa-plus-square", "text": "  " + Translator.trans("Add Action")});
 			var self = this;
-	
-			addButton.click(function(e) {
+			var container = $("<div>", {"class": "actions"});
+			if (this.addButton == null) {
+				var buttons = $("<div>", {"class": "action-buttons"});
+				this.addButton = $("<button>", {"class": "add btn-primary fa fa-plus-square", "text": "  " + Translator.trans("Add Action")});
+				buttons.append(this.addButton);
+				container.append(buttons);
+			}
+			this.addButton.click(function(e) {
 				e.preventDefault();
 				container.append(self.buildAction({}));
 			});
-	
-			buttons.append(addButton);
-			container.append(buttons);
-	
-			for (var i=0; i < data.length; i++) {
+			for (var i = 0; i < data.length; i++) {
 				var actionObj = data[i];
 				var actionDiv = this.buildAction(actionObj);
-	
+				
 				// Add values to fields
 				var fields = [actionObj];
 				var field;
@@ -77,6 +77,14 @@ THE SOFTWARE.
 					var input = actionDiv.find(":input[name='" + field.name + "'], span[name='" + field.name + "']");
 					if (input.hasClass('expression')) {
 						input.expressionbuilder('val', field.value);
+					} else if (input.hasClass('editable-select') || input.hasClass('editable-textarea')) {
+						input.attr('data-value', field.value);
+						var newField = this.findField(field.value);
+						if (newField && field.fields) {
+							for (var j = 0; j < field.fields.length; j++) {
+								actionDiv.find('> button').before(this.buildSubfields(field.fields[j], newField.fields[j]));
+							}
+						}
 					} else if (input.is(':checkbox')) {
 						input.prop('checked', field.value == input.attr('value'));
 					} else {
@@ -91,50 +99,91 @@ THE SOFTWARE.
 			return container;
 	    },
 	
-	    buildAction: function(data) {
-			var field = this.findField(data.name);
-			var div = $("<div>", {"class": "action"});
+		buildSubfields: function(field, fieldaction) {
 			var fieldsDiv = $("<div>", {"class": "subfields"});
-			var select = $("<select>", {"class": "action-select form-control", "name": "action-select"});
-	
-			for (var i=0; i < this.actions.length; i++) {
-				var possibleField = this.actions[i];
-				var option = $("<option>", {"text": possibleField.label, "value": possibleField.name});
-				select.append(option);
-			}
-	
-			var self = this;
-			select.change(function() {
-				var val = $(this).val();
-				var newField = self.findField(val);
-				fieldsDiv.empty();
-				if (newField.fields) {
-					for (var i=0; i < newField.fields.length; i++) {
-						fieldsDiv.append(self.buildField(newField.fields[i]));
+			var fieldDiv = this.buildField(fieldaction);
+			var input = fieldDiv.find("span[name='" + field.name + "']");
+			if (input.hasClass('editable-select')) {
+				input.attr('data-value', field.value);
+				for (var i = 0; i < fieldaction.options.length; i++) {
+					if (fieldaction.options[i].name == field.value) {
+						input.text(fieldaction.options[i].label);
+						if (field.fields) {
+							field = field.fields[0];
+							fieldDiv.find("div.subfields").replaceWith(this.buildSubfields(field, fieldaction.options[i].fields[0]));
+						}
+						break;
 					}
 				}
-				div.attr("class", "action " + val);
+			} else if (input.hasClass('editable-textarea')) {
+				input.attr('data-value', field.value).text(field.value);
+			}
+			fieldsDiv.append(fieldDiv);
+			return fieldsDiv;
+		},
+		
+	    buildAction: function(actionObj) {
+			var actionDiv = $("<div>", {"class": "action"});
+			var data = {'': ''};
+			$.each(this.actions, function(i, action) {
+				data[action.name] = action.label;
 			});
-	
-			var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove", "text": " ", "title": Translator.trans("Remove this Action")});
+			var self = this;
+			var $editable = $("<span>", { "name": "action-select", "class": "editable-select", "data-value": ""});
+			if (actionObj.value) {
+				$editable.attr("data-value", actionObj.value);
+				$editable.text(data[actionObj.value]);
+				data['selected'] = actionObj.value;
+			}
+			$editable.editable(
+				function (val, settings) {
+					var newField = self.findField(val);
+					settings.container.find("> .subfields:not(:first)").remove();
+					var subfields = settings.container.find("> .subfields");
+					subfields.empty();
+					if (newField.fields) {
+						for (var i=0; i < newField.fields.length; i++) {
+							subfields.append(self.buildField(newField.fields[i]));
+						}
+					}
+					actionDiv.attr("class", "action " + val);
+					$(this).attr("data-value", val);
+					return settings.data[val];
+				},
+				{
+					data: data,
+					container : actionDiv,
+					name: "action-select",
+					type: "select",
+					placeholder: Translator.trans('Choose an Action...'),
+					tooltip: Translator.trans('click to change the action'),
+					submit: "",
+					cancel: "",
+					cssclass: "action-select",
+					style: "inherit"
+				}
+			);
+			var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove pull-right", "text": " ", "title": Translator.trans("Remove this Action")});
 			removeLink.click(function(e) {
 				e.preventDefault();
-				div.remove();
+				actionDiv.remove();
 			});
-	
-			div.append(select);
-			div.append(fieldsDiv);
-			div.append(removeLink);
-			return div;
+
+			actionDiv.append($editable);
+			if (! actionObj.name) {
+				actionDiv.append($("<div>", {"class": "subfields"}));
+			}
+			actionDiv.append(removeLink);
+			return actionDiv;
 	    },
 	
 	    buildField: function(field) {
-			var div = $("<div>", {"class": "field"});
+			var fieldDiv = $("<div>", {"class": "field"});
 			var subfields = $("<div>", {"class": "subfields"});
 			var self = this;
 	
 			var label = $("<label>", {"text": field.label});
-			div.append(label);
+			fieldDiv.append(label);
 	
 			if (field.fieldType == "field") {
 				field.options = [];
@@ -165,40 +214,71 @@ THE SOFTWARE.
 				field.fieldType = "select";
 			}
 			if (field.fieldType == "select") {
-				var label = $("<label>", {"text": field.label});
-				var select = $("<select>", {"name": field.name, "class": "form-control"});
-	
-				for (var i=0; i < field.options.length; i++) {
-					var optionData = field.options[i];
-					var option = $("<option>", {"text": optionData.label, "value": optionData.name});
-					option.data("optionData", optionData);
-					select.append(option);
-				}
-	
-				select.change(function() {
-					var option = $(this).find("> :selected");
-					var optionData = option.data("optionData");
-					subfields.empty();
-					if (optionData.fields) {
-						for (var i=0; i < optionData.fields.length; i++) {
-							var f = optionData.fields[i];
-							subfields.append(self.buildField(f));
-						}
-					}
+				var data = {'': ''};
+				var options = {};
+				$.each(field.options, function(i, optionData) {
+					data[optionData.name] = optionData.label;
+					options[optionData.name] = optionData;
 				});
-	
-				select.change();
-				div.append(select);
+				data['selected'] = '';
+				var $editable = $("<span>", { "name": field.name, "class": "editable-select", "data-value": ""});
+				$editable.editable(
+					function (val, settings) {
+						var option = $editable.find('select').find("> :selected");
+						var optionData = settings.options[val];
+						var subfields = settings.container.find("> .subfields");
+						subfields.empty();
+						if (optionData.fields) {
+							for (var i=0; i < optionData.fields.length; i++) {
+								var f = optionData.fields[i];
+								subfields.append(self.buildField(f));
+							}
+						}
+						$(this).attr("data-value", val);
+						return settings.data[val];
+					},
+					{
+						data: data,
+						options: options,
+						container : fieldDiv,
+						name: "action-select",
+						type: "select",
+						select: true,
+						placeholder: Translator.trans("click to select ..."),
+						tooltip: Translator.trans("click to change ..."),
+						submit: "",
+						cancel: "",
+						cssclass: "action-select",
+						style: "inherit"
+					}
+				);
+				$editable.change();
+				fieldDiv.append($editable);
 			} else if (field.fieldType == "text") {
 				var input = $("<input>", {"type": "text", "name": field.name, "class": "form-control"});
-				div.append(input);
+				fieldDiv.append(input);
 			} else if (field.fieldType == "number" || field.fieldType == "integer") {
 				var input = $("<input>", {"type": "number", "name": field.name, "class": "form-control"});
-				div.append(input);
+				fieldDiv.append(input);
 			} else if (field.fieldType == "textarea") {
-				var id = "textarea-" + Math.floor(Math.random() * 100000);
-				var area = $("<textarea>", {"name": field.name, "id": id});
-				div.append(area);
+				var $editable = $("<span>", { "name": field.name, "class": "editable-textarea", "data-value": ""});
+				$editable.editable(
+					function (val, settings) {
+						$(this).attr("data-value", val);
+						return val;
+					},
+					{
+						name: field.name,
+						id: "textarea-" + Math.floor(Math.random() * 100000),
+						type: "textarea",
+						placeholder: Translator.trans("click to enter the message"),
+						tooltip: Translator.trans("click to edit the message"),
+						submit : Translator.trans('Ok'),
+						cancel : Translator.trans('Cancel'),
+						style: "inherit"
+					}
+				);
+				fieldDiv.append($editable);
 			} else if (field.fieldType == "expression") {
 				var expression = $('<span>', {"name": field.name, "class": "expression"}); 
 				expression.expressionbuilder({
@@ -214,14 +294,14 @@ THE SOFTWARE.
 					operatorHolder: self.expressionOptions.operatorHolder,
 					nestedExpression: self.expressionOptions.nestedExpression
 				});
-				div.append(expression);
+				fieldDiv.append(expression);
 			}
 			if (field.hint) {
-				div.append($("<p>", {"class": "hint", "text": field.hint}));
+				fieldDiv.append($("<p>", {"class": "hint", "text": field.hint}));
 			}
 	
-			div.append(subfields);
-			return div;
+			fieldDiv.append(subfields);
+			return fieldDiv;
 	    },
 	                        
 	
@@ -230,8 +310,15 @@ THE SOFTWARE.
 			fields = fields || this.element.find(".action");
 			var out = [];
 			fields.each(function() {
-				var input = $(this).find("> :input, > .expression, > .jstEditor > :input");
-				var val = input.hasClass('expression') ? input.expressionbuilder('val') : input.val();
+				var input = $(this).find("> :input, > .editable-select, > .editable-textarea, > .expression, > .jstEditor > :input");
+				var val;
+				if (input.hasClass('expression')) {
+					val = input.expressionbuilder('val');
+				} else if (input.hasClass('editable-select') || input.hasClass('editable-textarea')) {
+					val = input.attr('data-value');
+				} else {
+					val = input.val();
+				}
 				var subfields = $(this).find("> .subfields > .field");
 				var action = {name: input.attr("name"), value: val};
 				if (subfields.length > 0) {

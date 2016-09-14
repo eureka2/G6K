@@ -165,6 +165,7 @@ THE SOFTWARE.
 {% block scripts %}
 {{ parent() }}<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.simulators.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/css-validator/csslint.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/jquery.jeditable/jquery.jeditable.js') }}"></script>
 {% endblock %}
  
 {% macro showDatas(simulator) %}
@@ -256,7 +257,7 @@ THE SOFTWARE.
 {% macro showRuleAction(action, simulator) %}
 <div class="rule-action" data-id="{{ action.id }}" data-name="{{ action.name }}" data-target="{{ action.target }}" data-data="{{ action.data }}" data-datagroup="{{ action.datagroup }}" data-step="{{ action.step }}" data-panel="{{ action.panel }}" data-fieldset="{{ action.fieldset }}" data-field="{{ action.field }}" data-blockinfo="{{ action.blockinfo }}" data-chapter="{{ action.chapter }}" data-section="{{ action.section }}" data-prenote="{{ action.prenote }}" data-postnote="{{ action.postnote }}" data-action="{{ action.action }}" data-footnote="{{ action.footnote }}" data-choice="{{ action.choice }}" data-value="{{ action.value }}">
 {% if action.name == 'notifyError' or action.name == 'notifyWarning' %}
-	<span class="action-name">{{ action.name == 'notifyError' ? 'notify Error'|trans : 'notify Warning'|trans }} : </span> <span class="action-value">«{{ action.value }}»</span> <span class="action-target"> {{ 'for'|trans }} {{ action.target|trans }} </span>
+	<span class="action-name">{{ action.name == 'notifyError' ? 'notify Error'|trans : 'notify Warning'|trans }} : </span> <span class="action-value">«{{ action.value }}»</span> <span class="action-target"> {{ 'on'|trans }} {{ action.target|trans }} </span>
 	{% if action.target == 'data' %}
 		<span class="action-data">«{{ simulator.getDataById(action.data).label }}»</span>
 	{% elseif action.target == 'datagroup' %}

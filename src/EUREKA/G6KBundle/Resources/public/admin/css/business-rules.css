@@ -81,3 +81,58 @@
 }
 
 
+.editable-select, .editable-textarea {
+	cursor: pointer;
+	padding-bottom: 2px;
+	border-bottom: thin dotted;
+}
+.editable-textarea textarea {
+	min-width: 20em;
+	min-height: 5em;
+	vertical-align: middle;
+}
+.action div, .editable-select select, .editable-textarea textarea{
+	display: inline;
+}
+.action span, .action label,
+.rule span, .rule label {
+	margin-right: .2em;
+	font-weight: normal;
+}
+.action .subfields .subfields .editable-select:before, .action .editable-textarea:before {
+	content: '«';
+}
+.action .subfields .subfields .editable-select:after, .action .editable-textarea:after {
+	content: '» ';
+}
+.rule .field.editable-select:before, .rule .field.editable-textarea:before,
+.rule .value.editable-select:before, .rule .value.editable-textarea:before,
+.rule .value.expression:before {
+	content: '«';
+}
+.rule .field.editable-select:after, .rule .field.editable-textarea:after,
+.rule .value.editable-select:after, .rule .value.editable-textarea:after,
+.rule .value.expression:after {
+	content: '» ';
+}
+.expression .operand-holder {
+	width: auto;
+	border: none;
+}
+.rule-header {
+	width: 100%;
+	background: #D0D0D0;
+	font-size: 1.8em;
+}
+.rule-container {
+	margin-bottom: 2em;
+}
+
+.operand-wrapper, .operator-wrapper {
+	padding: 0;
+	margin: 0;
+}
+
+.operand-holder, .operator-holder, .right-parenthesis-holder  {
+	border: none;
+}

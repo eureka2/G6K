@@ -124,7 +124,7 @@ var ExpressionBuilder_I18N = {
 				}
 				
 				function addOperand(operandWrapper) {
-					var choices = jQuery('<select class="form-control"></select>');
+					var choices = jQuery('<select></select>');
 					choices.append('<option operand-type="none" value=""></option>');					
 					var gMiscellaneous = jQuery('<optgroup label="' + i18n['miscellaneous-label'] + '"></optgroup>');
 					gMiscellaneous.append('<option operand-type="literal" value="' + i18n['literal-label'] + '">' + i18n['literal-label'] + '</option>');
@@ -149,10 +149,10 @@ var ExpressionBuilder_I18N = {
 					choices.append(gfunctions);
 					
 					// Create Input Element
-					var input = jQuery('<input class="form-control"></input>');
+					var input = jQuery('<input></input>');
 					
 					// Create operand holder Element
-					var holder = jQuery('<button class="operand-holder form-control"></button>');
+					var holder = jQuery('<button class="operand-holder"></button>');
 					jQuery.each(settings.operandHolder.classes, function(c, clazz) {
 						holder.addClass(clazz);
 					});
@@ -169,17 +169,21 @@ var ExpressionBuilder_I18N = {
 					});
 					if (! holderCSS) {
 						holderCSS = {
-							"font-family": input.css('font-family'),
-							"font-size": input.css('font-size'),
-							border: "1px solid #CCC",
+							// "font-family": input.css('font-family'),
+							// "font-size": input.css('font-size'),
+							// border: "1px solid #CCC",
+							"border-bottom": "thin dotted",
 							position : "relative",
-							height: input.css('height'),
-							'line-height': input.css('height'),
-							'min-height': input.css('height'),
+							// height: input.css('height'),
+							// 'line-height': input.css('height'),
+							// 'min-height': input.css('height'),
 							cursor: "pointer",
 							"border-radius": 0,
-							margin: "0 1px 0 0",
-							padding: "0 2px 0 2px",
+							// margin: "0 1px 0 0",
+							// padding: "0 2px 0 2px",
+							margin: 0,
+							padding: 0,
+							background: "#fff",
 							"min-width": "20px"
 						};
 					}
@@ -392,12 +396,12 @@ var ExpressionBuilder_I18N = {
 				
 				function addOperator() {
 					var operatorWrapper = jQuery('<span class="operator-wrapper"></span>');
-					var choices = jQuery('<select class="form-control"></select>');  
+					var choices = jQuery('<select></select>');  
 					choices.append('<option value=""></option>');
 					jQuery.each(settings.operators, function(o, operator) {
 						choices.append('<option value="' + operator + '">' + operator + '</option>');
 					});
-					var holder = jQuery('<button class="operator-holder form-control"></button>');
+					var holder = jQuery('<button class="operator-holder"></button>');
 					jQuery.each(settings.operatorHolder.classes, function(c, clazz) {
 						holder.addClass(clazz);
 					});
@@ -700,7 +704,7 @@ var ExpressionBuilder_I18N = {
 					showHolder(wrapper, funcName, funcName, 'function');
 					var functionWrapper = jQuery('<span class="function-wrapper"></span>');
 					wrapper.append(functionWrapper);
-					var leftParenthesis = jQuery('<button class="left-parenthesis-holder form-control">(</button>');
+					var leftParenthesis = jQuery('<button class="left-parenthesis-holder">(</button>');
 					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
 						leftParenthesis.addClass(clazz);
 					});
@@ -733,7 +737,7 @@ var ExpressionBuilder_I18N = {
 					);
 					// TODO : if arity = -1 function has illimited arguments add option 'add arguments' to contextmenu'
 					for (var i = 1; i < func.arity; i++) {
-						var comma = jQuery('<button class="comma-holder form-control">,</button>');
+						var comma = jQuery('<button class="comma-holder">,</button>');
 						comma.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
 						jQuery.each(settings.operatorHolder.classes, function(c, clazz) {
 							comma.addClass(clazz);
@@ -760,7 +764,7 @@ var ExpressionBuilder_I18N = {
 							})
 						);
 					}
-					var rightParenthesis = jQuery('<button class="right-parenthesis-holder form-control">)</button>');
+					var rightParenthesis = jQuery('<button class="right-parenthesis-holder">)</button>');
 					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
 						rightParenthesis.addClass(clazz);
 					});
@@ -801,7 +805,7 @@ var ExpressionBuilder_I18N = {
 					}
 					wrapper.empty();
 					wrapper.removeClass('operand-wrapper').addClass('nested-operand-wrapper');
-					var leftParenthesis = jQuery('<button class="left-parenthesis-holder operand-holder form-control">(</button>');
+					var leftParenthesis = jQuery('<button class="left-parenthesis-holder operand-holder">(</button>');
 					leftParenthesis.data('operand-type', 'nested');
 					leftParenthesis.data('operand-value', '');
 					leftParenthesis.data('data-type', 'unknown');
@@ -848,7 +852,7 @@ var ExpressionBuilder_I18N = {
 					});
 					var nested = jQuery('<span class="nested-expression"></span>');
 					wrapper.append(nested);
-					var rightParenthesis = jQuery('<button class="right-parenthesis-holder form-control">)</button>');
+					var rightParenthesis = jQuery('<button class="right-parenthesis-holder">)</button>');
 					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
 						rightParenthesis.addClass(clazz);
 					});

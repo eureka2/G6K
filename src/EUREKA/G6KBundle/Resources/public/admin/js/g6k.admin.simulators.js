@@ -696,15 +696,19 @@ THE SOFTWARE.
 			expressionOptions: Simulators.expressionOptions,
 			conditions: rule.conditions
 		});
+		ruleContainer.find('.add-if-action').removeClass('update-button').show();
 		ruleContainer.find('.if-actions').actionsBuilder({
 			fields: Simulators.dataset,
 			expressionOptions: Simulators.expressionOptions,
-		    actions: actions,
-		    data: rule.ifdata
+			addButton: ruleContainer.find('.add-if-action'),
+			actions: actions,
+			data: rule.ifdata
 		});
+		ruleContainer.find('.add-else-action').removeClass('update-button').show();
 		ruleContainer.find('.else-actions').actionsBuilder({
 			fields: Simulators.dataset,
 			expressionOptions: Simulators.expressionOptions,
+			addButton: ruleContainer.find('.add-else-action'),
 			actions: actions,
 		    data: rule.elsedata
 		});
@@ -1050,14 +1054,14 @@ THE SOFTWARE.
 		}
 		var actionContainer = $('<div>', { 'class': 'rule-action', 'data-id': '', 'data-name': name, 'data-target': target, 'data-data': data, 'data-datagroup': datagroup, 'data-step': step, 'data-panel': panel, 'data-fieldset': fieldset, 'data-field': field, 'data-blockinfo': blockinfo, 'data-chapter': chapter, 'data-section': section, 'data-prenote': prenote, 'data-postnote': postnote, 'data-action': action, 'data-footnote': footnote, 'data-choice': choice, 'data-value': value });
 		if (name === 'notifyError') {
-			actionContainer.append('<span class="action-name">' + Translator.trans('notify Error') + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('for') + ' ' + Translator.trans(target) + ' </span>');
+			actionContainer.append('<span class="action-name">' + Translator.trans('notify Error') + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans(target) + ' </span>');
 			if (target === 'data') {
 				actionContainer.append('<span class="action-data">«' + data.label + '»</span>');
 			} else if (target === 'datagroup') {
 				actionContainer.append('<span class="action-datagroup">«' + datagroup.label + '»</span>');
 			}
 		} else if (name === 'notifyWarning') {
-			actionContainer.append('<span class="action-name">' + Translator.trans('notify Warning') + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('for') + ' ' + Translator.trans(target) + ' </span>');
+			actionContainer.append('<span class="action-name">' + Translator.trans('notify Warning') + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans(target) + ' </span>');
 			if (target === 'data') {
 				actionContainer.append('<span class="action-data">«' + data.label + '»</span>');
 			} else if (target === 'datagroup') {
@@ -1142,8 +1146,8 @@ THE SOFTWARE.
 		ruleContainer.append(ruleBody);
 		ruleBody.append('<div class="panel panel-default"><div class="panel-body form-inline"><div class="form-group"><label>' + Translator.trans('Name') + '</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>' + Translator.trans('Label') + '</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
 		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div><div class="panel-body"><div class="conditions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('then do ...') + '</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('else do ...') + '</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><button class="btn btn-info pull-right update-button add-if-action">' + Translator.trans('Add Action') + ' <span class="glyphicon glyphicon-plus-sign"></span></button><h4>' + Translator.trans('then do ...') + '</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><button class="btn btn-info pull-right update-button add-else-action">' + Translator.trans('Add Action') + ' <span class="glyphicon glyphicon-plus-sign"></span></button><h4>' + Translator.trans('else do ...') + '</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');
 		var ruleButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + ruleElementId + '-buttons-panel"></div>');
 		var ruleButtonsBody = $('<div class="panel-body rule-buttons"></div>');
 		ruleButtonsBody.append('<button class="btn btn-success pull-right validate-edit-rule">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
