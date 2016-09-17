@@ -31,9 +31,9 @@
   * database_host => name or IP address of your database server (simply &lt;Enter&gt; in case of SQLite)
   * database_port => port of the database server (simply &lt;Enter&gt; in case of SQLite)
   * database_name => name of the database created 1. (simply &lt;Enter&gt; in case of SQLite)
-  * database_user => User name for connecting to the database (simply &lt;Enter&gt; in case of SQLite)
+  * database_user => User name for connecting to the database (simply &lt;Enter&gt; in case of SQLite)
   * database_password => this user's password (simply &lt;Enter&gt; in case of SQLite)
-  * database_path => used in the case of SQLite and ignored in other cases, so make &lt;Enter&gt;
+  * database_path => used in the case of SQLite and ignored in other cases, so make &lt;Enter&gt;
   * locale => en 
 
 
