@@ -65,6 +65,7 @@ THE SOFTWARE.
 						<div class="panel-heading" role="tab">
 							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name }) }}" class="btn btn-primary pull-right view-button" target="_blank">{{ 'Try it'|trans }} <span class="glyphicon glyphicon-eye-open"></span></a>
 							<button class="btn btn-primary pull-right update-button edit-simulator">{{ 'Edit'|trans }} <span class="glyphicon glyphicon-pencil"></span></button>
+							<a class="btn btn-primary pull-right export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'export'}) }}">{{ 'Export simulator'|trans }} <span class="glyphicon glyphicon-export"></span></a>
 							<form id="save-form" action="" method="post">
 							<input type="hidden" name="simulator" value="" />
 							<input type="hidden" name="datas" value="" />

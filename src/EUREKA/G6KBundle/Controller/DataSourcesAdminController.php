@@ -37,6 +37,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use EUREKA\G6KBundle\Entity\Database;
 use EUREKA\G6KBundle\Entity\JSONToSQLConverter;
+use EUREKA\G6KBundle\Entity\SQLToJSONConverter;
 use EUREKA\G6KBundle\Entity\DOMClient as Client;
 use EUREKA\G6KBundle\Entity\ResultFilter;
 
@@ -173,6 +174,8 @@ class DataSourcesAdminController extends BaseAdminController {
 				return $this->showDatasources(0, null, "import");
 			} elseif ($crud == 'doimport-datasource') {
 				return $this->doImportDatasource($request->files->all());
+			} elseif ($crud == 'export-datasource') {
+				return $this->doExportDatasource($dsid);
 			} elseif ($crud == 'edit-datasource') {
 				return $this->showDatasources($dsid, null, "edit");
 			} elseif ($crud == 'doedit-datasource') {
@@ -459,6 +462,50 @@ class DataSourcesAdminController extends BaseAdminController {
 			echo $e->getMessage();
 			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
 		}
+	}
+
+	protected function doExportDatasource($dsid) {
+		$datasource = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']")[0];
+		$container = $this->get('kernel')->getContainer();
+		$driver = $container->getParameter('database_driver');
+		$parameters = array(
+			'database_driver' => $driver
+		);
+		if ($driver != 'pdo_sqlite') {
+			if ($container->hasParameter('database_host')) {
+				$parameters['database_host'] = $container->getParameter('database_host');
+			}
+			if ($container->hasParameter('database_port')) {
+				$parameters['database_port'] = $container->getParameter('database_port');
+			}
+			if ($container->hasParameter('database_user')) {
+				$parameters['database_user'] = $container->getParameter('database_user');
+			}
+			if ($container->hasParameter('database_password')) {
+				$parameters['database_password'] = $container->getParameter('database_password');
+			}
+		}
+		$converter = new SQLToJSONConverter($parameters);
+		$result = $converter->convert($datasource);
+		$content = array(
+			array(
+				'name' => (string)$datasource['name'].".schema.json",
+				'data' => json_encode($result['schema'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+			), 
+			array(
+				'name' => (string)$datasource['name'].".json",
+				'data' => json_encode($result['data'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+			)
+		);
+		$zipcontent = $this->zip($content);
+		$response = new Response();
+		$response->headers->set('Cache-Control', 'private');
+		$response->headers->set('Content-type', 'application/octet-stream');
+		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', (string)$datasource['name'] . ".zip"));
+		$response->headers->set('Content-length', strlen($zipcontent));
+		$response->sendHeaders();
+		$response->setContent($zipcontent);
+		return $response;
 	}
 
 	protected function doImportDatasource($files) {
@@ -1781,3 +1828,5 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 }
+
+?>

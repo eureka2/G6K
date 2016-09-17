@@ -155,14 +155,14 @@ ul.rule-conditions > li {
 	line-height: 6em;
 }
 
-.edit-simulator, .add-data, .edit-data, .delete-data, 
+.edit-simulator, .export-simulator, .add-data, .edit-data, .delete-data, 
 .add-datagroup, .edit-datagroup, .delete-datagroup, 
 .add-rule, .edit-rule, .add-step, .edit-step, 
 .add-choice, .add-source, .add-choice-source, .edit-choice-source, 
 .delete-choice, .delete-choice-source, 
 .expand-all, .collapse-all, 
 .edit-table-button, .drop-table-button,
-.edit-datasource-button, .drop-datasource-button,
+.export-datasource-button, .edit-datasource-button, .drop-datasource-button,
 .view-button {
 	margin-top: -9px;
 }

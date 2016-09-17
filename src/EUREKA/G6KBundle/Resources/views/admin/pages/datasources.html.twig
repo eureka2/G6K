@@ -185,6 +185,9 @@ THE SOFTWARE.
 					{% if datasource.action == 'show' %}
 					<a class="btn btn-primary pull-right drop-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'drop-datasource'}) }}" data-confirm="{{ 'Are you sure you want to drop the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'">{{ 'Drop datasource'|trans }} <span class="glyphicon glyphicon-minus-sign"></span></a>
 					<a class="btn btn-primary pull-right edit-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'edit-datasource'}) }}" data-confirm="{{ 'Are you sure you want to edit the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'">{{ 'Edit datasource'|trans }} <span class="glyphicon glyphicon-pencil"></span></a>
+					{% if datasource.type == 'internal' %}
+					<a class="btn btn-primary pull-right export-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'export-datasource'}) }}">{{ 'Export datasource'|trans }} <span class="glyphicon glyphicon-export"></span></a>
+					{% endif %}
 					{% endif %}
 					<h4 class="panel-title">{{ datasource.label }}</h4>
 					</div>

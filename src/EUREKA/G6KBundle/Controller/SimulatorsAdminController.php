@@ -69,6 +69,9 @@ class SimulatorsAdminController extends BaseAdminController {
 
 	public function indexAction(Request $request, $simulator = null, $crud = null)
 	{
+		if ($crud == 'export') {
+			return $this->doExportSimulator($simulator);
+		}
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
@@ -506,6 +509,34 @@ class SimulatorsAdminController extends BaseAdminController {
 			$this->simu->addBusinessRule($businessRuleObj);
 		}
 		$this->simu->save($simu_dir."/work/".$simulator.".xml");
+	}
+
+	protected function doExportSimulator($simu) {
+		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
+		$public_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/public";
+		$simulator = new \SimpleXMLElement($simu_dir . "/" . $simu . ".xml", LIBXML_NOWARNING, true);
+		$view = (string)$simulator["defaultView"];
+		$content = array(
+			array(
+				'name' => $simu . ".xml",
+				'data' => file_get_contents($simu_dir . "/" . $simu . ".xml")
+			)
+		);
+		if (file_exists($public_dir . "/" . $view . "/css/" . $simu . ".css")) {
+			$content[] = array(
+				'name' => $simu . ".css",
+				'data' => file_get_contents($public_dir . "/" . $view . "/css/" . $simu . ".css")
+			);
+		}
+		$zipcontent = $this->zip($content);
+		$response = new Response();
+		$response->headers->set('Cache-Control', 'private');
+		$response->headers->set('Content-type', 'application/octet-stream');
+		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', (string)$datasource['name'] . ".zip"));
+		$response->headers->set('Content-length', strlen($zipcontent));
+		$response->sendHeaders();
+		$response->setContent($zipcontent);
+		return $response;
 	}
 
 	protected function doImportSimulator($files) {
