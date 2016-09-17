@@ -11,9 +11,9 @@
 * Modules mbstring, iconv, POSIX (only on * nix), Intl with ICU 4+, and APCU 3.0.17+ APC (highly recommended) must be installed
 * recommended php.ini settings:
   * short_open_tag = Off
-  * magic_quotes_gpc = Off
-  * register_globals = Off
-  * session.auto_start = Off
+  * magic_quotes_gpc = Off
+  * register_globals = Off
+  * session.auto_start = Off
 
 ## Prerequisites for G6K
 * PDO enabled
@@ -27,14 +27,14 @@
 3. Download composer.phar (https://getcomposer.org/download/) in <DOCUMENT_ROOT>
 4. Under a shell or DOS, execute: ``php composer.phar create-project eureka2/g6k simulator/`` 
 5. Enter the parameter values required by the installer, including:
-   1. database_driver => pdo_pgsl, pdo_mysql or pdo_sqlite
-   2. database_host => name or IP address of your database server (simply &lt;Enter&gt; in case of SQLite)
-   3. database_port => port of the database server (simply &lt;Enter&gt; in case of SQLite)
-   4. database_name => name of the database created 1. (simply &lt;Enter&gt; in case of SQLite)
-   5. database_user => User name for connecting to the database (simply &lt;Enter&gt; in case of SQLite)
-   6. database_password => this user's password (simply &lt;Enter&gt; in case of SQLite)
-   7. database_path => used in the case of SQLite and ignored in other cases, so make &lt;Enter&gt;
-   8. locale => en 
+  * database_driver => pdo_pgsl, pdo_mysql or pdo_sqlite
+  * database_host => name or IP address of your database server (simply &lt;Enter&gt; in case of SQLite)
+  * database_port => port of the database server (simply &lt;Enter&gt; in case of SQLite)
+  * database_name => name of the database created 1. (simply &lt;Enter&gt; in case of SQLite)
+  * database_user => User name for connecting to the database (simply &lt;Enter&gt; in case of SQLite)
+  * database_password => this user's password (simply &lt;Enter&gt; in case of SQLite)
+  * database_path => used in the case of SQLite and ignored in other cases, so make &lt;Enter&gt;
+  * locale => en 
 
 
 ## Copyright and license
