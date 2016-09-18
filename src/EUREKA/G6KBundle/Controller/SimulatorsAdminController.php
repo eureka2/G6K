@@ -532,7 +532,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$response = new Response();
 		$response->headers->set('Cache-Control', 'private');
 		$response->headers->set('Content-type', 'application/octet-stream');
-		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', (string)$datasource['name'] . ".zip"));
+		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', (string)$simulator['name'] . ".zip"));
 		$response->headers->set('Content-length', strlen($zipcontent));
 		$response->sendHeaders();
 		$response->setContent($zipcontent);
