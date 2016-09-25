@@ -43,6 +43,17 @@ THE SOFTWARE.
       </a>
    </div>
    {% endif %}
+	{% if is_granted('ROLE_ADMIN') %}
+   <div class="col-sm-6 col-md-3">
+      <a href="{{ path('eureka_g6k_admin_views') }}" class="thumbnail">
+         <img src="{{ asset('bundles/eurekag6k/admin/images/view.png') }}" alt="{{ 'Views'|trans }}">
+      <div class="caption">
+         <h3>{{ viewsCount }} {{ 'Views'|trans }}</h3>
+         <p>{{ 'Views management'|trans }}</p>
+      </div>
+      </a>
+   </div>
+   {% endif %}
 	{% if is_granted('ROLE_MANAGER') %}
    <div class="col-sm-6 col-md-3">
       <a href="{{ path('eureka_g6k_admin_simulators') }}" class="thumbnail">

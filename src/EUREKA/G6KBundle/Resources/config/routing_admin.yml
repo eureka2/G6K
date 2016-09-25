@@ -46,6 +46,22 @@ eureka_g6k_admin_simulator_crud:
     path:     /admin/simulators/{simulator}/{crud}
     defaults: { _controller: EUREKAG6KBundle:SimulatorsAdmin:index }
 
+eureka_g6k_admin_views:
+    path:     /admin/views
+    defaults: { _controller: EUREKAG6KBundle:ViewsAdmin:index }
+
+eureka_g6k_admin_view:
+    path:     /admin/views/{view}
+    defaults: { _controller: EUREKAG6KBundle:ViewsAdmin:index }
+
+eureka_g6k_admin_view_node:
+    path:     /admin/views/{view}/{node}
+    defaults: { _controller: EUREKAG6KBundle:ViewsAdmin:index }
+
+eureka_g6k_admin_view_node_crud:
+    path:     /admin/views/{view}/{node}/{crud}
+    defaults: { _controller: EUREKAG6KBundle:ViewsAdmin:index }
+
 eureka_g6k_admin_simulator_calcul:
     path:     /{simu}
     defaults: { _controller: EUREKAG6KBundle:Default:calcul }

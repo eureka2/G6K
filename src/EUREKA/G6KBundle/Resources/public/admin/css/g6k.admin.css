@@ -14,10 +14,7 @@
 #page .thumbnails a{
 	text-decoration: none;
 }
-.has-error {
-	font-weight: bold;
-	color: #A96193;
-}
+
 .delete-attribute {
 	cursor: pointer;
 }
@@ -141,20 +138,70 @@ ul.rule-conditions > li {
 	float: right;
 }
 
-#data-sources ul , #simulators ul {
+#data-sources ul, #simulators ul {
 	margin-top: 6em;
 }
 
+#views ul {
+	margin-top: 3em;
+}
+
 #datasource-import-panel-holder .form-group input,
-#simulator-import-panel-holder .form-group input {
+#simulator-import-panel-holder .form-group input,
+#view-create-panel-holder .form-group input {
 	margin: 0;
 	padding: 0;
 }
 #datasource-import-panel-holder .form-group > div,
-#simulator-import-panel-holder .form-group > div {
+#simulator-import-panel-holder .form-group > div,
+#view-create-panel-holder .form-group > div {
 	line-height: 6em;
 }
+#view-create-panel-holder {
+	margin-top: 1.5em;
+}
+#view-create-form > div:first-child {
+	margin-bottom: 1.5em;
+}
 
+#page-views .tab-content {
+	margin-top: 0px;
+	padding-top: 5px;
+	border-left: 1px solid #e0e0e0;
+	border-right: 1px solid #e0e0e0;
+}
+#page-views .tab-content td,
+#page-views .tab-content h3 {
+	padding-left: 10px;
+}
+#page-views .form-group.file input {
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+}
+#page-views .add-node-container .control-label {
+	width: 100%;
+}
+#view-editor-container {
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+}
+#page-views .CodeMirror {
+	/* Set height, width, borders, and global font properties here */
+	height: 75vh !important;
+	width: auto;
+	border: 1px solid #d0d0d0;
+}
+#page-views .add-folder-or-file-form {
+	display: inline;
+}
+#templates-tree-container .view-tree-buttons {
+	width: 90px;
+}
+#assets-tree-container .view-tree-buttons {
+	width: 90px;
+}
 .edit-simulator, .export-simulator, .add-data, .edit-data, .delete-data, 
 .add-datagroup, .edit-datagroup, .delete-datagroup, 
 .add-rule, .edit-rule, .add-step, .edit-step, 
@@ -163,7 +210,7 @@ ul.rule-conditions > li {
 .expand-all, .collapse-all, 
 .edit-table-button, .drop-table-button,
 .export-datasource-button, .edit-datasource-button, .drop-datasource-button,
-.view-button {
+.view-button, .drop-view-button {
 	margin-top: -9px;
 }
 button.save-simulator {

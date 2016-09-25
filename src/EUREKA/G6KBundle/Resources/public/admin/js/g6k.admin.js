@@ -103,7 +103,7 @@ $(document).ready(function() {
 		});
 	}
 	$('body').on('shown.bs.modal', centerModal);
-	$('a[data-confirm]').click(function(ev) {
+	$('a[data-confirm], button[data-confirm]').click(function(ev) {
 		var href = $(this).attr('href');
 		if (!$('#dataConfirmModal').length) {
 			$('body').append('<div id="dataConfirmModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="' + Translator.trans('Close') + '"><span aria-hidden="true">&times;</span></button><h4 id="dataConfirmLabel" class="modal-title">' + Translator.trans('Please Confirm') + '</h4></div><div class="modal-body"></div><div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" aria-hidden="true">' + Translator.trans('Cancel') + '</button><a class="btn btn-primary" id="dataConfirmOK">' + Translator.trans('OK') + '</a></div></div></div></div>');

@@ -519,13 +519,16 @@ class SimulatorsAdminController extends BaseAdminController {
 		$content = array(
 			array(
 				'name' => $simu . ".xml",
-				'data' => file_get_contents($simu_dir . "/" . $simu . ".xml")
+				'data' => file_get_contents($simu_dir . "/" . $simu . ".xml"),
+				'modtime' => filemtime($simu_dir . "/" . $simu . ".xml")
 			)
 		);
 		if (file_exists($public_dir . "/" . $view . "/css/" . $simu . ".css")) {
 			$content[] = array(
 				'name' => $simu . ".css",
-				'data' => file_get_contents($public_dir . "/" . $view . "/css/" . $simu . ".css")
+				'data' => file_get_contents($public_dir . "/" . $view . "/css/" . $simu . ".css"),
+				'modtime' => filemtime($public_dir . "/" . $view . "/css/" . $simu . ".css")
+
 			);
 		}
 		$zipcontent = $this->zip($content);

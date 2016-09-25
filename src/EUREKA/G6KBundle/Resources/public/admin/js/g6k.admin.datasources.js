@@ -749,7 +749,7 @@ THE SOFTWARE.
 	    });
 		return errors;
 	}
-	
+
 	Datasources.checkDatasource = function() {
 		var errors = [];
 		var name = $("#datasource-name").val();

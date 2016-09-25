@@ -69,8 +69,9 @@ class BaseAdminController extends Controller {
 		foreach($contents as $content) {
 			$name = $content['name'];
 			$data = $content['data'];
+			$modtime = isset($content['modtime']) ? $content['modtime'] : time();
 			$name = str_replace('\\', '/', $name);
-			$hexdtime = pack('V', $this->unix2DosTime(time()));
+			$hexdtime = pack('V', $this->unix2DosTime($modtime));
 			$fr = "\x50\x4b\x03\x04";
 			$fr .= "\x14\x00"; // ver needed to extract
 			$fr .= "\x00\x00"; // gen purpose bit flag

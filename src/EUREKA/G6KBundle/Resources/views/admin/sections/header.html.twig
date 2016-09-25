@@ -19,6 +19,9 @@
         <li{%- if nav == 'datasources' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_datasources') }}">{{ 'Data sources'|trans }}<span class="sr-only">(current)</span></a></li>
 		{% endif %}
 		{% if is_granted('ROLE_MANAGER') %}
+        <li{%- if nav == 'views' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_views') }}">{{ 'Views'|trans }}</a></li>
+		{% endif %}
+		{% if is_granted('ROLE_MANAGER') %}
         <li{%- if nav == 'simulators' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_simulators') }}">{{ 'Simulators'|trans }}</a></li>
 		{% endif %}
 		{% if is_granted('ROLE_SUPER_ADMIN') %}

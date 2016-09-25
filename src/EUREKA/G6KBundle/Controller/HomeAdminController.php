@@ -29,6 +29,7 @@ namespace EUREKA\G6KBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Finder\Finder;
 
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
@@ -55,8 +56,15 @@ class HomeAdminController extends BaseAdminController {
 		$userManager = $this->get('fos_user.user_manager');
 		$users = $userManager->findUsers();
 
+		$finder = new Finder();
 		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
-		$simus = array_filter(scandir($simu_dir), function ($simu) { return preg_match("/.xml$/", $simu); } );
+		$finder->depth('== 0')->files()->name('*.xml')->in($simu_dir);
+		$simulatorsCount = $finder->count();
+
+		$finder = new Finder();
+		$views_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/views";
+		$finder->depth('== 0')->ignoreVCS(true)->exclude(array('admin', 'base', 'Theme'))->directories()->in($views_dir);
+		$viewsCount = $finder->count();
 
  		$hiddens = array();
 		$hiddens['script'] = $script;
@@ -71,7 +79,8 @@ class HomeAdminController extends BaseAdminController {
 					'nav' => 'home',
 					'datasourcesCount' => $datasourcesCount,
 					'usersCount' => count($users),
-					'simulatorsCount' => count($simus),
+					'simulatorsCount' => $simulatorsCount,
+					'viewsCount' => $viewsCount,
 					'hiddens' => $hiddens
 				)
 		);
