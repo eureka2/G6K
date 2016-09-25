@@ -57,6 +57,8 @@ class ViewsAdminController extends BaseAdminController {
 			return $this->dropView($view);
 		} elseif ($crud == 'doedit-node') {
 			return $this->doEditNode($form, $view, $node);
+		} elseif ($crud == 'rename-node') {
+			return $this->renameNode($form, $view, $node);
 		} elseif ($crud == 'add-node') {
 			return $this->addViewNode($form, $request->files->all(), $view, $node);
 		} elseif ($crud == 'remove-node') {
@@ -214,6 +216,30 @@ class ViewsAdminController extends BaseAdminController {
 		$nodePath = $this->searchNodePath($viewdir, $publicdir, $view);
 		if ($nodePath == $viewdir . "/" . $form['file'] || $nodePath == $publicdir . "/" . $form['file']) { // security check
 			$fs->dumpFile($nodePath, $form['file-content']);
+		}
+		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view_node', array('view' => $view, 'node' => $node)));
+	}
+
+	protected function renameNode($form, $view, $node) {
+		$this->node = $node;
+		$fs = new Filesystem();
+		$container = $this->get('kernel')->getContainer();
+		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
+		$viewdir = $bundle->getPath()."/Resources/views";
+		$publicdir = $bundle->getPath()."/Resources/public";
+		$nodePath = $this->searchNodePath($viewdir, $publicdir, $view);
+		$newName = $form['rename-node-name'];
+		if (basename($nodePath) == $view) {
+			$oldpath = $viewdir . '/' . basename($nodePath);
+			$newpath = $viewdir . '/' . $newName;
+			$fs->rename($oldpath, $newpath);
+			$oldpath = $publicdir . '/' . basename($nodePath);
+			$newpath = $publicdir . '/' . $newName;
+			$fs->rename($oldpath, $newpath);
+			$view =$newName;
+		} else {
+			$newpath = preg_replace("/".basename($nodePath)."$/", $newName, $nodePath);
+			$fs->rename($nodePath, $newpath);
 		}
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
 	}

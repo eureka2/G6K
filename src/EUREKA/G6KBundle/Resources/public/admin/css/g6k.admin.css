@@ -179,7 +179,8 @@ ul.rule-conditions > li {
 	padding: 0;
 	font-weight: normal;
 }
-#page-views .add-node-container .control-label {
+#page-views .add-node-container .control-label,
+#page-views .rename-node-container .control-label {
 	width: 100%;
 }
 #view-editor-container {
@@ -193,14 +194,15 @@ ul.rule-conditions > li {
 	width: auto;
 	border: 1px solid #d0d0d0;
 }
-#page-views .add-folder-or-file-form {
+#page-views .add-folder-or-file-form,
+#page-views .rename-node-form {
 	display: inline;
 }
 #templates-tree-container .view-tree-buttons {
-	width: 90px;
+	width: 130px;
 }
 #assets-tree-container .view-tree-buttons {
-	width: 90px;
+	width: 130px;
 }
 .edit-simulator, .export-simulator, .add-data, .edit-data, .delete-data, 
 .add-datagroup, .edit-datagroup, .delete-datagroup, 

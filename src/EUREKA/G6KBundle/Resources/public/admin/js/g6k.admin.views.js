@@ -71,8 +71,8 @@ $(document).ready(function() {
 	if ( $( "#page-views" ).length ) {
 		if ( $( ".tree" ).length ) {
 			$('.tree').treegrid({
-				expanderExpandedClass: 'glyphicon glyphicon-chevron-down',
-				expanderCollapsedClass: 'glyphicon glyphicon-chevron-right'
+				expanderExpandedClass: 'glyphicon glyphicon-folder-open',
+				expanderCollapsedClass: 'glyphicon glyphicon-folder-close'
 			});
 		}
 		if ( $( "#view-create-form" ).length ) {
@@ -172,6 +172,28 @@ $(document).ready(function() {
 					} else if (nodeType == 'template' && ! /\.twig$/.test(file)) {
 						errors.push(Translator.trans("The file extension of the template file must be '.twig'"));
 						fileinput.parents('.form-group').first().addClass('has-error');
+					}
+				}
+				if (errors.length > 0) {
+					Views.showErrors(errors, null, $(this).find('.modal-body'));
+					return false;
+				}
+				$(this).find('.modal').modal('hide');
+				return true;
+			});
+			$(".rename-node-form").submit(function(e) {
+				Views.hideErrors($(this).find('.modal-body'));
+				var container = $(this).find('.rename-node-container');
+				var nodeType = container.attr('data-node-type');
+				var $nodeName = $(this).find("input[name='node-name']");
+				var $newNodeName = $(this).find("input[name='rename-node-name']");
+				var errors = Views.checkNodeName($newNodeName);
+				if (nodeType === 'file') {
+					var extension = $nodeName.val().match(/\.[0-9a-z]+$/i);
+					var newExtension = $newNodeName.val().match(/\.[0-9a-z]+$/i);
+					if (!newExtension || newExtension[0] != extension[0]) {
+						errors.push(Translator.trans("The file extension can not be changed"));
+						$newNodeName.parents('.form-group').first().addClass('has-error');
 					}
 				}
 				if (errors.length > 0) {

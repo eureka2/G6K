@@ -7,12 +7,12 @@
                 <target>Accès refusé!</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>Action Button</source>
-                <target>Bouton d'action</target>
-            </trans-unit>
-            <trans-unit id="3">
                 <source>actionbutton</source>
                 <target>le bouton d'action</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>Action Button</source>
+                <target>Bouton d'action</target>
             </trans-unit>
             <trans-unit id="4">
                 <source>Add</source>
@@ -151,12 +151,12 @@
                 <target>avant le montant</target>
             </trans-unit>
             <trans-unit id="38">
-                <source>BlockInfo</source>
-                <target>Bloc d'info</target>
-            </trans-unit>
-            <trans-unit id="39">
                 <source>blockinfo</source>
                 <target>le bloc d'info</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>BlockInfo</source>
+                <target>Bloc d'info</target>
             </trans-unit>
             <trans-unit id="40">
                 <source>Blockinfo %id% (nolabel)</source>
@@ -275,12 +275,12 @@
                 <target>Nom du chapître</target>
             </trans-unit>
             <trans-unit id="69">
-                <source>choice</source>
-                <target>choix simple</target>
-            </trans-unit>
-            <trans-unit id="70">
                 <source>Choice</source>
                 <target>Choix</target>
+            </trans-unit>
+            <trans-unit id="70">
+                <source>choice</source>
+                <target>choix simple</target>
             </trans-unit>
             <trans-unit id="71">
                 <source>Choice %id%</source>
@@ -379,12 +379,12 @@
                 <target>contient</target>
             </trans-unit>
             <trans-unit id="95">
-                <source>Content</source>
-                <target>Contenu</target>
-            </trans-unit>
-            <trans-unit id="96">
                 <source>content</source>
                 <target>le contenu</target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>Content</source>
+                <target>Contenu</target>
             </trans-unit>
             <trans-unit id="97">
                 <source>contributor</source>
@@ -443,12 +443,12 @@
                 <target>Tableau de bord</target>
             </trans-unit>
             <trans-unit id="111">
-                <source>data</source>
-                <target>la donnée</target>
-            </trans-unit>
-            <trans-unit id="112">
                 <source>Data</source>
                 <target>Donnée</target>
+            </trans-unit>
+            <trans-unit id="112">
+                <source>data</source>
+                <target>la donnée</target>
             </trans-unit>
             <trans-unit id="113">
                 <source>Database</source>
@@ -495,19 +495,19 @@
                 <target>Données</target>
             </trans-unit>
             <trans-unit id="124">
-                <source>dataset</source>
-                <target>l'ensemble des données</target>
-            </trans-unit>
-            <trans-unit id="125">
                 <source>Dataset</source>
                 <target>Ensemble des données</target>
             </trans-unit>
+            <trans-unit id="125">
+                <source>dataset</source>
+                <target>l'ensemble des données</target>
+            </trans-unit>
             <trans-unit id="126">
-                <source>Data source</source>
+                <source>Datasource</source>
                 <target>Source de données</target>
             </trans-unit>
             <trans-unit id="127">
-                <source>Datasource</source>
+                <source>Data source</source>
                 <target>Source de données</target>
             </trans-unit>
             <trans-unit id="128">
@@ -531,12 +531,12 @@
                 <target>Format de date</target>
             </trans-unit>
             <trans-unit id="133">
-                <source>day</source>
-                <target>jour</target>
-            </trans-unit>
-            <trans-unit id="134">
                 <source>Day</source>
                 <target>Jour</target>
+            </trans-unit>
+            <trans-unit id="134">
+                <source>day</source>
+                <target>jour</target>
             </trans-unit>
             <trans-unit id="135">
                 <source>December</source>
@@ -587,12 +587,12 @@
                 <target>Description</target>
             </trans-unit>
             <trans-unit id="147">
-                <source>disabled</source>
-                <target>désactivé</target>
-            </trans-unit>
-            <trans-unit id="148">
                 <source>Disabled</source>
                 <target>Désactivé</target>
+            </trans-unit>
+            <trans-unit id="148">
+                <source>disabled</source>
+                <target>désactivé</target>
             </trans-unit>
             <trans-unit id="149">
                 <source>Disposition</source>
@@ -695,12 +695,12 @@
                 <target>Expire le</target>
             </trans-unit>
             <trans-unit id="174">
-                <source>explanation</source>
-                <target>l'explication</target>
-            </trans-unit>
-            <trans-unit id="175">
                 <source>Explanation</source>
                 <target>Explication</target>
+            </trans-unit>
+            <trans-unit id="175">
+                <source>explanation</source>
+                <target>l'explication</target>
             </trans-unit>
             <trans-unit id="176">
                 <source>Export</source>
@@ -731,12 +731,12 @@
                 <target>Février</target>
             </trans-unit>
             <trans-unit id="183">
-                <source>field</source>
-                <target>le champ</target>
-            </trans-unit>
-            <trans-unit id="184">
                 <source>Field</source>
                 <target>Champ</target>
+            </trans-unit>
+            <trans-unit id="184">
+                <source>field</source>
+                <target>le champ</target>
             </trans-unit>
             <trans-unit id="185">
                 <source>Field %id% (nolabel)</source>
@@ -759,12 +759,12 @@
                 <target>Champs</target>
             </trans-unit>
             <trans-unit id="190">
-                <source>FieldSet</source>
-                <target>Groupe de champs</target>
-            </trans-unit>
-            <trans-unit id="191">
                 <source>fieldset</source>
                 <target>groupe de champs</target>
+            </trans-unit>
+            <trans-unit id="191">
+                <source>FieldSet</source>
+                <target>Groupe de champs</target>
             </trans-unit>
             <trans-unit id="192">
                 <source>Fieldset %id% (nolegend)</source>
@@ -775,24 +775,24 @@
                 <target>Les champs marqués d'un %asterisk% sont obligatoires.</target>
             </trans-unit>
             <trans-unit id="194">
-                <source>File</source>
-                <target>Fichier</target>
-            </trans-unit>
-            <trans-unit id="195">
                 <source>file</source>
                 <target>fichier</target>
+            </trans-unit>
+            <trans-unit id="195">
+                <source>File</source>
+                <target>Fichier</target>
             </trans-unit>
             <trans-unit id="196">
                 <source>File «%file%»</source>
                 <target>Fichier «%file%»</target>
             </trans-unit>
             <trans-unit id="197">
-                <source>FootNote</source>
-                <target>Note de pied de page</target>
-            </trans-unit>
-            <trans-unit id="198">
                 <source>footnote</source>
                 <target>la note de pied de page</target>
+            </trans-unit>
+            <trans-unit id="198">
+                <source>FootNote</source>
+                <target>Note de pied de page</target>
             </trans-unit>
             <trans-unit id="199">
                 <source>FootNote %id%</source>
@@ -831,12 +831,12 @@
                 <target>Aide</target>
             </trans-unit>
             <trans-unit id="208">
-                <source>Hide</source>
-                <target>Cacher</target>
-            </trans-unit>
-            <trans-unit id="209">
                 <source>hide</source>
                 <target>cacher</target>
+            </trans-unit>
+            <trans-unit id="209">
+                <source>Hide</source>
+                <target>Cacher</target>
             </trans-unit>
             <trans-unit id="210">
                 <source>Home</source>
@@ -1103,12 +1103,12 @@
                 <target>montant</target>
             </trans-unit>
             <trans-unit id="276">
-                <source>Month</source>
-                <target>Mois</target>
-            </trans-unit>
-            <trans-unit id="277">
                 <source>month</source>
                 <target>mois</target>
+            </trans-unit>
+            <trans-unit id="277">
+                <source>Month</source>
+                <target>Mois</target>
             </trans-unit>
             <trans-unit id="278">
                 <source>multichoice</source>
@@ -1131,862 +1131,874 @@
                 <target>Saut de ligne avant le champ ?</target>
             </trans-unit>
             <trans-unit id="283">
+                <source>New name</source>
+                <target>Nouveau nom</target>
+            </trans-unit>
+            <trans-unit id="284">
                 <source>New Table</source>
                 <target>Nouvelle table</target>
             </trans-unit>
-            <trans-unit id="284">
+            <trans-unit id="285">
                 <source>New view</source>
                 <target>Nouvelle vue</target>
             </trans-unit>
-            <trans-unit id="285">
+            <trans-unit id="286">
                 <source>Next</source>
                 <target>Suivant</target>
             </trans-unit>
-            <trans-unit id="286">
+            <trans-unit id="287">
                 <source>No</source>
                 <target>Non</target>
             </trans-unit>
-            <trans-unit id="287">
+            <trans-unit id="288">
                 <source>None</source>
                 <target>aucune</target>
             </trans-unit>
-            <trans-unit id="288">
+            <trans-unit id="289">
                 <source>None of the following conditions is met</source>
                 <target>aucune des conditions suivantes n'est satisfaite</target>
             </trans-unit>
-            <trans-unit id="289">
+            <trans-unit id="290">
                 <source>Normal</source>
                 <target>Normal</target>
             </trans-unit>
-            <trans-unit id="290">
+            <trans-unit id="291">
                 <source>not contains</source>
                 <target>ne contient pas</target>
             </trans-unit>
-            <trans-unit id="291">
+            <trans-unit id="292">
                 <source>notify Error</source>
                 <target>afficher l'erreur</target>
             </trans-unit>
-            <trans-unit id="292">
+            <trans-unit id="293">
                 <source>notify Warning</source>
                 <target>afficher l'avertissement</target>
             </trans-unit>
-            <trans-unit id="293">
+            <trans-unit id="294">
                 <source>Not null</source>
                 <target>Non null</target>
             </trans-unit>
-            <trans-unit id="294">
+            <trans-unit id="295">
                 <source>November</source>
                 <target>Novembre</target>
             </trans-unit>
-            <trans-unit id="295">
+            <trans-unit id="296">
                 <source>now</source>
                 <target>« Date du jour »</target>
             </trans-unit>
-            <trans-unit id="296">
+            <trans-unit id="297">
                 <source>number</source>
                 <target>nombre décimal</target>
             </trans-unit>
-            <trans-unit id="297">
+            <trans-unit id="298">
                 <source>October</source>
                 <target>Octobre</target>
             </trans-unit>
-            <trans-unit id="298">
+            <trans-unit id="299">
                 <source>of</source>
                 <target>de</target>
             </trans-unit>
-            <trans-unit id="299">
+            <trans-unit id="300">
                 <source>of actionbutton</source>
                 <target>, du bouton d'action</target>
             </trans-unit>
-            <trans-unit id="300">
+            <trans-unit id="301">
                 <source>of blockinfo</source>
                 <target>, du bloc d'info</target>
             </trans-unit>
-            <trans-unit id="301">
+            <trans-unit id="302">
                 <source>of blockinfo «%blockinfo%»</source>
                 <target>du bloc d'info «%blockinfo%»</target>
             </trans-unit>
-            <trans-unit id="302">
+            <trans-unit id="303">
                 <source>of chapter</source>
                 <target>, du chapître</target>
             </trans-unit>
-            <trans-unit id="303">
+            <trans-unit id="304">
                 <source>of data</source>
                 <target>, de la donnée</target>
             </trans-unit>
-            <trans-unit id="304">
+            <trans-unit id="305">
                 <source>of data «%label%»</source>
                 <target>de la donnée «%label%»</target>
             </trans-unit>
-            <trans-unit id="305">
+            <trans-unit id="306">
                 <source>of field</source>
                 <target>, du champ</target>
             </trans-unit>
-            <trans-unit id="306">
+            <trans-unit id="307">
                 <source>of fieldset</source>
                 <target>, du groupe de champs</target>
             </trans-unit>
-            <trans-unit id="307">
+            <trans-unit id="308">
                 <source>of fieldset «%label%»</source>
                 <target>du groupe de champs «%label%»</target>
             </trans-unit>
-            <trans-unit id="308">
+            <trans-unit id="309">
                 <source>of field «%label%»</source>
                 <target>du champ «%label%»</target>
             </trans-unit>
-            <trans-unit id="309">
+            <trans-unit id="310">
                 <source>of footnote</source>
                 <target>, de la note de pied de page</target>
             </trans-unit>
-            <trans-unit id="310">
+            <trans-unit id="311">
                 <source>of panel</source>
                 <target>, du panneau</target>
             </trans-unit>
-            <trans-unit id="311">
+            <trans-unit id="312">
                 <source>of panel «%panel%»</source>
                 <target>du panneau «%panel%»</target>
             </trans-unit>
-            <trans-unit id="312">
+            <trans-unit id="313">
                 <source>of postnote</source>
                 <target>de la post note</target>
             </trans-unit>
-            <trans-unit id="313">
+            <trans-unit id="314">
                 <source>of prenote</source>
                 <target>, de la pre note</target>
             </trans-unit>
-            <trans-unit id="314">
+            <trans-unit id="315">
                 <source>of section</source>
                 <target>, de la section</target>
             </trans-unit>
-            <trans-unit id="315">
+            <trans-unit id="316">
                 <source>of step</source>
                 <target>de l'étape</target>
             </trans-unit>
-            <trans-unit id="316">
+            <trans-unit id="317">
                 <source>of step «%label%»</source>
                 <target>de l'étape «%label%»</target>
             </trans-unit>
-            <trans-unit id="317">
+            <trans-unit id="318">
                 <source>of the following conditions are met</source>
                 <target>les conditions suivantes sont satisfaites</target>
             </trans-unit>
-            <trans-unit id="318">
+            <trans-unit id="319">
                 <source>of the following conditions is met</source>
                 <target>des conditions suivantes est satisfaite</target>
             </trans-unit>
-            <trans-unit id="319">
+            <trans-unit id="320">
                 <source>of «%label%»</source>
                 <target>de «%label%»</target>
             </trans-unit>
-            <trans-unit id="320">
+            <trans-unit id="321">
                 <source>on</source>
                 <target>portant sur</target>
             </trans-unit>
-            <trans-unit id="321">
+            <trans-unit id="322">
                 <source>Optional attributes</source>
                 <target>Attributs optionnels</target>
             </trans-unit>
-            <trans-unit id="322">
+            <trans-unit id="323">
                 <source>Output</source>
                 <target>Sortie</target>
             </trans-unit>
-            <trans-unit id="323">
+            <trans-unit id="324">
                 <source>Page %pageno% of %numberofpages%</source>
                 <target>Page %pageno%/%numberofpages%</target>
             </trans-unit>
-            <trans-unit id="324">
+            <trans-unit id="325">
                 <source>Panel</source>
                 <target>Panneau</target>
             </trans-unit>
-            <trans-unit id="325">
+            <trans-unit id="326">
                 <source>panel</source>
                 <target>le panneau</target>
             </trans-unit>
-            <trans-unit id="326">
+            <trans-unit id="327">
                 <source>Panel %id% (nolabel)</source>
                 <target>Panneau %id% (pas de libellé)</target>
             </trans-unit>
-            <trans-unit id="327">
+            <trans-unit id="328">
                 <source>Password</source>
                 <target>Mot de passe</target>
             </trans-unit>
-            <trans-unit id="328">
+            <trans-unit id="329">
                 <source>percent</source>
                 <target>pourcentage</target>
             </trans-unit>
-            <trans-unit id="329">
+            <trans-unit id="330">
                 <source>Place the field under the label ?</source>
                 <target>Placez le champ sous l'étiquette de champ ?</target>
             </trans-unit>
-            <trans-unit id="330">
+            <trans-unit id="331">
                 <source>Please, choose a JSON data file</source>
                 <target>Merci de sélectionner un fichier de données JSON</target>
             </trans-unit>
-            <trans-unit id="331">
+            <trans-unit id="332">
                 <source>Please, choose a JSON schema file</source>
                 <target>Merci de sélectionner un fichier contenant le schéma JSON</target>
             </trans-unit>
-            <trans-unit id="332">
+            <trans-unit id="333">
                 <source>Please, choose a simulator file</source>
                 <target>Veuillez choisir un fichier de simulation</target>
             </trans-unit>
-            <trans-unit id="333">
+            <trans-unit id="334">
                 <source>Please Confirm</source>
                 <target>Merci de confirmer cette action</target>
             </trans-unit>
-            <trans-unit id="334">
+            <trans-unit id="335">
                 <source>Please confirm the database password</source>
                 <target>Merci de confirmer le mot de passe d'accès à la base de données</target>
             </trans-unit>
-            <trans-unit id="335">
+            <trans-unit id="336">
                 <source>Please enter a valid email address.</source>
                 <target>Veuillez entrer une adresse email valide.</target>
             </trans-unit>
-            <trans-unit id="336">
+            <trans-unit id="337">
                 <source>Please enter a valid password (6 car. min).</source>
                 <target>Le mot de passe n'est pas valide (6 car. min).</target>
             </trans-unit>
-            <trans-unit id="337">
+            <trans-unit id="338">
                 <source>Please enter a valid user name (3 car. min).</source>
                 <target>L'identifiant n'est pas valide (3 char. min).</target>
             </trans-unit>
-            <trans-unit id="338">
+            <trans-unit id="339">
                 <source>Please select a file !</source>
                 <target>Veuillez sélectionner un fichier !</target>
             </trans-unit>
-            <trans-unit id="339">
+            <trans-unit id="340">
                 <source>postnote</source>
                 <target>la post note</target>
             </trans-unit>
-            <trans-unit id="340">
+            <trans-unit id="341">
                 <source>PostNote</source>
                 <target>Post Note</target>
-            </trans-unit>
-            <trans-unit id="341">
-                <source>PreNote</source>
-                <target>Pre Note</target>
             </trans-unit>
             <trans-unit id="342">
                 <source>prenote</source>
                 <target>la pre note</target>
             </trans-unit>
             <trans-unit id="343">
+                <source>PreNote</source>
+                <target>Pre Note</target>
+            </trans-unit>
+            <trans-unit id="344">
                 <source>Previous</source>
                 <target>Précédent</target>
             </trans-unit>
-            <trans-unit id="344">
+            <trans-unit id="345">
                 <source>Prompt</source>
                 <target>Invite</target>
             </trans-unit>
-            <trans-unit id="345">
+            <trans-unit id="346">
                 <source>region</source>
                 <target>région</target>
             </trans-unit>
-            <trans-unit id="346">
+            <trans-unit id="347">
                 <source>Related informations</source>
                 <target>Informations connexes</target>
             </trans-unit>
-            <trans-unit id="347">
+            <trans-unit id="348">
                 <source>Remove this Action</source>
                 <target>Enlever cette action</target>
             </trans-unit>
-            <trans-unit id="348">
+            <trans-unit id="349">
                 <source>Remove this Condition</source>
                 <target>Enlever cette condition</target>
             </trans-unit>
-            <trans-unit id="349">
+            <trans-unit id="350">
                 <source>Remove this element</source>
                 <target>Supprimer cet élément</target>
             </trans-unit>
-            <trans-unit id="350">
+            <trans-unit id="351">
                 <source>Remove this Sub-Condition</source>
                 <target>Enlever cette sous-condition</target>
             </trans-unit>
-            <trans-unit id="351">
+            <trans-unit id="352">
+                <source>Rename «%node%»</source>
+                <target>Renommer «%node%»</target>
+            </trans-unit>
+            <trans-unit id="353">
                 <source>Required</source>
                 <target>Requis</target>
             </trans-unit>
-            <trans-unit id="352">
+            <trans-unit id="354">
                 <source>Required if visible</source>
                 <target>Requis si visible</target>
             </trans-unit>
-            <trans-unit id="353">
+            <trans-unit id="355">
                 <source>RESTful Web Service</source>
                 <target>Web Service RESTful</target>
             </trans-unit>
-            <trans-unit id="354">
+            <trans-unit id="356">
                 <source>Result index</source>
                 <target>Index de résultat</target>
             </trans-unit>
-            <trans-unit id="355">
+            <trans-unit id="357">
                 <source>result index</source>
                 <target>l'index de résultat</target>
             </trans-unit>
-            <trans-unit id="356">
+            <trans-unit id="358">
                 <source>Return format</source>
                 <target>Format réponse</target>
             </trans-unit>
-            <trans-unit id="357">
+            <trans-unit id="359">
                 <source>Return path value</source>
                 <target>Path de la réponse</target>
             </trans-unit>
-            <trans-unit id="358">
+            <trans-unit id="360">
                 <source>Roles</source>
                 <target>Rôles</target>
             </trans-unit>
-            <trans-unit id="359">
+            <trans-unit id="361">
                 <source>Round</source>
                 <target>Arrondi</target>
             </trans-unit>
-            <trans-unit id="360">
+            <trans-unit id="362">
                 <source>round</source>
                 <target>arrondi</target>
             </trans-unit>
-            <trans-unit id="361">
+            <trans-unit id="363">
                 <source>Rule</source>
                 <target>Règle</target>
             </trans-unit>
-            <trans-unit id="362">
+            <trans-unit id="364">
                 <source>Save</source>
                 <target>Enregistrer</target>
             </trans-unit>
-            <trans-unit id="363">
+            <trans-unit id="365">
                 <source>Search</source>
                 <target>Rechercher</target>
             </trans-unit>
-            <trans-unit id="364">
-                <source>Section</source>
-                <target>Section</target>
-            </trans-unit>
-            <trans-unit id="365">
+            <trans-unit id="366">
                 <source>section</source>
                 <target>la section</target>
             </trans-unit>
-            <trans-unit id="366">
+            <trans-unit id="367">
+                <source>Section</source>
+                <target>Section</target>
+            </trans-unit>
+            <trans-unit id="368">
                 <source>Section %id% (nolabel)</source>
                 <target>Section %id% (pas de libellél)</target>
             </trans-unit>
-            <trans-unit id="367">
+            <trans-unit id="369">
                 <source>Section label</source>
                 <target>Etiquette de la section</target>
             </trans-unit>
-            <trans-unit id="368">
+            <trans-unit id="370">
                 <source>Section name</source>
                 <target>Nom de la section</target>
             </trans-unit>
-            <trans-unit id="369">
+            <trans-unit id="371">
                 <source>Select a Disposition</source>
                 <target>Selectionnez une disposition</target>
             </trans-unit>
-            <trans-unit id="370">
+            <trans-unit id="372">
                 <source>Select a format</source>
                 <target>Sélectionnez un format</target>
             </trans-unit>
-            <trans-unit id="371">
+            <trans-unit id="373">
                 <source>Select an output</source>
                 <target>Sélectionnez une sortie</target>
             </trans-unit>
-            <trans-unit id="372">
+            <trans-unit id="374">
                 <source>Select an usage</source>
                 <target>Sélectionnez une utilisation</target>
             </trans-unit>
-            <trans-unit id="373">
+            <trans-unit id="375">
                 <source>Select a position</source>
                 <target>Sélectionnez une position</target>
             </trans-unit>
-            <trans-unit id="374">
+            <trans-unit id="376">
                 <source>Select a symbol</source>
                 <target>Sélectionnez un symbole</target>
             </trans-unit>
-            <trans-unit id="375">
+            <trans-unit id="377">
                 <source>Select a type</source>
                 <target>Sélectionnez un type</target>
             </trans-unit>
-            <trans-unit id="376">
+            <trans-unit id="378">
                 <source>Select a view</source>
                 <target>Sélectionnez une vue</target>
             </trans-unit>
-            <trans-unit id="377">
+            <trans-unit id="379">
                 <source>Separator</source>
                 <target>Séparateur</target>
             </trans-unit>
-            <trans-unit id="378">
+            <trans-unit id="380">
                 <source>September</source>
                 <target>Septembre</target>
             </trans-unit>
-            <trans-unit id="379">
-                <source>Set</source>
-                <target>Mettre</target>
-            </trans-unit>
-            <trans-unit id="380">
+            <trans-unit id="381">
                 <source>set</source>
                 <target>mettre</target>
             </trans-unit>
-            <trans-unit id="381">
+            <trans-unit id="382">
+                <source>Set</source>
+                <target>Mettre</target>
+            </trans-unit>
+            <trans-unit id="383">
                 <source>Set value</source>
                 <target>Mettre la valeur</target>
             </trans-unit>
-            <trans-unit id="382">
+            <trans-unit id="384">
                 <source>Show</source>
                 <target>Montrer</target>
             </trans-unit>
-            <trans-unit id="383">
+            <trans-unit id="385">
                 <source>show</source>
                 <target>montrer</target>
             </trans-unit>
-            <trans-unit id="384">
+            <trans-unit id="386">
                 <source>Show choices as radio buttons ?</source>
                 <target>Afficher les choix avec des boutons radio ?</target>
             </trans-unit>
-            <trans-unit id="385">
+            <trans-unit id="387">
                 <source>Show colon after field label ?</source>
                 <target>Afficher ':' après l'étiquette de champ?</target>
             </trans-unit>
-            <trans-unit id="386">
+            <trans-unit id="388">
                 <source>Show data description as help ?</source>
                 <target>Utiliser la description de données comme aide ?</target>
             </trans-unit>
-            <trans-unit id="387">
+            <trans-unit id="389">
                 <source>Show this file</source>
                 <target>Visualiser ce fichier</target>
             </trans-unit>
-            <trans-unit id="388">
+            <trans-unit id="390">
                 <source>Simulation performed on %host% on %date%</source>
                 <target>Simulation réalisée sur %host% le %date%</target>
             </trans-unit>
-            <trans-unit id="389">
+            <trans-unit id="391">
                 <source>Simulator : %simulator%</source>
                 <target>Simulateur: %simulator%</target>
             </trans-unit>
-            <trans-unit id="390">
+            <trans-unit id="392">
                 <source>Simulator : import</source>
                 <target>Simulateur: import</target>
             </trans-unit>
-            <trans-unit id="391">
+            <trans-unit id="393">
                 <source>Simulator file</source>
                 <target>Fichier simulateur</target>
             </trans-unit>
-            <trans-unit id="392">
+            <trans-unit id="394">
                 <source>Simulators</source>
                 <target>Simulateurs</target>
             </trans-unit>
-            <trans-unit id="393">
+            <trans-unit id="395">
                 <source>Simulators definition</source>
                 <target>Définition des simulateurs</target>
             </trans-unit>
-            <trans-unit id="394">
+            <trans-unit id="396">
                 <source>source</source>
                 <target>source</target>
             </trans-unit>
-            <trans-unit id="395">
+            <trans-unit id="397">
                 <source>Source</source>
                 <target>Source</target>
             </trans-unit>
-            <trans-unit id="396">
+            <trans-unit id="398">
                 <source>Sources</source>
                 <target>Sources</target>
             </trans-unit>
-            <trans-unit id="397">
+            <trans-unit id="399">
                 <source>SQL Request</source>
                 <target>Requête SQL</target>
             </trans-unit>
-            <trans-unit id="398">
-                <source>step</source>
-                <target>l'étape</target>
-            </trans-unit>
-            <trans-unit id="399">
+            <trans-unit id="400">
                 <source>Step</source>
                 <target>Etape</target>
             </trans-unit>
-            <trans-unit id="400">
+            <trans-unit id="401">
+                <source>step</source>
+                <target>l'étape</target>
+            </trans-unit>
+            <trans-unit id="402">
                 <source>Step %id% (nolabel)</source>
                 <target>Étape %id% (pas de libellél)</target>
             </trans-unit>
-            <trans-unit id="401">
+            <trans-unit id="403">
                 <source>Step Label</source>
                 <target>Libellé de l'étape</target>
             </trans-unit>
-            <trans-unit id="402">
+            <trans-unit id="404">
                 <source>Step Name</source>
                 <target>Nom de l'étape</target>
             </trans-unit>
-            <trans-unit id="403">
+            <trans-unit id="405">
                 <source>Steps</source>
                 <target>Etapes</target>
             </trans-unit>
-            <trans-unit id="404">
+            <trans-unit id="406">
                 <source>Steps of your simulation</source>
                 <target>Les étapes de votre simulation</target>
             </trans-unit>
-            <trans-unit id="405">
+            <trans-unit id="407">
                 <source>Step Template</source>
                 <target>Gabarit d'affichage de l'étape</target>
             </trans-unit>
-            <trans-unit id="406">
+            <trans-unit id="408">
                 <source>Store into memo</source>
                 <target>Stocker dans le mémo</target>
             </trans-unit>
-            <trans-unit id="407">
+            <trans-unit id="409">
                 <source>Stylesheet (optional)</source>
                 <target>Feuille de styles (facultatif)</target>
             </trans-unit>
-            <trans-unit id="408">
+            <trans-unit id="410">
                 <source>sub-folder</source>
                 <target>sous-dossier</target>
             </trans-unit>
-            <trans-unit id="409">
+            <trans-unit id="411">
                 <source>Submit</source>
                 <target>Soumettre</target>
             </trans-unit>
-            <trans-unit id="410">
+            <trans-unit id="412">
                 <source>Symbol position</source>
                 <target>Position du symbole</target>
             </trans-unit>
-            <trans-unit id="411">
+            <trans-unit id="413">
                 <source>Tables</source>
                 <target>Tables</target>
             </trans-unit>
-            <trans-unit id="412">
+            <trans-unit id="414">
                 <source>Templates</source>
                 <target>Gabarits</target>
             </trans-unit>
-            <trans-unit id="413">
+            <trans-unit id="415">
                 <source>text</source>
                 <target>texte</target>
             </trans-unit>
-            <trans-unit id="414">
+            <trans-unit id="416">
                 <source>textarea</source>
                 <target>texte enrichi</target>
             </trans-unit>
-            <trans-unit id="415">
+            <trans-unit id="417">
                 <source>The '%field%' field is required</source>
                 <target>Le champ '%field%' est requis</target>
             </trans-unit>
-            <trans-unit id="416">
+            <trans-unit id="418">
                 <source>The database host is required</source>
                 <target>Le serveur de base de données est requis</target>
             </trans-unit>
-            <trans-unit id="417">
+            <trans-unit id="419">
                 <source>The database label is required</source>
                 <target>Le libellé de la base de données est requis</target>
             </trans-unit>
-            <trans-unit id="418">
+            <trans-unit id="420">
                 <source>The database name is required</source>
                 <target>Le nom de la base de données est requis</target>
             </trans-unit>
-            <trans-unit id="419">
+            <trans-unit id="421">
                 <source>The database port is required</source>
                 <target>Le port de la base de données est requis</target>
             </trans-unit>
-            <trans-unit id="420">
+            <trans-unit id="422">
                 <source>The database user is required</source>
                 <target>L'identifiant de connexion à la base de données est requis</target>
             </trans-unit>
-            <trans-unit id="421">
+            <trans-unit id="423">
                 <source>The datasource name is required</source>
                 <target>Le nom de la source de données est requis</target>
             </trans-unit>
-            <trans-unit id="422">
+            <trans-unit id="424">
                 <source>The email field is required!</source>
                 <target>Le champ email est obligatoire!</target>
             </trans-unit>
-            <trans-unit id="423">
+            <trans-unit id="425">
                 <source>The field '%field%' is invalid</source>
                 <target>Le champ '%field%' est non valide</target>
             </trans-unit>
-            <trans-unit id="424">
+            <trans-unit id="426">
                 <source>The field '%field%' is not a number</source>
                 <target>Le champ '%field%' n'est pas un nombre</target>
             </trans-unit>
-            <trans-unit id="425">
+            <trans-unit id="427">
                 <source>The field '%field%' is not a valid currency</source>
                 <target>Le champ '%field%' n'est pas un montant valide</target>
             </trans-unit>
-            <trans-unit id="426">
+            <trans-unit id="428">
                 <source>The field '%field%' is not a valid date</source>
                 <target>Le champ '%field%' n'est pas une date valide</target>
             </trans-unit>
-            <trans-unit id="427">
+            <trans-unit id="429">
                 <source>The field '%field%' is not a valid year</source>
                 <target>Le champ '%field%' n'est pas une année valide</target>
             </trans-unit>
-            <trans-unit id="428">
+            <trans-unit id="430">
                 <source>The field '%field%' is not numeric</source>
                 <target>Le champ '%field%' n'est pas numérique</target>
             </trans-unit>
-            <trans-unit id="429">
+            <trans-unit id="431">
                 <source>The field '%field%' is required</source>
                 <target>Le champ '%field%' est obligatoire</target>
             </trans-unit>
-            <trans-unit id="430">
+            <trans-unit id="432">
+                <source>The file extension can not be changed</source>
+                <target>L'extension du fichier ne peut être changée</target>
+            </trans-unit>
+            <trans-unit id="433">
                 <source>The file extension of the assets file must be '.zip'</source>
                 <target>L'extension du fichier des ressources multimédia doit être '.zip '</target>
             </trans-unit>
-            <trans-unit id="431">
+            <trans-unit id="434">
                 <source>The file extension of the simulator file must be '.xml'</source>
                 <target>L'extension de fichier du fichier du simulateur doit être '.xml'</target>
             </trans-unit>
-            <trans-unit id="432">
+            <trans-unit id="435">
                 <source>The file extension of the stylesheet must be '.css'</source>
                 <target>L'extension de fichier de la feuille de style doit être '.css'</target>
             </trans-unit>
-            <trans-unit id="433">
+            <trans-unit id="436">
                 <source>The file extension of the template file must be '.twig'</source>
                 <target>L'extension du fichier gabarit doit être '.twig'</target>
             </trans-unit>
-            <trans-unit id="434">
+            <trans-unit id="437">
                 <source>The file extension of the templates file must be '.zip'</source>
                 <target>L'extension du fichier des gabarits doit être '.zip '</target>
             </trans-unit>
-            <trans-unit id="435">
+            <trans-unit id="438">
                 <source>The JSON data file extension must be '.json'</source>
                 <target>L'extension du fichier de données JSON doit être '.json'</target>
             </trans-unit>
-            <trans-unit id="436">
+            <trans-unit id="439">
                 <source>The JSON schema file extension must be '.schema.json'</source>
                 <target>L'extension du fichier du schéma JSON doit être '.schema.json'</target>
             </trans-unit>
-            <trans-unit id="437">
+            <trans-unit id="440">
                 <source>The name is required</source>
                 <target>Le nom est requis</target>
             </trans-unit>
-            <trans-unit id="438">
+            <trans-unit id="441">
                 <source>The name must not contains any space or special character</source>
                 <target>Le nom ne doit contenir ni espaces, ni caractères spéciaux</target>
             </trans-unit>
-            <trans-unit id="439">
+            <trans-unit id="442">
                 <source>The names of the two files without extension should be the same.</source>
                 <target>Les noms des deux fichiers (sans l'extension) doivent être les mêmes</target>
             </trans-unit>
-            <trans-unit id="440">
+            <trans-unit id="443">
                 <source>then do ...</source>
                 <target>alors  ...</target>
             </trans-unit>
-            <trans-unit id="441">
+            <trans-unit id="444">
                 <source>The password field is required (6 car. min)!</source>
                 <target>Le champ de mot de passe est requis (6 char. Min)!</target>
             </trans-unit>
-            <trans-unit id="442">
+            <trans-unit id="445">
                 <source>There's no record with id 0.</source>
                 <target>Il n'y a pas d'enregistrement avec l'id 0.</target>
             </trans-unit>
-            <trans-unit id="443">
+            <trans-unit id="446">
                 <source>The simulator decimal point is required</source>
                 <target>Le point décimal est requis</target>
             </trans-unit>
-            <trans-unit id="444">
+            <trans-unit id="447">
                 <source>The simulator label is required</source>
                 <target>L'étiquette de simulateur est requis</target>
             </trans-unit>
-            <trans-unit id="445">
+            <trans-unit id="448">
                 <source>The simulator name is required</source>
                 <target>Le nom du simulateur est requis</target>
             </trans-unit>
-            <trans-unit id="446">
+            <trans-unit id="449">
                 <source>The two passwords do not match !</source>
                 <target>Les deux mots de passe ne correspondent pas !</target>
             </trans-unit>
-            <trans-unit id="447">
+            <trans-unit id="450">
                 <source>The username field is required  (3 car .min)!</source>
                 <target>Le champ de l'identifiant est requis (3 char .min)!</target>
             </trans-unit>
-            <trans-unit id="448">
+            <trans-unit id="451">
                 <source>The Web Service URI is required</source>
                 <target>L'URI du web service est requis</target>
             </trans-unit>
-            <trans-unit id="449">
+            <trans-unit id="452">
                 <source>This email already exists !</source>
                 <target>Cet email existe déjà !</target>
             </trans-unit>
-            <trans-unit id="450">
+            <trans-unit id="453">
                 <source>This field is required</source>
                 <target>Ce champ est requis</target>
             </trans-unit>
-            <trans-unit id="451">
+            <trans-unit id="454">
                 <source>This record already exists.</source>
                 <target>Cet enregistrement existe déjà.</target>
             </trans-unit>
-            <trans-unit id="452">
+            <trans-unit id="455">
                 <source>This simulator does not exist</source>
                 <target>Ce simulateur n'existe pas</target>
             </trans-unit>
-            <trans-unit id="453">
+            <trans-unit id="456">
                 <source>This template does not exist</source>
                 <target>Ce template n'existe pas</target>
             </trans-unit>
-            <trans-unit id="454">
+            <trans-unit id="457">
                 <source>This user doesn't  exists !</source>
                 <target>Cet utilisateur n'existe pas!</target>
             </trans-unit>
-            <trans-unit id="455">
+            <trans-unit id="458">
                 <source>This username already exists !</source>
                 <target>Cet identifiant existe déjà !</target>
             </trans-unit>
-            <trans-unit id="456">
+            <trans-unit id="459">
                 <source>This value can not be greater than %max%</source>
                 <target>Cette donnée ne peut être supérieure à %max%</target>
             </trans-unit>
-            <trans-unit id="457">
+            <trans-unit id="460">
                 <source>This value can not be less than %min%</source>
                 <target>Cette donnée ne peut être inférieure à %min%</target>
             </trans-unit>
-            <trans-unit id="458">
+            <trans-unit id="461">
                 <source>This value is not in the expected format</source>
                 <target>Cette donnée n'est pas au format attendu</target>
             </trans-unit>
-            <trans-unit id="459">
+            <trans-unit id="462">
                 <source>This value is not in the expected format (%format%)</source>
                 <target>Cette donnée n'est pas au format attendu (%format%)</target>
             </trans-unit>
-            <trans-unit id="460">
+            <trans-unit id="463">
                 <source>This view already exists</source>
                 <target>Cette vue existe déjà</target>
             </trans-unit>
-            <trans-unit id="461">
+            <trans-unit id="464">
                 <source>to</source>
                 <target>à</target>
             </trans-unit>
-            <trans-unit id="462">
+            <trans-unit id="465">
                 <source>true</source>
                 <target>vrai</target>
             </trans-unit>
-            <trans-unit id="463">
+            <trans-unit id="466">
                 <source>Try it</source>
                 <target>Tester</target>
             </trans-unit>
-            <trans-unit id="464">
+            <trans-unit id="467">
                 <source>Tutorials</source>
                 <target>Tutoriels</target>
             </trans-unit>
-            <trans-unit id="465">
+            <trans-unit id="468">
                 <source>Type</source>
                 <target>Type</target>
             </trans-unit>
-            <trans-unit id="466">
+            <trans-unit id="469">
                 <source>Unit</source>
                 <target>Unité</target>
             </trans-unit>
-            <trans-unit id="467">
+            <trans-unit id="470">
                 <source>unit text</source>
                 <target>texte d'unité</target>
             </trans-unit>
-            <trans-unit id="468">
+            <trans-unit id="471">
                 <source>URI</source>
                 <target>URI</target>
             </trans-unit>
-            <trans-unit id="469">
+            <trans-unit id="472">
                 <source>Usage</source>
                 <target>Utilisation</target>
             </trans-unit>
-            <trans-unit id="470">
+            <trans-unit id="473">
                 <source>user</source>
                 <target>utilisateur</target>
             </trans-unit>
-            <trans-unit id="471">
+            <trans-unit id="474">
                 <source>User Interface</source>
                 <target>Interface utilisateur</target>
             </trans-unit>
-            <trans-unit id="472">
+            <trans-unit id="475">
                 <source>User Interface for step %id%</source>
                 <target>Interface utilisateur pour l'étape %id%</target>
             </trans-unit>
-            <trans-unit id="473">
+            <trans-unit id="476">
                 <source>UserName</source>
                 <target>Identifiant</target>
             </trans-unit>
-            <trans-unit id="474">
+            <trans-unit id="477">
                 <source>Users</source>
                 <target>Utilisateurs</target>
             </trans-unit>
-            <trans-unit id="475">
+            <trans-unit id="478">
                 <source>Users list</source>
                 <target>Liste des utilisateurs</target>
             </trans-unit>
-            <trans-unit id="476">
+            <trans-unit id="479">
                 <source>Users management</source>
                 <target>Gestion des utilisateurs</target>
             </trans-unit>
-            <trans-unit id="477">
+            <trans-unit id="480">
                 <source>Validate</source>
                 <target>Valider</target>
             </trans-unit>
-            <trans-unit id="478">
+            <trans-unit id="481">
                 <source>Validation errors</source>
                 <target>Erreurs de validation</target>
             </trans-unit>
-            <trans-unit id="479">
+            <trans-unit id="482">
                 <source>Value</source>
                 <target>Valeur</target>
             </trans-unit>
-            <trans-unit id="480">
+            <trans-unit id="483">
                 <source>Value column</source>
                 <target>Colonne 'Valeur'</target>
             </trans-unit>
-            <trans-unit id="481">
+            <trans-unit id="484">
                 <source>View files (compressed in zip format)</source>
                 <target>Fichiers de la vue (au format compressé zip)</target>
             </trans-unit>
-            <trans-unit id="482">
+            <trans-unit id="485">
                 <source>View name</source>
                 <target>Nom de la vue</target>
             </trans-unit>
-            <trans-unit id="483">
+            <trans-unit id="486">
                 <source>Views</source>
                 <target>Vues</target>
             </trans-unit>
-            <trans-unit id="484">
+            <trans-unit id="487">
                 <source>Views management</source>
                 <target>Gestion des vues</target>
             </trans-unit>
-            <trans-unit id="485">
+            <trans-unit id="488">
                 <source>View «%view%»</source>
                 <target>Vue «%view%»</target>
             </trans-unit>
-            <trans-unit id="486">
+            <trans-unit id="489">
                 <source>Warning</source>
                 <target>Avertissement</target>
             </trans-unit>
-            <trans-unit id="487">
+            <trans-unit id="490">
                 <source>Webservice URI</source>
                 <target>URI du web service</target>
             </trans-unit>
-            <trans-unit id="488">
+            <trans-unit id="491">
                 <source>Welcome to G6K world!</source>
                 <target>Bienvenue dans le monde de G6K !</target>
             </trans-unit>
-            <trans-unit id="489">
+            <trans-unit id="492">
                 <source>When ...</source>
                 <target>Lorsque ...</target>
             </trans-unit>
-            <trans-unit id="490">
+            <trans-unit id="493">
                 <source>whose label is</source>
                 <target>dont le libellé est</target>
             </trans-unit>
-            <trans-unit id="491">
+            <trans-unit id="494">
                 <source>XML Validation against schema fail</source>
                 <target>La validation XML par rapport au schéma a échoué</target>
             </trans-unit>
-            <trans-unit id="492">
+            <trans-unit id="495">
                 <source>XML Validation errors</source>
                 <target>Erreurs de validation XML</target>
             </trans-unit>
-            <trans-unit id="493">
-                <source>Year</source>
-                <target>Année</target>
-            </trans-unit>
-            <trans-unit id="494">
+            <trans-unit id="496">
                 <source>year</source>
                 <target>année</target>
             </trans-unit>
-            <trans-unit id="495">
+            <trans-unit id="497">
+                <source>Year</source>
+                <target>Année</target>
+            </trans-unit>
+            <trans-unit id="498">
                 <source>Yes</source>
                 <target>Oui</target>
             </trans-unit>
-            <trans-unit id="496">
+            <trans-unit id="499">
                 <source>You have unsaved stuff. Are you sure to leave?</source>
                 <target>Vous avez des choses non enregistrées. Etes-vous sûr de vouloir quitter cette page ?</target>
             </trans-unit>
-            <trans-unit id="497">
+            <trans-unit id="500">
                 <source>Your update are not saved. Sure to leave?</source>
                 <target>Vos mises à jour ne sont pas enregistrées. Certain de quitter cette page ?</target>
             </trans-unit>

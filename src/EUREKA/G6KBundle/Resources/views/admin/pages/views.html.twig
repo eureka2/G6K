@@ -228,6 +228,14 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 		{{ _self.popinfooter() }}
 		</form>
 		{% endif %}
+		<form class="rename-node-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'rename-node'}) }}" enctype="multipart/form-data">
+		<input type="hidden" name="node-name" value="{{ node.name }}" />
+		{{ _self.popinheader('rename-' ~ viewname ~ node.num, 'popin-rename-tree-node', 'Rename «%node%»'|trans({'%node%': node.name}), '<span class="glyphicon glyphicon-edit"></span>'|raw, 'btn btn-sm btn-default rename-tree-node' ) }}
+		<div class="rename-node-container" data-node-type="{% if node.isdir -%}folder{% else %}file{% endif %}">
+			<div class="form-group"><label class="control-label">{{ 'New name'|trans }}<input type="text" id="rename-node-name-{{ node.num }}" name="rename-node-name" value="{{ node.name }}" class="form-control input-sm" required="required"/></label></div>
+		</div>
+		{{ _self.popinfooter() }}
+		</form>
 		{% if parent > 0 %}
 		<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'remove-node'}) }}" class="btn btn-sm btn-default remove-tree-node" alt="{{ 'Remove this element'|trans }}" title="{{ 'Remove this element'|trans }}" data-confirm="{{ 'Are you sure you want to drop this element ?'|trans }}"> <span class="glyphicon glyphicon-trash"></span></a>
 		{% endif %}
