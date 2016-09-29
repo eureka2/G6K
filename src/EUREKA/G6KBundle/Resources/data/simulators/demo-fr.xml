@@ -65,21 +65,10 @@ Le taux est établi selon une table de référence publiée annuellement par le 
 			]]></Description>
 		</Data>
 		<Data id="5" name="montantForfaitaireRSA" label="Montant forfaitaire du RSA" type="money" content="524.16" />
-		<!--Data id="5" name="montantForfaitaireRSA" label="Montant forfaitaire du RSA" type="money" source="2" index="'montant'" /-->
-		<!--Data id="5" name="montantForfaitaireRSA" label="Montant forfaitaire du RSA" type="money" source="2"-->
-		<!--Data id="5" name="montantForfaitaireRSA" label="Montant forfaitaire du RSA" type="money" source="3" index="'value'">
-			<Description><![CDATA[
-Montant forfaitaire du RSA pour un foyer composé d’une seule personne.
-
-Le salarié doit dans tous les cas, conserver au moins cette somme après saisie
-			]]></Description>
-		</Data-->
 		<Data id="6" name="mtEnfantPA" label="Montant par enfant" type="money" content="max(0, round((#1 - #5) * #4 /100))" round="0" />
 		<Data id="7" name="totalPA" label="Montant total" type="money" content="max(0, min(#1 - #5, #6 * #3))" round="0" />
 		<Data id="8" name="dateRSA" label="Date du montant forfaitaire du RSA" type="date" source="2" index="'debut'" />
-		<!--Data id="8" name="dateRSA" label="Date du montant forfaitaire du RSA" type="date" source="3" index="'start'" /-->
 		<Data id="9" name="paramRSA" label="Paramètre openfisca pour le RSA Socle" type="text" content="'minim.rmi.rmi'" />
-		<!--Data id="9" name="paramRSA" label="Paramètre openfisca pour le RSA Socle" type="text" content="'rsa_socle'" /-->
 		<Data id="10" name="dateDuJour" label="Date du jour" type="date" content="now" />
 	</DataSet>
 	<Steps>
@@ -139,17 +128,10 @@ Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pensi
 		<Site id="1" name="SP" home="http://www.service-public.fr" />
 	</Sites>
 	<Sources>
-		<Source id="1" datasource="3" request="SELECT rate FROM MARate WHERE AARight = %s AND nChildren &lt;= %s ORDER BY nChildren DESC LIMIT 1" returnType="assocArray" returnPath="0/rate">
+		<Source id="1" datasource="demo" request="SELECT rate FROM MARate WHERE AARight = %s AND nChildren &lt;= %s ORDER BY nChildren DESC LIMIT 1" returnType="assocArray" returnPath="0/rate">
 			<Parameter type="columnValue" name="droitVH" data="2" />
 			<Parameter type="columnValue" name="nbEnfants" data="3" />
 		</Source>
-		<!--Source id="2" datasource="6" request="SELECT montant, debut FROM RSASocle ORDER BY debut DESC LIMIT 1" returnType="assocArray" returnPath="0" /-->
-		<!--Source id="2" datasource="7" returnType="json" returnPath="//values/rsa_socle">
-			<Parameter name="name" type="path" data="9" />
-		</Source-->
-		<!--Source id="3" datasource="8" returnType="json" returnPath="//parameters/values[php:functionString('strtotime', start) &lt;= php:functionString('strtotime', translate('#(dateDuJour)', '/', '-')) and php:functionString('strtotime', stop) >= php:functionString('strtotime', translate('#(dateDuJour)', '/', '-'))]">
-			<Parameter name="name" type="queryString" data="9" />
-		</Source-->
 	</Sources>
 	<BusinessRules>
 		<BusinessRule id="1" name="R1" label="Contrôle du champ 'Revenus du débiteur'">

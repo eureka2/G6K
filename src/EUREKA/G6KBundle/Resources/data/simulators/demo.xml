@@ -2,12 +2,12 @@
 <Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="demo" label="France: Maintenance allowance calculation simulator" dynamic="1">
 	<Description>The amount of the pension by child is calculated in proportion to the income, net by a minimum living wage (€ 524.16), by a debtor parent. This proportion is different according to the total number of children chargeable to the debtor parent (whatever is the union from which they were born) and the amplitude of the right of access and the accommodation (reduced, classic, or alternated without spontaneous sharing of expenses).</Description>
 	<DataSet dateFormat="d/m/Y" decimalPoint="." moneySymbol="€" symbolPosition="before">
-		<Data id="1" name="income" type="money">
+		<Data id="1" name="income" label="Debtor's income" type="money">
 			<Description><![CDATA[
 The personal resources of the debtor are taken into account which are taxable as well as the social-security benefits, with the exception of those to improve the standard of living of the children (ex: family benefits).
 			]]></Description>
 		</Data>
-		<Data id="2" name="AARight" type="choice" default="2">
+		<Data id="2" name="AARight" label="Right of access and residence" type="choice" default="2">
 			<Description><![CDATA[
 <strong>Right of access and residence:</strong>
 
@@ -18,17 +18,17 @@ The personal resources of the debtor are taken into account which are taxable as
 <strong>alternated</strong>: the children live alternately in the residence of each of the parents. The alternated residence can give rise to contribution  to the education of the children when the parents did not agree on the sharing of expenses bound to the child according to their resources or when one of the parents cannot assume only the financial charge of the alternated residence.
 			]]></Description>
 			<Choices>
-				<Choice id="1" value="1" label="reduced"/>
-				<Choice id="2" value="2" label="classic"/>
-				<Choice id="3" value="3" label="alternated"/>
+				<Choice id="1" value="1" label="reduced"></Choice>
+				<Choice id="2" value="2" label="classic"></Choice>
+				<Choice id="3" value="3" label="alternated"></Choice>
 			</Choices>
 		</Data>
-		<Data id="3" name="nChildren" type="number" default="1" min="1">
+		<Data id="3" name="nChildren" label="Number of children" type="number" default="1" min="1">
 			<Description><![CDATA[
 Total number of children chargeable to the debtor parent (whatever is the union from which they were born). All the children is thus taken into account the debtor parent of which has the responsibility) including those who do not live with him.
 			]]></Description>
 		</Data>
-		<Data id="4" name="MARate" type="percent" source="1">
+		<Data id="4" name="MARate" label="Alimony rate" type="percent" source="1">
 			<Description><![CDATA[
 The rate is established according to a table of reference published annually by the Ministry of Justice:
 <strong>Right of access and reduced accommodation</strong>
@@ -62,8 +62,6 @@ The rate is established according to a table of reference published annually by 
 </ul>
 			]]></Description>
 		</Data>
-		<!--Data id="5" name="lumpAmountRSA" label="Lump amount of the French RSA" type="money" source="2" index="'value'"-->
-		<!--Data id="5" name="lumpAmountRSA" label="Lump amount of the French RSA" type="money" source="2"-->
 		<Data id="5" name="lumpAmountRSA" label="Lump amount of the French RSA" type="money" content="524.16">
 			<Description><![CDATA[
 Lump amount of the RSA for a household made up of a single person.
@@ -71,18 +69,17 @@ Lump amount of the RSA for a household made up of a single person.
 The employee owes in every case, keep at least this sum after seizure
 			]]></Description>
 		</Data>
-		<Data id="6" name="amountByChild" type="money" content="round((#1 - #5) * #4 /100)" round="0">
+		<Data id="6" name="amountByChild" label="Amount by child" type="money" content="round((#1 - #5) * #4 /100)" round="0">
 			<Description><![CDATA[
 			]]></Description>
 		</Data>
-		<Data id="7" name="totalMA" type="money" content="min(#1, #6 * #3)" round="0">
+		<Data id="7" name="totalMA" label="Total amount" type="money" content="min(#1, #6 * #3)" round="0">
 			<Description><![CDATA[
 			]]></Description>
 		</Data>
-		<Data id="8" name="RSADate" label="Date of the lump sum of French RSA" type="date" source="2" index="'start'"/>
-		<!--Data id="9" name="RSAParam" label="Openfisca parameter for the RSA Base" type="text" content="'minim.rmi.rmi'"/-->
-		<Data id="9" name="RSAParam" label="Openfisca parameter for the RSA Socle" type="text" content="'rsa_socle'" />
-		<Data id="10" name="todaysDate" label="Today's date" type="date" content="now"/>
+		<Data id="8" name="RSADate" label="Date of the lump sum of French RSA" type="date" source="2" index="'start'"></Data>
+		<Data id="9" name="RSAParam" label="Openfisca parameter for the RSA Socle" type="text" content="'rsa_socle'"></Data>
+		<Data id="10" name="todaysDate" label="Today's date" type="date" content="now"></Data>
 	</DataSet>
 	<Steps>
 		<Step id="0" name="calculation" label="Maintenance allowance" template="pages:article.html.twig">
@@ -93,23 +90,23 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 			<Panels>
 				<Panel id="1" name="panel1">
 					<FieldSet id="1">
-						<Legend/>
-						<Field position="1" label="Income of the debtor parent" usage="input" required="1" help="1" data="1"/>
-						<Field position="2" label="Amplitude of the right of access and the accommodation" usage="input" required="1" expanded="0" underlabel="0" help="1" data="2"/>
-						<Field position="3" label="Number of children of the debtor parent" usage="input" required="1" help="1" data="3"/>
-						<Field position="4" label="Applicable rate by child" usage="output" required="0" help="1" data="4"/>
+						<Legend></Legend>
+						<Field position="1" label="Income of the debtor parent" usage="input" required="1" help="1" data="1"></Field>
+						<Field position="2" label="Amplitude of the right of access and the accommodation" usage="input" required="1" expanded="0" underlabel="0" help="1" data="2"></Field>
+						<Field position="3" label="Number of children of the debtor parent" usage="input" required="1" help="1" data="3"></Field>
+						<Field position="4" label="Applicable rate by child" usage="output" required="0" help="1" data="4"></Field>
 					</FieldSet>
 					<FieldSet id="2">
 						<Legend><![CDATA[
 Maintenance allowance
 				]]></Legend>
-						<Field position="1" label="Maintenance allowance by child" usage="output" required="0" help="0" emphasize="1" data="6"/>
-						<Field position="2" label="Total of the maintenance allowance" usage="output" required="0" help="0" emphasize="1" data="7"/>
+						<Field position="1" label="Maintenance allowance by child" usage="output" required="0" help="0" emphasize="1" data="6"></Field>
+						<Field position="2" label="Total of the maintenance allowance" usage="output" required="0" help="0" emphasize="1" data="7"></Field>
 					</FieldSet>
 				</Panel>
 			</Panels>
 			<ActionList>
-				<Action name="reset" label="Reset" class="btn-default" what="reset" for="currentStep"/>
+				<Action name="reset" label="Reset" class="btn-default" what="reset" for="currentStep"></Action>
 			</ActionList>
 		</Step>
 		<Step id="1" name="calculation" label="Maintenance allowance" template="pages:article.html.twig">
@@ -118,62 +115,71 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 			<Panels>
 				<Panel id="1" name="panel1">
 					<FieldSet id="1">
-						<Legend/>
-						<Field position="1" label="Income of the debtor parent" usage="input" required="1" help="1" explanation="1" data="1"/>
-						<Field position="2" label="Amplitude of the right of access and the accommodation" usage="input" required="1" expanded="0" underlabel="0" help="1" explanation="2" data="2"/>
-						<Field position="3" label="Number of children of the debtor parent" usage="input" required="1" help="1" explanation="3" data="3"/>
-						<Field position="4" label="Applicable rate by child" usage="output" required="0" help="1" explanation="4" data="4"/>
-						<Field position="5" label="Maintenance allowance by child" usage="output" required="0" help="0" emphasize="1" explanation="'5 = ((1) - 483) * (4) /100'" data="5"/>
-						<Field position="6" label="Total of the maintenance allowance" usage="output" required="0" help="0" emphasize="1" explanation="'6 = (5) * (3)'" data="6"/>
+						<Legend></Legend>
+						<Field position="1" label="Income of the debtor parent" usage="input" required="1" help="1" explanation="1" data="1"></Field>
+						<Field position="2" label="Amplitude of the right of access and the accommodation" usage="input" required="1" expanded="0" underlabel="0" help="1" explanation="2" data="2"></Field>
+						<Field position="3" label="Number of children of the debtor parent" usage="input" required="1" help="1" explanation="3" data="3"></Field>
+						<Field position="4" label="Applicable rate by child" usage="output" required="0" help="1" explanation="4" data="4"></Field>
+						<Field position="5" label="Maintenance allowance by child" usage="output" required="0" help="0" emphasize="1" explanation="'5 = ((1) - 483) * (4) /100'" data="5"></Field>
+						<Field position="6" label="Total of the maintenance allowance" usage="output" required="0" help="0" emphasize="1" explanation="'6 = (5) * (3)'" data="6"></Field>
 					</FieldSet>
 				</Panel>
 			</Panels>
 			<ActionList>
-				<Action name="reset" label="Reset" class="btn-primary" what="reset" for="currentStep"/>
-				<Action name="calculate" label="Calculate" class="" what="submit" for="currentStep"/>
+				<Action name="reset" label="Reset" class="btn-primary" what="reset" for="currentStep"></Action>
+				<Action name="calculate" label="Calculate" class="" what="submit" for="currentStep"></Action>
 			</ActionList>
 		</Step>
 	</Steps>
 	<Sources>
-		<Source id="1" datasource="1" request="SELECT rate FROM MARate WHERE AARight = %s AND nChildren &lt;= %s ORDER BY nChildren DESC LIMIT 1" returnType="assocArray" returnPath="0/rate">
-			<Parameter type="columnValue" name="AARight" data="2"/>
-			<Parameter type="columnValue" name="nChildren" data="3"/>
+		<Source id="1" datasource="demo" request="SELECT rate FROM MARate WHERE AARight = %s AND nChildren &lt;= %s ORDER BY nChildren DESC LIMIT 1" returnType="assocArray" returnPath="0/rate">
+			<Parameter type="columnValue" name="AARight" data="2"></Parameter>
+			<Parameter type="columnValue" name="nChildren" data="3"></Parameter>
 		</Source>
-		<!--Source id="2" datasource="3" returnType="json" returnPath="//values/rsa_socle">
-			<Parameter name="name" type="path" data="9" />
-		</Source-->
-		<!--Source id="2" datasource="2" returnType="json" returnPath="//parameters/values[php:functionString('strtotime', start) &lt;= php:functionString('strtotime', translate('#(dateDuJour)', '/', '-')) and php:functionString('strtotime', stop) >= php:functionString('strtotime', translate('#(dateDuJour)', '/', '-'))]">
-			<Parameter name="name" type="queryString" data="9"/>
-		</Source-->
 	</Sources>
 	<BusinessRules>
 		<BusinessRule id="1" name="R1" label="Control of the field 'Income of the debtor parent'">
-			<Conditions value="#1 &lt;= 0"/>
+			<Conditions value="#1 &lt;= 0">
+				<Condition operand="1" operator="&lt;=" expression="0" />
+			</Conditions>
 			<IfActions>
-				<Action id="1" name="notifyError" target="data" data="1" value="Your income must be upper to 0"/>
+				<Action id="1" name="notifyError" target="data" data="1" value="Your income must be upper to 0"></Action>
 			</IfActions>
 			<ElseActions>
 			</ElseActions>
 		</BusinessRule>
 		<BusinessRule id="2" name="R2" label="Control of the field 'Number of children of the debtor parent'">
-			<Conditions value="defined(#2) &amp;&amp; #2 &lt;= 0"/>
+			<Conditions value="defined(#3) &amp;&amp; #3 &lt;= 0">
+				<Connector type="all">
+					<Condition operand="3" operator="present" />
+					<Condition operand="3" operator="&lt;=" expression="0" />
+				</Connector>
+			</Conditions>
 			<IfActions>
-				<Action id="1" name="notifyError" target="data" data="3" value="The number of children must be upper to 0"/>
+				<Action id="1" name="notifyError" target="data" data="3" value="The number of children must be upper to 0"></Action>
 			</IfActions>
 			<ElseActions>
 			</ElseActions>
 		</BusinessRule>
 		<BusinessRule id="3" name="R3" label="Condition of display of the fieldset 'Maintenance allowance' and the 'Reset' button">
-			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6)"/>
+			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6)">
+				<Connector type="all">
+					<Condition operand="1" operator="present" />
+					<Condition operand="2" operator="present" />
+					<Condition operand="3" operator="present" />
+					<Condition operand="4" operator="present" />
+					<Condition operand="6" operator="present" />
+				</Connector>
+			</Conditions>
 			<IfActions>
-				<Action id="1" name="showObject" target="field" step="0" panel="1" fieldset="1" field="4"/>
-				<Action id="2" name="showObject" target="fieldset" step="0" panel="1" fieldset="2"/>
-				<Action id="3" name="showObject" target="action" step="0" action="reset"/>
+				<Action id="1" name="showObject" target="field" step="0" panel="1" fieldset="1" field="4"></Action>
+				<Action id="2" name="showObject" target="fieldset" step="0" panel="1" fieldset="2"></Action>
+				<Action id="3" name="showObject" target="action" step="0" action="reset"></Action>
 			</IfActions>
 			<ElseActions>
-				<Action id="1" name="hideObject" target="field" step="0" panel="1" fieldset="1" field="4"/>
-				<Action id="2" name="hideObject" target="fieldset" step="0" panel="1" fieldset="2"/>
-				<Action id="3" name="hideObject" target="action" step="0" panel="1" action="reset"/>
+				<Action id="1" name="hideObject" target="field" step="0" panel="1" fieldset="1" field="4"></Action>
+				<Action id="2" name="hideObject" target="fieldset" step="0" panel="1" fieldset="2"></Action>
+				<Action id="3" name="hideObject" target="action" step="0" panel="1" action="reset"></Action>
 			</ElseActions>
 		</BusinessRule>
 	</BusinessRules>
