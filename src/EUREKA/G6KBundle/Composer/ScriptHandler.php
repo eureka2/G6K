@@ -221,6 +221,14 @@ class ScriptHandler
 			return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
 		}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
 		file_put_contents($databasesDir."/DataSources.xml", $formatted);
+		$parameters = (object)$parameters;
+		$simusDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
+		if (file_exists($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->locale . '.xml')) {
+			rename($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->locale . '.xml', $simusDir . DIRECTORY_SEPARATOR . 'demo.xml');
+		}
+		foreach (glob($simusDir . DIRECTORY_SEPARATOR . "demo-*.xml") as $filename) {
+			unlink($filename);
+		}
 	}
 
 	protected static function getParameters(Event $event, $configDir) {
