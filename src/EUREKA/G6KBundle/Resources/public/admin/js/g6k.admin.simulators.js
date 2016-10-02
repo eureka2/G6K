@@ -112,10 +112,21 @@ THE SOFTWARE.
 		nestedExpression: { classes: ['button', 'button-default'] }
 	};
 
+	Simulators.sourceReturnTypes = { 
+		'json': Translator.trans('JSON'), 
+		'xml': Translator.trans('XML'), 
+		'singleValue': Translator.trans('Single value'), 
+		'assocArray': Translator.trans('Associative array'), 
+		'html': Translator.trans('HTML'), 
+		'csv': Translator.trans('Comma separated value (csv)') 
+	}
+
 	Simulators.dataBackup = null;
 	Simulators.datagroupBackup = null;
 	Simulators.dataChoicesBackup = null;
 	Simulators.ruleBackup = null;
+	Simulators.sourceBackup = null;
+	Simulators.sourceParametersBackup = null;
 	Simulators.dataset = {};
 	Simulators.datagroups = {};
 
@@ -279,6 +290,19 @@ THE SOFTWARE.
 			}
 		});
 		return result;
+	}
+
+	Simulators.collectRuleConnector = function(conditionsPanel) {
+		var conditions = conditionsPanel.find('.rule-conditions');
+		var ruleElementId = conditions.attr('data-rule-element-id');
+		var connector = null;
+		$.each(rules, function(k, rule) {
+			if (rule.elementId == ruleElementId) {
+				connector = rule.connector || null;
+				return false;
+			}
+		});
+		return connector;
 	}
 
 	Simulators.collectRuleActions = function(actionsPanel) {
@@ -694,7 +718,8 @@ THE SOFTWARE.
 		ruleContainer.find('.conditions').conditionsBuilder({
 			fields: Simulators.dataset,
 			expressionOptions: Simulators.expressionOptions,
-			conditions: rule.conditions
+			conditions: rule.conditions,
+			connector: rule.connector
 		});
 		ruleContainer.find('.add-if-action').removeClass('update-button').show();
 		ruleContainer.find('.if-actions').actionsBuilder({
@@ -780,11 +805,13 @@ THE SOFTWARE.
 			}
 		});
 		ruleContainer.find('.validate-add-rule, .validate-edit-rule').click(function() {
+			var conditions = ruleContainer.find('.conditions').conditionsBuilder("conditions");
 			var rule = {
 				id: ruleContainer.find('.rule-id').text(),
 				name: ruleContainer.find('.input-rule-name').val(),
 				label: ruleContainer.find('.input-rule-label').val(),
-				conditions: ruleContainer.find('.conditions').conditionsBuilder("conditions"),
+				conditions: conditions,
+				connector: conditions,
 				ifActions: ruleContainer.find('.if-actions').actionsBuilder("actions"),
 				elseActions:ruleContainer.find('.else-actions').actionsBuilder("actions")
 
@@ -806,7 +833,6 @@ THE SOFTWARE.
 	}
 
 	Simulators.drawRuleForDisplay = function(rule) {
-		console.log(rule);
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
 		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
 		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-rule">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> Rule <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
@@ -820,7 +846,7 @@ THE SOFTWARE.
 			rule.conditions = rule.conditions.any[0];
 		}
 		Simulators.plainConditions(rule.conditions);
-		conditionsPanelBody.append('<ul class="rule-conditions" data-value="' + rule.conditions + '">' + Simulators.drawConditionForDisplay(rule.conditions) + '</ul>');
+		conditionsPanelBody.append('<ul class="rule-conditions" data-value="' + rule.conditions + '" data-rule-element-id="' + ruleElementId + '">' + Simulators.drawConditionForDisplay(rule.conditions) + '</ul>');
 		conditionsPanel.append(conditionsPanelBody);
 		ruleBody.append(conditionsPanel);
 		if (rule.ifActions.length > 0) {
@@ -937,6 +963,12 @@ THE SOFTWARE.
 					var data = Simulators.dataset[ruleData.name];
 					type = data.type;
 					ruleData["name"] = data.label;
+					if (data.type === 'choice') {
+						var label = Simulators.getChoiceLabel(data, ruleData.value);
+						if (label != "") {
+							ruleData["value"] = '«' + label + '»';
+						}
+					}
 				}
 				if (ruleData.operator) {
 					ruleData["operator"] = Simulators.getPlainOperator(ruleData.operator, type);
@@ -1047,95 +1079,132 @@ THE SOFTWARE.
 						break;
 					case 'choice':
 						choice = ruleAction.fields[0].fields[0].fields[0].value;
-						data = Simulators.dataset[ruleAction.fields[0].fields[0].value];
+						data = ruleAction.fields[0].fields[0].value;
 						break;
 				}
 				break;
 		}
 		var actionContainer = $('<div>', { 'class': 'rule-action', 'data-id': '', 'data-name': name, 'data-target': target, 'data-data': data, 'data-datagroup': datagroup, 'data-step': step, 'data-panel': panel, 'data-fieldset': fieldset, 'data-field': field, 'data-blockinfo': blockinfo, 'data-chapter': chapter, 'data-section': section, 'data-prenote': prenote, 'data-postnote': postnote, 'data-action': action, 'data-footnote': footnote, 'data-choice': choice, 'data-value': value });
-		if (name === 'notifyError') {
-			actionContainer.append('<span class="action-name">' + Translator.trans('notify Error') + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans(target) + ' </span>');
-			if (target === 'data') {
-				actionContainer.append('<span class="action-data">«' + data.label + '»</span>');
-			} else if (target === 'datagroup') {
-				actionContainer.append('<span class="action-datagroup">«' + datagroup.label + '»</span>');
-			}
-		} else if (name === 'notifyWarning') {
-			actionContainer.append('<span class="action-name">' + Translator.trans('notify Warning') + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans(target) + ' </span>');
+		if (name === 'notifyError' || name === 'notifyWarning') {
+			var actionName = name === 'notifyError' ? Translator.trans('notify Error') : Translator.trans('notify Warning');
+			actionContainer.append('<span class="action-name">' + actionName + ' : </span> <span class="action-value">«' + Simulators.replaceByDataLabel(value) + '»</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans(target) + ' </span>');
 			if (target === 'data') {
 				actionContainer.append('<span class="action-data">«' + data.label + '»</span>');
 			} else if (target === 'datagroup') {
 				actionContainer.append('<span class="action-datagroup">«' + datagroup.label + '»</span>');
 			}
 		} else if (name === 'hideObject' || name === 'showObject') {
+			var actionNode = Simulators.findAction(name, actions);
+			actionContainer.append('<span class="action-name">' + (name === 'hideObject' ? Translator.trans('hide') : Translator.trans('show')) + '</span>');
+			var optionNode = Simulators.findActionOption('objectId', target, actionNode);;
+			actionContainer.append('<span class="action-target"> ' + Translator.trans(target) + '</span>');
 			switch (target) {
 				case 'step':
-					actionContainer.append('<span class="action-step">«»</span>');
+					actionContainer.append('<span class="action-step"> «' + Simulators.findActionField([{stepId: step}], optionNode).label + '»</span>');
 					break;
 				case 'panel':
-					actionContainer.append('<span class="action-panel">«»</span>');
-					actionContainer.append('<span class="action-step"> </span>');
+					actionContainer.append('<span class="action-panel"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'fieldset':
-					actionContainer.append('<span class="action-fieldset">«»</span>');
-					actionContainer.append('<span class="action-panel"> </span>');
-					actionContainer.append('<span class="action-step"> </span>');
+					actionContainer.append('<span class="action-fieldset"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('in panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'blockinfo':
-					actionContainer.append('<span class="action-blockinfo">«»</span>');
-					actionContainer.append('<span class="action-panel"> </span>');
-					actionContainer.append('<span class="action-step"> </span>');
-					break;
-				case 'field':
-					actionContainer.append('<span class="action-field">«»</span>');
-					actionContainer.append('<span class="action-fieldset"> </span>');
-					actionContainer.append('<span class="action-panel"> </span>');
-					actionContainer.append('<span class="action-step"> </span>');
+					actionContainer.append('<span class="action-blockinfo"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {blockinfoId: blockinfo}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('in panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'chapter':
-					actionContainer.append('<span class="action-chapter">«»</span>');
-					actionContainer.append('<span class="action-blockinfo"> </span>');
-					actionContainer.append('<span class="action-panel"> </span>');
-					actionContainer.append('<span class="action-step"> </span>');
+					actionContainer.append('<span class="action-chapter"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {blockinfoId: blockinfo}, {chapterId: chapter}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-blockinfo"> ' + Translator.trans('in blockinfo «%blockinfo%»', {'blockinfo': Simulators.findActionField([{stepId: step}, {panelId: panel}, {blockinfoId: blockinfo}], optionNode).label})+ '</span>');
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'section':
-					actionContainer.append('<span class="action-section">«»</span>');
-					actionContainer.append('<span class="action-chapter">«»</span>');
-					actionContainer.append('<span class="action-blockinfo"> </span>');
-					actionContainer.append('<span class="action-panel"> </span>');
-					actionContainer.append('<span class="action-step"> </span>');
+					actionContainer.append('<span class="action-section"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {blockinfoId: blockinfo}, {chapterId: chapter}, {sectionId: section}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-chapter"> ' + Translator.trans('in') + ' ' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {blockinfoId: blockinfo}, {chapterId: chapter}], optionNode).label + '</span>');
+					actionContainer.append('<span class="action-blockinfo"> ' + Translator.trans('of blockinfo «%blockinfo%»', {'blockinfo': Simulators.findActionField([{stepId: step}, {panelId: panel}, {blockinfoId: blockinfo}], optionNode).label})+ '</span>');
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
+					break;
+				case 'field':
+					actionContainer.append('<span class="action-field"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'prenote':
-					actionContainer.append('<span class="action-prenote"></span>');
-					actionContainer.append('<span class="action-fieldset"> </span>');
-					actionContainer.append('<span class="action-panel"> </span>');
-					actionContainer.append('<span class="action-step"> </span>');
+					actionContainer.append('<span class="action-prenote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'postnote':
-					actionContainer.append('<span class="action-postnote"></span>');
-					actionContainer.append('<span class="action-fieldset"> </span>');
-					actionContainer.append('<span class="action-panel"> </span>');
-					actionContainer.append('<span class="action-step"> </span>');
+					actionContainer.append('<span class="action-postnote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'footnote':
-					actionContainer.append('<span class="action-footnote">«»</span>')
-					actionContainer.append('<span class="action-panel"> </span>');
-					actionContainer.append('<span class="action-step"> </span>');
+					actionContainer.append('<span class="action-footnote"> «' + Simulators.findActionField([{stepId: step}, {footnoteId: footnote}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'action':
-					actionContainer.append('<span class="action-action">«»</span>');
-					actionContainer.append('<span class="action-panel"> </span>');
-					actionContainer.append('<span class="action-step"> </span>');
+					actionContainer.append('<span class="action-action"> «' + Simulators.findActionField([{stepId: step}, {actionId: action}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'choice':
-					actionContainer.append('<span class="action-choice">«»</span>');
-					actionContainer.append('<span class="action-data"> </span>');
+					console.log("data : " + data)
+					console.log("choice : " + choice)
+					actionContainer.append('<span class="action-choice"> «' + Simulators.findActionField([data, choice], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-data"> ' + Translator.trans('of data «%label%»', {'label': Simulators.dataset[data].label}) + '</span>');
 					break;
 			}
 		} else if (target === 'setAttribute') {
 			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans(target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': data.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByDataLabel(value)) + '</span>');
 		}
 		return actionContainer;
+	}
+
+	Simulators.findAction = function(name, fromNode) {
+		for (var i=0; i < fromNode.length; i++) {
+			var action = fromNode[i];
+			if (action.name == name) {
+				return action;
+			}
+		}
+		return null;
+	}
+
+	Simulators.findActionField = function(fields, currentNode) {
+		for (var f = 0; f < fields.length; f++) {
+			var name = Object.keys(fields[f])[0];
+			var value = fields[f][name];
+			currentNode = Simulators.findActionOption(name, value, currentNode);
+			if (!currentNode) { 
+				return null; 
+			}
+		}
+		return currentNode;
+	}
+
+	Simulators.findActionOption = function(name, value, node) {
+		var fields = node.fields || [];
+		for (var f = 0; f < fields.length; f++) {
+			var field = fields[f];
+			if (field.name == name) {
+				var options = field.options || [];
+				for (var i = 0; i < options.length; i++) {
+					var option = options[i];
+					if (option.name == value) {
+						return option;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	Simulators.drawRuleForInput = function(rule) {
@@ -1164,6 +1233,7 @@ THE SOFTWARE.
 			name: 'R' + (rules.length + 1),
 			label: '',
 			conditions: '',
+			connector: null,
 			ifdata: [],
 			elsedata: []
 		};
@@ -1183,6 +1253,7 @@ THE SOFTWARE.
 			name: ruleDisplayContainer.find('.rule-name').text(),
 			label: ruleDisplayContainer.find('.rule-label').text(),
 			conditions: ruleDisplayContainer.find('.rule-conditions').attr("data-value"),
+			connector: Simulators.collectRuleConnector(ruleDisplayContainer.find('.conditions-panel')),
 			ifdata: Simulators.collectRuleActions(ruleDisplayContainer.find('.if-actions-panel')),
 			elsedata: Simulators.collectRuleActions(ruleDisplayContainer.find('.else-actions-panel'))
 		};
@@ -1209,6 +1280,22 @@ THE SOFTWARE.
 				}
 			}
 		}); 
+	}
+
+	Simulators.collectRules = function() {
+		var rulesData = [];
+		$('#business-rules .rule-container').each(function(r) {
+			rulesData.push({
+				id: $(this).find('.rule-id').text(),
+				name: $(this).find('.rule-name').text(),
+				label: $(this).find('.rule-label').text(),
+				conditions: $(this).find('.rule-conditions').attr("data-value"),
+				connector: Simulators.collectRuleConnector($(this).find('.conditions-panel')),
+				ifActions: Simulators.collectRuleActions($(this).find('.if-actions-panel')),
+				elseActions: Simulators.collectRuleActions($(this).find('.else-actions-panel'))
+			});
+		});
+		return rulesData;
 	}
 
 	Simulators.checkSimulatorOptions = function(simulatorContainer) {
@@ -1332,7 +1419,7 @@ THE SOFTWARE.
 		var simulatorAttributes = $('<div></div>');
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-name', 'text', 'name', Translator.trans('Name'), simulator.name, true, 'name'));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-label', 'text', 'label', Translator.trans('Label'), simulator.label, true, 'label'));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-defaultView', 'text', 'defaultView', Translator.trans('Default view'), simulator.defaultView, false, 'defaultView'));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-defaultView', 'select', 'defaultView', Translator.trans('Default view'), simulator.defaultView, true, Translator.trans('Default view'), JSON.stringify(views)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-referer', 'text', 'referer', Translator.trans('Main referer'), simulator.referer, false, 'referer'));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-dateFormat', 'select', 'dateFormat', Translator.trans('Date format'), simulator.dateFormat, true, Translator.trans('Select a format'), JSON.stringify(Simulators.dateFormats)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'text', 'decimalPoint', Translator.trans('Decimal point'), simulator.decimalPoint, true, Translator.trans('Decimal point')));
@@ -1348,7 +1435,6 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		optionalAttributes.append('<li class="list-group-item" data-element="simulator" data-type="text" data-name="defaultView" data-placeholder="' + Translator.trans('Default View value') + '">' + Translator.trans('Default view') + '</li>');
 		optionalAttributes.append('<li class="list-group-item" data-element="simulator" data-type="text" data-name="referer" data-placeholder="' + Translator.trans('Main referer value') + '">' + Translator.trans('Main referer') + '</li>');
 		var dynamicAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="dynamic" data-placeholder="">' + Translator.trans('Interactive UI') + '</li>');
 		optionalAttributes.append(dynamicAttribute);
@@ -1915,15 +2001,475 @@ THE SOFTWARE.
 		return dataPanelContainer;
 	}
 
-	Simulators.removeAttribute = function(attr) {
-		var id =  attr.parent('label.control-label').attr('for');
-		var input = $('#' + id);
-		var ids  = input.attr('id').split('-');
-		var name = ids.pop();
-		var element = ids.join('-');
-		var li = attr.parents('div.attributes-container').children('div.optional-attributes').children('ul').children("li[data-element='" + element +"'][data-name='" + name +"']");
-		li.show();
-		attr.parent('label').parent('div.form-group').remove();
+	Simulators.maxSourceId = function() {
+		var maxId = 1;
+		var sources = $('#sources').find('.source-container');
+		sources.each(function() {
+			var id = parseInt($(this).attr('data-id'));
+			if (id > maxId) {
+				maxId = id;
+			}
+		});
+		return maxId;
+	}
+
+	Simulators.drawSourceForDisplay = function(source) {
+		var sourceElementId = 'source-' + source.id;
+		var sourcePanelContainer = $('<div>', { 'class': 'panel-group', id: sourceElementId, role: 'tablist', 'aria-multiselectable': 'true' });
+		var sourcePanel = $('<div>', { 'class': 'panel panel-info' });
+		sourcePanel.append('<div class="panel-heading" role="tab" id="' + sourceElementId + '-panel"><button class="btn btn-info pull-right update-button delete-source" data-parent="#' + sourceElementId + '">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-source" data-parent="#' + sourceElementId + '">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + '</a></h4></div>');
+		var sourcePanelCollapse = $('<div id="collapse' + sourceElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sourceElementId + '-panel"></div>');
+		var sourcePanelBody = $('<div class="panel-body"></div>');
+		var sourceContainer = $('<div class="panel panel-default source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
+		var sourceContainerBody = $('<div class="panel-body"></div>');
+		var attributesContainer = $('<div class="attributes-container"></div>');
+		var attributes = $('<div></div>');
+		attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'text', 'datasource', Translator.trans('Datasource'), source.datasource, true, Translator.trans('Datasource')));
+		if (source.request) {
+			attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'text', 'request', Translator.trans('Request'), source.request, false, Translator.trans('Request')));
+		}
+		attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'select', 'returnType', Translator.trans('Return type'), source.returnType, true, Translator.trans('Select a return type'), JSON.stringify(Simulators.sourceReturnTypes)));
+		if (source.returnPath) {
+			attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'text', 'returnPath', Translator.trans('Return path'), source.returnPath, false, Translator.trans('Return path')));
+		}
+		if (source.separator) {
+			attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'text', 'separator', Translator.trans('Separator'), source.separator, false, Translator.trans('Separator')));
+		}
+		if (source.delimiter) {
+			attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'text', 'delimiter', Translator.trans('Delimiter'), source.delimiter, false, Translator.trans('Delimiter')));
+		}
+		attributesContainer.append(attributes);
+		sourceContainerBody.append(attributesContainer);
+		sourceContainer.append(sourceContainerBody);
+		sourcePanelBody.append(sourceContainer);
+		sourcePanelCollapse.append(sourcePanelBody);
+		sourcePanel.append(sourcePanelCollapse);
+		sourcePanelContainer.append(sourcePanel);
+		return sourcePanelContainer;
+	}
+
+	Simulators.drawSourceParametersForDisplay  = function(sourceId) {
+		var parametersPanel = $('<div>', { 'class': 'panel panel-default source-parameters-panel', id: 'source-' + sourceId + '-source--parameters-panel' });
+		parametersPanel.append('<div class="panel-heading">' + Translator.trans('Parameters') + '</div>');
+		var parametersPanelBody = $('<div class="panel-body"></div>');
+		parametersPanel.append(parametersPanelBody);
+		return parametersPanel;
+	}
+
+	Simulators.drawSourceParameterForDisplay = function(parameter) {
+		var parameterPanel = $('<div>', { 'class': 'panel panel-default source-parameter-container',  'data-id': parameter.id });
+		parameterPanel.append('<div class="panel-heading">' + Translator.trans('Parameter %id%', { 'id': parameter.id }) + '</div>');
+		var parameterPanelBody = $('<div>', { 'class': 'panel-body', id: 'source-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
+		var attributesContainer = $('<div class="attributes-container"></div>');
+		var attributes = $('<div></div>');
+		var datasList = {};
+		var type = '';
+		$.each(dataset, function( name, data) {
+			datasList[name] = data.label;
+			if (name == parameter.data) {
+				type = data.type;
+			}
+		});
+		var typesList = { 
+			queryString: Translator.trans('Query string'), 
+			path: Translator.trans('PATH'), 
+			data: Translator.trans('Data'), 
+			columnValue: Translator.trans('Column value') 
+		}
+		attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'type', Translator.trans('Type'), parameter.type, true, Translator.trans('Select a type'), JSON.stringify(typesList)));
+		attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'name', Translator.trans('Name'), parameter.name, true, Translator.trans('Parameter name')));
+		attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'data', Translator.trans('Data'), parameter.data, true, Translator.trans('Select a data'), JSON.stringify(datasList)));
+		if (type === 'date' || type === 'day' || type === 'month' || type === 'year') {
+			attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'format', Translator.trans('Format'), parameter.format, true, Translator.trans('Parameter format')));
+		}
+		attributesContainer.append(attributes);
+		parameterPanelBody.append(attributesContainer);
+		parameterPanel.append(parameterPanelBody);
+		return parameterPanel;
+	}
+
+	Simulators.drawSourceForInput = function(source) {
+		var sourceElementId = 'source-' + source.id;
+		var sourcePanelContainer = $('<div>', { 'class': 'panel-group', id: sourceElementId, role: 'tablist', 'aria-multiselectable': 'true' });
+		var sourcePanel = $('<div>', { 'class': 'panel panel-info' });
+		sourcePanel.append('<div class="panel-heading" role="tab" id="' + sourceElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + '</a></h4></div>');
+		var sourcePanelCollapse = $('<div id="collapse' + sourceElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sourceElementId + '-panel"></div>');
+		var sourcePanelBody = $('<div class="panel-body"></div>');
+		var sourceContainer = $('<div class="panel panel-default source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
+		var sourceContainerBody = $('<div class="panel-body"></div>');
+		var attributesContainer = $('<div class="attributes-container"></div>');
+		var attributes = $('<div></div>');
+		var datasourcesList = {};
+		var datasourceType = ''
+		$.each(datasources, function( name, datasource) {
+			datasourcesList[name] = name;
+			if (name == source.datasource) {
+				datasourceType = datasource.type;
+			}
+		});
+		attributes.append(Simulators.simpleAttributeForInput(sourceElementId + '-datasource', 'select', 'datasource', Translator.trans('Datasource'), source.datasource, true, Translator.trans('Select a data source'), JSON.stringify(datasourcesList)));
+		var request = Simulators.simpleAttributeForInput(sourceElementId + '-request', 'text', 'request', Translator.trans('Request'), source.request, true, Translator.trans('Enter a SQL request'));
+		attributes.append(request);
+		attributes.append(Simulators.simpleAttributeForInput(sourceElementId + '-returnType', 'select', 'returnType', Translator.trans('Return type'), source.returnType, true, Translator.trans('Select a return type'), JSON.stringify(Simulators.sourceReturnTypes)));
+		var returnPath = Simulators.simpleAttributeForInput(sourceElementId + '-returnPath', 'text', 'returnPath', Translator.trans('Return path'), source.returnPath, true, Translator.trans('Enter a return path'));
+		attributes.append(returnPath);
+		var separator = Simulators.simpleAttributeForInput(sourceElementId + '-separator', 'text', 'separator', Translator.trans('Separator'), source.separator, true, Translator.trans('Enter a separator'));
+		attributes.append(separator);
+		var delimiter = Simulators.simpleAttributeForInput(sourceElementId + '-delimiter', 'text', 'delimiter', Translator.trans('Delimiter'), source.delimiter, true, Translator.trans('Enter a delimiter'));
+		attributes.append(delimiter);
+		if (datasourceType === 'uri') {
+			request.hide();
+		}
+		if (source.returnType === 'singleValue') {
+			returnPath.hide();
+		}
+		if (source.returnType !== 'csv') {
+			separator.hide();
+			delimiter.hide();
+		}
+		attributesContainer.append(attributes);
+		sourceContainerBody.append(attributesContainer);
+		sourceContainer.append(sourceContainerBody);
+		sourcePanelBody.append(sourceContainer);
+		var sourceButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + sourceElementId + '-buttons-panel"></div>');
+		var sourceButtonsBody = $('<div class="panel-body source-buttons"></div>');
+		sourceButtonsBody.append('<button class="btn btn-success pull-right validate-edit-source">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
+		sourceButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-source">' + Translator.trans('Cancel') + '</span></button>');
+		sourceButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		sourceButtonsPanel.append(sourceButtonsBody);
+		sourcePanelBody.append(sourceButtonsPanel);
+		sourcePanelCollapse.append(sourcePanelBody);
+		sourcePanel.append(sourcePanelCollapse);
+		sourcePanelContainer.append(sourcePanel);
+		return sourcePanelContainer;
+	}
+
+	Simulators.bindSource = function(sourcePanelContainer) {
+		sourcePanelContainer.find('.sortable' ).sortable({
+			cursor: "move",
+			axis: "y"
+		});
+		sourcePanelContainer.find('.cancel-edit-source').click(function() {
+			sourcePanelContainer.replaceWith(Simulators.sourceBackup);
+			Simulators.sourceBackup.find('button.edit-source').click(function(e) {
+				e.preventDefault();
+				Simulators.editSource($($(this).attr('data-parent')));
+			});
+			Simulators.sourceBackup.find('button.delete-source').click(function(e) {
+				e.preventDefault();
+				Simulators.deleteSource($($(this).attr('data-parent')));
+			});
+			Simulators.sourceParametersBackup = null;
+			$('.update-button').show();
+			if (! Admin.updated) {
+				$('.save-simulator').hide();
+			}
+		});
+		sourcePanelContainer.find('.cancel-add-source').click(function() {
+			sourcePanelContainer.remove();
+			Simulators.sourceParametersBackup = null;
+			$('.update-button').show();
+			if (! Admin.updated) {
+				$('.save-simulator').hide();
+			}
+		});
+		sourcePanelContainer.find('.validate-edit-source, .validate-add-source').click(function() {
+			var sourceContainerGroup = sourcePanelContainer.parent();
+			var sourceContainer = sourcePanelContainer.find('.source-container');
+			var attributes = sourceContainer.find('.attributes-container');
+			var source = { id: sourceContainer.attr('data-id') };
+			attributes.find('input.simple-value:visible, select.simple-value:visible, span.attribute-expression:visible').each(function (index) {
+				var value;
+				if ($(this).hasClass('attribute-expression')) {
+					value = $(this).expressionbuilder('val');
+				} else {
+					value = $(this).val();
+				}
+				source[$(this).attr('data-attribute')] = value;
+			});
+			var datasourceType = datasources[source['datasource']].type;
+			if (datasourceType !== 'uri') {
+				if (source['request'] == '') {
+					sourceContainerGroup.find('.alert .error-message').text(Translator.trans('The request field is required'));
+					sourceContainerGroup.find('.alert').show();
+					return;
+				}
+			}
+			var newSourcePanel = Simulators.drawSourceForDisplay(source);
+			if (sourcePanelContainer.find('.source-parameter-panel').length) {
+				var parametersPanel = Simulators.drawSourceParametersForDisplay(source.id);
+				var parametersContainer = parametersPanel.find('> .panel-body');
+				sourcePanelContainer.find('.source-parameter-panel').each(function (index) {
+					var parameterPanel = $(this);
+					var parameter = { id: parameterPanel.attr('data-id') };
+					parameterPanel.find('input.simple-value:visible, select.simple-value:visible, span.attribute-expression:visible').each(function (index) {
+						var value;
+						if ($(this).hasClass('attribute-expression')) {
+							value = $(this).expressionbuilder('val');
+						} else {
+							value = $(this).val();
+						}
+						parameter[$(this).attr('data-attribute')] = value;
+					});
+					parametersContainer.append(Simulators.drawSourceParameterForDisplay(parameter));
+				});
+				newSourcePanel.find('.collapse').find('> .panel-body').append(parametersPanel);
+			}
+			sourcePanelContainer.replaceWith(newSourcePanel);
+			newSourcePanel.find('button.edit-source').click(function(e) {
+				e.preventDefault();
+				Simulators.editSource($($(this).attr('data-parent')));
+			});
+			newSourcePanel.find('button.delete-source').click(function(e) {
+				e.preventDefault();
+				Simulators.deleteSource($($(this).attr('data-parent')));
+			});
+			Simulators.sourceParametersBackup = null;
+			$('.update-button').show();
+			Admin.updated = true;
+			$("html, body").animate({ scrollTop: newSourcePanel.offset().top }, 500);
+		});
+		sourcePanelContainer.find('select[data-attribute=datasource]').change(function(e) {
+			var datasource = $(this).val();
+			if (datasources[datasource]) {
+				var type = datasources[datasource].type;
+				switch (type) {
+					case 'uri':
+						sourcePanelContainer.find('input[data-attribute=request]').parent().parent().hide();
+						sourcePanelContainer.find('input[data-attribute=request]').val('');
+						break;
+					default:
+						sourcePanelContainer.find('input[data-attribute=request]').parent().parent().show();
+				}
+			}
+		});
+		sourcePanelContainer.find('select[data-attribute=returnType]').change(function(e) {
+			var returnType = $(this).val();
+			if (returnType === 'singleValue') {
+				sourcePanelContainer.find('input[data-attribute=returnPath]').parent().parent().hide();
+				sourcePanelContainer.find('input[data-attribute=returnPath]').val('');
+			} else {
+				sourcePanelContainer.find('input[data-attribute=returnPath]').parent().parent().show();
+			}
+			if (returnType === 'csv') {
+				sourcePanelContainer.find('input[data-attribute=separator]').parent().parent().show();
+				sourcePanelContainer.find('input[data-attribute=delimiter]').parent().parent().show();
+			} else {
+				sourcePanelContainer.find('input[data-attribute=separator]').parent().parent().hide();
+				sourcePanelContainer.find('input[data-attribute=delimiter]').parent().parent().hide();
+				sourcePanelContainer.find('input[data-attribute=separator]').val('');
+				sourcePanelContainer.find('input[data-attribute=delimiter]').val('');
+			}
+		});
+	}
+
+	Simulators.drawSourceParametersForInput = function(sourceId) {
+		var parametersPanel = $('<div>', { 'class': 'panel panel-default source-parameters-panel', id: 'source-' + sourceId + '-source-parameters-panel' });
+		parametersPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button add-source-parameter">' + Translator.trans('Add parameter') + ' <span class="glyphicon glyphicon-plus-sign"></span></button>' + Translator.trans('Parameters') + '</div>');
+		var parametersPanelBody = $('<div class="panel-body"></div>');
+		parametersPanel.append(parametersPanelBody);
+		return parametersPanel;
+	}
+
+	Simulators.drawSourceParameterForInput = function(parameter) {
+		var parameterPanel = $('<div>', { 'class': 'panel panel-default source-parameter-panel',  'data-id': parameter.id  });
+		parameterPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-source-parameter">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
+		var parameterPanelBody = $('<div>', { 'class': 'panel-body', id: 'data-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
+		var attributesContainer = $('<div class="attributes-container"></div>');
+		var attributes = $('<div></div>');
+		var datasList = {};
+		var type = '';
+		$.each(dataset, function( name, data) {
+			datasList[name] = data.label;
+			if (name == parameter.data) {
+				type = data.type;
+			}
+		});
+		var typesList = { 
+			queryString: Translator.trans('Query string'), 
+			path: Translator.trans('PATH'), 
+			data: Translator.trans('Data'), 
+			columnValue: Translator.trans('Column value') 
+		}
+		attributes.append(Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'type', Translator.trans('Type'), parameter.type, true, Translator.trans('Select a type'), JSON.stringify(typesList)));
+		attributes.append(Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'name', Translator.trans('Name'), parameter.name, true, Translator.trans('Parameter name')));
+		attributes.append(Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'data', Translator.trans('Data'), parameter.data, true, Translator.trans('Select a data'), JSON.stringify(datasList)));
+		var format = Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'format', Translator.trans('Format'), parameter.format, true, Translator.trans('Date format of the parameter with characters : d, j, D, l or z (day) - F, M, m or n (month) - Y, y (year)'));
+		attributes.append(format);
+		if (type !== 'date' && type !== 'day' && type !== 'month' && type !== 'year') {
+			format.hide();
+		}
+		attributesContainer.append(attributes);
+		parameterPanelBody.append(attributesContainer);
+		parameterPanel.append(parameterPanelBody);
+		return parameterPanel;
+	}
+
+	Simulators.bindParameters = function(parametersPanel) {
+		parametersPanel.find('button.add-source-parameter').click(function(e) {
+			var parametersContainer = parametersPanel.find('> .panel-body');
+			var id = parametersContainer.children('div.panel').length + 1;
+			var sourceId = parametersPanel.attr('id').match(/^source-(\d+)/)[1];
+			var parameter = {
+				id: id,
+				sourceId: sourceId,
+				type: '',
+				name: '',
+				format: '',
+				data: ''
+			};
+			var parameterPanel = Simulators.drawSourceParameterForInput(parameter);
+			// parametersPanel.find('button.add-source-parameter').removeClass('update-button').hide();
+			parametersContainer.append(parameterPanel);
+			Simulators.bindParameter(parameterPanel);
+		});
+		parametersPanel.find('button.delete-source-parameter').click(function(e) {
+			var parametersContainer = parametersPanel.find('> .panel-body');
+			parametersContainer.find('.attributes-container').remove();
+			parametersPanel.find('button.add-source-parameter').addClass('update-button').show();
+		});
+	}
+
+	Simulators.bindParameter = function(parameterPanel) {
+		parameterPanel.find('button.delete-source-parameter').click(function(e) {
+			var parametersPanel = parameterPanel.parents('.source-parameters-panel');
+			parameterPanel.remove();
+		});
+		parameterPanel.find('select[data-attribute=data]').change(function(e) {
+			var data = $(this).val();
+			if (dataset[data]) {
+				var type = dataset[data].type;
+				switch (type) {
+					case 'date':
+					case 'day':
+					case 'month':
+					case 'year':
+						parameterPanel.find('input[data-attribute=format]').parent().parent().show();
+						break;
+					default:
+						parameterPanel.find('input[data-attribute=format]').parent().parent().hide();
+						parameterPanel.find('input[data-attribute=format]').val('');
+				}
+			}
+		});
+	}
+
+	Simulators.addSource = function(sourceContainerGroup) {
+		$('.update-button').hide();
+		var source = {
+			id: Simulators.maxSourceId() + 1, 
+			datasource: '',
+			request: '',
+			returnType: '',
+			returnPath: '',
+			separator: '',
+			delimiter: ''
+		};
+		var sourcePanelContainer = Simulators.drawSourceForInput(source);
+		sourcePanelContainer.find('button.cancel-edit-source').addClass('cancel-add-source').removeClass('cancel-edit-source');
+		sourcePanelContainer.find('button.validate-edit-source').addClass('validate-add-source').removeClass('validate-edit-source');
+		var sourcesPanel;
+		var parentId = sourceContainerGroup.attr('id');
+		if (parentId === 'sources') {
+			sourcesPanel = $("#collapsesources").find("> div.sortable");
+		} else {
+			sourcesPanel = sourceContainerGroup.find(".sources-panel > div.sortable");
+		}
+		sourcesPanel.append(sourcePanelContainer);
+		Simulators.bindSource(sourcePanelContainer);
+		sourceContainerGroup.find('a[source-toggle="collapse"]').each(function() {
+			var objectID=$(this).attr('href');
+			if($(objectID).hasClass('in')===false) {
+				$(objectID).collapse('show');
+			}
+		});
+		$("html, body").animate({ scrollTop: sourcePanelContainer.offset().top }, 500);
+	}
+
+	Simulators.editSource = function(sourceContainerGroup) {
+		$('.update-button').hide();
+		var sourceContainer = sourceContainerGroup.find('.source-container');
+		var attributesContainer = sourceContainer.find('.attributes-container');
+		var source = {
+			id: sourceContainer.attr('data-id'), 
+			datasource: attributesContainer.find("p[data-attribute='datasource']").attr('data-value'),
+			request: attributesContainer.find("p[data-attribute='request']").attr('data-value'),
+			returnType: attributesContainer.find("p[data-attribute='returnType']").attr('data-value'),
+			returnPath: attributesContainer.find("p[data-attribute='returnPath']").attr('data-value'),
+			separator: attributesContainer.find("p[data-attribute='separator']").attr('data-value'),
+			delimiter: attributesContainer.find("p[data-attribute='delimiter']").attr('data-value')
+		};
+		var sourcePanelContainer = Simulators.drawSourceForInput(source);
+		var parametersPanel = Simulators.drawSourceParametersForInput(source.id);
+		var parameterContainers = sourceContainerGroup.find('div.source-parameter-container');
+		if (parameterContainers.length > 0) {
+			parametersPanel.find('button.add-parameter').removeClass('update-button').hide();
+			parametersPanel.find('button.delete-parameter').removeClass('update-button').hide();
+			parameterContainers.each(function(c) {
+				var parameter = {
+					id : $(this).attr('data-id'),
+					sourceId: source.id,
+					type: $(this).find("p[data-attribute='type']").attr('data-value'),
+					name: $(this).find("p[data-attribute='name']").attr('data-value'),
+					format: $(this).find("p[data-attribute='format']").attr('data-value') || '',
+					data: $(this).find("p[data-attribute='data']").attr('data-value')  || ''
+				};
+				var parameterPanel = Simulators.drawSourceParameterForInput(parameter);
+				parametersPanel.find('> .panel-body').append(parameterPanel);
+				Simulators.bindParameter(parameterPanel);
+			});
+		}
+		sourcePanelContainer.find('.source-buttons').before(parametersPanel);
+		Simulators.bindParameters(parametersPanel);
+		Simulators.sourceBackup = sourceContainerGroup.replaceWith(sourcePanelContainer);
+		Simulators.bindSource(sourcePanelContainer);
+		sourcePanelContainer.find('> .panel-heading a').click();
+		$("html, body").animate({ scrollTop: sourcePanelContainer.offset().top }, 500);
+	}
+
+	Simulators.deleteSource = function(sourceContainerGroup) {
+		var sourceContainer = sourceContainerGroup.find('.source-container');
+		var attributesContainer = sourceContainer.find('.attributes-container');
+		bootbox.confirm({
+			title: Translator.trans('Deleting source'),
+			message: Translator.trans("Are you sure you want to delete this source"), 
+			callback: function(confirmed) {
+				if (confirmed) {
+					sourceContainerGroup.remove();
+					$('.save-simulator').show();
+					Admin.updated = true;
+				}
+			}
+		}); 
+	}
+
+	Simulators.collectSources = function() {
+		var sources = [];
+		var containers = $('#sources').find('div.source-container');
+		containers.each(function(i) {
+			var parameters = [];
+			var parameterContainers = $(this).parent().find('div.source-parameter-container');
+			parameterContainers.each(function(c) {
+				parameters.push({
+					type: $(this).find("p[data-attribute='type']").attr('data-value'),
+					name: $(this).find("p[data-attribute='name']").attr('data-value'),
+					format: $(this).find("p[data-attribute='format']").attr('data-value') || '',
+					data: $(this).find("p[data-attribute='data']").attr('data-value')  || ''
+				});
+			});
+			var attributesContainer = $(this).find('.attributes-container');
+			sources.push({
+				id: i + 1, 
+				datasource: attributesContainer.find("p[data-attribute='datasource']").attr('data-value'),
+				request: attributesContainer.find("p[data-attribute='request']").attr('data-value'),
+				returnType: attributesContainer.find("p[data-attribute='returnType']").attr('data-value'),
+				returnPath: attributesContainer.find("p[data-attribute='returnPath']").attr('data-value'),
+				separator: attributesContainer.find("p[data-attribute='separator']").attr('data-value'),
+				delimiter: attributesContainer.find("p[data-attribute='delimiter']").attr('data-value'),
+				parameters: parameters
+			});
+		});
+		return sources;
 	}
 
 	Simulators.addData = function(dataContainerGroup) {
@@ -2104,6 +2650,99 @@ THE SOFTWARE.
 		}); 
 	}
 
+	Simulators.collectDatas = function() {
+		var datas = [];
+		$('#datas .data-container').each(function(d) {
+			if ($(this).hasClass('datagroup')) {
+				var gdatas = [];
+				$(this).parent().find('.datagroup-data-container').each(function(d) {
+					var choices = [];
+					$(this).parent().find('.choice-container').each(function(d) {
+						choices.push({
+							id:  $(this).attr('data-id'),
+							value: $(this).find("p[data-attribute='value']").attr('data-value'),
+							label: $(this).find("p[data-attribute='label']").attr('data-value'),
+						});
+					});
+					var choicesource = {};
+					$(this).parent().find('.choice-source-container').each(function(d) {
+						choicesource = {
+							id:  $(this).attr('data-id'),
+							idColumn: $(this).find("p[data-attribute='idColumn']").attr('data-value'),
+							valueColumn: $(this).find("p[data-attribute='valueColumn']").attr('data-value'),
+							labelColumn: $(this).find("p[data-attribute='labelColumn']").attr('data-value')
+						};
+					});
+					gdatas.push({
+						element: 'data',
+						id:  $(this).attr('data-id'),
+						name: $(this).find("p[data-attribute='name']").attr('data-value'),
+						label: $(this).find("p[data-attribute='label']").attr('data-value'),
+						type: $(this).find("p[data-attribute='type']").attr('data-value'),
+						'default': $(this).find("span[data-attribute='default']").attr('data-value'),
+						min: $(this).find("span[data-attribute='min']").attr('data-value'),
+						max: $(this).find("span[data-attribute='max']").attr('data-value'),
+						content: $(this).find("span[data-attribute='content']").attr('data-value'),
+						round: $(this).find("p[data-attribute='round']").attr('data-value'),
+						unit: $(this).find("p[data-attribute='unit']").attr('data-value'),
+						source: $(this).find("span[data-attribute='source']").attr('data-value'),
+						index: $(this).find("span[data-attribute='index']").attr('data-value'),
+						memorize: $(this).find("input[data-attribute='memorize']").is(':checked') ? 1 : 0,
+						description: $(this).parent().find(".data-description").html(),
+						choices: choices,
+						choicesource: choicesource
+					});
+				});
+				datas.push({
+					element: 'datagroup',
+					id:  $(this).attr('data-id'),
+					name: $(this).find("p[data-attribute='name']").attr('data-value'),
+					label: $(this).find("p[data-attribute='label']").attr('data-value'),
+					description: $(this).parent().find(".datagroup-description").html(),
+					datas: gdatas
+				});
+			} else {
+				var choices = [];
+				$(this).parent().find('.choice-container').each(function(d) {
+					choices.push({
+						id:  $(this).attr('data-id'),
+						value: $(this).find("p[data-attribute='value']").attr('data-value'),
+						label: $(this).find("p[data-attribute='label']").attr('data-value'),
+					});
+				});
+				var choicesource = {};
+				$(this).parent().find('.choice-source-container').each(function(d) {
+					choicesource = {
+						id:  $(this).attr('data-id'),
+						idColumn: $(this).find("p[data-attribute='idColumn']").attr('data-value'),
+						valueColumn: $(this).find("p[data-attribute='valueColumn']").attr('data-value'),
+						labelColumn: $(this).find("p[data-attribute='labelColumn']").attr('data-value')
+					};
+				});
+				datas.push({
+					element: 'data',
+					id:  $(this).attr('data-id'),
+					name: $(this).find("p[data-attribute='name']").attr('data-value'),
+					label: $(this).find("p[data-attribute='label']").attr('data-value'),
+					type: $(this).find("p[data-attribute='type']").attr('data-value'),
+					'default': $(this).find("span[data-attribute='default']").attr('data-value'),
+					min: $(this).find("span[data-attribute='min']").attr('data-value'),
+					max: $(this).find("span[data-attribute='max']").attr('data-value'),
+					content: $(this).find("span[data-attribute='content']").attr('data-value'),
+					round: $(this).find("p[data-attribute='round']").attr('data-value'),
+					unit: $(this).find("p[data-attribute='unit']").attr('data-value'),
+					source: $(this).find("span[data-attribute='source']").attr('data-value'),
+					index: $(this).find("span[data-attribute='index']").attr('data-value'),
+					memorize: $(this).find("input[data-attribute='memorize']").is(':checked') ? 1 : 0,
+					description: $(this).parent().find(".data-description").html(),
+					choices: choices,
+					choicesource: choicesource
+				});
+			}
+		});
+		return datas;
+	}
+
 	Simulators.simpleAttributeForDisplay = function(element, type, name, label, value, required, placeholder, options) {
 		if (required || value !== '') {
 			var attribute = '<div class="form-group col-sm-12">';
@@ -2176,6 +2815,17 @@ THE SOFTWARE.
 		attribute    += '    <span id="' + id + '" data-attribute="' + name + '" class="attribute-expression" data-placeholder="' + placeholder + '"  data-value="' + value + '" />'; 
 		attribute    += '</div>';
 		return $(attribute);
+	}
+
+	Simulators.removeAttribute = function(attr) {
+		var id =  attr.parent('label.control-label').attr('for');
+		var input = $('#' + id);
+		var ids  = input.attr('id').split('-');
+		var name = ids.pop();
+		var element = ids.join('-');
+		var li = attr.parents('div.attributes-container').children('div.optional-attributes').children('ul').children("li[data-element='" + element +"'][data-name='" + name +"']");
+		li.show();
+		attr.parent('label').parent('div.form-group').remove();
 	}
 
 	Simulators.dropAttribute = function(ui, target) {
@@ -2300,6 +2950,18 @@ $(document).ready(function() {
 		    e.preventDefault();
 			Simulators.deleteDatagroup($($(this).attr('data-parent')));
 		});
+		$('button.add-source').click(function(e) {
+		    e.preventDefault();
+			Simulators.addSource($($(this).attr('data-parent')));
+		});
+		$('button.edit-source').click(function(e) {
+		    e.preventDefault();
+			Simulators.editSource($($(this).attr('data-parent')));
+		});
+		$('button.delete-source').click(function(e) {
+		    e.preventDefault();
+			Simulators.deleteSource($($(this).attr('data-parent')));
+		});
 		$("#business-rules").sortable({
 			cursor: "move",
 			containment: "parent",
@@ -2343,7 +3005,7 @@ $(document).ready(function() {
 				Simulators.dropAttribute(ui.draggable, target);
 			}
 		});
-		$('#page-simulators button.save-simulator').click(function(e) {
+		$('#page button.save-simulator').click(function(e) {
 			var simulator = {
 				name: $('#simulator-attributes-panel-holder').find("p[data-attribute='name']").attr('data-value'),
 				label: $('#simulator-attributes-panel-holder').find("p[data-attribute='label']").attr('data-value'),
@@ -2359,108 +3021,10 @@ $(document).ready(function() {
 				relatedInformations: $('#simulator-related-informations-panel-holder').find('.simulator-related-informations').html()
 			};
 			$('input[name=simulator]').val(JSON.stringify(simulator));
-			var datas = [];
-			$('#datas .data-container').each(function(d) {
-				if ($(this).hasClass('datagroup')) {
-					var gdatas = [];
-					$(this).parent().find('.datagroup-data-container').each(function(d) {
-						var choices = [];
-						$(this).parent().find('.choice-container').each(function(d) {
-							choices.push({
-								id:  $(this).attr('data-id'),
-								value: $(this).find("p[data-attribute='value']").attr('data-value'),
-								label: $(this).find("p[data-attribute='label']").attr('data-value'),
-							});
-						});
-						var choicesource = {};
-						$(this).parent().find('.choice-source-container').each(function(d) {
-							choicesource = {
-								id:  $(this).attr('data-id'),
-								idColumn: $(this).find("p[data-attribute='idColumn']").attr('data-value'),
-								valueColumn: $(this).find("p[data-attribute='valueColumn']").attr('data-value'),
-								labelColumn: $(this).find("p[data-attribute='labelColumn']").attr('data-value')
-							};
-						});
-						gdatas.push({
-							element: 'data',
-							id:  $(this).attr('data-id'),
-							name: $(this).find("p[data-attribute='name']").attr('data-value'),
-							label: $(this).find("p[data-attribute='label']").attr('data-value'),
-							type: $(this).find("p[data-attribute='type']").attr('data-value'),
-							'default': $(this).find("span[data-attribute='default']").attr('data-value'),
-							min: $(this).find("span[data-attribute='min']").attr('data-value'),
-							max: $(this).find("span[data-attribute='max']").attr('data-value'),
-							content: $(this).find("span[data-attribute='content']").attr('data-value'),
-							round: $(this).find("p[data-attribute='round']").attr('data-value'),
-							unit: $(this).find("p[data-attribute='unit']").attr('data-value'),
-							source: $(this).find("span[data-attribute='source']").attr('data-value'),
-							index: $(this).find("span[data-attribute='index']").attr('data-value'),
-							memorize: $(this).find("input[data-attribute='memorize']").is(':checked') ? 1 : 0,
-							description: $(this).parent().find(".data-description").html(),
-							choices: choices,
-							choicesource: choicesource
-						});
-					});
-					datas.push({
-						element: 'datagroup',
-						id:  $(this).attr('data-id'),
-						name: $(this).find("p[data-attribute='name']").attr('data-value'),
-						label: $(this).find("p[data-attribute='label']").attr('data-value'),
-						description: $(this).parent().find(".datagroup-description").html(),
-						datas: gdatas
-					});
-				} else {
-					var choices = [];
-					$(this).parent().find('.choice-container').each(function(d) {
-						choices.push({
-							id:  $(this).attr('data-id'),
-							value: $(this).find("p[data-attribute='value']").attr('data-value'),
-							label: $(this).find("p[data-attribute='label']").attr('data-value'),
-						});
-					});
-					var choicesource = {};
-					$(this).parent().find('.choice-source-container').each(function(d) {
-						choicesource = {
-							id:  $(this).attr('data-id'),
-							idColumn: $(this).find("p[data-attribute='idColumn']").attr('data-value'),
-							valueColumn: $(this).find("p[data-attribute='valueColumn']").attr('data-value'),
-							labelColumn: $(this).find("p[data-attribute='labelColumn']").attr('data-value')
-						};
-					});
-					datas.push({
-						element: 'data',
-						id:  $(this).attr('data-id'),
-						name: $(this).find("p[data-attribute='name']").attr('data-value'),
-						label: $(this).find("p[data-attribute='label']").attr('data-value'),
-						type: $(this).find("p[data-attribute='type']").attr('data-value'),
-						'default': $(this).find("span[data-attribute='default']").attr('data-value'),
-						min: $(this).find("span[data-attribute='min']").attr('data-value'),
-						max: $(this).find("span[data-attribute='max']").attr('data-value'),
-						content: $(this).find("span[data-attribute='content']").attr('data-value'),
-						round: $(this).find("p[data-attribute='round']").attr('data-value'),
-						unit: $(this).find("p[data-attribute='unit']").attr('data-value'),
-						source: $(this).find("span[data-attribute='source']").attr('data-value'),
-						index: $(this).find("span[data-attribute='index']").attr('data-value'),
-						memorize: $(this).find("input[data-attribute='memorize']").is(':checked') ? 1 : 0,
-						description: $(this).parent().find(".data-description").html(),
-						choices: choices,
-						choicesource: choicesource
-					});
-				}
-			});
-			$('input[name=datas]').val(JSON.stringify(datas));
-			var rulesData = [];
-			$('#business-rules .rule-container').each(function(r) {
-				rulesData.push({
-					id: $(this).find('.rule-id').text(),
-					name: $(this).find('.rule-name').text(),
-					label: $(this).find('.rule-label').text(),
-					conditions: $(this).find('.rule-conditions').attr("data-value"),
-					ifActions: Simulators.collectRuleActions($(this).find('.if-actions-panel')),
-					elseActions: Simulators.collectRuleActions($(this).find('.else-actions-panel'))
-				});
-			});
-			$('input[name=rules]').val(JSON.stringify(rulesData));
+			$('input[name=sources]').val(JSON.stringify(Simulators.collectSources()));
+			$('input[name=datas]').val(JSON.stringify(Simulators.collectDatas()));
+			$('input[name=rules]').val(JSON.stringify(Simulators.collectRules()));
+			Admin.updated = false;
 			$('#save-form').submit();
 		});
 		$('.panel-collapse').on('hidden.bs.collapse', function () {

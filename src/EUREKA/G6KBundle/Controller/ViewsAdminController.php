@@ -229,7 +229,7 @@ class ViewsAdminController extends BaseAdminController {
 		$publicdir = $bundle->getPath()."/Resources/public";
 		$nodePath = $this->searchNodePath($viewdir, $publicdir, $view);
 		$newName = $form['rename-node-name'];
-		if (basename($nodePath) == $view) {
+		if (basename($nodePath) == $view && (dirname($nodePath) == $viewdir || dirname($nodePath) == $publicdir)) {
 			$oldpath = $viewdir . '/' . basename($nodePath);
 			$newpath = $viewdir . '/' . $newName;
 			$fs->rename($oldpath, $newpath);

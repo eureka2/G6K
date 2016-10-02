@@ -30,6 +30,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use EUREKA\G6KBundle\Entity\Simulator;
 use EUREKA\G6KBundle\Entity\Source;
+use EUREKA\G6KBundle\Entity\Parameter;
 use EUREKA\G6KBundle\Entity\ChoiceGroup;
 use EUREKA\G6KBundle\Entity\Choice;
 use EUREKA\G6KBundle\Entity\ChoiceSource;
@@ -43,6 +44,8 @@ use EUREKA\G6KBundle\Entity\BlockInfo;
 use EUREKA\G6KBundle\Entity\Chapter;
 use EUREKA\G6KBundle\Entity\Section;
 use EUREKA\G6KBundle\Entity\BusinessRule;
+use EUREKA\G6KBundle\Entity\Connector;
+use EUREKA\G6KBundle\Entity\Condition;
 use EUREKA\G6KBundle\Entity\RuleAction;
 use EUREKA\G6KBundle\Entity\DOMClient as Client;
 use EUREKA\G6KBundle\Entity\ResultFilter;
@@ -126,6 +129,16 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 			}
 		}
+		$databasedir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/databases";
+		$sources = new \SimpleXMLElement($databasedir."/DataSources.xml", LIBXML_NOWARNING, true);
+		$datasources = array();
+		$dss = $sources->xpath("/DataSources/DataSource");
+		foreach ($dss as $ds) {
+			$datasources[(string)$ds['name']] = array(
+				'id' => (string)$ds['id'],
+				'type' => (string)$ds['type']
+			);
+		}
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
 		try {
@@ -140,6 +153,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'dataset' => preg_replace("/\n/", "\n\t", json_encode($this->dataset, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
 					'actions' => preg_replace("/\n/", "\n\t", json_encode($this->actions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
 					'rules' => preg_replace("/\n/", "\n\t", json_encode($this->rules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
+					'datasources' => preg_replace("/\n/", "\n\t", json_encode($datasources, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
 					'views' => preg_replace("/\n/", "\n\t", json_encode($views, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
 					'hiddens' => $hiddens
 				)
@@ -324,6 +338,9 @@ class SimulatorsAdminController extends BaseAdminController {
 			$businessRuleObj->setLabel((string)$brule['label']);
 			// $businessRuleObj->setConditions($this->infix($brule["conditions"]));
 			$businessRuleObj->setConditions((string)$brule["conditions"]);
+			if (isset($brule["connector"])) {
+				$businessRuleObj->setConnector($this->loadConnector($brule["connector"]));
+			}
 			foreach ($brule["ifActions"] as $ida => $action) {
 				$ruleActionObj = new RuleAction((int)$ida + 1, (string)$action['value']);
 				switch ($action['value']) {
@@ -508,7 +525,55 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			$this->simu->addBusinessRule($businessRuleObj);
 		}
+
+		$sources = json_decode($form['sources'], true);
+		$this->simu->setSources(array());
+		foreach($sources as $id => $source) {
+			$sourceObj = new Source($this, (int)$source['id'], $source['datasource'], $source['returnType']);
+			if (isset($source['request'])) {
+				$sourceObj->setRequest($source['request']);
+			}
+			if (isset($source['separator'])) {
+				$sourceObj->setSeparator($source['separator']);
+			}
+			if (isset($source['delimiter'])) {
+				$sourceObj->setDelimiter($source['delimiter']);
+			}
+			if (isset($source['returnPath'])) {
+				$sourceObj->setReturnPath($source['returnPath']);
+			}
+			if (isset($source['parameters'])) {
+				foreach ($source['parameters'] as $parameter) {
+					$parameterObj = new Parameter($sourceObj, $parameter['type']);
+					$parameterObj->setName($parameter['name']);
+					$parameterObj->setFormat($parameter['format']);
+					$data = $this->simu->getDataByName($parameter['data']);
+					$parameterObj->setData($data->getId());
+					$sourceObj->addParameter($parameterObj);
+				}
+			}
+			$this->simu->addSource($sourceObj);
+		}
+
 		$this->simu->save($simu_dir."/work/".$simulator.".xml");
+	}
+
+	private function loadConnector($connector, $parentConnector = null) {
+		$kind = null;
+		if (isset($connector['all'])) {
+			$kind = 'all';
+		} elseif (isset($connector['any'])) {
+			$kind = 'any';
+		} elseif (isset($connector['none'])) {
+			$kind = 'none';
+		} else {
+			return new Condition($this->simu, $parentConnector, $connector['name'], $connector['operator'], $connector['value']);;
+		}
+		$connectorObj = new Connector($this->simu, $kind);
+		foreach ($connector[$kind] as $cond) {
+			$connectorObj->addCondition($this->loadConnector($cond, $connectorObj));
+		}
+		return $connectorObj;
 	}
 
 	protected function doExportSimulator($simu) {
@@ -1492,7 +1557,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			if (count($ostepactionbuttons) > 0) {
 				$actionbuttons = array(
 						"label" => $this->get('translator')->trans("actionbutton"),
-						"name" => "actionbutton",
+						"name" => "action",
 						"fields" => array(
 							array(
 								"label" => $this->get('translator')->trans("of step"),
@@ -1807,6 +1872,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'name' => $brule->getName(),
 				'label' => $brule->getLabel(),
 				'conditions' => $brule->getConditions(),
+				'connector' => $brule->getConnector() != null ? $this->ruleConnector($brule->getConnector()) : null,
 				'ifdata' =>  $this->actionsData($brule->getId(), $brule->getIfActions()),
 				'elsedata' => $this->actionsData($brule->getId(), $brule->getElseActions())
 			);
@@ -1830,7 +1896,25 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 		 
 		}
+	}
 
+	private function ruleConnector($pconnector) {
+		if ($pconnector instanceof Condition) {
+			$data = $this->simu->getDataById($pconnector->getOperand());
+			return array(
+				'name' => $data == null ? $pconnector->getOperand() : $data->getName(),
+				'operator' => $pconnector->getOperator(),
+				'value' =>  $pconnector->getExpression()
+			);
+		}
+		$kind = $pconnector->getType();
+		$connector = array(
+			$kind => array()
+		);
+		foreach ($pconnector->getConditions() as $cond) {
+			$connector[$kind][] = $this->ruleConnector($cond);
+		}
+		return $connector;
 	}
 
 	private function actionsData($ruleID, $actions) {

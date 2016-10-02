@@ -738,6 +738,11 @@ class Simulator {
 						$data->addRuleDependency((int)$brule['id']);
 					}
 				}
+				if ($brule->Conditions->Condition) {
+					$businessRuleObj->setConnector($this->loadConnector($brule->Conditions->Condition));
+				} else if ($brule->Conditions->Connector) {
+					$businessRuleObj->setConnector($this->loadConnector($brule->Conditions->Connector));
+				}
 				foreach ($brule->IfActions->Action as $action) {
 					$ruleActionObj = new RuleAction((int)$action['id'], (string)$action['name']);
 					$ruleActionObj->setTarget((string)$action['target']);
@@ -793,6 +798,17 @@ class Simulator {
 				$this->businessrules[] = $businessRuleObj;
 			}
 		}
+	}
+
+	protected function loadConnector(\SimpleXMLElement $connector, $parentConnector = null) {
+		if ($connector->getName() == 'Condition') {
+			return new Condition($this, $parentConnector, (string)$connector['operand'], (string)$connector['operator'], (string)$connector['expression']);
+		}
+		$connectorObj = new Connector($this, (string)$connector['type']);
+		foreach ($connector->children() as $child) {
+			$connectorObj->addCondition($this->loadConnector($child, $connectorObj));
+		}
+		return $connectorObj;
 	}
 
 	public function loadForSource($url) {
@@ -1531,6 +1547,7 @@ class Simulator {
 					'name' => (string)$brule['name'],
 					'label' => (string)$brule['label'],
 					'conditions' => $this->replaceByDataName((string)$brule->Conditions['value']),
+					'connector' => $brule->Conditions->Condition ? $this->ruleConnector($brule->Conditions->Condition) : ($brule->Conditions->Connector ? $this->ruleConnector($brule->Conditions->Connector) : null),
 					'ifdata' =>  $this->actionsData((int)$brule['id'], $brule->IfActions, $datas),
 					'elsedata' => $this->actionsData((int)$brule['id'], $brule->ElseActions, $datas)
 				);
@@ -1566,6 +1583,25 @@ class Simulator {
 			return json_encode($json);
 			// return json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES);
 		}
+	}
+
+	protected function ruleConnector(\SimpleXMLElement $pconnector) {
+		if ($pconnector->getName() == 'Condition') {
+			$data = $this->getDataById((string)$pconnector['operand']);
+			return array(
+				'name' => $data == null ? (string)$pconnector['operand'] : $data->getName(),
+				'operator' => (string)$pconnector['operator'],
+				'value' => (string)$pconnector['expression']
+			);
+		}
+		$kind = (string)$pconnector['type'];
+		$connector = array(
+			$kind => array()
+		);
+		foreach ($pconnector->children() as $child) {
+			$connector[$kind][] = $this->ruleConnector($child);
+		}
+		return $connector;
 	}
 
 	public function save($file) {
@@ -1732,9 +1768,9 @@ class Simulator {
 			}
 		}
 		$xml[] = '	</DataSet>';
-		if ($profiles !== null) {
-			$xml[] = '	<Profiles label="' . $profiles->getLabel() . '">';
-			foreach ($profiles->getProfiles() as $profile) {
+		if ($this->profiles !== null) {
+			$xml[] = '	<Profiles label="' . $this->profiles->getLabel() . '">';
+			foreach ($this->profiles->getProfiles() as $profile) {
 				$xml[] = '		<Profile id="' . $profile->getId() . '" name="' . $profile->getName() . '" label="' . $profile->getLabel() . '">';
 				if ($profile->getDescription() != '') {
 					$xml[] = '			<Description><![CDATA[';
@@ -2041,6 +2077,9 @@ class Simulator {
 				$attrs = 'id="' . $rule->getId() . '" name="' . $rule->getName() . '" label="' . $rule->getLabel() . '"';
 				$xml[] = '		<BusinessRule ' . $attrs . '>';
 				$xml[] = '			<Conditions value="' . htmlspecialchars($rule->getConditions(), ENT_COMPAT) . '" />';
+				if ($rule->getConnector() != null) {
+					$this->saveConnector($rule->getConnector(), "			", $xml);
+				}
 				$xml[] = '			<IfActions>';
 				foreach ($rule->getIfActions() as $action) {
 					$attrs = 'id="' . $action->getId() . '" name="' . $action->getName() . '" target="' . $action->getTarget() . '"';
@@ -2154,6 +2193,32 @@ class Simulator {
 		$xmlstring = implode("\r\n", $xml);
 		$xmlstring = str_replace('&gt;', '>', $xmlstring);
 		file_put_contents($file, $xmlstring);
+	}
+
+	private function saveConnector($connector, $indent, &$xml) {
+		if ($connector instanceof Condition) {
+			$htmlcondition = '<Condition operand="' . $cond->getOperand() . '" operator="' . $cond->getOperator() . '"';
+			$expression = $cond->getExpression();
+			if ($expression != null && $expression != '') {
+				$htmlcondition .= ' expression="' . $expression . '"';
+			}
+			$htmlcondition .= ' />';
+			$xml[] = $indent . "\t" . $htmlcondition;
+		} else {
+			$htmlconnector = '<Connector type="' . $connector->getType() . '"';
+			$conditions = $connector->getConditions();
+			if (empty($conditions)) {
+				$htmlconnector .= ' />';
+				$xml[] = $indent . $htmlconnector;
+			} else {
+				$htmlconnector .= '>';
+				$xml[] = $indent . $htmlconnector;
+				foreach ($conditions as $cond) {
+					$this->saveConnector($cond, $indent . "\t", $xml);
+				}
+				$xml[] = $indent . '</Connector>';
+			}
+		}
 	}
 
 	private function loadFileFromCache($url) {

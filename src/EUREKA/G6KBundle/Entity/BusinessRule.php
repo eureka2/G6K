@@ -34,6 +34,7 @@ class BusinessRule {
 	private $name = "";
 	private $label = "";
 	private $conditions = "";
+	private $connector = null;
 	private $ifActions = array();
 	private $elseActions = array();	
 	private $translator = null;
@@ -89,23 +90,31 @@ class BusinessRule {
 	public function setName($name) {
 		$this->name = $name;
 	}
-	
+
 	public function getLabel() {
 		return $this->label;
 	}
-	
+
 	public function setLabel($label) {
 		$this->label = $label;
 	}
-	
+
 	public function getConditions() {
 		return $this->conditions;
 	}
-	
+
 	public function setConditions($conditions) {
 		$this->conditions = $conditions;
 	}
-	
+
+	public function getConnector() {
+		return $this->connector;
+	}
+
+	public function setConnector($connector) {
+		$this->connector = $connector;
+	}
+
 	public function getIfActions() {
 		return $this->ifActions;
 	}
@@ -131,12 +140,35 @@ class BusinessRule {
 	}
 	
 	public function getExtendedConditions() {
-		$extended = $this->parseConditions();
-		$this->optimize($extended);
+		if ($this->connector != null) {
+			$extended = $this->ruleConnector($this->connector);
+		} else {
+			$extended = $this->parseConditions();
+			$this->optimize($extended);
+		}
 		$this->plainConditions($extended);
 		return $extended;
 	}
-	
+
+	private function ruleConnector($pconnector) {
+		if ($pconnector instanceof Condition) {
+			$data = $this->simulator->getDataById($pconnector->getOperand());
+			return array(
+				'name' => $data == null ? $pconnector->getOperand() : $data->getName(),
+				'operator' => $pconnector->getOperator(),
+				'value' =>  $pconnector->getExpression()
+			);
+		}
+		$kind = $pconnector->getType();
+		$connector = array(
+			$kind => array()
+		);
+		foreach ($pconnector->getConditions() as $cond) {
+			$connector[$kind][] = $this->ruleConnector($cond);
+		}
+		return $connector;
+	}
+
 	protected function getPlainOperator($operator, $type) {
 		$operators = array(
 			'=' => $this->translator->trans('is equal to'),
@@ -203,6 +235,13 @@ class BusinessRule {
 					$data = $this->simulator->getDataByName($ruleData["name"]);
 					$type = $data->getType();
 					$ruleData["name"] = $data->getLabel();
+					if ($data->getType() == 'choice') {
+						$data->setValue($ruleData["value"]);
+						$label = $data->getChoiceLabel();
+						if ($label != "") {
+							$ruleData["value"] = '«' . $label . '»';
+						}
+					}
 				}
 				if (isset($ruleData["operator"])) {
 					$ruleData["operator"] = $this->getPlainOperator($ruleData["operator"], $type);

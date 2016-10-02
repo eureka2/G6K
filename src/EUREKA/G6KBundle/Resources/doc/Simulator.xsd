@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2015 rel. 3 (http://www.altova.com) by DILA (DILA) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="Simulator">
 		<xs:annotation>
@@ -294,6 +293,10 @@
 									<xs:sequence>
 										<xs:element name="Conditions">
 											<xs:complexType>
+												<xs:choice minOccurs="0">
+													<xs:element name="Condition" type="ConditionType"/>
+													<xs:element name="Connector" type="ConnectorType"/>
+												</xs:choice>
 												<xs:attribute name="value" type="xs:string" use="required"/>
 											</xs:complexType>
 										</xs:element>
@@ -542,4 +545,24 @@
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="label" type="xs:string" use="optional"/>
 	</xs:attributeGroup>
+	<xs:complexType name="ConnectorType">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="Condition" type="ConditionType"/>
+			<xs:element name="Connector" type="ConnectorType"/>
+		</xs:choice>
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKENS">
+					<xs:enumeration value="all"/>
+					<xs:enumeration value="any"/>
+					<xs:enumeration value="none"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ConditionType">
+		<xs:attribute name="operand" type="xs:string" use="required"/>
+		<xs:attribute name="operator" type="xs:string" use="required"/>
+		<xs:attribute name="expression"/>
+	</xs:complexType>
 </xs:schema>

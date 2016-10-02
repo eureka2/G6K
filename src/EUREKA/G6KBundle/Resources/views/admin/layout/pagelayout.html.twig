@@ -51,6 +51,7 @@ var dataset = {{ dataset|raw }}
 var actions = {{ actions|raw }}
 var rules = {{ rules|raw }}
 var views = {{ views|raw }}
+var datasources = {{ datasources|raw }}
 </script>
 {% endif %}				
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-1.11.1.min.js') }}"></script>
@@ -58,7 +59,7 @@ var views = {{ views|raw }}
 <script type="text/javascript" src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/translations/config.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
-<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.js') }}"></script>
 <script type="text/javascript">
 Admin.lang = '{{ app.request.locale }}';

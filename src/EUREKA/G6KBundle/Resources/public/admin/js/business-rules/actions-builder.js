@@ -129,7 +129,7 @@ THE SOFTWARE.
 				data[action.name] = action.label;
 			});
 			var self = this;
-			var $editable = $("<span>", { "name": "action-select", "class": "editable-select", "data-value": ""});
+			var $editable = $("<span>", { "name": "action-select", "class": "editable-select action-select", "data-value": ""});
 			if (actionObj.value) {
 				$editable.attr("data-value", actionObj.value);
 				$editable.text(data[actionObj.value]);

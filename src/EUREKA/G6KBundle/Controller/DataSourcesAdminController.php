@@ -231,7 +231,6 @@ class DataSourcesAdminController extends BaseAdminController {
 							'name' => $dsname,
 							'database' => array('id' => $id, 'type' => $type, 'name' => $name, 'label' => $label)
 						);
-						
 					}
 				} elseif ($type == 'jsonsql') {
 					if (file_exists($this->db_dir.'/'.$name.".schema.json") && file_exists($this->db_dir.'/'.$name.".json")) {

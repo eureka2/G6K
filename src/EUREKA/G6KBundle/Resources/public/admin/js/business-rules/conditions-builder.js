@@ -128,9 +128,20 @@ THE SOFTWARE.
 						self.fields[name].operators = baseOperators;
 				}
 			});
-			this.conditions = this.options.conditions ? this.parse(this.options.conditions) :  {"all": []};
-			this.optimize(this.conditions);
-			var rules = this.buildRules(this.conditions);
+			var rules;
+			if (this.options.connector) {
+				var connector = this.options.connector;
+				this.conditions = this.infix(connector);
+				if (connector.all || connector.any || connector.none) {
+					rules = this.buildRules(connector);
+				} else {
+					rules = this.buildRules({ 'all': [connector] });
+				}
+			} else {
+				this.conditions = this.options.conditions ? this.parse(this.options.conditions) :  {"all": []};
+				this.optimize(this.conditions);
+				rules = this.buildRules(this.conditions);
+			}
 			this.element.html(rules);
 		},
 
@@ -347,17 +358,16 @@ THE SOFTWARE.
 		},
 
 		collectDataFromNode: function(element) {
-			var klass = null;
+			var kind = null;
 			var self = this;
 			if (element.is(".conditional")) {
-				klass = element.find("> .all-any-none-wrapper > .all-any-none").val();
+				kind = element.find("> .all-any-none-wrapper > .all-any-none").attr("data-value");
 			}
-
-			if (klass) {
+			if (kind) {
 				var out = {};
-				out[klass] = [];
+				out[kind] = [];
 				element.find("> .conditional, > .rule").each(function() {
-					out[klass].push(self.collectDataFromNode($(this)));
+					out[kind].push(self.collectDataFromNode($(this)));
 				});
 				return out;
 			} else {
@@ -372,9 +382,9 @@ THE SOFTWARE.
 					value = currentValue.val();
 				}
 				return {
-					name: element.find(".field").val(),
-					operator: element.find(".operator").val(),
-					value: value
+					name: element.find(".field").attr("data-value"),
+					operator: element.find(".operator").attr("data-value"),
+					value: value || ''
 				};
 			}
 		},
@@ -495,7 +505,7 @@ THE SOFTWARE.
 				none: Translator.trans("None"),
 				selected: kind
 			};
-			var select = $("<span>", { "name": "action-select", "class": "editable-select", "data-value": kind, "text": data[kind] });
+			var select = $("<span>", { "name": "action-select", "class": "editable-select all-any-none", "data-value": kind, "text": data[kind] });
 			select.editable(
 				function (val, settings) {
 					$(this).attr("data-value", val);
