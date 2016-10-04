@@ -1587,9 +1587,15 @@ class Simulator {
 
 	protected function ruleConnector(\SimpleXMLElement $pconnector) {
 		if ($pconnector->getName() == 'Condition') {
-			$data = $this->getDataById((string)$pconnector['operand']);
+			$operand = (string)$pconnector['operand'];
+			if (preg_match("/^\d+$/", $operand)) {
+				$operand = (int)$operand;
+				$name = isset($this->datas[$operand]) ? $this->datas[$operand]['name'] : $operand;
+			} else {
+				$name = $operand;
+			}
 			return array(
-				'name' => $data == null ? (string)$pconnector['operand'] : $data->getName(),
+				'name' => $name,
 				'operator' => (string)$pconnector['operator'],
 				'value' => (string)$pconnector['expression']
 			);
