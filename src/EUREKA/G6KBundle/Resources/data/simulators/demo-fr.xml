@@ -135,7 +135,9 @@ Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pensi
 	</Sources>
 	<BusinessRules>
 		<BusinessRule id="1" name="R1" label="Contrôle du champ 'Revenus du débiteur'">
-			<Conditions value="#1 &lt;= 0" />
+			<Conditions value="#1 &lt;= 0">
+				<Condition operand="revenus" operator="&lt;=" expression="0" />
+			</Conditions>
 			<IfActions>
 				<Action id="1" name="notifyError" target="data" data="1" value="Votre revenu doit être supérieur à 0" />
 			</IfActions>
@@ -143,7 +145,12 @@ Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pensi
 			</ElseActions>
 		</BusinessRule>
 		<BusinessRule id="2" name="R2" label="Contrôle du champ 'Nombre d'enfants du parent débiteur'">
-			<Conditions value="defined(#2) &amp;&amp; #2 &lt;= 0" />
+			<Conditions value="defined(#3) &amp;&amp; #3 &lt;= 0">
+				<Connector type="all">
+					<Condition operand="nbEnfants" operator="present" />
+					<Condition operand="nbEnfants" operator="&lt;=" expression="0" />
+				</Connector>
+			</Conditions>
 			<IfActions>
 				<Action id="1" name="notifyError" target="data" data="3" value="Le nombre d'enfants doit être supérieur à 0" />
 			</IfActions>
@@ -152,6 +159,15 @@ Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pensi
 		</BusinessRule>
 		<BusinessRule id="3" name="R3" label="Condition d'affichage du fieldset 'Pension alimentaire' et du bouton 'Recommencer'">
 			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6)" />
+			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6)">
+				<Connector type="all">
+					<Condition operand="revenus" operator="present" />
+					<Condition operand="droitVH" operator="present" />
+					<Condition operand="nbEnfants" operator="present" />
+					<Condition operand="tauxPA" operator="present" />
+					<Condition operand="mtEnfantPA" operator="present" />
+				</Connector>
+			</Conditions>
 			<IfActions>
 				<Action id="1" name="showObject" target="field" step="0" panel="1" fieldset="1" field="4" />
 				<Action id="2" name="showObject" target="fieldset" step="0" panel="1" fieldset="2" />

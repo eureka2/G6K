@@ -140,7 +140,7 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 	<BusinessRules>
 		<BusinessRule id="1" name="R1" label="Control of the field 'Income of the debtor parent'">
 			<Conditions value="#1 &lt;= 0">
-				<Condition operand="1" operator="&lt;=" expression="0" />
+				<Condition operand="income" operator="&lt;=" expression="0" />
 			</Conditions>
 			<IfActions>
 				<Action id="1" name="notifyError" target="data" data="1" value="Your income must be upper to 0"></Action>
@@ -151,8 +151,8 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 		<BusinessRule id="2" name="R2" label="Control of the field 'Number of children of the debtor parent'">
 			<Conditions value="defined(#3) &amp;&amp; #3 &lt;= 0">
 				<Connector type="all">
-					<Condition operand="3" operator="present" />
-					<Condition operand="3" operator="&lt;=" expression="0" />
+					<Condition operand="nChildren" operator="present" />
+					<Condition operand="nChildren" operator="&lt;=" expression="0" />
 				</Connector>
 			</Conditions>
 			<IfActions>
@@ -164,11 +164,11 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 		<BusinessRule id="3" name="R3" label="Condition of display of the fieldset 'Maintenance allowance' and the 'Reset' button">
 			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6)">
 				<Connector type="all">
-					<Condition operand="1" operator="present" />
-					<Condition operand="2" operator="present" />
-					<Condition operand="3" operator="present" />
-					<Condition operand="4" operator="present" />
-					<Condition operand="6" operator="present" />
+					<Condition operand="income" operator="present" />
+					<Condition operand="AARight" operator="present" />
+					<Condition operand="nChildren" operator="present" />
+					<Condition operand="MARate" operator="present" />
+					<Condition operand="amountByChild" operator="present" />
 				</Connector>
 			</Conditions>
 			<IfActions>
