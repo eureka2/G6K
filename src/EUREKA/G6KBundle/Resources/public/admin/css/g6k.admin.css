@@ -238,4 +238,12 @@ button.save-simulator {
 	cursor: pointer;
 	display: none;
 }
-#toTop .fa {margin-right: 5px;}
+#toTop .fa {
+	margin-right: 5px;
+}
+
+.toast {
+	border: 1px solid #AAA;
+	background: #FFFFE0;
+	border-radius: 8px; 
+}

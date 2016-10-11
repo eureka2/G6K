@@ -480,6 +480,10 @@ class Simulator {
 			$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
 			$datasources = new \SimpleXMLElement($datasrc, LIBXML_NOWARNING, true);
 		}
+		$this->loadEntities($simulator, $datasources);
+	}
+
+	protected function loadEntities($simulator, $datasources) {
 		foreach ($datasources->DataSource as $datasource) {
 			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
 			$datasourceObj->setUri((string)$datasource['uri']);
@@ -1825,7 +1829,7 @@ class Simulator {
 							if ($fieldset->getPopinLink() != '') {
 								$attrs .= ' popinLink="' . $fieldset->getPopinLink() . '"'; 
 							}
-							$xml[] = '			<FieldSet ' . $attrs . '>';
+							$xml[] = '					<FieldSet ' . $attrs . '>';
 							if ($fieldset->getLegend() != '') {
 								$xml[] = '				<Legend><![CDATA[';
 								$xml[] = trim($fieldset->getLegend());
@@ -1961,13 +1965,13 @@ class Simulator {
 									}
 								}
 							}
-							$xml[] = '			</FieldSet>';
+							$xml[] = '					</FieldSet>';
 						} elseif ($block instanceof BlockInfo) {
 							$blocinfo = $block;
 							$attrs = 'id="' . $blocinfo->getId() . '"';
 							$attrs .= ' name="' . $blocinfo->getName() . '"';
 							$attrs .= ' label="' . $blocinfo->getLabel() . '"';
-							$xml[] = '			<BlockInfo ' . $attrs . '>';
+							$xml[] = '					<BlockInfo ' . $attrs . '>';
 							foreach ($blocinfo->getChapters() as $chapter) {
 								$attrs = 'id="' . $chapter->getId() . '"';
 								$attrs .= ' name="' . $chapter->getName() . '"';
@@ -1978,23 +1982,23 @@ class Simulator {
 								if ($chapter->isCollapsible()) {
 									$attrs .= ' collapsible="1"'; 
 								}
-								$xml[] = '				<Chapter ' . $attrs . '>';
+								$xml[] = '						<Chapter ' . $attrs . '>';
 								foreach ($chapter->getSections() as $section) {
 									$attrs = 'id="' . $section->getId() . '"';
 									$attrs .= ' name="' . $section->getName() . '"';
 									$attrs .= ' label="' . $section->getLabel() . '"';
-									$xml[] = '					<Section ' . $attrs . '>';
-									$xml[] = '						<Content><![CDATA[';
+									$xml[] = '							<Section ' . $attrs . '>';
+									$xml[] = '								<Content><![CDATA[';
 									$xml[] = trim($section->getContent());
-									$xml[] = '						]]></Content>';
-									$xml[] = '						<Annotations><![CDATA[';
+									$xml[] = '								]]></Content>';
+									$xml[] = '								<Annotations><![CDATA[';
 									$xml[] = trim($section->getAnnotations());
-									$xml[] = '						]]></Annotations>';
-									$xml[] = '					</Section>';
+									$xml[] = '								]]></Annotations>';
+									$xml[] = '							</Section>';
 								}
-								$xml[] = '				</Chapter>';
+								$xml[] = '						</Chapter>';
 							}
-							$xml[] = '			</BlockInfo>';
+							$xml[] = '					</BlockInfo>';
 						}
 					}
 					$xml[] = '				</Panel>';
@@ -2082,10 +2086,11 @@ class Simulator {
 			foreach ($this->getBusinessRules() as $rule) {
 				$attrs = 'id="' . $rule->getId() . '" name="' . $rule->getName() . '" label="' . $rule->getLabel() . '"';
 				$xml[] = '		<BusinessRule ' . $attrs . '>';
-				$xml[] = '			<Conditions value="' . htmlspecialchars($rule->getConditions(), ENT_COMPAT) . '" />';
+				$xml[] = '			<Conditions value="' . htmlspecialchars($rule->getConditions(), ENT_COMPAT) . '">';
 				if ($rule->getConnector() != null) {
-					$this->saveConnector($rule->getConnector(), "			", $xml);
+					$this->saveConnector($rule->getConnector(), "				", $xml);
 				}
+				$xml[] = '			</Conditions>';
 				$xml[] = '			<IfActions>';
 				foreach ($rule->getIfActions() as $action) {
 					$attrs = 'id="' . $action->getId() . '" name="' . $action->getName() . '" target="' . $action->getTarget() . '"';
@@ -2203,10 +2208,10 @@ class Simulator {
 
 	private function saveConnector($connector, $indent, &$xml) {
 		if ($connector instanceof Condition) {
-			$htmlcondition = '<Condition operand="' . $cond->getOperand() . '" operator="' . $cond->getOperator() . '"';
-			$expression = $cond->getExpression();
+			$htmlcondition = '<Condition operand="' . $connector->getOperand() . '" operator="' . str_replace('<', '&lt;', $connector->getOperator()) . '"';
+			$expression = $connector->getExpression();
 			if ($expression != null && $expression != '') {
-				$htmlcondition .= ' expression="' . $expression . '"';
+				$htmlcondition .= ' expression="' . str_replace('<', '&lt;', $expression) . '"';
 			}
 			$htmlcondition .= ' />';
 			$xml[] = $indent . "\t" . $htmlcondition;
@@ -2239,6 +2244,40 @@ class Simulator {
 		apc_add($url, $file);
 		apc_add($mtimekey, $mtime);
 		return $file;
+	}
+
+	public function loadEmptySimulator() {
+		$datasrc = dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml';
+		if(extension_loaded('apc') && ini_get('apc.enabled')) {
+			$xml = $this->loadFileFromCache($datasrc);
+			$datasources = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
+		} else {
+			$datasources = new \SimpleXMLElement($datasrc, LIBXML_NOWARNING, true);
+		}
+		$simusrc = '<?xml version="1.0" encoding="utf-8"?>' .PHP_EOL;
+		$simusrc .= '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="';
+		$simusrc .= $this->controller->get('translator')->trans("new");
+		$simusrc .= '" label="';
+		$simusrc .= $this->controller->get('translator')->trans("Simulator of calculation of ...");
+		$simusrc .= '">' .PHP_EOL;
+		$simusrc .= <<<EOT
+	<Description><![CDATA[
+	]]></Description>
+	<DataSet dateFormat="d/m/Y" decimalPoint="," moneySymbol="€" symbolPosition="after">
+	</DataSet>
+	<Steps>
+		<Step id="0" name="" label="" template="pages:article.html.twig">
+			<Panels>
+				<Panel id="1" name="panel1">
+					<FieldSet id="1" />
+				</Panel>
+			</Panels>
+		</Step>
+	</Steps>
+</Simulator>
+EOT;
+		$simulator = new \SimpleXMLElement($simusrc, LIBXML_NOWARNING, false);
+		$this->loadEntities($simulator, $datasources);
 	}
 }
 

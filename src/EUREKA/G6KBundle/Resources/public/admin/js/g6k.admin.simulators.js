@@ -121,6 +121,7 @@ THE SOFTWARE.
 		'csv': Translator.trans('Comma separated value (csv)') 
 	}
 
+	Simulators.updating = false;
 	Simulators.dataBackup = null;
 	Simulators.datagroupBackup = null;
 	Simulators.dataChoicesBackup = null;
@@ -156,7 +157,7 @@ THE SOFTWARE.
 					});
 					var name = $(this).find("p[data-attribute='name']").attr('data-value');
 					var data = {
-						id:  $(this).attr('data-id'),
+						id:  parseInt($(this).attr('data-id')),
 						label: $(this).find("p[data-attribute='label']").attr('data-value'),
 						type: $(this).find("p[data-attribute='type']").attr('data-value'),
 						description: $(this).parent().find(".data-description").html()
@@ -294,10 +295,10 @@ THE SOFTWARE.
 
 	Simulators.collectRuleConnector = function(conditionsPanel) {
 		var conditions = conditionsPanel.find('.rule-conditions');
-		var ruleElementId = conditions.attr('data-rule-element-id');
+		var ruleId = conditions.attr('data-rule-id');
 		var connector = null;
 		$.each(rules, function(k, rule) {
-			if (rule.elementId == ruleElementId) {
+			if (rule.id == ruleId) {
 				connector = rule.connector || null;
 				return false;
 			}
@@ -672,8 +673,9 @@ THE SOFTWARE.
 	Simulators.maxDatasetId = function() {
 		var maxId = 0;
 		$.each(Simulators.dataset, function(name, data) {
-			if (data.id > maxId && ! /(dynamic|script)$/.test(name)) {
-				maxId = data.id;
+			var id = parseInt(data.id);
+			if (id > maxId && ! /(dynamic|script)$/.test(name)) {
+				maxId = id;
 			}
 		});
 		return maxId;
@@ -711,6 +713,16 @@ THE SOFTWARE.
 			}
 		});
 		rules = newRules;
+	}
+
+	Simulators.maxRuleId = function() {
+		var maxId = 0;
+		$.each(rules, function(k, rule) {
+			if (rule.id > maxId) {
+				maxId = rule.id;
+			}
+		});
+		return maxId;
 	}
 
 	Simulators.bindRule = function(rule) {
@@ -800,23 +812,49 @@ THE SOFTWARE.
 				Simulators.deleteRule($($(this).attr('data-parent')));
 			});
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			if (! Admin.updated) {
 				$('.save-simulator').hide();
 			}
+			Simulators.updating = false;
+		});
+		ruleContainer.find('.cancel-add-rule').click(function() {
+			ruleContainer.remove();
+			$('.update-button').show();
+			$('.toggle-collapse-all').show();
+			if (! Admin.updated) {
+				$('.save-simulator').hide();
+			}
+			Simulators.updating = false;
 		});
 		ruleContainer.find('.validate-add-rule, .validate-edit-rule').click(function() {
 			var conditions = ruleContainer.find('.conditions').conditionsBuilder("conditions");
-			var rule = {
+			var editedrule = {
 				id: ruleContainer.find('.rule-id').text(),
 				name: ruleContainer.find('.input-rule-name').val(),
 				label: ruleContainer.find('.input-rule-label').val(),
 				conditions: conditions,
 				connector: conditions,
-				ifActions: ruleContainer.find('.if-actions').actionsBuilder("actions"),
-				elseActions:ruleContainer.find('.else-actions').actionsBuilder("actions")
-
+				ifdata: ruleContainer.find('.if-actions').actionsBuilder("actions"),
+				elsedata:ruleContainer.find('.else-actions').actionsBuilder("actions")
 			};
-			var newContainer = Simulators.drawRuleForDisplay(rule);
+			if (editedrule.conditions.all && editedrule.conditions.all.length == 1) {
+				editedrule.conditions = editedrule.conditions.all[0];
+			} else if (editedrule.conditions.any && editedrule.conditions.any.length == 1) {
+				editedrule.conditions = editedrule.conditions.any[0];
+			}
+			if (editedrule.connector.all && editedrule.connector.all.length == 1) {
+				editedrule.connector = editedrule.connector.all[0];
+			} else if (editedrule.connector.any && editedrule.connector.any.length == 1) {
+				editedrule.connector = editedrule.connector.any[0];
+			}
+			$.each(rules, function(k, rule) {
+				if (rule.id == editedrule.id) {
+					rules[k] = editedrule;
+					return false;
+				}
+			});
+			var newContainer = Simulators.drawRuleForDisplay(editedrule);
 			ruleContainer.replaceWith(newContainer);
 			newContainer.find('button.edit-rule').click(function(e) {
 				e.preventDefault();
@@ -827,8 +865,10 @@ THE SOFTWARE.
 				Simulators.deleteRule($($(this).attr('data-parent')));
 			});
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			Admin.updated = true;
 			$("html, body").animate({ scrollTop: newContainer.offset().top }, 500);
+			Simulators.updating = false;
 		});
 	}
 
@@ -837,34 +877,30 @@ THE SOFTWARE.
 		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
 		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-rule">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> Rule <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
 		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse in', role: 'tabpanel' });
-		var conditionsPanel = $('<div class="panel panel-default if-actions-panel"></div>');
+		var conditionsPanel = $('<div class="panel panel-default conditions-panel"></div>');
 		conditionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div>');
 		var conditionsPanelBody = $('<div class="panel-body"></div>');
-		if (rule.conditions.all && rule.conditions.all.length == 1) {
-			rule.conditions = rule.conditions.all[0];
-		} else if (rule.conditions.any && rule.conditions.any.length == 1) {
-			rule.conditions = rule.conditions.any[0];
-		}
-		Simulators.plainConditions(rule.conditions);
-		conditionsPanelBody.append('<ul class="rule-conditions" data-value="' + rule.conditions + '" data-rule-element-id="' + ruleElementId + '">' + Simulators.drawConditionForDisplay(rule.conditions) + '</ul>');
+		var conditions = jQuery.extend(true, {}, rule.connector)
+		Simulators.plainConditions(conditions);
+		conditionsPanelBody.append('<ul class="rule-conditions" data-value="' + conditions + '" data-rule-element-id="' + ruleElementId + '" data-rule-id="' + rule.id + '">' + Simulators.drawConditionForDisplay(conditions) + '</ul>');
 		conditionsPanel.append(conditionsPanelBody);
 		ruleBody.append(conditionsPanel);
-		if (rule.ifActions.length > 0) {
-			var actionsPanel = $('<div class="panel panel-default conditions-panel"></div>');
+		if (rule.ifdata.length > 0) {
+			var actionsPanel = $('<div class="panel panel-default if-actions-panel"></div>');
 			actionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('then do ...') + '</h4></div>');
 			var actionsPanelBody = $('<div class="panel-body"></div>');
-			$.each(rule.ifActions, function(a, action) {
+			$.each(rule.ifdata, function(a, action) {
 				var actionContainer = Simulators.drawRuleActionForDisplay(action);
 				actionsPanelBody.append(actionContainer);
 			});
 			actionsPanel.append(actionsPanelBody);
 			ruleBody.append(actionsPanel);
 		}
-		if (rule.elseActions.length > 0) {
+		if (rule.elsedata.length > 0) {
 			var actionsPanel = $('<div class="panel panel-default else-actions-panel"></div>');
 			actionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('else do ...') + '</h4></div>');
 			var actionsPanelBody = $('<div class="panel-body"></div>');
-			$.each(rule.elseActions, function(a, action) {
+			$.each(rule.elsedata, function(a, action) {
 				var actionContainer = Simulators.drawRuleActionForDisplay(action);
 				actionsPanelBody.append(actionContainer);
 			});
@@ -1156,13 +1192,11 @@ THE SOFTWARE.
 					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'choice':
-					console.log("data : " + data)
-					console.log("choice : " + choice)
 					actionContainer.append('<span class="action-choice"> «' + Simulators.findActionField([data, choice], optionNode).label + '»</span>');
 					actionContainer.append('<span class="action-data"> ' + Translator.trans('of data «%label%»', {'label': Simulators.dataset[data].label}) + '</span>');
 					break;
 			}
-		} else if (target === 'setAttribute') {
+		} else if (name === 'setAttribute') {
 			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans(target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': data.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByDataLabel(value)) + '</span>');
 		}
 		return actionContainer;
@@ -1227,10 +1261,11 @@ THE SOFTWARE.
 		return ruleContainer;
 	}
 
-	Simulators.addRule = function() {
+	Simulators.addRule = function(ruleContainerGroup) {
+		var id = Simulators.maxRuleId()+ 1;
 		var rule = {
-			id: rules.length + 1,
-			name: 'R' + (rules.length + 1),
+			id: id,
+			name: 'R' + id,
 			label: '',
 			conditions: '',
 			connector: null,
@@ -1239,12 +1274,21 @@ THE SOFTWARE.
 		};
 		rules.push(rule);
 		var ruleContainer = Simulators.drawRuleForInput(rule);
+		ruleContainer.find('button.cancel-edit-rule').addClass('cancel-add-rule').removeClass('cancel-edit-rule');
+		ruleContainer.find('button.validate-edit-rule').addClass('validate-add-rule').removeClass('validate-edit-rule');
 		$("#business-rules").append(ruleContainer);
 		rule.elementId = ruleContainer.attr('id');
 		Simulators.bindRule(rule);
-		ruleContainer.find('> .panel-heading a').click();
+		ruleContainerGroup.find('a[data-toggle="collapse"]').each(function() {
+			var objectID=$(this).attr('href');
+			if($(objectID).hasClass('in')===false) {
+				$(objectID).collapse('show');
+			}
+		});
 		$("html, body").animate({ scrollTop: ruleContainer.offset().top }, 500);
 		$('.update-button').hide();
+		$('.toggle-collapse-all').hide();
+		Simulators.updating = true;
 	}
 
 	Simulators.editRule = function(ruleDisplayContainer) {
@@ -1265,6 +1309,8 @@ THE SOFTWARE.
 		ruleInputContainer.find('> .panel-heading a').click();
 		$("html, body").animate({ scrollTop: ruleInputContainer.offset().top }, 500);
 		$('.update-button').hide();
+		$('.toggle-collapse-all').hide();
+		Simulators.updating = true;
 	}
 
 	Simulators.deleteRule = function(ruleContainer) {
@@ -1285,14 +1331,12 @@ THE SOFTWARE.
 	Simulators.collectRules = function() {
 		var rulesData = [];
 		$('#business-rules .rule-container').each(function(r) {
-			rulesData.push({
-				id: $(this).find('.rule-id').text(),
-				name: $(this).find('.rule-name').text(),
-				label: $(this).find('.rule-label').text(),
-				conditions: $(this).find('.rule-conditions').attr("data-value"),
-				connector: Simulators.collectRuleConnector($(this).find('.conditions-panel')),
-				ifActions: Simulators.collectRuleActions($(this).find('.if-actions-panel')),
-				elseActions: Simulators.collectRuleActions($(this).find('.else-actions-panel'))
+			var ruleId =  $(this).find('.rule-conditions').attr('data-rule-id');
+			$.each(rules, function(k, rule) {
+				if (rule.id == ruleId) {
+					rulesData.push(rule);
+					return false;
+				}
 			});
 		});
 		return rulesData;
@@ -1341,7 +1385,7 @@ THE SOFTWARE.
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='referer']").text($('#simulator-referer').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").attr('data-value', $('#simulator-defaultView').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").text($('#simulator-defaultView').val());
-				$('#simulator').find('.panel-heading h4.panel-title').text($('#simulator-label').val());
+				$('#simulator-options-panel.panel-heading h4.panel-title').text($('#simulator-label').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").attr('data-value', $('#simulator-dateFormat').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").text($('#simulator-dateFormat option:selected').text());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").attr('data-value', $('#simulator-decimalPoint').val());
@@ -1375,6 +1419,8 @@ THE SOFTWARE.
 				$('#simulator-related-informations-panel-holder').show();
 				Admin.updated = true;
 				$('.update-button').show();
+				$('.toggle-collapse-all').show();
+				Simulators.updating = false;
 			}
 		});
 		simulatorContainer.find('.cancel-edit-simulator').click(function() {
@@ -1386,9 +1432,11 @@ THE SOFTWARE.
 			$('#simulator-description-panel-holder').show();
 			$('#simulator-related-informations-panel-holder').show();
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			if (! Admin.updated) {
 				$('.save-simulator').hide();
 			}
+			Simulators.updating = false;
 		});
 		simulatorContainer.find('.optional-attributes li' ).each(function(){
 			var self = $(this);
@@ -1417,10 +1465,10 @@ THE SOFTWARE.
 		var simulatorAttributesPanelBody = $('<div class="panel-body"></div>');
 		var simulatorAttributesContainer = $('<div class="attributes-container droppable"></div>');
 		var simulatorAttributes = $('<div></div>');
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-name', 'text', 'name', Translator.trans('Name'), simulator.name, true, 'name'));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-label', 'text', 'label', Translator.trans('Label'), simulator.label, true, 'label'));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-name', 'text', 'name', Translator.trans('Name'), simulator.name, true, Translator.trans('Simulator name without spaces or special characters')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-label', 'text', 'label', Translator.trans('Label'), simulator.label, true, Translator.trans('Simulator label')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-defaultView', 'select', 'defaultView', Translator.trans('Default view'), simulator.defaultView, true, Translator.trans('Default view'), JSON.stringify(views)));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-referer', 'text', 'referer', Translator.trans('Main referer'), simulator.referer, false, 'referer'));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-referer', 'text', 'referer', Translator.trans('Main referer'), simulator.referer, false, Translator.trans('referer URL')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-dateFormat', 'select', 'dateFormat', Translator.trans('Date format'), simulator.dateFormat, true, Translator.trans('Select a format'), JSON.stringify(Simulators.dateFormats)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'text', 'decimalPoint', Translator.trans('Decimal point'), simulator.decimalPoint, true, Translator.trans('Decimal point')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-moneySymbol', 'select', 'moneySymbol', Translator.trans('Currency symbol'), simulator.moneySymbol, true, Translator.trans('Select a symbol'), JSON.stringify(Simulators.moneySymbols)));
@@ -1499,21 +1547,28 @@ THE SOFTWARE.
 			});
 			Simulators.dataChoicesBackup = null;
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			if (! Admin.updated) {
 				$('.save-simulator').hide();
 			}
+			Simulators.updating = false;
 		});
 		dataPanelContainer.find('.cancel-add-data').click(function() {
 			dataPanelContainer.remove();
 			Simulators.dataChoicesBackup = null;
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			if (! Admin.updated) {
 				$('.save-simulator').hide();
 			}
+			Simulators.updating = false;
 		});
 		dataPanelContainer.find('.validate-edit-data, .validate-add-data').click(function() {
 			var dataContainerGroup = dataPanelContainer.parent();
 			var dataContainer = dataPanelContainer.find('.data-container');
+			if (! Simulators.checkData(dataPanelContainer)) {
+				return false;
+			}
 			var attributes = dataContainer.find('.attributes-container');
 			var data = { id: dataContainer.attr('data-id') };
 			attributes.find('input.simple-value, select.simple-value, span.attribute-expression').each(function (index) {
@@ -1584,8 +1639,10 @@ THE SOFTWARE.
 				Simulators.dataset[data.name].options = choices;
 			}
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			Admin.updated = true;
 			$("html, body").animate({ scrollTop: newDataPanel.offset().top }, 500);
+			Simulators.updating = false;
 		});
 		dataPanelContainer.find('.optional-attributes li' ).each(function(){
 			var self = $(this);
@@ -1667,17 +1724,21 @@ THE SOFTWARE.
 			});
 			Simulators.dataChoicesBackup = null;
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			if (! Admin.updated) {
 				$('.save-simulator').hide();
 			}
+			Simulators.updating = false;
 		});
 		dataPanelContainer.find('.cancel-add-datagroup').click(function() {
 			dataPanelContainer.remove();
 			Simulators.dataChoicesBackup = null;
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			if (! Admin.updated) {
 				$('.save-simulator').hide();
 			}
+			Simulators.updating = false;
 		});
 		dataPanelContainer.find('.validate-edit-datagroup, .validate-add-datagroup').click(function() {
 			var dataContainerGroup = dataPanelContainer.parent();
@@ -1705,7 +1766,9 @@ THE SOFTWARE.
 				Simulators.deleteDatagroup($($(this).attr('data-parent')));
 			});
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			Admin.updated = true;
+			Simulators.updating = false;
 		});
 	}
 
@@ -1906,8 +1969,8 @@ THE SOFTWARE.
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-2 control-label">' + Translator.trans('Name') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="Data name" value="' + data.name + '" /></div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-label" class="col-sm-2 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-label" id="' + dataElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="Data label" value="' + data.label + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-2 control-label">' + Translator.trans('Name') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="' + Translator.trans('Data name without spaces or special characters') + '" value="' + data.name + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-label" class="col-sm-2 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-label" id="' + dataElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="' + Translator.trans('Data label') + '" value="' + data.label + '" /></div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(dataElementId + '-type', 'select', 'type', 'Type', data.type, true, Translator.trans('Select a data type'), JSON.stringify(Admin.types)));
 		attributesContainer.append(requiredAttributes);
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
@@ -1981,7 +2044,7 @@ THE SOFTWARE.
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-2 control-label">' + Translator.trans('Group Name') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="' + Translator.trans('Group name') + '" value="' + datagroup.name + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-2 control-label">' + Translator.trans('Group Name') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="' + Translator.trans('Group name without spaces or special characters') + '" value="' + datagroup.name + '" /></div></div>');
 		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-label" class="col-sm-2 control-label">' + Translator.trans('Group Label') + '</label><div class="col-sm-10"><input type="text" name="' + dataElementId + '-label" id="' + dataElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="' + Translator.trans('Group label') + '" value="' + datagroup.label + '" /></div></div>');
 		attributesContainer.append(requiredAttributes);
 		dataContainerBody.append(attributesContainer);
@@ -1999,6 +2062,27 @@ THE SOFTWARE.
 		dataPanel.append(dataPanelCollapse);
 		dataPanelContainer.append(dataPanel);
 		return dataPanelContainer;
+	}
+
+	Simulators.checkData = function(dataContainer) {
+		var dataElementId = dataContainer.attr('id');
+		var dataName = $.trim($('#' + dataElementId + '-name').val());
+		if (dataName === '') {
+			dataContainer.find('.error-message').text(Translator.trans('The data name is required'));
+			dataContainer.find('.alert').show();
+			return false;
+		}
+		if (! /^\w+$/.test(dataName)) {
+			dataContainer.find('.error-message').text(Translator.trans('Incorrect data name'));
+			dataContainer.find('.alert').show();
+			return false;
+		}
+		if ($.trim($('#' + dataElementId + '-label').val()) === '') {
+			dataContainer.find('.error-message').text(Translator.trans('The data label is required'));
+			dataContainer.find('.alert').show();
+			return false;
+		}
+		return true;
 	}
 
 	Simulators.maxSourceId = function() {
@@ -2161,17 +2245,21 @@ THE SOFTWARE.
 			});
 			Simulators.sourceParametersBackup = null;
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			if (! Admin.updated) {
 				$('.save-simulator').hide();
 			}
+			Simulators.updating = false;
 		});
 		sourcePanelContainer.find('.cancel-add-source').click(function() {
 			sourcePanelContainer.remove();
 			Simulators.sourceParametersBackup = null;
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			if (! Admin.updated) {
 				$('.save-simulator').hide();
 			}
+			Simulators.updating = false;
 		});
 		sourcePanelContainer.find('.validate-edit-source, .validate-add-source').click(function() {
 			var sourceContainerGroup = sourcePanelContainer.parent();
@@ -2226,8 +2314,10 @@ THE SOFTWARE.
 			});
 			Simulators.sourceParametersBackup = null;
 			$('.update-button').show();
+			$('.toggle-collapse-all').show();
 			Admin.updated = true;
 			$("html, body").animate({ scrollTop: newSourcePanel.offset().top }, 500);
+			Simulators.updating = false;
 		});
 		sourcePanelContainer.find('select[data-attribute=datasource]').change(function(e) {
 			var datasource = $(this).val();
@@ -2356,6 +2446,7 @@ THE SOFTWARE.
 
 	Simulators.addSource = function(sourceContainerGroup) {
 		$('.update-button').hide();
+		$('.toggle-collapse-all').hide();
 		var source = {
 			id: Simulators.maxSourceId() + 1, 
 			datasource: '',
@@ -2377,17 +2468,19 @@ THE SOFTWARE.
 		}
 		sourcesPanel.append(sourcePanelContainer);
 		Simulators.bindSource(sourcePanelContainer);
-		sourceContainerGroup.find('a[source-toggle="collapse"]').each(function() {
+		sourceContainerGroup.find('a[data-toggle="collapse"]').each(function() {
 			var objectID=$(this).attr('href');
 			if($(objectID).hasClass('in')===false) {
 				$(objectID).collapse('show');
 			}
 		});
 		$("html, body").animate({ scrollTop: sourcePanelContainer.offset().top }, 500);
+		Simulators.updating = true;
 	}
 
 	Simulators.editSource = function(sourceContainerGroup) {
 		$('.update-button').hide();
+		$('.toggle-collapse-all').hide();
 		var sourceContainer = sourceContainerGroup.find('.source-container');
 		var attributesContainer = sourceContainer.find('.attributes-container');
 		var source = {
@@ -2425,6 +2518,7 @@ THE SOFTWARE.
 		Simulators.bindSource(sourcePanelContainer);
 		sourcePanelContainer.find('> .panel-heading a').click();
 		$("html, body").animate({ scrollTop: sourcePanelContainer.offset().top }, 500);
+		Simulators.updating = true;
 	}
 
 	Simulators.deleteSource = function(sourceContainerGroup) {
@@ -2473,6 +2567,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.addData = function(dataContainerGroup) {
+		$('.toggle-collapse-all').hide();
 		$('.update-button').hide();
 		var data = {
 			id: Simulators.maxDatasetId() + 1, 
@@ -2499,10 +2594,12 @@ THE SOFTWARE.
 			}
 		});
 		$("html, body").animate({ scrollTop: dataPanelContainer.offset().top }, 500);
+		Simulators.updating = true;
 	}
 
 	Simulators.editData = function(dataContainerGroup) {
 		$('.update-button').hide();
+		$('.toggle-collapse-all').hide();
 		var dataContainer = dataContainerGroup.find('.data-container, .datagroup-data-container');
 		var attributesContainer = dataContainer.find('.attributes-container');
 		var data = {
@@ -2561,6 +2658,7 @@ THE SOFTWARE.
 		Simulators.bindData(dataPanelContainer);
 		dataPanelContainer.find('> .panel-heading a').click();
 		$("html, body").animate({ scrollTop: dataPanelContainer.offset().top }, 500);
+		Simulators.updating = true;
 	}
 
 	Simulators.deleteData = function(dataContainerGroup) {
@@ -2584,8 +2682,9 @@ THE SOFTWARE.
 
 	Simulators.addDatagroup = function(dataContainerGroup) {
 		$('.update-button').hide();
+		$('.toggle-collapse-all').hide();
 		var datagroup = {
-			id: Simulators.maxDatasetId() + 1, 
+			id: parseInt(Simulators.maxDatasetId()) + 1, 
 			name: '',
 			label: '',
 			description: ''
@@ -2610,10 +2709,12 @@ THE SOFTWARE.
 			}
 		});
 		$("html, body").animate({ scrollTop: dataPanelContainer.offset().top }, 500);
+		Simulators.updating = true;
 	}
 
 	Simulators.editDatagroup = function(dataContainerGroup) {
 		$('.update-button').hide();
+		$('.toggle-collapse-all').hide();
 		var dataContainer = dataContainerGroup.find('.data-container.datagroup');
 		var attributesContainer = dataContainer.find('.attributes-container');
 		var datagroup = {
@@ -2630,6 +2731,7 @@ THE SOFTWARE.
 		Simulators.bindDatagroup(dataContainerGroup);
 		dataContainerGroup.find('> .panel-heading a').click();
 		$("html, body").animate({ scrollTop: dataContainerGroup.offset().top }, 500);
+		Simulators.updating = true;
 	}
 
 	Simulators.deleteDatagroup = function(dataContainerGroup) {
@@ -2882,6 +2984,26 @@ THE SOFTWARE.
 		$('.alert').hide();
 	}
 
+	Simulators.toast = function(message) {
+		var toast = $('<div>', { 'class' : 'toast'});
+		$.each(arguments, function (k, arg) {
+			toast.append($('<p>', { text: arg }));
+		});
+		toast.css({	display: "block", 
+					opacity: 0.90, 
+					position: "fixed",
+					padding: "7px",
+					"text-align": "center",
+					width: "270px",
+					left: ($(window).width() - 284)/2,
+					top: $(window).height()/2 }
+				)
+				.appendTo( 'body' ).delay( 1500 )
+				.fadeOut( 400, function(){
+					$(this).remove();
+				});
+	}
+	
 	global.Simulators = Simulators;
 }(this));
 
@@ -2913,10 +3035,12 @@ $(document).ready(function() {
 			descriptionPanel.after(relatedInformationsPanel);
 			Simulators.bindSimulatorOptions(attributesPanel.parent());
 			$('.update-button').hide();
+			$('.toggle-collapse-all').hide();
+			Simulators.updating = true;
 		});
 		$('button.add-rule').click(function(e) {
 		    e.preventDefault();
-			Simulators.addRule();
+			Simulators.addRule($($(this).attr('data-parent')));
 		});
 		$('button.edit-rule').click(function(e) {
 		    e.preventDefault();
@@ -3015,8 +3139,8 @@ $(document).ready(function() {
 				decimalPoint: $('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").attr('data-value'),
 				moneySymbol: $('#simulator-attributes-panel-holder').find("p[data-attribute='moneySymbol']").attr('data-value'),
 				symbolPosition: $('#simulator-attributes-panel-holder').find("p[data-attribute='symbolPosition']").attr('data-value'),
-				dynamic: $('#simulator-attributes-panel-holder').find("input[data-attribute='dynamic']").is(':checked') ? 1 : 0,
-				memo: $('#simulator-attributes-panel-holder').find("input[data-attribute='memo']").is(':checked') ? 1 : 0,
+				dynamic: $('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").attr('data-value'),
+				memo: $('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").attr('data-value'),
 				description: $('#simulator-description-panel-holder').find(".simulator-description").html(),
 				relatedInformations: $('#simulator-related-informations-panel-holder').find('.simulator-related-informations').html()
 			};
@@ -3037,7 +3161,17 @@ $(document).ready(function() {
 			butt.html(Translator.trans('Collapse all') + ' <span class="glyphicon glyphicon-collapse-up"></span>');
 			butt.addClass('collapse-all').removeClass('expand-all');
 		});
+		$('.panel-collapse').on('hide.bs.collapse show.bs.collapse', function () {
+			if (Simulators.updating) {
+				Simulators.toast(Translator.trans('An update is in progress,'), Translator.trans('first click «Cancel» or «Validate»'));
+			}
+			return ! Simulators.updating;
+		});
 		$('button.toggle-collapse-all').on('click',function() {
+			if (Simulators.updating) {
+				Simulators.toast(Translator.trans('An update is in progress,'), Translator.trans('first click "Cancel" or "Validate"'));
+				return false;
+			}
 			if ($(this).hasClass('expand-all')) {
 				$(this).parent().find('a[data-toggle="collapse"]').each(function() {
 					var objectID=$(this).attr('href');
@@ -3056,6 +3190,10 @@ $(document).ready(function() {
 				$(this).addClass('expand-all').removeClass('collapse-all');
 			}
 		});
+		if ( $("#save-form input[name='create']" ).length) {
+			$('#simulator button.edit-simulator').trigger('click');
+			$('#simulator-name').val('');
+		}
 		if ( $("#simulator-import-form" ).length) {
 			$( "#simulator-import-form" ).find('input, textarea').on("change propertychange", function (e) {
 				Admin.updated = true;

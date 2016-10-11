@@ -98,22 +98,27 @@ class SimulatorsAdminController extends BaseAdminController {
 			if ($simulator !== null && $file == $simulator) {
 				$this->simu = new Simulator($this);
 				try {
-					if (isset($form['update'])) {
-						$this->simu->load($simu_dir."/".$simu);
-						$this->update($simulator, $form);
-						$this->loadBusinessRules();
-					} elseif (isset($form['create'])) {
-					} elseif (isset($form['delete'])) {
-					} else {
-						$this->simu->load($simu_dir."/".$simu);
-						$this->loadBusinessRules();
-					}
+					$this->simu->load($simu_dir."/".$simu);
+					$this->loadBusinessRules();
 				} catch (\Exception $e) {
 					$this->simu = null;
 				}
 			}
 		}
-		if ($crud == 'import') {
+		if ($crud == 'create') {
+			$hiddens['action'] = 'create';
+			$this->simu = new Simulator($this);
+			$this->simu->loadEmptySimulator();
+			$this->loadBusinessRules();
+		} elseif ($crud == 'save') {
+			if (isset($form['create'])) {
+				return $this->doCreate($simulator, $form);
+			} elseif (isset($form['update'])) {
+				$this->update($simulator, $form);
+				$this->loadBusinessRules();
+			} elseif (isset($form['delete'])) {
+			}
+		} elseif ($crud == 'import') {
 			$hiddens['action'] = 'import';
 		} elseif ($crud == 'doimport') {
 			return $this->doImportSimulator($request->files->all());
@@ -202,6 +207,13 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $this->simu !== null ? $this->simu->getDataById($id) : null;
 	}
 
+	protected function doCreate($simulator, $form) {
+		$this->simu = new Simulator($this);
+		$this->simu->loadEmptySimulator();
+		$this->update($simulator, $form);
+		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $this->simu->getName())));
+	}
+
 	protected function update($simulator, $form) {
 		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
 		$simulatorData = json_decode($form['simulator'], true);
@@ -217,7 +229,9 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->setDecimalPoint($simulatorData['decimalPoint']);
 		$this->simu->setMoneySymbol($simulatorData['moneySymbol']);
 		$this->simu->setSymbolPosition($simulatorData['symbolPosition']);
-
+		if (isset($form['create'])) {
+			$simulator = $simulatorData["name"];
+		}
 		$datas = json_decode($form['datas'], true);
 		// file_put_contents($simu_dir."/work/".$simulator."-datas.json", var_export($datas, true));
 
@@ -330,18 +344,22 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 
 		$rulesData = json_decode($form['rules'], true);
+		// file_put_contents($simu_dir."/work/".$simulator."-rules.json", var_export($rulesData, true));
 
 		$this->simu->setBusinessRules(array());
 
 		foreach($rulesData as $id => $brule) {
 			$businessRuleObj = new BusinessRule($this->simu, 'rule-'.mt_rand(), (int)$brule['id'], (string)$brule['name']);
 			$businessRuleObj->setLabel((string)$brule['label']);
-			// $businessRuleObj->setConditions($this->infix($brule["conditions"]));
-			$businessRuleObj->setConditions((string)$brule["conditions"]);
 			if (isset($brule["connector"])) {
+				if (isset($brule["connector"]["name"])) {
+					$businessRuleObj->setConditions($this->makeCond($brule["connector"]));
+				} else {
+					$businessRuleObj->setConditions($this->infix($brule["connector"]));
+				}
 				$businessRuleObj->setConnector($this->loadConnector($brule["connector"]));
 			}
-			foreach ($brule["ifActions"] as $ida => $action) {
+			foreach ($brule["ifdata"] as $ida => $action) {
 				$ruleActionObj = new RuleAction((int)$ida + 1, (string)$action['value']);
 				switch ($action['value']) {
 					case 'notifyError':
@@ -432,7 +450,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 				$businessRuleObj->addIfAction($ruleActionObj);
 			}
-			foreach ($brule["elseActions"] as $ida => $action) {
+			foreach ($brule["elsedata"] as $ida => $action) {
 				$ruleActionObj = new RuleAction((int)$ida + 1, (string)$action['value']);
 				switch ($action['value']) {
 					case 'notifyError':
@@ -554,8 +572,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			$this->simu->addSource($sourceObj);
 		}
-
-		$this->simu->save($simu_dir."/work/".$simulator.".xml");
+		if (isset($form['create'])) {
+			$this->simu->save($simu_dir."/".$simulator.".xml");
+		} else {
+			$this->simu->save($simu_dir."/work/".$simulator.".xml");
+		}
 	}
 
 	private function loadConnector($connector, $parentConnector = null) {

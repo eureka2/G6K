@@ -55,7 +55,6 @@ THE SOFTWARE.
 	};
 
 	Admin.types = { 
-		array: Translator.trans('array'), 
 		date: Translator.trans('date'), 
 		day: Translator.trans('day'), 
 		today: Translator.trans('today'), 
@@ -70,6 +69,7 @@ THE SOFTWARE.
 		choice: Translator.trans('choice'), 
 		multichoice: Translator.trans('multichoice'), 
 		percent: Translator.trans('percent'), 
+		array: Translator.trans('array'), 
 		table: Translator.trans('table'), 
 		department: Translator.trans('department'), 
 		region: Translator.trans('region'), 
