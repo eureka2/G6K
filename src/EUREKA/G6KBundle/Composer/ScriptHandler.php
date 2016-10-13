@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015 Jacques ArchimÃ¨de
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -140,7 +140,6 @@ class ScriptHandler
 			$database->exec($sql);
 		} catch (\Exception $e) {
 			$event->getIO()->write("Can't set sequence for table fos_user : " . $e->getMessage());
-			break;
 		}
 	}
 
