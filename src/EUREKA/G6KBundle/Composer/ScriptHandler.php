@@ -140,7 +140,6 @@ class ScriptHandler
 			$database->exec($sql);
 		} catch (\Exception $e) {
 			$event->getIO()->write("Can't set sequence for table fos_user : " . $e->getMessage());
-			break;
 		}
 	}
 
