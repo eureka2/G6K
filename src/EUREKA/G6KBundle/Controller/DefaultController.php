@@ -822,18 +822,18 @@ class DefaultController extends Controller {
 							break;
 						case 'blocinfo':
 							$panel = $step->getPanelById($action->getpanel());
-							$blocinfo = $panel->getFieldSetById($action->getBlockinfo());
+							$blocinfo = $panel->getBlockInfoById($action->getBlockinfo());
 							$blocinfo->setDisplayable($action->getName() == 'showObject');
 							break;
 						case 'chapter':
 							$panel = $step->getPanelById($action->getpanel());
-							$blocinfo = $panel->getFieldSetById($action->getBlockinfo());
+							$blocinfo = $panel->getBlockInfoById($action->getBlockinfo());
 							$chapter = $blocinfo->getChapterById($action->getChapter());
 							$chapter->setDisplayable($action->getName() == 'showObject');
 							break;
 						case 'section':
 							$panel = $step->getPanelById($action->getpanel());
-							$blocinfo = $panel->getFieldSetById($action->getBlockinfo());
+							$blocinfo = $panel->getBlockInfoById($action->getBlockinfo());
 							$chapter = $blocinfo->getChapterById($action->getChapter());
 							$section = $chapter->getSectionById($action->getSection());
 							$section->setDisplayable($action->getName() == 'showObject');
