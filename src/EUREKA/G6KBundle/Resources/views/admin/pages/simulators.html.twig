@@ -119,8 +119,8 @@ THE SOFTWARE.
 							<div class="panel panel-default" id="simulator-elements-panel">
 							{{ _self.showSources ( simulator ) }}
 							{{ _self.showDatas ( simulator ) }}
-							{{ _self.showBusinessRules ( simulator ) }}
 							{{ _self.showSteps ( simulator ) }}
+							{{ _self.showBusinessRules ( simulator ) }}
 							</div>
 						</div>
 					</div>
@@ -170,6 +170,10 @@ THE SOFTWARE.
 
 {% block scripts %}
 {{ parent() }}<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.simulators.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.simulators.datas.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.simulators.sources.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.simulators.rules.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.simulators.steps.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/css-validator/csslint.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/jquery.jeditable/jquery.jeditable.js') }}"></script>
 {% endblock %}
@@ -330,7 +334,12 @@ THE SOFTWARE.
 {% macro showSteps(simulator) %}
 {{ _self.openCollapsiblePanel('steps' , 'Steps'|trans, 'primary', '', 'sortable', [{ 'class': 'add-step', 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
 {% for step in simulator.steps %}
-	{{ _self.openCollapsiblePanel('step-' ~ step.id , step.label, 'info', loop.index == 1 ? 'in' : '', 'sortable' ) }}
+	{% set buttons = [{ 'class': 'delete-step', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }] %}
+	{% if not step.footNotes %}
+	{% set buttons = buttons|merge([{ 'class': 'add-footnotes', 'label': 'Add footnotes'|trans, 'icon': 'glyphicon-plus-sign' }]) %}
+	{% endif %}
+	{% set buttons = buttons|merge([{ 'class': 'add-panel', 'label': 'Add panel'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-step', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' }]) %}
+	{{ _self.openCollapsiblePanel('step-' ~ step.id, 'Step'|trans ~ ' #'~step.id~' : ' ~ step.label, 'info', loop.index == 1 ? 'in' : '', '', buttons ) }}
 	<div class="panel panel-default step-container" id="step-{{ step.id }}-attributes-panel" data-id="{{ step.id }}">
 		<div class="panel-body">
 			<div class="attributes-container">
@@ -342,25 +351,89 @@ THE SOFTWARE.
 				{{ _self.showAttribute('step-'~step.id, 'checkbox', 'dynamic', 'Interactive UI'|trans, step.dynamic, false, 'dynamic') }}
 				</div>
 			</div>
+			<div class="panel panel-default description-panel elements-container" id="step-{{ step.id }}-description-panel">
+				<div class="panel-heading">
+					{{ 'Description'|trans }}
+				</div>
+				<div class="panel-body step-description">
+					{{ _self.paragraphs(step.description) }}
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="panel panel-default description-panel" id="step-{{ step.id }}-description-panel">
-		<div class="panel-heading">
-			{{ 'Description'|trans }}
-		</div>
-		<div class="panel-body step-description">
-			{{ _self.paragraphs(step.description) }}
-		</div>
-	</div>
-	<div class="panel panel-default" id="step-{{ step.id }}-fieldsets-panel">
-		<div class="panel-body">
+	<div class="panel panel-default panels-panel" id="step-{{ step.id }}-panels-panel">
+		<div class="panel-body sortable">
 		{% for panel in step.panels %}
 			{{ _self.showPanel(step, panel, loop.index == 1 ? 'in' : '') }}
 		{% endfor %}
 		</div>
 	</div>
+	{{ _self.showActionButtons(step) }}  
+	{% if step.footNotes %}
+	{{ _self.showFootNotes(step) }}  
+	{% endif %}
 	{{ _self.closeCollapsiblePanel() }}  
 {% endfor %}
+{{ _self.closeCollapsiblePanel() }}  
+{% endmacro %}
+
+{% macro showFootNotes(step) %}
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-footnotes' , 'FootNotes'|trans, 'success', '', '', [{ 'class': 'delete-footnotes', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-footnote', 'label': 'Add footnote'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-footnotes', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' }] ) }}
+<div class="panel panel-default footnotes-container" id="step-{{ step.id }}-footnotes-attributes-panel">
+	<div class="panel-body">
+		<div class="attributes-container">
+			<div>
+			{{ _self.showAttribute('step-'~step.id~ '-footnotes', 'select', 'position', 'Position'|trans, step.footNotes.position, true, 'Select a position'|trans, { 'beforeActions':'before action buttons'|trans, 'afterActions':'after action buttons'|trans } ) }}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="footnotes-panel sortable">
+{% for footnote in step.footNotes.footNotes %}
+{% set footnoteElementId = 'step-'~step.id~'-footnotes-footnote-'~footnote.id %}
+<div class="panel panel-default footnote-container" id="{{ footnoteElementId }}-panel" data-step="{{ step.id }}" data-id="{{ footnote.id}}">
+	<div class="panel-heading">
+		<button class="btn btn-default pull-right update-button delete-footnote" data-parent="#{{ footnoteElementId }}-panel">{{ 'Delete'|trans }} <span class="glyphicon glyphicon-minus-sign"></span></button>
+		<button class="btn btn-default pull-right update-button edit-footnote" data-parent="#{{ footnoteElementId }}-panel">{{ 'Edit'|trans }} <span class="glyphicon glyphicon-plus-sign"></span></button>
+		<h4 class="panel-title">
+			{{ 'FootNote #%id%'|trans({'%id%': footnote.id }) }}
+		</h4>
+	</div>
+	<div class="panel-body step-footnote">
+	{{ _self.paragraphs(footnote.text) }}
+	</div>
+</div>
+{% endfor %}
+</div>
+{{ _self.closeCollapsiblePanel() }}  
+{% endmacro %}
+
+{% macro showActionButtons(step) %}
+<div class="actions-buttons-panel">
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-action-buttons' , 'Actions Buttons'|trans, 'success', '', 'sortable', [{ 'class': 'add-action-button', 'label': 'Add action button'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
+{% for action in step.actions %}
+{{ _self.showActionButton(step, action) }}
+{% endfor %}
+{{ _self.closeCollapsiblePanel() }}  
+</div>
+{% endmacro %}
+
+{% macro showActionButton(step, action) %}
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-action-button-' ~ action.name , 'Action Button'|trans ~ ' : ' ~ action.label, 'default', '', '', [{ 'class': 'delete-action-button', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-action-button', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' }] ) }}
+<div class="panel panel-default action-button-container" id="step-{{ step.id }}-action-button-{{ action.name }}-attributes-panel" data-step="{{ step.id }}" data-id="{{ action.name }}">
+	<div class="panel-body">
+		<div class="attributes-container">
+			<div>
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'name', 'Name'|trans, action.name, true, 'Button name'|trans) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'label', 'Label'|trans, action.label, true, 'Button label'|trans) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'what', 'What'|trans, action.what, true, 'Select an action'|trans, { 'submit':'Submit'|trans, 'reset':'Reset'|trans } ) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'for', 'For'|trans, action.for, true, 'Select a target step'|trans, { 'priorStep':'Prior step'|trans, 'currentStep':'Current step'|trans, 'nextStep':'Next step'|trans, 'jumpToStep':'Jump to step'|trans, 'newSimulation':'New simulation'|trans, 'externalPage':'External page'|trans } ) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'uri', 'URI'|trans, action.uri, false, 'Button uri'|trans) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'class', 'Class'|trans, action.class, false, 'Button class'|trans) }}
+			</div>
+		</div>
+	</div>
+</div>
 {{ _self.closeCollapsiblePanel() }}  
 {% endmacro %}
 
@@ -427,8 +500,8 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro showPanel(step, panel, inClass) %}
-{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id , 'Panel #' ~ panel.id, 'success', inClass, '' ) }}
-<div class="panel panel-default panel-container" id="step-{{ step.id }}-panel-{{ panel.id }}-attributes-panel" data-id="{{ panel.id }}">
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id , 'Panel'|trans ~ ' #' ~ panel.id ~ ' : ' ~ panel.label, 'success', inClass, '', [{ 'class': 'delete-panel', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-fieldset', 'label': 'Add fieldset'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'add-blockinfo', 'label': 'Add blockinfo'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-panel', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+<div class="panel panel-default panel-container" id="step-{{ step.id }}-panel-{{ panel.id }}-attributes-panel" data-step="{{ step.id }}" data-id="{{ panel.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
@@ -438,8 +511,8 @@ THE SOFTWARE.
 		</div>
 	</div>
 </div>
-<div class="panel panel-default" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldsets-panel">
-	<div class="panel-body">
+<div class="panel panel-default blocks-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-blocks-panel">
+	<div class="panel-body sortable">
 	{% for blck in panel.fieldSets %}
 		{% if blck.class == "FieldSet" %}
 		{{ _self.showFieldSet(step, panel, blck, loop.index == 1 ? 'in' : '') }}
@@ -453,40 +526,46 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro showFieldSet(step, panel, fieldset, inClass) %}
-{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'Fieldset #' ~ fieldset.id, 'info', inClass, '' ) }}
-<div class="panel panel-default fielset-container" id="step-{{ step.id }}}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-attributes-panel" data-id="{{ fieldset.id }}">
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~  fieldset.legend, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+<div class="panel panel-default block-container fieldset" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-id="{{ fieldset.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
 			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'disposition', 'Disposition'|trans, fieldset.disposition, false, 'Select a Disposition'|trans, {'classic':'Classic'|trans, 'grid':'Grid'|trans}) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'display', 'Display'|trans, fieldset.display, false, 'Select a Display'|trans, {'inline':'Inline'|trans, 'pop-in':'Pop-in'|trans}) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'text', 'popinLink', 'Pop-in Link'|trans, fieldset.popinLink, false, 'Pop-in Link'|trans) }}
+			</div>
+		</div>
+		<div class="panel panel-default legend-panel elements-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-legend-panel">
+			<div class="panel-heading">
+			{{ 'Legend'|trans }}
+			</div>
+			<div class="panel-body fieldset-legend">
+				{{ _self.paragraphs(fieldset.legend) }}
 			</div>
 		</div>
 	</div>
 </div>
-<div class="panel panel-default" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-legend-panel">
-	<div class="panel-heading">
-		Legend
-	</div>
-	<div class="panel-body fieldset-legend">
-		{{ _self.paragraphs(fieldset.legend) }}
-	</div>
-</div>
-<div class="panel panel-default" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-fieldsets-panel">
-	<div class="panel-body">
+<div class="panel panel-default columns-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-columns-panel">
+	<div class="panel-body sortable">
 	{% for column in fieldset.columns %}
 	{#	{{ _self.showFieldSetColumn(step, panel, fieldset, column, loop.index == 1 ? 'in' : '') }} #}
 	{% endfor %}
 	</div>
+</div>
+<div class="panel panel-default fields-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-fields-panel">
+	<div class="panel-body sortable">
 	{% for field in fieldset.fields %}
 	{{ _self.showField(step, panel, fieldset, field, loop.index == 1 ? 'in' : '') }}
 	{% endfor %}
+	</div>
 </div>
 {{ _self.closeCollapsiblePanel() }}  
 {% endmacro %}
 
 {% macro showField(step, panel, fieldset, field, inClass) %}
-{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position , 'Field #' ~ field.position ~ ' ' ~ field.label, 'info', inClass, '' ) }}
-<div class="panel panel-default field-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-field-{{ field.position }}-attributes-panel" data-id="{{ field.position }}">
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position , 'Field'|trans ~ ' #' ~ field.position ~ ' : ' ~ field.label, 'warning', inClass, '', [{ 'class': 'delete-field', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-field', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+<div class="panel panel-default field-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-field-{{ field.position }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-fieldset="{{ fieldset.id }}" data-id="{{ field.position }}">
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
@@ -502,17 +581,38 @@ THE SOFTWARE.
 			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'help', 'Show data description as help ?'|trans, field.help, false, 'help') }}
 			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'emphasize', 'Emphasize the text label ?'|trans, field.emphasize, false, 'emphasize') }}
 			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'checkbox', 'expanded', 'Show choices as radio buttons ?'|trans, field.expanded, false, 'expanded') }}
-			{{ _self.showExpressionAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'explanation', 'Explanation'|trans, field.explanation, field.explanation, false, 'Explanation'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position, 'text', 'explanation', 'Explanation'|trans, field.explanation, field.explanation, false, 'Explanation'|trans) }}
 			</div>
 		</div>
+		{% if field.preNote %}
+		<div class="panel panel-default note-panel elements-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-field-{{ field.position }}-note-panel">
+			<div class="panel-heading">
+				<span class="note-position pull-right">{{ 'Note position'|trans }} : {{ 'placed before the field'|trans }}</span> 
+				{{ 'Note'|trans }}
+			</div>
+			<div class="panel-body field-note">
+			{{ _self.paragraphs(field.preNote.text) }}
+			</div>
+		</div>
+		{% elseif field.postNote %}
+		<div class="panel panel-default note-panel elements-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-field-{{ field.position }}-note-panel">
+			<div class="panel-heading">
+				<span class="note-position pull-right">{{ 'Note position'|trans }} : {{ 'placed after the field'|trans }}</span> 
+				{{ 'Note'|trans }}
+			</div>
+			<div class="panel-body field-note">
+			{{ _self.paragraphs(field.postNote.text) }}
+			</div>
+		</div>
+		{% endif %}
 	</div>
 </div>
 {{ _self.closeCollapsiblePanel() }}  
 {% endmacro %}
 
 {% macro showBlockInfo(step, panel, blockinfo, inClass) %}
-{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id , 'Blockinfo #' ~ blockinfo.id, 'info', inClass, '' ) }}
-<div class="panel panel-default blockinfo-container" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-attributes-panel" data-id="{{ blockinfo.id }}">
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id , 'Blockinfo #%id% : %label%'|trans({'%id%': blockinfo.id, '%label%': blockinfo.label }), 'info', inClass, '', [{ 'class': 'delete-blockinfo', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-chapter', 'label': 'Add chapter'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-blockinfo', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+<div class="panel panel-default block-container blockinfo" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-id="{{ blockinfo.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
@@ -522,17 +622,19 @@ THE SOFTWARE.
 		</div>
 	</div>
 </div>
-<div class="panel panel-default" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapters-panel">
+<div class="panel panel-default chapters-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapters-panel">
+	<div class="panel-body sortable">
 	{% for chapter in blockinfo.chapters %}
 	{{ _self.showChapter(step, panel, blockinfo, chapter, loop.index == 1 ? 'in' : '') }}
 	{% endfor %}
+	</div>
 </div>
 {{ _self.closeCollapsiblePanel() }}  
 {% endmacro %}
 
 {% macro showChapter(step, panel, blockinfo, chapter, inClass) %}
-{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id , 'Chapter #' ~ chapter.id ~ ' ' ~ chapter.label, 'info', inClass, '' ) }}
-<div class="panel panel-default chapter-container" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-attributes-panel" data-chapter-id="{{ chapter.id }}">
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id , 'Chapter #%id% : %label%'|trans({'%id%': chapter.id, '%label%': chapter.label }), 'warning', inClass, '', [{ 'class': 'delete-chapter', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-section', 'label': 'Add section'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-chapter', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+<div class="panel panel-default chapter-container" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-blockinfo="{{ blockinfo.id }}" data-id="{{ chapter.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
@@ -544,18 +646,20 @@ THE SOFTWARE.
 		</div>
 	</div>
 </div>
-<div class="panel panel-default" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections-panel">
+<div class="panel panel-default sections-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections-panel">
+	<div class="panel-body sortable">
 	{% for section in chapter.sections %}
 	{{ _self.showSection(step, panel, blockinfo, chapter, section, loop.index == 1 ? 'in' : '') }}
 	{% endfor %}
+	</div>
 </div>
 {{ _self.closeCollapsiblePanel() }}  
 {% endmacro %}
 
 
 {% macro showSection(step, panel, blockinfo, chapter, section, inClass) %}
-{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id , 'Section #' ~ section.id ~ ' ' ~ section.label, 'info', inClass, '' ) }}
-<div class="panel panel-default section-container" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-attributes-panel" data-section-id="{{ section.id }}">
+{{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id , 'Section #%id% : %label%'|trans({ '%id%': section.id, '%label%': section.label }), 'info', inClass, '', [{ 'class': 'delete-section', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-section', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+<div class="panel panel-default section-container" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-blockinfo="{{ blockinfo.id }}" data-chapter="{{ chapter.id }}" data-id="{{ section.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
@@ -565,12 +669,20 @@ THE SOFTWARE.
 		</div>
 	</div>
 </div>
-<div class="panel panel-default" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-content-panel">
+<div class="panel panel-default content-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-content-panel">
 	<div class="panel-heading">
-		Content
+		{{ 'Content'|trans }}
 	</div>
 	<div class="panel-body section-content">
 		{{ _self.paragraphs(section.content) }}
+	</div>
+</div>
+<div class="panel panel-default annotations-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-annotations-panel">
+	<div class="panel-heading">
+		{{ 'Annotations'|trans }}
+	</div>
+	<div class="panel-body section-annotations">
+		{{ _self.paragraphs(section.annotations) }}
 	</div>
 </div>
 {{ _self.closeCollapsiblePanel() }}  
@@ -580,8 +692,8 @@ THE SOFTWARE.
 {% macro showAttribute(element, type, name, label, value, required, placeholder, options) %}
 {% if required or value is not empty %}
 <div class="form-group col-sm-12">
-	<label class="col-sm-2 control-label">{{ label }}</label>
-	<div class="col-sm-10">
+	<label class="col-sm-4 control-label">{{ label }}</label>
+	<div class="col-sm-8">
 		{% if type == 'text' or type == 'number' %}
 		<p data-attribute="{{ name }}" data-value="{{ value }}" class="form-control-static simple-value">{{ value }}</p>
 		{% elseif type == 'checkbox' %}
@@ -601,7 +713,7 @@ THE SOFTWARE.
 {% macro showExpressionAttribute(element, name, label, value, plainvalue, required, placeholder) %}
 {% if required or value is not empty %}
 <div class="form-group col-sm-12">
-	<label class="col-sm-2 control-label">{{ label }}</label>
+	<label class="col-sm-4 control-label">{{ label }}</label>
 	<span data-attribute="{{ name }}" class="attribute-expression" data-placeholder="{{ placeholder }}"  data-value="{{ value }}">{{ plainvalue }}</span>
 </div>
 {% endif %}
@@ -625,7 +737,8 @@ THE SOFTWARE.
 				</a>
 			</h4>
 		</div>
-		<div id="collapse{{ id }}" class="panel-collapse collapse {{ in }}" role="tabpanel" aria-labelledby="{{ id }}-panel">
+		{# <div id="collapse{{ id }}" class="panel-collapse collapse {{ in }}" role="tabpanel" aria-labelledby="{{ id }}-panel"> #}
+		<div id="collapse{{ id }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ id }}-panel">
 			<div class="panel-body {{ sortable }}">
 {% endmacro %}
 
@@ -637,7 +750,7 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro showData(data, containerType, inClass) %}
-{{ _self.openCollapsiblePanel('data-' ~ data.id , '#'~data.id~' : '~data.label, 'info', inClass, '', [{ 'class': 'delete-data', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-data', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ _self.openCollapsiblePanel('data-' ~ data.id, '#'~data.id~' : '~data.label, 'info', inClass, '', [{ 'class': 'delete-data', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-data', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 <div class="panel panel-default {{ containerType }}-container" id="data-{{ data.id }}-attributes-panel" data-id="{{ data.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">

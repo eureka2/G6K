@@ -36,11 +36,17 @@ use EUREKA\G6KBundle\Entity\Choice;
 use EUREKA\G6KBundle\Entity\ChoiceSource;
 use EUREKA\G6KBundle\Entity\DataGroup;
 use EUREKA\G6KBundle\Entity\Data;
+use EUREKA\G6KBundle\Entity\Step;
+use EUREKA\G6KBundle\Entity\Action;
+use EUREKA\G6KBundle\Entity\FootNotes;
+use EUREKA\G6KBundle\Entity\FootNote;
 use EUREKA\G6KBundle\Entity\Panel;
 use EUREKA\G6KBundle\Entity\FieldSet;
+use EUREKA\G6KBundle\Entity\Column;
 use EUREKA\G6KBundle\Entity\FieldRow;
 use EUREKA\G6KBundle\Entity\Field;
 use EUREKA\G6KBundle\Entity\BlockInfo;
+use EUREKA\G6KBundle\Entity\FieldNote;
 use EUREKA\G6KBundle\Entity\Chapter;
 use EUREKA\G6KBundle\Entity\Section;
 use EUREKA\G6KBundle\Entity\BusinessRule;
@@ -69,6 +75,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	private $dataset = array();
 	private $actions = array();
 	private $rules = array();
+	private $steps = array();
 
 	public function indexAction(Request $request, $simulator = null, $crud = null)
 	{
@@ -98,7 +105,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			if ($simulator !== null && $file == $simulator) {
 				$this->simu = new Simulator($this);
 				try {
-					$this->simu->load($simu_dir."/".$simu);
+					if (file_exists($simu_dir."/work/".$simu)) {
+						$this->simu->load($simu_dir."/work/".$simu);
+					} else {
+						$this->simu->load($simu_dir."/".$simu);
+					}
 					$this->loadBusinessRules();
 				} catch (\Exception $e) {
 					$this->simu = null;
@@ -156,6 +167,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'simulators' => $simulators,
 					'simulator' => $this->simu,
 					'dataset' => preg_replace("/\n/", "\n\t", json_encode($this->dataset, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
+					'steps' => preg_replace("/\n/", "\n\t", json_encode($this->steps, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
 					'actions' => preg_replace("/\n/", "\n\t", json_encode($this->actions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
 					'rules' => preg_replace("/\n/", "\n\t", json_encode($this->rules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
 					'datasources' => preg_replace("/\n/", "\n\t", json_encode($datasources, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
@@ -341,6 +353,165 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 				$this->simu->addData($dataObj);
 			}
+		}
+
+		$steps = json_decode($form['steps'], true);
+		file_put_contents($simu_dir."/work/".$simulator."-steps.json", var_export($steps, true));
+
+		$this->simu->setSteps(array());
+		$step0 = false;
+		foreach($steps as $s => $step) {
+			$stepObj = new Step($this, (int)$step['id'], $step['name'], $step['label'], $step['template']);
+			if ($stepObj->getId() == 0) {
+				$step0 = true;
+			}
+			$stepObj->setOutput($step['output']);
+			$stepObj->setDescription($step['description']);
+			$stepObj->setDynamic($step['dynamic'] == '1');
+			foreach ($step['panels'] as $p => $panel) {
+				$panelObj = new Panel($stepObj, (int)$panel['id']);
+				$panelObj->setName($panel['name']);
+				$panelObj->setLabel($panel['label']);
+				foreach ($panel['blocks'] as $b => $block) {
+					if ($block['type'] == 'fieldset') {
+						$fieldset = $block;
+						$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
+						$fieldsetObj->setLegend($fieldset['legend']);
+						if ($fieldset['disposition'] != "") {
+							$fieldsetObj->setDisposition($fieldset['disposition']);
+						}
+						if ($fieldset['display'] != "") {
+							$fieldsetObj->setDisplay($fieldset['display']);
+						}
+						if ($fieldset['popinLink'] != "") {
+							$fieldsetObj->setPopinLink($fieldset['popinLink']);
+						}
+						if (isset($fieldset['columns'])) {
+							foreach ($fieldset['columns'] as $column) {
+								$columnObj = new Column(null, (int)$column['id'], $column['name'], $column['type']);
+								$columnObj->setLabel($column['label']);
+								$fieldsetObj->addColumn($columnObj);
+							}
+						}
+						foreach ($fieldset['fields'] as $child) {
+							if ($child['type'] == "fieldrow") {
+								$fieldrow = $child;
+								$fieldRowObj = new FieldRow($fieldsetObj, $fieldrow['label']);
+								$fieldRowObj->setColon($fieldrow['colon'] == '' || $fieldrow['colon'] == '1');
+								$fieldRowObj->setHelp($fieldrow['help'] == '1');
+								$fieldRowObj->setEmphasize($fieldrow['emphasize'] == '1');
+								$fieldRowObj->setDataGroup($fieldrow['datagroup']);
+								foreach ($fieldrow['fields'] as $field) {
+									$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], $field['label']);
+									$fieldObj->setUsage($field['usage']);
+									$fieldObj->setPrompt($field['prompt']);
+									$fieldObj->setNewline($field['newline'] == '' || $field['newline'] == '1');
+									$fieldObj->setRequired($field['required'] == '1');
+									$fieldObj->setVisibleRequired($field['visibleRequired'] == '1');
+									$fieldObj->setColon($field['colon'] == '' || $field['colon'] == '1');
+									$fieldObj->setUnderlabel($field['underlabel'] == '1');
+									$fieldObj->setHelp($field['help'] == '1');
+									$fieldObj->setEmphasize($field['emphasize'] == '1');
+									$fieldObj->setExplanation($field['explanation']);
+									$fieldObj->setExpanded($field['expanded'] == '1');
+									if ($field['Note']) {
+										$note = $field['Note'];
+										if ($note['position'] == 'beforeField') {
+											$noteObj = new FieldNote($this);
+											$noteObj->setText($note['text']);
+											$fieldObj->setPreNote($noteObj);
+										} elseif ($note['position'] == 'afterField') {
+											$noteObj = new FieldNote($this);
+											$noteObj->setText($note['text']);
+											$fieldObj->setPostNote($noteObj);
+										}
+									}
+									$fieldRowObj->addField($fieldObj);
+								}
+								$fieldsetObj->addField($fieldRowObj);
+							} elseif ($child['type'] == "field") {
+								$field = $child;
+								$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], $field['label']);
+								$fieldObj->setUsage($field['usage']);
+								$fieldObj->setPrompt($field['prompt']);
+								$fieldObj->setNewline($field['newline'] == '' || $field['newline'] == '1');
+								$fieldObj->setRequired($field['required'] == '1');
+								$fieldObj->setVisibleRequired($field['visibleRequired'] == '1');
+								$fieldObj->setColon($field['colon'] == '' || $field['colon'] == '1');
+								$fieldObj->setUnderlabel($field['underlabel'] == '1');
+								$fieldObj->setHelp($field['help'] == '1');
+								$fieldObj->setEmphasize($field['emphasize'] == '1');
+								$fieldObj->setExplanation($field['explanation']);
+								$fieldObj->setExpanded($field['expanded'] == '1');
+								if (isset($field['Note'])) {
+									$note = $field['Note'];
+									if ($note['position'] == 'beforeField') {
+										$noteObj = new FieldNote($this);
+										$noteObj->setText($note['text']);
+										$fieldObj->setPreNote($noteObj);
+									} elseif ($note['position'] == 'afterField') {
+										$noteObj = new FieldNote($this);
+										$noteObj->setText($note['text']);
+										$fieldObj->setPostNote($noteObj);
+									}
+								}
+								$fieldsetObj->addField($fieldObj);
+							}
+						}
+						$panelObj->addFieldSet($fieldsetObj);
+					} elseif ($block['type'] == 'blockinfo') {
+						$blockinfo = $block;
+						$blockinfoObj = new BlockInfo($panelObj, (int)$blockinfo['id']);
+						$blockinfoObj->setName($blockinfo['name']);
+						$blockinfoObj->setLabel($blockinfo['label']);
+						foreach ($blockinfo['chapters'] as $c => $chapter) {
+							$chapterObj = new Chapter($blockinfoObj, (int)$chapter['id']);
+							$chapterObj->setName($chapter['name']);
+							$chapterObj->setLabel($chapter['label']);
+							$chapterObj->setIcon($chapter['icon']);
+							$chapterObj->setCollapsible($chapter['collapsible'] == '1');
+							foreach ($chapter['sections'] as $section) {
+								$sectionObj = new Section($chapterObj, (int)$section['id']);
+								$sectionObj->setName($section['name']);
+								$sectionObj->setLabel($section['label']);
+								$sectionObj->setContent($section['content']);
+								$sectionObj->setAnnotations($section['annotations']);
+								$chapterObj->addSection($sectionObj);
+							}
+							$blockinfoObj->addChapter($chapterObj);
+						}
+						$panelObj->addFieldSet($blockinfoObj);
+					}
+				}
+				$stepObj->addPanel($panelObj);
+			}
+			foreach ($step['actions'] as $action) {
+				$actionObj = new Action($stepObj, $action['name'], $action['label']);
+				$actionObj->setClass($action['class']);
+				$actionObj->setWhat($action['what']);
+				$actionObj->setFor($action['for']);
+				$actionObj->setUri($action['uri']);
+				$stepObj->addAction($actionObj);
+			}
+			if (isset($step['footNotes'])) {
+				$footnotes = $step['footNotes'];
+				if (isset($footnotes['footNotes'])) {
+					$footnotesObj = new FootNotes($stepObj);
+					if ($footnotes['position'] != "") {
+						$footnotesObj->setPosition($footnotes['position']);
+					}
+					foreach ($footnotes['footNotes'] as $footnote) {
+						$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
+						$footnoteObj->setText($footnote['text']);
+						$footnotesObj->addFootNote($footnoteObj);
+					}
+					$stepObj->setFootNotes($footnotesObj);
+				}
+			}
+			$this->simu->addStep($stepObj);
+		}
+		if (!$step0) {
+			$this->simu->setDynamic(false);
 		}
 
 		$rulesData = json_decode($form['rules'], true);
@@ -600,13 +771,18 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function doExportSimulator($simu) {
 		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
 		$public_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/public";
-		$simulator = new \SimpleXMLElement($simu_dir . "/" . $simu . ".xml", LIBXML_NOWARNING, true);
+		if (file_exists($simu_dir . "/work/" . $simu . ".xml")) {
+			$simu_file = $simu_dir . "/work/" . $simu . ".xml";
+		} else {
+			$simu_file = $simu_dir . "/" . $simu . ".xml";
+		}
+		$simulator = new \SimpleXMLElement($simu_file, LIBXML_NOWARNING, true);
 		$view = (string)$simulator["defaultView"];
 		$content = array(
 			array(
 				'name' => $simu . ".xml",
-				'data' => file_get_contents($simu_dir . "/" . $simu . ".xml"),
-				'modtime' => filemtime($simu_dir . "/" . $simu . ".xml")
+				'data' => file_get_contents($simu_file),
+				'modtime' => filemtime($simu_file)
 			)
 		);
 		if (file_exists($public_dir . "/" . $view . "/css/" . $simu . ".css")) {
@@ -972,6 +1148,18 @@ class SimulatorsAdminController extends BaseAdminController {
 			$ostepfootnotes = array();
 			$ostepactionbuttons = array();
 			foreach ($this->simu->getSteps() as $step) {
+				$tstep = array(
+					'id' => $step->getId(),
+					'name' => $step->getName(),
+					'label' => $step->getLabel(),
+					'template' => $step->getTemplate(),
+					'output' => $step->getOutput(),
+					'dynamic' => $step->isDynamic() ? 1 : 0,
+					'description' => $step->getDescription(),
+					'panels' => array(),
+					'actions' => array(),
+					'footNotes' => array()
+				);
 				$stepLabel = $step->getLabel() != '' ? $step->getLabel() : $this->get('translator')->trans('Step %id% (nolabel)', array('%id%' => $step->getId()));
 				$osteps[] = array (
 					"label" => $stepLabel,
@@ -1001,6 +1189,12 @@ class SimulatorsAdminController extends BaseAdminController {
 				$opanelchapters = array ();
 				$opanelsections = array ();
 				foreach ($step->getPanels() as $panel) {
+					$tpanel = array(
+						'id' => $panel->getId(),
+						'name' => $panel->getName(),
+						'label' => $panel->getLabel(),
+						'blocks' => array()
+					);
 					$panelLabel = $panel->getLabel() != '' ? $panel->getLabel() : $this->get('translator')->trans('Panel %id% (nolabel)', array('%id%' => $panel->getId()));
 					$opanels[] = array (
 						"label" => $panelLabel,
@@ -1015,6 +1209,16 @@ class SimulatorsAdminController extends BaseAdminController {
 					$oblockinfosections = array ();
 					foreach ($panel->getFieldSets() as $block) {
 						if ($block instanceof FieldSet) {
+							$tblock = array(
+								'type' => 'fieldset',
+								'id' => $block->getId(),
+								'disposition' => $block->getDisposition(),
+								'display' => $block->getDisplay(),
+								'popinLink' => $block->getPopinLink(),
+								'legend' => $block->getLegend(),
+								'columns' => array(),
+								'fields' => array()
+							);
 							$fieldset = $block;
 							$fieldsetLabel = $fieldset->getLegend() != '' ? trim($fieldset->getLegend()) : $this->get('translator')->trans('Fieldset %id% (nolegend)', array('%id%' => $fieldset->getId()));
 							$ofieldsets[] = array (
@@ -1027,44 +1231,103 @@ class SimulatorsAdminController extends BaseAdminController {
 							foreach ($fieldset->getFields() as $child) {
 								if ($child instanceof Field) {
 									$field = $child;
+									$tfield = array(
+										'type' => 'field',
+										'position' => $field->getPosition(),
+										'data' => $field->getData(),
+										'usage' => $field->getUsage(),
+										'label' => $field->getLabel(),
+										'newline' => $field->isNewline() ? 1 : 0,
+										'prompt' => $field->getPrompt(),
+										'required' => $field->isRequired() ? 1 : 0,
+										'visibleRequired' => $field->isVisibleRequired() ? 1: 0,
+										'colon' => $field->hasColon() ? 1 : 0,
+										'underlabel' => $field->isUnderlabel() ? 1 : 0,
+										'help' => $field->hasHelp() ? 1 : 0,
+										'emphasize' => $field->isEmphasized() ? 1 : 0,
+										'explanation' => $field->getExplanation(),
+										'expanded' => $field->isExpanded() ? 1 : 0
+									);
 									$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
 									$ofields[] = array (
 										"label" => $fieldLabel,
 										"name" => $field->getPosition()
 									);
 									if ($field->getPreNote()) {
+										$tfield['Note'] = array(
+											'position' => 'beforeField',
+											'text' => $field->getPreNote()->getText()
+										);
 										$oprenotes[] = array(
 											'label' => $fieldLabel,
 											'name' => $field->getPosition()
 										);
 									}
 									if ($field->getPostNote()) {
+										$tfield['Note'] = array(
+											'position' => 'afterField',
+											'text' => $field->getPostNote()->getText()
+										);
 										$opostnotes[] = array(
 											'label' => $fieldLabel,
 											'name' => $field->getPosition()
 										);
 									}
+									$tblock['fields'][] = $tfield;
 								} elseif ($child instanceof FieldRow) {
 									$fieldrow = $child;
+									$tfieldrow = array(
+										'type' => 'fieldrow',
+										'label' => $fieldrow->getLabel(),
+										'help' => $fieldrow->hasHelp() ? 1 : 0,
+										'colon' => $fieldrow->hasColon() ? 1 : 0,
+										'emphasize' => $fieldrow->isEmphasized() ? 1 : 0,
+										'datagroup' => $fieldrow->getDatagroup(),
+										'fields' => array()
+									);
 									foreach ($fieldrow->getFields() as $field) {
+										$tfield = array(
+											'position' => $field->getPosition(),
+											'data' => $field->getData(),
+											'usage' => $field->getUsage(),
+											'label' => $field->getLabel(),
+											'newline' => $field->isNewline() ? 1 : 0,
+											'prompt' => $field->getPrompt(),
+											'required' => $field->isRequired() ? 1 : 0,
+											'visibleRequired' => $field->isVisibleRequired() ? 1: 0,
+											'colon' => $field->hasColon() ? 1 : 0,
+											'underlabel' => $field->isUnderlabel() ? 1 : 0,
+											'help' => $field->hasHelp() ? 1 : 0,
+											'emphasize' => $field->isEmphasized() ? 1 : 0,
+											'explanation' => $field->getExplanation(),
+											'expanded' => $field->isExpanded() ? 1 : 0
+										);
 										$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
 										$ofields[] = array (
 											"label" => $fieldLabel,
 											"name" => $field->getPosition()
 										);
 										if ($field->getPreNote()) {
+											$tfield['preNote'] = array(
+												'text' => $field->getPreNote()->getText()
+											);
 											$oprenotes[] = array(
 												'label' => $fieldLabel,
 												'name' => $field->getPosition()
 											);
 										}
 										if ($field->getPostNote()) {
+											$tfield['postNote'] = array(
+												'text' => $field->getPostNote()->getText()
+											);
 											$opostnotes[] = array(
 												'label' => $fieldLabel,
 												'name' => $field->getPosition()
 											);
 										}
+										$tfieldrow['fields'][] = $tfield;
 									}
+									$tblock['fields'][] = $tfieldrow;
 								}
 							}
 							if (count($ofields) > 0) {
@@ -1109,7 +1372,15 @@ class SimulatorsAdminController extends BaseAdminController {
 									)
 								);
 							}
+							$tpanel['blocks'][] = $tblock;
 						} elseif ($block instanceof BlockInfo) {
+							$tblock = array(
+								'type' => 'blockinfo',
+								'id' => $block->getId(),
+								'name' => $block->getName(),
+								'label' => $block->getLabel(),
+								'chapters' => array()
+							);
 							$blockinfo = $block;
 							$blockinfoLabel = $blockinfo->getLabel() != '' ? $blockinfo->getLabel() : $this->get('translator')->trans('Blockinfo %id% (nolabel)', array('%id%' => $blockinfo->getId()));
 							$oblockinfos[] = array (
@@ -1119,18 +1390,34 @@ class SimulatorsAdminController extends BaseAdminController {
 							$ochapters = array ();
 							$ochaptersections = array ();
 							foreach ($blockinfo->getChapters() as $chapter) {
-								$chapterLabel = $chapter->getLabel() != '' ? $chapter->getLabel() : $this->get('translator')->trans('Chapter %id% (nolabel)', array('%id%' => $blockinfo->getId()));
+								$tchapter = array(
+									'id' => $chapter->getId(),
+									'name' => $chapter->getName(),
+									'label' => $chapter->getLabel(),
+									'icon' => $chapter->getIcon(),
+									'collapsible' => $chapter->isCollapsible() ? 1 : 0,
+									'sections' => array()
+								);
+								$chapterLabel = $chapter->getLabel() != '' ? $chapter->getLabel() : $this->get('translator')->trans('Chapter %id% (nolabel)', array('%id%' => $chapter->getId()));
 								$ochapters[] = array (
 									"label" => $chapterLabel,
 									"name" => $chapter->getId()
 								);
 								$osections = array ();
 								foreach ($chapter->getSections() as $section) {
-									$sectionLabel = $section->getLabel() != '' ? $section->getLabel() : $this->get('translator')->trans('Section %id% (nolabel)', array('%id%' => $blockinfo->getId()));
+									$tsection = array(
+										'id' => $section->getId(),
+										'name' => $section->getName(),
+										'label' => $section->getLabel(),
+										'content' => $section->getContent(),
+										'annotations' => $section->getAnnotations()
+									);
+									$sectionLabel = $section->getLabel() != '' ? $section->getLabel() : $this->get('translator')->trans('Section %id% (nolabel)', array('%id%' => $section->getId()));
 									$osections[] = array (
 										"label" => $sectionLabel,
 										"name" => $section->getId()
 									);
+									$tchapter['sections'][] = $tsection;
 								}
 
 								if (count($osections) > 0) {
@@ -1147,6 +1434,7 @@ class SimulatorsAdminController extends BaseAdminController {
 										)
 									);
 								}
+								$tblock['chapters'][] = $tchapter;
 							}
 							if (count($ochapters) > 0) {
 								$oblockinfochapters[] = array(
@@ -1176,6 +1464,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									)
 								);
 							}
+							$tpanel['blocks'][] = $tblock;
 						}
 					}
 					if (count($ofieldsets) > 0) {
@@ -1276,6 +1565,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							)
 						);
 					}
+					$tstep['panels'][] = $tpanel;
 				}
 				if (count($opanels) > 0) {
 					$osteppanels[] = array(
@@ -1391,10 +1681,19 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 				$oactionbuttons = array();
 				foreach ($step->getActions() as $action) {
+					$tactionbutton = array(
+						'name' => $action->getName(),
+						'label' => $action->getLabel(),
+						'what' => $action->getWhat(),
+						'for' => $action->getFor(),
+						'uri' => $action->getUri(),
+						'class' => $action->getClass()
+					);
 					$oactionbuttons[] = array(
 						'label' => $action->getLabel(),
 						'name' => $action->getName()
 					);
+					$tstep['actions'][] = $tactionbutton;
 				}
 				if (count($oactionbuttons) > 0) {
 					$ostepactionbuttons[] = array(
@@ -1413,12 +1712,22 @@ class SimulatorsAdminController extends BaseAdminController {
 				$ofootnotes = array();
 				if ($step->getFootNotes() !== null) {
 					$footnoteList = $step->getFootNotes();
+					$tfootnotes = array(
+						'position' => $footnoteList->getPosition(),
+						'footNotes' => array()
+					);
 					foreach ($footnoteList->getFootNotes() as $footnote) {
+						$tfootnote = array(
+							'id' => $footnote->getId(),
+							'text' => $footnote->getText()
+						);
 						$ofootnotes[] = array(
 							'label' => $this->get('translator')->trans('FootNote %id%', array('%id%' => $footnote->getId())),
 							'name' => $footnote->getId()
 						);
+						$tfootnotes['footNotes'][] = $tfootnote;
 					}
+					$tstep['footNotes'] = $tfootnotes;
 				}
 				if (count($ofootnotes) > 0) {
 					$ostepfootnotes[] = array(
@@ -1434,6 +1743,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						)
 					);
 				}
+				$this->steps[] = $tstep;
 			}
 			if (count($osteps) > 0) {
 				$steps = array(

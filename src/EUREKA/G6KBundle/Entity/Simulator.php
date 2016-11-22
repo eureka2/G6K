@@ -457,7 +457,7 @@ class Simulator {
 			$tableObj = new Table($dataObj, (string)$table['id']);
 			$tableObj->setName((string)$table['name']);
 			$tableObj->setLabel((string)$table['label']);
-			$tableObj->setDescription($table->Description);
+			$tableObj->setDescription((string)$table->Description);
 			foreach ($table->Column as $column) {
 				$columnObj = new Column($tableObj, (int)$column['id'], (string)$column['name'], (string)$column['type']);
 				$columnObj->setLabel((string)$column['label']);
@@ -465,7 +465,7 @@ class Simulator {
 			}
 			$dataObj->setTable($tableObj);
 		}
-		$dataObj->setDescription($data->Description);
+		$dataObj->setDescription((string)$data->Description);
 		return $dataObj;
 	}
 
@@ -489,7 +489,7 @@ class Simulator {
 			$datasourceObj->setUri((string)$datasource['uri']);
 			$datasourceObj->setMethod((string)$datasource['method']);
 			$datasourceObj->setDatabase((int)$datasource['database']);
-			$datasourceObj->setDescription($datasource->Description);
+			$datasourceObj->setDescription((string)$datasource->Description);
 			foreach ($datasource->Namespace as $namespace) {
 				$datasourceObj->addNamespace((string)$namespace['prefix'], (string)$namespace['uri']);
 			}
@@ -522,7 +522,7 @@ class Simulator {
 		$this->setReferer((string)$simulator["referer"]);
 		$this->setDynamic((string)$simulator['dynamic'] == '1');
 		$this->setMemo((string)$simulator['memo'] == '1');
-		$this->setDescription($simulator->Description);
+		$this->setDescription((string)$simulator->Description);
 		$this->setRelatedInformations($simulator->RelatedInformations);
 		$this->setDateFormat((string)($simulator->DataSet['dateFormat']));
 		$this->setDecimalPoint((string)($simulator->DataSet['decimalPoint']));
@@ -534,7 +534,7 @@ class Simulator {
 					$datagroup = $child;
 					$dataGroupObj = new DataGroup($this, (int)$datagroup['id'], (string)$datagroup['name']);
 					$dataGroupObj->setLabel((string)$datagroup['label']);
-					$dataGroupObj->setDescription($datagroup->Description);
+					$dataGroupObj->setDescription((string)$datagroup->Description);
 					foreach ($datagroup->Data as $data) {
 						$dataGroupObj->addData( $this->loadData($data));
 					}
@@ -550,7 +550,7 @@ class Simulator {
 			foreach ($simulator->Profiles->Profile as $profile) {
 				$profileObj = new Profile((int)$profile['id'], (string)$profile['name']);
 				$profileObj->setLabel((string)$profile['label']);
-				$profileObj->setDescription($profile->Description);
+				$profileObj->setDescription((string)$profile->Description);
 				foreach ($profile->Data as $data) {
 					$profileObj->addData((int)$data['id'], (string)$data['default']);
 				}
@@ -565,7 +565,7 @@ class Simulator {
 					$step0 = true;
 				}
 				$stepObj->setOutput((string)$step['output']);
-				$stepObj->setDescription($step->Description);
+				$stepObj->setDescription((string)$step->Description);
 				$stepObj->setDynamic((string)$step['dynamic'] == '1');
 				foreach ($step->Panels->Panel as $panel) {
 					$panelObj = new Panel($stepObj, (int)$panel['id']);
@@ -575,7 +575,7 @@ class Simulator {
 						if ($block->getName() == "FieldSet") {
 							$fieldset = $block;
 							$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
-							$fieldsetObj->setLegend($fieldset->Legend);
+							$fieldsetObj->setLegend((string)$fieldset->Legend);
 							if ((string)$fieldset['disposition'] != "") {
 								$fieldsetObj->setDisposition((string)$fieldset['disposition']);
 							}
@@ -614,12 +614,12 @@ class Simulator {
 										$fieldObj->setExpanded((string)$field['expanded'] == '1');
 										if ($field->PreNote) {
 											$noteObj = new FieldNote($this);
-											$noteObj->setText($field->PreNote);
+											$noteObj->setText((string)$field->PreNote);
 											$fieldObj->setPreNote($noteObj);
 										}
 										if ($field->PostNote) {
 											$noteObj = new FieldNote($this);
-											$noteObj->setText($field->PostNote);
+											$noteObj->setText((string)$field->PostNote);
 											$fieldObj->setPostNote($noteObj);
 										}
 										$fieldRowObj->addField($fieldObj);
@@ -641,12 +641,12 @@ class Simulator {
 									$fieldObj->setExpanded((string)$field['expanded'] == '1');
 									if ($field->PreNote) {
 										$noteObj = new FieldNote($this);
-										$noteObj->setText($field->PreNote);
+										$noteObj->setText((string)$field->PreNote);
 										$fieldObj->setPreNote($noteObj);
 									}
 									if ($field->PostNote) {
 										$noteObj = new FieldNote($this);
-										$noteObj->setText($field->PostNote);
+										$noteObj->setText((string)$field->PostNote);
 										$fieldObj->setPostNote($noteObj);
 									}
 									$fieldsetObj->addField($fieldObj);
@@ -696,7 +696,7 @@ class Simulator {
 					}
 					foreach ($footnotes as $footnote) {
 						$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
-						$footnoteObj->setText($footnote);
+						$footnoteObj->setText((string)$footnote);
 						$footnotesObj->addFootNote($footnoteObj);
 					}
 					$stepObj->setFootNotes($footnotesObj);
@@ -831,7 +831,7 @@ class Simulator {
 			$datasourceObj->setUri((string)$datasource['uri']);
 			$datasourceObj->setMethod((string)$datasource['method']);
 			$datasourceObj->setDatabase((int)$datasource['database']);
-			$datasourceObj->setDescription($datasource->Description);
+			$datasourceObj->setDescription((string)$datasource->Description);
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {
@@ -1371,7 +1371,7 @@ class Simulator {
 		if ((string)$simulator["memo"] != "") {
 			$json["memo"] = (string)$simulator["memo"];
 		}
-		$json["description"] = $this->paragraphs($simulator->Description);
+		$json["description"] = $this->paragraphs((string)$simulator->Description);
 		if ($simulator->Profiles) {
 			$profiles['label'] = (string)$simulator->Profiles['label'];
 			$profs = array();
@@ -1389,7 +1389,7 @@ class Simulator {
 					'id' => (int)$profile['id'],
 					'name' => (string)$profile['name'],
 					'label' => (string)$profile['label'],
-					'description' => $this->paragraphs($profile->Description),
+					'description' => $this->paragraphs((string)$profile->Description),
 					'datas' => $pdatas
 				);
 			}
@@ -1831,17 +1831,17 @@ class Simulator {
 							}
 							$xml[] = '					<FieldSet ' . $attrs . '>';
 							if ($fieldset->getLegend() != '') {
-								$xml[] = '				<Legend><![CDATA[';
+								$xml[] = '						<Legend><![CDATA[';
 								$xml[] = trim($fieldset->getLegend());
-								$xml[] = '				]]></Legend>';
+								$xml[] = '						]]></Legend>';
 							}
 							if (count($fieldset->getColumns()) > 0) {
-								$xml[] = '				<Columns>';
+								$xml[] = '						<Columns>';
 								foreach ($fieldset->getColumns() as $column) {
 									$attrs = 'id="' . $column->getId() . '" name="' . $column->getName() . '" type="' . $column->getType() . '" label="' . $column->getLabel() . '"';
-									$xml[] = '					<Column ' . $attrs . ' />';
+									$xml[] = '							<Column ' . $attrs . ' />';
 								}
-								$xml[] = '				</Columns>';
+								$xml[] = '						</Columns>';
 							}
 							foreach ($fieldset->getFields() as $child) {
 								if ($child instanceof FieldRow) {
@@ -1859,7 +1859,7 @@ class Simulator {
 									if ($fieldrow->isEmphasized()) {
 										$attrs .= ' emphasize="1"'; 
 									}
-									$xml[] = '				<FieldRow ' . $attrs . '>';
+									$xml[] = '						<FieldRow ' . $attrs . '>';
 									foreach ($fieldrow->getFields() as $field) {
 										$attrs = 'position="' . $field->getPosition() . '" data="' . $field->getData() . '" usage="' . $field->getUsage() . '"';
 										if (! $field->isNewline()) {
@@ -1896,23 +1896,23 @@ class Simulator {
 											$attrs .= ' expanded="0"'; 
 										}
 										if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
-											$xml[] = '					<Field ' . $attrs . '>';
+											$xml[] = '							<Field ' . $attrs . '>';
 											if ($field->getPreNote() !== null) {
-												$xml[] = '						<PreNote><![CDATA[';
+												$xml[] = '							<PreNote><![CDATA[';
 												$xml[] = trim($field->getPreNote()->getText());
-												$xml[] = '						]]></PreNote>';
+												$xml[] = '							]]></PreNote>';
 											}
 											if ($field->getPostNote() !== null) {
-												$xml[] = '						<PostNote><![CDATA[';
+												$xml[] = '							<PostNote><![CDATA[';
 												$xml[] = trim($field->getPostNote()->getText());
-												$xml[] = '						]]></PostNote>';
+												$xml[] = '							]]></PostNote>';
 											}
-											$xml[] = '					</Field>';
+											$xml[] = '							</Field>';
 										} else {
-											$xml[] = '					<Field ' . $attrs . ' />';
+											$xml[] = '							<Field ' . $attrs . ' />';
 										}
 									}
-									$xml[] = '				</FieldRow>';
+									$xml[] = '						</FieldRow>';
 								} elseif ($child instanceof Field) {
 									$field = $child;
 									$attrs = 'position="' . $field->getPosition() . '" data="' . $field->getData() . '" usage="' . $field->getUsage() . '"';
@@ -1948,20 +1948,20 @@ class Simulator {
 										$attrs .= ' expanded="0"'; 
 									}
 									if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
-										$xml[] = '				<Field ' . $attrs . '>';
+										$xml[] = '						<Field ' . $attrs . '>';
 										if ($field->getPreNote() !== null) {
-											$xml[] = '					<PreNote><![CDATA[';
+											$xml[] = '							<PreNote><![CDATA[';
 											$xml[] = trim($field->getPreNote()->getText());
-											$xml[] = '					]]></PreNote>';
+											$xml[] = '							]]></PreNote>';
 										}
 										if ($field->getPostNote() !== null) {
-											$xml[] = '					<PostNote><![CDATA[';
+											$xml[] = '							<PostNote><![CDATA[';
 											$xml[] = trim($field->getPostNote()->getText());
-											$xml[] = '					]]></PostNote>';
+											$xml[] = '							]]></PostNote>';
 										}
-										$xml[] = '				</Field>';
+										$xml[] = '						</Field>';
 									} else {
-										$xml[] = '				<Field ' . $attrs . ' />';
+										$xml[] = '						<Field ' . $attrs . ' />';
 									}
 								}
 							}
@@ -2259,20 +2259,13 @@ class Simulator {
 		$simusrc .= $this->controller->get('translator')->trans("new");
 		$simusrc .= '" label="';
 		$simusrc .= $this->controller->get('translator')->trans("Simulator of calculation of ...");
-		$simusrc .= '">' .PHP_EOL;
+		$simusrc .= '" defaultView="Default">' .PHP_EOL;
 		$simusrc .= <<<EOT
 	<Description><![CDATA[
 	]]></Description>
 	<DataSet dateFormat="d/m/Y" decimalPoint="," moneySymbol="€" symbolPosition="after">
 	</DataSet>
 	<Steps>
-		<Step id="0" name="" label="" template="pages:article.html.twig">
-			<Panels>
-				<Panel id="1" name="panel1">
-					<FieldSet id="1" />
-				</Panel>
-			</Panels>
-		</Step>
 	</Steps>
 </Simulator>
 EOT;

@@ -47,6 +47,9 @@
 .optional-attributes  li:hover{
 	background : #eee;
 }
+.elements-container {
+	margin-top: 0.6em;
+}
 .nav-pills li:first-child {
 	margin-left: 0.1em;
 }
@@ -207,10 +210,18 @@ ul.rule-conditions > li {
 #page-simulators .source-buttons {
 	margin-top: 1em;
 }
+#page-simulators #steps div.panels-panel + div {
+	margin-top: 1em;
+}
 
 .edit-simulator, .export-simulator, .add-data, .edit-data, .delete-data, 
 .add-datagroup, .edit-datagroup, .delete-datagroup, 
-.add-rule, .edit-rule, .add-step, .edit-step, 
+.add-rule, .edit-rule, .add-step, .edit-step, .delete-step, 
+.add-footnotes, .edit-footnotes, .delete-footnotes, .add-footnote, .edit-footnote, .delete-footnote, 
+.add-action-button, .edit-action-button, .delete-action-button, 
+.add-panel, .edit-panel, .delete-panel, .add-fieldset, .edit-fieldset, .delete-fieldset, 
+.add-blockinfo, .edit-blockinfo, .delete-blockinfo, .add-field, .edit-field, .delete-field, 
+.add-chapter, .edit-chapter, .delete-chapter, .add-section, .edit-section, .delete-section, 
 .add-choice, .add-source, .add-choice-source, .edit-choice-source, 
 .delete-choice, .delete-choice-source, 
 .expand-all, .collapse-all, 
