@@ -975,14 +975,14 @@ class Simulator {
 		$this->dependencies = 'noteDependencies';
 		if ($field->PreNote) {
 			$nfield['prenote'] = $this->paragraphs(preg_replace_callback(
-				"/#(\d+)/", 
+				'/#(\d+)|\<var\s+class="data"\s+data-id="(\d+)L?"\>[^\<]+\<\/var\>/', 
 				array($this, 'addNoteDependency'), 
 				(string)$field->PreNote
 			));
 		}
 		if ($field->PostNote) {
 			$nfield['postnote'] = $this->paragraphs(preg_replace_callback(
-				"/#(\d+)/", 
+				'/#(\d+)|\<var\s+class="data"\s+data-id="(\d+)L?"\>[^\<]+\<\/var\>/', 
 				array($this, 'addNoteDependency'),
 				(string)$field->PostNote
 			));
@@ -1507,7 +1507,7 @@ class Simulator {
 							$this->dependencies = 'footNoteDependencies';
 							$nfootnote = array(
 								'text'	=> $this->paragraphs(preg_replace_callback(
-									"/#(\d+)/", 
+									'/#(\d+)|\<var\s+class="data"\s+data-id="(\d+)L?"\>[^\<]+\<\/var\>/', 
 									array($this, 'addNoteDependency'), 
 									$footnote
 								))
@@ -2088,7 +2088,7 @@ class Simulator {
 				$xml[] = '		<BusinessRule ' . $attrs . '>';
 				$xml[] = '			<Conditions value="' . htmlspecialchars($rule->getConditions(), ENT_COMPAT) . '">';
 				if ($rule->getConnector() != null) {
-					$this->saveConnector($rule->getConnector(), "				", $xml);
+					$this->saveConnector($rule->getConnector(), "			", $xml);
 				}
 				$xml[] = '			</Conditions>';
 				$xml[] = '			<IfActions>';
@@ -2225,7 +2225,7 @@ class Simulator {
 				$htmlconnector .= '>';
 				$xml[] = $indent . $htmlconnector;
 				foreach ($conditions as $cond) {
-					$this->saveConnector($cond, $indent . "\t", $xml);
+					$this->saveConnector($cond, $indent . "", $xml);
 				}
 				$xml[] = $indent . '</Connector>';
 			}

@@ -25,6 +25,74 @@ THE SOFTWARE.
 (function (global) {
 	'use strict';
 
+	Simulators.changeDataIdInRules = function(oldId, id) {
+		var re = new RegExp("#" + oldId + '([^\d])?', 'g');
+		var ruleConditions = $('#business-rules').find('.rule-conditions');
+		ruleConditions.each(function(r) {
+			if (re.test($(this).attr('data-value'))) {
+				var val = $(this).attr('data-value');
+				val = val.replace(re, "#" + id + '$1');
+				$(this).attr('data-value', val);
+			}
+		});
+		var ruleActions = $('#business-rules').find('.rule-action');
+		ruleActions.each(function(r) {
+			if (this.hasAttribute('data-data') && $(this).attr('data-data') == oldId) {
+				$(this).attr('data-data', id);
+			}
+			if (this.hasAttribute('data-name') && $(this).attr('data-name') == "setAttribute" && re.test($(this).attr('data-value'))) {
+				var val = $(this).attr('data-value');
+				val = val.replace(re, "#" + id + '$1');
+				$(this).attr('data-value', val);
+			}
+		});
+		$.each(rules, function(r, rule) {
+			if (re.test(rule.conditions)) {
+				rule.conditions = rule.conditions.replace(re, "#" + id + '$1');
+			}
+			Simulators.changeDataIdInConnector(rule.connector, oldId, id);
+			$.each(rule.ifdata, function(a, action) {
+				if (action.value == "setAttribute") {
+					var val = action.fields[0].fields[0].fields[0].value;
+					if (re.test(val)) {
+						val = val.replace(re, "#" + id + '$1');
+						action.fields[0].fields[0].fields[0].value = val;
+					}
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				if (action.value == "setAttribute") {
+					var val = action.fields[0].fields[0].fields[0].value;
+					if (re.test(val)) {
+						val = val.replace(re, "#" + id + '$1');
+						action.fields[0].fields[0].fields[0].value = val;
+					}
+				}
+			});
+		});
+	}
+
+	Simulators.changeDataIdInConnector = function(connector, oldId, id) {
+		if (connector.all) {
+			$.each(connector.all, function(c, conn) {
+				Simulators.changeDataIdInConnector(conn, oldId, id);
+			});
+		} else if (connector.any) {
+			$.each(connector.any, function(c, conn) {
+				Simulators.changeDataIdInConnector(conn, oldId, id);
+			});
+		} else if (connector.none) {
+			$.each(connector.none, function(c, conn) {
+				Simulators.changeDataIdInConnector(conn, oldId, id);
+			});
+		} else {
+			var re = new RegExp("#" + oldId + '([^\\d])?', 'g');
+			if (connector.value && re.test(connector.value)) {
+				connector.value = connector.value.replace(re, "#" + id + '$1');
+			}
+		}
+	}
+
 	Simulators.isStepInRules = function(id) {
 		var found = false;
 		$.each(rules, function(r, rule) {
@@ -2168,25 +2236,30 @@ THE SOFTWARE.
 
 	Simulators.renumberRules = function() {
 		$.each(rules, function(index, rule) {
-			rule.id = index + 1;
+			var id = index + 1;
+			if (rule.name == 'R' + rule.id) {
+				rule.name = 'R' + id;
+				$('#' + rule.elementId).find('span.rule-name').html(rule.name);
+			}
+			if (rule.label == 'R' + rule.id) {
+				rule.label = 'R' + id;
+				$('#' + rule.elementId).find('span.rule-label').html(rule.label);
+			}
+			rule.id = id;
 			$('#' + rule.elementId).find('span.rule-id').html(rule.id);
+			$('#' + rule.elementId).find('ul.rule-conditions').attr('data-rule-id', rule.id);
 		});
 	}
 
 	Simulators.sortRulesFromUI = function() {
 		var newRules = [];
 		$("#business-rules").children('div.rule-container').each(function(index) {
-			var name = $(this).find('.input-rule-name').val()
-			if (rules[index].name == name) {
-				newRules.push(rules[index]);
-			} else {
-				var i = Simulators.findRuleIndexByName(name);
-				rules[i].id = index + 1;
-				$(this).find('span.rule-id').html(rules[i].id);
-				newRules.push(rules[i]);
-			}
+			var name = $.trim($(this).find('span.rule-name').text());
+			var i = Simulators.findRuleIndexByName(name);
+			newRules.push(rules[i]);
 		});
-		rules = newRules;
+		rules = newRules.slice(0);
+		Simulators.renumberRules();
 	}
 
 	Simulators.bindSortableRules = function() {
@@ -2196,6 +2269,9 @@ THE SOFTWARE.
 			axis: "y",
 			update: function( e, ui ) {
 				Simulators.sortRulesFromUI();
+				$('.update-button').show();
+				$('.toggle-collapse-all').show();
+				Admin.updated = true;
 			}
 		});
 	}
@@ -2203,8 +2279,9 @@ THE SOFTWARE.
 	Simulators.maxRuleId = function() {
 		var maxId = 0;
 		$.each(rules, function(k, rule) {
-			if (rule.id > maxId) {
-				maxId = rule.id;
+			var id = parseInt(rule.id);
+			if (id > maxId) {
+				maxId = id;
 			}
 		});
 		return maxId;
@@ -2319,6 +2396,7 @@ THE SOFTWARE.
 		});
 		ruleContainer.find('.cancel-add-rule').click(function() {
 			ruleContainer.remove();
+			rules.pop();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
 			if (! Admin.updated) {
@@ -2329,6 +2407,7 @@ THE SOFTWARE.
 		ruleContainer.find('.validate-add-rule, .validate-edit-rule').click(function() {
 			var conditions = ruleContainer.find('.conditions').conditionsBuilder("conditions");
 			var editedrule = {
+				elementId: '',
 				id: ruleContainer.find('.rule-id').text(),
 				name: ruleContainer.find('.input-rule-name').val(),
 				label: ruleContainer.find('.input-rule-label').val(),
@@ -2347,27 +2426,32 @@ THE SOFTWARE.
 			} else if (editedrule.connector.any && editedrule.connector.any.length == 1) {
 				editedrule.connector = editedrule.connector.any[0];
 			}
+			var newContainer = Simulators.drawRuleForDisplay(editedrule);
+			editedrule.elementId = newContainer.attr('id');
 			$.each(rules, function(k, rule) {
 				if (rule.id == editedrule.id) {
 					rules[k] = editedrule;
 					return false;
 				}
 			});
-			var newContainer = Simulators.drawRuleForDisplay(editedrule);
 			ruleContainer.replaceWith(newContainer);
 			Simulators.bindRuleButtons(newContainer);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
 			Admin.updated = true;
-			$("html, body").animate({ scrollTop: newContainer.offset().top }, 500);
 			Simulators.updating = false;
+			newContainer.find('a[data-toggle="collapse"]').each(function() {
+				var objectID = $(this).attr('href');
+				$(objectID).collapse('show');
+			});
+			$("html, body").animate({ scrollTop: newContainer.offset().top - $('#navbar').height() }, 500);
 		});
 	}
 
 	Simulators.drawRuleForDisplay = function(rule) {
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
 		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
-		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-rule">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> Rule <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
+		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule" data-parent="#' + ruleElementId + '">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-rule" data-parent="#' + ruleElementId + '">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">' + Translator.trans('Rule') + ' #<span class="rule-id">' + rule.id + '</span> <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
 		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse in', role: 'tabpanel' });
 		var conditionsPanel = $('<div class="panel panel-default conditions-panel"></div>');
 		conditionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div>');
@@ -2382,7 +2466,7 @@ THE SOFTWARE.
 			actionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('then do ...') + '</h4></div>');
 			var actionsPanelBody = $('<div class="panel-body"></div>');
 			$.each(rule.ifdata, function(a, action) {
-				var actionContainer = Simulators.drawRuleActionForDisplay(action);
+				var actionContainer = Simulators.drawRuleActionForDisplay(a + 1, action);
 				actionsPanelBody.append(actionContainer);
 			});
 			actionsPanel.append(actionsPanelBody);
@@ -2393,7 +2477,7 @@ THE SOFTWARE.
 			actionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('else do ...') + '</h4></div>');
 			var actionsPanelBody = $('<div class="panel-body"></div>');
 			$.each(rule.elsedata, function(a, action) {
-				var actionContainer = Simulators.drawRuleActionForDisplay(action);
+				var actionContainer = Simulators.drawRuleActionForDisplay(a + 1, action);
 				actionsPanelBody.append(actionContainer);
 			});
 			actionsPanel.append(actionsPanelBody);
@@ -2518,7 +2602,7 @@ THE SOFTWARE.
 		}
 	}
 
-	Simulators.drawRuleActionForDisplay = function(ruleAction) {
+	Simulators.drawRuleActionForDisplay = function(id, ruleAction) {
 		var name = ruleAction.value;
 		var target = "";
 		var data = null;
@@ -2612,7 +2696,7 @@ THE SOFTWARE.
 				}
 				break;
 		}
-		var actionContainer = $('<div>', { 'class': 'rule-action', 'data-id': '', 'data-name': name, 'data-target': target, 'data-data': data, 'data-datagroup': datagroup, 'data-step': step, 'data-panel': panel, 'data-fieldset': fieldset, 'data-field': field, 'data-blockinfo': blockinfo, 'data-chapter': chapter, 'data-section': section, 'data-prenote': prenote, 'data-postnote': postnote, 'data-action': action, 'data-footnote': footnote, 'data-choice': choice, 'data-value': value });
+		var actionContainer = $('<div>', { 'class': 'rule-action', 'data-id': id, 'data-name': name, 'data-target': target, 'data-data': data.id, 'data-datagroup': datagroup, 'data-step': step, 'data-panel': panel, 'data-fieldset': fieldset, 'data-field': field, 'data-blockinfo': blockinfo, 'data-chapter': chapter, 'data-section': section, 'data-prenote': prenote, 'data-postnote': postnote, 'data-action': action, 'data-footnote': footnote, 'data-choice': choice, 'data-value': value });
 		if (name === 'notifyError' || name === 'notifyWarning') {
 			var actionName = name === 'notifyError' ? Translator.trans('notify Error') : Translator.trans('notify Warning');
 			actionContainer.append('<span class="action-name">' + actionName + ' : </span> <span class="action-value">«' + Simulators.replaceByDataLabel(value) + '»</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans(target) + ' </span>');
@@ -2754,70 +2838,81 @@ THE SOFTWARE.
 	}
 
 	Simulators.addRule = function(ruleContainerGroup) {
-		var id = Simulators.maxRuleId()+ 1;
-		var rule = {
-			id: id,
-			name: 'R' + id,
-			label: '',
-			conditions: '',
-			connector: null,
-			ifdata: [],
-			elsedata: []
-		};
-		rules.push(rule);
-		var ruleContainer = Simulators.drawRuleForInput(rule);
-		ruleContainer.find('button.cancel-edit-rule').addClass('cancel-add-rule').removeClass('cancel-edit-rule');
-		ruleContainer.find('button.validate-edit-rule').addClass('validate-add-rule').removeClass('validate-edit-rule');
-		$("#business-rules").append(ruleContainer);
-		rule.elementId = ruleContainer.attr('id');
-		Simulators.bindRule(rule);
-		ruleContainerGroup.find('a[data-toggle="collapse"]').each(function() {
-			var objectID=$(this).attr('href');
-			if($(objectID).hasClass('in')===false) {
+		try {
+			var id = Simulators.maxRuleId()+ 1;
+			var rule = {
+				id: id,
+				name: 'R' + id,
+				label: '',
+				conditions: '',
+				connector: null,
+				ifdata: [],
+				elsedata: []
+			};
+			rules.push(rule);
+			$('.toggle-collapse-all').hide();
+			$('.update-button').hide();
+			var ruleContainer = Simulators.drawRuleForInput(rule);
+			ruleContainer.find('button.cancel-edit-rule').addClass('cancel-add-rule').removeClass('cancel-edit-rule');
+			ruleContainer.find('button.validate-edit-rule').addClass('validate-add-rule').removeClass('validate-edit-rule');
+			$("#business-rules").append(ruleContainer);
+			rule.elementId = ruleContainer.attr('id');
+			Simulators.bindRule(rule);
+			$("#collapsebusinessrules").collapse('show');
+			ruleContainer.find('a[data-toggle="collapse"]').each(function() {
+				var objectID=$(this).attr('href');
 				$(objectID).collapse('show');
-			}
-		});
-		$("html, body").animate({ scrollTop: ruleContainer.offset().top }, 500);
-		$('.update-button').hide();
-		$('.toggle-collapse-all').hide();
-		Simulators.updating = true;
+			});
+			$("html, body").animate({ scrollTop: ruleContainer.offset().top - $('#navbar').height() }, 500);
+			Simulators.updating = true;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	Simulators.editRule = function(ruleDisplayContainer) {
-		var	rule = {
-			id: ruleDisplayContainer.find('.rule-id').text(),
-			name: ruleDisplayContainer.find('.rule-name').text(),
-			label: ruleDisplayContainer.find('.rule-label').text(),
-			conditions: ruleDisplayContainer.find('.rule-conditions').attr("data-value"),
-			connector: Simulators.collectRuleConnector(ruleDisplayContainer.find('.conditions-panel')),
-			ifdata: Simulators.collectRuleActions(ruleDisplayContainer.find('.if-actions-panel')),
-			elsedata: Simulators.collectRuleActions(ruleDisplayContainer.find('.else-actions-panel'))
-		};
-		var ruleInputContainer = Simulators.drawRuleForInput(rule);
-		rule.elementId = ruleInputContainer.attr('id');
-		ruleDisplayContainer.after(ruleInputContainer);
-		Simulators.ruleBackup = ruleDisplayContainer.detach();
-		Simulators.bindRule(rule);
-		ruleInputContainer.find('> .panel-heading a').click();
-		$("html, body").animate({ scrollTop: ruleInputContainer.offset().top }, 500);
-		$('.update-button').hide();
-		$('.toggle-collapse-all').hide();
-		Simulators.updating = true;
+		try {
+			var	rule = {
+				id: ruleDisplayContainer.find('.rule-id').text(),
+				name: ruleDisplayContainer.find('.rule-name').text(),
+				label: ruleDisplayContainer.find('.rule-label').text(),
+				conditions: ruleDisplayContainer.find('.rule-conditions').attr("data-value"),
+				connector: Simulators.collectRuleConnector(ruleDisplayContainer.find('.conditions-panel')),
+				ifdata: Simulators.collectRuleActions(ruleDisplayContainer.find('.if-actions-panel')),
+				elsedata: Simulators.collectRuleActions(ruleDisplayContainer.find('.else-actions-panel'))
+			};
+			$('.update-button').hide();
+			$('.toggle-collapse-all').hide();
+			var ruleInputContainer = Simulators.drawRuleForInput(rule);
+			rule.elementId = ruleInputContainer.attr('id');
+			ruleDisplayContainer.after(ruleInputContainer);
+			Simulators.ruleBackup = ruleDisplayContainer.detach();
+			Simulators.bindRule(rule);
+			$("#collapse" + ruleInputContainer.attr('id')).collapse('show');
+			$("html, body").animate({ scrollTop: ruleInputContainer.offset().top - $('#navbar').height() }, 500);
+			Simulators.updating = true;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	Simulators.deleteRule = function(ruleContainer) {
-		var ruleLabel = ruleContainer.find('.rule-label').text();
-		bootbox.confirm({
-			title: Translator.trans('Deleting rule'),
-			message: Translator.trans("Are you sure you want to delete the rule : %label% ?", { 'label': ruleLabel }), 
-			callback: function(confirmed) {
-				if (confirmed) {
-					ruleContainer.remove();
-					$('.save-simulator').show();
-					Admin.updated = true;
+		try {
+			var ruleLabel = ruleContainer.find('.rule-label').text();
+			bootbox.confirm({
+				title: Translator.trans('Deleting rule'),
+				message: Translator.trans("Are you sure you want to delete the rule : %label% ?", { 'label': ruleLabel }), 
+				callback: function(confirmed) {
+					if (confirmed) {
+						ruleContainer.remove();
+						$('.save-simulator').show();
+						Admin.updated = true;
+					}
 				}
-			}
-		}); 
+			}); 
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	Simulators.collectRules = function() {

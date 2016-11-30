@@ -907,6 +907,18 @@ class Expression {
 		return (int)$lastDate->format('j');
 	}
 
+	public static function firstDayOfMonth($dateObj) {
+		$date = clone $dateObj;
+		$date->modify('first day of this month');
+		return $date;
+	}
+
+	public static function lastDayOfMonth($dateObj) {
+		$date = clone $dateObj;
+		$date->modify('last day of this month');
+		return $date;
+	}
+
 	private static function fixedHolidays($year, $lang = "en-US") {
 		$fholidays = array(
 			"US" => array(
@@ -1017,11 +1029,27 @@ class Expression {
 		return $d;
 	}
 
+	public static function addMonths($months, $dateObject) {
+		$next = new \DateTime($dateObject->format('Y-m-d'));
+		$next->modify('last day of +'.$months.' month');
+		if($dateObject->format('d') > $next->format('d')) {
+			$int = $dateObject->diff($next);
+		} else {
+			$int = new \DateInterval('P'.$months.'M');
+		}
+		$date = clone $dateObject;
+		$newDate = $date->add($int);
+		// goes back 1 day from date, remove if you want same day of month
+		// $newDate->sub(new \DateInterval('P1D')); 
+		return $newDate;
+	}
+
 	private function func(Token $func, &$args) {
 		$functions = array(
 			"abs" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return abs($a); }),
 			"acos" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return acos($a); }),
 			"acosh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return acosh($a); }),
+			"addMonths" => array(2, array(Token::T_NUMBER, Token::T_DATE), Token::T_DATE, function($a, $b) { return Expression::addMonths($a, $b); }),
 			"asin" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return asin($a); }),
 			"asinh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return asinh($a); }),
 			"atan" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return atan($a); }),
@@ -1048,6 +1076,7 @@ class Expression {
 			}),
 			"day" => array(1, array(Token::T_DATE), Token::T_NUMBER, function($a) { return (float)$a->format('d'); }),
 			"exp" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return exp($a); }),
+			"firstDayOfMonth" => array(1, array(Token::T_DATE), Token::T_DATE, function($a) { return Expression::firstDayOfMonth($a); }),
 			"floor" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return floor($a); }),
 			"fullmonth" => array(1, array(Token::T_DATE), Token::T_TEXT, function($a) {
 				$months = array("janvier", "février", "mars", "avril", "mai", "juin",  "juillet", "août", "septembre", "octobre", "novembre", "décembre");
@@ -1055,6 +1084,7 @@ class Expression {
 			}),
 			"get" => array(2, array(Token::T_ARRAY, Token::T_NUMBER), Token::T_TEXT, function($a, $b) { return isset($a[$b - 1]) ? $a[$b - 1] : ""; }),
 			"lastday" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return Expression::lastDay($b, $a); }),
+			"lastDayOfMonth" => array(1, array(Token::T_DATE), Token::T_DATE, function($a) { return Expression::lastDayOfMonth($a); }),
 			"length" => array(1, array(Token::T_TEXT), Token::T_NUMBER, function($a) { return mb_strlen($a, 'utf8'); }),
 			"log" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log($a); }),
 			"log10" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log10($a); }),

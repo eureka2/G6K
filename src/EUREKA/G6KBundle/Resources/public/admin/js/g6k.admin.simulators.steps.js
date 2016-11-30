@@ -113,6 +113,86 @@ THE SOFTWARE.
 		return steps;
 	}
 
+	Simulators.changeDataIdInSteps = function(oldId, id) {
+		var re1 = new RegExp("#" + oldId + '([^\\d])?', 'g');
+		var re2 = new RegExp('\\<var\\s+([^\\s]*\\s*)data\\-id=\\"' + oldId + '\\"', 'g');
+		$.each(steps, function(s, step) {
+			if (re1.test(step.description)) {
+				step.description = step.description.replace(re1, "#" + id + '$1');
+			}
+			if (re2.test(step.description)) {
+				step.description = step.description.replace(re2, '<var $1data-id="' + id + '"');
+			}
+			if (step.footNotes && step.footNotes.footNotes) {
+				$.each(step.footNotes.footNotes, function(fn, footnote) {
+					if (re1.test(footnote.text)) {
+						footnote.text = footnote.text.replace(re1, "#" + id + '$1');
+					}
+					if (re2.test(footnote.text)) {
+						footnote.text = footnote.text.replace(re2, '<var $1data-id="' + id + '"');
+					}
+				});
+			}
+			$.each(step.panels, function(p, panel) {
+				$.each(panel.blocks, function(b, block) {
+					if (block.type == 'fieldset') {
+						if (re1.test(block.legend)) {
+							block.legend = block.legend.replace(re1, "#" + id + '$1');
+						}
+						if (re2.test(block.legend)) {
+							block.legend = block.legend.replace(re2, '<var $1data-id="' + id + '"');
+						}
+						$.each(block.fields, function(f, field) {
+							if (field.type == 'field') {
+								if (field.data == oldId) {
+									field.data = id;
+								}
+								if (field.Note && field.Note.text) {
+									if (re1.test(field.Note.text)) {
+										field.Note.text = field.Note.text.replace(re1, "#" + id + '$1');
+									}
+									if (re2.test(field.Note.text)) {
+										field.Note.text = field.Note.text.replace(re2, '<var $1data-id="' + id + '"');
+									}
+								}
+							} else if (field.type == 'fieldrow') {
+								$.each(field.fields, function(sf, sfield) {
+									if (sfield.data == oldId) {
+										sfield.data = id;
+									}
+									if (sfield.Note && sfield.Note.text) {
+										if (re1.test(sfield.Note.text)) {
+											sfield.Note.text = sfield.Note.text.replace(re1, "#" + id + '$1');
+										}
+										if (re2.test(sfield.Note.text)) {
+											sfield.Note.text = sfield.Note.text.replace(re2, '<var $1data-id="' + id + '"');
+										}
+									}
+								});
+							}
+						});
+					} else { // blockinfo
+						$.each(block.chapters, function(c, chapter) {
+							$.each(chapter.sections, function(sn, section) {
+								if (re1.test(section.content)) {
+									section.content = section.content.replace(re1, "#" + id + '$1');
+								}
+								if (re2.test(section.content)) {
+									section.content = section.content.replace(re2, '<var $1data-id="' + id + '"');
+								}
+								if (re1.test(section.annotations)) {
+									section.annotations = section.annotations.replace(re1, "#" + id + '$1');
+								}
+								if (re2.test(section.content)) {
+									section.annotations = section.annotations.replace(re2, '<var $1data-id="' + id + '"');
+								}
+							});
+						});
+					}
+				});
+			});
+		});
+	}
 	Simulators.renumberSteps = function(panelGroups) {
 		var step0 = 0;
 		$.each(steps, function(index, step) {
@@ -218,7 +298,7 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'checkbox', 'dynamic', Translator.trans('Interactive UI'), step.dynamic, false, Translator.trans('Interactive UI')));
 		attributesContainer.append(requiredAttributes);
 		stepContainerBody.append(attributesContainer);
-		stepContainerBody.append('<div class="panel panel-default description-panel" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body step-description">' + step.description + '</div></div>');
+		stepContainerBody.append('<div class="panel panel-default description-panel" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body step-description rich-text">' + step.description + '</div></div>');
 		stepContainer.append(stepContainerBody);
 		stepPanelBody.append(stepContainer);
 		return stepPanelContainer;
@@ -602,7 +682,7 @@ THE SOFTWARE.
 		var footnotesElementId = 'step-' + footnotes.stepId + '-footnotes';
 		var footnotesPanelContainer = Simulators.openCollapsiblePanel(footnotesElementId, Translator.trans('FootNotes'), 'success', 'in', '', [{ 'class': 'delete-footnotes', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-footnote', 'label': Translator.trans('Add footnote'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-footnotes', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' }] );
 		var footnotesPanelBody = footnotesPanelContainer.find('.panel-body');
-		var footnotesContainer = $('<div class="panel panel-default footnotes-container" id="' + footnotesElementId + '-attributes-panel" data-id="' + footnotes.stepId + '"></div>');
+		var footnotesContainer = $('<div class="panel panel-default footnotes-container" id="' + footnotesElementId + '-attributes-panel" data-step="' + footnotes.stepId + '"></div>');
 		var footnotesContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -627,7 +707,7 @@ THE SOFTWARE.
 		footnotesPanel.append('<div class="panel-heading" role="tab" id="' + footnotesElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + footnotesElementId + '" href="#collapse' + footnotesElementId + '" aria-expanded="true" aria-controls="collapse' + footnotesElementId + '">' + Translator.trans('FootNotes') + '</a></h4></div>');
 		var footnotesPanelCollapse = $('<div id="collapse' + footnotesElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + footnotesElementId + '-panel"></div>');
 		var footnotesPanelBody = $('<div class="panel-body"></div>');
-		var footnotesContainer = $('<div class="panel panel-default footnotes-container" id="' + footnotesElementId + '-attributes-panel" data-id="' + footnotes.stepId + '"></div>');
+		var footnotesContainer = $('<div class="panel panel-default footnotes-container" id="' + footnotesElementId + '-attributes-panel" data-step="' + footnotes.stepId + '"></div>');
 		var footnotesContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -695,7 +775,7 @@ THE SOFTWARE.
 			if (! Simulators.checkFootNotes(footnotesPanelContainer)) {
 				return false;
 			}
-			var stepId = footnotesContainer.attr('data-id');
+			var stepId = footnotesContainer.attr('data-step');
 			var footnotes = { stepId: stepId };
 			var attributes = footnotesContainer.find('.attributes-container');
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
@@ -790,7 +870,7 @@ THE SOFTWARE.
 	Simulators.editFootNotes = function(footnotesContainerGroup) {
 		try {
 			var footnotesContainer = footnotesContainerGroup.find('.footnotes-container');
-			var stepId = footnotesContainer.attr('data-id');
+			var stepId = footnotesContainer.attr('data-step');
 			var step = Simulators.findInArray(steps, [{ key: 'id', val: stepId } ]);
 			var footnotes = step.footNotes;
 			footnotes['stepId'] = stepId;
@@ -798,8 +878,8 @@ THE SOFTWARE.
 			$('.toggle-collapse-all').hide();
 			var footnotesPanelContainer = Simulators.drawFootNotesForInput(footnotes);
 			Simulators.footnotesBackup = footnotesContainer.replaceWith(footnotesPanelContainer.find('.footnotes-container'));
-			Simulators.bindBlockInfo(footnotesContainerGroup);
-			footnotesContainerGroup.find('> .panel-heading a').click();
+			Simulators.bindFootNotes(footnotesContainerGroup);
+			$("#collapse" + footnotesContainerGroup.attr('id')).collapse('show');
 			$("html, body").animate({ scrollTop: footnotesContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
@@ -810,7 +890,7 @@ THE SOFTWARE.
 	Simulators.deleteFootNotes = function(footnotesContainerGroup) {
 		try {
 			var footnotesContainer = footnotesContainerGroup.find('.footnotes-container');
-			var stepId = footnotesContainer.attr('data-id');
+			var stepId = footnotesContainer.attr('data-step');
 			var step = Simulators.findInArray(steps, [{ key: 'id', val: stepId }]);
 			var label = step.label ? step.label : step.name;
 			bootbox.confirm({
@@ -838,7 +918,7 @@ THE SOFTWARE.
 		footnoteContainerHeading.append('<button class="btn btn-default pull-right update-button edit-footnote" data-parent="#' +  footnoteElementId + '-panel">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button>');
 		footnoteContainerHeading.append('<h4 class="panel-title">' + Translator.trans('FootNote') + ' #' + footnote.id + '</h4>');
 		footnoteContainer.append(footnoteContainerHeading);
-		var footnoteContainerBody = $('<div class="panel-body step-footnote"></div>');
+		var footnoteContainerBody = $('<div class="panel-body step-footnote rich-text"></div>');
 		footnoteContainerBody.append(footnote.text);
 		footnoteContainer.append(footnoteContainerBody);
 		return footnoteContainer;
@@ -1007,7 +1087,6 @@ THE SOFTWARE.
 			var footnoteContainerBody = footnotePanelContainer.find('.step-footnote');
 			Simulators.footnoteBackup = footnoteContainer.find('.step-footnote').replaceWith(footnoteContainerBody);
 			Simulators.bindFootNote(footnoteContainerBody);
-			footnoteContainer.find('> .panel-heading a').click();
 			$("html, body").animate({ scrollTop: footnoteContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
@@ -1335,7 +1414,7 @@ THE SOFTWARE.
 			var panelActionButtonContainer = Simulators.drawActionButtonForInput(action);
 			Simulators.actionButtonBackup = actionContainer.replaceWith(panelActionButtonContainer.find('.action-button-container'));
 			Simulators.bindActionButton(actionContainerGroup);
-			actionContainerGroup.find('> .panel-heading a').click();
+			$("#collapse" + actionContainerGroup.attr('id')).collapse('show');
 			$("html, body").animate({ scrollTop: actionContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
@@ -1855,7 +1934,7 @@ THE SOFTWARE.
 		fieldsetContainerBody.append(attributesContainer);
 		fieldsetContainer.append(fieldsetContainerBody);
 		fieldsetPanelBody.append(fieldsetContainer);
-		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body fieldset-legend">' + fieldset.legend + '</div></div>');
+		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body fieldset-legend rich-text">' + fieldset.legend + '</div></div>');
 		fieldsetPanelBody.append('<div class="panel panel-default columns-panel" id="' + fieldsetElementId + '-columns-panel"><div class="panel-body sortable"></div></div>');
 		fieldsetPanelBody.append('<div class="panel panel-default fields-panel" id="' + fieldsetElementId + '-fields-panel"><div class="panel-body sortable"></div></div>');
 		return fieldsetPanelContainer;
@@ -2262,7 +2341,7 @@ THE SOFTWARE.
 		fieldPanelBody.append(fieldContainer);
 		if (field.Note) {
 			var position = field.Note == 'beforeField' ? Translator.trans('placed before the field') : Translator.trans('placed after the field');
-			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right">' + Translator.trans('Note position') + ' : ' + position + '</span>' + Translator.trans('Note') + '</div><div class="panel-body field-note">' + field.Note.text + '</div></div>');
+			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right">' + Translator.trans('Note position') + ' : ' + position + '</span>' + Translator.trans('Note') + '</div><div class="panel-body field-note rich-text">' + field.Note.text + '</div></div>');
 		}
 		return fieldPanelContainer;
 	}
@@ -2281,7 +2360,7 @@ THE SOFTWARE.
 		var datasList = {
 			0: Translator.trans('--- Select a data ---')
 		};
-		$.each(dataset, function( name, data) {
+		$.each(Simulators.dataset, function( name, data) {
 			datasList[data.id] = data.label;
 		});
 		requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-data', 'select', 'data', Translator.trans('Data'), field.data, true, Translator.trans('Select a data'), JSON.stringify(datasList)));
@@ -2479,8 +2558,9 @@ THE SOFTWARE.
 			} else {
 				delete field['Note'];
 			}
-			var newFieldPanel = Simulators.drawFieldForDisplay(field, 'in');
+			var newFieldPanel = Simulators.drawFieldForDisplay(field);
 			fieldPanelContainer.replaceWith(newFieldPanel);
+			Simulators.bindFieldButtons(newFieldPanel);
 			if ($(this).hasClass('validate-edit-field')) {
 				var oldField = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fields' }, { key: 'position', val: position }]);
 				var oldLabel = oldField.label;
@@ -2492,7 +2572,6 @@ THE SOFTWARE.
 				delete field['fieldsetId'];
 				Simulators.updateInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fields' }, { key: 'position', val: position }], field);
 			} else {
-				Simulators.bindFieldButtons(newFieldPanel);
 				Simulators.addFieldInActions(field);
 				delete field['stepId'];
 				delete field['panelId'];
@@ -3457,9 +3536,9 @@ THE SOFTWARE.
 		sectionContainerBody.append(attributesContainer);
 		sectionContainer.append(sectionContainerBody);
 		sectionPanelBody.append(sectionContainer);
-		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body section-content">' + section.content + '</div></div>');
+		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body section-content rich-text">' + section.content + '</div></div>');
 		if (section.annotations) {
-			sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body section-annotations">' + section.annotations + '</div></div>');
+			sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body section-annotations rich-text">' + section.annotations + '</div></div>');
 		}
 		return sectionPanelContainer;
 	}

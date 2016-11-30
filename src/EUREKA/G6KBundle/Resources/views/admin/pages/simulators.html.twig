@@ -64,11 +64,14 @@ THE SOFTWARE.
 					<div class="panel panel-primary">
 						<div id="simulator-options-panel" class="panel-heading" role="tab">
 							{% if hiddens.action != 'create' %}
-							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name }) }}" class="btn btn-primary pull-right view-button" target="_blank">{{ 'Try it'|trans }} <span class="glyphicon glyphicon-eye-open"></span></a>
+							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name, 'view': simulator.defaultView }) }}" class="btn btn-primary pull-right view-button" target="_blank">{{ 'Try it'|trans }} <span class="glyphicon glyphicon-eye-open"></span></a>
 							{% endif %}
 							<button class="btn btn-primary pull-right update-button edit-simulator">{{ 'Edit'|trans }} <span class="glyphicon glyphicon-pencil"></span></button>
 							{% if hiddens.action != 'create' %}
-							<a class="btn btn-primary pull-right export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'export'}) }}">{{ 'Export simulator'|trans }} <span class="glyphicon glyphicon-export"></span></a>
+							<a class="btn btn-primary pull-right link-button export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'export'}) }}">{{ 'Export simulator'|trans }} <span class="glyphicon glyphicon-export"></span></a>
+							{% if hiddens.updated %}
+							<a class="btn btn-primary pull-right link-button publish-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'publish'}) }}">{{ 'Publish simulator'|trans }} <span class="glyphicon glyphicon-share"></span></a>
+							{% endif %}
 							{% endif %}
 							<form id="save-form" action="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'save'}) }}" method="post">
 							<input type="hidden" name="simulator" value="" />
@@ -104,7 +107,7 @@ THE SOFTWARE.
 								<div class="panel-heading">
 									{{ 'Description'|trans }}
 								</div>
-								<div class="panel-body simulator-description">
+								<div class="panel-body simulator-description rich-text">
 									{{ _self.paragraphs(simulator.description) }}
 								</div>
 							</div>
@@ -112,7 +115,7 @@ THE SOFTWARE.
 								<div class="panel-heading">
 									{{ 'Related informations'|trans }}
 								</div>
-								<div class="panel-body simulator-related-informations">
+								<div class="panel-body simulator-related-informations rich-text">
 									{{ _self.paragraphs(simulator.relatedInformations) }}
 								</div>
 							</div>
@@ -197,7 +200,7 @@ THE SOFTWARE.
 		<div class="panel-heading">
 			{{ 'Description'|trans }}
 		</div>
-		<div class="panel-body  datagroup-description">
+		<div class="panel-body  datagroup-description rich-text">
 			{{ _self.paragraphs(data.description) }}
 		</div>
 	</div>
@@ -225,7 +228,7 @@ THE SOFTWARE.
 			<button class="btn btn-info pull-right update-button delete-rule" data-parent="#{{ rule.elementId }}">{{ 'Delete'|trans }} <span class="glyphicon glyphicon-minus-sign"></span></button>
 			<button class="btn btn-info pull-right update-button edit-rule" data-parent="#{{ rule.elementId }}">{{ 'Edit'|trans }} <span class="glyphicon glyphicon-pencil"></span></button>
 			<h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#business-rules" href="#collapse{{ rule.elementId }}" aria-expanded="true" aria-controls="collapse{{ rule.elementId }}">#<span class="rule-id">{{ rule.id }}</span> {{ 'Rule'|trans }} <span class="rule-name">{{ rule.name }}</span> : <span class="rule-label">{{ rule.label }}</span></a>
+				<a data-toggle="collapse" data-parent="#business-rules" href="#collapse{{ rule.elementId }}" aria-expanded="true" aria-controls="collapse{{ rule.elementId }}">{{ 'Rule'|trans }} #<span class="rule-id">{{ rule.id }}</span> <span class="rule-name">{{ rule.name }}</span> : <span class="rule-label">{{ rule.label }}</span></a>
 			</h4>
 		</div>
 		<div id="collapse{{ rule.elementId }}" class="panel-body panel-collapse collapse" role="tabpanel">
@@ -355,7 +358,7 @@ THE SOFTWARE.
 				<div class="panel-heading">
 					{{ 'Description'|trans }}
 				</div>
-				<div class="panel-body step-description">
+				<div class="panel-body step-description rich-text">
 					{{ _self.paragraphs(step.description) }}
 				</div>
 			</div>
@@ -379,7 +382,7 @@ THE SOFTWARE.
 
 {% macro showFootNotes(step) %}
 {{ _self.openCollapsiblePanel('step-' ~ step.id ~ '-footnotes' , 'FootNotes'|trans, 'success', '', '', [{ 'class': 'delete-footnotes', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-footnote', 'label': 'Add footnote'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-footnotes', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' }] ) }}
-<div class="panel panel-default footnotes-container" id="step-{{ step.id }}-footnotes-attributes-panel">
+<div class="panel panel-default footnotes-container" id="step-{{ step.id }}-footnotes-attributes-panel" data-step="{{ step.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
@@ -399,7 +402,7 @@ THE SOFTWARE.
 			{{ 'FootNote #%id%'|trans({'%id%': footnote.id }) }}
 		</h4>
 	</div>
-	<div class="panel-body step-footnote">
+	<div class="panel-body step-footnote rich-text">
 	{{ _self.paragraphs(footnote.text) }}
 	</div>
 </div>
@@ -540,7 +543,7 @@ THE SOFTWARE.
 			<div class="panel-heading">
 			{{ 'Legend'|trans }}
 			</div>
-			<div class="panel-body fieldset-legend">
+			<div class="panel-body fieldset-legend rich-text">
 				{{ _self.paragraphs(fieldset.legend) }}
 			</div>
 		</div>
@@ -590,7 +593,7 @@ THE SOFTWARE.
 				<span class="note-position pull-right">{{ 'Note position'|trans }} : {{ 'placed before the field'|trans }}</span> 
 				{{ 'Note'|trans }}
 			</div>
-			<div class="panel-body field-note">
+			<div class="panel-body field-note rich-text">
 			{{ _self.paragraphs(field.preNote.text) }}
 			</div>
 		</div>
@@ -600,7 +603,7 @@ THE SOFTWARE.
 				<span class="note-position pull-right">{{ 'Note position'|trans }} : {{ 'placed after the field'|trans }}</span> 
 				{{ 'Note'|trans }}
 			</div>
-			<div class="panel-body field-note">
+			<div class="panel-body field-note rich-text">
 			{{ _self.paragraphs(field.postNote.text) }}
 			</div>
 		</div>
@@ -673,7 +676,7 @@ THE SOFTWARE.
 	<div class="panel-heading">
 		{{ 'Content'|trans }}
 	</div>
-	<div class="panel-body section-content">
+	<div class="panel-body section-content rich-text">
 		{{ _self.paragraphs(section.content) }}
 	</div>
 </div>
@@ -681,7 +684,7 @@ THE SOFTWARE.
 	<div class="panel-heading">
 		{{ 'Annotations'|trans }}
 	</div>
-	<div class="panel-body section-annotations">
+	<div class="panel-body section-annotations rich-text">
 		{{ _self.paragraphs(section.annotations) }}
 	</div>
 </div>
@@ -777,7 +780,7 @@ THE SOFTWARE.
 	<div class="panel-heading">
 		{{ 'Description'|trans }}
 	</div>
-	<div class="panel-body data-description">
+	<div class="panel-body data-description rich-text">
 		{{ _self.paragraphs(data.description) }}
 	</div>
 </div>

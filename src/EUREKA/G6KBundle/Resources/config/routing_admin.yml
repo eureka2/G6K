@@ -63,8 +63,8 @@ eureka_g6k_admin_view_node_crud:
     defaults: { _controller: EUREKAG6KBundle:ViewsAdmin:index }
 
 eureka_g6k_admin_simulator_calcul:
-    path:     /{simu}
-    defaults: { _controller: EUREKAG6KBundle:Default:calcul }
+    path:     /{simu}/{view}/tryIt
+    defaults: { _controller: EUREKAG6KBundle:Default:tryIt }
 
 eureka_g6k_admin_simulator_validate:
     path:     /admin/validate

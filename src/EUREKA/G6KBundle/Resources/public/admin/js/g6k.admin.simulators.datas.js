@@ -206,6 +206,67 @@ THE SOFTWARE.
 		return maxId;
 	}
 
+	Simulators.renumberDatas = function(panelGroups) {
+		panelGroups.each(function(index) {
+			var dataContainer = $(this).find("div.data-container");
+			var oldId = dataContainer.attr('data-id');
+			var id = index + 1;
+			if (id != oldId) {
+				var data = Simulators.findDataById(oldId);
+				$(this).attr('id', 'data-' + id);
+				var re = new RegExp("data-" + oldId + '([^\\d])?', 'g');
+				var a = $(this).find('> .panel > .panel-heading').find('> h4 > a');
+				a.text(' #' + id + ' : ' + data.label + ' ');
+				var descendants = $(this).find('*');
+				descendants.each(function(d) {
+					if (this.hasAttribute('id')) {
+						var attr = $(this).attr('id');
+						attr = attr.replace(re, "data-" + id + '$1');
+						$(this).attr('id', attr);
+					}
+					if (this.hasAttribute('data-parent')) {
+						var attr = $(this).attr('data-parent');
+						attr = attr.replace(re, "data-" + id + '$1');
+						$(this).attr('data-parent', attr);
+					}
+					if (this.hasAttribute('href')) {
+						var attr = $(this).attr('href');
+						attr = attr.replace(re, "data-" + id + '$1');
+						$(this).attr('href', attr);
+					}
+					if (this.hasAttribute('aria-controls')) {
+						var attr = $(this).attr('aria-controls');
+						attr = attr.replace(re, "data-" + id + '$1');
+						$(this).attr('aria-controls', attr);
+					}
+					if (this.hasAttribute('aria-labelledby')) {
+						var attr = $(this).attr('aria-labelledby');
+						attr = attr.replace(re, "data-" + id + '$1');
+						$(this).attr('aria-labelledby', attr);
+					}
+				});
+				Simulators.changeDataIdInRules(oldId, 'X' + id)
+				Simulators.changeDataIdInSteps(oldId, 'X' + id)
+				Simulators.changeDataIdInRichText(oldId, 'X' + id);
+				Simulators.changeDataIdInExpression(oldId, 'X' + id);
+			}
+		});
+		panelGroups.each(function(index) {
+			var dataContainer = $(this).find("div.data-container");
+			var oldId = dataContainer.attr('data-id');
+			var id = index + 1;
+			if (id != oldId) {
+				dataContainer.attr('data-id', id);
+				var data = Simulators.findDataById(oldId);
+				data.id = id;
+				Simulators.changeDataIdInRules('X' + data.id, data.id);
+				Simulators.changeDataIdInSteps('X' + data.id, data.id);
+				Simulators.changeDataIdInRichText('X' + data.id, data.id);
+				Simulators.changeDataIdInExpression('X' + data.id, data.id);
+			}
+		});
+	}
+
 	Simulators.bindSortableDatas = function(container) {
 		if (! container ) {
 			container = $("#page-simulators #collapsedatas");
@@ -219,7 +280,7 @@ THE SOFTWARE.
 				var container = $(ui.item).find('.data-container');
 				var id = container.attr('data-id');
 				var newId =  ui.item.index();
-				// Simulators.renumberDatas($(ui.item).parent().find('> div'));
+				Simulators.renumberDatas($(ui.item).parent().find('> div'));
 				// TODO: update data id in rules and fields
 				$('.update-button').show();
 				$('.toggle-collapse-all').show();
@@ -692,7 +753,7 @@ THE SOFTWARE.
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body data-description">' + data.description + '</div></div>');
+		dataPanelBody.append('<div class="panel panel-default" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body data-description rich-text">' + data.description + '</div></div>');
 		dataPanelCollapse.append(dataPanelBody);
 		dataPanel.append(dataPanelCollapse);
 		dataPanelContainer.append(dataPanel);
@@ -766,7 +827,7 @@ THE SOFTWARE.
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body datagroup-description">' + datagroup.description + '</div></div>');
+		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body datagroup-description rich-text">' + datagroup.description + '</div></div>');
 		dataPanelBody.append('<div class="panel panel-default datas-panel" id="' + dataElementId + '-datas-panel"><div class="panel-body sortable"></div></div>');
 		dataPanelCollapse.append(dataPanelBody);
 		dataPanel.append(dataPanelCollapse);
@@ -827,117 +888,129 @@ THE SOFTWARE.
 	}
 
 	Simulators.addData = function(dataContainerGroup) {
-		$('.toggle-collapse-all').hide();
-		$('.update-button').hide();
-		var data = {
-			id: Simulators.maxDatasetId() + 1, 
-			name: '',
-			label: '',
-			description: ''
-		};
-		var dataPanelContainer = Simulators.drawDataForInput(data);
-		dataPanelContainer.find('button.cancel-edit-data').addClass('cancel-add-data').removeClass('cancel-edit-data');
-		dataPanelContainer.find('button.validate-edit-data').addClass('validate-add-data').removeClass('validate-edit-data');
-		var datasPanel;
-		var parentId = dataContainerGroup.attr('id');
-		if (parentId === 'datas') {
-			datasPanel = $("#collapsedatas").find("> div.sortable");
-		} else {
-			datasPanel = dataContainerGroup.find(".datas-panel > div.sortable");
-		}
-		datasPanel.append(dataPanelContainer);
-		Simulators.bindData(dataPanelContainer);
-		dataContainerGroup.find('a[data-toggle="collapse"]').each(function() {
-			var objectID=$(this).attr('href');
-			if($(objectID).hasClass('in')===false) {
-				$(objectID).collapse('show');
+		try {
+			$('.toggle-collapse-all').hide();
+			$('.update-button').hide();
+			var data = {
+				id: Simulators.maxDatasetId() + 1, 
+				name: '',
+				label: '',
+				description: ''
+			};
+			var dataPanelContainer = Simulators.drawDataForInput(data);
+			dataPanelContainer.find('button.cancel-edit-data').addClass('cancel-add-data').removeClass('cancel-edit-data');
+			dataPanelContainer.find('button.validate-edit-data').addClass('validate-add-data').removeClass('validate-edit-data');
+			var datasPanel;
+			var parentId = dataContainerGroup.attr('id');
+			if (parentId === 'datas') {
+				datasPanel = $("#collapsedatas").find("> div.sortable");
+			} else {
+				datasPanel = dataContainerGroup.find(".datas-panel > div.sortable");
 			}
-		});
-		$("html, body").animate({ scrollTop: dataPanelContainer.offset().top }, 500);
-		Simulators.updating = true;
+			datasPanel.append(dataPanelContainer);
+			Simulators.bindData(dataPanelContainer);
+			dataContainerGroup.find('a[data-toggle="collapse"]').each(function() {
+				var objectID=$(this).attr('href');
+				if($(objectID).hasClass('in')===false) {
+					$(objectID).collapse('show');
+				}
+			});
+			$("html, body").animate({ scrollTop: dataPanelContainer.offset().top }, 500);
+			Simulators.updating = true;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	Simulators.editData = function(dataContainerGroup) {
-		$('.update-button').hide();
-		$('.toggle-collapse-all').hide();
-		var dataContainer = dataContainerGroup.find('.data-container, .datagroup-data-container');
-		var attributesContainer = dataContainer.find('.attributes-container');
-		var data = {
-			id: dataContainer.attr('data-id'), 
-			name: attributesContainer.find("p[data-attribute='name']").attr('data-value'),
-			label: attributesContainer.find("p[data-attribute='label']").attr('data-value'),
-			type: attributesContainer.find("p[data-attribute='type']").attr('data-value'),
-			description: dataContainerGroup.find('.data-description').html()
-		};
-		$.each(Simulators.optionalAttributes, function (name, attr) {
-			var oattr = attributesContainer.find("p[data-attribute='" + name + "'], span[data-attribute='" + name + "']");
-			if (oattr.length > 0) {
-				data[name] = oattr.attr('data-value');
-			}
-		});
-		var dataPanelContainer = Simulators.drawDataForInput(data);
-		if (data.type === 'choice') {
-			var choicesPanel = Simulators.drawChoicesForInput(data.id);
-			var choiceContainers = dataContainerGroup.find('div.choice-container');
-			if (choiceContainers.length > 0) {
-				choicesPanel.find('button.add-choice-source').removeClass('update-button').hide();
-				choicesPanel.find('button.delete-choice-source').removeClass('update-button').hide();
-				choiceContainers.each(function(c) {
-					var choice = {
-						id : $(this).attr('data-id'),
-						dataId: data.id,
-						value: $(this).find("p[data-attribute='value']").attr('data-value'),
-						label: $(this).find("p[data-attribute='label']").attr('data-value')
-					};
-					var choicePanel = Simulators.drawChoiceForInput(choice);
-					choicesPanel.find('> .panel-body').append(choicePanel);
-					Simulators.bindChoice(choicePanel);
-				});
-			} else {
-				var choiceSourceContainers = dataContainerGroup.find('div.choice-source-container');
-				if (choiceSourceContainers.length > 0) {
-					choicesPanel.find('button.delete-choice-source').addClass('update-button').show();
-					choicesPanel.find('button.add-choice').removeClass('update-button').hide();
-					choicesPanel.find('button.add-choice-source').removeClass('update-button').hide();
-					var choiceSource = {
-						id : choiceSourceContainers.eq(0).attr('data-id'),
-						dataId: data.id,
-						valueColumn: choiceSourceContainers.eq(0).find("p[data-attribute='valueColumn']").attr('data-value'),
-						labelColumn: choiceSourceContainers.eq(0).find("p[data-attribute='labelColumn']").attr('data-value'),
-						idColumn: choiceSourceContainers.eq(0).find("p[data-attribute='idColumn']").attr('data-value')
-					};
-					var choicePanel = Simulators.drawChoiceSourceForInput(choiceSource);
-					choicesPanel.find('> .panel-body').append(choicePanel);
-					Simulators.bindChoiceSource(choicePanel);
+		try {
+			$('.update-button').hide();
+			$('.toggle-collapse-all').hide();
+			var dataContainer = dataContainerGroup.find('.data-container, .datagroup-data-container');
+			var attributesContainer = dataContainer.find('.attributes-container');
+			var data = {
+				id: dataContainer.attr('data-id'), 
+				name: attributesContainer.find("p[data-attribute='name']").attr('data-value'),
+				label: attributesContainer.find("p[data-attribute='label']").attr('data-value'),
+				type: attributesContainer.find("p[data-attribute='type']").attr('data-value'),
+				description: dataContainerGroup.find('.data-description').html()
+			};
+			$.each(Simulators.optionalAttributes, function (name, attr) {
+				var oattr = attributesContainer.find("p[data-attribute='" + name + "'], span[data-attribute='" + name + "']");
+				if (oattr.length > 0) {
+					data[name] = oattr.attr('data-value');
 				}
+			});
+			var dataPanelContainer = Simulators.drawDataForInput(data);
+			if (data.type === 'choice') {
+				var choicesPanel = Simulators.drawChoicesForInput(data.id);
+				var choiceContainers = dataContainerGroup.find('div.choice-container');
+				if (choiceContainers.length > 0) {
+					choicesPanel.find('button.add-choice-source').removeClass('update-button').hide();
+					choicesPanel.find('button.delete-choice-source').removeClass('update-button').hide();
+					choiceContainers.each(function(c) {
+						var choice = {
+							id : $(this).attr('data-id'),
+							dataId: data.id,
+							value: $(this).find("p[data-attribute='value']").attr('data-value'),
+							label: $(this).find("p[data-attribute='label']").attr('data-value')
+						};
+						var choicePanel = Simulators.drawChoiceForInput(choice);
+						choicesPanel.find('> .panel-body').append(choicePanel);
+						Simulators.bindChoice(choicePanel);
+					});
+				} else {
+					var choiceSourceContainers = dataContainerGroup.find('div.choice-source-container');
+					if (choiceSourceContainers.length > 0) {
+						choicesPanel.find('button.delete-choice-source').addClass('update-button').show();
+						choicesPanel.find('button.add-choice').removeClass('update-button').hide();
+						choicesPanel.find('button.add-choice-source').removeClass('update-button').hide();
+						var choiceSource = {
+							id : choiceSourceContainers.eq(0).attr('data-id'),
+							dataId: data.id,
+							valueColumn: choiceSourceContainers.eq(0).find("p[data-attribute='valueColumn']").attr('data-value'),
+							labelColumn: choiceSourceContainers.eq(0).find("p[data-attribute='labelColumn']").attr('data-value'),
+							idColumn: choiceSourceContainers.eq(0).find("p[data-attribute='idColumn']").attr('data-value')
+						};
+						var choicePanel = Simulators.drawChoiceSourceForInput(choiceSource);
+						choicesPanel.find('> .panel-body').append(choicePanel);
+						Simulators.bindChoiceSource(choicePanel);
+					}
+				}
+				dataPanelContainer.find('.description-panel').after(choicesPanel);
+				Simulators.bindChoices(choicesPanel);
 			}
-			dataPanelContainer.find('.description-panel').after(choicesPanel);
-			Simulators.bindChoices(choicesPanel);
+			Simulators.dataBackup = dataContainerGroup.replaceWith(dataPanelContainer);
+			Simulators.bindData(dataPanelContainer);
+			dataPanelContainer.find('> .panel-heading a').click();
+			$("html, body").animate({ scrollTop: dataPanelContainer.offset().top }, 500);
+			Simulators.updating = true;
+		} catch (e) {
+			console.log(e.message);
 		}
-		Simulators.dataBackup = dataContainerGroup.replaceWith(dataPanelContainer);
-		Simulators.bindData(dataPanelContainer);
-		dataPanelContainer.find('> .panel-heading a').click();
-		$("html, body").animate({ scrollTop: dataPanelContainer.offset().top }, 500);
-		Simulators.updating = true;
 	}
 
 	Simulators.deleteData = function(dataContainerGroup) {
-		var dataContainer = dataContainerGroup.find('.data-container, .datagroup-data-container');
-		var attributesContainer = dataContainer.find('.attributes-container');
-		var dataLabel = attributesContainer.find("p[data-attribute='label']").attr('data-value');
-		bootbox.confirm({
-			title: Translator.trans('Deleting data'),
-			message: Translator.trans("Are you sure you want to delete the data : %label%", { 'label': dataLabel }), 
-			callback: function(confirmed) {
-				if (confirmed) {
-					var name = attributesContainer.find("p[data-attribute='name']").attr('data-value');
-					delete Simulators.dataset[name];
-					dataContainerGroup.remove();
-					$('.save-simulator').show();
-					Admin.updated = true;
+		try {
+			var dataContainer = dataContainerGroup.find('.data-container, .datagroup-data-container');
+			var attributesContainer = dataContainer.find('.attributes-container');
+			var dataLabel = attributesContainer.find("p[data-attribute='label']").attr('data-value');
+			bootbox.confirm({
+				title: Translator.trans('Deleting data'),
+				message: Translator.trans("Are you sure you want to delete the data : %label%", { 'label': dataLabel }), 
+				callback: function(confirmed) {
+					if (confirmed) {
+						var name = attributesContainer.find("p[data-attribute='name']").attr('data-value');
+						delete Simulators.dataset[name];
+						dataContainerGroup.remove();
+						$('.save-simulator').show();
+						Admin.updated = true;
+					}
 				}
-			}
-		}); 
+			}); 
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	Simulators.checkDatagroup = function(datagroupContainer) {
@@ -957,75 +1030,87 @@ THE SOFTWARE.
 	}
 
 	Simulators.addDatagroup = function(dataContainerGroup) {
-		$('.update-button').hide();
-		$('.toggle-collapse-all').hide();
-		var datagroup = {
-			id: parseInt(Simulators.maxDatasetId()) + 1, 
-			name: '',
-			label: '',
-			description: ''
-		};
-		var dataPanelContainer = Simulators.drawDatagroupForInput(datagroup);
-		dataPanelContainer.find('button.cancel-edit-datagroup').addClass('cancel-add-datagroup').removeClass('cancel-edit-datagroup');
-		dataPanelContainer.find('button.validate-edit-datagroup').addClass('validate-add-datagroup').removeClass('validate-edit-datagroup');
-		var datasPanel;
-		var parentId = dataContainerGroup.attr('id');
-		if (parentId === 'datas') {
-			datasPanel = $("#collapsedatas").find("> div.sortable");
-		} else {
-			datasPanel = dataContainerGroup.find(".datas-panel > div.sortable");
-		}
-
-		datasPanel.append(dataPanelContainer);
-		Simulators.bindDatagroup(dataPanelContainer);
-		dataContainerGroup.find('a[data-toggle="collapse"]').each(function() {
-			var objectID=$(this).attr('href');
-			if($(objectID).hasClass('in')===false) {
-				$(objectID).collapse('show');
+		try {
+			$('.update-button').hide();
+			$('.toggle-collapse-all').hide();
+			var datagroup = {
+				id: parseInt(Simulators.maxDatasetId()) + 1, 
+				name: '',
+				label: '',
+				description: ''
+			};
+			var dataPanelContainer = Simulators.drawDatagroupForInput(datagroup);
+			dataPanelContainer.find('button.cancel-edit-datagroup').addClass('cancel-add-datagroup').removeClass('cancel-edit-datagroup');
+			dataPanelContainer.find('button.validate-edit-datagroup').addClass('validate-add-datagroup').removeClass('validate-edit-datagroup');
+			var datasPanel;
+			var parentId = dataContainerGroup.attr('id');
+			if (parentId === 'datas') {
+				datasPanel = $("#collapsedatas").find("> div.sortable");
+			} else {
+				datasPanel = dataContainerGroup.find(".datas-panel > div.sortable");
 			}
-		});
-		$("html, body").animate({ scrollTop: dataPanelContainer.offset().top }, 500);
-		Simulators.updating = true;
+	
+			datasPanel.append(dataPanelContainer);
+			Simulators.bindDatagroup(dataPanelContainer);
+			dataContainerGroup.find('a[data-toggle="collapse"]').each(function() {
+				var objectID=$(this).attr('href');
+				if($(objectID).hasClass('in')===false) {
+					$(objectID).collapse('show');
+				}
+			});
+			$("html, body").animate({ scrollTop: dataPanelContainer.offset().top }, 500);
+			Simulators.updating = true;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	Simulators.editDatagroup = function(dataContainerGroup) {
-		$('.update-button').hide();
-		$('.toggle-collapse-all').hide();
-		var dataContainer = dataContainerGroup.find('.data-container.datagroup');
-		var attributesContainer = dataContainer.find('.attributes-container');
-		var datagroup = {
-			id: dataContainer.attr('data-id'), 
-			name: attributesContainer.find("p[data-attribute='name']").attr('data-value'),
-			label: attributesContainer.find("p[data-attribute='label']").attr('data-value'),
-			description: dataContainerGroup.find('.datagroup-description').html()
-		};
-		var dataPanelContainer = Simulators.drawDatagroupForInput(datagroup);
-		Simulators.datagroupBackup = dataContainerGroup.clone();
-		dataContainer.replaceWith(dataPanelContainer.find('.data-container.datagroup'));
-		dataContainerGroup.find('.description-panel').eq(0).replaceWith(dataPanelContainer.find('.description-panel').eq(0));
-		dataContainerGroup.find('.description-panel').eq(0).after(dataPanelContainer.find('.buttons-panel'));
-		Simulators.bindDatagroup(dataContainerGroup);
-		dataContainerGroup.find('> .panel-heading a').click();
-		$("html, body").animate({ scrollTop: dataContainerGroup.offset().top }, 500);
-		Simulators.updating = true;
+		try {
+			$('.update-button').hide();
+			$('.toggle-collapse-all').hide();
+			var dataContainer = dataContainerGroup.find('.data-container.datagroup');
+			var attributesContainer = dataContainer.find('.attributes-container');
+			var datagroup = {
+				id: dataContainer.attr('data-id'), 
+				name: attributesContainer.find("p[data-attribute='name']").attr('data-value'),
+				label: attributesContainer.find("p[data-attribute='label']").attr('data-value'),
+				description: dataContainerGroup.find('.datagroup-description').html()
+			};
+			var dataPanelContainer = Simulators.drawDatagroupForInput(datagroup);
+			Simulators.datagroupBackup = dataContainerGroup.clone();
+			dataContainer.replaceWith(dataPanelContainer.find('.data-container.datagroup'));
+			dataContainerGroup.find('.description-panel').eq(0).replaceWith(dataPanelContainer.find('.description-panel').eq(0));
+			dataContainerGroup.find('.description-panel').eq(0).after(dataPanelContainer.find('.buttons-panel'));
+			Simulators.bindDatagroup(dataContainerGroup);
+			dataContainerGroup.find('> .panel-heading a').click();
+			$("html, body").animate({ scrollTop: dataContainerGroup.offset().top }, 500);
+			Simulators.updating = true;
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	Simulators.deleteDatagroup = function(dataContainerGroup) {
-		var dataContainer = dataContainerGroup.find('.data-container.datagroup');
-		var attributesContainer = dataContainer.find('.attributes-container');
-		var dataLabel = attributesContainer.find("p[data-attribute='label']").attr('data-value');
-		bootbox.confirm({
-			title: Translator.trans('Deleting datagroup'),
-			message: Translator.trans("Are you sure you want to delete the data group : %label% ?", { 'label': dataLabel }), 
-			callback: function(confirmed) {
-				if (confirmed) {
-					// TODO : update dataset to delete all data in this datagroup
-					dataContainerGroup.remove();
-					$('.save-simulator').show();
-					Admin.updated = true;
+		try {
+			var dataContainer = dataContainerGroup.find('.data-container.datagroup');
+			var attributesContainer = dataContainer.find('.attributes-container');
+			var dataLabel = attributesContainer.find("p[data-attribute='label']").attr('data-value');
+			bootbox.confirm({
+				title: Translator.trans('Deleting datagroup'),
+				message: Translator.trans("Are you sure you want to delete the data group : %label% ?", { 'label': dataLabel }), 
+				callback: function(confirmed) {
+					if (confirmed) {
+						// TODO : update dataset to delete all data in this datagroup
+						dataContainerGroup.remove();
+						$('.save-simulator').show();
+						Admin.updated = true;
+					}
 				}
-			}
-		}); 
+			}); 
+		} catch (e) {
+			console.log(e.message);
+		}
 	}
 
 	Simulators.collectDatas = function() {

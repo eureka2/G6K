@@ -67,13 +67,27 @@ class DefaultController extends Controller {
 
 	public function calculAction(Request $request, $simu, $view = null)
 	{
+		return $this->runCalcul($request, $simu, $view);
+	}
+
+	public function tryItAction(Request $request, $simu, $view = null)
+	{
+		return $this->runCalcul($request, $simu, $view, true);
+	}
+
+	public function runCalcul(Request $request, $simu, $view, $test = false)
+	{
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$this->parser = new ExpressionParser();
 		$this->uricache = array();
 		try {
 			$this->simu = new Simulator($this);
-			$this->simu->load(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml');
+			if ($test && file_exists(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml')) {
+				$this->simu->load(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml');
+			} else {
+				$this->simu->load(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml');
+			}
 		} catch (\Exception $e) {
 			$page404Url = $request->getScheme() . '://' . $request->getHttpHost() . $this->container->getParameter('page404');
 			$page404 = @file_get_contents($page404Url);
@@ -258,7 +272,7 @@ class DefaultController extends Controller {
 							$istep = $toStep;
 						} elseif ($action->getFor() == 'newSimulation') {
 							$route = $request->get('_route');
-							if ($route == 'eureka_g6k_calcul_view') {
+							if ($route == 'eureka_g6k_calcul_view' || $route == 'eureka_g6k_calcul_view_try') {
 								return $this->redirect($this->generateUrl($route, array('simu' => $simu, 'view' => $view)));
 							} else {
 								return $this->redirect($this->generateUrl($route, array('simu' => $simu)));
@@ -385,9 +399,23 @@ class DefaultController extends Controller {
 
 	public function fieldsAction(Request $request, $simu)
 	{
+		return $this->runFields($request, $simu);
+	}
+
+	public function fieldsTryItAction(Request $request, $simu)
+	{
+		return $this->runFields($request, $simu, true);
+	}
+
+	public function runFields(Request $request, $simu, $test = false)
+	{
 		$form = $request->request->all();
 		$this->simu = new Simulator($this);
-		$fields = $this->simu->toJSON(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml', $form['stepId']);
+		if ($test && file_exists(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml')) {
+			$fields = $this->simu->toJSON(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml', $form['stepId']);
+		} else {
+			$fields = $this->simu->toJSON(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml', $form['stepId']);
+		}
 		$response = new Response();
 		$response->setContent($fields);
 		$response->headers->set('Content-Type', 'application/json');
@@ -396,9 +424,23 @@ class DefaultController extends Controller {
 
 	public function sourceAction(Request $request, $simu)
 	{
+		return $this->runSource($request, $simu);
+	}
+
+	public function sourceTryItAction(Request $request, $simu)
+	{
+		return $this->runSource($request, $simu, true);
+	}
+
+	public function runSource(Request $request, $simu, $test = false)
+	{
 		$form = $request->request->all();
 		$this->simu = new Simulator($this);
-		$this->simu->loadForSource(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml');
+		if ($test && file_exists(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml')) {
+			$this->simu->loadForSource(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml');
+		} else {
+			$this->simu->loadForSource(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml');
+		}
 		$source = $this->simu->getSourceById((int)$form['source']);
 		$params = $source->getParameters();
 		foreach ($params as $param) {
@@ -1215,6 +1257,11 @@ class DefaultController extends Controller {
 			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
 			array($this, 'replaceVariable'),
 			$target
+		);
+		$result = preg_replace_callback(
+			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
+			array($this, 'replaceVariable'),
+			$result
 		);
 		return $result;
 	}

@@ -59,6 +59,7 @@ use EUREKA\G6KBundle\Entity\ResultFilter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
@@ -81,7 +82,10 @@ class SimulatorsAdminController extends BaseAdminController {
 	{
 		if ($crud == 'export') {
 			return $this->doExportSimulator($simulator);
+		} elseif ($crud == 'publish') {
+			return $this->doPublishSimulator($simulator);
 		}
+		
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
@@ -93,6 +97,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$hiddens['script'] = $script;
 		$hiddens['action'] = 'show';
 		$simulators = array();
+		$updated = false;
 		foreach($simus as $simu) {
 			$s = new \SimpleXMLElement($simu_dir."/".$simu, LIBXML_NOWARNING, true);
 			$file = preg_replace("/.xml$/", "", $simu);
@@ -107,6 +112,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				try {
 					if (file_exists($simu_dir."/work/".$simu)) {
 						$this->simu->load($simu_dir."/work/".$simu);
+						$updated = true;
 					} else {
 						$this->simu->load($simu_dir."/".$simu);
 					}
@@ -116,6 +122,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 			}
 		}
+		$hiddens['updated'] = $updated;
 		if ($crud == 'create') {
 			$hiddens['action'] = 'create';
 			$this->simu = new Simulator($this);
@@ -128,6 +135,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				$this->update($simulator, $form);
 				$this->loadBusinessRules();
 			} elseif (isset($form['delete'])) {
+				// TODO: doDelete
 			}
 		} elseif ($crud == 'import') {
 			$hiddens['action'] = 'import';
@@ -495,7 +503,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (isset($step['footNotes'])) {
 				$footnotes = $step['footNotes'];
-				if (isset($footnotes['footNotes'])) {
+				if (isset($footnotes['footNotes']) && count($footnotes['footNotes']) > 0) {
 					$footnotesObj = new FootNotes($stepObj);
 					if ($footnotes['position'] != "") {
 						$footnotesObj->setPosition($footnotes['position']);
@@ -802,6 +810,48 @@ class SimulatorsAdminController extends BaseAdminController {
 		$response->sendHeaders();
 		$response->setContent($zipcontent);
 		return $response;
+	}
+
+	protected function doPublishSimulator($simu) {
+		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
+		$schema_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/doc";
+		$fs = new Filesystem();
+		if ($fs->exists($simu_dir . "/work/" . $simu . ".xml")) {
+			libxml_use_internal_errors(true);
+			$xml = new \DOMDocument();
+			$xml->load($simu_dir . "/work/" . $simu . ".xml");
+			if (!$xml->schemaValidate($schema_dir . "/Simulator.xsd")) {
+				$libxmlErrors = libxml_get_errors();
+				$response = new StreamedResponse();
+				$response->setCallback(function() use($libxmlErrors) {
+					foreach ($libxmlErrors as $error) {
+						switch ($error->level) {
+							case LIBXML_ERR_WARNING:
+								print "Warning $error->code : ";
+								break;
+							case LIBXML_ERR_ERROR:
+								print "Error $error->code : ";
+								break;
+							case LIBXML_ERR_FATAL:
+								print "Fatal Error $error->code : ";
+								break;
+						}
+						print trim($error->message);
+						if ($error->file) {
+							print " in " . basename($error->file);
+						}
+						print " on line $error->line\n";
+						print "<br>\n";
+						flush();
+					}
+				});
+				libxml_clear_errors();
+				return $response;
+			} else {
+				$fs->copy($simu_dir . "/work/" . $simu . ".xml", $simu_dir . "/" . $simu . ".xml");
+				return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
+			}
+		}
 	}
 
 	protected function doImportSimulator($files) {
@@ -1135,6 +1185,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 			}
 		}
+		$this->steps = array();
 		if (count($this->simu->getSteps()) > 0) {
 			$osteps = array ();
 			$osteppanels = array ();
@@ -2693,6 +2744,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
 			array($this, 'replaceVariable'),
 			$target
+		);
+		$result = preg_replace_callback(
+			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
+			array($this, 'replaceVariable'),
+			$result
 		);
 		return $result;
 	}

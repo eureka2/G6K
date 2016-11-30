@@ -319,6 +319,12 @@ THE SOFTWARE.
 				} else {
 					val = input.val();
 				}
+				val = val.replace(
+					/'(\d{1,2}\/\d{1,2}\/\d{4})'/g,
+					function (match, m1, offs, str) {
+						return m1;
+					}
+				);
 				var subfields = $(this).find("> .subfields > .field");
 				var action = {name: input.attr("name"), value: val};
 				if (subfields.length > 0) {

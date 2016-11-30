@@ -214,7 +214,7 @@ ul.rule-conditions > li {
 	margin-top: 1em;
 }
 
-.edit-simulator, .export-simulator, .add-data, .edit-data, .delete-data, 
+.edit-simulator, .export-simulator, .publish-simulator, .add-data, .edit-data, .delete-data, 
 .add-datagroup, .edit-datagroup, .delete-datagroup, 
 .add-rule, .edit-rule, .add-step, .edit-step, .delete-step, 
 .add-footnotes, .edit-footnotes, .delete-footnotes, .add-footnote, .edit-footnote, .delete-footnote, 
@@ -241,6 +241,9 @@ button.save-simulator {
 
 .bootstrap-wysihtml5-insert-link-modal .checkbox {
 	margin-left: 25px;
+}
+var.data {
+	font-style: normal !important;
 }
 #toTop{
 	position: fixed;

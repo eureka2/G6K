@@ -32,6 +32,7 @@ THE SOFTWARE.
 		"abs" : {arity: 1, args: ['number'], type: 'number'},
 		"acos" : {arity: 1, args: ['number'], type: 'number'},
 		"acosh" : {arity: 1, args: ['number'], type: 'number'},
+		"addMonths" : {arity: 2, args: ['number', 'date'], type: 'date'},
 		"asin" : {arity: 1, args: ['number'], type: 'number'},
 		"asinh" : {arity: 1, args: ['number'], type: 'number'},
 		"atan" : {arity: 1, args: ['number'], type: 'number'},
@@ -43,10 +44,12 @@ THE SOFTWARE.
 		"count" : {arity: -1, args: ['number'], type: 'number'},
 		"day" : {arity: 1, args: ['date'], type: 'number'},
 		"exp" : {arity: 1, args: ['number'], type: 'number'},
+		"firstDayOfMonth" : {arity: 1, args: ['date'], type: 'date'},
 		"floor" : {arity: 1, args: ['number'], type: 'number'},
 		"fullmonth" : {arity: 1, args: ['date'], type: 'text'},
 		"get" : {arity: 2, args: ['array', 'number'], type: 'text'},
 		"lastday" : {arity: 2, args: ['number', 'number'], type: 'number'},
+		"lastDayOfMonth" : {arity: 1, args: ['date'], type: 'date'},
 		"log" : {arity: 1, args: ['number'], type: 'number'},
 		"log10" : {arity: 1, args: ['number'], type: 'number'},
 		"max" : {arity: 2, args: ['number', 'number'], type: 'number'},
@@ -131,8 +134,39 @@ THE SOFTWARE.
 	Simulators.updating = false;
 
 	Simulators.init = function() {
+		Admin.wysihtml5Options.toolbar.insertData = true;
 		Simulators.collectDataset();
 		$('.save-simulator').hide();
+	}
+
+	Simulators.changeDataIdInRichText = function(oldId, id) {
+		var re1 = new RegExp("#" + oldId + '([^\\d])?', 'g');
+		var re2 = new RegExp('\\<var\\s+([^\\s]*\\s*)data\\-id=\\"' + oldId + '\\"', 'g');
+		$('#simulator').find('.rich-text').each(function(r) {
+			var updated = false;
+			var richtext = $(this).html();
+			if (re1.test(richtext)) {
+				richtext = richtext.replace(re1, "#" + id + '$1');
+				updated = true;
+			}
+			if (re2.test(richtext)) {
+				richtext = richtext.replace(re2, '<var $1data-id="' + id + '"');
+				updated = true;
+			}
+			if (updated) {
+				$(this).html(richtext);
+			}
+		});
+	}
+
+	Simulators.changeDataIdInExpression = function(oldId, id) {
+		var re1 = new RegExp("#" + oldId + '([^\\d])?', 'g');
+		$('#simulator').find('span.attribute-expression').each(function(a) {
+			var val = $(this).attr('data-value');
+			if (re1.test(val)) {
+				$(this).attr('data-value', val.replace(re1, "#" + id + '$1'));
+			}
+		});
 	}
 
 	Simulators.simpleAttributeForDisplay = function(element, type, name, label, value, required, placeholder, options) {
@@ -525,7 +559,7 @@ THE SOFTWARE.
 		simulatorAttributesPanel.append(simulatorAttributesPanelBody);
 		var simulatorDescriptionPanel = $('<div class="panel panel-default" id="simulator-description-panel"></div>');
 		simulatorDescriptionPanel.append('<div class="panel-heading">' + Translator.trans('Description') + '</div>');
-		var simulatorDescriptionBody = $('<div class="panel-body simulator-description"></div>');
+		var simulatorDescriptionBody = $('<div class="panel-body simulator-description rich-text"></div>');
 		simulatorDescriptionBody.append('<textarea rows="10" name="simulator-description" id="simulator-description" wrap="hard" class="form-control">' + simulator.description + '</textarea>');
 		simulatorDescriptionPanel.append(simulatorDescriptionBody);
 		var simulatorRelatedInformationsPanel = $('<div class="panel panel-default" id="simulator-related-informations-panel"></div>');

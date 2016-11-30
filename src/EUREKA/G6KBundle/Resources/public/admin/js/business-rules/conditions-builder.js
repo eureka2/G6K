@@ -381,6 +381,12 @@ THE SOFTWARE.
 				} else {
 					value = currentValue.val();
 				}
+				value = value.replace(
+					/'(\d{1,2}\/\d{1,2}\/\d{4})'/g,
+					function (match, m1, offs, str) {
+						return m1;
+					}
+				);
 				return {
 					name: element.find(".field").attr("data-value"),
 					operator: element.find(".operator").attr("data-value"),

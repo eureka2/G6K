@@ -31,25 +31,74 @@ THE SOFTWARE.
 	Admin.lang = 'en';
 	Admin.locale = 'en-US';
 
+	Admin.wysihtml5Custom = {
+		insertData: function(context) {
+			var locale = context.locale;
+			var options = context.options;
+			var datas = [];
+			$.each(Simulators.dataset, function(name, d) {
+				datas.push('<li><a data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<var class=data data-id=' + d.id + '>«' + d.label + '»</var>" tabindex="-1">' + d.label + '</a></li>');
+			});
+			return '<li class="dropdown">' +
+				'<a class="btn btn-default dropdown-toggle" data-toggle="dropdown">' + 
+					'<span class="current-font">' + Translator.trans('Variables') + ' </span>' +
+					'<b class="caret"></b>' + 
+				'</a>' +
+				'<ul class="dropdown-menu">' + 
+				datas.join("")  +
+				'</ul>' + 
+			'</li>';
+		}
+	};
+
 	Admin.wysihtml5Options = {
-		'locale': Admin.locale,
-		'font-styles': false,
-		'color': false,
-		'emphasis': true,
-		'blockquote': true,
-		'lists': true,
-		'html': false,
-		'link': true,
-		'image': false,
-		'shortcuts': {
+		toolbar: {
+			'locale': Admin.locale,
+			'font-styles': false,
+			'color': false,
+			'emphasis': true,
+			'blockquote': true,
+			'lists': true,
+			'html': false,
+			'link': true,
+			'image': false,
+			'insertData': false
+		},
+		customTemplates: Admin.wysihtml5Custom,
+		shortcuts: {
 		   '83': 'small'     // S
 		},
-		'events': {
+		parserRules: {
+			classes: {
+				"data": 1
+			},
+			tags: {
+				'var': {
+					"check_attributes": {
+						"data-id": "numbers"
+					}
+				}
+			}
+		},
+		events: {
 			'change': function(e) {
 				var val = this.getValue();
 				val = val.replace(/^(\<br\>)+/i, '');
 				val = val.replace(/(\<br\>)+$/i, '');
 				this.setValue(val);
+			},
+			"beforeload": function() { 
+				if (typeof Simulators !== 'undefined') {
+					var val = this.getValue();
+					val = val.replace(
+						/#(\d+)/g,
+						function (match, m1, offs, str) {
+							var data = Simulators.findDataById(m1);
+							return '<var class="data" data-id="' + data.id + '">«' + data.label + '»</var>';
+						}
+					);
+					this.setValue(val);
+				}
 			}
 		}
 	};
