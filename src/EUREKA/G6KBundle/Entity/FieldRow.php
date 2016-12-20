@@ -29,82 +29,102 @@ namespace EUREKA\G6KBundle\Entity;
 class FieldRow {
 
 	private $fieldset = null;
+	private $id = 0;
 	private $label = "";
 	private $help = false;
 	private $colon = true;
 	private $emphasize = false;
 	private $datagroup = "";
 	private $fields = array();
-	
-	public function __construct($fieldset, $label) {
+
+	public function __construct($fieldset, $id, $label) {
 		$this->fieldset = $fieldset;
+		$this->id = $id;
 		$this->label = $label;
 	}
-	
+
 	public function getFieldSet() {
 		return $this->fieldset;
 	}
-	
+
+	public function getId() {
+		return $this->id;
+	}
+
+	public function setId($id) {
+		$this->id = $id;
+	}
+
 	public function getDataGroup() {
 		return $this->datagroup;
 	}
-	
+
 	public function setDataGroup($datagroup) {
 		$this->datagroup = $datagroup;
 	}
-	
+
 	public function getLabel() {
 		return $this->label;
 	}
-	
+
 	public function setLabel($label) {
 		$this->label = $label;
 	}
-	
+
 	public function hasColon() {
 		return $this->colon;
 	}
-	
+
 	public function setColon($colon) {
 		$this->colon = $colon;
 	}
+
 	public function hasHelp() {
 		return $this->help;
 	}
-	
+
 	public function setHelp($help) {
 		$this->help = $help;
 	}
-	
+
 	public function isEmphasized() {
 		return $this->emphasize;
 	}
-	
+
 	public function setEmphasize($emphasize) {
 		$this->emphasize = $emphasize;
 	}
-	
+
 	public function getFields() {
 		return $this->fields;
 	}
-	
+
 	public function setFields($fields) {
 		$this->fields = $fields;
 	}
-	
+
 	public function addField(Field $field) {
 		$this->fields[] = $field;
 	}
-	
+
 	public function removeField($index) {
 		$this->fields[$index] = null;
 	}
-	
+
+	public function getFieldByPosition($position) {
+		foreach ($this->fields as $field) {
+			if ($field->getPosition() == $position) {
+				return $field;
+			}
+		}
+		return null;
+	}
+
 	public function getClass() {
 		$classPath = explode('\\', get_class());
 		return end($classPath);
 	}
-	
+
 }
 
 ?>

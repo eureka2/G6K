@@ -34,7 +34,7 @@ THE SOFTWARE.
 			<div class="panel-heading"><h3>{{ 'Data source'|trans }} : <br /> {{ dbname }}</h3></div>
 			<div class="panel-body">
 				<form action="{{ path('eureka_g6k_admin_datasource_table', {'dsid': dsid, 'table': 'new'}) }}">
-				<button id="btnAddNewTable" class="btn btn-default">{{ 'Add table'|trans }} <span class="glyphicon glyphicon-plus-sign"></span></button>
+				<button id="btnAddNewTable" class="btn btn-default" title="{{ 'Add table'|trans }}"><span class="button-label">{{ 'Add table'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
 				</form>
 				<h4>{{ 'Tables'|trans }} :</h4>
 				<ul class="nav nav-pills nav-stacked">
@@ -80,10 +80,10 @@ THE SOFTWARE.
 				<div id="table" class="panel panel-primary">
 					<div class="panel-heading">
 					{% if table.action != 'create-table' %}
-					<a class="btn btn-primary pull-right drop-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'drop'}) }}" data-confirm="{{ 'Are you sure you want to drop the table %table% ?'|trans({ '%table%' : table.label }) }}">{{ 'Drop table'|trans }} <span class="glyphicon glyphicon-minus-sign"></span></a>
+					<a class="btn btn-primary pull-right drop-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'drop'}) }}" title="{{ 'Drop table'|trans }}" data-confirm="{{ 'Are you sure you want to drop the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Drop table'|trans }}</span> <span class="glyphicon glyphicon-minus-sign"></span></a>
 					{% endif %}
 					{% if table.action != 'create-table' and table.action != 'edit-table'  %}
-					<a class="btn btn-primary pull-right edit-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'edit'}) }}" data-confirm="{{ 'Are you sure you want to edit the structure of the table %table% ?'|trans({ '%table%' : table.label }) }}">{{ 'Edit table structure'|trans }} <span class="glyphicon glyphicon-pencil"></span></a>
+					<a class="btn btn-primary pull-right edit-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'edit'}) }}" title="{{ 'Edit table structure'|trans }}" data-confirm="{{ 'Are you sure you want to edit the structure of the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Edit table structure'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></a>
 					{% endif %}
 					<h4 class="panel-title">{{ table.label }}</h4>
 					</div>
@@ -126,7 +126,7 @@ THE SOFTWARE.
 						</div>
 						<div class="table-responsive">
 							<span class="table-caption">{{ 'Fields'|trans }}</span>
-							<button id="btnAddNewColumn" class="btn btn-default pull-right">{{ 'Add column'|trans }} <span class="glyphicon glyphicon-plus-sign"></span></button>
+							<button id="btnAddNewColumn" class="btn btn-default pull-right" title="{{ 'Add column'|trans }}"><span class="button-label">{{ 'Add column'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
 							<table id="edition-table" class="table table-condensed table-striped table-bordered table-hover">
 								<thead>
 									<tr>
@@ -150,7 +150,7 @@ THE SOFTWARE.
 						{% else %}
 						<div class="table-responsive">
 							{{ table.description|raw }}
-							<button id="btnAddNewRow" class="btn btn-default">{{ 'Add record'|trans }} <span class="glyphicon glyphicon-plus-sign"></span></button>
+							<button id="btnAddNewRow" class="btn btn-default" title="{{ 'Add record'|trans }}"><span class="button-label">{{ 'Add record'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
 							<table id="{{ table.name }}" class="table table-condensed table-striped table-bordered table-hover">
 								<thead>
 									<tr>
@@ -183,10 +183,10 @@ THE SOFTWARE.
 				<div id="datasource" class="panel panel-primary">
 					<div class="panel-heading">
 					{% if datasource.action == 'show' %}
-					<a class="btn btn-primary pull-right drop-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'drop-datasource'}) }}" data-confirm="{{ 'Are you sure you want to drop the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'">{{ 'Drop datasource'|trans }} <span class="glyphicon glyphicon-minus-sign"></span></a>
-					<a class="btn btn-primary pull-right edit-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'edit-datasource'}) }}" data-confirm="{{ 'Are you sure you want to edit the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'">{{ 'Edit datasource'|trans }} <span class="glyphicon glyphicon-pencil"></span></a>
+					<a class="btn btn-primary pull-right drop-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'drop-datasource'}) }}" title="{{ 'Drop datasource'|trans }}" data-confirm="{{ 'Are you sure you want to drop the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'"><span class="button-label">{{ 'Drop datasource'|trans }}</span> <span class="glyphicon glyphicon-minus-sign"></span></a>
+					<a class="btn btn-primary pull-right edit-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'edit-datasource'}) }}" title="{{ 'Edit datasource'|trans }}" data-confirm="{{ 'Are you sure you want to edit the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'"><span class="button-label">{{ 'Edit datasource'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></a>
 					{% if datasource.type == 'internal' %}
-					<a class="btn btn-primary pull-right export-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'export-datasource'}) }}">{{ 'Export datasource'|trans }} <span class="glyphicon glyphicon-export"></span></a>
+					<a class="btn btn-primary pull-right export-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'export-datasource'}) }}" title="{{ 'Export datasource'|trans }}"><span class="button-label">{{ 'Export datasource'|trans }}</span> <span class="glyphicon glyphicon-export"></span></a>
 					{% endif %}
 					{% endif %}
 					<h4 class="panel-title">{{ datasource.label }}</h4>

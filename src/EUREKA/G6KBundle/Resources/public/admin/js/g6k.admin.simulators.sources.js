@@ -25,6 +25,32 @@ THE SOFTWARE.
 (function (global) {
 	'use strict';
 
+	Simulators.sourceBackup = null;
+	
+	Simulators.changeDataNameInSources = function(oldName, name) {
+		var parameters = $('#sources').find('.source-parameter-container');
+		parameters.each(function(p) {
+			var pdatas = $(this).find("p[data-attribute='data']");
+			pdatas.each(function(d) {
+				if ($(this).attr('data-value') == oldName) {
+					$(this).attr('data-value', name);
+				}
+			});
+		});
+	}
+
+	Simulators.changeDataLabelInSources = function(name, label) {
+		var parameters = $('#sources').find('.source-parameter-container');
+		parameters.each(function(p) {
+			var pdatas = $(this).find("p[data-attribute='data']");
+			pdatas.each(function(d) {
+				if ($(this).attr('data-value') == name) {
+					$(this).html(label);
+				}
+			});
+		});
+	}
+
 	Simulators.maxSourceId = function() {
 		var maxId = 1;
 		var sources = $('#sources').find('.source-container');
@@ -37,11 +63,83 @@ THE SOFTWARE.
 		return maxId;
 	}
 
+	Simulators.renumberSources = function(panelGroups) {
+		panelGroups.each(function(index) {
+			var dataContainer = $(this).find("div.source-container");
+			var oldId = dataContainer.attr('data-id');
+			var id = index + 1;
+			if (id != oldId) {
+				$(this).attr('id', 'source-' + id);
+				var re = new RegExp("source-" + oldId + '([^\\d])?', 'g');
+				var a = $(this).find('> .panel > .panel-heading').find('> h4 > a');
+				a.text(' #' + id + ' ');
+				var descendants = $(this).find('*');
+				descendants.each(function(d) {
+					if (this.hasAttribute('id')) {
+						var attr = $(this).attr('id');
+						attr = attr.replace(re, "source-" + id + '$1');
+						$(this).attr('id', attr);
+					}
+					if (this.hasAttribute('data-parent')) {
+						var attr = $(this).attr('data-parent');
+						attr = attr.replace(re, "source-" + id + '$1');
+						$(this).attr('data-parent', attr);
+					}
+					if (this.hasAttribute('href')) {
+						var attr = $(this).attr('href');
+						attr = attr.replace(re, "source-" + id + '$1');
+						$(this).attr('href', attr);
+					}
+					if (this.hasAttribute('aria-controls')) {
+						var attr = $(this).attr('aria-controls');
+						attr = attr.replace(re, "source-" + id + '$1');
+						$(this).attr('aria-controls', attr);
+					}
+					if (this.hasAttribute('aria-labelledby')) {
+						var attr = $(this).attr('aria-labelledby');
+						attr = attr.replace(re, "source-" + id + '$1');
+						$(this).attr('aria-labelledby', attr);
+					}
+				});
+				Simulators.changeSourceIdInDatas(oldId, 'X' + id)
+			}
+		});
+		panelGroups.each(function(index) {
+			var dataContainer = $(this).find("div.source-container");
+			var oldId = dataContainer.attr('data-id');
+			var id = index + 1;
+			if (id != oldId) {
+				dataContainer.attr('data-id', id);
+				Simulators.changeSourceIdInDatas('X' + id, id);
+			}
+		});
+	}
+
+	Simulators.bindSortableSources = function(container) {
+		if (! container ) {
+			container = $("#page-simulators #collapsesources");
+		}
+		container.find("> .sortable").sortable({
+			cursor: "move",
+			containment: "parent",
+			axis: "y",
+			update: function( e, ui ) {
+				var self = $(this);
+				var container = $(ui.item).find('.source-container');
+				var id = container.attr('data-id');
+				Simulators.renumberSources($(ui.item).parent().find('> div'));
+				$('.update-button').show();
+				$('.toggle-collapse-all').show();
+				Admin.updated = true;
+			}
+		});
+	}
+
 	Simulators.drawSourceForDisplay = function(source) {
 		var sourceElementId = 'source-' + source.id;
 		var sourcePanelContainer = $('<div>', { 'class': 'panel-group', id: sourceElementId, role: 'tablist', 'aria-multiselectable': 'true' });
 		var sourcePanel = $('<div>', { 'class': 'panel panel-info' });
-		sourcePanel.append('<div class="panel-heading" role="tab" id="' + sourceElementId + '-panel"><button class="btn btn-info pull-right update-button delete-source" data-parent="#' + sourceElementId + '">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-source" data-parent="#' + sourceElementId + '">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + '</a></h4></div>');
+		sourcePanel.append('<div class="panel-heading" role="tab" id="' + sourceElementId + '-panel"><button class="btn btn-info pull-right update-button delete-source" title="' + Translator.trans('Delete') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-source" title="' + Translator.trans('Edit') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + '</a></h4></div>');
 		var sourcePanelCollapse = $('<div id="collapse' + sourceElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sourceElementId + '-panel"></div>');
 		var sourcePanelBody = $('<div class="panel-body"></div>');
 		var sourceContainer = $('<div class="panel panel-default source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
@@ -88,7 +186,7 @@ THE SOFTWARE.
 		var attributes = $('<div></div>');
 		var datasList = {};
 		var type = '';
-		$.each(dataset, function( name, data) {
+		$.each(Simulators.dataset, function( name, data) {
 			datasList[name] = data.label;
 			if (name == parameter.data) {
 				type = data.type;
@@ -170,7 +268,7 @@ THE SOFTWARE.
 
 	Simulators.bindSourceButtons = function(container) {
 		if (! container ) {
-			container = $("#simulator");
+			container = $("#collapsesources");
 		}
 		container.find('button.edit-source').click(function(e) {
 		    e.preventDefault();
@@ -270,7 +368,7 @@ THE SOFTWARE.
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
 			Admin.updated = true;
-			$("html, body").animate({ scrollTop: newSourcePanel.offset().top }, 500);
+			$("html, body").animate({ scrollTop: newSourcePanel.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = false;
 		});
 		sourcePanelContainer.find('select[data-attribute=datasource]').change(function(e) {
@@ -309,7 +407,7 @@ THE SOFTWARE.
 
 	Simulators.drawSourceParametersForInput = function(sourceId) {
 		var parametersPanel = $('<div>', { 'class': 'panel panel-default source-parameters-panel', id: 'source-' + sourceId + '-source-parameters-panel' });
-		parametersPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button add-source-parameter">' + Translator.trans('Add parameter') + ' <span class="glyphicon glyphicon-plus-sign"></span></button>' + Translator.trans('Parameters') + '</div>');
+		parametersPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button add-source-parameter" title="' + Translator.trans('Add parameter') + '"><span class="button-label">' + Translator.trans('Add parameter') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button>' + Translator.trans('Parameters') + '</div>');
 		var parametersPanelBody = $('<div class="panel-body"></div>');
 		parametersPanel.append(parametersPanelBody);
 		return parametersPanel;
@@ -317,13 +415,13 @@ THE SOFTWARE.
 
 	Simulators.drawSourceParameterForInput = function(parameter) {
 		var parameterPanel = $('<div>', { 'class': 'panel panel-default source-parameter-panel',  'data-id': parameter.id  });
-		parameterPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-source-parameter">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
+		parameterPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-source-parameter" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
 		var parameterPanelBody = $('<div>', { 'class': 'panel-body', id: 'data-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		var datasList = {};
 		var type = '';
-		$.each(dataset, function( name, data) {
+		$.each(Simulators.dataset, function( name, data) {
 			datasList[name] = data.label;
 			if (name == parameter.data) {
 				type = data.type;
@@ -422,13 +520,12 @@ THE SOFTWARE.
 		}
 		sourcesPanel.append(sourcePanelContainer);
 		Simulators.bindSource(sourcePanelContainer);
-		sourceContainerGroup.find('a[data-toggle="collapse"]').each(function() {
+		$("#collapsesources").collapse('show');
+		sourcePanelContainer.find('a[data-toggle="collapse"]').each(function() {
 			var objectID=$(this).attr('href');
-			if($(objectID).hasClass('in')===false) {
-				$(objectID).collapse('show');
-			}
+			$(objectID).collapse('show');
 		});
-		$("html, body").animate({ scrollTop: sourcePanelContainer.offset().top }, 500);
+		$("html, body").animate({ scrollTop: sourcePanelContainer.offset().top - $('#navbar').height() }, 500);
 		Simulators.updating = true;
 	}
 
@@ -436,6 +533,7 @@ THE SOFTWARE.
 		$('.update-button').hide();
 		$('.toggle-collapse-all').hide();
 		var sourceContainer = sourceContainerGroup.find('.source-container');
+		var id = sourceContainer.attr('data-id');
 		var attributesContainer = sourceContainer.find('.attributes-container');
 		var source = {
 			id: sourceContainer.attr('data-id'), 
@@ -470,20 +568,32 @@ THE SOFTWARE.
 		Simulators.bindParameters(parametersPanel);
 		Simulators.sourceBackup = sourceContainerGroup.replaceWith(sourcePanelContainer);
 		Simulators.bindSource(sourcePanelContainer);
-		sourcePanelContainer.find('> .panel-heading a').click();
-		$("html, body").animate({ scrollTop: sourcePanelContainer.offset().top }, 500);
+		$("#collapsesource-" + id).collapse('show');
+		$("html, body").animate({ scrollTop: sourcePanelContainer.offset().top - $('#navbar').height() }, 500);
 		Simulators.updating = true;
 	}
 
 	Simulators.deleteSource = function(sourceContainerGroup) {
 		var sourceContainer = sourceContainerGroup.find('.source-container');
 		var attributesContainer = sourceContainer.find('.attributes-container');
+		var id = sourceContainer.attr('data-id');
+		var dataId;
+		if ((dataId = Simulators.isSourceIdInDatas(id)) !== false) {
+			var data = Simulators.findDataById(dataId);
+			bootbox.alert({
+				title: Translator.trans('Deleting source'),
+				message: Translator.trans("This source is used in data #%id% : %label%. You must modify this data before you can delete this source", { 'id': dataId, 'label': data.label }) 
+			});
+			return;
+		}
 		bootbox.confirm({
 			title: Translator.trans('Deleting source'),
 			message: Translator.trans("Are you sure you want to delete this source"), 
 			callback: function(confirmed) {
 				if (confirmed) {
+					var sparent = sourceContainerGroup.parent();
 					sourceContainerGroup.remove();
+					Simulators.renumberSources(sparent.find('> div'));
 					$('.save-simulator').show();
 					Admin.updated = true;
 				}

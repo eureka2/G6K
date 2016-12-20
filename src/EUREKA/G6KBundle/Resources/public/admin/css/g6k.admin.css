@@ -77,6 +77,9 @@ ul.rule-conditions > li {
 	list-style-type: none;
 	margin-left: -35px;
 }
+.button-label {
+	display: none;
+}
 /*==============================================
     MEDIA QUERIES     
     =============================================*/
@@ -87,7 +90,9 @@ ul.rule-conditions > li {
         padding: 0px 18px;
         min-height: 1200px;
     }
-		
+	.button-label {
+		display: inline;
+	}
     .navbar-side {
         z-index: 1;
         position: absolute;
@@ -220,6 +225,7 @@ ul.rule-conditions > li {
 .add-footnotes, .edit-footnotes, .delete-footnotes, .add-footnote, .edit-footnote, .delete-footnote, 
 .add-action-button, .edit-action-button, .delete-action-button, 
 .add-panel, .edit-panel, .delete-panel, .add-fieldset, .edit-fieldset, .delete-fieldset, 
+.add-column, .edit-column, .delete-column, .add-fieldrow, .edit-fieldrow, .delete-fieldrow, 
 .add-blockinfo, .edit-blockinfo, .delete-blockinfo, .add-field, .edit-field, .delete-field, 
 .add-chapter, .edit-chapter, .delete-chapter, .add-section, .edit-section, .delete-section, 
 .add-choice, .add-source, .add-choice-source, .edit-choice-source, 
@@ -228,8 +234,14 @@ ul.rule-conditions > li {
 .edit-table-button, .drop-table-button,
 .export-datasource-button, .edit-datasource-button, .drop-datasource-button,
 .view-button, .drop-view-button ,
-.edit-source, .delete-source, .add-source-parameter, .delete-source-parameter {
+.add-profile, .edit-profile, .delete-profile, .add-profile-data, .edit-profile-data, .delete-profile-data,
+.edit-source, .delete-source, .add-source-parameter, .delete-source-parameter,
+.btn-group.update-button {
 	margin-top: -9px;
+}
+a.add-data, a.add-datagroup, a.add-footnotes, a.add-panel,
+a.add-blockinfo, a.add-fieldset {
+	margin-top: 0;
 }
 button.save-simulator {
 	position: fixed;

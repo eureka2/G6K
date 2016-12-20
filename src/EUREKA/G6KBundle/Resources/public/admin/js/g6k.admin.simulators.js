@@ -304,21 +304,46 @@ THE SOFTWARE.
 		var panel = $('<div>', { class: 'panel panel-' + style });
 		var panelHeading = $('<div>', { id: id + '-panel', class: 'panel-heading', role:'tab', 'aria-multiselectable': 'true' });
 		$.each(buttons, function(b, butt) {
-			var button = $('<button>', { class: 'btn btn-' + style + ' pull-right update-button ' + butt.class });
-			button.attr('data-parent', '#' + id);
-			var span = $('<span>', { class: 'glyphicon ' + butt.icon } );
-			button.append(butt.label);
-			button.append(' ');
-			button.append(span);
-			panelHeading.append(button);
+			if (butt.dropdown) {
+				var btngroup = $('<div>', { class: 'btn-group pull-right update-button' });
+				var button = $('<button>', { class: 'btn btn-' + style + ' dropdown-toggle', title: butt.label, 'data-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false' });
+				var span1 = $('<span>', { class: 'button-label' } );
+				span1.append(butt.label);
+				button.append(span1);
+				var span2 = $('<span>', { class: 'glyphicon ' + butt.icon } );
+				button.append(' ');
+				button.append(span2);
+				var ul = $('<ul>', { class: 'dropdown-menu'});
+				$.each(butt.dropdown, function(d, item) {
+					var li = $('<li>');
+					var link = $('<a>', { class: item.class, title: item.label, });
+					link.attr('data-parent', '#' + id);
+					li.append(link);
+					ul.append(li);
+				});
+				btngroup.append(button, ul);
+				panelHeading.append(btngroup);
+			} else {
+				var button = $('<button>', { class: 'btn btn-' + style + ' pull-right update-button ' + butt.class, title: butt.label });
+				button.attr('data-parent', '#' + id);
+				var span1 = $('<span>', { class: 'button-label' } );
+				span1.append(butt.label);
+				button.append(span1);
+				var span2 = $('<span>', { class: 'glyphicon ' + butt.icon } );
+				button.append(' ');
+				button.append(span2);
+				panelHeading.append(button);
+			}
 		});
 		if (style === 'primary') {
-			var button2 = $('<button>', { class: 'btn btn-' + style + ' pull-right expand-all toggle-collapse-all' });
+			var button2 = $('<button>', { class: 'btn btn-' + style + ' pull-right expand-all toggle-collapse-all', title: Translator.trans('Expand all') });
 			button2.attr('data-parent', '#' + id);
-			var span = $('<span>', { class: 'glyphicon glyphicon-expand' } );
-			button2.append(Translator.trans('Expand all'));
+			var span1 = $('<span>', { class: 'button-label' } );
+			span1.append(Translator.trans('Expand all'));
+			button2.append(span1);
+			var span2 = $('<span>', { class: 'glyphicon glyphicon-expand' } );
 			button2.append(' ');
-			button2.append(span);
+			button2.append(span2);
 			panelHeading.append(button2);
 		}
 		var h4 = $('<h4>', { class: 'panel-title' } );
@@ -398,25 +423,29 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindSimulatorButtons = function() {
-		$('button.add-source').click(function(e) {
+		$('#sources-panel').find('> button.add-source').click(function(e) {
 		    e.preventDefault();
 			Simulators.addSource($($(this).attr('data-parent')));
 		});
-		$('button.add-datagroup').click(function(e) {
+		$('#datas-panel').find('> button.add-datagroup, > div > ul li a.add-datagroup').click(function(e) {
 		    e.preventDefault();
 			Simulators.addDatagroup($($(this).attr('data-parent')));
 		});
-		$('button.add-data').click(function(e) {
+		$('#datas-panel').find('> button.add-data, > div > ul li a.add-data').click(function(e) {
 		    e.preventDefault();
 			Simulators.addData($($(this).attr('data-parent')));
 		});
-		$('button.add-step').click(function(e) {
+		$('#steps-panel').find('> button.add-step').click(function(e) {
 		    e.preventDefault();
 			Simulators.addStep($($(this).attr('data-parent')));
 		});
-		$('button.add-rule').click(function(e) {
+		$('#businessrules-panel').find('> button.add-rule').click(function(e) {
 		    e.preventDefault();
 			Simulators.addRule($($(this).attr('data-parent')));
+		});
+		$('#profiles-panel').find('> button.add-profile').click(function(e) {
+		    e.preventDefault();
+			Simulators.addProfile($($(this).attr('data-parent')));
 		});
 	}
 
@@ -616,11 +645,15 @@ $(document).ready(function() {
 			Simulators.updating = true;
 		});
 		Simulators.bindSimulatorButtons();
+		Simulators.bindProfileDataButtons();
+		Simulators.bindProfileButtons();
 		Simulators.bindRuleButtons();
 		Simulators.bindDataButtons();
 		Simulators.bindDatagroupButtons();
 		Simulators.bindSourceButtons();
 		Simulators.bindFieldButtons();
+		Simulators.bindFieldRowButtons();
+		Simulators.bindFieldSetColumnButtons();
 		Simulators.bindSectionButtons();
 		Simulators.bindChapterButtons();
 		Simulators.bindBlockInfoButtons();
@@ -630,16 +663,21 @@ $(document).ready(function() {
 		Simulators.bindFootNoteButtons();
 		Simulators.bindActionButtonButtons();
 		Simulators.bindStepButtons();
+		Simulators.bindSortableSources();
 		Simulators.bindSortableDatas();
 		Simulators.bindSortableSteps();
 		Simulators.bindSortableFootNotes();
 		Simulators.bindSortableActionButtons();
 		Simulators.bindSortablePanels();
 		Simulators.bindSortableBlocks();
+		Simulators.bindSortableFieldRows();
+		Simulators.bindSortableFieldSetColumns();
 		Simulators.bindSortableFields();
 		Simulators.bindSortableChapters();
 		Simulators.bindSortableSections();
 		Simulators.bindSortableRules();
+		Simulators.bindSortableProfileDatas();
+		Simulators.bindSortableProfiles();
 		$('#page-simulators textarea').wysihtml5(Admin.wysihtml5Options);
 		$('#page-simulators select').select2({
 			language: Admin.lang,
@@ -688,8 +726,9 @@ $(document).ready(function() {
 			$('input[name=simulator]').val(JSON.stringify(simulator));
 			$('input[name=sources]').val(JSON.stringify(Simulators.collectSources()));
 			$('input[name=datas]').val(JSON.stringify(Simulators.collectDatas()));
-			$('input[name=rules]').val(JSON.stringify(Simulators.collectRules()));
 			$('input[name=steps]').val(JSON.stringify(Simulators.collectSteps()));
+			$('input[name=rules]').val(JSON.stringify(Simulators.collectRules()));
+			$('input[name=profiles]').val(JSON.stringify(Simulators.collectProfiles()));
 			Admin.updated = false;
 			$('#save-form').submit();
 		});

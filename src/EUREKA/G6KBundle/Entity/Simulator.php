@@ -399,7 +399,7 @@ class Simulator {
 	private function replaceIdByDataLabel($matches) {
 		$id = $matches[1];
 		$data = $this->getDataById($id);
-		return $data !== null ? '«' . $data->getLabel() . '»' : "#" . $id;
+		return $data !== null ? '<var class="data" data-id="' . $data->getId() . '">«' . $data->getLabel() . '»</var>' : "#" . $id;
 	}
 
 	public function replaceByDataLabel($target) {
@@ -594,7 +594,7 @@ class Simulator {
 									}
 								} elseif ($child->getName() == "FieldRow") {
 									$fieldrow = $child;
-									$fieldRowObj = new FieldRow($fieldsetObj, (string)$fieldrow['label']);
+									$fieldRowObj = new FieldRow($fieldsetObj, (int)$fieldrow['id'], (string)$fieldrow['label']);
 									$fieldRowObj->setColon((string)$fieldrow['colon'] == '' || (string)$fieldrow['colon'] == '1');
 									$fieldRowObj->setHelp((string)$fieldrow['help'] == '1');
 									$fieldRowObj->setEmphasize((string)$fieldrow['emphasize'] == '1');
@@ -755,6 +755,8 @@ class Simulator {
 					$ruleActionObj->setStep((string)$action['step']);
 					$ruleActionObj->setPanel((string)$action['panel']);
 					$ruleActionObj->setFieldset((string)$action['fieldset']);
+					$ruleActionObj->setColumn((string)$action['column']);
+					$ruleActionObj->setFieldrow((string)$action['fieldrow']);
 					$ruleActionObj->setField((string)$action['field']);
 					$ruleActionObj->setBlockinfo((string)$action['blockinfo']);
 					$ruleActionObj->setChapter((string)$action['chapter']);
@@ -781,6 +783,8 @@ class Simulator {
 					$ruleActionObj->setStep((string)$action['step']);
 					$ruleActionObj->setPanel((string)$action['panel']);
 					$ruleActionObj->setFieldset((string)$action['fieldset']);
+					$ruleActionObj->setColumn((string)$action['column']);
+					$ruleActionObj->setFieldrow((string)$action['fieldrow']);
 					$ruleActionObj->setField((string)$action['field']);
 					$ruleActionObj->setBlockinfo((string)$action['blockinfo']);
 					$ruleActionObj->setChapter((string)$action['chapter']);
@@ -1846,7 +1850,7 @@ class Simulator {
 							foreach ($fieldset->getFields() as $child) {
 								if ($child instanceof FieldRow) {
 									$fieldrow = $child;
-									$attrs = 'datagroup="' . $fieldrow->getDataGroup() . '"';
+									$attrs = 'id="' . $fieldrow->getId() . '" datagroup="' . $fieldrow->getDataGroup() . '"';
 									if ($fieldrow->getLabel() != '') {
 										$attrs .= ' label="' . $fieldrow->getLabel() . '"'; 
 									}
@@ -2109,6 +2113,12 @@ class Simulator {
 					if ($action->getFieldset() != '') {
 						$attrs .= ' fieldset="' . $action->getFieldset() . '"';
 					}
+					if ($action->getColumn() != '') {
+						$attrs .= ' column="' . $action->getColumn() . '"';
+					}
+					if ($action->getFieldrow() != '') {
+						$attrs .= ' fieldrow="' . $action->getFieldrow() . '"';
+					}
 					if ($action->getField() != '') {
 						$attrs .= ' field="' . $action->getField() . '"';
 					}
@@ -2159,6 +2169,12 @@ class Simulator {
 					}
 					if ($action->getFieldset() != '') {
 						$attrs .= ' fieldset="' . $action->getFieldset() . '"';
+					}
+					if ($action->getColumn() != '') {
+						$attrs .= ' column="' . $action->getColumn() . '"';
+					}
+					if ($action->getFieldrow() != '') {
+						$attrs .= ' fieldrow="' . $action->getFieldrow() . '"';
 					}
 					if ($action->getField() != '') {
 						$attrs .= ' field="' . $action->getField() . '"';

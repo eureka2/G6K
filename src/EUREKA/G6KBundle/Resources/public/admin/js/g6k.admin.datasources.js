@@ -201,7 +201,7 @@ THE SOFTWARE.
 
 	Datasources.drawChoicesForInput = function(fieldId) {
 		var choicesPanel = $('<div>', { 'class': 'panel panel-default choices-panel', id: 'field-' + fieldId + '-choices-panel' });
-		choicesPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice-source">' + Translator.trans('Delete source') + '<span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice-source">' + Translator.trans('Add source') + '<span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice">' + Translator.trans('Add choice') + '<span class="glyphicon glyphicon-plus-sign"></span></button>' + Translator.trans('Choices') + '</div>');
+		choicesPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice-source" title="' + Translator.trans('Delete source') + '"><span class="button-label">' + Translator.trans('Delete source') + '</span><span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice-source" title="' + Translator.trans('Add source') + '"><span class="button-label">' + Translator.trans('Add source') + '</span><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice" title="' + Translator.trans('Add choice') + '"><span class="button-label">' + Translator.trans('Add choice') + '</span><span class="glyphicon glyphicon-plus-sign"></span></button>' + Translator.trans('Choices') + '</div>');
 		var choicesPanelBody = $('<div class="panel-body"></div>');
 		choicesPanel.append(choicesPanelBody);
 		return choicesPanel;
@@ -259,7 +259,7 @@ THE SOFTWARE.
 
 	Datasources.drawChoiceForInput = function(choice) {
 		var choicePanel = $('<div>', { 'class': 'panel panel-default choice-panel',  'data-id': choice.id  });
-		choicePanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice">' + Translator.trans('Delete') + '<span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Choice %id%', { 'id' : choice.id }) + '</div>');
+		choicePanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span><span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Choice %id%', { 'id' : choice.id }) + '</div>');
 		var choicePanelBody = $('<div>', { 'class': 'panel-body', id: 'field-' + choice.fieldId + '-choice-' + choice.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');

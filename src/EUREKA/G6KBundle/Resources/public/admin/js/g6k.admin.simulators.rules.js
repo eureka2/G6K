@@ -25,6 +25,40 @@ THE SOFTWARE.
 (function (global) {
 	'use strict';
 
+	Simulators.isDataIdInRules = function(id) {
+		var inRules = false;
+		var re = new RegExp("#" + id + '([^\d])?', 'g');
+		$.each(rules, function(r, rule) {
+			if (re.test(rule.conditions)) {
+				inRules = rule.id;
+				return false;
+			}
+			if (rule.connector && Simulators.isDataIdInConnector(rule.connector, id)) {
+				inRules = rule.id;
+				return false;
+			}
+			$.each(rule.ifdata, function(a, action) {
+				if (action.value == "setAttribute") {
+					var val = action.fields[0].fields[0].fields[0].value;
+					if (re.test(val)) {
+						inRules = rule.id;
+						return false;
+					}
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				if (action.value == "setAttribute") {
+					var val = action.fields[0].fields[0].fields[0].value;
+					if (re.test(val)) {
+						inRules = rule.id;
+						return false;
+					}
+				}
+			});
+		});
+		return inRules;
+	}
+
 	Simulators.changeDataIdInRules = function(oldId, id) {
 		var re = new RegExp("#" + oldId + '([^\d])?', 'g');
 		var ruleConditions = $('#business-rules').find('.rule-conditions');
@@ -34,6 +68,12 @@ THE SOFTWARE.
 				val = val.replace(re, "#" + id + '$1');
 				$(this).attr('data-value', val);
 			}
+			var datas = $(this).find('var.data');
+			datas.each(function(d) {
+				if ($(this).attr('data-id') == oldId) {
+					$(this).attr('data-id', id);
+				}
+			});
 		});
 		var ruleActions = $('#business-rules').find('.rule-action');
 		ruleActions.each(function(r) {
@@ -45,12 +85,20 @@ THE SOFTWARE.
 				val = val.replace(re, "#" + id + '$1');
 				$(this).attr('data-value', val);
 			}
+			var datas = $(this).find('var.data');
+			datas.each(function(d) {
+				if ($(this).attr('data-id') == oldId) {
+					$(this).attr('data-id', id);
+				}
+			});
 		});
 		$.each(rules, function(r, rule) {
 			if (re.test(rule.conditions)) {
 				rule.conditions = rule.conditions.replace(re, "#" + id + '$1');
 			}
-			Simulators.changeDataIdInConnector(rule.connector, oldId, id);
+			if (rule.connector) {
+				Simulators.changeDataIdInConnector(rule.connector, oldId, id);
+			}
 			$.each(rule.ifdata, function(a, action) {
 				if (action.value == "setAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
@@ -72,6 +120,99 @@ THE SOFTWARE.
 		});
 	}
 
+	Simulators.isDataNameInRules = function(name) {
+		var inRules = false;
+		$.each(rules, function(r, rule) {
+			if (rule.connector && Simulators.isDataNameInConnector(rule.connector, name)) {
+				inRules = rule.id;
+				return false;
+			}
+			$.each(rule.ifdata, function(a, action) {
+				if (action.value == "setAttribute") {
+					if (action.fields[0].fields[0].value == name) {
+						inRules = rule.id;
+						return false;
+					}
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				if (action.value == "setAttribute") {
+					if (action.fields[0].fields[0].value == name) {
+						inRules = rule.id;
+						return false;
+					}
+				}
+			});
+		});
+		return inRules;
+	}
+
+	Simulators.changeDataNameInRules = function(oldName, name) {
+		$.each(rules, function(r, rule) {
+			if (rule.connector) {
+				Simulators.changeDataNameInConnector(rule.connector, oldName, name);
+			}
+			$.each(rule.ifdata, function(a, action) {
+				if (action.value == "setAttribute") {
+					if (action.fields[0].fields[0].value == oldName) {
+						action.fields[0].fields[0].value = name;
+					}
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				if (action.value == "setAttribute") {
+					if (action.fields[0].fields[0].value == oldName) {
+						action.fields[0].fields[0].value = name;
+					}
+				}
+			});
+		});
+	}
+
+	Simulators.changeDataLabelInRules = function(id, label) {
+		var rulesObj= $('#business-rules').find('.rule-conditions, .rule-action');
+		rulesObj.each(function(r) {
+			var datas = $(this).find('var.data');
+			datas.each(function(d) {
+				if ($(this).attr('data-id') == id) {
+					$(this).text('«' + label + '»');
+				}
+			});
+		});
+	}
+
+	Simulators.isDataIdInConnector = function(connector, id) {
+		var inConnector = false;
+		if (connector.all) {
+			$.each(connector.all, function(c, conn) {
+				if (Simulators.isDataIdInConnector(conn, id)) {
+					inConnector = true;
+					return false;
+				}
+			});
+		} else if (connector.any) {
+			$.each(connector.any, function(c, conn) {
+				if (Simulators.isDataIdInConnector(conn, id)) {
+					inConnector = true;
+					return false;
+				}
+			});
+		} else if (connector.none) {
+			$.each(connector.none, function(c, conn) {
+				if (Simulators.isDataIdInConnector(conn, id)) {
+					inConnector = true;
+					return false;
+				}
+			});
+		} else {
+			var re = new RegExp("#" + id + '([^\\d])?', 'g');
+			if (connector.value && re.test(connector.value)) {
+				inConnector = true;
+			}
+		}
+		return inConnector;
+	}
+
 	Simulators.changeDataIdInConnector = function(connector, oldId, id) {
 		if (connector.all) {
 			$.each(connector.all, function(c, conn) {
@@ -91,6 +232,59 @@ THE SOFTWARE.
 				connector.value = connector.value.replace(re, "#" + id + '$1');
 			}
 		}
+	}
+
+	Simulators.isDataNameInConnector = function(connector, name) {
+		var inConnector = false;
+		if (connector.all) {
+			$.each(connector.all, function(c, conn) {
+				if (Simulators.isDataNameInConnector(conn, name)) {
+					inConnector = true;
+					return false;
+				}
+			});
+		} else if (connector.any) {
+			$.each(connector.any, function(c, conn) {
+				if (Simulators.isDataNameInConnector(conn, name)) {
+					inConnector = true;
+					return false;
+				}
+			});
+		} else if (connector.none) {
+			$.each(connector.none, function(c, conn) {
+				if (Simulators.isDataNameInConnector(conn, name)) {
+					inConnector = true;
+					return false;
+				}
+			});
+		} else if (connector.name == name) {
+			inConnector = true;
+			return false;
+		}
+		return inConnector;
+	}
+
+	Simulators.changeDataNameInConnector = function(connector, oldName, name) {
+		if (connector.all) {
+			$.each(connector.all, function(c, conn) {
+				Simulators.changeDataIdInConnector(conn, oldName, name);
+			});
+		} else if (connector.any) {
+			$.each(connector.any, function(c, conn) {
+				Simulators.changeDataIdInConnector(conn, oldName, name);
+			});
+		} else if (connector.none) {
+			$.each(connector.none, function(c, conn) {
+				Simulators.changeDataIdInConnector(conn, oldName, name);
+			});
+		} else if (connector.name == oldName) {
+			connector.name = name;
+		}
+	}
+
+	Simulators.deleteDatagroupInActions = function(name) {
+		Simulators.deleteInArray(actions, [{ key: 'name', val: 'notifyError', list: 'fields' }, { key: 'name', val: 'target', list: 'options' }, { key: 'name', val: 'datagroup', list: 'fields' }, { key: 'name', val: 'datagroupName', list: 'options' }, { key: 'name', val: name }]);
+		Simulators.deleteInArray(actions, [{ key: 'name', val: 'notifyWarning', list: 'fields' }, { key: 'name', val: 'target', list: 'options' }, { key: 'name', val: 'datagroup', list: 'fields' }, { key: 'name', val: 'datagroupName', list: 'options' }, { key: 'name', val: name }]);
 	}
 
 	Simulators.isStepInRules = function(id) {
@@ -121,7 +315,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeStepIdInRules = function(oldId, id) {
-		var objects = ['step', 'action', 'footnote', 'panel', 'fieldset', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
+		var objects = ['step', 'action', 'footnote', 'panel', 'fieldset', 'column', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
 		$.each(objects, function (k, obj) {
 			var astep = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: oldId }]);
 			if (astep) {
@@ -162,7 +356,7 @@ THE SOFTWARE.
 		if (! label) {
 			label = Translator.trans('Step %id% (nolabel)', { id: id });
 		}
-		var objects = ['step', 'action', 'footnote', 'panel', 'fieldset', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
+		var objects = ['step', 'action', 'footnote', 'panel', 'fieldset', 'column', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
 		$.each(objects, function (k, obj) {
 			var astep = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: id }]);
 			if (astep) {
@@ -253,32 +447,33 @@ THE SOFTWARE.
 	}
 
 	Simulators.deleteStepInActions = function(id) {
-		var objects = ['step', 'action', 'footnote', 'panel', 'fieldset', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
+		var objects = ['step', 'action', 'footnote', 'panel', 'fieldset', 'column', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
 		$.each(objects, function (k, obj) {
 			Simulators.deleteInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: id }]);
 			Simulators.deleteInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: id }]);
 		});
 	}
 
+
 	Simulators.isFootNoteInRules = function(stepId, id) {
 		var found = false;
 		$.each(rules, function(r, rule) {
-			var rfootnote = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
+			var rfootnote = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
 			if (rfootnote) {
 				found = rule.id;
 				return false;
 			}
-			rfootnote = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id } ]);
+			rfootnote = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id } ]);
 			if (rfootnote) {
 				found = rule.id;
 				return false;
 			}
-			rfootnote = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
+			rfootnote = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
 			if (rfootnote) {
 				found = rule.id;
 				return false;
 			}
-			rfootnote = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
+			rfootnote = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
 			if (rfootnote) {
 				found = rule.id;
 				return false;
@@ -594,7 +789,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.changePanelIdInRules = function(stepId, oldId, id) {
-		var objects = ['panel', 'fieldset', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
+		var objects = ['panel', 'fieldset', 'column', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
 		$.each(objects, function (k, obj) {
 			var apanel = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: oldId }]);
 			if (apanel) {
@@ -635,7 +830,7 @@ THE SOFTWARE.
 		if (! label) {
 			label = Translator.trans('Panel %id% (nolabel)', { id: id });
 		}
-		var objects = ['panel', 'fieldset', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
+		var objects = ['panel', 'fieldset', 'column', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
 		$.each(objects, function (k, obj) {
 			var apanel = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: id }]);
 			if (apanel) {
@@ -736,7 +931,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.deletePanelInActions = function(stepId, id) {
-		var objects = ['panel', 'fieldset', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
+		var objects = ['panel', 'fieldset', 'column', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
 		$.each(objects, function (k, obj) {
 			Simulators.deleteInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: id }]);
 			Simulators.deleteInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: id }]);
@@ -771,7 +966,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeFieldSetIdInRules = function(stepId, panelId, oldId, id) {
-		var objects = ['fieldset', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
+		var objects = ['fieldset', 'column', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
 		$.each(objects, function (k, obj) {
 			var afieldset = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: oldId }]);
 			if (afieldset) {
@@ -812,7 +1007,7 @@ THE SOFTWARE.
 		if (! legend) {
 			legend = Translator.trans('Fieldset %id% (nolegend)', { id: id });
 		}
-		var objects = ['fieldset', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
+		var objects = ['fieldset', 'column', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
 		$.each(objects, function (k, obj) {
 			var afieldset = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: id }]);
 			if (afieldset) {
@@ -935,33 +1130,33 @@ THE SOFTWARE.
 	}
 
 	Simulators.deleteFieldSetInActions = function(stepId, panelId, id) {
-		var objects = ['fieldset', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
+		var objects = ['fieldset', 'column', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section'];
 		$.each(objects, function (k, obj) {
 			Simulators.deleteInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: id }]);
 			Simulators.deleteInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: id }]);
 		});
 	}
 
-	Simulators.isFieldInRules = function(stepId, panelId, fieldsetId, id) {
+	Simulators.isFieldSetColumnInRules = function(stepId, panelId, fieldsetId, id) {
 		var found = false;
 		$.each(rules, function(r, rule) {
-			var rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			if (rfield && rfield.value == id) {
+			var rcolumn = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+			if (rcolumn && rcolumn.value == id) {
 				found = rule.id;
 				return false;
 			}
-			rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' } ]);
-			if (rfield && rfield.value == id) {
+			rcolumn = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' } ]);
+			if (rcolumn && rcolumn.value == id) {
 				found = rule.id;
 				return false;
 			}
-			rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			if (rfield && rfield.value == id) {
+			rcolumn = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+			if (rcolumn && rcolumn.value == id) {
 				found = rule.id;
 				return false;
 			}
-			rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			if (rfield && rfield.value == id) {
+			rcolumn = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+			if (rcolumn && rcolumn.value == id) {
 				found = rule.id;
 				return false;
 			}
@@ -969,103 +1164,97 @@ THE SOFTWARE.
 		return found;
 	}
 
-	Simulators.changeFieldIdInRules = function(stepId, panelId, fieldsetId, oldId, id) {
-		var objects = ['field', 'prenote', 'postnote'];
+	Simulators.changeFieldSetColumnIdInRules = function(stepId, panelId, fieldsetId, oldId, id) {
+		var objects = ['column'];
 		$.each(objects, function (k, obj) {
-			var afield = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: oldId }]);
-			if (afield) {
-				afield.name = id;
+			var acolumn = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId', list: 'options' }, { key: 'name', val: oldId }]);
+			if (acolumn) {
+				acolumn.name = id;
 			}
-			afield = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: oldId }]);
-			if (afield) {
-				afield.name = id;
+			acolumn = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId', list: 'options' }, { key: 'name', val: oldId }]);
+			if (acolumn) {
+				acolumn.name = id;
 			}
 		});
 		var ruleActions = $('#business-rules').find('.rule-action');
 		ruleActions.each(function(r) {
-			if (this.hasAttribute('data-field') && $(this).attr('data-step') == stepId && $(this).attr('data-panel') == panelId && $(this).attr('data-fieldset') == fieldsetId && $(this).attr('data-field') == oldId) {
-				$(this).attr('data-field', id);
+			if (this.hasAttribute('data-column') && $(this).attr('data-step') == stepId && $(this).attr('data-panel') == panelId && $(this).attr('data-fieldset') == fieldsetId && $(this).attr('data-column') == oldId) {
+				$(this).attr('data-column', id);
 			}
 		});
 		$.each(rules, function(r, rule) {
-			var rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			if (rfield && rfield.value == oldId) {
-				rfield.value = id;
+			var rcolumn = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+			if (rcolumn && rcolumn.value == oldId) {
+				rcolumn.value = id;
 			}
-			rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' } ]);
-			if (rfield && rfield.value == oldId) {
-				rfield.value = id;
+			rcolumn = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' } ]);
+			if (rcolumn && rcolumn.value == oldId) {
+				rcolumn.value = id;
 			}
-			rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			if (rfield && rfield.value == oldId) {
-				rfield.value = id;
+			rcolumn = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+			if (rcolumn && rcolumn.value == oldId) {
+				rcolumn.value = id;
 			}
-			rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			if (rfield && rfield.value == oldId) {
-				rfield.value = id;
+			rcolumn = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+			if (rcolumn && rcolumn.value == oldId) {
+				rcolumn.value = id;
 			}
 		});
 	}
 
-	Simulators.changeFieldLabelInRules = function(stepId, panelId, fieldsetId, position, label) {
+	Simulators.changeFieldSetColumnLabelInRules = function(stepId, panelId, fieldsetId, id, label) {
 		if (! label) {
-			label = Translator.trans('Field %id% (nolabel)', { id: position });
+			label = Translator.trans('Column %id% (nolabel)', { id: id });
 		}
-		var objects = ['field', 'prenote', 'postnote'];
+		var objects = ['column', 'field'];
 		$.each(objects, function (k, obj) {
-			var afield = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
-			if (afield) {
-				afield.label = label;
+			var acolumn = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId', list: 'options' }, { key: 'name', val: id }]);
+			if (acolumn) {
+				acolumn.label = label;
 			}
-			afield = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
-			if (afield) {
-				afield.label = label;
+			acolumn = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId', list: 'options' }, { key: 'name', val: id }]);
+			if (acolumn) {
+				acolumn.label = label;
 			}
 		});
 		var ruleActions = $('#business-rules').find('.rule-action');
 		ruleActions.each(function(r) {
-			if (this.hasAttribute('data-field') && $(this).attr('data-step') == stepId && $(this).attr('data-panel') == panelId && $(this).attr('data-fieldset') == fieldsetId && $(this).attr('data-field') == position) {
+			if (this.hasAttribute('data-column') && $(this).attr('data-step') == stepId && $(this).attr('data-panel') == panelId && $(this).attr('data-fieldset') == fieldsetId && $(this).attr('data-column') == id) {
 				var target = $(this).attr('data-target');
-				var action = $(this).find('span.action-field');
+				var action = $(this).find('span.action-column');
 				switch (target) {
-					case 'field':
-						var action = $(this).find('span.action-field');
+					case 'column':
 						action.text(' «' + label + '»');
 						break;
-					case 'prenote':
-						var action = $(this).find('span.action-prenote');
-						action.text(' ' + Translator.trans('of field «%label%»', {'label': label}));
-						break;
-					case 'postnote':
-						var action = $(this).find('span.action-postnote');
-						action.text(' ' + Translator.trans('of field «%label%»', {'label': label}));
+					case 'field':
+						action.text(' ' + Translator.trans('in') + ' ' + label);
 						break;
 				}
 			}
 		});
 	}
 
-	Simulators.addFieldInActions = function(field) {
+	Simulators.addFieldSetColumnInActions = function(column) {
 		var ractions = ['hideObject', 'showObject'];
-		var afield = {
-			label: field.label != '' ? field.label : Translator.trans("Field %id% (nolabel)", { id: field.position}), 
-			name: field.position
+		var acolumn = {
+			label: column.label != '' ? column.label : Translator.trans("Column %id% (nolabel)", { id: column.id}), 
+			name: column.id
 		};
-		var stepId = field.stepId;
-		var panelId = field.panelId;
-		var fieldsetId = field.fieldsetId;
+		var stepId = column.stepId;
+		var panelId = column.panelId;
+		var fieldsetId = column.fieldsetId;
 		$.each(ractions, function(a, action) {
 			var objs = Simulators.findInArray(actions, [{ key: 'name', val: action, list: 'fields' }, { key: 'name', val: 'objectId' } ]);
 			var step  = Simulators.findInArray(objs.options, [{ key: 'name', val: 'step', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId } ]);
 			var panel = Simulators.findInArray(objs.options, [{ key: 'name', val: 'panel', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId } ]);
 			var fieldset = Simulators.findInArray(objs.options, [{ key: 'name', val: 'fieldset', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId } ]);
-			var ofield = Simulators.findInArray(objs.options, [{ key: 'name', val: 'field' }]);
-			if (ofield) {
-				var ofieldsetfield = Simulators.findInArray(ofield.fields, [{ key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' } ]);
-				if (ofieldsetfield) {
-					ofieldsetfield.options.push(afield);
+			var ocolumn = Simulators.findInArray(objs.options, [{ key: 'name', val: 'column' }]);
+			if (ocolumn) {
+				var ofieldsetcolumn = Simulators.findInArray(ocolumn.fields, [{ key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' } ]);
+				if (ofieldsetcolumn) {
+					ofieldsetcolumn.options.push(acolumn);
 				} else {
-					Simulators.addInArray(ofield.fields, [{ key: 'name', val: 'stepId', list: 'options' }], 
+					Simulators.addInArray(ocolumn.fields, [{ key: 'name', val: 'stepId', list: 'options' }], 
 						{
 							"label": step.label,
 							"name": step.name,
@@ -1090,10 +1279,10 @@ THE SOFTWARE.
 															"fields": [
 																{
 																	"label": Translator.trans("whose label is"),
-																	"name": "fieldId",
+																	"name": "columnId",
 																	"fieldType": "select",
 																	"options": [
-																		afield
+																		acolumn
 																	]
 																}
 															]
@@ -1109,8 +1298,8 @@ THE SOFTWARE.
 				}
 			} else {
 				objs.options.push({
-					"label": Translator.trans("field"),
-					"name": "field",
+					"label": Translator.trans("column"),
+					"name": "column",
 					"fields": [
 						{
 							"label": Translator.trans("of step"),
@@ -1141,10 +1330,10 @@ THE SOFTWARE.
 																	"fields": [
 																		{
 																			"label": Translator.trans("whose label is"),
-																			"name": "fieldId",
+																			"name": "columnId",
 																			"fieldType": "select",
 																			"options": [
-																				afield
+																				acolumn
 																			]
 																		}
 																	]
@@ -1165,11 +1354,661 @@ THE SOFTWARE.
 		});
 	}
 
-	Simulators.deleteFieldInActions = function(stepId, panelId, fieldsetId, position) {
+	Simulators.deleteFieldSetColumnInActions = function(stepId, panelId, fieldsetId, id) {
+		var objects = ['column'];
+		$.each(objects, function (k, obj) {
+			Simulators.deleteInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId', list: 'options' }, { key: 'name', val: id }]);
+			Simulators.deleteInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId', list: 'options' }, { key: 'name', val: id }]);
+		});
+	}
+
+	Simulators.isFieldRowInRules = function(stepId, panelId, fieldsetId, id) {
+		var found = false;
+		$.each(rules, function(r, rule) {
+			var rfieldrow = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+			if (rfieldrow && rfieldrow.value == id) {
+				found = rule.id;
+				return false;
+			}
+			rfieldrow = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' } ]);
+			if (rfieldrow && rfieldrow.value == id) {
+				found = rule.id;
+				return false;
+			}
+			rfieldrow = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+			if (rfieldrow && rfieldrow.value == id) {
+				found = rule.id;
+				return false;
+			}
+			rfieldrow = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+			if (rfieldrow && rfieldrow.value == id) {
+				found = rule.id;
+				return false;
+			}
+		});
+		return found;
+	}
+
+	Simulators.changeFieldRowIdInRules = function(stepId, panelId, fieldsetId, oldId, id) {
+		var objects = ['fieldrow', 'field', 'prenote', 'postnote'];
+		$.each(objects, function (k, obj) {
+			var afieldrow = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: oldId }]);
+			if (afieldrow) {
+				afieldrow.name = id;
+			}
+			afieldrow = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: oldId }]);
+			if (afieldrow) {
+				afieldrow.name = id;
+			}
+		});
+		var ruleActions = $('#business-rules').find('.rule-action');
+		ruleActions.each(function(r) {
+			if (this.hasAttribute('data-fieldrow') && $(this).attr('data-step') == stepId && $(this).attr('data-panel') == panelId && $(this).attr('data-fieldset') == fieldsetId && $(this).attr('data-fieldrow') == oldId) {
+				$(this).attr('data-fieldrow', id);
+			}
+		});
+		$.each(rules, function(r, rule) {
+			var rfieldrow = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+			if (rfieldrow && rfieldrow.value == oldId) {
+				rfieldrow.value = id;
+			}
+			rfieldrow = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' } ]);
+			if (rfieldrow && rfieldrow.value == oldId) {
+				rfieldrow.value = id;
+			}
+			rfieldrow = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+			if (rfieldrow && rfieldrow.value == oldId) {
+				rfieldrow.value = id;
+			}
+			rfieldrow = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+			if (rfieldrow && rfieldrow.value == oldId) {
+				rfieldrow.value = id;
+			}
+		});
+	}
+
+	Simulators.changeFieldRowLabelInRules = function(stepId, panelId, fieldsetId, id, label) {
+		if (! label) {
+			label = Translator.trans('FieldRow %id% (nolabel)', { id: id });
+		}
+		var objects = ['fieldrow', 'field'];
+		$.each(objects, function (k, obj) {
+			var afieldrow = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: id }]);
+			if (afieldrow) {
+				afieldrow.label = label;
+			}
+			afieldrow = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: id }]);
+			if (afieldrow) {
+				afieldrow.label = label;
+			}
+		});
+		var ruleActions = $('#business-rules').find('.rule-action');
+		ruleActions.each(function(r) {
+			if (this.hasAttribute('data-fieldrow') && $(this).attr('data-step') == stepId && $(this).attr('data-panel') == panelId && $(this).attr('data-fieldset') == fieldsetId && $(this).attr('data-fieldrow') == id) {
+				var target = $(this).attr('data-target');
+				var action = $(this).find('span.action-fieldrow');
+				switch (target) {
+					case 'fieldrow':
+						action.text(' «' + label + '»');
+						break;
+					case 'field':
+						action.text(' ' + Translator.trans('in') + ' ' + label);
+						break;
+				}
+			}
+		});
+	}
+
+	Simulators.addFieldRowInActions = function(fieldrow) {
+		var ractions = ['hideObject', 'showObject'];
+		var afieldrow = {
+			label: fieldrow.label != '' ? fieldrow.label : Translator.trans("FieldRow %id% (nolabel)", { id: fieldrow.id}), 
+			name: fieldrow.id
+		};
+		var stepId = fieldrow.stepId;
+		var panelId = fieldrow.panelId;
+		var fieldsetId = fieldrow.fieldsetId;
+		$.each(ractions, function(a, action) {
+			var objs = Simulators.findInArray(actions, [{ key: 'name', val: action, list: 'fields' }, { key: 'name', val: 'objectId' } ]);
+			var step  = Simulators.findInArray(objs.options, [{ key: 'name', val: 'step', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId } ]);
+			var panel = Simulators.findInArray(objs.options, [{ key: 'name', val: 'panel', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId } ]);
+			var fieldset = Simulators.findInArray(objs.options, [{ key: 'name', val: 'fieldset', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId } ]);
+			var ofieldrow = Simulators.findInArray(objs.options, [{ key: 'name', val: 'fieldrow' }]);
+			if (ofieldrow) {
+				var ofieldsetfieldrow = Simulators.findInArray(ofieldrow.fields, [{ key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' } ]);
+				if (ofieldsetfieldrow) {
+					ofieldsetfieldrow.options.push(afieldrow);
+				} else {
+					Simulators.addInArray(ofieldrow.fields, [{ key: 'name', val: 'stepId', list: 'options' }], 
+						{
+							"label": step.label,
+							"name": step.name,
+							"fields": [
+								{
+									"label": Translator.trans("of panel"),
+									"name": "panelId",
+									"fieldType": "select",
+									"options": [
+										{
+											"label": panel.label,
+											"name": panel.name,
+											"fields": [
+												{
+													"label": Translator.trans("of fieldset"),
+													"name": "fieldsetId",
+													"fieldType": "select",
+													"options": [
+														{
+															"label": fieldset.label,
+															"name": fieldset.name,
+															"fields": [
+																{
+																	"label": Translator.trans("whose label is"),
+																	"name": "fieldrowId",
+																	"fieldType": "select",
+																	"options": [
+																		afieldrow
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						});
+				}
+			} else {
+				objs.options.push({
+					"label": Translator.trans("fieldrow"),
+					"name": "fieldrow",
+					"fields": [
+						{
+							"label": Translator.trans("of step"),
+							"name": "stepId",
+							"fieldType": "select",
+							"options": [
+								{
+									"label": step.label,
+									"name": step.name,
+									"fields": [
+										{
+											"label": Translator.trans("of panel"),
+											"name": "panelId",
+											"fieldType": "select",
+											"options": [
+												{
+													"label": panel.label,
+													"name": panel.name,
+													"fields": [
+														{
+															"label": Translator.trans("of fieldset"),
+															"name": "fieldsetId",
+															"fieldType": "select",
+															"options": [
+																{
+																	"label": fieldset.label,
+																	"name": fieldset.name,
+																	"fields": [
+																		{
+																			"label": Translator.trans("whose label is"),
+																			"name": "fieldrowId",
+																			"fieldType": "select",
+																			"options": [
+																				afieldrow
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				});
+			}
+		});
+	}
+
+	Simulators.deleteFieldRowInActions = function(stepId, panelId, fieldsetId, id) {
+		var objects = ['fieldrow', 'field', 'prenote', 'postnote'];
+		$.each(objects, function (k, obj) {
+			Simulators.deleteInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: id }]);
+			Simulators.deleteInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: id }]);
+		});
+	}
+
+	Simulators.isFieldInRules = function(stepId, panelId, fieldsetId, fieldrowId, id) {
+		var found = false;
+		$.each(rules, function(r, rule) {
+			var rfield;
+			if (fieldrowId === '') {
+				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			} else {
+				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			}
+			if (rfield && rfield.value == id) {
+				found = rule.id;
+				return false;
+			}
+			if (fieldrowId === '') {
+				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			} else {
+				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			}
+			if (rfield && rfield.value == id) {
+				found = rule.id;
+				return false;
+			}
+			if (fieldrowId === '') {
+				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			} else {
+				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			}
+			if (rfield && rfield.value == id) {
+				found = rule.id;
+				return false;
+			}
+			if (fieldrowId === '') {
+				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			} else {
+				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			}
+			if (rfield && rfield.value == id) {
+				found = rule.id;
+				return false;
+			}
+		});
+		return found;
+	}
+
+	Simulators.changeFieldIdInRules = function(stepId, panelId, fieldsetId, fieldrowId, oldId, id) {
 		var objects = ['field', 'prenote', 'postnote'];
 		$.each(objects, function (k, obj) {
-			Simulators.deleteInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
-			Simulators.deleteInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
+			var afield;
+			if (fieldrowId === '') {
+				afield = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: oldId }]);
+			} else {
+				afield = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: oldId }]);
+			}
+			if (afield) {
+				afield.name = id;
+			}
+			if (fieldrowId === '') {
+				afield = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: oldId }]);
+			} else {
+				afield = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: oldId }]);
+			}
+			if (afield) {
+				afield.name = id;
+			}
+		});
+		var ruleActions = $('#business-rules').find('.rule-action');
+		ruleActions.each(function(r) {
+			if (this.hasAttribute('data-field') && $(this).attr('data-step') == stepId && $(this).attr('data-panel') == panelId && $(this).attr('data-fieldset') == fieldsetId && $(this).attr('data-fieldrow') == fieldrowId && $(this).attr('data-field') == oldId) {
+				$(this).attr('data-field', id);
+			}
+		});
+		$.each(rules, function(r, rule) {
+			var rfield;
+			if (fieldrowId === '') {
+				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			} else {
+				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			}
+			if (rfield && rfield.value == oldId) {
+				rfield.value = id;
+			}
+			if (fieldrowId === '') {
+				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			} else {
+				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			}
+			if (rfield && rfield.value == oldId) {
+				rfield.value = id;
+			}
+			if (fieldrowId === '') {
+				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			} else {
+				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			}
+			if (rfield && rfield.value == oldId) {
+				rfield.value = id;
+			}
+			if (fieldrowId === '') {
+				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			} else {
+				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+			}
+			if (rfield && rfield.value == oldId) {
+				rfield.value = id;
+			}
+		});
+	}
+
+	Simulators.changeFieldLabelInRules = function(stepId, panelId, fieldsetId, fieldrowId, position, label) {
+		if (! label) {
+			label = Translator.trans('Field %id% (nolabel)', { id: position });
+		}
+		var objects = ['field', 'prenote', 'postnote'];
+		$.each(objects, function (k, obj) {
+			var afield;
+			if (fieldrowId === '') {
+				afield = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
+			} else {
+				afield = Simulators.findInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
+			}
+			if (afield) {
+				afield.label = label;
+			}
+			if (fieldrowId === '') {
+				afield = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
+			} else {
+				afield = Simulators.findInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
+			}
+			if (afield) {
+				afield.label = label;
+			}
+		});
+		var ruleActions = $('#business-rules').find('.rule-action');
+		ruleActions.each(function(r) {
+			if (this.hasAttribute('data-field') && $(this).attr('data-step') == stepId && $(this).attr('data-panel') == panelId && $(this).attr('data-fieldset') == fieldsetId && $(this).attr('data-fieldrow') == fieldrowId && $(this).attr('data-field') == position) {
+				var target = $(this).attr('data-target');
+				var action = $(this).find('span.action-field');
+				switch (target) {
+					case 'field':
+						var action = $(this).find('span.action-field');
+						action.text(' «' + label + '»');
+						break;
+					case 'prenote':
+						var action = $(this).find('span.action-prenote');
+						action.text(' ' + Translator.trans('of field «%label%»', {'label': label}));
+						break;
+					case 'postnote':
+						var action = $(this).find('span.action-postnote');
+						action.text(' ' + Translator.trans('of field «%label%»', {'label': label}));
+						break;
+				}
+			}
+		});
+	}
+
+	Simulators.addFieldInActions = function(field) {
+		var ractions = ['hideObject', 'showObject'];
+		var afield = {
+			label: field.label != '' ? field.label : Translator.trans("Field %id% (nolabel)", { id: field.position}), 
+			name: field.position
+		};
+		var stepId = field.stepId;
+		var panelId = field.panelId;
+		var fieldsetId = field.fieldsetId;
+		var fieldrowId = field.fieldrowId;
+		$.each(ractions, function(a, action) {
+			var objs = Simulators.findInArray(actions, [{ key: 'name', val: action, list: 'fields' }, { key: 'name', val: 'objectId' } ]);
+			var step  = Simulators.findInArray(objs.options, [{ key: 'name', val: 'step', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId } ]);
+			var panel = Simulators.findInArray(objs.options, [{ key: 'name', val: 'panel', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId } ]);
+			var fieldset = Simulators.findInArray(objs.options, [{ key: 'name', val: 'fieldset', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId } ]);
+			if (fieldset.disposition === 'grid') {
+				var fieldrow = Simulators.findInArray(objs.options, [{ key: 'name', val: 'fieldrow', list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: fieldrowId } ]);
+				var ofield = Simulators.findInArray(objs.options, [{ key: 'name', val: 'field' }]);
+				if (ofield) {
+					var ofieldrowfield = Simulators.findInArray(ofield.fields, [{ key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' } ]);
+					if (ofieldrowfield) {
+						ofieldrowfield.options.push(afield);
+					} else {
+						Simulators.addInArray(ofield.fields, [{ key: 'name', val: 'stepId', list: 'options' }], 
+							{
+								"label": step.label,
+								"name": step.name,
+								"fields": [
+									{
+										"label": Translator.trans("of panel"),
+										"name": "panelId",
+										"fieldType": "select",
+										"options": [
+											{
+												"label": panel.label,
+												"name": panel.name,
+												"fields": [
+													{
+														"label": Translator.trans("of fieldset"),
+														"name": "fieldsetId",
+														"fieldType": "select",
+														"options": [
+															{
+																"label": fieldset.label,
+																"name": fieldset.name,
+																"fields": [
+																	{
+																		"label": Translator.trans("of fieldrow"),
+																		"name": "fieldrowId",
+																		"fieldType": "select",
+																		"options": [
+																			{
+																				"label": fieldrow.label,
+																				"name": fieldrow.name,
+																				"fields": [
+																					{
+																						"label": Translator.trans("whose label is"),
+																						"name": "fieldId",
+																						"fieldType": "select",
+																						"options": [
+																							afield
+																						]
+																					}
+																				]
+																			}
+																		]
+																	}
+																]
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							});
+					}
+				} else {
+					objs.options.push({
+						"label": Translator.trans("field"),
+						"name": "field",
+						"fields": [
+							{
+								"label": Translator.trans("of step"),
+								"name": "stepId",
+								"fieldType": "select",
+								"options": [
+									{
+										"label": step.label,
+										"name": step.name,
+										"fields": [
+											{
+												"label": Translator.trans("of panel"),
+												"name": "panelId",
+												"fieldType": "select",
+												"options": [
+													{
+														"label": panel.label,
+														"name": panel.name,
+														"fields": [
+															{
+																"label": Translator.trans("of fieldset"),
+																"name": "fieldsetId",
+																"fieldType": "select",
+																"options": [
+																	{
+																		"label": fieldset.label,
+																		"name": fieldset.name,
+																		"fields": [
+																			{
+																				"label": Translator.trans("of fieldrow"),
+																				"name": "fieldrowId",
+																				"fieldType": "select",
+																				"options": [
+																					{
+																						"label": fieldrow.label,
+																						"name": fieldrow.name,
+																						"fields": [
+																							{
+																								"label": Translator.trans("whose label is"),
+																								"name": "fieldId",
+																								"fieldType": "select",
+																								"options": [
+																									afield
+																								]
+																							}
+																						]
+																					}
+																				]
+																			}
+																		]
+																	}
+																]
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					});
+				}
+			} else {
+				var ofield = Simulators.findInArray(objs.options, [{ key: 'name', val: 'field' }]);
+				if (ofield) {
+					var ofieldsetfield = Simulators.findInArray(ofield.fields, [{ key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' } ]);
+					if (ofieldsetfield) {
+						ofieldsetfield.options.push(afield);
+					} else {
+						Simulators.addInArray(ofield.fields, [{ key: 'name', val: 'stepId', list: 'options' }], 
+							{
+								"label": step.label,
+								"name": step.name,
+								"fields": [
+									{
+										"label": Translator.trans("of panel"),
+										"name": "panelId",
+										"fieldType": "select",
+										"options": [
+											{
+												"label": panel.label,
+												"name": panel.name,
+												"fields": [
+													{
+														"label": Translator.trans("of fieldset"),
+														"name": "fieldsetId",
+														"fieldType": "select",
+														"options": [
+															{
+																"label": fieldset.label,
+																"name": fieldset.name,
+																"fields": [
+																	{
+																		"label": Translator.trans("whose label is"),
+																		"name": "fieldId",
+																		"fieldType": "select",
+																		"options": [
+																			afield
+																		]
+																	}
+																]
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							});
+					}
+				} else {
+					objs.options.push({
+						"label": Translator.trans("field"),
+						"name": "field",
+						"fields": [
+							{
+								"label": Translator.trans("of step"),
+								"name": "stepId",
+								"fieldType": "select",
+								"options": [
+									{
+										"label": step.label,
+										"name": step.name,
+										"fields": [
+											{
+												"label": Translator.trans("of panel"),
+												"name": "panelId",
+												"fieldType": "select",
+												"options": [
+													{
+														"label": panel.label,
+														"name": panel.name,
+														"fields": [
+															{
+																"label": Translator.trans("of fieldset"),
+																"name": "fieldsetId",
+																"fieldType": "select",
+																"options": [
+																	{
+																		"label": fieldset.label,
+																		"name": fieldset.name,
+																		"fields": [
+																			{
+																				"label": Translator.trans("whose label is"),
+																				"name": "fieldId",
+																				"fieldType": "select",
+																				"options": [
+																					afield
+																				]
+																			}
+																		]
+																	}
+																]
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					});
+				}
+			}
+		});
+	}
+
+	Simulators.deleteFieldInActions = function(stepId, panelId, fieldsetId, fieldrowId, position) {
+		var objects = ['field', 'prenote', 'postnote'];
+		$.each(objects, function (k, obj) {
+			if (fieldrowId === '') {
+				Simulators.deleteInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
+			} else {
+				Simulators.deleteInArray(actions, [{ key: 'name', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
+			}
+			if (fieldrowId === '') {
+				Simulators.deleteInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
+			} else {
+				Simulators.deleteInArray(actions, [{ key: 'name', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'options' }, { key: 'name', val: obj, list: 'fields' }, { key: 'name', val: 'stepId', list: 'options' }, { key: 'name', val: stepId, list: 'fields' }, { key: 'name', val: 'panelId', list: 'options' }, { key: 'name', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId', list: 'options' }, { key: 'name', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId', list: 'options' }, { key: 'name', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId', list: 'options' }, { key: 'name', val: position }]);
+			}
 		});
 	}
 
@@ -1601,22 +2440,22 @@ THE SOFTWARE.
 	Simulators.isSectionInRules = function(stepId, panelId, blockinfoId, chapterId, id) {
 		var found = false;
 		$.each(rules, function(r, rule) {
-			var rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+			var rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
 			if (rsection && rsection.value == id) {
 				found = rule.id;
 				return false;
 			}
-			rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' } ]);
+			rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' } ]);
 			if (rsection && rsection.value == id) {
 				found = rule.id;
 				return false;
 			}
-			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
 			if (rsection && rsection.value == id) {
 				found = rule.id;
 				return false;
 			}
-			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
 			if (rsection && rsection.value == id) {
 				found = rule.id;
 				return false;
@@ -1644,19 +2483,19 @@ THE SOFTWARE.
 			}
 		});
 		$.each(rules, function(r, rule) {
-			var rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+			var rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
 			if (rsection && rsection.value == oldId) {
 				rsection.value = id;
 			}
-			rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' } ]);
+			rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' } ]);
 			if (rsection && rsection.value == oldId) {
 				rsection.value = id;
 			}
-			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
 			if (rsection && rsection.value == oldId) {
 				rsection.value = id;
 			}
-			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
 			if (rsection && rsection.value == oldId) {
 				rsection.value = id;
 			}
@@ -1905,40 +2744,84 @@ THE SOFTWARE.
 						case 'field':
 						case 'prenote':
 						case 'postnote':
-							clause = {
-								name: 'action-select', 
-								value: $(this).attr('data-name'), 
-								fields: [
-									{
-										name: 'objectId',
-										value: target, 
-										fields: [
-											{
-												name: 'stepId', 
-												value: $(this).attr('data-step'), 
-												fields: [
-													{
-														name: 'panelId', 
-														value: $(this).attr('data-panel'), 
-														fields: [
-															{
-																name: 'fieldsetId', 
-																value: $(this).attr('data-fieldset'),
-																fields: [
-																	{
-																		name: 'fieldId',
-																		value: $(this).attr('data-field')
-																	}
-																]
-															}
-														]
-													}
-												]
-											}
-										]
-									}
-								]
-							};
+							var fieldset = Simulators.findInArray(steps, [{ key: 'id', val: $(this).attr('data-step'), list: 'panels' }, { key: 'id', val: $(this).attr('data-panel'), list: 'blocks' }, { key: 'id', val: $(this).attr('data-fieldset') }]);
+							if (fieldset.disposition === 'grid') {
+								clause = {
+									name: 'action-select', 
+									value: $(this).attr('data-name'), 
+									fields: [
+										{
+											name: 'objectId',
+											value: target, 
+											fields: [
+												{
+													name: 'stepId', 
+													value: $(this).attr('data-step'), 
+													fields: [
+														{
+															name: 'panelId', 
+															value: $(this).attr('data-panel'), 
+															fields: [
+																{
+																	name: 'fieldsetId', 
+																	value: $(this).attr('data-fieldset'),
+																	fields: [
+																		{
+																			name: 'fieldrowId', 
+																			value: $(this).attr('data-fieldrow'),
+																			fields: [
+																				{
+																					name: 'fieldId',
+																					value: $(this).attr('data-field')
+																				}
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								};
+							} else {
+								clause = {
+									name: 'action-select', 
+									value: $(this).attr('data-name'), 
+									fields: [
+										{
+											name: 'objectId',
+											value: target, 
+											fields: [
+												{
+													name: 'stepId', 
+													value: $(this).attr('data-step'), 
+													fields: [
+														{
+															name: 'panelId', 
+															value: $(this).attr('data-panel'), 
+															fields: [
+																{
+																	name: 'fieldsetId', 
+																	value: $(this).attr('data-fieldset'),
+																	fields: [
+																		{
+																			name: 'fieldId',
+																			value: $(this).attr('data-field')
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								};
+							}
 							break;
 						case 'section':
 							clause = {
@@ -2006,6 +2889,78 @@ THE SOFTWARE.
 																	{
 																		name: 'chapterId', 
 																		value: $(this).attr('data-chapter')
+																	}
+																]
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							};
+							break;
+						case 'column':
+							clause = {
+								name: 'action-select', 
+								value: $(this).attr('data-name'), 
+								fields: [
+									{
+										name: 'objectId',
+										value: target, 
+										fields: [
+											{
+												name: 'stepId', 
+												value: $(this).attr('data-step'), 
+												fields: [
+													{
+														name: 'panelId', 
+														value: $(this).attr('data-panel'), 
+														fields: [
+															{
+																name: 'fieldsetId', 
+																value: $(this).attr('data-fieldset'), 
+																fields: [
+																	{
+																		name: 'columnId', 
+																		value: $(this).attr('data-column')
+																	}
+																]
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							};
+							break;
+						case 'fieldrow':
+							clause = {
+								name: 'action-select', 
+								value: $(this).attr('data-name'), 
+								fields: [
+									{
+										name: 'objectId',
+										value: target, 
+										fields: [
+											{
+												name: 'stepId', 
+												value: $(this).attr('data-step'), 
+												fields: [
+													{
+														name: 'panelId', 
+														value: $(this).attr('data-panel'), 
+														fields: [
+															{
+																name: 'fieldsetId', 
+																value: $(this).attr('data-fieldset'), 
+																fields: [
+																	{
+																		name: 'fieldrowId', 
+																		value: $(this).attr('data-fieldrow')
 																	}
 																]
 															}
@@ -2289,7 +3244,7 @@ THE SOFTWARE.
 
 	Simulators.bindRuleButtons = function(container) {
 		if (! container ) {
-			container = $("#simulator");
+			container = $("#businessrules");
 		}
 		container.find('button.edit-rule').click(function(e) {
 		    e.preventDefault();
@@ -2451,7 +3406,7 @@ THE SOFTWARE.
 	Simulators.drawRuleForDisplay = function(rule) {
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
 		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
-		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule" data-parent="#' + ruleElementId + '">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-rule" data-parent="#' + ruleElementId + '">' + Translator.trans('Edit') + ' <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">' + Translator.trans('Rule') + ' #<span class="rule-id">' + rule.id + '</span> <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
+		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule" title="' + Translator.trans('Delete') + '" data-parent="#' + ruleElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-rule" title="' + Translator.trans('Edit') + '" data-parent="#' + ruleElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">' + Translator.trans('Rule') + ' #<span class="rule-id">' + rule.id + '</span> <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
 		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse in', role: 'tabpanel' });
 		var conditionsPanel = $('<div class="panel panel-default conditions-panel"></div>');
 		conditionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div>');
@@ -2605,12 +3560,16 @@ THE SOFTWARE.
 	Simulators.drawRuleActionForDisplay = function(id, ruleAction) {
 		var name = ruleAction.value;
 		var target = "";
-		var data = null;
-		var datagroup = null;
+		var dataObj = null;
+		var datagroupObj = null;
+		var data = "";
+		var datagroup = "";
 		var step = "";
 		var panel = "";
 		var fieldset = "";
 		var blockinfo = "";
+		var column = "";
+		var fieldrow = "";
 		var field = "";
 		var chapter = "";
 		var section = "";
@@ -2627,10 +3586,12 @@ THE SOFTWARE.
 				value = ruleAction.fields[0].value;
 				switch (target) {
 					case 'data':
-						data = Simulators.dataset[ruleAction.fields[1].fields[0].value];
+						dataObj = Simulators.dataset[ruleAction.fields[1].fields[0].value];
+						data = dataObj.id;
 						break;
 					case 'datagroup':
-						datagroup = Simulators.datagroups[ruleAction.fields[1].fields[0].value];
+						datagroupObj = Simulators.datagroups[ruleAction.fields[1].fields[0].value];
+						datagroup = datagroupObj.id;
 						break;
 					case 'dataset':
 						break;
@@ -2639,7 +3600,8 @@ THE SOFTWARE.
 			case 'setAttribute':
 				target = ruleAction.fields[0].value;
 				value = ruleAction.fields[0].fields[0].fields[0].value;
-				data = Simulators.dataset[ruleAction.fields[0].fields[0].value];
+				dataObj = Simulators.dataset[ruleAction.fields[0].fields[0].value];
+				data = dataObj.id;
 				break;
 			case 'hideObject':
 			case 'showObject':
@@ -2649,17 +3611,35 @@ THE SOFTWARE.
 					case 'field':
 						panel = ruleAction.fields[0].fields[0].fields[0].value;
 						fieldset = ruleAction.fields[0].fields[0].fields[0].fields[0].value;
-						field = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						var fieldsetObj = Simulators.findInArray(steps, [{ key: 'id', val: step, list: 'panels' }, { key: 'id', val: panel, list: 'blocks' }, { key: 'id', val: fieldset }]);
+						if (fieldsetObj.disposition === 'grid') {
+							fieldrow = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+							field = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						} else {
+							field = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						}
 						break;
 					case 'prenote':
 						panel = ruleAction.fields[0].fields[0].fields[0].value;
 						fieldset = ruleAction.fields[0].fields[0].fields[0].fields[0].value;
-						prenote = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						var fieldsetObj = Simulators.findInArray(steps, [{ key: 'id', val: step, list: 'panels' }, { key: 'id', val: panel, list: 'blocks' }, { key: 'id', val: fieldset }]);
+						if (fieldsetObj.disposition === 'grid') {
+							fieldrow = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+							prenote = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						} else {
+							prenote = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						}
 						break;
 					case 'postnote':
 						panel = ruleAction.fields[0].fields[0].fields[0].value;
 						fieldset = ruleAction.fields[0].fields[0].fields[0].fields[0].value;
-						postnote = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						var fieldsetObj = Simulators.findInArray(steps, [{ key: 'id', val: step, list: 'panels' }, { key: 'id', val: panel, list: 'blocks' }, { key: 'id', val: fieldset }]);
+						if (fieldsetObj.disposition === 'grid') {
+							fieldrow = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+							postnote = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						} else {
+							postnote = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						}
 						break;
 					case 'section':
 						panel = ruleAction.fields[0].fields[0].fields[0].value;
@@ -2671,6 +3651,16 @@ THE SOFTWARE.
 						panel = ruleAction.fields[0].fields[0].fields[0].value;
 						blockinfo = ruleAction.fields[0].fields[0].fields[0].fields[0].value;
 						chapter = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						break;
+					case 'fieldrow':
+						panel = ruleAction.fields[0].fields[0].fields[0].value;
+						fieldset = ruleAction.fields[0].fields[0].fields[0].fields[0].value;
+						fieldrow = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						break;
+					case 'column':
+						panel = ruleAction.fields[0].fields[0].fields[0].value;
+						fieldset = ruleAction.fields[0].fields[0].fields[0].fields[0].value;
+						column = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
 						break;
 					case 'fieldset':
 						panel = ruleAction.fields[0].fields[0].fields[0].value;
@@ -2691,19 +3681,20 @@ THE SOFTWARE.
 						break;
 					case 'choice':
 						choice = ruleAction.fields[0].fields[0].fields[0].value;
-						data = ruleAction.fields[0].fields[0].value;
+						dataObj = Simulators.dataset[ruleAction.fields[0].fields[0].value];
+						data = dataObj.id;
 						break;
 				}
 				break;
 		}
-		var actionContainer = $('<div>', { 'class': 'rule-action', 'data-id': id, 'data-name': name, 'data-target': target, 'data-data': data.id, 'data-datagroup': datagroup, 'data-step': step, 'data-panel': panel, 'data-fieldset': fieldset, 'data-field': field, 'data-blockinfo': blockinfo, 'data-chapter': chapter, 'data-section': section, 'data-prenote': prenote, 'data-postnote': postnote, 'data-action': action, 'data-footnote': footnote, 'data-choice': choice, 'data-value': value });
+		var actionContainer = $('<div>', { 'class': 'rule-action', 'data-id': id, 'data-name': name, 'data-target': target, 'data-data': data, 'data-datagroup': datagroup, 'data-step': step, 'data-panel': panel, 'data-fieldset': fieldset, 'data-column': column, 'data-fieldrow': fieldrow, 'data-field': field, 'data-blockinfo': blockinfo, 'data-chapter': chapter, 'data-section': section, 'data-prenote': prenote, 'data-postnote': postnote, 'data-action': action, 'data-footnote': footnote, 'data-choice': choice, 'data-value': value });
 		if (name === 'notifyError' || name === 'notifyWarning') {
 			var actionName = name === 'notifyError' ? Translator.trans('notify Error') : Translator.trans('notify Warning');
-			actionContainer.append('<span class="action-name">' + actionName + ' : </span> <span class="action-value">«' + Simulators.replaceByDataLabel(value) + '»</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans(target) + ' </span>');
+			actionContainer.append('<span class="action-name">' + actionName + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans(target) + ' </span>');
 			if (target === 'data') {
-				actionContainer.append('<span class="action-data">«' + data.label + '»</span>');
+				actionContainer.append('<span class="action-data"><var class="data" data-id="' + dataObj.id + '">«' + dataObj.label + '»</var></span>');
 			} else if (target === 'datagroup') {
-				actionContainer.append('<span class="action-datagroup">«' + datagroup.label + '»</span>');
+				actionContainer.append('<span class="action-datagroup"><var class="datagroup" data-id="' + datagroupObj.id + '">«' + datagroupObj.label + '»</var></span>');
 			}
 		} else if (name === 'hideObject' || name === 'showObject') {
 			var actionNode = Simulators.findAction(name, actions);
@@ -2721,6 +3712,18 @@ THE SOFTWARE.
 				case 'fieldset':
 					actionContainer.append('<span class="action-fieldset"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label + '»</span>');
 					actionContainer.append('<span class="action-panel"> ' + Translator.trans('in panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
+					break;
+				case 'column':
+					actionContainer.append('<span class="action-column"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {columnId: column}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
+					break;
+				case 'fieldrow':
+					actionContainer.append('<span class="action-fieldrow"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}], optionNode).label + '»</span>');
+					actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
 					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'blockinfo':
@@ -2742,20 +3745,38 @@ THE SOFTWARE.
 					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'field':
-					actionContainer.append('<span class="action-field"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label + '»</span>');
-					actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					if (fieldsetObj.disposition === 'grid') {
+						actionContainer.append('<span class="action-field"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}, {fieldId: field}], optionNode).label + '»</span>');
+						actionContainer.append('<span class="action-fieldrow"> ' + Translator.trans('in') + ' ' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}], optionNode).label + '</span>');
+						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('of fieldset «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					} else {
+						actionContainer.append('<span class="action-field"> «' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label + '»</span>');
+						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					}
 					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
 					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'prenote':
-					actionContainer.append('<span class="action-prenote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label}) + '</span>');
-					actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					if (fieldsetObj.disposition === 'grid') {
+						actionContainer.append('<span class="action-prenote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-fieldrow"> ' + Translator.trans('in') + ' ' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}], optionNode).label + '</span>');
+						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('of fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					} else {
+						actionContainer.append('<span class="action-prenote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					}
 					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
 					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'postnote':
-					actionContainer.append('<span class="action-postnote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label}) + '</span>');
-					actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					if (fieldsetObj.disposition === 'grid') {
+						actionContainer.append('<span class="action-postnote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-fieldrow"> ' + Translator.trans('in') + ' ' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}], optionNode).label + '</span>');
+						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('of fieldset «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					} else {
+						actionContainer.append('<span class="action-postnote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					}
 					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
 					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
@@ -2769,11 +3790,11 @@ THE SOFTWARE.
 					break;
 				case 'choice':
 					actionContainer.append('<span class="action-choice"> «' + Simulators.findActionField([data, choice], optionNode).label + '»</span>');
-					actionContainer.append('<span class="action-data"> ' + Translator.trans('of data «%label%»', {'label': Simulators.dataset[data].label}) + '</span>');
+					actionContainer.append('<span class="action-data"> ' + Translator.trans('of data «%label%»', {'label': dataObj.label}) + '</span>');
 					break;
 			}
 		} else if (name === 'setAttribute') {
-			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans(target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': data.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByDataLabel(value)) + '</span>');
+			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans(target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByDataLabel(value)) + '</span>');
 		}
 		return actionContainer;
 	}
@@ -2820,13 +3841,13 @@ THE SOFTWARE.
 	Simulators.drawRuleForInput = function(rule) {
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
 		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
-		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> ' + Translator.trans('Rule') + ' <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
+		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> ' + Translator.trans('Rule') + ' <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
 		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse', role: 'tabpanel' });
 		ruleContainer.append(ruleBody);
 		ruleBody.append('<div class="panel panel-default"><div class="panel-body form-inline"><div class="form-group"><label>' + Translator.trans('Name') + '</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>' + Translator.trans('Label') + '</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
 		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div><div class="panel-body"><div class="conditions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><button class="btn btn-info pull-right update-button add-if-action">' + Translator.trans('Add Action') + ' <span class="glyphicon glyphicon-plus-sign"></span></button><h4>' + Translator.trans('then do ...') + '</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><button class="btn btn-info pull-right update-button add-else-action">' + Translator.trans('Add Action') + ' <span class="glyphicon glyphicon-plus-sign"></span></button><h4>' + Translator.trans('else do ...') + '</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><button class="btn btn-info pull-right update-button add-if-action" title="' + Translator.trans('Add Action') + '"><span class="button-label">' + Translator.trans('Add Action') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><h4>' + Translator.trans('then do ...') + '</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
+		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><button class="btn btn-info pull-right update-button add-else-action" title="' + Translator.trans('Add Action') + '"><span class="button-label">' + Translator.trans('Add Action') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><h4>' + Translator.trans('else do ...') + '</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');
 		var ruleButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + ruleElementId + '-buttons-panel"></div>');
 		var ruleButtonsBody = $('<div class="panel-body rule-buttons"></div>');
 		ruleButtonsBody.append('<button class="btn btn-success pull-right validate-edit-rule">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');

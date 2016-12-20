@@ -36,6 +36,8 @@ class RuleAction {
 	private $step = "";
 	private $panel = "";
 	private $fieldset = "";
+	private $column = "";
+	private $fieldrow = "";
 	private $field = "";
 	private $blockinfo = "";
 	private $chapter = "";
@@ -111,6 +113,22 @@ class RuleAction {
 
 	public function setFieldset($fieldset) {
 		$this->fieldset = $fieldset;
+	}
+
+	public function getColumn() {
+		return $this->column;
+	}
+
+	public function setColumn($column) {
+		$this->column = $column;
+	}
+
+	public function getFieldrow() {
+		return $this->fieldrow;
+	}
+
+	public function setFieldrow($fieldrow) {
+		$this->fieldrow = $fieldrow;
 	}
 
 	public function getField() {
@@ -193,6 +211,10 @@ class RuleAction {
 				return $this->getPrenote();
 			case 'postnote':
 				return $this->getPostnote();
+			case 'column':
+				return $this->getColumn();
+			case 'fieldrow':
+				return $this->getFieldrow();
 			case 'fieldset':
 				return $this->getFieldset();
 			case 'section':

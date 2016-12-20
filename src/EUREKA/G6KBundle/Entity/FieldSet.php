@@ -122,7 +122,16 @@ class FieldSet {
 
 	public function getFieldByPosition($position) {
 		foreach ($this->fields as $field) {
-			if ($field->getPosition() == $position) {
+			if ($field instanceof Field && $field->getPosition() == $position) {
+				return $field;
+			}
+		}
+		return null;
+	}
+
+	public function getFieldRowById($id) {
+		foreach ($this->fields as $field) {
+			if ($field instanceof FieldRow && $field->getId() == $id) {
 				return $field;
 			}
 		}
@@ -143,6 +152,15 @@ class FieldSet {
 
 	public function removeColumn($index) {
 		$this->columns[$index] = null;
+	}
+
+	public function getColumnById($id) {
+		foreach ($this->columns as $column) {
+			if ($column->getId() == $id) {
+				return $column;
+			}
+		}
+		return null;
 	}
 
 	public function getClass() {

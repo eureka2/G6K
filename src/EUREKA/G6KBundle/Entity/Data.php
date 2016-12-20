@@ -237,12 +237,16 @@ class Data {
 	}
 
 	public function getChoiceLabel() {
+		return $this->getChoiceLabelByValue($this->value);
+	}
+
+	public function getChoiceLabelByValue($avalue) {
 		$label = "";
-		if ($this->type == "choice" && $this->value != "") {
+		if ($this->type == "choice" && $avalue != "") {
 			foreach ($this->choices as $choice) {
 				if ($choice instanceof ChoiceGroup) {
 					foreach ($choice as $gchoice) {
-						if ($gchoice->getValue() == $this->value) {
+						if ($gchoice->getValue() == $avalue) {
 							$label = $gchoice->getLabel();
 							break;
 						}
@@ -250,7 +254,7 @@ class Data {
 					if ($label != "") {
 						break;
 					}
-				} elseif ($choice->getValue() == $this->value) {
+				} elseif ($choice->getValue() == $avalue) {
 					$label = $choice->getLabel();
 					break;
 				}
@@ -258,7 +262,7 @@ class Data {
 		}
 		if ($this->type == "multichoice") {
 			$label = array();
-			foreach ($this->value as $value) {
+			foreach ($avalue as $value) {
 				foreach ($this->choices as $choice) {
 					if ($choice instanceof ChoiceGroup) {
 						$found = false;

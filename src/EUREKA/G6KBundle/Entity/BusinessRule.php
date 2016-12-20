@@ -209,10 +209,12 @@ class BusinessRule {
 			if (isset($ruleData["name"])) {
 				$type = 'boolean';
 				if ($ruleData["name"] == 'script') {
+					$ruleData["id"] = 0;
 					$ruleData["name"] = $this->translator->trans('Javascript');
 					$ruleData["operator"] = $this->translator->trans('is');
 					$ruleData["value"] = $ruleData["value"] == 1 ? $this->translator->trans('enabled') : $this->translator->trans('disabled');
 				} elseif ($ruleData["name"] == 'dynamic') {
+					$ruleData["id"] = 0;
 					$ruleData["name"] = $this->translator->trans('User Interface');
 					$ruleData["operator"] =  $ruleData["value"] == 1 ? $this->translator->trans('is') : $this->translator->trans('is not');
 					$ruleData["value"] = $this->translator->trans('interactive');
@@ -223,6 +225,7 @@ class BusinessRule {
 				} elseif (preg_match("/^#(\d+)$/", $ruleData["name"], $matches)) {
 					$data = $this->simulator->getDataById($matches[1]);
 					$type = $data->getType();
+					$ruleData["id"] = $data->getId();
 					$ruleData["name"] = $data->getLabel();
 					if ($data->getType() == 'choice') {
 						$data->setValue($ruleData["value"]);
@@ -234,6 +237,7 @@ class BusinessRule {
 				} else {
 					$data = $this->simulator->getDataByName($ruleData["name"]);
 					$type = $data->getType();
+					$ruleData["id"] = $data->getId();
 					$ruleData["name"] = $data->getLabel();
 					if ($data->getType() == 'choice') {
 						$data->setValue($ruleData["value"]);
