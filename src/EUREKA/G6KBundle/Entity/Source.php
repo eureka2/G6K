@@ -30,8 +30,11 @@ class Source {
 
 	private $simulator = null;
 	private $id = 0;
+	private $label = "";
 	private $datasource = ""; // datasource name
-	private $request = ""; // sql if type = database
+	private $request = ""; // sql if datasource type = database or internal
+	private $requestType = "simple"; // simple of complex ,if datasource type = database or internal
+	private $parsed = ""; // parsed sql if datasource type = database or internal
 	private $returnType = ""; // json, xml, html, csv, assocArray or singleValue
 	private $separator = ";"; // only for returnType = csv
 	private $delimiter = ""; // only for returnType = csv 
@@ -58,6 +61,14 @@ class Source {
 		$this->id = $id;
 	}
 
+	public function getLabel() {
+		return $this->label;
+	}
+
+	public function setLabel($label) {
+		$this->label = $label;
+	}
+
 	public function getDatasource() {
 		return $this->datasource;
 	}
@@ -72,6 +83,22 @@ class Source {
 
 	public function setRequest($request) {
 		$this->request = $request;
+	}
+
+	public function getRequestType() {
+		return $this->requestType;
+	}
+
+	public function setRequestType($requestType) {
+		$this->requestType = $requestType;
+	}
+
+	public function getParsed() {
+		return $this->parsed;
+	}
+
+	public function setParsed($parsed) {
+		$this->parsed = $parsed;
 	}
 
 	public function getReturnType() {

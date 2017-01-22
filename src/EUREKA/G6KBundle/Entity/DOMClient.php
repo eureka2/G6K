@@ -58,7 +58,7 @@ class DOMClient extends BaseClient {
 			"gzip"
 		),
 		'HTTP_PROXY' => array(
-			'proxy' => "", // e.g   "192.168.50.13:8080",
+			'proxy' => "", // e.g   "192.168.50.12:8080",
 			'authorization' => ""
 		),
 		'HTTPS_PROXY' => array(
@@ -106,153 +106,48 @@ class DOMClient extends BaseClient {
 
 	protected function doRequest($request) {
 		$server = $request->getServer();
-		$host = $server['HTTP_HOST'];
-		$path = $this->getPath($request->getUri());
-		$method = $request->getMethod();
-		$data = $request->getContent();
-		$parameters = $request->getParameters();
-		$auth = $parameters['auth'];
-		$remote = $this->makeRemote($server);
-
-		$headers = array();
-		$proxy = $server['HTTPS'] ? $server['HTTPS_PROXY']['proxy'] : $server['HTTP_PROXY']['proxy'];
+		$scheme = parse_url($request->getUri(), PHP_URL_SCHEME);
+		$proxy = $scheme == 'https' ? $server['HTTPS_PROXY']['proxy'] : $server['HTTP_PROXY']['proxy'];
 		if ($proxy) {
-			$headers[] = $method  . " " . $request->getUri() . " HTTP/1.1";
-			$headers[] = "Host: $proxy";
+			$ctxConfig = array(
+				'http' => array(
+					'method' => $request->getMethod(),
+					'header'  => 'Content-type: application/x-www-form-urlencoded'."\r\n",
+					'content' => $request->getContent(),
+					'proxy' => 'tcp://' . $proxy ,
+					'request_fulluri' => true
+				)
+			);
 		} else {
-			$headers[] = "$method $path HTTP/1.1";
-			$headers[] = "Host: $host";
+			$ctxConfig = array(
+				'http' => array(
+					'method' => $request->getMethod(),
+					'header'  => 'Content-type: application/x-www-form-urlencoded'."\r\n",
+					'content' => $request->getContent(),
+					'request_fulluri' => true
+				)
+			);
 		}
-		if ($server['HTTP_USER_AGENT']) {
-			$headers[] = "User-Agent: {$server['HTTP_USER_AGENT']}";
+		if ( $scheme == 'https') {
+			$sniServer = parse_url($request->getUri(), PHP_URL_HOST);
+			$ctxConfig['ssl'] = array( 
+				'SNI_enabled' => true,
+				'SNI_server_name' => $sniServer
+			);
 		}
-		if ($server['HTTP_ACCEPT']) {
-			$headers[] = "Accept: " . implode(",", $server['HTTP_ACCEPT']);
+		$context = stream_context_create($ctxConfig);
+		$content = @file_get_contents($request->getUri(), false, $context);
+		$responseHeaders = $http_response_header;
+		$status = array_shift($responseHeaders);
+		if (preg_match("/^HTTP\/1\.[01] (\d+)/", $status, $m)) {
+			$status = $m[1];
+		} else {
+			$status = '500';
 		}
-		if ($server['HTTP_ACCEPT_ENCODING']) {
-			$headers[] = "Accept-encoding: " . implode(",", $server['HTTP_ACCEPT_ENCODING']);
-		}
-		if ($proxy) {
-			$pauth = $server['HTTPS'] ? $server['HTTPS_PROXY']['authorization'] : $server['HTTP_PROXY']['authorization'];
-			if ($pauth) {
-				$headers[] = "Proxy-Authorization: Basic " . base64_encode($pauth);
-			}
-			$headers[] = "Proxy-Connection: keep-alive";
-		}
-		if ($auth['type'] == 'basic' && !empty($auth['username'])) {
-			$headers[] = "Authorization: Basic " . base64_encode($auth['username'].':'.$auth['password']);
-		} elseif ($auth['type'] == 'digest' && !empty($auth['username'])) {
-			$req = 'Authorization: Digest ';
-			foreach ($auth as $k => $v) {
-				if (empty($k) || empty($v)) continue;
-				if ($k == 'password') continue;
-				$req .= $k.'="'.$v.'", ';
-			}
-			$headers[] = $req;
-		}
-		if ($method == "POST" && $data !== null) {
-			$data = $this->encodeData($data);
-			$headers[] = 'Content-Type: application/x-www-form-urlencoded';
-			$headers[] = 'Content-length: '. strlen($data);
-			$headers[] = "Connection: close";
-		}
-		$context = stream_context_create();
-		if ($proxy) {
-			stream_context_set_option($context, 'http', 'proxy', "tcp://" . $proxy);
-			$pauth = $server['HTTPS'] ? $server['HTTPS_PROXY']['authorization'] : $server['HTTP_PROXY']['authorization'];
-			if ($pauth) {
-				$pauth = base64_encode($pauth);
-				stream_context_set_option($context, 'http', 'header', array("Proxy-Authorization: Basic $pauth"));
-			}
-			stream_context_set_option($context, 'http', 'request_fulluri', true);
-		}
-		if ($server['HTTPS']) {
-			stream_context_set_option($context, 'ssl', 'verify_host', true);
-			if (!empty($parameters['cert'])) {
-				stream_context_set_option($context, 'ssl', 'cafile', $parameters['cert']);
-				stream_context_set_option($context, 'ssl', 'verify_peer', true);
-			} else {
-				stream_context_set_option($context, 'ssl', 'allow_self_signed', true);
-			}
-		}
-		$fp = stream_socket_client($remote, $err, $errstr, 30, STREAM_CLIENT_CONNECT, $context);
-		if (!$fp) {
-			throw new \RuntimeException(sprintf('Request error : %s ==> %s', $err, $errstr));
-		}
-		stream_set_timeout($fp, $parameters['timeout']);
-		fputs($fp, implode("\r\n", $headers));
-		fputs($fp, "\r\n\r\n");
-		if ($method == "POST" && $data !== null) {
-			fputs($fp, $data);
-		}
-
 		$headers = array();
-		$content = "";
-		$status = 200;
-		$inHeaders = true;
-		$atStart = true;
-		while(!feof($fp)) { 
-			$line = fgets($fp, 4096);
-			if ($atStart) {
-				// Deal with first line of returned data
-				$atStart = false;
-				if (!preg_match('/HTTP\/(\\d\\.\\d)\\s*(\\d+)\\s*(.*)/', $line, $m)) {
-					throw new \RuntimeException(sprintf('Status code line invalid : %s', htmlentities($line)));
-				}
-				$status = $m[2];
-				$status_string = $m[3];
-			} else if ($inHeaders) {
-				if (trim($line) == '') {
-					$inHeaders = false;
-					if ($parameters['headers']) { // headers only
-						break; // Skip the rest of the input
-					}
-				} else if (preg_match('/([^:]+):\\s*(.*)/', $line, $m)) {
-					$key = strtolower(trim($m[1]));
-					$val = trim($m[2]);
-					// Deal with the possibility of multiple headers of same name
-					if (isset($headers[$key])) {
-						if (is_array($headers[$key])) {
-							$headers[$key][] = $val;
-						} else {
-							$headers[$key] = array($headers[$key], $val);
-						}
-					} else {
-						$headers[$key] = $val;
-					}
-				}
-			} else {
-				// We're not in the headers, so append the line to the contents
-				$content .= $line;
-			}
-		}
-		fclose($fp);
-		if ($auth['type'] != 'nodigest' && !empty($auth['username']) && $auth['type'] != 'digest' && $status == 401) {
-			$authenticate = $headers['www-authenticate'];
-			if (!empty($authenticate) && preg_match("/Digest (.*)$/Us", $authenticate, $matches)) {
-				foreach (split(",", $matches[1]) as $i) {
-					$ii=split("=", trim($i),2);
-					if (!empty($ii[1]) && !empty($ii[0])) {
-						$auth[$ii[0]] = preg_replace("/^\"/",'', preg_replace("/\"$/",'', $ii[1]));
-					}
-				}
-				$auth['type'] = 'digest';
-				$auth['uri'] = 'https://'.$host.$path;
-				$auth['cnonce'] = $this->randomNonce();
-				$auth['nc'] = 1;
-				$a1 = md5($auth['username'].':'.$auth['realm'].':'.$auth['password']);
-				$a2 = md5('POST'.':'.$auth['uri']);
-				$auth['response']=md5($a1.':'.$auth['nonce'].':'.$auth['nc'].':'.$auth['cnonce'].':'.$auth['qop'].':'.$a2);
-				$parameters['auth'] = $auth;
-				$newRequest = new Request($request->getUri(), 
-					$method, 
-					$parameters, 
-					$request->getFiles(), 
-					$request->getCookies(), 
-					$request->getServer(), 
-					$request->getContent()
-				);
-				return $this->doRequest(newRequest);
+		foreach($responseHeaders as $h) {
+			if (preg_match("/^([^\:]+):\s*(.+)$/", $h, $m)) {
+				$headers[trim($m[1])] = trim($m[2]);
 			}
 		}
 		if (isset($headers['transfer-encoding']) && $headers['transfer-encoding'] == 'chunked') {

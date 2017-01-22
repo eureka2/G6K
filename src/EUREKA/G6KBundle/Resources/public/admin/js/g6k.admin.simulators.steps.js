@@ -308,11 +308,11 @@ THE SOFTWARE.
 		var stepContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'text', 'name', Translator.trans('Step Name'), step.name, true, Translator.trans('Step Name')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'text', 'label', Translator.trans('Step Label'), step.label, true, Translator.trans('Step Label')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'text', 'template', Translator.trans('Step Template'), step.template, true, Translator.trans('Step Template')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'select', 'output', Translator.trans('Output'), step.output, false, Translator.trans('Select an output'), JSON.stringify(Simulators.outputTypes)));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'checkbox', 'dynamic', Translator.trans('Interactive UI'), step.dynamic, false, Translator.trans('Interactive UI')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'text', 'name', Translator.trans('Step Name'), step.name, step.name, true, Translator.trans('Step Name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'text', 'label', Translator.trans('Step Label'), step.label, step.label, true, Translator.trans('Step Label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'text', 'template', Translator.trans('Step Template'), step.template, step.template, true, Translator.trans('Step Template')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'select', 'output', Translator.trans('Output'), step.output, step.output, false, Translator.trans('Select an output'), JSON.stringify(Simulators.outputTypes)));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'checkbox', 'dynamic', Translator.trans('Interactive UI'), step.dynamic, step.dynamic, false, Translator.trans('Interactive UI')));
 		attributesContainer.append(requiredAttributes);
 		stepContainerBody.append(attributesContainer);
 		stepContainerBody.append('<div class="panel panel-default description-panel" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body step-description rich-text">' + step.description + '</div></div>');
@@ -707,7 +707,7 @@ THE SOFTWARE.
 		var footnotesContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(footnotesElementId, 'select', 'position', Translator.trans('Position'), footnotes.position, true, Translator.trans('Select a position'), JSON.stringify( { 'beforeActions': Translator.trans('before action buttons'), 'afterActions': Translator.trans('after action buttons') } )));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(footnotesElementId, 'select', 'position', Translator.trans('Position'), footnotes.position, footnotes.position, true, Translator.trans('Select a position'), JSON.stringify( { 'beforeActions': Translator.trans('before action buttons'), 'afterActions': Translator.trans('after action buttons') } )));
 		attributesContainer.append(requiredAttributes);
 		footnotesContainerBody.append(attributesContainer);
 		footnotesContainer.append(footnotesContainerBody);
@@ -1190,12 +1190,12 @@ THE SOFTWARE.
 		var actionContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'name', Translator.trans('Name'), action.name, true, Translator.trans('Button name')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'label', Translator.trans('Label'), action.label, true, Translator.trans('Button label')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'what', Translator.trans('What'), action.what, true, Translator.trans('Select an action'), JSON.stringify( { 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset') } )));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'for', Translator.trans('For'), action.for, true, Translator.trans('Select a target step'), JSON.stringify( { 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'uri', Translator.trans('URI'), action.uri, false, Translator.trans('Button uri')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'class', Translator.trans('Class'), action.class, false, Translator.trans('Button class')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'name', Translator.trans('Name'), action.name, action.name, true, Translator.trans('Button name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'label', Translator.trans('Label'), action.label, action.label, true, Translator.trans('Button label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'what', Translator.trans('What'), action.what, action.what, true, Translator.trans('Select an action'), JSON.stringify( { 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset') } )));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'for', Translator.trans('For'), action.for, action.for, true, Translator.trans('Select a target step'), JSON.stringify( { 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'uri', Translator.trans('URI'), action.uri, action.uri, false, Translator.trans('Button uri')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'class', Translator.trans('Class'), action.class, action.class, false, Translator.trans('Button class')));
 		attributesContainer.append(requiredAttributes);
 		actionContainerBody.append(attributesContainer);
 		actionContainer.append(actionContainerBody);
@@ -1374,7 +1374,7 @@ THE SOFTWARE.
 			actionContainer.find('.alert').show();
 			return false;
 		}
-		if (! /^\w+$/.test(actionName)) {
+		if (! /^[\w\-]+$/.test(actionName)) {
 			actionContainer.find('.error-message').text(Translator.trans('Incorrect action button name'));
 			actionContainer.find('.alert').show();
 			return false;
@@ -1567,8 +1567,8 @@ THE SOFTWARE.
 		var panelContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(panelElementId, 'text', 'name', Translator.trans('Name'), panel.name, true, Translator.trans('Panel name')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(panelElementId, 'text', 'label', Translator.trans('Label'), panel.label, true, Translator.trans('Panel label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(panelElementId, 'text', 'name', Translator.trans('Name'), panel.name, panel.name, true, Translator.trans('Panel name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(panelElementId, 'text', 'label', Translator.trans('Label'), panel.label, panel.label, true, Translator.trans('Panel label')));
 		attributesContainer.append(requiredAttributes);
 		panelContainerBody.append(attributesContainer);
 		panelContainer.append(panelContainerBody);
@@ -1956,9 +1956,9 @@ THE SOFTWARE.
 		var fieldsetContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, false, Translator.trans('Select a Disposition'), JSON.stringify({ 'classic':Translator.trans('Classic'), 'grid':Translator.trans('Grid') })));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'display', Translator.trans('Display'), fieldset.display, false, Translator.trans('Select a Display'), JSON.stringify({ 'inline':Translator.trans('Inline'), 'pop-in':Translator.trans('Pop-in') })));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'text', 'popinLink', Translator.trans('Pop-in Link'), fieldset.popinLink, false, Translator.trans('Pop-in Link')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, fieldset.disposition, false, Translator.trans('Select a Disposition'), JSON.stringify({ 'classic':Translator.trans('Classic'), 'grid':Translator.trans('Grid') })));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'display', Translator.trans('Display'), fieldset.display, fieldset.display, false, Translator.trans('Select a Display'), JSON.stringify({ 'inline':Translator.trans('Inline'), 'pop-in':Translator.trans('Pop-in') })));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'text', 'popinLink', Translator.trans('Pop-in Link'), fieldset.popinLink, fieldset.popinLink, false, Translator.trans('Pop-in Link')));
 		attributesContainer.append(requiredAttributes);
 		fieldsetContainerBody.append(attributesContainer);
 		fieldsetContainer.append(fieldsetContainerBody);
@@ -2364,9 +2364,9 @@ THE SOFTWARE.
 		var columnContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(columnElementId, 'text', 'name', Translator.trans('Name'), column.name, true, Translator.trans('Column name')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(columnElementId, 'text', 'label', Translator.trans('Label'), column.label, true, Translator.trans('Column label')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(columnElementId, 'select', 'type', Translator.trans('Type'), column.type, true, Translator.trans('Select a column type'), JSON.stringify(Admin.types)));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(columnElementId, 'text', 'name', Translator.trans('Name'), column.name, column.name, true, Translator.trans('Column name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(columnElementId, 'text', 'label', Translator.trans('Label'), column.label, column.label, true, Translator.trans('Column label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(columnElementId, 'select', 'type', Translator.trans('Type'), column.type, column.type, true, Translator.trans('Select a column type'), JSON.stringify(Admin.types)));
 		attributesContainer.append(requiredAttributes);
 		columnContainerBody.append(attributesContainer);
 		columnContainer.append(columnContainerBody);
@@ -2731,11 +2731,11 @@ THE SOFTWARE.
 		var fieldrowContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'text', 'label', Translator.trans('Label'), fieldrow.label, true, Translator.trans('Fieldrow label')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'checkbox', 'colon', Translator.trans('Show colon after field label ?'), fieldrow.colon, false, Translator.trans('Show colon after field label ?')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'checkbox', 'help', Translator.trans('Show data description as help ?'), fieldrow.help, false, Translator.trans('Show data description as help ?')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'checkbox', 'emphasize', Translator.trans('Emphasize the text label ?'), fieldrow.emphasize, false, Translator.trans('Emphasize the text label ?')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'text', 'datagroup', Translator.trans('Datagroup'), Simulators.findDatagroupById(fieldrow.datagroup).label, true, Translator.trans('Datagroup')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'text', 'label', Translator.trans('Label'), fieldrow.label, fieldrow.label, true, Translator.trans('Fieldrow label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'checkbox', 'colon', Translator.trans('Show colon after field label ?'), fieldrow.colon, fieldrow.colon, false, Translator.trans('Show colon after field label ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'checkbox', 'help', Translator.trans('Show data description as help ?'), fieldrow.help, fieldrow.help, false, Translator.trans('Show data description as help ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'checkbox', 'emphasize', Translator.trans('Emphasize the text label ?'), fieldrow.emphasize, fieldrow.emphasize, false, Translator.trans('Emphasize the text label ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'text', 'datagroup', Translator.trans('Datagroup'), Simulators.findDatagroupById(fieldrow.datagroup).label, Simulators.findDatagroupById(fieldrow.datagroup).label, true, Translator.trans('Datagroup')));
 		attributesContainer.append(requiredAttributes);
 		fieldrowContainerBody.append(attributesContainer);
 		fieldrowContainer.append(fieldrowContainerBody);
@@ -3186,19 +3186,19 @@ THE SOFTWARE.
 		var fieldContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'data', Translator.trans('Data'), Simulators.findDataById(field.data).label, true, Translator.trans('Field data')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'label', Translator.trans('Label'), field.label, false, Translator.trans('Field label')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'select', 'usage', Translator.trans('Usage'), field.usage, true, Translator.trans('Select an usage'), JSON.stringify( {'input': Translator.trans('input'), 'output': Translator.trans('output') } )));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'prompt', Translator.trans('Prompt'), field.prompt, false, Translator.trans('Field prompt')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'required', Translator.trans('Required'), field.required, false, Translator.trans('Required')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'visibleRequired', Translator.trans('Required if visible'), field.visibleRequired, false, Translator.trans('Required if visible')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'newline', Translator.trans('Newline before field ?'), field.newline, false, Translator.trans('Newline before field ?')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'colon', Translator.trans('Show colon after field label ?'), field.colon, false, Translator.trans('Show colon after field label ?')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'underlabel', Translator.trans('Place the field under the label ?'), field.underlabel, false, Translator.trans('Place the field under the label ?')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'help', Translator.trans('Show data description as help ?'), field.help, false, Translator.trans('Show data description as help ?')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'emphasize', Translator.trans('Emphasize the text label ?'), field.emphasize, false, Translator.trans('Emphasize the text label ?')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'expanded', Translator.trans('Show choices as radio buttons ?'), field.expanded, false, Translator.trans('Show choices as radio buttons ?')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'explanation', Translator.trans('Explanation'), field.explanation, false, Translator.trans('Explanation')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'data', Translator.trans('Data'), Simulators.findDataById(field.data).label, Simulators.findDataById(field.data).label, true, Translator.trans('Field data')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'label', Translator.trans('Label'), field.label, field.label, false, Translator.trans('Field label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'select', 'usage', Translator.trans('Usage'), field.usage, field.usage, true, Translator.trans('Select an usage'), JSON.stringify( {'input': Translator.trans('input'), 'output': Translator.trans('output') } )));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'prompt', Translator.trans('Prompt'), field.prompt, field.prompt, false, Translator.trans('Field prompt')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'required', Translator.trans('Required'), field.required, field.required, false, Translator.trans('Required')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'visibleRequired', Translator.trans('Required if visible'), field.visibleRequired, field.visibleRequired, false, Translator.trans('Required if visible')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'newline', Translator.trans('Newline before field ?'), field.newline, field.newline, false, Translator.trans('Newline before field ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'colon', Translator.trans('Show colon after field label ?'), field.colon, field.colon, false, Translator.trans('Show colon after field label ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'underlabel', Translator.trans('Place the field under the label ?'), field.underlabel, field.underlabel, false, Translator.trans('Place the field under the label ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'help', Translator.trans('Show data description as help ?'), field.help, field.help, false, Translator.trans('Show data description as help ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'emphasize', Translator.trans('Emphasize the text label ?'), field.emphasize, field.emphasize, false, Translator.trans('Emphasize the text label ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'expanded', Translator.trans('Show choices as radio buttons ?'), field.expanded, field.expanded, false, Translator.trans('Show choices as radio buttons ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'explanation', Translator.trans('Explanation'), field.explanation, field.explanation, false, Translator.trans('Explanation')));
 		attributesContainer.append(requiredAttributes);
 		fieldContainerBody.append(attributesContainer);
 		fieldContainer.append(fieldContainerBody);
@@ -3403,24 +3403,29 @@ THE SOFTWARE.
 			var field = { 
 				type: 'field',
 				position: position, 
-				newline: '1',
+				newline: '0',
 				prompt: '',
-				required: '1',
-				visibleRequired: '1',
-				colon: '1',
+				required: '0',
+				visibleRequired: '0',
+				colon: '0',
 				underlabel: '0',
-				help: '1',
+				help: '0',
 				emphasize: '0',
 				explanation: '',
-				expanded: '1'
+				expanded: '0'
 			};
 			field['stepId'] = stepId;
 			field['panelId'] = panelId;
 			field['fieldsetId'] = fieldsetId;
 			field['fieldrowId'] = fieldrowId;
 			var attributes = fieldContainer.find('.attributes-container');
-			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
-				field[$(this).attr('data-attribute')] = $(this).val();
+			attributes.find('input.simple-value, select.simple-value').each(function (index) {
+				// field[$(this).attr('data-attribute')] = $(this).val();
+				if ($(this).is(':checkbox')) {
+					field[$(this).attr('data-attribute')] = $(this).is(':checked') ? 1 : 0;
+				} else {
+					field[$(this).attr('data-attribute')] = $(this).val();
+				}
 			});
 			if (! field.label) {
 				field.label = '';
@@ -3661,8 +3666,8 @@ THE SOFTWARE.
 		var blockinfoContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(blockinfoElementId, 'text', 'name', Translator.trans('Name'), blockinfo.name, true, Translator.trans('Blockinfo name')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(blockinfoElementId, 'text', 'label', Translator.trans('Label'), blockinfo.label, true, Translator.trans('Blockinfo label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(blockinfoElementId, 'text', 'name', Translator.trans('Name'), blockinfo.name, blockinfo.name, true, Translator.trans('Blockinfo name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(blockinfoElementId, 'text', 'label', Translator.trans('Label'), blockinfo.label, blockinfo.label, true, Translator.trans('Blockinfo label')));
 		attributesContainer.append(requiredAttributes);
 		blockinfoContainerBody.append(attributesContainer);
 		blockinfoContainer.append(blockinfoContainerBody);
@@ -4045,10 +4050,10 @@ THE SOFTWARE.
 		var chapterContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(chapterElementId, 'text', 'name', Translator.trans('Chapter name'), chapter.name, true, Translator.trans('Chapter name')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(chapterElementId, 'text', 'label', Translator.trans('Chapter label'), chapter.label, true, Translator.trans('Chapter label')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(chapterElementId, 'text', 'icon', Translator.trans('Icon'), chapter.icon, false, Translator.trans('Chapter icon')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(chapterElementId, 'checkbox', 'collapsible', Translator.trans('Allow collapse/expand ?'), chapter.collapsible, false, Translator.trans('Allow collapse/expand ?')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(chapterElementId, 'text', 'name', Translator.trans('Chapter name'), chapter.name, chapter.name, true, Translator.trans('Chapter name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(chapterElementId, 'text', 'label', Translator.trans('Chapter label'), chapter.label, chapter.label, true, Translator.trans('Chapter label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(chapterElementId, 'text', 'icon', Translator.trans('Icon'), chapter.icon, chapter.icon, false, Translator.trans('Chapter icon')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(chapterElementId, 'checkbox', 'collapsible', Translator.trans('Allow collapse/expand ?'), chapter.collapsible, chapter.collapsible, false, Translator.trans('Allow collapse/expand ?')));
 		attributesContainer.append(requiredAttributes);
 		chapterContainerBody.append(attributesContainer);
 		chapterContainer.append(chapterContainerBody);
@@ -4450,8 +4455,8 @@ THE SOFTWARE.
 		var sectionContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(sectionElementId, 'text', 'name', Translator.trans('Name'), section.name, true, Translator.trans('Section name')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(sectionElementId, 'text', 'label', Translator.trans('Label'), section.label, false, Translator.trans('Section label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(sectionElementId, 'text', 'name', Translator.trans('Name'), section.name, section.name, true, Translator.trans('Section name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(sectionElementId, 'text', 'label', Translator.trans('Label'), section.label, section.label, false, Translator.trans('Section label')));
 		attributesContainer.append(requiredAttributes);
 		sectionContainerBody.append(attributesContainer);
 		sectionContainer.append(sectionContainerBody);

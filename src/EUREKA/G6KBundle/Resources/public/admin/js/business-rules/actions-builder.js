@@ -148,6 +148,7 @@ THE SOFTWARE.
 					}
 					actionDiv.attr("class", "action " + val);
 					$(this).attr("data-value", val);
+					settings.data.selected = val;
 					return settings.data[val];
 				},
 				{
@@ -235,6 +236,7 @@ THE SOFTWARE.
 							}
 						}
 						$(this).attr("data-value", val);
+						settings.data.selected = val;
 						return settings.data[val];
 					},
 					{

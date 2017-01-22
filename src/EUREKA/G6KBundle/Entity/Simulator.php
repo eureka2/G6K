@@ -493,6 +493,7 @@ class Simulator {
 			foreach ($datasource->Namespace as $namespace) {
 				$datasourceObj->addNamespace((string)$namespace['prefix'], (string)$namespace['uri']);
 			}
+			// TODO: if datasource type = internal or database => load tables an columns
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {
@@ -716,7 +717,11 @@ class Simulator {
 		if ($simulator->Sources) {
 			foreach ($simulator->Sources->Source as $source) {
 				$sourceObj = new Source($this, (int)$source['id'], (string)$source['datasource'], (string)$source['returnType']);
+				$sourceObj->setLabel((string)$source['label']);
 				$sourceObj->setRequest((string)$source['request']);
+				if ((string)$source['requestType'] != '') {
+					$sourceObj->setRequestType((string)$source['requestType']);
+				}
 				$sourceObj->setSeparator((string)$source['separator']);
 				$sourceObj->setDelimiter((string)$source['delimiter']);
 				$sourceObj->setReturnPath((string)$source['returnPath']);
@@ -879,7 +884,11 @@ class Simulator {
 		if ($simulator->Sources) {
 			foreach ($simulator->Sources->Source as $source) {
 				$sourceObj = new Source($this, (int)$source['id'], (string)$source['datasource'], (string)$source['returnType']);
+				$sourceObj->setLabel((string)$source['label']);
 				$sourceObj->setRequest((string)$source['request']);
+				if ((string)$source['requestType'] != '') {
+					$sourceObj->setRequestType((string)$source['requestType']);
+				}
 				$sourceObj->setSeparator((string)$source['separator']);
 				$sourceObj->setDelimiter((string)$source['delimiter']);
 				$sourceObj->setReturnPath((string)$source['returnPath']);
@@ -962,10 +971,10 @@ class Simulator {
 		if ((string)$field['prompt'] != "") {
 			$nfield['prompt'] = (string)$field['prompt'];
 		}
-		if ((string)$field['required'] == '1') {
+		if ((string)$field['required'] == '' || (string)$field['required'] == '1') {
 			$nfield['required'] = '1';
 		}
-		if ((string)$field['visibleRequired'] == '1') {
+		if ((string)$field['visibleRequired'] == '' || (string)$field['visibleRequired'] == '1') {
 			$nfield['visibleRequired'] = '1';
 		}
 		$this->dependencies = 'fieldDependencies';
@@ -1535,6 +1544,7 @@ class Simulator {
 					$parameters[(string)$parameter['name']] = $data['name'];
 					$this->addDependency(array(null, (int)$parameter['data']));
 				}
+				$sources[$id]['label'] = (string)$source['label'];
 				$sources[$id]['separator'] = (string)$source['separator'];
 				$sources[$id]['delimiter'] = (string)$source['delimiter'];
 				$sources[$id]['parameters'] = $parameters;
@@ -2048,8 +2058,14 @@ class Simulator {
 			$xml[] = '	<Sources>';
 			foreach ($this->getSources() as $source) {
 				$attrs = 'id="' . $source->getId() . '" datasource="' . $source->getDatasource() . '"';
+				if ($source->getLabel() != '') {
+					$attrs .= ' label="' . $source->getLabel() . '"'; 
+				}
 				if ($source->getRequest() != '') {
 					$attrs .= ' request="' . htmlspecialchars($source->getRequest(), ENT_COMPAT) . '"'; 
+				}
+				if ($source->getRequestType() != '' && $source->getRequestType() != 'simple') {
+					$attrs .= ' requestType="' . $source->getRequestType() . '"'; 
 				}
 				if ($source->getReturnType() != '') {
 					$attrs .= ' returnType="' . $source->getReturnType() . '"'; 

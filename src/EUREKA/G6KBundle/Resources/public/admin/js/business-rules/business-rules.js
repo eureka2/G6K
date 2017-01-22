@@ -82,10 +82,10 @@ THE SOFTWARE.
 		constants: constants,
 		functions: functions,
 		operators: ['+', '-', '*', '%', '/', '&', '|'],
-		onCompleted: function(type) { 
+		onCompleted: function(type, expression) { 
 			// console.log('Expression complete, type = ' + type); 
 		},
-		onEditing: function() { 
+		onEditing: function(expression) { 
 			// console.log('Expression being changed'); 
 		},
 		onError: function(error) { console.log('error : ' + error); },

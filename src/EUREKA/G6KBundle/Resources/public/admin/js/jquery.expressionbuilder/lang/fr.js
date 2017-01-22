@@ -33,6 +33,7 @@ ExpressionBuilder_I18N['fr'] = {
 	'fields-label': 'Champs',
 	'constants-label': 'Constantes',
 	'functions-label': 'Fonctions',
+	'parameters-label': 'Paramètres',
 	'miscellaneous-label': 'Divers',
 	'nested-expression-label': 'Sous-expression',
 	'operand-holder-tip': 'Cliquer pour changer cette opérande ou clic-droit pour plus d\'actions',

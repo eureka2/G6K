@@ -29,60 +29,83 @@ THE SOFTWARE.
 	};
 
 	Simulators.functions = {
-		"abs" : {arity: 1, args: ['number'], type: 'number'},
-		"acos" : {arity: 1, args: ['number'], type: 'number'},
-		"acosh" : {arity: 1, args: ['number'], type: 'number'},
-		"addMonths" : {arity: 2, args: ['number', 'date'], type: 'date'},
-		"asin" : {arity: 1, args: ['number'], type: 'number'},
-		"asinh" : {arity: 1, args: ['number'], type: 'number'},
-		"atan" : {arity: 1, args: ['number'], type: 'number'},
-		"atan2" : {arity: 2, args: ['number', 'number'], type: 'number'},
-		"atanh" : {arity: 1, args: ['number'], type: 'number'},
-		"ceil" : {arity: 1, args: ['number'], type: 'number'},
-		"cos" : {arity: 1, args: ['number'], type: 'number'},
-		"cosh" : {arity: 1, args: ['number'], type: 'number'},
-		"count" : {arity: -1, args: ['number'], type: 'number'},
-		"day" : {arity: 1, args: ['date'], type: 'number'},
-		"exp" : {arity: 1, args: ['number'], type: 'number'},
-		"firstDayOfMonth" : {arity: 1, args: ['date'], type: 'date'},
-		"floor" : {arity: 1, args: ['number'], type: 'number'},
-		"fullmonth" : {arity: 1, args: ['date'], type: 'text'},
-		"get" : {arity: 2, args: ['array', 'number'], type: 'text'},
-		"lastday" : {arity: 2, args: ['number', 'number'], type: 'number'},
-		"lastDayOfMonth" : {arity: 1, args: ['date'], type: 'date'},
-		"log" : {arity: 1, args: ['number'], type: 'number'},
-		"log10" : {arity: 1, args: ['number'], type: 'number'},
-		"max" : {arity: 2, args: ['number', 'number'], type: 'number'},
-		"min" : {arity: 2, args: ['number', 'number'], type: 'number'},
-		"money": {arity: 1, args: ['number'], type: 'text'},
-		"month" : {arity: 1, args: ['date'], type: 'number'},
-		"nextWorkDay": {arity: 1, args: ['date'], type: 'date'},
-		"pow" : {arity: 2, args: ['number', 'number'], type: 'number'},
-		"rand" : {arity: 0, args: [], type: 'number'},
-		"replace": {arity: 3, args: ['text', 'text', 'text'], type: 'text'},
-		"round" : {arity: 1, args: ['number'], type: 'number'},
-		"sin" : {arity: 1, args: ['number'], type: 'number'},
-		"sinh" : {arity: 1, args: ['number'], type: 'number'},
-		"size" : {arity: 1, args: ['array'], type: 'number'},
-		"split" : {arity: 2, args: ['text', 'text'], type: 'array'},
-		"sqrt" : {arity: 1, args: ['number'], type: 'number'},
-		"sum" : {arity: -1, args: ['number'], type: 'number'},
-		"tan" : {arity: 1, args: ['number'], type: 'number'},
-		"tanh" : {arity: 1, args: ['number'], type: 'number'},
-		"workdays" : {arity: 2, args: ['date', 'date'], type: 'number'},
-		"workdaysofmonth" : {arity: 2, args: ['number', 'number'], type: 'number'},
-		"year" : {arity: 1, args: ['date'], type: 'number'}
+		"abs" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('abs') },
+		"acos" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('acos')},
+		"acosh" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('acosh')},
+		"addMonths" : {arity: 2, args: ['number', 'date'], type: 'date', label: Translator.trans('addMonths')},
+		"asin" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('asin')},
+		"asinh" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('asinh')},
+		"atan" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('atan')},
+		"atan2" : {arity: 2, args: ['number', 'number'], type: 'number', label: Translator.trans('atan2')},
+		"atanh" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('atanh')},
+		"ceil" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('ceil')},
+		"cos" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('cos')},
+		"cosh" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('cosh')},
+		"count" : {arity: -1, args: ['number'], type: 'number', label: Translator.trans('count')},
+		"day" : {arity: 1, args: ['date'], type: 'number', label: Translator.trans('day')},
+		"exp" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('exp')},
+		"firstDayOfMonth" : {arity: 1, args: ['date'], type: 'date', label: Translator.trans('firstDayOfMonth')},
+		"floor" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('floor')},
+		"fullmonth" : {arity: 1, args: ['date'], type: 'text', label: Translator.trans('fullmonth')},
+		"get" : {arity: 2, args: ['array', 'number'], type: 'text', label: Translator.trans('get')},
+		"lastday" : {arity: 2, args: ['number', 'number'], type: 'number', label: Translator.trans('lastDay')},
+		"lastDayOfMonth" : {arity: 1, args: ['date'], type: 'date', label: Translator.trans('lastDayOfMonth')},
+		"log" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('log')},
+		"log10" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('log10')},
+		"max" : {arity: 2, args: ['number', 'number'], type: 'number', label: Translator.trans('max')},
+		"min" : {arity: 2, args: ['number', 'number'], type: 'number', label: Translator.trans('min')},
+		"money": {arity: 1, args: ['number'], type: 'text', label: Translator.trans('money')},
+		"month" : {arity: 1, args: ['date'], type: 'number', label: Translator.trans('month')},
+		"nextWorkDay": {arity: 1, args: ['date'], type: 'date', label: Translator.trans('nextWorkDay')},
+		"pow" : {arity: 2, args: ['number', 'number'], type: 'number', label: Translator.trans('pow')},
+		"rand" : {arity: 0, args: [], type: 'number', label: Translator.trans('rand')},
+		"replace": {arity: 3, args: ['text', 'text', 'text'], type: 'text', label: Translator.trans('replace')},
+		"round" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('round')},
+		"sin" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('sin')},
+		"sinh" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('sinh')},
+		"size" : {arity: 1, args: ['array'], type: 'number', label: Translator.trans('size')},
+		"split" : {arity: 2, args: ['text', 'text'], type: 'array', label: Translator.trans('split')},
+		"sqrt" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('sqrt')},
+		"sum" : {arity: -1, args: ['number'], type: 'number', label: Translator.trans('sum')},
+		"tan" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('tan')},
+		"tanh" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('tanh')},
+		"workdays" : {arity: 2, args: ['date', 'date'], type: 'number', label: Translator.trans('workdays')},
+		"workdaysofmonth" : {arity: 2, args: ['number', 'number'], type: 'number', label: Translator.trans('workdaysofmonth')},
+		"year" : {arity: 1, args: ['date'], type: 'number', label: Translator.trans('year')}
 	};
 
 	Simulators.constants = { 
-		pi: {type : 'number'}, 
-		now: {type: 'date'}, 
-		today: {type: 'date'}, 
-		'true': {type: 'boolean'}, 
-		'false': {type: 'boolean'}
+		pi: {type : 'number', label: Translator.trans('pi')}, 
+		now: {type: 'date', label: Translator.trans('now')}, 
+		today: {type: 'date', label: Translator.trans('today')}, 
+		'true': {type: 'boolean', label: Translator.trans('true')}, 
+		'false': {type: 'boolean', label: Translator.trans('false')}
 	};
 
-	Simulators.dateFormats = { 'd/m/Y':'d/m/Y', 'm/d/Y':'m/d/Y', 'd-m-Y':'d-m-Y', 'm-d-Y':'m-d-Y', 'Y-m-d':'Y-m-d' };
+	Simulators.dateFormats = { 
+		'd/m/Y': Translator.trans('d/m/Y') + ' (' +( new Date).format('d/m/Y') + ')', 
+		'm/d/Y': Translator.trans('m/d/Y') + ' (' +( new Date).format('m/d/Y') + ')', 
+		'd-m-Y': Translator.trans('d-m-Y') + ' (' +( new Date).format('d-m-Y') + ')', 
+		'm-d-Y': Translator.trans('m-d-Y') + ' (' +( new Date).format('m-d-Y') + ')', 
+		'Y-m-d': Translator.trans('Y-m-d') + ' (' +( new Date).format('Y-m-d') + ')'
+	};
+
+	Simulators.parameterDateFormats = { 
+		'Y-m-d': Translator.trans('Y-m-d') + ' (' +( new Date).format('Y-m-d') + ')', 
+		'Y-m': Translator.trans('Y-m') + ' (' +( new Date).format('Y-m') + ')', 
+		'm-d': Translator.trans('m-d') + ' (' +( new Date).format('m-d') + ')', 
+		'd/m/Y': Translator.trans('d/m/Y') + ' (' +( new Date).format('d/m/Y') + ')', 
+		'm/Y': Translator.trans('m/Y') + ' (' +( new Date).format('m/Y') + ')', 
+		'm/d': Translator.trans('m/d') + ' (' +( new Date).format('m/d') + ')',
+		'Y': Translator.trans('Y') + ' (' +( new Date).format('Y') + ')',
+		'y-m-d': Translator.trans('y-m-d') + ' (' +( new Date).format('y-m-d') + ')',
+		'y-m': Translator.trans('y-m') + ' (' +( new Date).format('y-m') + ')',
+		'd/m/y': Translator.trans('d/m/Y') + ' (' +( new Date).format('d/m/y') + ')', 
+		'm/y': Translator.trans('m/y') + ' (' +( new Date).format('m/y') + ')',
+		'y': Translator.trans('y') + ' (' +( new Date).format('y') + ')',
+		'm': Translator.trans('m') + ' (' +( new Date).format('m') + ')',
+		'd': Translator.trans('d') + ' (' +( new Date).format('d') + ')'
+	};
 
 	Simulators.moneySymbols = {'฿':'฿', 'B/.':'B/.', '₵':'₵', '¢':'¢', '₡':'₡', 'Kč':'Kč', '$':'$', '₫':'₫', '€':'€', 'ƒ':'ƒ', 'Ft':'Ft', '₲':'₲', '₴':'₴', '₭':'₭', 'L':'L', '£ / ₤':'£ / ₤', '₺':'₺', '₥':'₥', '₦':'₦', 'S/.':'S/.', '₱':'₱', 'P':'P', 'R':'R', 'RM':'RM', '₹ / ₨':'₹ / ₨', '৲':'৲', '৳':'৳', 'R$':'R$', '₪':'₪', '₮':'₮', '₩':'₩', '¥':'¥', 'Ұ':'Ұ', 'zł':'zł' };
 
@@ -93,8 +116,8 @@ THE SOFTWARE.
 		'content': { type : 'expression', label: Translator.trans('Content'), placeholder: Translator.trans('content')},
 		'round': { type : 'number', label: Translator.trans('Round'), placeholder: Translator.trans('round')},
 		'unit': { type : 'text', label: Translator.trans('Unit'), placeholder: Translator.trans('unit text')},
-		'source': { type : 'expression', label: Translator.trans('Source'), placeholder: Translator.trans('source')},
-		'index': { type : 'expression', label: Translator.trans('Index'), placeholder: Translator.trans('index name')},
+		'source': { type : 'select', label: Translator.trans('Source'), placeholder: Translator.trans('source')},
+		'index': { type : 'select', label: Translator.trans('Index'), placeholder: Translator.trans('index name')},
 		'memorize': { type : 'checkbox', label: Translator.trans('Memorize'), placeholder: Translator.trans('Store into memo)')}
 	};
 
@@ -102,10 +125,10 @@ THE SOFTWARE.
 		constants: Simulators.constants,
 		functions: Simulators.functions,
 		operators: ['+', '-', '*', '%', '/', '&', '|'],
-		onCompleted: function(type) { 
+		onCompleted: function(type, expression) { 
 			// console.log('Expression complete, type = ' + type); 
 			},
-		onEditing: function() { 
+		onEditing: function(expression) { 
 			// console.log('Expression being changed'); 
 		},
 		onError: function(error) { console.log('error : ' + error); },
@@ -169,20 +192,21 @@ THE SOFTWARE.
 		});
 	}
 
-	Simulators.simpleAttributeForDisplay = function(element, type, name, label, value, required, placeholder, options) {
+	Simulators.simpleAttributeForDisplay = function(element, type, name, label, value, display, required, placeholder, options) {
 		if (required || (value && value !== '')) {
 			var attribute = '<div class="form-group col-sm-12">';
 			attribute    += '    <label class="col-sm-4 control-label">' + label + '</label>';
 			attribute    += '    <div class="col-sm-8">';
+			value = value || '';
 			if (type === 'text' || type === 'number') {
-				attribute    += '        <p data-attribute="' + name + '" data-value="' + value + '" class="form-control-static simple-value">' + value + '</p>';
+				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + value + '">' + display + '</p>';
 			} else if (type === 'checkbox') {
-				attribute    += '        <p data-attribute="' + name + '" class="form-control-static simple-value" data-value="' + (value !== '' ? 1 : 0) + '">' + (value !== '' ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
+				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + (value !== '' && value !== '0' ? 1 : 0) + '">' + (value !== '' && value !== '0' ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
 			} else if (type === 'select') {
 				options = jQuery.parseJSON(options);
 				$.each(options, function(ovalue, olabel) {
 					if (ovalue == value) {
-						attribute    += '       <p data-attribute="' + name + '" data-value="' + ovalue + '" class="form-control-static simple-value">' + olabel + '</p>';
+						attribute    += '       <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + ovalue + '">' + olabel + '</p>';
 					}
 				});
 			}
@@ -204,14 +228,18 @@ THE SOFTWARE.
 		}
 		attribute    += '    ' + label + '</label>';
 		if (type === 'checkbox') {
-			attribute    += '    <div class="col-sm-4">';
+			attribute    += '    <div class="col-sm-4 input-group">';
 		} else {
-			attribute    += '    <div class="col-sm-8">';
+			attribute    += '    <div class="col-sm-8 input-group">';
 		}
 		if (type === 'text' || type === 'number') {
 			attribute    += '        <input type="' + type + '" name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" placeholder="' + placeholder + '"  value="' + value + '" />';
 		} else if (type === 'checkbox') {
-			attribute    += '        <input type="checkbox" name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" value="1" checked="checked" />';
+			attribute    += '        <input type="checkbox" name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" value="1" checked="checked"';
+			if (value == '1') {
+				attribute    += ' checked="checked"';
+			}
+			attribute    += ' />';
 		} else if (type === 'select') {
 			options = jQuery.parseJSON(options);
 			attribute    += '        <select name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" data-placeholder="' + placeholder + '">';
@@ -288,10 +316,10 @@ THE SOFTWARE.
 			operatorHolder: Simulators.expressionOptions.operatorHolder,
 			nestedExpression: Simulators.expressionOptions.nestedExpression
 		});
-		attribute.find('select.simple-value').select2({
-			language: Admin.lang,
-			minimumResultsForSearch: 50
-		});
+		// attribute.find('select.simple-value').select2({
+			// language: Admin.lang,
+			// minimumResultsForSearch: 50
+		// });
 		attribute.find('span.delete-attribute').click(function() {
 			Simulators.removeAttribute($(this));
 		});
@@ -317,6 +345,7 @@ THE SOFTWARE.
 				$.each(butt.dropdown, function(d, item) {
 					var li = $('<li>');
 					var link = $('<a>', { class: item.class, title: item.label, });
+					link.append(item.label);
 					link.attr('data-parent', '#' + id);
 					li.append(link);
 					ul.append(li);
@@ -404,8 +433,14 @@ THE SOFTWARE.
 	}
 
 	Simulators.checkSimulatorOptions = function(simulatorContainer) {
-		if ($.trim($('#simulator-name').val()) === '') {
+		var name = $.trim($('#simulator-name').val());
+		if (name === '') {
 			simulatorContainer.find('.error-message').text(Translator.trans('The simulator name is required'));
+			simulatorContainer.find('.alert').show();
+			return false;
+		}
+		if (! /^[\w\-]+$/.test(name)) {
+			simulatorContainer.find('.error-message').text(Translator.trans('Incorrect simulator name'));
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
@@ -451,10 +486,10 @@ THE SOFTWARE.
 
 	Simulators.bindSimulatorOptions = function(simulatorContainer) {
 		simulatorContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
-		simulatorContainer.find('select[data-attribute=dateFormat], select[data-attribute=moneySymbol], select[data-attribute=symbolPosition]').select2({
-			language: Admin.lang,
-			minimumResultsForSearch: 50
-		});
+		// simulatorContainer.find('select[data-attribute=dateFormat], select[data-attribute=moneySymbol], select[data-attribute=symbolPosition]').select2({
+			// language: Admin.lang,
+			// minimumResultsForSearch: 50
+		// });
 		simulatorContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -679,10 +714,10 @@ $(document).ready(function() {
 		Simulators.bindSortableProfileDatas();
 		Simulators.bindSortableProfiles();
 		$('#page-simulators textarea').wysihtml5(Admin.wysihtml5Options);
-		$('#page-simulators select').select2({
-			language: Admin.lang,
-			minimumResultsForSearch: 50
-		});
+		// $('#page-simulators select').select2({
+			// language: Admin.lang,
+			// minimumResultsForSearch: 50
+		// });
 		$('#page-simulators .delete-attribute').click(function() {
 			Simulators.removeAttribute($(this));
 		});

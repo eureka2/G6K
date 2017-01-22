@@ -79,11 +79,12 @@ THE SOFTWARE.
 				{% if table is not empty %}
 				<div id="table" class="panel panel-primary">
 					<div class="panel-heading">
-					{% if table.action != 'create-table' %}
+					{% if table.action != 'create-table' and table.action != 'import-table' %}
 					<a class="btn btn-primary pull-right drop-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'drop'}) }}" title="{{ 'Drop table'|trans }}" data-confirm="{{ 'Are you sure you want to drop the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Drop table'|trans }}</span> <span class="glyphicon glyphicon-minus-sign"></span></a>
 					{% endif %}
-					{% if table.action != 'create-table' and table.action != 'edit-table'  %}
+					{% if table.action != 'create-table' and table.action != 'edit-table' and table.action != 'import-table'  %}
 					<a class="btn btn-primary pull-right edit-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'edit'}) }}" title="{{ 'Edit table structure'|trans }}" data-confirm="{{ 'Are you sure you want to edit the structure of the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Edit table structure'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></a>
+					<a class="btn btn-primary pull-right import-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'import'}) }}" title="{{ 'Import to table from a delimited text file'|trans }}" data-confirm="{{ 'Are you sure you want to import data into the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Import data'|trans }}</span> <span class="glyphicon glyphicon-import"></span></a>
 					{% endif %}
 					<h4 class="panel-title">{{ table.label }}</h4>
 					</div>
@@ -126,7 +127,7 @@ THE SOFTWARE.
 						</div>
 						<div class="table-responsive">
 							<span class="table-caption">{{ 'Fields'|trans }}</span>
-							<button id="btnAddNewColumn" class="btn btn-default pull-right" title="{{ 'Add column'|trans }}"><span class="button-label">{{ 'Add column'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
+							<button id="btnAddNewColumn" class="btn btn-default pull-right" title="{{ 'Add field'|trans }}"><span class="button-label">{{ 'Add field'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
 							<table id="edition-table" class="table table-condensed table-striped table-bordered table-hover">
 								<thead>
 									<tr>
@@ -146,6 +147,46 @@ THE SOFTWARE.
 						{% else %}
 						<button id="btnSaveEditedTable" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
 						{% endif %}
+						</form>
+						{% elseif table.action == 'import-table' %}
+						<form id="import-table-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'doimport'}) }}" enctype="multipart/form-data">
+						<div class="panel panel-default" id="table-import-panel-holder">
+							<div class="panel-heading">
+								{{ 'Import to table from a delimited text file'|trans }}
+							</div>
+							<div class="panel-body table-file">
+								<div class="form-group col-sm-12">    
+									<label class="col-sm-4 control-label" for="table-data-file">{{ 'Text file'|trans }}</label>    
+									<div class="col-sm-8">        
+										<input type="file" id="table-data-file" name="table-data-file" accept="text/csv, text/plain" class="form-control input-sm" />
+									</div>
+								</div>
+								<div class="form-group col-sm-12">    
+									<label class="col-sm-4 control-label" for="table-data-separator">{{ 'Separator'|trans }}</label>    
+									<div class="col-sm-8">        
+										<select type="text" id="table-data-separator" name="table-data-separator" class="form-control input-sm" />
+										<option value=";">{{ 'Semicolon'|trans }}</option>
+										<option value=",">{{ 'Comma'|trans }}</option>
+										<option value="t">{{ 'Tabulation'|trans }}</option>
+										<option value=" ">{{ 'Space'|trans }}</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-sm-12">    
+									<label class="col-sm-4 control-label" for="table-data-delimiter">{{ 'Delimiter'|trans }}</label>    
+									<div class="col-sm-8">        
+										<input type="text" id="table-data-delimiter" name="table-data-delimiter" value='"' class="form-control input-sm" />
+									</div>
+								</div>
+								<div class="form-group col-sm-12">    
+									<label class="col-sm-4 control-label" for="table-data-has-header">{{ 'Column names in first line ?'|trans }}</label>    
+									<div class="col-sm-8">        
+										<input type="checkbox" id="table-data-has-header" name="table-data-has-header" value="1" class="form-control input-sm" checked="checked" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<button id="btnImportTable" class="btn btn-primary pull-right">{{ 'Import'|trans }}</button>
 						</form>
 						{% else %}
 						<div class="table-responsive">
@@ -452,13 +493,13 @@ THE SOFTWARE.
 								<div class="form-group col-sm-12">    
 									<label class="col-sm-2 control-label" for="datasource-schema-file">{{ 'JSON Schema'|trans }}</label>    
 									<div class="col-sm-10">        
-										<input type="file" name="datasource-schema-file" accept=".schema.json" class="form-control input-sm" />
+										<input type="file" id="datasource-schema-file" name="datasource-schema-file" accept=".schema.json" class="form-control input-sm" />
 									</div>
 								</div>
 								<div class="form-group col-sm-12">    
 									<label class="col-sm-2 control-label" for="datasource-data-file">{{ 'JSON Data'|trans }}</label>    
 									<div class="col-sm-10">        
-										<input type="file" name="datasource-data-file" accept=".json" class="form-control input-sm" />
+										<input type="file" id="datasource-data-file" name="datasource-data-file" accept=".json" class="form-control input-sm" />
 									</div>
 								</div>
 							</div>

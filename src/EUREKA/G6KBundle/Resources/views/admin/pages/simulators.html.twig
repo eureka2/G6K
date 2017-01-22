@@ -90,16 +90,16 @@ THE SOFTWARE.
 								<div class="panel-body">
 									<div class="attributes-container">
 										<div>
-										{{ _self.showAttribute('simulator', 'text', 'name', 'Name'|trans, simulator.name, true, 'name') }}
-										{{ _self.showAttribute('simulator', 'text', 'label', 'Label'|trans, simulator.label, true, 'label') }}
-										{{ _self.showAttribute('simulator', 'text', 'defaultView', 'Default view'|trans, simulator.defaultView, true, 'defaultView') }}
-										{{ _self.showAttribute('simulator', 'text', 'referer', 'Main referer'|trans, simulator.referer, true, 'referer') }}
-										{{ _self.showAttribute('simulator', 'select', 'dateFormat', 'Date format'|trans, simulator.dateFormat, true, 'Select a format'|trans, { 'd/m/Y':'d/m/Y', 'm/d/Y':'m/d/Y', 'd-m-Y':'d-m-Y', 'm-d-Y':'m-d-Y', 'Y-m-d':'Y-m-d' }) }}
-										{{ _self.showAttribute('simulator', 'text', 'decimalPoint', 'Decimal point'|trans, simulator.decimalPoint, true, 'Decimal point'|trans) }}
-										{{ _self.showAttribute('simulator', 'select', 'moneySymbol', 'Currency symbol'|trans, simulator.moneySymbol, true, 'Select a symbol'|trans, {'฿':'฿', 'B/.':'B/.', '₵':'₵', '¢':'¢', '₡':'₡', 'Kč':'Kč', '$':'$', '₫':'₫', '€':'€', 'ƒ':'ƒ', 'Ft':'Ft', '₲':'₲', '₴':'₴', '₭':'₭', 'L':'L', '£ / ₤':'£ / ₤', '₺':'₺', '₥':'₥', '₦':'₦', 'S/.':'S/.', '₱':'₱', 'P':'P', 'R':'R', 'RM':'RM', '₹ / ₨':'₹ / ₨', '৲':'৲', '৳':'৳', 'R$':'R$', '₪':'₪', '₮':'₮', '₩':'₩', '¥':'¥', 'Ұ':'Ұ', 'zł':'zł' }) }}
-										{{ _self.showAttribute('simulator', 'select', 'symbolPosition', 'Symbol position'|trans, simulator.symbolPosition, true, 'Select a position'|trans, {'before':'before currency'|trans, 'after':'after currency'|trans}) }}
-										{{ _self.showAttribute('simulator', 'checkbox', 'dynamic', 'Interactive UI'|trans, simulator.dynamic, true, 'dynamic') }}
-										{{ _self.showAttribute('simulator', 'checkbox', 'memo', 'Data memo ?'|trans, simulator.memo, true, 'memo') }}
+										{{ _self.showAttribute('simulator', 'text', 'name', 'Name'|trans, simulator.name, simulator.name, true, 'name') }}
+										{{ _self.showAttribute('simulator', 'text', 'label', 'Label'|trans, simulator.label, simulator.label, true, 'label') }}
+										{{ _self.showAttribute('simulator', 'text', 'defaultView', 'Default view'|trans, simulator.defaultView, simulator.defaultView, true, 'defaultView') }}
+										{{ _self.showAttribute('simulator', 'text', 'referer', 'Main referer'|trans, simulator.referer, simulator.referer, true, 'referer') }}
+										{{ _self.showAttribute('simulator', 'select', 'dateFormat', 'Date format'|trans, simulator.dateFormat, simulator.dateFormat|trans, true, 'Select a format'|trans, { 'd/m/Y':'d/m/Y'|trans, 'm/d/Y':'m/d/Y'|trans, 'd-m-Y':'d-m-Y'|trans, 'm-d-Y':'m-d-Y'|trans, 'Y-m-d':'Y-m-d'|trans }) }}
+										{{ _self.showAttribute('simulator', 'text', 'decimalPoint', 'Decimal point'|trans, simulator.decimalPoint, simulator.decimalPoint, true, 'Decimal point'|trans) }}
+										{{ _self.showAttribute('simulator', 'select', 'moneySymbol', 'Currency symbol'|trans, simulator.moneySymbol, simulator.moneySymbol, true, 'Select a symbol'|trans, {'฿':'฿', 'B/.':'B/.', '₵':'₵', '¢':'¢', '₡':'₡', 'Kč':'Kč', '$':'$', '₫':'₫', '€':'€', 'ƒ':'ƒ', 'Ft':'Ft', '₲':'₲', '₴':'₴', '₭':'₭', 'L':'L', '£ / ₤':'£ / ₤', '₺':'₺', '₥':'₥', '₦':'₦', 'S/.':'S/.', '₱':'₱', 'P':'P', 'R':'R', 'RM':'RM', '₹ / ₨':'₹ / ₨', '৲':'৲', '৳':'৳', 'R$':'R$', '₪':'₪', '₮':'₮', '₩':'₩', '¥':'¥', 'Ұ':'Ұ', 'zł':'zł' }) }}
+										{{ _self.showAttribute('simulator', 'select', 'symbolPosition', 'Symbol position'|trans, simulator.symbolPosition, simulator.symbolPosition, true, 'Select a position'|trans, {'before':'before currency'|trans, 'after':'after currency'|trans}) }}
+										{{ _self.showAttribute('simulator', 'checkbox', 'dynamic', 'Interactive UI'|trans, simulator.dynamic, simulator.dynamic, true, 'dynamic') }}
+										{{ _self.showAttribute('simulator', 'checkbox', 'memo', 'Data memo ?'|trans, simulator.memo, simulator.memo, true, 'memo') }}
 										</div>
 									</div>
 								</div>
@@ -193,8 +193,8 @@ THE SOFTWARE.
 		<div class="panel-body">
 			<div class="attributes-container">
 				<div>
-				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'name', 'Group Name'|trans, data.name, true, 'Group name'|trans) }}
-				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'label', 'Group Label'|trans, data.label, true, 'Group label'|trans) }}
+				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'name', 'Group Name'|trans, data.name, data.name, true, 'Group name'|trans) }}
+				{{ _self.showAttribute('datagroup-'~data.id, 'text', 'label', 'Group Label'|trans, data.label, data.label, true, 'Group label'|trans) }}
 				</div>
 			</div>
 		</div>
@@ -383,11 +383,11 @@ THE SOFTWARE.
 		<div class="panel-body">
 			<div class="attributes-container">
 				<div>
-				{{ _self.showAttribute('step-'~step.id, 'text', 'name', 'Step Name'|trans, step.name, true, 'Step Name'|trans) }}
-				{{ _self.showAttribute('step-'~step.id, 'text', 'label', 'Step Label'|trans, step.label, true, 'Step Label'|trans) }}
-				{{ _self.showAttribute('step-'~step.id, 'text', 'template', 'Step Template'|trans, step.template, true, 'Step Template'|trans) }}
-				{{ _self.showAttribute('step-'~step.id, 'select', 'output', 'Output'|trans, step.output, false, 'Select an output', {'normal':'Normal'|trans, 'inlinePDF':'Inline PDF'|trans, 'downloadablePDF':'Downloadable PDF'|trans, 'html':'html'}) }}
-				{{ _self.showAttribute('step-'~step.id, 'checkbox', 'dynamic', 'Interactive UI'|trans, step.dynamic, false, 'dynamic') }}
+				{{ _self.showAttribute('step-'~step.id, 'text', 'name', 'Step Name'|trans, step.name, step.name, true, 'Step Name'|trans) }}
+				{{ _self.showAttribute('step-'~step.id, 'text', 'label', 'Step Label'|trans, step.label, step.label, true, 'Step Label'|trans) }}
+				{{ _self.showAttribute('step-'~step.id, 'text', 'template', 'Step Template'|trans, step.template, step.template, true, 'Step Template'|trans) }}
+				{{ _self.showAttribute('step-'~step.id, 'select', 'output', 'Output'|trans, step.output, step.output, false, 'Select an output', {'normal':'Normal'|trans, 'inlinePDF':'Inline PDF'|trans, 'downloadablePDF':'Downloadable PDF'|trans, 'html':'html'}) }}
+				{{ _self.showAttribute('step-'~step.id, 'checkbox', 'dynamic', 'Interactive UI'|trans, step.dynamic, step.dynamic, false, 'dynamic') }}
 				</div>
 			</div>
 			<div class="panel panel-default description-panel elements-container" id="step-{{ step.id }}-description-panel">
@@ -422,7 +422,7 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-'~step.id~ '-footnotes', 'select', 'position', 'Position'|trans, step.footNotes.position, true, 'Select a position'|trans, { 'beforeActions':'before action buttons'|trans, 'afterActions':'after action buttons'|trans } ) }}
+			{{ _self.showAttribute('step-'~step.id~ '-footnotes', 'select', 'position', 'Position'|trans, step.footNotes.position, step.footNotes.position, true, 'Select a position'|trans, { 'beforeActions':'before action buttons'|trans, 'afterActions':'after action buttons'|trans } ) }}
 			</div>
 		</div>
 	</div>
@@ -463,12 +463,12 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'name', 'Name'|trans, action.name, true, 'Button name'|trans) }}
-			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'label', 'Label'|trans, action.label, true, 'Button label'|trans) }}
-			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'what', 'What'|trans, action.what, true, 'Select an action'|trans, { 'submit':'Submit'|trans, 'reset':'Reset'|trans } ) }}
-			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'for', 'For'|trans, action.for, true, 'Select a target step'|trans, { 'priorStep':'Prior step'|trans, 'currentStep':'Current step'|trans, 'nextStep':'Next step'|trans, 'jumpToStep':'Jump to step'|trans, 'newSimulation':'New simulation'|trans, 'externalPage':'External page'|trans } ) }}
-			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'uri', 'URI'|trans, action.uri, false, 'Button uri'|trans) }}
-			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'class', 'Class'|trans, action.class, false, 'Button class'|trans) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'name', 'Name'|trans, action.name, action.name, true, 'Button name'|trans) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'label', 'Label'|trans, action.label, action.label, true, 'Button label'|trans) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'what', 'What'|trans, action.what, action.what, true, 'Select an action'|trans, { 'submit':'Submit'|trans, 'reset':'Reset'|trans } ) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'for', 'For'|trans, action.for, action.for, true, 'Select a target step'|trans, { 'priorStep':'Prior step'|trans, 'currentStep':'Current step'|trans, 'nextStep':'Next step'|trans, 'jumpToStep':'Jump to step'|trans, 'newSimulation':'New simulation'|trans, 'externalPage':'External page'|trans } ) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'uri', 'URI'|trans, action.uri, action.uri, false, 'Button uri'|trans) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'class', 'Class'|trans, action.class, action.class, false, 'Button class'|trans) }}
 			</div>
 		</div>
 	</div>
@@ -485,17 +485,83 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro showSource(simulator, source, containerType, inClass) %}
-{{ _self.openCollapsiblePanel('source-' ~ source.id , '#'~source.id, 'info', inClass, '', [{ 'class': 'delete-source', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-source', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{% set datasource = simulator.datasourceByName(source.datasource) %}
+{{ _self.openCollapsiblePanel('source-' ~ source.id , '#' ~ source.id ~ ' ' ~ source.label, 'info', inClass, '', [{ 'class': 'delete-source', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-source', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 <div class="panel panel-default {{ containerType }}-container" id="source-{{ source.id }}-attributes-panel" data-id="{{ source.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('source-'~source.id, 'text', 'datasource', 'Datasource'|trans, source.datasource, true, 'Datasource'|trans) }}
-			{{ _self.showAttribute('source-'~source.id, 'text', 'request', 'Request'|trans, source.request, false, 'Request'|trans) }}
-			{{ _self.showAttribute('source-'~source.id, 'select', 'returnType', 'Return type'|trans, source.returnType, true, 'Select a return type'|trans, { 'json':'JSON'|trans, 'xml':'XML'|trans, 'singleValue':'Single value'|trans, 'assocArray':'Associative array'|trans, 'html':'HTML'|trans, 'csv':'Comma separated value (csv)'|trans } ) }}
-			{{ _self.showAttribute('source-'~source.id, 'text', 'returnPath', 'Return path'|trans, source.returnPath, false, 'Return path'|trans) }}
-			{{ _self.showAttribute('source-'~source.id, 'text', 'separator', 'Separator'|trans, source.separator, false, 'Separator'|trans) }}
-			{{ _self.showAttribute('source-'~source.id, 'text', 'delimiter', 'Delimiter'|trans, source.delimiter, false, 'Delimiter'|trans) }}
+			{{ _self.showAttribute('source-' ~ source.id, 'text', 'label', 'Label'|trans, source.label, source.label, false, 'Source label'|trans) }}
+			{{ _self.showAttribute('source-' ~ source.id, 'text', 'datasource', 'Datasource'|trans, source.datasource, source.datasource, true, 'Datasource'|trans) }}
+			{% if datasource.type != 'uri' %}
+				{{ _self.showAttribute('source-'~source.id, 'select', 'requestType', 'Request type'|trans, source.requestType, source.requestType, false, 'Select a request type'|trans, { 'simple':'Simple'|trans, 'complex':'Complex'|trans } ) }}
+				{% if source.requestType == 'simple' and source.parsed != ''%}
+				{{ _self.showAttribute('source-'~source.id, 'text', 'table', 'Table'|trans, source.parsed.from.table, '«' ~ source.parsed.from.label ~ '»', false, 'Table'|trans) }}
+				<div class="form-group col-sm-12">
+					<label class="col-sm-4 control-label">{{ 'Selected columns'|trans }}</label>
+					<div class="col-sm-8">
+						<p data-attribute="columns" data-value="" class="form-control-static simple-value">
+							{% for col in source.parsed.select %}
+							{% if loop.index > 1 %}
+							<span>, </span>
+							{% endif %}
+							<span data-attribute="column" data-value="{{ col.column }}" data-alias="{{ col.alias }}">
+							{% if col.alias and col.alias != '' and col.alias|lower != col.column|lower %}
+							{{ '«' ~ col.label ~ '» ' ~ 'alias'|trans ~ ' ' ~ col.alias }}
+							{% else %}
+							{{ '«' ~ col.label ~ '»' }}
+							{% endif %}
+							</span>
+							{% endfor %}
+						</p>
+					</div>
+				</div>
+				{% if source.parsed.where == 'true' %}
+				{{ _self.showAttribute('source-'~source.id, 'text', 'filter', 'Filter'|trans, source.parsed.where|url_encode, 'No filter'|trans, false, 'Filter'|trans) }}
+				{% else %}
+				{{ _self.showAttribute('source-'~source.id, 'text', 'filter', 'Filter'|trans, source.parsed.where|url_encode, source.parsed.where, false, 'Filter'|trans) }}
+				{% endif %}
+				<div class="form-group col-sm-12">
+					<label class="col-sm-4 control-label">{{ 'Order by'|trans }}</label>
+					<div class="col-sm-8">
+						<p data-attribute="orderbykeys" data-value="" class="form-control-static simple-value">
+							{% if source.parsed.orderby is not empty %}
+							{% for col in source.parsed.orderby %}
+							{% if loop.index > 1 %}
+							<span>, </span>
+							{% endif %}
+							<span data-attribute="orderbykey" data-value="{{ col.key }}" data-order="{{ col.order }}">
+							{% if col.order == 'desc' %}
+							{{ '«' ~ col.label ~ '» ' ~ 'in descending order'|trans }}
+							{% else %}
+							{{ '«' ~ col.label ~ '» ' ~ 'in ascending order'|trans }}
+							{% endif %}
+							</span>
+							{% endfor %}
+							{% endif %}
+						</p>
+					</div>
+				</div>
+				{% if source.parsed.limit == 0 %}
+				{{ _self.showAttribute('source-'~source.id, 'number', 'nbresult', 'Number of results'|trans, source.parsed.limit, 'All results'|trans, false, 'Number of results'|trans) }}
+				{% else %}
+				{{ _self.showAttribute('source-'~source.id, 'number', 'nbresult', 'Number of results'|trans, source.parsed.limit, source.parsed.limit, false, 'Number of results'|trans) }}
+				{% endif %}
+				{% if source.parsed.offset == 0 %}
+				{{ _self.showAttribute('source-'~source.id, 'number', 'from', 'From'|trans, source.parsed.offset, 'from start'|trans, false, 'From'|trans) }}
+				{% else %}
+				{{ _self.showAttribute('source-'~source.id, 'number', 'from', 'From'|trans, source.parsed.offset, source.parsed.offset, false, 'From'|trans) }}
+				{% endif %}
+				{% else %}
+				{{ _self.showAttribute('source-'~source.id, 'text', 'request', 'Request'|trans, source.request|url_encode, source.request, false, 'Request'|trans) }}
+				{% endif %}
+			{% endif %}
+			{{ _self.showAttribute('source-'~source.id, 'select', 'returnType', 'Return type'|trans, source.returnType, source.returnType, true, 'Select a return type'|trans, { 'json':'JSON'|trans, 'xml':'XML'|trans, 'singleValue':'Single value'|trans, 'assocArray':'Associative array'|trans, 'html':'HTML'|trans, 'csv':'Comma separated value (csv)'|trans } ) }}
+			{{ _self.showAttribute('source-'~source.id, 'text', 'returnPath', 'Return path'|trans, source.returnPath, source.returnPath, false, 'Return path'|trans) }}
+			{% if source.returnType == 'csv' %}
+			{{ _self.showAttribute('source-'~source.id, 'text', 'separator', 'Separator'|trans, source.separator, source.separator, false, 'Separator'|trans) }}
+			{{ _self.showAttribute('source-'~source.id, 'text', 'delimiter', 'Delimiter'|trans, source.delimiter, source.delimiter, false, 'Delimiter'|trans) }}
+			{% endif %}
 			</div>
 		</div>
 	</div>
@@ -516,16 +582,18 @@ THE SOFTWARE.
 			<div class="panel-body" id="source-{{ source.id }}-source-parameter-{{ paramId }}-panel">
 				<div class="attributes-container">
 					<div>
-						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'select', 'type', 'Type'|trans, parameter.type, true, 'Select a type'|trans, { 'queryString':'Query string'|trans, 'path':'PATH'|trans, 'data':'Data'|trans, 'columnValue':'Column value'|trans } ) }}
-						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'text', 'name', 'Name'|trans, parameter.name, false, 'Parameter name'|trans) }}
+						{% if datasource.type == 'uri' %}
+						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'select', 'type', 'Type'|trans, parameter.type, parameter.type, true, 'Select a type'|trans, { 'queryString':'Query string parameter'|trans, 'path':'PATH'|trans, 'data':'POST data'|trans, 'columnValue':'Column value'|trans } ) }}
+						{% endif %}
+						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'text', 'name', 'Name'|trans, parameter.name, parameter.name, false, 'Parameter name'|trans) }}
 						<div class="form-group col-sm-12">
-							<label class="col-sm-2 control-label">{{ 'Data'|trans }}</label>
-							<div class="col-sm-10">
+							<label class="col-sm-4 control-label">{{ 'Data'|trans }}</label>
+							<div class="col-sm-8">
 								<p data-attribute="data" data-value="{{ data.name }}" class="form-control-static simple-value">{{ data.label }}</p>
 							</div>
 						</div>
 						{% if data.type == 'date' or data.type == 'day' or data.type == 'month' or data.type == 'year' %}
-							{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'text', 'format', 'Format'|trans, parameter.format, false, 'Date format of the parameter with characters : d, j, D, l or z (day) - F, M, m or n (month) - Y, y (year)'|trans) }}
+						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'text', 'format', 'Format'|trans, parameter.format, parameter.format|trans, false, 'Date format of the parameter'|trans) }}
 						{% endif %}
 					</div>
 				</div>
@@ -544,8 +612,8 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id, 'text', 'name', 'Name'|trans, panel.name, true, 'Panel name'|trans) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id, 'text', 'label', 'Label'|trans, panel.label, true, 'Panel label'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id, 'text', 'name', 'Name'|trans, panel.name, panel.name, true, 'Panel name'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id, 'text', 'label', 'Label'|trans, panel.label, panel.label, true, 'Panel label'|trans) }}
 			</div>
 		</div>
 	</div>
@@ -574,9 +642,9 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'disposition', 'Disposition'|trans, fieldset.disposition, false, 'Select a Disposition'|trans, {'classic':'Classic'|trans, 'grid':'Grid'|trans}) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'display', 'Display'|trans, fieldset.display, false, 'Select a Display'|trans, {'inline':'Inline'|trans, 'pop-in':'Pop-in'|trans}) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'text', 'popinLink', 'Pop-in Link'|trans, fieldset.popinLink, false, 'Pop-in Link'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'disposition', 'Disposition'|trans, fieldset.disposition, fieldset.disposition, false, 'Select a Disposition'|trans, {'classic':'Classic'|trans, 'grid':'Grid'|trans}) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'display', 'Display'|trans, fieldset.display, fieldset.display, false, 'Select a Display'|trans, {'inline':'Inline'|trans, 'pop-in':'Pop-in'|trans}) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'text', 'popinLink', 'Pop-in Link'|trans, fieldset.popinLink, fieldset.popinLink, false, 'Pop-in Link'|trans) }}
 			</div>
 		</div>
 		<div class="panel panel-default legend-panel elements-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-legend-panel">
@@ -633,9 +701,9 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id, 'text', 'name', 'Name'|trans, column.name, true, 'Column name'|trans) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id, 'text', 'label', 'Label'|trans, column.label, true, 'Column label'|trans) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id, 'select', 'type', 'Type'|trans, column.type, true, 'Select a type'|trans, {'array':'liste'|trans, 'date':'date'|trans, 'day':'day'|trans, 'month':'month'|trans, 'year':'year'|trans, 'boolean':'boolean'|trans, 'integer':'integer'|trans, 'number':'number'|trans, 'text':'text'|trans, 'textarea':'textarea'|trans, 'money':'money'|trans, 'choice':'choice'|trans, 'multichoice':'multichoice'|trans, 'percent':'percent'|trans, 'table':'table'|trans, 'department':'department'|trans, 'region':'region'|trans, 'country':'country'|trans}) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id, 'text', 'name', 'Name'|trans, column.name, column.name, true, 'Column name'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id, 'text', 'label', 'Label'|trans, column.label, column.label, true, 'Column label'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id, 'select', 'type', 'Type'|trans, column.type, column.type, true, 'Select a type'|trans, {'array':'liste'|trans, 'date':'date'|trans, 'day':'day'|trans, 'month':'month'|trans, 'year':'year'|trans, 'boolean':'boolean'|trans, 'integer':'integer'|trans, 'number':'number'|trans, 'text':'text'|trans, 'textarea':'textarea'|trans, 'money':'money'|trans, 'choice':'choice'|trans, 'multichoice':'multichoice'|trans, 'percent':'percent'|trans, 'table':'table'|trans, 'department':'department'|trans, 'region':'region'|trans, 'country':'country'|trans}) }}
 			</div>
 		</div>
 	</div>
@@ -653,11 +721,11 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'text', 'label', 'Label'|trans, fieldrow.label, true, 'Fieldrow label'|trans) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'checkbox', 'colon', 'Show colon after field label ?'|trans, fieldrow.colon, false, 'colon') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'checkbox', 'help', 'Show data description as help ?'|trans, fieldrow.help, false, 'help') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'checkbox', 'emphasize', 'Emphasize the text label ?'|trans, fieldrow.emphasize, false, 'emphasize') }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'text', 'datagroup', 'Datagroup'|trans, fieldrow.fieldset.panel.step.simulator.getDataGroupById(fieldrow.datagroup).label, true, 'Datagroup'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'text', 'label', 'Label'|trans, fieldrow.label, fieldrow.label, true, 'Fieldrow label'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'checkbox', 'colon', 'Show colon after field label ?'|trans, fieldrow.colon, fieldrow.colon, false, 'colon') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'checkbox', 'help', 'Show data description as help ?'|trans, fieldrow.help, fieldrow.help, false, 'help') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'checkbox', 'emphasize', 'Emphasize the text label ?'|trans, fieldrow.emphasize, fieldrow.emphasize, false, 'emphasize') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id, 'text', 'datagroup', 'Datagroup'|trans, fieldrow.fieldset.panel.step.simulator.getDataGroupById(fieldrow.datagroup).label, fieldrow.fieldset.panel.step.simulator.getDataGroupById(fieldrow.datagroup).label, true, 'Datagroup'|trans) }}
 			</div>
 		</div>
 	</div>
@@ -685,19 +753,19 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute(elementId, 'text', 'data', 'Data'|trans, field.fieldset.panel.step.simulator.getDataById(field.data).label, true, 'Field data'|trans) }}
-			{{ _self.showAttribute(elementId, 'text', 'label', 'Label'|trans, field.label, false, 'Field label'|trans) }}
-			{{ _self.showAttribute(elementId, 'select', 'usage', 'Usage'|trans, field.usage, true, 'Select an usage'|trans, {'input':'input'|trans, 'output':'output'|trans}) }}
-			{{ _self.showAttribute(elementId, 'text', 'prompt', 'Prompt'|trans, field.prompt, false, 'Field prompt'|trans) }}
-			{{ _self.showAttribute(elementId, 'checkbox', 'required', 'Required'|trans, field.required, false, 'required') }}
-			{{ _self.showAttribute(elementId, 'checkbox', 'visibleRequired', 'Required if visible'|trans, field.visibleRequired, false, 'visibleRequired') }}
-			{{ _self.showAttribute(elementId, 'checkbox', 'newline', 'Newline before field ?'|trans, field.newline, false, 'newline') }}
-			{{ _self.showAttribute(elementId, 'checkbox', 'colon', 'Show colon after field label ?'|trans, field.colon, false, 'colon') }}
-			{{ _self.showAttribute(elementId, 'checkbox', 'underlabel', 'Place the field under the label ?'|trans, field.underlabel, false, 'underlabel') }}
-			{{ _self.showAttribute(elementId, 'checkbox', 'help', 'Show data description as help ?'|trans, field.help, false, 'help') }}
-			{{ _self.showAttribute(elementId, 'checkbox', 'emphasize', 'Emphasize the text label ?'|trans, field.emphasize, false, 'emphasize') }}
-			{{ _self.showAttribute(elementId, 'checkbox', 'expanded', 'Show choices as radio buttons ?'|trans, field.expanded, false, 'expanded') }}
-			{{ _self.showAttribute(elementId, 'text', 'explanation', 'Explanation'|trans, field.explanation, false, 'Explanation'|trans) }}
+			{{ _self.showAttribute(elementId, 'text', 'data', 'Data'|trans, field.fieldset.panel.step.simulator.getDataById(field.data).label, field.fieldset.panel.step.simulator.getDataById(field.data).label, true, 'Field data'|trans) }}
+			{{ _self.showAttribute(elementId, 'text', 'label', 'Label'|trans, field.label, field.label, false, 'Field label'|trans) }}
+			{{ _self.showAttribute(elementId, 'select', 'usage', 'Usage'|trans, field.usage, field.usage, true, 'Select an usage'|trans, {'input':'input'|trans, 'output':'output'|trans}) }}
+			{{ _self.showAttribute(elementId, 'text', 'prompt', 'Prompt'|trans, field.prompt, field.prompt, false, 'Field prompt'|trans) }}
+			{{ _self.showAttribute(elementId, 'checkbox', 'required', 'Required'|trans, field.required, field.required, false, 'required') }}
+			{{ _self.showAttribute(elementId, 'checkbox', 'visibleRequired', 'Required if visible'|trans, field.visibleRequired, field.visibleRequired, false, 'visibleRequired') }}
+			{{ _self.showAttribute(elementId, 'checkbox', 'newline', 'Newline before field ?'|trans, field.newline, field.newline, false, 'newline') }}
+			{{ _self.showAttribute(elementId, 'checkbox', 'colon', 'Show colon after field label ?'|trans, field.colon, field.colon, false, 'colon') }}
+			{{ _self.showAttribute(elementId, 'checkbox', 'underlabel', 'Place the field under the label ?'|trans, field.underlabel, field.underlabel, false, 'underlabel') }}
+			{{ _self.showAttribute(elementId, 'checkbox', 'help', 'Show data description as help ?'|trans, field.help, field.help, false, 'help') }}
+			{{ _self.showAttribute(elementId, 'checkbox', 'emphasize', 'Emphasize the text label ?'|trans, field.emphasize, field.emphasize, false, 'emphasize') }}
+			{{ _self.showAttribute(elementId, 'checkbox', 'expanded', 'Show choices as radio buttons ?'|trans, field.expanded, field.expanded, false, 'expanded') }}
+			{{ _self.showAttribute(elementId, 'text', 'explanation', 'Explanation'|trans, field.explanation, field.explanation, false, 'Explanation'|trans) }}
 			</div>
 		</div>
 		{% if field.preNote %}
@@ -732,8 +800,8 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'name', 'Name'|trans, blockinfo.name, true, 'Blockinfo name'|trans) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'label', 'Label'|trans, blockinfo.label, true, 'Blockinfo label'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'name', 'Name'|trans, blockinfo.name, blockinfo.name, true, 'Blockinfo name'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'label', 'Label'|trans, blockinfo.label, blockinfo.label, true, 'Blockinfo label'|trans) }}
 			</div>
 		</div>
 	</div>
@@ -754,10 +822,10 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'name', 'Name'|trans, chapter.name, true, 'Chapter name'|trans) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'label', 'Label'|trans, chapter.label, true, 'Chapter label'|trans) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'icon', 'Icon'|trans, chapter.icon, false, 'Chapter icon'|trans) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'checkbox', 'collapsible', 'Allow collapse/expand ?'|trans, chapter.collapsible, false, 'collapsible') }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'name', 'Name'|trans, chapter.name, chapter.name, true, 'Chapter name'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'label', 'Label'|trans, chapter.label, chapter.label, true, 'Chapter label'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'text', 'icon', 'Icon'|trans, chapter.icon, chapter.icon, false, 'Chapter icon'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id, 'checkbox', 'collapsible', 'Allow collapse/expand ?'|trans, chapter.collapsible, chapter.collapsible, false, 'collapsible') }}
 			</div>
 		</div>
 	</div>
@@ -779,8 +847,8 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id, 'text', 'name', 'Name'|trans, section.name, true, 'Section name'|trans) }}
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id, 'text', 'label', 'Label'|trans, section.label, false, 'Section label'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id, 'text', 'name', 'Name'|trans, section.name, section.name, true, 'Section name'|trans) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id, 'text', 'label', 'Label'|trans, section.label, section.label, false, 'Section label'|trans) }}
 			</div>
 		</div>
 	</div>
@@ -805,13 +873,13 @@ THE SOFTWARE.
 {% endmacro %}
 
 
-{% macro showAttribute(element, type, name, label, value, required, placeholder, options) %}
+{% macro showAttribute(element, type, name, label, value, display, required, placeholder, options) %}
 {% if required or value is not empty %}
 <div class="form-group col-sm-12">
 	<label class="col-sm-4 control-label">{{ label }}</label>
 	<div class="col-sm-8">
 		{% if type == 'text' or type == 'number' %}
-		<p data-attribute="{{ name }}" data-value="{{ value }}" class="form-control-static simple-value">{{ value }}</p>
+		<p data-attribute="{{ name }}" data-value="{{ value }}" class="form-control-static simple-value">{{ display }}</p>
 		{% elseif type == 'checkbox' %}
 		<p data-attribute="{{ name }}" class="form-control-static simple-value" data-value="{%- if value -%}1{%- else -%}0{%- endif -%}">{%- if value -%}{{ 'Yes'|trans }}{%- else -%}{{ 'No'|trans }}{%- endif -%}</p>
 		{% elseif type == 'select' %}
@@ -886,20 +954,26 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('data-'~data.id, 'text', 'name', 'Name'|trans, data.name, true, 'Data name'|trans) }}
-			{{ _self.showAttribute('data-'~data.id, 'text', 'label', 'Label'|trans, data.label, true, 'Data label'|trans) }}
-			{{ _self.showAttribute('data-'~data.id, 'select', 'type', 'Type'|trans, data.type, true, 'Select a type'|trans, {'array':'liste'|trans, 'date':'date'|trans, 'day':'day'|trans, 'month':'month'|trans, 'year':'year'|trans, 'boolean':'boolean'|trans, 'integer':'integer'|trans, 'number':'number'|trans, 'text':'text'|trans, 'textarea':'textarea'|trans, 'money':'money'|trans, 'choice':'choice'|trans, 'multichoice':'multichoice'|trans, 'percent':'percent'|trans, 'table':'table'|trans, 'department':'department'|trans, 'region':'region'|trans, 'country':'country'|trans}) }}
+			{{ _self.showAttribute('data-'~data.id, 'text', 'name', 'Name'|trans, data.name, data.name, true, 'Data name'|trans) }}
+			{{ _self.showAttribute('data-'~data.id, 'text', 'label', 'Label'|trans, data.label, data.label, true, 'Data label'|trans) }}
+			{{ _self.showAttribute('data-'~data.id, 'select', 'type', 'Type'|trans, data.type, data.type, true, 'Select a type'|trans, {'array':'liste'|trans, 'date':'date'|trans, 'day':'day'|trans, 'month':'month'|trans, 'year':'year'|trans, 'boolean':'boolean'|trans, 'integer':'integer'|trans, 'number':'number'|trans, 'text':'text'|trans, 'textarea':'textarea'|trans, 'money':'money'|trans, 'choice':'choice'|trans, 'multichoice':'multichoice'|trans, 'percent':'percent'|trans, 'table':'table'|trans, 'department':'department'|trans, 'region':'region'|trans, 'country':'country'|trans}) }}
 			{{ _self.showExpressionAttribute('data-'~data.id, 'default', 'Default'|trans, data.unparsedDefault, data.plainDefault, false, 'default value'|trans) }}
 			{{ _self.showExpressionAttribute('data-'~data.id, 'min', 'Min'|trans, data.unparsedMin, data.plainMin, false, 'Minimum value'|trans) }}
 			{{ _self.showExpressionAttribute('data-'~data.id, 'max', 'Max'|trans, data.unparsedMax, data.plainMax, false, 'Maximum value'|trans) }}
 			{{ _self.showExpressionAttribute('data-'~data.id, 'content', 'Content'|trans, data.content, data.plainContent, false, 'Content'|trans) }}
 			{% if data.round != '2' %}
-			{{ _self.showAttribute('data-'~data.id, 'number', 'round', 'Round'|trans, data.round, false, 'Round'|trans) }}
+			{{ _self.showAttribute('data-'~data.id, 'number', 'round', 'Round'|trans, data.round, data.round, false, 'Round'|trans) }}
 			{% endif %}
-			{{ _self.showAttribute('data-'~data.id, 'text', 'unit', 'Unit'|trans, data.unit, false, 'Unit'|trans) }}
-			{{ _self.showExpressionAttribute('data-'~data.id, 'source', 'Source'|trans, data.source, data.plainSource, false, 'Source'|trans) }}
-			{{ _self.showExpressionAttribute('data-'~data.id, 'index', 'Index'|trans, data.unparsedIndex, data.plainIndex, false, 'Index'|trans) }}
-			{{ _self.showAttribute('data-'~data.id, 'checkbox', 'memorize', 'Memorize'|trans, data.memorize, false, 'Memorize'|trans) }}
+			{{ _self.showAttribute('data-'~data.id, 'text', 'unit', 'Unit'|trans, data.unit, data.unit, false, 'Unit'|trans) }}
+			{% if data.source is not empty %}
+			{% set sourceLabel = data.simulator.sourceById(data.source).label %}
+			{% if sourceLabel is empty %}
+			{% set sourceLabel = data.source %}
+			{% endif %}
+			{{ _self.showAttribute('data-'~data.id, 'number', 'source', 'Source'|trans, data.source, sourceLabel, false, 'Unit'|trans) }}
+			{% endif %}
+			{{ _self.showAttribute('data-'~data.id, 'text', 'index', 'Index'|trans, data.unparsedIndex, data.unparsedIndex, false, 'Index'|trans) }}
+			{{ _self.showAttribute('data-'~data.id, 'checkbox', 'memorize', 'Memorize'|trans, data.memorize, data.memorize, false, 'Memorize'|trans) }}
 			</div>
 		</div>
 	</div>
@@ -926,8 +1000,8 @@ THE SOFTWARE.
 			<div class="panel-body" id="data-{{ data.id }}-choice-{{ choice.id }}-panel">
 				<div class="attributes-container">
 					<div>
-					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'value', 'Value'|trans, choice.value, true, 'Choice value'|trans) }}
-					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'label', 'Label'|trans, choice.label, true, 'Choice label'|trans) }}
+					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'value', 'Value'|trans, choice.value, choice.value, true, 'Choice value'|trans) }}
+					{{ _self.showAttribute('data-'~data.id~'-choice-'~choice.id, 'text', 'label', 'Label'|trans, choice.label, choice.label, true, 'Choice label'|trans) }}
 					</div>
 				</div>
 			</div>
@@ -936,9 +1010,9 @@ THE SOFTWARE.
 		{% if data.choiceSource is not empty %}
 		<div class="attributes-container choice-source-container" data-id="{{ data.choiceSource.id }}">
 			<div>
-			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'idColumn', 'Source column id'|trans, data.choiceSource.idColumn, false, 'Source column id'|trans) }}
-			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'valueColumn', 'Source column value'|trans, data.choiceSource.valueColumn, true, 'Source column value'|trans) }}
-			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'labelColumn', 'Source column label'|trans, data.choiceSource.labelColumn, true, 'Source column label'|trans) }}
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'idColumn', 'Source column id'|trans, data.choiceSource.idColumn, data.choiceSource.idColumn, false, 'Source column id'|trans) }}
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'valueColumn', 'Source column value'|trans, data.choiceSource.valueColumn, data.choiceSource.valueColumn, true, 'Source column value'|trans) }}
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'labelColumn', 'Source column label'|trans, data.choiceSource.labelColumn, data.choiceSource.labelColumn, true, 'Source column label'|trans) }}
 			</div>
 		</div>
 		{% endif %}
@@ -995,8 +1069,8 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('profile-'~profile.id, 'text', 'name', 'Name'|trans, profile.name, true, 'Name'|trans) }}
-			{{ _self.showAttribute('profile-'~profile.id, 'text', 'label', 'Label'|trans, profile.label, true, 'Label'|trans) }}
+			{{ _self.showAttribute('profile-'~profile.id, 'text', 'name', 'Name'|trans, profile.name, profile.name, true, 'Name'|trans) }}
+			{{ _self.showAttribute('profile-'~profile.id, 'text', 'label', 'Label'|trans, profile.label, profile.label, true, 'Label'|trans) }}
 			</div>
 		</div>
 		<div class="panel panel-default description-panel elements-container" id="profile-{{ profile.id }}-description-panel">
@@ -1036,11 +1110,11 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-				{{ _self.showAttribute('profile-'~profileId~'-data-'~id, 'select', 'data', 'Data'|trans, data.id, true, 'Profile data'|trans, { (data.id): data.label }) }}
+				{{ _self.showAttribute('profile-'~profileId~'-data-'~id, 'select', 'data', 'Data'|trans, data.id, data.id, true, 'Profile data'|trans, { (data.id): data.label }) }}
 				{% if data.type == 'choice' or data.type == 'multichoice' %}
-				{{ _self.showAttribute('profile-'~profileId~'-data-'~id, 'select', 'default', 'Profile data value'|trans, deflt, true, 'Profile data value'|trans, { (deflt): data.choiceLabelByValue(deflt) }) }}
+				{{ _self.showAttribute('profile-'~profileId~'-data-'~id, 'select', 'default', 'Profile data value'|trans, deflt, deflt, true, 'Profile data value'|trans, { (deflt): data.choiceLabelByValue(deflt) }) }}
 				{% else %}
-				{{ _self.showAttribute('profile-'~profileId~'-data-'~id, 'text', 'default', 'Profile data value'|trans,deflt, true, 'Profile data value'|trans) }}
+				{{ _self.showAttribute('profile-'~profileId~'-data-'~id, 'text', 'default', 'Profile data value'|trans, deflt, deflt, true, 'Profile data value'|trans) }}
 				{% endif %}
 				</div>
 		</div>

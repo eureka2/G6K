@@ -63,7 +63,7 @@ THE SOFTWARE.
 		} else if (action === 'edit-table') {
 			$("#page-datasources textarea[name='table-description']").wysihtml5(Admin.wysihtml5Options);
 			$('#btnAddNewColumn').click(function(e) {
-				Datasources.addNewColumn([0, '', '', '', '', '']);
+				Datasources.addNewColumn([0, '', '', '', '-1', '']);
 				e.preventDefault();
 				return false;
 			});
@@ -81,7 +81,7 @@ THE SOFTWARE.
 			$.each(fields, function(index, field) {
 				Datasources.addNewColumn(field);
 			});
-		} else {
+		} else if (action !== 'import-table') {
 			Datasources.fields = {};
 			Datasources.editFields = [];
 			var cells = "";
@@ -419,7 +419,13 @@ THE SOFTWARE.
 			'</select>' +
 			'</td>' +
 			'<td class="new-notnull">' +
-			'<select name="notnull[]" class="form-control input-sm">' +
+			'<select name="notnull[]" class="form-control input-sm"';
+		if (field[4] == '-1') {
+			column += ' disabled="disabled"';
+			field[4] = '0';
+		}
+		column += ">";
+		column += 
 			'<option value="1"';
 		if (field[4] == '1') {
 			column += ' selected="selected"';
@@ -509,6 +515,7 @@ THE SOFTWARE.
 			}
 			$(this).data('previous', curr);
 		});
+		$("html, body").animate({ scrollTop: $column.offset().top - $('#navbar').height() }, 500);
 	}
 
 	Datasources.checkNewTable = function() {
@@ -753,8 +760,11 @@ THE SOFTWARE.
 	Datasources.checkDatasource = function() {
 		var errors = [];
 		var name = $("#datasource-name").val();
-		if (name == '' | name == Translator.trans('New Datasource')) {
+		if (name == '' || name == Translator.trans('New Datasource')) {
 			errors.push(Translator.trans("The datasource name is required"));
+		}
+		if (! /^[\w\-]+$/.test(name)) {
+			errors.push(Translator.trans("Incorrect datasource name"));
 		}
 		var type = $("#datasource-type").val();
 		switch (type) {
@@ -862,7 +872,7 @@ $(document).ready(function() {
 			Datasources.toggleDatasourceFields(this.id);
 			Admin.updated = true;
 		});
-		$( "#datasource-creation-form, #datasource-edition-form, #datasource-import-form, #edit-table-form" ).find('input, textarea').on("change propertychange", function (e) {
+		$( "#datasource-creation-form, #datasource-edition-form, #datasource-import-form, #edit-table-form, #import-table-form" ).find('input, textarea').on("change propertychange", function (e) {
 			Admin.updated = true;
 		});
 		if ( $("#datasource-creation-form, #datasource-edition-form" ).length) {
@@ -972,6 +982,41 @@ $(document).ready(function() {
 							});
 						}
 					}
+				}
+				if (errors.length > 0) {
+					e.preventDefault();
+					Datasources.showErrors(errors, messageheader);
+					return false;
+				}
+				Datasources.hideErrors();
+				Admin.updated = false;
+				return true;
+			});
+		}
+		if ( $("#import-table-form" ).length) {
+			$("#import-table-form input[name='table-data-file']").change(function (e) {
+			Datasources.hideErrors();
+			var files = e.target.files;
+				var $file = $(this);
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					$file.data('content', e.target.result);
+				};
+				reader.onerror  = function(e) {
+					$file.data('error', e.target.error.name);
+				};
+				reader.readAsText(files[0], "UTF-8");
+			});
+			$("#import-table-form").submit(function (e) {
+				var errors = [];
+				var name = '';
+				messageheader = Translator.trans('Text file');
+				var datainput = $("#import-table-form input[name='table-data-file']");
+				var datafile = datainput.val();
+				if (datafile == '') {
+					errors.push(Translator.trans("Please, choose a file"));
+				} else if (! /\.(csv|txt)$/.test(datafile)) {
+					errors.push(Translator.trans("The data file extension must be '.csv' or '.txt'"));
 				}
 				if (errors.length > 0) {
 					e.preventDefault();

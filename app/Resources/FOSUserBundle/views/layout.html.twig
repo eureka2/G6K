@@ -2,9 +2,11 @@
 <html>
     <head>
         <meta charset="UTF-8" />
+		<link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/admin/js/bootstrap/css/bootstrap.css') }}" />
+		<link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/admin/js/bootstrap/css/bootstrap-theme.css') }}" />
     </head>
     <body>
-		<h1>Simulators</h1>
+		<h1 class="text-center text-primary">{{ 'Simulators'|trans }}</h1>
         <div>
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                 {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |

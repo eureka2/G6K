@@ -200,8 +200,8 @@ THE SOFTWARE.
 		var profileContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
-		attributes.append(Simulators.simpleAttributeForDisplay(profileElementId, 'text', 'name', Translator.trans('Name'), profile.name, true, Translator.trans('Name')));
-		attributes.append(Simulators.simpleAttributeForDisplay(profileElementId, 'text', 'label', Translator.trans('Label'), profile.label, true, Translator.trans('Label')));
+		attributes.append(Simulators.simpleAttributeForDisplay(profileElementId, 'text', 'name', Translator.trans('Name'), profile.name, profile.name, true, Translator.trans('Name')));
+		attributes.append(Simulators.simpleAttributeForDisplay(profileElementId, 'text', 'label', Translator.trans('Label'), profile.label, profile.label, true, Translator.trans('Label')));
 		attributesContainer.append(attributes);
 		profileContainerBody.append(attributesContainer);
 		profileContainerBody.append('<div class="panel panel-default description-panel" id="' + profileElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body profile-description rich-text">' + profile.description + '</div></div>');
@@ -493,11 +493,11 @@ THE SOFTWARE.
 				});
 			}
 		});
-		attributes.append(Simulators.simpleAttributeForDisplay(profileDataElementId, 'select', 'data', Translator.trans('Data'), data.data, true, Translator.trans('Profile data'), JSON.stringify(datasList)));
+		attributes.append(Simulators.simpleAttributeForDisplay(profileDataElementId, 'select', 'data', Translator.trans('Data'), data.data, data.data, true, Translator.trans('Profile data'), JSON.stringify(datasList)));
 		if ( ! $.isEmptyObject(choices)) {
-			attributes.append(Simulators.simpleAttributeForDisplay(profileDataElementId, 'select', 'default', Translator.trans('Profile data value'), data.default, true, Translator.trans('Profile data value'), JSON.stringify(choices)));
+			attributes.append(Simulators.simpleAttributeForDisplay(profileDataElementId, 'select', 'default', Translator.trans('Profile data value'), data.default, data.default, true, Translator.trans('Profile data value'), JSON.stringify(choices)));
 		} else {
-			attributes.append(Simulators.simpleAttributeForDisplay(profileDataElementId, 'text', 'default', Translator.trans('Profile data value'), data.default, true, Translator.trans('Profile data value')));
+			attributes.append(Simulators.simpleAttributeForDisplay(profileDataElementId, 'text', 'default', Translator.trans('Profile data value'), data.default, data.default, true, Translator.trans('Profile data value')));
 		}
 		attributesContainer.append(attributes);
 		dataContainerBody.append(attributesContainer);

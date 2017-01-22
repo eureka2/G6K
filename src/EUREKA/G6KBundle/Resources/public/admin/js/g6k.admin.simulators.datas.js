@@ -222,9 +222,8 @@ THE SOFTWARE.
 	Simulators.isSourceIdInDatas = function(id) {
 		var inData = false;
 		var containers = $("#datas").find(".data-container");
-		var fields = $("#datas").find(".data-container span[data-attribute='source']");
 		containers.each(function(c) {
-			var field = $(this).find("span[data-attribute='source']");
+			var field = $(this).find("p[data-attribute='source']");
 			if (field.attr('data-value') == id) {
 				inData = $(this).attr('data-id');
 				return false;
@@ -234,11 +233,22 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeSourceIdInDatas = function(oldId, id) {
-		var fields = $("#datas").find(".data-container span[data-attribute='source']");
+		var fields = $("#datas").find(".data-container p[data-attribute='source']");
 		fields.each(function(f) {
 			if ($(this).attr('data-value') == oldId) {
 				$(this).attr('data-value', id);
-				$(this).html(id);
+				if ($(this).html() == oldId) {
+					$(this).html(id);
+				}
+			}
+		});
+	}
+
+	Simulators.changeSourceLabelInDatas = function(id, label) {
+		var fields = $("#datas").find(".data-container p[data-attribute='source']");
+		fields.each(function(f) {
+			if ($(this).attr('data-value') == id) {
+				$(this).html(label);
 			}
 		});
 	}
@@ -420,10 +430,10 @@ THE SOFTWARE.
 
 	Simulators.bindData = function(dataPanelContainer) {
 		dataPanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
-		dataPanelContainer.find('select[data-attribute=type]').select2({
-			language: Admin.lang,
-			minimumResultsForSearch: 50
-		});
+		// dataPanelContainer.find('select[data-attribute=type]').select2({
+			// language: Admin.lang,
+			// minimumResultsForSearch: 50
+		// });
 		dataPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -460,11 +470,11 @@ THE SOFTWARE.
 			Simulators.updating = false;
 		});
 		dataPanelContainer.find('.validate-edit-data, .validate-add-data').click(function() {
-			var dataContainerGroup = dataPanelContainer.parent();
-			var dataContainer = dataPanelContainer.find('.data-container');
 			if (! Simulators.checkData(dataPanelContainer)) {
 				return false;
 			}
+			var dataContainerGroup = dataPanelContainer.parent();
+			var dataContainer = dataPanelContainer.find('.data-container');
 			var attributes = dataContainer.find('.attributes-container');
 			var data = { 
 				id: dataContainer.attr('data-id'),
@@ -474,6 +484,8 @@ THE SOFTWARE.
 				var value;
 				if ($(this).hasClass('attribute-expression')) {
 					value = $(this).expressionbuilder('val');
+				} else if ($(this).is(':checkbox')) {
+					value = $(this).is(':checked') ? 1 : 0;
 				} else {
 					value = $(this).val();
 				}
@@ -607,6 +619,23 @@ THE SOFTWARE.
 			} else {
 				Simulators.dataChoicesBackup = dataPanelContainer.find('.choices-panel').detach();
 			}
+		});
+		dataPanelContainer.find('select[data-attribute=source]').change(function(e) {
+			var source = $(this).val();
+			var index = dataPanelContainer.find('select[data-attribute=index]');
+			var columns = $('#collapsesources').find('.source-container[data-id=' + source + ']').find('span[data-attribute=column]');
+			if (index.length > 0) {
+				index.empty();
+				columns.each(function(k) {
+					index.append($('<option>', {value: "'" + $(this).attr('data-alias') + "'", text: $(this).attr('data-alias')}));
+				});
+			}
+			var optionalIndex = dataPanelContainer.find('optional-attributes').find('li[data-name=index]');
+			var indicesList = {};
+			columns.each(function(k) {
+				indicesList["'" + $(this).attr('data-alias') + "'"] = $(this).attr('data-alias');
+			});
+			optionalIndex.attr('data-options', encodeURI(JSON.stringify( indicesList )));
 		});
 		dataPanelContainer.find('.attribute-expression').each(function( index ) {
 			var expression = $( this );
@@ -793,8 +822,8 @@ THE SOFTWARE.
 		var choicePanelBody = $('<div>', { 'class': 'panel-body', id: 'data-' + choice.dataId + '-choice-' + choice.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choice.dataId + '-choice-' + choice.id, 'text', 'value', Translator.trans('Value'), choice.value, true, Translator.trans('Choice value')));
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choice.dataId + '-choice-' + choice.id, 'text', 'label', Translator.trans('Label'), choice.label, true, Translator.trans('Choice label')));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choice.dataId + '-choice-' + choice.id, 'text', 'value', Translator.trans('Value'), choice.value, choice.value, true, Translator.trans('Choice value')));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choice.dataId + '-choice-' + choice.id, 'text', 'label', Translator.trans('Label'), choice.label, choice.label, true, Translator.trans('Choice label')));
 		attributesContainer.append(attributes);
 		choicePanelBody.append(attributesContainer);
 		choicePanel.append(choicePanelBody);
@@ -807,8 +836,8 @@ THE SOFTWARE.
 		var choicePanelBody = $('<div>', { 'class': 'panel-body', id: 'data-' + choice.dataId + '-choice-' + choice.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
-		attributes.append('<div class="form-group col-sm-12"><label for="data-' + choice.dataId + '-choice-' + choice.id + '-value" class="col-sm-4 control-label">' + Translator.trans('Value') + '</label><div class="col-sm-8"><input type="text" name="data-' + choice.dataId + '-choice-' + choice.id + '-value" id="data-' + choice.dataId + '-choice-' + choice.id + '-value" class="form-control simple-value" placeholder="' + Translator.trans('Choice value') + '"  value="' + choice.value + '" /></div></div>');
-		attributes.append('<div class="form-group col-sm-12"><label for="data-' + choice.dataId + '-choice-' + choice.id + '-label" class="col-sm-4 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-8"><input type="text" name="data-' + choice.dataId + '-choice-' + choice.id + '-label" id="data-' + choice.dataId + '-choice-' + choice.id + '-label" class="form-control simple-value" placeholder="' + Translator.trans('Choice label') + '"  value="' + choice.label + '" /></div></div>');
+		attributes.append('<div class="form-group col-sm-12"><label for="data-' + choice.dataId + '-choice-' + choice.id + '-value" class="col-sm-4 control-label">' + Translator.trans('Value') + '</label><div class="col-sm-8 input-group"><input type="text" name="data-' + choice.dataId + '-choice-' + choice.id + '-value" id="data-' + choice.dataId + '-choice-' + choice.id + '-value" class="form-control simple-value" placeholder="' + Translator.trans('Choice value') + '"  value="' + choice.value + '" /></div></div>');
+		attributes.append('<div class="form-group col-sm-12"><label for="data-' + choice.dataId + '-choice-' + choice.id + '-label" class="col-sm-4 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-8 input-group"><input type="text" name="data-' + choice.dataId + '-choice-' + choice.id + '-label" id="data-' + choice.dataId + '-choice-' + choice.id + '-label" class="form-control simple-value" placeholder="' + Translator.trans('Choice label') + '"  value="' + choice.label + '" /></div></div>');
 		attributesContainer.append(attributes);
 		choicePanelBody.append(attributesContainer);
 		choicePanel.append(choicePanelBody);
@@ -844,9 +873,9 @@ THE SOFTWARE.
 	Simulators.drawChoiceSourceForDisplay = function(choiceSource) {
 		var attributesContainer = $('<div class="attributes-container choice-source-container" data-id="' + choiceSource.id + '"></div>');
 		var attributes = $('<div></div>');
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'idColumn', Translator.trans('Source column id'), choiceSource.idColumn, false, Translator.trans('Source column id')));
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'valueColumn', Translator.trans('Source column value'), choiceSource.valueColumn, true, Translator.trans('Source column value')));
-		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'labelColumn', Translator.trans('Source column label'), choiceSource.labelColumn, true, Translator.trans('Source column label')));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'idColumn', Translator.trans('Source column id'), choiceSource.idColumn, choiceSource.idColumn, false, Translator.trans('Source column id')));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'valueColumn', Translator.trans('Source column value'), choiceSource.valueColumn, choiceSource.valueColumn, true, Translator.trans('Source column value')));
+		attributes.append(Simulators.simpleAttributeForDisplay('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id, 'text', 'labelColumn', Translator.trans('Source column label'), choiceSource.labelColumn, choiceSource.labelColumn, true, Translator.trans('Source column label')));
 		attributesContainer.append(attributes);
 		return attributesContainer;
 	}
@@ -882,14 +911,22 @@ THE SOFTWARE.
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'name', Translator.trans('Name'), data.name, true, Translator.trans('Data name')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'label', Translator.trans('Label'), data.label, true, Translator.trans('Data label')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'select', 'type', Translator.trans('Type'), data.type, true, Translator.trans('Select a data type'), JSON.stringify(Admin.types)));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'name', Translator.trans('Name'), data.name, data.name, true, Translator.trans('Data name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'label', Translator.trans('Label'), data.label, data.label, true, Translator.trans('Data label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'select', 'type', Translator.trans('Type'), data.type, data.type, true, Translator.trans('Select a data type'), JSON.stringify(Admin.types)));
 		$.each(Simulators.optionalAttributes, function (name, attr) {
 			if (data[name]) {
-				var attribute = attr.type === 'expression' ?
-					Simulators.expressionAttributeForDisplay(dataElementId, name, attr.label, data[name], false, attr.placeholder) :
-					Simulators.simpleAttributeForDisplay(dataElementId, attr.type, name, attr.label, data[name], false, attr.placeholder);
+				var attribute;
+				if (name == 'source') {
+					var source = $('#collapsesources').find('.source-container[data-id=' + data[name] + ']').find('p[data-attribute=label]').attr('data-value') || data[name];
+					attribute = Simulators.simpleAttributeForDisplay(dataElementId, 'text', name, attr.label, data[name], source, false, attr.placeholder);
+				} else if (name == 'index') {
+					attribute = Simulators.simpleAttributeForDisplay(dataElementId, 'text', name, attr.label, data[name], data[name], false, attr.placeholder);
+				} else if (attr.type === 'expression') {
+					attribute = Simulators.expressionAttributeForDisplay(dataElementId, name, attr.label, data[name], data[name], false, attr.placeholder);
+				} else {
+					attribute = Simulators.simpleAttributeForDisplay(dataElementId, attr.type, name, attr.label, data[name], data[name], false, attr.placeholder);
+				}
 				requiredAttributes.append(attribute);
 			} 
 		});
@@ -915,22 +952,46 @@ THE SOFTWARE.
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-4 control-label">' + Translator.trans('Name') + '</label><div class="col-sm-8"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="' + Translator.trans('Data name without spaces or special characters') + '" value="' + data.name + '" /></div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-label" class="col-sm-4 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-8"><input type="text" name="' + dataElementId + '-label" id="' + dataElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="' + Translator.trans('Data label') + '" value="' + data.label + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-name" class="col-sm-4 control-label">' + Translator.trans('Name') + '</label><div class="col-sm-8 input-group"><input type="text" name="' + dataElementId + '-name" id="' + dataElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="' + Translator.trans('Data name without spaces or special characters') + '" value="' + data.name + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + dataElementId + '-label" class="col-sm-4 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-8 input-group"><input type="text" name="' + dataElementId + '-label" id="' + dataElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="' + Translator.trans('Data label') + '" value="' + data.label + '" /></div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(dataElementId + '-type', 'select', 'type', 'Type', data.type, true, Translator.trans('Select a data type'), JSON.stringify(Admin.types)));
 		attributesContainer.append(requiredAttributes);
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
+		var sourcesList = {};
+		$('#collapsesources').find('.source-container').each(function(s) {
+			sourcesList[$(this).attr('data-id')] = $(this).find('p[data-attribute=label]').attr('data-value') || Translator.trans('Source') + ' ' + $(this).attr('data-id');
+		});
+		var indicesList = {};
+		var source = data.source || 1;
+		var columns = $('#collapsesources').find('.source-container[data-id=' + source + ']').find('span[data-attribute=column]');
+		columns.each(function(k) {
+			indicesList["'" + $(this).attr('data-alias') + "'"] = $(this).attr('data-alias');
+		});
 		$.each(Simulators.optionalAttributes, function (name, attr) {
-			var optionalAttribute = attr.type === 'expression' ?
-				$('<li class="list-group-item" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>') :
-				$('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+			var optionalAttribute;
+			if (name === 'source') {
+				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( sourcesList )) + '">' + attr.label + '</li>');
+			} else if (name === 'index') {
+				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
+			} else if (attr.type === 'expression') {
+				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+			} else {
+				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+			}
 			optionalAttributes.append(optionalAttribute);
 			if (data[name]) {
-				var attribute = attr.type === 'expression' ?
-					Simulators.expressionAttributeForInput(dataElementId + '-' + name, name, attr.label, data[name], false, attr.placeholder) :
-					Simulators.simpleAttributeForInput(dataElementId + '-' + name, attr.type, name, attr.label, data[name], false, attr.placeholder);
+				var attribute;
+				if (name === 'source') {
+					attribute = Simulators.simpleAttributeForInput(dataElementId + '-' + name, 'select', name, attr.label, data[name], false, attr.placeholder, JSON.stringify(sourcesList)); 
+				} else if (name === 'index') {
+					attribute = Simulators.simpleAttributeForInput(dataElementId + '-' + name, 'select', name, attr.label, data[name], false, attr.placeholder, JSON.stringify(indicesList)); 
+				} else if (attr.type === 'expression') {
+					attribute = Simulators.expressionAttributeForInput(dataElementId + '-' + name, name, attr.label, data[name], false, attr.placeholder);
+				} else {
+					attribute = Simulators.simpleAttributeForInput(dataElementId + '-' + name, attr.type, name, attr.label, data[name], false, attr.placeholder);
+				}
 				requiredAttributes.append(attribute);
 				optionalAttribute.hide();
 			} 
@@ -965,8 +1026,8 @@ THE SOFTWARE.
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'name', Translator.trans('Group Name'), datagroup.name, true, Translator.trans('Group Name')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'label', Translator.trans('Group Label'), datagroup.label, true, Translator.trans('Group Label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'name', Translator.trans('Group Name'), datagroup.name, datagroup.name, true, Translator.trans('Group Name')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(dataElementId, 'text', 'label', Translator.trans('Group Label'), datagroup.label, datagroup.label, true, Translator.trans('Group Label')));
 		attributesContainer.append(requiredAttributes);
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
@@ -1319,8 +1380,8 @@ THE SOFTWARE.
 						content: $(this).find("span[data-attribute='content']").attr('data-value'),
 						round: $(this).find("p[data-attribute='round']").attr('data-value'),
 						unit: $(this).find("p[data-attribute='unit']").attr('data-value'),
-						source: $(this).find("span[data-attribute='source']").attr('data-value'),
-						index: $(this).find("span[data-attribute='index']").attr('data-value'),
+						source: $(this).find("p[data-attribute='source']").attr('data-value'),
+						index: $(this).find("p[data-attribute='index']").attr('data-value'),
 						memorize: $(this).find("input[data-attribute='memorize']").is(':checked') ? 1 : 0,
 						description: $(this).parent().find(".data-description").html(),
 						choices: choices,
@@ -1365,8 +1426,8 @@ THE SOFTWARE.
 					content: $(this).find("span[data-attribute='content']").attr('data-value'),
 					round: $(this).find("p[data-attribute='round']").attr('data-value'),
 					unit: $(this).find("p[data-attribute='unit']").attr('data-value'),
-					source: $(this).find("span[data-attribute='source']").attr('data-value'),
-					index: $(this).find("span[data-attribute='index']").attr('data-value'),
+					source: $(this).find("p[data-attribute='source']").attr('data-value'),
+					index: $(this).find("p[data-attribute='index']").attr('data-value'),
 					memorize: $(this).find("input[data-attribute='memorize']").is(':checked') ? 1 : 0,
 					description: $(this).parent().find(".data-description").html(),
 					choices: choices,

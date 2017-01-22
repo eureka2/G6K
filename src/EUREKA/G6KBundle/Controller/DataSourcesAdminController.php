@@ -184,6 +184,8 @@ class DataSourcesAdminController extends BaseAdminController {
 				return $this->dropDatasource ($dsid);
 			} elseif ($crud == 'edit') {
 				return $this->showDatasources($dsid, $table, 'edit-table');
+			} elseif ($crud == 'import') {
+				return $this->showDatasources($dsid, $table, 'import-table');
 			} else {
 				$database = $this->getDatabase($dsid);
 				switch ($crud) {
@@ -197,6 +199,8 @@ class DataSourcesAdminController extends BaseAdminController {
 						return $this->createTable ($form, $database);
 					case 'doedit':
 						return $this->doEditTable ($form, $table, $database);
+					case 'doimport':
+						return $this->doImportTable($form, $dsid, $table, $database, $request->files->all());
 					case 'drop':
 						return $this->dropTable ($table, $database);
 				}
@@ -610,6 +614,54 @@ class DataSourcesAdminController extends BaseAdminController {
 			unlink($datafile);
 		}
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
+	}
+
+	protected function doImportTable($form, $dsid, $table, $database, $files) {
+		$container = $this->get('kernel')->getContainer();
+		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
+		$datas = array();
+		$csvfile = '';
+		foreach ($files as $fieldname => $file) {
+			if ($file && $file->isValid()) {
+				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+				if ($fieldname == 'table-data-file') {
+					$csvfile = $filePath;
+				}
+			}
+		}
+		$separator = $form["table-data-separator"]; 
+		if ($separator == 't') {
+			$separator = "\t";
+		}
+		$delimiter = $form["table-data-delimiter"]; 
+		$hasheader = isset($form["table-data-has-header"]) && $form["table-data-has-header"] == "1";
+		if ($csvfile != '') {
+			if (($handle = fopen($csvfile, 'r')) !== FALSE) {
+				$infosColumns = $this->infosColumns($database, $table);
+				$header = $hasheader ? NULL : array_filter(array_keys($infosColumns), function($k) {
+					return $k != 'id';
+				});
+				while (($row = fgetcsv($handle, 0, $separator, $delimiter)) !== FALSE) {
+					if(!$header) {
+						$header = $row;
+						foreach ($header as $name) {
+							if (!isset($infosColumns[$name])) {
+								throw new \Exception("Unkown column name : {$name}");
+							}
+						}
+					} else {
+						$data = array_combine($header, $row);
+						$data['id'] = '0';
+						if (($result = $this->addDBTableRow($data, $table, $database)) !== true) {
+							return $this->errorResponse($data, $result);
+						}
+					}
+				}
+				fclose($handle);
+			}
+			unlink($csvfile);
+		}
+		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource_table', array('dsid' => $dsid, 'table' => $table)));
 	}
 
 	protected function getChoicesFromSource($source, $result) {
@@ -1144,7 +1196,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
-	protected function createDBTable($form, $database) {
+	protected function createDBTable(&$form, $database) {
 		$create = "create table " . $form['table-name'] . " (\n";
 		if (!in_array('id', $form['field'])) {
 			switch ($database->getType()) {
@@ -1164,24 +1216,26 @@ class DataSourcesAdminController extends BaseAdminController {
 			}
 		}
 		foreach ($form['field'] as $i => $field) {
-			if ($database->getType() == 'jsonsql') {
-				$create .= $field . " " . $form['type'][$i];
-			} else {
-				$create .= $field . " " . $this->datatypes[$database->getType()][$form['type'][$i]];
+			if ($field != '') {
+				if ($database->getType() == 'jsonsql') {
+					$create .= $field . " " . $form['type'][$i];
+				} else {
+					$create .= $field . " " . $this->datatypes[$database->getType()][$form['type'][$i]];
+				}
+				if ($form['notnull'][$i] == 1) {
+					$create .= " not null";
+				}
+				if ($database->getType() =='jsonsql' && $form['label'][$i] != '') {
+					$create .= " title " . $database->quote($form['label'][$i]);
+				}
+				if ($database->getType() =='jsonsql' && $form['description'][$i] != '') {
+					$create .= " comment " . $database->quote($form['description'][$i]);
+				}
+				if ($i < count($form['field']) - 1 ) {
+					$create .= ",";
+				}
+				$create .= "\n";
 			}
-			if ($form['notnull'][$i] == 1) {
-				$create .= " not null";
-			}
-			if ($database->getType() =='jsonsql' && $form['label'][$i] != '') {
-				$create .= " title " . $database->quote($form['label'][$i]);
-			}
-			if ($database->getType() =='jsonsql' && $form['description'][$i] != '') {
-				$create .= " comment " . $database->quote($form['description'][$i]);
-			}
-			if ($i < count($form['field']) - 1 ) {
-				$create .= ",";
-			}
-			$create .= "\n";
 		}
 		$create .= ")";
 		try {
@@ -1197,6 +1251,13 @@ class DataSourcesAdminController extends BaseAdminController {
 		} catch (Exception $e) {
 			return $this->get('translator')->trans("Can't create table %table% : %error%", array('%table%' => $form['table-name'], '%error%' => $e->getMessage()));
 		}
+		if (!in_array('id', $form['field'])) {
+			array_unshift($form['field'], 'id');
+			array_unshift($form['type'], 'integer');
+			array_unshift($form['notnull'], 1);
+			array_unshift($form['label'], 'id');
+			array_unshift($form['description'], 'Identifiant interne');
+		}
 		return true;
 	}
 
@@ -1211,83 +1272,106 @@ class DataSourcesAdminController extends BaseAdminController {
 			}
 		}
 		$col = 0;
+		$alterdefsSQLite = array();
 		foreach($infosColumns as $name => $info) {
-			if (strcasecmp($form['field'][$col], $name) != 0 && $database->getType() != 'sqlite') {
-				$rename = "";
-				switch ($database->getType()) {
-					case 'mysql':
-					case 'mysqli':
-						$rename = "ALTER TABLE $table CHANGE COLUMN $name {$form['field'][$col]}";
-						break;
-					case 'jsonsql':
-					case 'pgsql':
-						$rename = "ALTER TABLE $table RENAME COLUMN $name TO {$form['field'][$col]}";
-						break;
-				}
-				try {
-					$database->exec($rename);
-				} catch (Exception $e) {
-					return $this->get('translator')->trans("Can't rename column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
+			$alterSQLite = false;
+			if (strcasecmp($form['field'][$col], $name) != 0) {
+				if ($database->getType() == 'sqlite') {
+					$alterSQLite = true;
+				} else {
+					$rename = "";
+					switch ($database->getType()) {
+						case 'mysql':
+						case 'mysqli':
+							$rename = "ALTER TABLE $table CHANGE COLUMN $name {$form['field'][$col]}";
+							break;
+						case 'jsonsql':
+						case 'pgsql':
+							$rename = "ALTER TABLE $table RENAME COLUMN $name TO {$form['field'][$col]}";
+							break;
+					}
+					try {
+						$database->exec($rename);
+					} catch (Exception $e) {
+						return $this->get('translator')->trans("Can't rename column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
+					}
 				}
 			}
-			if ($form['type'][$col] != $info['g6k_type'] && $database->getType() != 'sqlite') {
-				$changetype = "";
-				if ($database->getType() == 'jsonsql') {
-					$changetype = "ALTER TABLE $table MODIFY COLUMN $name SET TYPE {$form['type'][$col]}";
-					try {
-						$database->exec($changetype);
-					} catch (Exception $e) {
-						return $this->get('translator')->trans("Can't modify type of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
-					}
+			if ($form['type'][$col] != $info['g6k_type']) {
+				if ($database->getType() == 'sqlite') {
+					$alterSQLite = true;
 				} else {
-					$newDBType = $this->datatypes[$database->getType()][$form['type'][$col]];
-					if ($info['type'] != $newDBType) {
-						switch ($database->getType()) {
-							case 'mysql':
-							case 'mysqli':
-								$changetype = "ALTER TABLE $table MODIFY COLUMN $name $newDBType";
-								break;
-							case 'pgsql':
-								$changetype = "ALTER TABLE $table ALTER COLUMN $name SET DATA TYPE $newDBType";
-								break;
-						}
+					$changetype = "";
+					if ($database->getType() == 'jsonsql') {
+						$changetype = "ALTER TABLE $table MODIFY COLUMN $name SET TYPE {$form['type'][$col]}";
 						try {
 							$database->exec($changetype);
 						} catch (Exception $e) {
 							return $this->get('translator')->trans("Can't modify type of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 						}
+					} else {
+						$newDBType = $this->datatypes[$database->getType()][$form['type'][$col]];
+						if ($info['type'] != $newDBType) {
+							switch ($database->getType()) {
+								case 'mysql':
+								case 'mysqli':
+									$changetype = "ALTER TABLE $table MODIFY COLUMN $name $newDBType";
+									break;
+								case 'pgsql':
+									$changetype = "ALTER TABLE $table ALTER COLUMN $name SET DATA TYPE $newDBType";
+									break;
+							}
+							try {
+								$database->exec($changetype);
+							} catch (Exception $e) {
+								return $this->get('translator')->trans("Can't modify type of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
+							}
+						}
 					}
 				}
 			}
-			if ($form['notnull'][$col] != $info['notnull'] && $database->getType() != 'sqlite') {
-				$changenullable = "";
-				switch ($database->getType()) {
-					case 'jsonsql':
-						if ($form['notnull'][$col] == 1) {
-							$changenullable = "ALTER TABLE $table MODIFY COLUMN $name SET NOT NULL";
-						} else {
-							$changenullable = "ALTER TABLE $table MODIFY COLUMN $name REMOVE NOT NULL";
-						}
-						break;
-					case 'mysql':
-					case 'mysqli':
-						$newDBType = $this->datatypes[$database->getType()][$form['type'][$col]];
-						$newNullable = $form['notnull'][$col] == 1 ? 'NOT NULL' : 'NULL';
-						$changenullable = "ALTER TABLE $table MODIFY COLUMN $name $newDBType $newNullable";
-						break;
-					case 'pgsql':
-						if ($form['notnull'][$col] == 1) {
-							$changenullable = "ALTER TABLE $table ALTER COLUMN $name SET NOT NULL";
-						} else {
-							$changenullable = "ALTER TABLE $table ALTER COLUMN $name DROP NOT NULL";
-						}
-						break;
+			if ($form['notnull'][$col] != $info['notnull']) {
+				if ($database->getType() == 'sqlite') {
+					$alterSQLite = true;
+				} else {
+					$changenullable = "";
+					switch ($database->getType()) {
+						case 'jsonsql':
+							if ($form['notnull'][$col] == 1) {
+								$changenullable = "ALTER TABLE $table MODIFY COLUMN $name SET NOT NULL";
+							} else {
+								$changenullable = "ALTER TABLE $table MODIFY COLUMN $name REMOVE NOT NULL";
+							}
+							break;
+						case 'mysql':
+						case 'mysqli':
+							$newDBType = $this->datatypes[$database->getType()][$form['type'][$col]];
+							$newNullable = $form['notnull'][$col] == 1 ? 'NOT NULL' : 'NULL';
+							$changenullable = "ALTER TABLE $table MODIFY COLUMN $name $newDBType $newNullable";
+							break;
+						case 'pgsql':
+							if ($form['notnull'][$col] == 1) {
+								$changenullable = "ALTER TABLE $table ALTER COLUMN $name SET NOT NULL";
+							} else {
+								$changenullable = "ALTER TABLE $table ALTER COLUMN $name DROP NOT NULL";
+							}
+							break;
+					}
+					try {
+						$database->exec($changenullable);
+					} catch (Exception $e) {
+						return $this->get('translator')->trans("Can't alter 'NOT NULL' property of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
+					}
 				}
-				try {
-					$database->exec($changenullable);
-				} catch (Exception $e) {
-					return $this->get('translator')->trans("Can't alter 'NOT NULL' property of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
+			}
+			if ($alterSQLite) {
+				$alterdefs = "CHANGE $name " . $form['field'][$col] . " " . $this->datatypes[$database->getType()][$form['type'][$col]];
+				if ($form['field'][$col] == 'id') {
+					$alterdefs .= " PRIMARY KEY AUTOINCREMENT"; 
+				} elseif ($form['notnull'][$col] == 1) {
+					$alterdefs .= " NOT NULL"; 
 				}
+				$alterdefsSQLite[] = $alterdefs;
 			}
 			if ($form['label'][$col] != $info['label'] && $database->getType() == 'jsonsql') {
 				$changelabel = "ALTER TABLE $table MODIFY COLUMN $name SET TITLE " . $database->quote($form['label'][$col]);
@@ -1307,36 +1391,157 @@ class DataSourcesAdminController extends BaseAdminController {
 			}
 			$col++;
 		}
+		if (count($alterdefsSQLite) > 0) {
+			$this->alterSQLiteTable($table, implode(" ", $alterdefsSQLite), $database);
+		}
 		for ($i = $col; $i < count($form['field']); $i++) {
 			$name = $form['field'][$i];
-			$type = $form['type'][$i];
-			$label = $form['label'][$i];
-			$description = $form['description'][$i];
-			$notnull = $form['notnull'][$i] == 1 ? 'NOT NULL' : '';
-			$dbype = $this->datatypes[$database->getType()][$type];
-			$addcolumn = "";
-			switch ($database->getType()) {
-				case 'jsonsql':
-					$addcolumn = "ALTER TABLE $table ADD COLUMN $name $type $notnull TITLE " . $database->quote($label) . " COMMENT " . $database->quote($description);
-					break;
-				case 'sqlite':
-					$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
-					break;
-				case 'mysql':
-				case 'mysqli':
-					$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
-					break;
-				case 'pgsql':
-					$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
-					break;
-			}
-			try {
-				$database->exec($addcolumn);
-			} catch (Exception $e) {
-				return $this->get('translator')->trans("Can't add the column '%column%' into table '%table%' : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
+			if ($name !='') {
+				$type = $form['type'][$i];
+				$label = $form['label'][$i];
+				$description = $form['description'][$i];
+				$notnull = $form['notnull'][$i] == 1 ? 'NOT NULL' : '';
+				$dbype = $this->datatypes[$database->getType()][$type];
+				$addcolumn = "";
+				switch ($database->getType()) {
+					case 'jsonsql':
+						$addcolumn = "ALTER TABLE $table ADD COLUMN $name $type $notnull TITLE " . $database->quote($label) . " COMMENT " . $database->quote($description);
+						break;
+					case 'sqlite':
+						$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
+						break;
+					case 'mysql':
+					case 'mysqli':
+						$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
+						break;
+					case 'pgsql':
+						$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
+						break;
+				}
+				try {
+					$database->exec($addcolumn);
+				} catch (Exception $e) {
+					return $this->get('translator')->trans("Can't add the column '%column%' into table '%table%' : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
+				}
 			}
 		}
 		return true;
+	}
+
+/******************************************************
+ *  ALTER TABLE tbl_name alter_specification [, alter_specification] ...
+ *
+ * alter_specification:
+ *   ADD column_definition
+ * | DROP column_definition
+ * | CHANGE old_col_name column_definition
+ *
+ * column_definition:
+ *   same as for create table statements
+ */
+	protected function alterSQLiteTable($table, $alterdefs, $database){
+		if ($alterdefs != ''){
+			$result = $database->query("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = '".$table."' ORDER BY type DESC");
+			if (count($result) > 0) {
+				$row = $result[0];
+				$tmpname = 't'.time();
+				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ", preg_replace("/[\(]/", "( ", $row['sql'], 1))));
+				$createtemptableSQL = 'CREATE TEMPORARY '.substr(trim(preg_replace("'" . $table . "'", $tmpname, $origsql, 1)), 6);
+				$createindexsql = array();
+				$i = 0;
+				$defs = preg_split("/[,]+/", $alterdefs, -1, PREG_SPLIT_NO_EMPTY);
+				$prevword = $table;
+				$oldcols = preg_split("/[,]+/", substr(trim($createtemptableSQL), strpos(trim($createtemptableSQL), '(') + 1), -1, PREG_SPLIT_NO_EMPTY);
+				$newcols = array();
+				for($i = 0; $i < sizeof($oldcols); $i++){
+					$colparts = preg_split("/[\s]+/", $oldcols[$i], -1, PREG_SPLIT_NO_EMPTY);
+					$oldcols[$i] = $colparts[0];
+					$newcols[$colparts[0]] = $colparts[0];
+				}
+				$newcolumns = '';
+				$oldcolumns = '';
+				reset($newcols);
+				while (list($key, $val) = each($newcols)) {
+					$newcolumns .= ($newcolumns ? ', ' : '') . $val;
+					$oldcolumns .= ($oldcolumns ? ', ' : '') . $key;
+				}
+				$copytotempsql = 'INSERT INTO ' . $tmpname . '(' . $newcolumns . ') SELECT ' . $oldcolumns . ' FROM ' . $table;
+				$createtesttableSQL = $createtemptableSQL;
+				foreach ($defs as $def) {
+					$defparts = preg_split("/[\s]+/", $def, -1, PREG_SPLIT_NO_EMPTY);
+					$action = strtolower($defparts[0]);
+					switch($action){
+						case 'add':
+							if(sizeof($defparts) <= 2){
+								throw new \Exception('near "'.$defparts[0].($defparts[1]?' '.$defparts[1]:'').'": syntax error');
+							}
+							$createtesttableSQL = substr($createtesttableSQL,0,strlen($createtesttableSQL)-1).',';
+							for($i=1;$i<sizeof($defparts);$i++)
+								$createtesttableSQL.=' '.$defparts[$i];
+							$createtesttableSQL.=')';
+							break;
+						case 'change':
+							if(sizeof($defparts) <= 3){
+								throw new \Exception('near "'.$defparts[0].($defparts[1]?' '.$defparts[1]:'').($defparts[2]?' '.$defparts[2]:'').'": syntax error');
+							}
+							if($severpos = strpos($createtesttableSQL,' '.$defparts[1].' ')){
+								if($newcols[$defparts[1]] != $defparts[1]){
+									throw new \Exception('unknown column "'.$defparts[1].'" in "'.$table.'"');
+								}
+								$newcols[$defparts[1]] = $defparts[2];
+								$nextcommapos = strpos($createtesttableSQL,',',$severpos);
+								$insertval = '';
+								for ($i = 2; $i < sizeof($defparts); $i++) {
+									$insertval .= ' ' . $defparts[$i];
+								}
+								if ($nextcommapos)
+									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos) . $insertval.substr($createtesttableSQL, $nextcommapos);
+								else
+									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos - (strpos($createtesttableSQL, ',') ? 0 : 1)) . $insertval . ')';
+							} else {
+								throw new \Exception('unknown column "' . $defparts[1] . '" in "' . $table . '"');
+							}
+							break;
+						case 'drop':
+							if (sizeof($defparts) < 2) {
+								throw new \Exception('near "' . $defparts[0] . ($defparts[1] ? ' ' . $defparts[1] : '') . '" : syntax error');
+							}
+							if ($severpos = strpos($createtesttableSQL, ' ' . $defparts[1] . ' ')) {
+								$nextcommapos = strpos($createtesttableSQL, ',', $severpos);
+								if ($nextcommapos)
+									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos) . substr($createtesttableSQL, $nextcommapos + 1);
+								else
+									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos - (strpos($createtesttableSQL, ',') ? 0 : 1) - 1) . ')';
+								unset($newcols[$defparts[1]]);
+							} else {
+								throw new \Exception('unknown column "' . $defparts[1] . '" in "' . $table . '"');
+							}
+							break;
+						default:
+							throw new \Exception('near "' . $prevword . '": syntax error');
+					}
+					$prevword = $defparts[sizeof($defparts) - 1];
+				}
+				$createnewtableSQL = 'CREATE ' . substr(trim(preg_replace("'" . $tmpname . "'", $table, $createtesttableSQL, 1)), 17);
+				$newcolumns = '';
+				$oldcolumns = '';
+				reset($newcols);
+				while(list($key,$val) = each($newcols)){
+					$newcolumns .= ($newcolumns ? ', ' : '') . $val;
+					$oldcolumns .= ($oldcolumns ? ', ' : '') . $key;
+				}
+				$copytonewsql = 'INSERT INTO ' . $table . '(' . $newcolumns . ') SELECT ' . $oldcolumns . ' FROM ' . $tmpname;
+				$database->exec($createtemptableSQL); //create temp table
+				$database->exec($copytotempsql); //copy to table
+				$this->dropDBTable($table, $database); //drop old table
+				$database->exec($createnewtableSQL); //recreate original table
+				$database->exec($copytonewsql); //copy back to original table
+				$this->dropDBTable($tmpname, $database); //drop temp table
+			} else {
+				throw new \Exception('no such table: '.$table);
+			}
+			return true;
+		}
 	}
 
 	protected function addDBTableRow($form, $table, $database) {
@@ -1446,51 +1651,53 @@ class DataSourcesAdminController extends BaseAdminController {
 		$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['table-description'])));
 		$newTable->appendChild($descr);
 		foreach ($form['field'] as $i => $field) {
-			$column = $dom->createElement("Column");
-			$column->setAttribute('id', $i + 1);
-			$column->setAttribute('name', $field);
-			$column->setAttribute('type', $form['type'][$i]);
-			$column->setAttribute('label', $form['label'][$i]);
-			$descr = $dom->createElement("Description");
-			$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['description'][$i])));
-			$column->appendChild($descr);
-			if ($form['type'][$i] == 'choice' || $form['type'][$i] == 'multichoice') {
-				$choices = $dom->createElement("Choices");
-				if (isset($form['field-'.$i.'-choicesource-datasource'])) {
-					$source = $dom->createElement("Source");
-					$source->setAttribute('id', 1);
-					$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
-					$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
-					$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
-					$source->setAttribute('labelColumn', $form['field-'.$i.'-choicesource-labelColumn']);
-					if (($form['field-'.$i.'-choicesource-datasource'] == 'internal' || $form['field-'.$i.'-choicesource-datasource'] == 'database')) {
-						$source->setAttribute('request', $form['field-'.$i.'-choicesource-request']);
-					} else {
-						if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
-							$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
+			if ($field != '') {
+				$column = $dom->createElement("Column");
+				$column->setAttribute('id', $i + 1);
+				$column->setAttribute('name', $field);
+				$column->setAttribute('type', $form['type'][$i]);
+				$column->setAttribute('label', $form['label'][$i]);
+				$descr = $dom->createElement("Description");
+				$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['description'][$i])));
+				$column->appendChild($descr);
+				if ($form['type'][$i] == 'choice' || $form['type'][$i] == 'multichoice') {
+					$choices = $dom->createElement("Choices");
+					if (isset($form['field-'.$i.'-choicesource-datasource'])) {
+						$source = $dom->createElement("Source");
+						$source->setAttribute('id', 1);
+						$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
+						$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
+						$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
+						$source->setAttribute('labelColumn', $form['field-'.$i.'-choicesource-labelColumn']);
+						if (($form['field-'.$i.'-choicesource-datasource'] == 'internal' || $form['field-'.$i.'-choicesource-datasource'] == 'database')) {
+							$source->setAttribute('request', $form['field-'.$i.'-choicesource-request']);
+						} else {
+							if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
+								$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
+							}
+							if ($form['field-'.$i.'-choicesource-returnType'] == 'csv') {
+								if (isset($form['field-'.$i.'-choicesource-separator'])) {
+									$source->setAttribute('separator', $form['field-'.$i.'-choicesource-separator']);
+								}
+								if (isset($form['field-'.$i.'-choicesource-delimiter'])) {
+									$source->setAttribute('delimiter', $form['field-'.$i.'-choicesource-delimiter']);
+								}
+							}
 						}
-						if ($form['field-'.$i.'-choicesource-returnType'] == 'csv') {
-							if (isset($form['field-'.$i.'-choicesource-separator'])) {
-								$source->setAttribute('separator', $form['field-'.$i.'-choicesource-separator']);
-							}
-							if (isset($form['field-'.$i.'-choicesource-delimiter'])) {
-								$source->setAttribute('delimiter', $form['field-'.$i.'-choicesource-delimiter']);
-							}
+						$choices->appendChild($source);
+					} else{
+						foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
+							$choice = $dom->createElement("Choice");
+							$choice->setAttribute('id', $c + 1);
+							$choice->setAttribute('value', $value);
+							$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
+							$choices->appendChild($choice);
 						}
 					}
-					$choices->appendChild($source);
-				} else{
-					foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
-						$choice = $dom->createElement("Choice");
-						$choice->setAttribute('id', $c + 1);
-						$choice->setAttribute('value', $value);
-						$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
-						$choices->appendChild($choice);
-					}
+					$column->appendChild($choices);
 				}
-				$column->appendChild($choices);
+				$newTable->appendChild($column);
 			}
-			$newTable->appendChild($column);
 		}
 		$datasource->appendChild($newTable);
 		$this->saveDatasources($dom);
@@ -1577,56 +1784,63 @@ class DataSourcesAdminController extends BaseAdminController {
 						$theTable->appendChild($descr);
 					}
 				}
-				$columns = $theTable->getElementsByTagName('Column');
+				$columnsList = $theTable->getElementsByTagName('Column');
+				// remove all child of table : see http://php.net/manual/fr/domnode.removechild.php#90292
+				$columns = array();
+				foreach ($columnsList as $column) {
+					$columns[] = $column;
+				}
 				foreach ($columns as $column) {
 					$theTable->removeChild($column);
 				}
 				foreach ($form['field'] as $i => $field) {
-					$column = $dom->createElement("Column");
-					$column->setAttribute('id', $i + 1);
-					$column->setAttribute('name', $field);
-					$column->setAttribute('type', $form['type'][$i]);
-					$column->setAttribute('label', $form['label'][$i]);
-					$descr = $dom->createElement("Description");
-					$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['description'][$i])));
-					$column->appendChild($descr);
-					if ($form['type'][$i] == 'choice' || $form['type'][$i] == 'multichoice') {
-						$choices = $dom->createElement("Choices");
-						if (isset($form['field-'.$i.'-choicesource-datasource'])) {
-							$source = $dom->createElement("Source");
-							$source->setAttribute('id', 1);
-							$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
-							$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
-							$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
-							$source->setAttribute('labelColumn', $form['field-'.$i.'-choicesource-labelColumn']);
-							if (($form['field-'.$i.'-choicesource-datasource'] == 'internal' || $form['field-'.$i.'-choicesource-datasource'] == 'database')) {
-								$source->setAttribute('request', $form['field-'.$i.'-choicesource-request']);
-							} else {
-								if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
-									$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
+					if ($field != '') {
+						$column = $dom->createElement("Column");
+						$column->setAttribute('id', $i + 1);
+						$column->setAttribute('name', $field);
+						$column->setAttribute('type', $form['type'][$i]);
+						$column->setAttribute('label', $form['label'][$i]);
+						$descr = $dom->createElement("Description");
+						$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['description'][$i])));
+						$column->appendChild($descr);
+						if ($form['type'][$i] == 'choice' || $form['type'][$i] == 'multichoice') {
+							$choices = $dom->createElement("Choices");
+							if (isset($form['field-'.$i.'-choicesource-datasource'])) {
+								$source = $dom->createElement("Source");
+								$source->setAttribute('id', 1);
+								$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
+								$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
+								$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
+								$source->setAttribute('labelColumn', $form['field-'.$i.'-choicesource-labelColumn']);
+								if (($form['field-'.$i.'-choicesource-datasource'] == 'internal' || $form['field-'.$i.'-choicesource-datasource'] == 'database')) {
+									$source->setAttribute('request', $form['field-'.$i.'-choicesource-request']);
+								} else {
+									if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
+										$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
+									}
+									if ($form['field-'.$i.'-choicesource-returnType'] == 'csv') {
+										if (isset($form['field-'.$i.'-choicesource-separator'])) {
+											$source->setAttribute('separator', $form['field-'.$i.'-choicesource-separator']);
+										}
+										if (isset($form['field-'.$i.'-choicesource-delimiter'])) {
+											$source->setAttribute('delimiter', $form['field-'.$i.'-choicesource-delimiter']);
+										}
+									}
 								}
-								if ($form['field-'.$i.'-choicesource-returnType'] == 'csv') {
-									if (isset($form['field-'.$i.'-choicesource-separator'])) {
-										$source->setAttribute('separator', $form['field-'.$i.'-choicesource-separator']);
-									}
-									if (isset($form['field-'.$i.'-choicesource-delimiter'])) {
-										$source->setAttribute('delimiter', $form['field-'.$i.'-choicesource-delimiter']);
-									}
+								$choices->appendChild($source);
+							} else{
+								foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
+									$choice = $dom->createElement("Choice");
+									$choice->setAttribute('id', $c + 1);
+									$choice->setAttribute('value', $value);
+									$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
+									$choices->appendChild($choice);
 								}
 							}
-							$choices->appendChild($source);
-						} else{
-							foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
-								$choice = $dom->createElement("Choice");
-								$choice->setAttribute('id', $c + 1);
-								$choice->setAttribute('value', $value);
-								$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
-								$choices->appendChild($choice);
-							}
+							$column->appendChild($choices);
 						}
-						$column->appendChild($choices);
+						$theTable->appendChild($column);
 					}
-					$theTable->appendChild($column);
 				}
 				break;
 			}
@@ -1757,7 +1971,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 				break;
 			case 'uri':
-				$datasource->setAttribute('uri', $form['datasource-name']);
+				$datasource->setAttribute('uri', $form['datasource-uri']);
 				$datasource->setAttribute('method', $form['datasource-method']);
 				if ($oldType != 'uri') {
 					$databases = $xpath->query("/DataSources/Databases")->item(0);

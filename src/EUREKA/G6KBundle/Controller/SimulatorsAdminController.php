@@ -55,6 +55,7 @@ use EUREKA\G6KBundle\Entity\Condition;
 use EUREKA\G6KBundle\Entity\RuleAction;
 use EUREKA\G6KBundle\Entity\DOMClient as Client;
 use EUREKA\G6KBundle\Entity\ResultFilter;
+use EUREKA\G6KBundle\Entity\SQLSelectTokenizer;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -159,8 +160,11 @@ class SimulatorsAdminController extends BaseAdminController {
 		$dss = $sources->xpath("/DataSources/DataSource");
 		foreach ($dss as $ds) {
 			$dstype = (string)$ds['type'];
+			$dbtype = '';
 			$tables = array();
 			if (($dstype == 'internal' || $dstype == 'database') && $ds->Table) {
+				$databases = $sources->xpath("/DataSources/Databases/Database[@id='".(string)$ds['database']."']");
+				$dbtype = (string)$databases[0]['type'];
 				foreach($ds->Table as $dstable) {
 					$columns = array();
 					foreach($dstable->Column as $dscolumn) {
@@ -174,7 +178,7 @@ class SimulatorsAdminController extends BaseAdminController {
 								);
 							}
 						}
-						$columns[] = array(
+						$columns[strtolower((string)$dscolumn['name'])] = array(
 							'id' => (int)$dscolumn['id'],
 							'name' => (string)$dscolumn['name'],
 							'type' => (string)$dscolumn['type'],
@@ -183,7 +187,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							'choices' => $choices
 						);
 					}
-					$tables[] = array(
+					$tables[strtolower((string)$dstable['name'])] = array(
 						'id' => (int)$dstable['id'],
 						'name' => (string)$dstable['name'],
 						'label' => (string)$dstable['label'],
@@ -194,10 +198,72 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			$datasources[(string)$ds['name']] = array(
 				'id' => (string)$ds['id'],
+				'name' => (string)$ds['name'],
 				'type' => (string)$ds['type'],
+				'method' => (string)$ds['method'],
 				'description' => (string)$ds->Description,
+				'dbtype' => $dbtype,
 				'tables' => $tables
 			);
+		}
+		if ($this->simu != null) {
+			$tokenizer = new SQLSelectTokenizer();
+			foreach ($this->simu->getSources() as $source) {
+				$datasource = $source->getDatasource();
+				if (is_numeric($datasource)) {
+					$datasource = $this->simu->getDatasourceById((int)$datasource);
+					$name = $datasource->getName();
+				} else {
+					$name = $datasource;
+				}
+				if ($source->getRequest() != "" && $source->getRequestType() == "simple") {
+					$tokenizer->setTables($datasources[$name]['tables']);
+					$num = 0;
+					$sql = preg_replace_callback("/('%([sdf])'|%([sdf])\b)/", function($a) use ($num) { 
+						$num++;
+						return '$' . $num . '$' . $a[count($a) - 1]; 
+					}, $source->getRequest());
+					$sql = preg_replace_callback("/'%(\d+)\$([sdf])'/", function($a) { 
+						return '$' . $a[1] . '$' . $a[2]; 
+					}, $sql);
+					$sql = preg_replace_callback('/%(\d+)\$([sdf])\b/', function($a) { 
+						return '$' . $a[1] . '$' . $a[2]; 
+					}, $sql);
+					$parsed = $tokenizer->parseSetOperations($sql);
+					if ($parsed->statement == 'compound select' || count($parsed->from) > 1) {
+						$source->setRequestType("complex");
+					} else {
+						$table = strtolower($parsed->from[0]->table);
+						$parsed->from[0]->label = $datasources[$name]['tables'][$table]['label'];
+						foreach($parsed->select as &$col) {
+							$colname = strtolower($col->column);
+							if (isset($datasources[$name]['tables'][$table]['columns'][$colname])) {
+								$col->label = $datasources[$name]['tables'][$table]['columns'][$colname]['label'];
+							} else {
+								$col->label = $col->column;
+							}
+						}
+						foreach($parsed->orderby as &$col) {
+							$colname = strtolower($col->key);
+							if (isset($datasources[$name]['tables'][$table]['columns'][$colname])) {
+								$col->label = $datasources[$name]['tables'][$table]['columns'][$colname]['label'];
+							} else {
+								$col->label = $col->key;
+							}
+						}
+						$nparsed = array(
+							'select' => $parsed->select,
+							'from' => $parsed->from[0],
+							'where' => $parsed->where,
+							'conditions' => $parsed->conditions,
+							'orderby' => $parsed->orderby,
+							'limit' => $parsed->limit,
+							'offset' => $parsed->offset
+						);
+						$source->setParsed($nparsed);
+					}
+				}
+			}
 		}
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
@@ -210,12 +276,12 @@ class SimulatorsAdminController extends BaseAdminController {
 					'nav' => 'simulators',
 					'simulators' => $simulators,
 					'simulator' => $this->simu,
-					'dataset' => preg_replace("/\n/", "\n\t", json_encode($this->dataset, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
-					'steps' => preg_replace("/\n/", "\n\t", json_encode($this->steps, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
-					'actions' => preg_replace("/\n/", "\n\t", json_encode($this->actions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
-					'rules' => preg_replace("/\n/", "\n\t", json_encode($this->rules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
-					'datasources' => preg_replace("/\n/", "\n\t", json_encode($datasources, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
-					'views' => preg_replace("/\n/", "\n\t", json_encode($views, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES)),
+					'dataset' => $this->dataset,
+					'steps' => $this->steps,
+					'actions' => $this->actions,
+					'rules' => $this->rules,
+					'datasources' => $datasources,
+					'views' => $views,
 					'hiddens' => $hiddens
 				)
 			);
@@ -271,7 +337,10 @@ class SimulatorsAdminController extends BaseAdminController {
 	}
 
 	protected function update($simulator, $form) {
-		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
+		$fs = new Filesystem();
+		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
+		$publicdir = $bundle->getPath()."/Resources/public";
+		$simu_dir = $bundle->getPath()."/Resources/data/simulators";
 		$simulatorData = json_decode($form['simulator'], true);
 		$this->simu->setName($simulatorData["name"]);
 		$this->simu->setLabel($simulatorData["label"]);
@@ -400,7 +469,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 
 		$steps = json_decode($form['steps'], true);
-		file_put_contents($simu_dir."/work/".$simulator."-steps.json", var_export($steps, true));
+		// file_put_contents($simu_dir."/work/".$simulator."-steps.json", var_export($steps, true));
 
 		$this->simu->setSteps(array());
 		$step0 = false;
@@ -828,11 +897,21 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 
 		$sources = json_decode($form['sources'], true);
+		// file_put_contents($simu_dir."/work/".$simulator."-sources.json", var_export($sources, true));
+
 		$this->simu->setSources(array());
 		foreach($sources as $id => $source) {
 			$sourceObj = new Source($this, (int)$source['id'], $source['datasource'], $source['returnType']);
-			if (isset($source['request'])) {
+			if (isset($source['label'])) {
+				$sourceObj->setLabel($source['label']);
+			}
+			if (isset($source['requestType']) && $source['requestType'] == 'simple') {
+				$sourceObj->setRequest($this->composeSimpleSQLRequest($source));
+			} elseif (isset($source['request'])) {
 				$sourceObj->setRequest($source['request']);
+			}
+			if (isset($source['requestType'])) {
+				$sourceObj->setRequestType($source['requestType']);
 			}
 			if (isset($source['separator'])) {
 				$sourceObj->setSeparator($source['separator']);
@@ -860,6 +939,54 @@ class SimulatorsAdminController extends BaseAdminController {
 		} else {
 			$this->simu->save($simu_dir."/work/".$simulator.".xml");
 		}
+		$view = $this->simu->getDefaultView();
+		if ($view != '' && ! $fs->exists($publicdir.'/'.$view.'/css/'.$simulator.'.css')) {
+			if ($fs->exists($publicdir.'/'.$view.'/css/common.css')) {
+				$fs->dumpFile($publicdir.'/'.$view.'/css/'.$simulator.'.css', '@import "common.css";'."\n");
+			}
+		}
+	}
+
+	private function composeSimpleSQLRequest($source) {
+		$request = 'SELECT';
+		$selectList = array();
+		foreach ($source['columns'] as $col) {
+			$column = $col['column'];
+			if ($col['alias'] != $col['column']) {
+				$column .= ' as ' . $col['alias'];
+			}
+			$selectList[] = $column;
+		}
+		$request .= ' ' . implode(', ', $selectList);
+		$request .= ' FROM ' . $source['table'];
+		if ($source['filter'] != '') {
+			$request .= ' WHERE ' . $source['filter'];
+		}
+		$orderbykeys = array();
+		foreach ($source['orderby'] as $orderby) {
+			if ( $orderby['order'] == 'desc') {
+				$orderbykeys[] = $orderby['key'] . ' DESC';
+			} else {
+				$orderbykeys[] = $orderby['key'];
+			}
+		}
+		if (count($orderbykeys) > 0) {
+			$request .= ' ORDER BY ' . implode(', ', $orderbykeys);
+		}
+		$limit = $source['nbresult'];
+		$offset = $source['from'];
+		if ($limit > 0) {
+			$request .= ' LIMIT ' . $limit;
+			if ($offset > 0) {
+				$request .= ' OFFSET ' . $offset;
+			}
+		} else if ($offset > 0 && $source['dbtype'] == 'pgsql') {
+			$request .= 'LIMIT ALL OFFSET ' . $offset;
+		}
+		$request = preg_replace_callback('/\$(\d+)\$([sdf])\b/', function($a) { 
+			return '%' . $a[1] . '$' . $a[2]; 
+		}, $request);
+		return $request;
 	}
 
 	private function loadConnector($connector, $parentConnector = null) {

@@ -268,8 +268,17 @@
 										</xs:element>
 									</xs:sequence>
 									<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+									<xs:attribute name="label"/>
 									<xs:attribute name="datasource" type="xs:string" use="required"/>
 									<xs:attribute name="request" type="xs:string"/>
+									<xs:attribute name="requestType">
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="simple"/>
+												<xs:enumeration value="complex"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
 									<xs:attribute name="returnType" use="required">
 										<xs:simpleType>
 											<xs:restriction base="xs:NMTOKEN">

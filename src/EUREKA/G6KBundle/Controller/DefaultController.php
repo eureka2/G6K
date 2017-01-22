@@ -1104,10 +1104,10 @@ class DefaultController extends Controller {
 					$result = $this->uricache[$uri];
 				} else {
 					$client = Client::createClient();
-					if ($datasource->getMethod() == "GET") {
+					if (strcasecmp($datasource->getMethod(), "GET") == 0) {
 						$result = $client->get($uri);
 					} else {
-						$result = $client->post($uri, $data);
+						$result = $client->post($uri, $datas);
 					}
 					$this->uricache[$uri] = $result;
 				}

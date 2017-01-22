@@ -39,6 +39,7 @@ var ExpressionBuilder_I18N = {
 		'fields-label': 'Fields',
 		'constants-label': 'Constants',
 		'functions-label': 'Functions',
+		'parameters-label': 'Parameters',
 		'miscellaneous-label': 'Miscellaneous',
 		'nested-expression-label': 'Nested expression',
 		'operand-holder-tip': 'Click to change this operand or right-click for more actions',
@@ -54,36 +55,37 @@ var ExpressionBuilder_I18N = {
   
 	var methods = {
 		init : function( options ) {
-		
+
 			var settings = {
 				fields: {},
 				constants: {},
 				functions: {},
+				parameters: {},
 				operators: ['+', '-', '*', '%', '/', '&', '|'],
 				initial: null,
-				onCompleted: function(type) {},
-				onEditing: function() {},
+				onCompleted: function(type, expression) {},
+				onEditing: function(expression) {},
 				onError: function(error) {},
 				language: 'en',
 				operandHolder: { classes: ['label', 'label-primary'] },
 				operatorHolder: { classes: ['label', 'label-primary'] },
 				nestedExpression: { classes: ['label', 'label-primary'] }
 			};
-	
+
 			return this.each(function() { 
-			
+
 				var expression = jQuery(this);
 				var expressionId = Math.floor(Math.random() * 100000);
 				var lastevent = 0; // 0 = none, 1 = editing, 2 = completion
-				
+
 				var holderCSS;
 
 				if ( options ) { 
 					jQuery.extend( settings, options );
 				}
-			
+
 				expression.data('settings', settings);
-				
+
 				var i18n = jQuery.extend(
 					{}, 
 					ExpressionBuilder_I18N['en'], 
@@ -92,15 +94,15 @@ var ExpressionBuilder_I18N = {
 				if (typeof i18n === 'undefined') {
 					throw new Error("jquery.expressionbuilder requires a script file for '" + settings.language + "' language");
 				}
-				
+
 				expression.append(createHolderContextMenu());
-				
+
 				if (settings.initial && ! jQuery.isArray(settings.initial)) {
 					settings.initial = parse(settings.initial);
 				}
-				
+
 				initialize();
-				
+
 				function createHolderContextMenu() {
 					var contextMenu = jQuery('<div id="holder-menu' + expressionId + '" class="context-menu-holder"></div>');
 					var items = jQuery('<ul class="dropdown-menu" role="menu"></ul>');
@@ -115,56 +117,71 @@ var ExpressionBuilder_I18N = {
 					items.append('<li><a tabindex="-1" menu-action="delete"><span class="pull-right">del</span>' + i18n['menu-action-delete'] + '</a></li>');
 					return contextMenu;
 				}
-				
+
 				function createOperand() {
 					var operandWrapper = jQuery('<span class="operand-wrapper"></span>');
 					expression.append(operandWrapper);
 					addOperand(operandWrapper);
 					return operandWrapper;
 				}
-				
+
 				function addOperand(operandWrapper) {
 					var choices = jQuery('<select></select>');
-					choices.append('<option operand-type="none" value=""></option>');					
+					choices.append('<option operand-type="none" value=""></option>');
 					var gMiscellaneous = jQuery('<optgroup label="' + i18n['miscellaneous-label'] + '"></optgroup>');
 					gMiscellaneous.append('<option operand-type="literal" value="' + i18n['literal-label'] + '">' + i18n['literal-label'] + '</option>');
 					gMiscellaneous.append('<option operand-type="nested" value="nested">' + i18n['nested-expression-label'] + '</option>');
 					choices.append(gMiscellaneous);
-					var gfields = jQuery('<optgroup label="' + i18n['fields-label'] + '">');
-					jQuery.each(settings.fields, function(name, field) {
-						gfields.append('<option operand-type="field" value="' + name + '">' + field.label + '</option>');
-					});
-					choices.append(gfields);
-					
-					var gconstants = jQuery('<optgroup label="' + i18n['constants-label'] + '">');
-					jQuery.each(settings.constants, function(name, funct) {
-						gconstants.append('<option operand-type="constant" value="' + name + '">' + name + '</option>');
-					});
-					choices.append(gconstants);
-					
-					var gfunctions = jQuery('<optgroup label="' + i18n['functions-label'] + '">');
-					jQuery.each(settings.functions, function(name, funct) {
-						gfunctions.append('<option operand-type="function" value="' + name + '">' + name + '</option>');
-					});
-					choices.append(gfunctions);
-					
+
+					if (Object.keys(settings.fields).length > 0) {
+						var gfields = jQuery('<optgroup label="' + i18n['fields-label'] + '">');
+						jQuery.each(settings.fields, function(name, field) {
+							gfields.append('<option operand-type="field" value="' + name + '">' + field.label + '</option>');
+						});
+						choices.append(gfields);
+					}
+
+					if (Object.keys(settings.constants).length > 0) {
+						var gconstants = jQuery('<optgroup label="' + i18n['constants-label'] + '">');
+						jQuery.each(settings.constants, function(name, funct) {
+							gconstants.append('<option operand-type="constant" value="' + name + '">' + name + '</option>');
+						});
+						choices.append(gconstants);
+					}
+
+					if (Object.keys(settings.parameters).length > 0) {
+						var gparameters = jQuery('<optgroup label="' + i18n['parameters-label'] + '">');
+						jQuery.each(settings.parameters, function(name, parameter) {
+							gparameters.append('<option operand-type="parameter" value="' + name + '">' + parameter.name + '</option>');
+						});
+						choices.append(gparameters);
+					}
+
+					if (Object.keys(settings.functions).length > 0) {
+						var gfunctions = jQuery('<optgroup label="' + i18n['functions-label'] + '">');
+						jQuery.each(settings.functions, function(name, funct) {
+							gfunctions.append('<option operand-type="function" value="' + name + '">' + name + '</option>');
+						});
+						choices.append(gfunctions);
+					}
+
 					// Create Input Element
 					var input = jQuery('<input></input>');
-					
+
 					// Create operand holder Element
 					var holder = jQuery('<button class="operand-holder"></button>');
 					jQuery.each(settings.operandHolder.classes, function(c, clazz) {
 						holder.addClass(clazz);
 					});
-					
+
 					// put holder, input and select element in wrapper element
 					operandWrapper.append(holder).append(input).append(choices);
-					
+
 					input.css({
 						position : "relative",
 						display : "none"
 					}).attr('placeholder', i18n['literal-placeholder']);
-										
+
 					choices.css({
 					});
 					if (! holderCSS) {
@@ -172,6 +189,7 @@ var ExpressionBuilder_I18N = {
 							// "font-family": input.css('font-family'),
 							// "font-size": input.css('font-size'),
 							// border: "1px solid #CCC",
+							"border": "none",
 							"border-bottom": "thin dotted",
 							position : "relative",
 							// height: input.css('height'),
@@ -187,7 +205,7 @@ var ExpressionBuilder_I18N = {
 							"min-width": "20px"
 						};
 					}
-					
+
 					holder.attr('title', i18n['operand-holder-tip']).css(jQuery.extend( {}, holderCSS, { display : "none" } ));
 					holder.contextmenu({
 						target: '#holder-menu' + expressionId,
@@ -213,15 +231,15 @@ var ExpressionBuilder_I18N = {
 							}
 						}
 					});
-					
+
 					resizeOperand(operandWrapper);
-					
-					holder.on ('click', function(e) {						
+
+					holder.on ('click', function(e) {
 						e.preventDefault();
 						showOperandChoices(jQuery(this).parent('span'));
 						resizeOperand(jQuery(this).parent('span'));
 					});
-			  
+
 					holder.on('keydown',null, 'Ctrl+c', function (e) {
 						var holder = jQuery(this);
 						setTimeout(function() {
@@ -229,7 +247,7 @@ var ExpressionBuilder_I18N = {
 						}, 0);
 						return false;
 					});
-			  
+
 					holder.on('keydown',null, 'Ctrl+insert', function (e) {
 						var wrapper = jQuery(this).parent('span');
 						setTimeout(function() {
@@ -237,7 +255,7 @@ var ExpressionBuilder_I18N = {
 						}, 0);
 						return false;
 					});
-			  
+
 					holder.on('keydown',null, 'insert', function (e) {
 						var wrapper = jQuery(this).parent('span');
 						setTimeout(function() {
@@ -245,7 +263,7 @@ var ExpressionBuilder_I18N = {
 						}, 0);
 						return false;
 					});
-			  
+
 					holder.on('keydown', null, 'Ctrl+n', function (e) {
 						var wrapper = jQuery(this).parent('span');
 						setTimeout(function() {
@@ -253,7 +271,7 @@ var ExpressionBuilder_I18N = {
 						}, 0);
 						return false;
 					});
-			  
+
 					holder.on('keydown', null, 'del', function (e) {
 						var wrapper = jQuery(this).parent('span');
 						setTimeout(function() {
@@ -261,7 +279,7 @@ var ExpressionBuilder_I18N = {
 						}, 0);
 						return false;
 					});
-					
+
 					choices.on ('keydown', function(e){
 						if (e.keyCode >= 37 && e.keyCode <=40) // arrow buttons
 							return ;
@@ -271,7 +289,7 @@ var ExpressionBuilder_I18N = {
 							}, 0);
 							return;
 						}
-							
+
 						var chosen = jQuery(this).val();
 						if ( chosen == i18n['literal-label'] ) {
 							var text = jQuery(this).find("option[operand-type='literal']").text();
@@ -279,7 +297,7 @@ var ExpressionBuilder_I18N = {
 							literalOperand(jQuery(this).parent('span'), val);
 						}
 					});
-						
+
 					choices.on ('change blur', function(e){
 						var chosen = jQuery(this).val();
 						var text = jQuery(this).find('option:selected').text();
@@ -296,19 +314,21 @@ var ExpressionBuilder_I18N = {
 							nestedExpression(jQuery(this).parent('span'));
 						} else if (type === 'field') {
 							fieldOperand(jQuery(this).parent('span'), chosen, text);
+						} else if (type === 'parameter') {
+							parameterOperand(jQuery(this).parent('span'), chosen, text);
 						} else if (type === 'none') {
 							noneOperand(jQuery(this).parent('span'));
 						}
 					});
-					
+
 					choices.find('option').on('click', function(e){
 						if (jQuery(this).val() == jQuery(this).parent().parent().val()) {
 							jQuery(this).parent().parent().trigger('change');
 						}
 					});
-					
+
 					input.autoGrowInput({ maxWidth: 500, minWidth: choices.width(), comfortZone: 1 });
-					
+
 					input.on ('keyup', function(e){
 						if (e.keyCode == 13) { //enter
 							e.preventDefault();
@@ -323,7 +343,7 @@ var ExpressionBuilder_I18N = {
 							return false;
 						}
 					});
-					
+
 					input.on ('blur', function(e){
 						if (jQuery(this).val() === '') {
 							showOperandChoices(jQuery(this).parent('span'));
@@ -333,14 +353,14 @@ var ExpressionBuilder_I18N = {
 						}
 						resizeOperand(jQuery(this).parent('span'));
 					});
-					
+
 					holder.data('operand-type', 'none');
 					holder.data('operand-value', '');
 					holder.data('operand-completed', false);
 					checkState();
 					return holder;
 				}
-				
+
 				function addOperandAfter(wrapper) {
 					var holder = wrapper.children('button.operand-holder');
 					var operator = addOperator();
@@ -354,7 +374,7 @@ var ExpressionBuilder_I18N = {
 					}
 					operator.children('select').focus();
 				}
-				
+
 				function insertOperandBefore(wrapper) {
 					var holder = wrapper.children('button.operand-holder');
 					var operator = addOperator();
@@ -366,8 +386,8 @@ var ExpressionBuilder_I18N = {
 					addOperand(operandWrapper);
 					operandWrapper.children('select').focus();
 				}
-				
-				
+
+
 				function deleteOperand(wrapper) {
 					var holder = wrapper.children('button.operand-holder');
 					if (wrapper.is(':nth-child(2)')) { //first child is context-menu
@@ -387,13 +407,13 @@ var ExpressionBuilder_I18N = {
 						}
 					}
 				}
-				
+
 				function createOperator() {
 					var operatorWrapper = addOperator();
 					expression.append(operatorWrapper);
 					return operatorWrapper;
 				}
-				
+
 				function addOperator() {
 					var operatorWrapper = jQuery('<span class="operator-wrapper"></span>');
 					var choices = jQuery('<select></select>');  
@@ -406,16 +426,16 @@ var ExpressionBuilder_I18N = {
 						holder.addClass(clazz);
 					});
 					operatorWrapper.append(holder).append(choices);
-										
+
 					choices.css({
 						width: '43px'
 					});
-					
+
 					holder.attr('title', i18n['operator-holder-tip']).css(jQuery.extend( {}, holderCSS, { display : "none", 'text-align': 'center' } ));
 					operatorWrapper.css({
 						display : "none",
 					});
-					
+
 					holder.on ('click', function(e) {
 						e.preventDefault();
 						showOperatorChoices(jQuery(this).parent('span'));
@@ -427,7 +447,7 @@ var ExpressionBuilder_I18N = {
 					});
 					return operatorWrapper;
 				}
-			
+
 				function guessType(value) {
 					if (/^\d+$/.test(value)) {
 						return 'integer'
@@ -441,110 +461,7 @@ var ExpressionBuilder_I18N = {
 						return 'text';
 					}
 				}
-				
-				function combineTypes(type1, op, type2) {
-					var type;
-					switch (type1) {
-						case '':
-							type = type2;
-							break;
-						case 'text':
-							if (op === '+') {
-								type = 'text';
-							} else {
-								type = 'unknown';
-							}
-							break;
-						case 'integer':
-							if (op === '+') {
-								if (type2 === 'text') {
-									type = 'text';
-								} else if (type2 === 'integer') {
-									type = 'integer';
-								} else if (type2 === 'number') {
-									type = 'number';
-								} else if (type2 === 'date') {
-									type = 'date';
-								} else {
-									type = 'unknown';
-								}
-							} else {
-								if (type2 === 'integer') {
-									type = 'integer';
-								} else if (type2 === 'number') {
-									type = 'number';
-								} else {
-									type = 'unknown';
-								}
-							}
-							break;
-						case 'number':
-						case 'money':
-						case 'percent':
-							if (op === '+') {
-								if (type2 === 'text') {
-									type = 'text';
-								} else if (type2 === 'integer') {
-									type = 'number';
-								} else if (type2 === 'number') {
-									type = 'number';
-								} else {
-									type = 'unknown';
-								}
-							} else {
-								if (type2 === 'integer') {
-									type = 'number';
-								} else if (type2 === 'number') {
-									type = 'number';
-								} else {
-									type = 'unknown';
-								}
-							}
-							break;
-						case 'day':
-						case 'month':
-						case 'year':
-							if (op === '+') {
-								if (type2 === 'text') {
-									type = 'text';
-								} else if (type2 === 'integer') {
-									type = 'integer';
-								} else {
-									type = 'unknown';
-								}
-							} else {
-								if (type2 === 'integer') {
-									type = 'integer';
-								} else {
-									type = 'unknown';
-								}
-							}
-							break;
-						case 'date':
-							if (op === '+') {
-								if (type2 === 'text') {
-									type = 'text';
-								} else if (type2 === 'integer') {
-									type = 'date';
-								} else {
-									type = 'unknown';
-								}
-							} else if (op === '-') {
-								if (type2 === 'integer') {
-									type = 'date';
-								} else if (type2 === 'date') {
-									type = 'integer';
-								} else {
-									type = 'unknown';
-								}
-							}
-							break;
-						default:
-							type = 'unknown';
-					}
-					return type;
-				}
-				
+
 				function showHolder(wrapper, val, label, operandType) {
 					var holder = wrapper.children('button.operand-holder');
 					var choices = wrapper.children('select');
@@ -569,6 +486,9 @@ var ExpressionBuilder_I18N = {
 						case 'function':
 							holder.data('data-type', settings.functions[val].type);
 							break;
+						case 'parameter':
+							holder.data('data-type', settings.parameters[val].type);
+							break;
 						case 'nested':
 							break;
 						default:
@@ -576,10 +496,11 @@ var ExpressionBuilder_I18N = {
 					}
 					holder.text(label).css({"display":"inline-block"});
 					holder.data('operand-completed', true);
+					lastevent = 0;
 					checkState();
 					return holder.focus();
 				}
-				
+
 				function showInput(wrapper, val) {
 					if (wrapper.hasClass('function-operand-wrapper')) {
 						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
@@ -624,7 +545,7 @@ var ExpressionBuilder_I18N = {
 					choices.css({"display":"inline"}).focus();
 					return choices;
 				}
-				
+
 				function showOperatorHolder(wrapper, val) {
 					var holder = wrapper.children('button.operator-holder');
 					var choices = wrapper.children('select');
@@ -637,7 +558,7 @@ var ExpressionBuilder_I18N = {
 						operand.children('select').focus();
 					}
 				}
-				
+
 				function resizeOperand(wrapper){
 					var width = wrapper.children('select').outerWidth();
 					var input = wrapper.children('input');
@@ -648,9 +569,9 @@ var ExpressionBuilder_I18N = {
 					input.css({
 						"width" : width
 					});
-				 
+
 				}
-				
+
 				function noneOperand(wrapper) {
 					if (wrapper.hasClass('function-operand-wrapper')) {
 						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
@@ -665,7 +586,7 @@ var ExpressionBuilder_I18N = {
 					holder.data('operand-completed', false);
 					checkState();
 				}
-				
+
 				function literalOperand(wrapper, literal) {
 					if (wrapper.hasClass('function-operand-wrapper')) {
 						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
@@ -673,7 +594,7 @@ var ExpressionBuilder_I18N = {
 					}
 					showInput(wrapper, literal);
 				}
-				
+
 				function fieldOperand(wrapper, fieldName, fieldLabel) {
 					if (wrapper.hasClass('function-operand-wrapper')) {
 						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
@@ -681,7 +602,7 @@ var ExpressionBuilder_I18N = {
 					}
 					showHolder(wrapper, fieldName, fieldLabel, 'field');
 				}
-				
+
 				function constantOperand(wrapper, constant) {
 					if (wrapper.hasClass('function-operand-wrapper')) {
 						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
@@ -689,7 +610,15 @@ var ExpressionBuilder_I18N = {
 					}
 					showHolder(wrapper, constant, constant, 'constant');
 				}
-				
+
+				function parameterOperand(wrapper, parameter, parameterLabel) {
+					if (wrapper.hasClass('function-operand-wrapper')) {
+						wrapper.removeClass('function-operand-wrapper').addClass('operand-wrapper');
+						wrapper.children('span.function-wrapper').remove();
+					}
+					showHolder(wrapper, parameter, parameterLabel, 'parameter');
+				}
+
 				function functionExpression(wrapper, funcName, initial) {
 					var holder = wrapper.children('button.operand-holder');
 					if (wrapper.hasClass('function-operand-wrapper')) {
@@ -730,8 +659,8 @@ var ExpressionBuilder_I18N = {
 					}
 					nested.expressionbuilder(
 						jQuery.extend({}, settings, {
-							onCompleted: function(type) { checkState(); },
-							onEditing: function() { checkState(); },
+							onCompleted: function(type, expression) { checkState(); },
+							onEditing: function(expression) { checkState(); },
 							initial: initargs
 						})
 					);
@@ -758,8 +687,8 @@ var ExpressionBuilder_I18N = {
 						}
 						nested.expressionbuilder(
 							jQuery.extend({}, settings, {
-								onCompleted: function(type) { checkState(); },
-								onEditing: function() { checkState(); },
+								onCompleted: function(type, expression) { checkState(); },
+								onEditing: function(expression) { checkState(); },
 								initial: initargs
 							})
 						);
@@ -774,7 +703,7 @@ var ExpressionBuilder_I18N = {
 					holder.data('operand-completed', false);
 					checkState();
 				}
-				
+
 				function removeNestedExpression(wrapper) {
 					wrapper.children('span.nested-expression').expressionbuilder('destroy');
 					wrapper.empty();
@@ -795,7 +724,7 @@ var ExpressionBuilder_I18N = {
 					}
 					checkState();
 				}
-				
+
 				function nestedExpression(wrapper, initial) {
 					var holder = wrapper.children('button.operand-holder');
 					var leftOperator = holder.data('left-operator');
@@ -859,8 +788,8 @@ var ExpressionBuilder_I18N = {
 					wrapper.append(rightParenthesis);
 					nested.expressionbuilder(
 						jQuery.extend({}, settings, {
-							onCompleted: function(type) { leftParenthesis.data('data-type', type); checkState(); },
-							onEditing: function() { checkState(); },
+							onCompleted: function(type, expression) { leftParenthesis.data('data-type', type); checkState(); },
+							onEditing: function(expression) { checkState(); },
 							initial: initial
 						})
 					);
@@ -883,17 +812,17 @@ var ExpressionBuilder_I18N = {
 									type = combineTypes(type, op, dataType);
 								}
 							});
-							settings.onCompleted(type); 
+							settings.onCompleted(type, expression); 
 							lastevent = 2;
 						}
 					} else {
 						if (lastevent != 1) {
-							settings.onEditing();
+							settings.onEditing(expression);
 							lastevent = 1;
 						}
 					}
 				}
-				
+
 				function notifyError(error) {
 					if (i18n[error]) {
 						error = i18n[error];
@@ -901,7 +830,7 @@ var ExpressionBuilder_I18N = {
 					settings.onError(error);
 					throw new Error(error);;
 				}
-				
+
 				function findFieldName (id) {
 					var fieldName = 'unknown';
 					jQuery.each(settings.fields, function( name, field ) {
@@ -912,14 +841,28 @@ var ExpressionBuilder_I18N = {
 					});
 					return fieldName;
 				}
-				
+
+				function findParameterName (num) {
+					var parameterName = 'unknown';
+					jQuery.each(settings.parameters, function( name, parameter ) {
+						if ( parameter.num == num) {
+							parameterName = name;
+							return false; // break;
+						}
+					});
+					return parameterName;
+				}
+
 				function parse(expr) {
-					
+
 					var result = [];
 					var text = [];
-					
+
 					var PATTERN = new RegExp('([\\s!,\\(\\)\\' + settings.operators.join('\\') + '])', 'g');
-					
+
+					expr = expr.replace(/'\$(\d+)\$(s|d|f)'/g, function (match, m1, m2, str) {
+						return "$" + m1 + "$" + m2;
+					});
 					expr = expr.replace(/('[^']*')/g, function (match, m1, str) {
 						text.push(m1.substr(1, m1.length - 2));
 						return "¤" + text.length;
@@ -937,15 +880,18 @@ var ExpressionBuilder_I18N = {
 						if (value !== '') {
 							var matches;
 							if (jQuery.isNumeric(value)) {
-				                result.push(prev = parseFloat(unarySign + value));
-				            } else if (value.match(/^#\d+/)) {
+								result.push(prev = parseFloat(unarySign + value));
+							} else if (value.match(/^#\d+/)) {
 								var id = parseInt(value.substr(1));
-				                result.push(prev = unarySign + findFieldName (id));
-				            } else if (matches = value.match(/^¤(\d+)/)) {
+								result.push(prev = unarySign + findFieldName (id));
+							} else if (matches = value.match(/^\$(\d+)\$/)) {
+								var num = parseInt(matches[1]);
+								result.push(prev = unarySign + findParameterName (num));
+							} else if (matches = value.match(/^¤(\d+)/)) {
 								var i = parseInt(matches[1]);
-				                result.push(prev = text[i - 1]);
-				            } else if (matches = value.match(/^D(\d{1,2})\.(\d{1,2})\.(\d{4})/)) {
-				                result.push(prev = unarySign + matches[1] + "/" + matches[2] + "/" + matches[3]);
+								result.push(prev = text[i - 1]);
+							} else if (matches = value.match(/^D(\d{1,2})\.(\d{1,2})\.(\d{4})/)) {
+								result.push(prev = unarySign + matches[1] + "/" + matches[2] + "/" + matches[3]);
 							} else if (value ==='+' || value === '-') {
 								if (jQuery.inArray(prev, settings.operators) >= 0 || prev === '(' || prev === ',' || prev === '') {
 									unarySign = value;
@@ -963,7 +909,7 @@ var ExpressionBuilder_I18N = {
 					});
 					return result;
 				}
-				
+
 				function getInitialSubExpression(from, initial) {
 					var i = from;
 					var n = settings.initial.length;
@@ -1031,6 +977,12 @@ var ExpressionBuilder_I18N = {
 								choices.val(value);
 								showHolder(operandWrapper, value, settings.fields[value].label, 'field');
 								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
+							} else if (settings.parameters[value]) {
+								operandWrapper = createOperand();
+								var choices = operandWrapper.children('select');
+								choices.val(value);
+								showHolder(operandWrapper, value, settings.parameters[value].name, 'parameter');
+								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
 							} else if (settings.functions[value]) {
 								var funcName = value;
 								i++;
@@ -1057,14 +1009,18 @@ var ExpressionBuilder_I18N = {
 						operandWrapper.children('select').focus();
 					}
 				}
-			  
+
 			}); 
 		},
-		
-		destroy : function() {
+
+		settings: function() {
+			jQuery(this).data('settings');
+		},
+
+		destroy: function() {
 			jQuery(this).remove();
 		},
-		
+
 		completed: function() {
 			var expression = jQuery(this);
 			var settings = expression.data('settings');
@@ -1099,7 +1055,22 @@ var ExpressionBuilder_I18N = {
 			});
 			return isCompleted;
 		},
-		
+
+		type : function() {
+			var expression = jQuery(this);
+			var operandType = '';
+			expression.children('span').each(function(o) {
+				if (! jQuery(this).hasClass('operator-wrapper')) {
+					var wrapper = jQuery(this);
+					var holder = wrapper.children('button.operand-holder');
+					var dataType = holder.data('data-type');
+					var op =  holder.data('left-operator') ? holder.data('left-operator').children('button.operator-holder').data('operator-value') : '';
+					operandType = combineTypes(operandType, op, dataType);
+				}
+			});
+			return operandType;
+		},
+
 		val : function(value) {
 			var settings = jQuery(this).data('settings');
 			if (value) {
@@ -1116,6 +1087,22 @@ var ExpressionBuilder_I18N = {
 							var operandValue = holder.data('operand-value');
 							if (settings.fields[operandValue]) {
 								expression += '#' + settings.fields[operandValue].id;
+							} else if (settings.parameters[operandValue]) {
+								var type = settings.parameters[operandValue].type;
+								var param = '$' + settings.parameters[operandValue].num + '$';
+								switch (type) {
+									case 'integer':
+										param += 'd';
+										break;
+									case 'number':
+									case 'money':
+									case 'percent':
+										param += 'f';
+										break;
+									default:
+										param = "'" + param + "s'";
+								}
+								expression += param;
 							} else if (holder.data('operand-type') === 'literal' && ! jQuery.isNumeric(holder.data('operand-value'))) {
 								expression += "'" + operandValue.replace(/'/g, "\\'") + "'";
 							} else {
@@ -1149,12 +1136,117 @@ var ExpressionBuilder_I18N = {
 				return expr(jQuery(this));
 			}
 		},
-		
-        getVersion: function() {
-            return "1.0.0";
-        }
-		
+
+		getVersion: function() {
+			return "1.1.0";
+		}
+
 	};
+
+	function combineTypes(type1, op, type2) {
+		var type;
+		switch (type1) {
+			case '':
+				type = type2;
+				break;
+			case 'text':
+				if (op === '+') {
+					type = 'text';
+				} else {
+					type = 'unknown';
+				}
+				break;
+			case 'integer':
+				if (op === '+') {
+					if (type2 === 'text') {
+						type = 'text';
+					} else if (type2 === 'integer') {
+						type = 'integer';
+					} else if (type2 === 'number') {
+						type = 'number';
+					} else if (type2 === 'date') {
+						type = 'date';
+					} else {
+						type = 'unknown';
+					}
+				} else {
+					if (type2 === 'integer') {
+						type = 'integer';
+					} else if (type2 === 'number') {
+						type = 'number';
+					} else {
+						type = 'unknown';
+					}
+				}
+				break;
+			case 'number':
+			case 'money':
+			case 'percent':
+				if (op === '+') {
+					if (type2 === 'text') {
+						type = 'text';
+					} else if (type2 === 'integer') {
+						type = 'number';
+					} else if (type2 === 'number') {
+						type = 'number';
+					} else if (type1 === 'number' && type2 === 'date') {
+						type = 'date';
+					} else {
+						type = 'unknown';
+					}
+				} else {
+					if (type2 === 'integer') {
+						type = 'number';
+					} else if (type2 === 'number') {
+						type = 'number';
+					} else {
+						type = 'unknown';
+					}
+				}
+				break;
+			case 'day':
+			case 'month':
+			case 'year':
+				if (op === '+') {
+					if (type2 === 'text') {
+						type = 'text';
+					} else if (type2 === 'integer') {
+						type = 'integer';
+					} else {
+						type = 'unknown';
+					}
+				} else {
+					if (type2 === 'integer') {
+						type = 'integer';
+					} else {
+						type = 'unknown';
+					}
+				}
+				break;
+			case 'date':
+				if (op === '+') {
+					if (type2 === 'text') {
+						type = 'text';
+					} else if (type2 === 'integer') {
+						type = 'date';
+					} else {
+						type = 'unknown';
+					}
+				} else if (op === '-') {
+					if (type2 === 'integer') {
+						type = 'date';
+					} else if (type2 === 'date') {
+						type = 'integer';
+					} else {
+						type = 'unknown';
+					}
+				}
+				break;
+			default:
+				type = 'unknown';
+		}
+		return type;
+	}
 
 	jQuery.fn.expressionbuilder = function( method ) {    
 		if ( methods[method] ) {

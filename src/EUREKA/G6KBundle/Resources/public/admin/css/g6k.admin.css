@@ -155,12 +155,14 @@ ul.rule-conditions > li {
 }
 
 #datasource-import-panel-holder .form-group input,
+#table-import-panel-holder .form-group input,
 #simulator-import-panel-holder .form-group input,
 #view-create-panel-holder .form-group input {
 	margin: 0;
 	padding: 0;
 }
 #datasource-import-panel-holder .form-group > div,
+#table-import-panel-holder .form-group > div,
 #simulator-import-panel-holder .form-group > div,
 #view-create-panel-holder .form-group > div {
 	line-height: 6em;
@@ -219,6 +221,9 @@ ul.rule-conditions > li {
 	margin-top: 1em;
 }
 
+.source-container .form-control {
+	z-index: auto !important;
+}
 .edit-simulator, .export-simulator, .publish-simulator, .add-data, .edit-data, .delete-data, 
 .add-datagroup, .edit-datagroup, .delete-datagroup, 
 .add-rule, .edit-rule, .add-step, .edit-step, .delete-step, 
@@ -231,7 +236,7 @@ ul.rule-conditions > li {
 .add-choice, .add-source, .add-choice-source, .edit-choice-source, 
 .delete-choice, .delete-choice-source, 
 .expand-all, .collapse-all, 
-.edit-table-button, .drop-table-button,
+.edit-table-button, .drop-table-button, .import-table-button,
 .export-datasource-button, .edit-datasource-button, .drop-datasource-button,
 .view-button, .drop-view-button ,
 .add-profile, .edit-profile, .delete-profile, .add-profile-data, .edit-profile-data, .delete-profile-data,
@@ -242,6 +247,164 @@ ul.rule-conditions > li {
 a.add-data, a.add-datagroup, a.add-footnotes, a.add-panel,
 a.add-blockinfo, a.add-fieldset {
 	margin-top: 0;
+}
+.editable-text {
+	cursor: pointer;
+	border-bottom: thin dotted;
+}
+.dropdown-menu {
+	z-index: 10000;
+}
+.request-column-container, 
+.request-filter-connector-container, 
+.request-filter-parenthesis-container,
+.request-filter-condition-edition-container, 
+.request-orderbykey-container {
+	display: inline-block;
+	background: #F0F0F0;
+	margin: 2px;
+	border: 1px solid #aaa;
+	border-radius: 4px;
+	cursor: default;
+	padding-right: 5px;
+	padding-bottom: 2px;
+}
+.request-column-container .attribute-expression,
+.request-filter-condition-edition-container .editable-select,
+.request-filter-condition-edition-container .attribute-expression,
+.request-orderbykey-container .attribute-expression {
+	margin-left: 3px;
+}
+.request-filter-condition-edition-container,
+.request-filter-condition-num {
+	float: left;
+}
+.request-filter-condition-num {
+	clear: both;
+	margin-bottom: 2px;
+}
+.delete-request-column,
+.delete-request-filter-condition,
+.delete-request-orderbykey {
+	color: #999;
+	font-weight: bold;
+	margin-left: 3px;
+}
+.add-request-column,
+.add-request-orderbykey,
+.add-request-condition {
+	color: #000;
+	font-weight: bold;
+}
+.input-group select, 
+.input-group input {
+	border-radius: 4px !important;
+	z-index: 1 !important;
+}
+.request-column-container .operand-holder, 
+.request-column-container .operator-holder, 
+.request-column-container .comma-holder, 
+.request-column-container .left-parenthesis-holder, 
+.request-column-container .right-parenthesis-holder,
+.request-filter-condition-edition-container .operand-holder, 
+.request-filter-condition-edition-container .operator-holder, 
+.request-filter-condition-edition-container .comma-holder, 
+.request-filter-condition-edition-container .left-parenthesis-holder, 
+.request-filter-condition-edition-container .right-parenthesis-holder,
+.request-orderbykey-container .operand-holder, 
+.request-orderbykey-container .operator-holder, 
+.request-orderbykey-container .comma-holder, 
+.request-orderbykey-container .left-parenthesis-holder, 
+.request-orderbykey-container .right-parenthesis-holder {
+	background: #F0F0F0 !important;
+}
+.request-columns-container,
+.request-orderbykeys-container,
+.request-filter-conditions,
+.request-filter-expression {
+	height: auto !important;
+	min-height: 34px;
+}
+.request-filter-expression {
+	background: #fafafa !important;
+}
+.request-filter-conditions-container {
+	margin-top: -17px;
+}
+.request-filter-expression-container {
+	margin-top: -12px;
+}
+.request-filter-tools-container > div {
+	padding-left: 0;
+}
+.request-filter-condition-container {
+	display: block;
+	margin: 0 4px;
+	list-style: outside none none;
+	padding: 0;
+	vertical-align: middle;
+}
+.request-filter-expression li {
+	display: block;
+	float: left;
+	margin: 0 4px;
+	list-style: outside none none;
+	padding: 0;
+}
+.request-expression-token {
+	background: white none repeat scroll 0 0 padding-box;
+	border: 1px solid gainsboro;
+	border-radius: 3px;
+	color: #888;
+	font-size: 2em;
+	font-weight: bold;
+	height: 32px;
+	line-height: 32px;
+	list-style-type: none;
+	padding: 0;
+	position: relative;
+	text-align: center;
+	width: 32px;
+}
+.request-filter-expression .request-expression-token {
+	display: block;
+	float: left;
+	cursor: move;
+}
+.request-filter-expression .request-expression-token.request-connector {
+	font-size: 1em;
+	color: #f93;
+}
+.request-filter-condition-container .request-expression-token {
+	display: inline-block;
+}
+.request-filter-expression .request-expression-token.request-bracket {
+	font-size: 1.5em;
+	width: 32px;
+}
+.request-expression-token .request-expression-delete-token{
+	background: #f9e7e7 none repeat scroll 0 0 padding-box;
+	border: 1px solid #d14c4c;
+	border-radius: 2px;
+	display: block;
+	height: 11px;
+	position: absolute;
+	right: -1px;
+	top: -1px;
+	width: 10px;
+	z-index: 5;
+	color: #d14c4c;
+	text-decoration: none;
+	transition: color 0.2s ease-in-out 0s;
+	font-size: 0.3em;
+}
+.request-filter-conditions-container .request-expression-token {
+	color: #c6c6c9;
+}
+.request-columns-container + span, 
+.request-orderbykeys-container + span,
+.request-filter-conditions + span {
+	padding: 6px 4px !important;
 }
 button.save-simulator {
 	position: fixed;

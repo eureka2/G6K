@@ -392,18 +392,21 @@ class ResultFilter {
 	}
 
 	static function xml2array($xml) {
-		$result = array();
-		if (is_array($xml)) {
-			foreach ($xml as $key => $item) {
+		$result = (array)$xml;
+		if (count($result) == 0) {
+			$result = (string)$xml;  
+		}
+		if (is_array($result)) {
+			foreach ($result as $key => $value){
 				$key = (string)$key;
-				if (is_object($item) && get_class($item) == 'SimpleXMLElement') {
-					$result[$key] = self::xml2array((array)$item);
+				if (is_object($value) && strpos(get_class($value),"SimpleXML")!==false) {
+						$result[$key] = self::xml2array($value);
 				} elseif ($key == '@attributes') {
 					$key = array_keys($item)[0];
 					$item = $item[$key];
 					$result[$key] = $item;
 				} else {
-					$result[$key] = $item;
+					$result[$key] = self::xml2array($value);
 				}
 			}
 		}

@@ -381,12 +381,14 @@ THE SOFTWARE.
 				} else {
 					value = currentValue.val();
 				}
-				value = value.replace(
-					/'(\d{1,2}\/\d{1,2}\/\d{4})'/g,
-					function (match, m1, offs, str) {
-						return m1;
-					}
-				);
+				if (value) {
+					value = value.replace(
+						/'(\d{1,2}\/\d{1,2}\/\d{4})'/g,
+						function (match, m1, offs, str) {
+							return m1;
+						}
+					);
+				}
 				return {
 					name: element.find(".field").attr("data-value"),
 					operator: element.find(".operator").attr("data-value"),
@@ -515,6 +517,7 @@ THE SOFTWARE.
 			select.editable(
 				function (val, settings) {
 					$(this).attr("data-value", val);
+					settings.data.selected = val;
 					return settings.data[val];
 				},
 				{
@@ -627,6 +630,7 @@ THE SOFTWARE.
 		select.editable(
 			function (val, settings) {
 				$(this).attr("data-value", val);
+				settings.data.selected = val;
 				return settings.data[val];
 			},
 			{
@@ -683,6 +687,7 @@ THE SOFTWARE.
 			select.editable(
 				function (val, settings) {
 					$(this).attr("data-value", val);
+					settings.data.selected = val;
 					return settings.data[val];
 				},
 				{
@@ -759,6 +764,7 @@ THE SOFTWARE.
 				select.editable(
 					function (val, settings) {
 						$(this).attr("data-value", val);
+						settings.data.selected = val;
 						return settings.data[val];
 					},
 					{
