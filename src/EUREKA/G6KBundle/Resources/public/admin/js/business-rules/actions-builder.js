@@ -164,7 +164,7 @@ THE SOFTWARE.
 					style: "inherit"
 				}
 			);
-			var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove pull-right", "text": " ", "title": Translator.trans("Remove this Action")});
+			var removeLink = $("<button>", {"class": "remove glyphicon glyphicon-remove pull-left", "text": " ", "title": Translator.trans("Remove this Action")});
 			removeLink.click(function(e) {
 				e.preventDefault();
 				actionDiv.remove();

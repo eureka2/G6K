@@ -613,6 +613,7 @@ class Simulator {
 										$fieldObj->setEmphasize((string)$field['emphasize'] == '1');
 										$fieldObj->setExplanation((string)$field['explanation']);
 										$fieldObj->setExpanded((string)$field['expanded'] == '1');
+										$fieldObj->setWidget((string)$field['widget']);
 										if ($field->PreNote) {
 											$noteObj = new FieldNote($this);
 											$noteObj->setText((string)$field->PreNote);
@@ -640,6 +641,7 @@ class Simulator {
 									$fieldObj->setEmphasize((string)$field['emphasize'] == '1');
 									$fieldObj->setExplanation((string)$field['explanation']);
 									$fieldObj->setExpanded((string)$field['expanded'] == '1');
+									$fieldObj->setWidget((string)$field['widget']);
 									if ($field->PreNote) {
 										$noteObj = new FieldNote($this);
 										$noteObj->setText((string)$field->PreNote);
@@ -976,6 +978,9 @@ class Simulator {
 		}
 		if ((string)$field['visibleRequired'] == '' || (string)$field['visibleRequired'] == '1') {
 			$nfield['visibleRequired'] = '1';
+		}
+		if ((string)$field['widget'] != "") {
+			$nfield['widget'] = (string)$field['widget'];
 		}
 		$this->dependencies = 'fieldDependencies';
 		if ((string)$field['explanation'] != "") {
@@ -1906,8 +1911,11 @@ class Simulator {
 										if ($field->getExplanation() != '') {
 											$attrs .= ' explanation="' . $field->getExplanation() . '"'; 
 										}
-										if (! $field->isExpanded()) {
-											$attrs .= ' expanded="0"'; 
+										if ($field->isExpanded()) {
+											$attrs .= ' expanded="1"'; 
+										}
+										if ($field->getWidget() != '') {
+											$attrs .= ' widget="' . $field->getWidget() . '"'; 
 										}
 										if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
 											$xml[] = '							<Field ' . $attrs . '>';
@@ -1958,8 +1966,11 @@ class Simulator {
 									if ($field->getExplanation() != '') {
 										$attrs .= ' explanation="' . $field->getExplanation() . '"'; 
 									}
-									if (! $field->isExpanded()) {
-										$attrs .= ' expanded="0"'; 
+									if ($field->isExpanded()) {
+										$attrs .= ' expanded="1"'; 
+									}
+									if ($field->getWidget() != '') {
+										$attrs .= ' widget="' . $field->getWidget() . '"'; 
 									}
 									if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
 										$xml[] = '						<Field ' . $attrs . '>';

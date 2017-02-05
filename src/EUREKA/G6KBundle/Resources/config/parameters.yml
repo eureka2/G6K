@@ -4,3 +4,11 @@ parameters:
     viewpath:
         Demo: www.mysite.com
     page404: /404.html
+    widgets:
+        geoAPILocalities:
+            label: Insee code obtained by autocompletion on the name of the commune or its postal code
+            css: 
+                - lib/jquery.auto-complete.css
+            js: 
+                - lib/jquery.auto-complete.min.js
+                - js/geoAPILocalities.js

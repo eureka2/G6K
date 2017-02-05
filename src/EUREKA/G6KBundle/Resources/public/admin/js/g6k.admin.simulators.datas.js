@@ -430,10 +430,6 @@ THE SOFTWARE.
 
 	Simulators.bindData = function(dataPanelContainer) {
 		dataPanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
-		// dataPanelContainer.find('select[data-attribute=type]').select2({
-			// language: Admin.lang,
-			// minimumResultsForSearch: 50
-		// });
 		dataPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -923,7 +919,7 @@ THE SOFTWARE.
 				} else if (name == 'index') {
 					attribute = Simulators.simpleAttributeForDisplay(dataElementId, 'text', name, attr.label, data[name], data[name], false, attr.placeholder);
 				} else if (attr.type === 'expression') {
-					attribute = Simulators.expressionAttributeForDisplay(dataElementId, name, attr.label, data[name], data[name], false, attr.placeholder);
+					attribute = Simulators.expressionAttributeForDisplay(dataElementId, name, attr.label, data[name], Simulators.replaceByDataLabel(data[name]), false, attr.placeholder);
 				} else {
 					attribute = Simulators.simpleAttributeForDisplay(dataElementId, attr.type, name, attr.label, data[name], data[name], false, attr.placeholder);
 				}
@@ -948,7 +944,7 @@ THE SOFTWARE.
 		dataPanel.append('<div class="panel-heading" role="tab" id="' + dataElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + dataElementId + '" href="#collapse' + dataElementId + '" aria-expanded="true" aria-controls="collapse' + dataElementId + '">#' + data.id + ' : ' + data.label + '</a></h4></div>');
 		var dataPanelCollapse = $('<div id="collapse' + dataElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + dataElementId + '-panel"></div>');
 		var dataPanelBody = $('<div class="panel-body"></div>');
-		var dataContainer = $('<div class="panel panel-default data-container" id="' + dataElementId + '-attributes-panel" data-datagroup="' + data.datagroup + '" data-id="' + data.id + '"></div>');
+		var dataContainer = $('<div class="panel panel-default data-container" id="' + dataElementId + '-attributes-panel" data-datagroup="' + data.datagroup + '" data-id="' + data.id + '" data-name="' + data.name + '"></div>');
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -1047,7 +1043,7 @@ THE SOFTWARE.
 		dataPanel.append('<div class="panel-heading" role="tab" id="' + dataElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + dataElementId + '" href="#collapse' + dataElementId + '" aria-expanded="true" aria-controls="collapse' + dataElementId + '">' + Translator.trans('Group') + ' ' + datagroup.label + '</a></h4></div>');
 		var dataPanelCollapse = $('<div id="collapse' + dataElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + dataElementId + '-panel"></div>');
 		var dataPanelBody = $('<div class="panel-body"></div>');
-		var dataContainer = $('<div class="panel panel-default data-container datagroup" id="' + dataElementId + '-attributes-panel" data-id="' + datagroup.id + '"></div>');
+		var dataContainer = $('<div class="panel panel-default data-container datagroup" id="' + dataElementId + '-attributes-panel" data-id="' + datagroup.id + '" data-name="' + datagroup.name + '"></div>');
 		var dataContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -1071,23 +1067,94 @@ THE SOFTWARE.
 		return dataPanelContainer;
 	}
 
-	Simulators.checkData = function(dataContainer) {
-		var dataElementId = dataContainer.attr('id');
+	Simulators.checkData = function(dataPanelContainer) {
+		var dataElementId = dataPanelContainer.attr('id');
+		var dataId = dataPanelContainer.find('.data-container').attr('data-id');
+		var dataOldName = dataPanelContainer.find('.data-container').attr('data-name');
 		var dataName = $.trim($('#' + dataElementId + '-name').val());
 		if (dataName === '') {
-			dataContainer.find('.error-message').text(Translator.trans('The data name is required'));
-			dataContainer.find('.alert').show();
+			dataPanelContainer.find('.error-message').text(Translator.trans('The data name is required'));
+			dataPanelContainer.find('.alert').show();
 			return false;
 		}
 		if (! /^\w+$/.test(dataName)) {
-			dataContainer.find('.error-message').text(Translator.trans('Incorrect data name'));
-			dataContainer.find('.alert').show();
+			dataPanelContainer.find('.error-message').text(Translator.trans('Incorrect data name'));
+			dataPanelContainer.find('.alert').show();
 			return false;
 		}
-		if ($.trim($('#' + dataElementId + '-label').val()) === '') {
-			dataContainer.find('.error-message').text(Translator.trans('The data label is required'));
-			dataContainer.find('.alert').show();
+		if (dataName != dataOldName) {
+			if (Simulators.dataset[dataName] && Simulators.dataset[dataName].id != dataId) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('This data name already exists'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+		}
+		var dataLabel = $.trim($('#' + dataElementId + '-label').val());
+		if (dataLabel === '') {
+			dataPanelContainer.find('.error-message').text(Translator.trans('The data label is required'));
+			dataPanelContainer.find('.alert').show();
 			return false;
+		}
+		var source = dataPanelContainer.find('.data-container select[data-attribute=source]');
+		if (source.length > 0) {
+			if ($('#source-' + source.val() + '-source-parameters-panel').find(".source-parameter-container p[data-attribute=data][data-value='" + dataName + "']").length > 0) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('Circular reference between data «%data%» and source «%source%»', { data: dataLabel, source: source.find('option:selected').text() }));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+		}
+		var dataId = dataPanelContainer.find('.data-container').attr('data-id');
+		var deflt = dataPanelContainer.find('.data-container span[data-attribute=default]');
+		if (deflt.length > 0) { 
+			if (! deflt.expressionbuilder("completed")) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('Please, complete the input of the default value'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+			if (! Simulators.checkDataInExpression(dataId, deflt)) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('The default value can not refer to the data itself'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+		}
+		var min = dataPanelContainer.find('.data-container span[data-attribute=min]');
+		if (min.length > 0) { 
+			if (! min.expressionbuilder("completed")) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('Please, complete the input of min'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+			if (! Simulators.checkDataInExpression(dataId, min)) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('min can not refer to the data itself'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+		}
+		var max = dataPanelContainer.find('.data-container span[data-attribute=max]');
+		if (max.length > 0) { 
+			if (! max.expressionbuilder("completed")) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('Please, complete the input of max'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+			if (! Simulators.checkDataInExpression(dataId, max)) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('max can not refer to the data itself'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+		}
+		var content = dataPanelContainer.find('.data-container span[data-attribute=content]');
+		if (content.length > 0) { 
+			if (! content.expressionbuilder("completed")) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('Please, complete the input of Content'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+			if (! Simulators.checkDataInExpression(dataId, content)) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('Content can not refer to the data itself'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
 		}
 		return true;
 	}
@@ -1248,18 +1315,27 @@ THE SOFTWARE.
 		}
 	}
 
-	Simulators.checkDatagroup = function(datagroupContainer) {
-		var datagroupElementId = datagroupContainer.attr('id');
+	Simulators.checkDatagroup = function(dataPanelContainer) {
+		var datagroupElementId = dataPanelContainer.attr('id');
+		var datagroupId = dataPanelContainer.find('.data-container.datagroup').attr('data-id');
+		var datagroupOldName = dataPanelContainer.find('.data-container.datagroup').attr('data-name');
 		var datagroupName = $.trim($('#' + datagroupElementId + '-name').val());
 		if (datagroupName === '') {
-			datagroupContainer.find('.error-message').text(Translator.trans('The datagroup name is required'));
-			datagroupContainer.find('.alert').show();
+			dataPanelContainer.find('.error-message').text(Translator.trans('The datagroup name is required'));
+			dataPanelContainer.find('.alert').show();
 			return false;
 		}
 		if (! /^\w+$/.test(datagroupName)) {
-			datagroupContainer.find('.error-message').text(Translator.trans('Incorrect datagroup name'));
-			datagroupContainer.find('.alert').show();
+			dataPanelContainer.find('.error-message').text(Translator.trans('Incorrect datagroup name'));
+			dataPanelContainer.find('.alert').show();
 			return false;
+		}
+		if (datagroupName != datagroupOldName) {
+			if (Simulators.datagroups[datagroupName] && Simulators.datagroups[datagroupName].id != datagroupId) {
+				dataPanelContainer.find('.error-message').text(Translator.trans('This datagroup name already exists'));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
 		}
 		return true;
 	}

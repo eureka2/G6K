@@ -186,19 +186,11 @@ var ExpressionBuilder_I18N = {
 					});
 					if (! holderCSS) {
 						holderCSS = {
-							// "font-family": input.css('font-family'),
-							// "font-size": input.css('font-size'),
-							// border: "1px solid #CCC",
 							"border": "none",
 							"border-bottom": "thin dotted",
 							position : "relative",
-							// height: input.css('height'),
-							// 'line-height': input.css('height'),
-							// 'min-height': input.css('height'),
 							cursor: "pointer",
 							"border-radius": 0,
-							// margin: "0 1px 0 0",
-							// padding: "0 2px 0 2px",
 							margin: 0,
 							padding: 0,
 							background: "#fff",
@@ -527,11 +519,12 @@ var ExpressionBuilder_I18N = {
 						}
 					} else {
 						if ( input.val() === "" ) {
-							choices.find("option[operand-type='literal']").remove();
+							choices.find("option[operand-type='literal']").text(i18n['literal-label']).prop('selected', false);
 						} else {
 							choices.find("option[operand-type='literal']").text(input.val()).prop('selected', true);
 						}
 					}
+					input.val("");
 					holder.hide();
 					input.hide();
 					choices.css({"display":"inline"}).focus();

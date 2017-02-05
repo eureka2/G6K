@@ -135,8 +135,8 @@ THE SOFTWARE.
 					}
 				});
 			}
-			$.each(step.panels, function(p, panel) {
-				$.each(panel.blocks, function(b, block) {
+			$.each(step.panels || [], function(p, panel) {
+				$.each(panel.blocks || [], function(b, block) {
 					if (block.type == 'fieldset') {
 						if (re1.test(block.legend)) {
 							block.legend = block.legend.replace(re1, "#" + id + '$1');
@@ -144,7 +144,7 @@ THE SOFTWARE.
 						if (re2.test(block.legend)) {
 							block.legend = block.legend.replace(re2, '<var $1data-id="' + id + '"');
 						}
-						$.each(block.fieldrows, function(fr, fieldrow) {
+						$.each(block.fieldrows || [], function(fr, fieldrow) {
 							$.each(fieldrow.fields, function(f, field) {
 								if (field.type == 'field') {
 									if (field.data == oldId) {
@@ -176,8 +176,8 @@ THE SOFTWARE.
 							});
 						});
 					} else { // blockinfo
-						$.each(block.chapters, function(c, chapter) {
-							$.each(chapter.sections, function(sn, section) {
+						$.each(block.chapters || [], function(c, chapter) {
+							$.each(chapter.sections || [], function(sn, section) {
 								if (re1.test(section.content)) {
 									section.content = section.content.replace(re1, "#" + id + '$1');
 								}
@@ -332,7 +332,7 @@ THE SOFTWARE.
 		buttons.push({ 'class': 'edit-step', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' });
 		var stepPanelContainer = Simulators.openCollapsiblePanel(stepElementId, Translator.trans('Step') + ' #' + step.id + ' : ' + step.label, 'info', '', '', buttons );
 		var stepPanelBody = stepPanelContainer.find('.panel-body');
-		var stepContainer = $('<div class="panel panel-default step-container" id="' + stepElementId + '-attributes-panel" data-step="' + step.stepId + '" data-panel="' + step.panelId + '" data-id="' + step.id + '"></div>');
+		var stepContainer = $('<div class="panel panel-default step-container" id="' + stepElementId + '-attributes-panel" data-id="' + step.id + '" data-name="' + step.name + '"></div>');
 		var stepContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -530,6 +530,18 @@ THE SOFTWARE.
 			stepContainer.find('.alert').show();
 			return false;
 		}
+		var exists = false;
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				exists = true;
+				return false;
+			}
+		});
+		if (exists) {
+			stepContainer.find('.error-message').text(Translator.trans('This step name already exists'));
+			stepContainer.find('.alert').show();
+			return false;
+		}
 		return true;
 	}
 
@@ -547,7 +559,7 @@ THE SOFTWARE.
 				label: '',
 				template: 'pages:article.html.twig',
 				output: 'normal',
-				dynamic: 1,
+				dynamic: '1',
 				description: '',
 				panels: [],
 				actions: [],
@@ -1194,7 +1206,7 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'label', Translator.trans('Label'), action.label, action.label, true, Translator.trans('Button label')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'what', Translator.trans('What'), action.what, action.what, true, Translator.trans('Select an action'), JSON.stringify( { 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset') } )));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'for', Translator.trans('For'), action.for, action.for, true, Translator.trans('Select a target step'), JSON.stringify( { 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'uri', Translator.trans('URI'), action.uri, action.uri, false, Translator.trans('Button uri')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'uri', Translator.trans('URI / Step'), action.uri, action.uri, false, Translator.trans('Button uri')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'class', Translator.trans('Class'), action.class, action.class, false, Translator.trans('Button class')));
 		attributesContainer.append(requiredAttributes);
 		actionContainerBody.append(attributesContainer);
@@ -1219,10 +1231,10 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="text" data-name="uri" data-placeholder="' + Translator.trans('Button uri') + '">' + Translator.trans('URI') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="text" data-name="uri" data-placeholder="' + Translator.trans('Button uri') + '">' + Translator.trans('URI / Step') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (action.uri) {
-			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-uri', 'text', 'uri', Translator.trans('URI'), action.uri, false, Translator.trans('Button uri'));
+			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-uri', 'text', 'uri', Translator.trans('URI / Step'), action.uri, false, Translator.trans('Button uri'));
 			requiredAttributes.append(attribute);
 			optionalAttribute.hide();
 		} 
@@ -1584,7 +1596,7 @@ THE SOFTWARE.
 		panelPanel.append('<div class="panel-heading" role="tab" id="' + panelElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + panelElementId + '" href="#collapse' + panelElementId + '" aria-expanded="true" aria-controls="collapse' + panelElementId + '">' + Translator.trans('Panel') + ' #' + panel.id + ' : ' + panel.label + '</a></h4></div>');
 		var panelPanelCollapse = $('<div id="collapse' + panelElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + panelElementId + '-panel"></div>');
 		var panelPanelBody = $('<div class="panel-body"></div>');
-		var panelContainer = $('<div class="panel panel-default panel-container" id="' + panelElementId + '-attributes-panel" data-step="' + panel.stepId + '" data-id="' + panel.id + '"></div>');
+		var panelContainer = $('<div class="panel panel-default panel-container" id="' + panelElementId + '-attributes-panel" data-step="' + panel.stepId + '" data-id="' + panel.id + '" data-name="' + panel.name + '"></div>');
 		var panelContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -1750,6 +1762,21 @@ THE SOFTWARE.
 		}
 		if (! /^\w+$/.test(panelName)) {
 			panelContainer.find('.error-message').text(Translator.trans('Incorrect panel name'));
+			panelContainer.find('.alert').show();
+			return false;
+		}
+		var stepId = panelContainer.find('.panel-container').attr('data-step');
+		var id = panelContainer.find('.panel-container').attr('data-id');
+		var exists = false;
+		var step = Simulators.findInArray(steps, [{ key: 'id', val: stepId }]);
+			$.each(step.panels, function(p, panel) {
+			if (panel.id != id && panel.name == panelName) {
+				exists = true;
+				return false;
+			}
+		});
+		if (exists) {
+			panelContainer.find('.error-message').text(Translator.trans('This panel name already exists'));
 			panelContainer.find('.alert').show();
 			return false;
 		}
@@ -1976,7 +2003,7 @@ THE SOFTWARE.
 		fieldsetPanel.append('<div class="panel-heading" role="tab" id="' + fieldsetElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + fieldsetElementId + '" href="#collapse' + fieldsetElementId + '" aria-expanded="true" aria-controls="collapse' + fieldsetElementId + '">#' + fieldset.id + ' : ' + fieldset.legend + '</a></h4></div>');
 		var fieldsetPanelCollapse = $('<div id="collapse' + fieldsetElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + fieldsetElementId + '-panel"></div>');
 		var fieldsetPanelBody = $('<div class="panel-body"></div>');
-		var fieldsetContainer = $('<div class="panel panel-default block-container fieldset" id="' + fieldsetElementId + '-attributes-panel" data-step="' + fieldset.stepId + '" data-panel="' + fieldset.panelId + '" data-id="' + fieldset.id + '"></div>');
+		var fieldsetContainer = $('<div class="panel panel-default block-container fieldset" id="' + fieldsetElementId + '-attributes-panel" data-step="' + fieldset.stepId + '" data-panel="' + fieldset.panelId + '" data-id="' + fieldset.id + '" data-name="' + fieldset.name + '"></div>');
 		var fieldsetContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -2381,7 +2408,7 @@ THE SOFTWARE.
 		columnPanel.append('<div class="panel-heading" role="tab" id="' + columnElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + columnElementId + '" href="#collapse' + columnElementId + '" aria-expanded="true" aria-controls="collapse' + columnElementId + '">' + Translator.trans('Column #%id% : %label%', {'id': column.id, 'label': column.label }) + '</a></h4></div>');
 		var columnPanelCollapse = $('<div id="collapse' + columnElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + columnElementId + '-panel"></div>');
 		var columnPanelBody = $('<div class="panel-body"></div>');
-		var columnContainer = $('<div class="panel panel-default column-container" id="' + columnElementId + '-attributes-panel" data-step="' + column.stepId + '" data-panel="' + column.panelId + '" data-fieldset="' + column.fieldsetId + '" data-id="' + column.id + '"></div>');
+		var columnContainer = $('<div class="panel panel-default column-container" id="' + columnElementId + '-attributes-panel" data-step="' + column.stepId + '" data-panel="' + column.panelId + '" data-fieldset="' + column.fieldsetId + '" data-id="' + column.id + '" data-name="' + column.name + '"></div>');
 		var columnContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -2505,23 +2532,40 @@ THE SOFTWARE.
 		});
 	}
 
-	Simulators.checkFieldSetColumn = function(columnContainer) {
-		var columnElementId = columnContainer.attr('id');
-		var dataName = $.trim($('#' + columnElementId + '-name').val());
-		if (dataName === '') {
-			columnContainer.find('.error-message').text(Translator.trans('The column name is required'));
-			columnContainer.find('.alert').show();
+	Simulators.checkFieldSetColumn = function(columnPanelContainer) {
+		var columnElementId = columnPanelContainer.attr('id');
+		var columnName = $.trim($('#' + columnElementId + '-name').val());
+		if (columnName === '') {
+			columnPanelContainer.find('.error-message').text(Translator.trans('The column name is required'));
+			columnPanelContainer.find('.alert').show();
 			return false;
 		}
-		if (! /^\w+$/.test(dataName)) {
-			columnContainer.find('.error-message').text(Translator.trans('Incorrect column name'));
-			columnContainer.find('.alert').show();
+		if (! /^\w+$/.test(columnName)) {
+			columnPanelContainer.find('.error-message').text(Translator.trans('Incorrect column name'));
+			columnPanelContainer.find('.alert').show();
 			return false;
 		}
 		var columnLabel = $.trim($('#' + columnElementId + '-label').val());
 		if (columnLabel === '') {
-			columnContainer.find('.error-message').text(Translator.trans('The column label is required'));
-			columnContainer.find('.alert').show();
+			columnPanelContainer.find('.error-message').text(Translator.trans('The column label is required'));
+			columnPanelContainer.find('.alert').show();
+			return false;
+		}
+		var stepId = columnPanelContainer.find('.column-container').attr('data-step');
+		var panelId = columnPanelContainer.find('.column-container').attr('data-panel');
+		var fieldsetId = columnPanelContainer.find('.column-container').attr('data-fieldset');
+		var id = columnPanelContainer.find('.column-container').attr('data-id');
+		var fieldset = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId }]);
+		var exists = false;
+			$.each(fieldset.columns, function(c, column) {
+			if (column.id != id && column.name == columnName) {
+				exists = true;
+				return false;
+			}
+		});
+		if (exists) {
+			columnPanelContainer.find('.error-message').text(Translator.trans('This column name already exists'));
+			columnPanelContainer.find('.alert').show();
 			return false;
 		}
 		return true;
@@ -3199,6 +3243,7 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'emphasize', Translator.trans('Emphasize the text label ?'), field.emphasize, field.emphasize, false, Translator.trans('Emphasize the text label ?')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'expanded', Translator.trans('Show choices as radio buttons ?'), field.expanded, field.expanded, false, Translator.trans('Show choices as radio buttons ?')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'explanation', Translator.trans('Explanation'), field.explanation, field.explanation, false, Translator.trans('Explanation')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'select', 'widget', Translator.trans('Widget'), field.widget, field.widget, false, Translator.trans('Select a widget'), JSON.stringify(widgets)));
 		attributesContainer.append(requiredAttributes);
 		fieldContainerBody.append(attributesContainer);
 		fieldContainer.append(fieldContainerBody);
@@ -3310,6 +3355,12 @@ THE SOFTWARE.
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-explanation', 'text', 'explanation', Translator.trans('Explanation'), field.explanation, false, Translator.trans('Explanation')));
 			optionalAttribute.hide();
 		} 
+		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="select" data-name="widget" data-placeholder="' + Translator.trans('Select a widget') + '" data-options="' + encodeURI(JSON.stringify(widgets)) + '">' + Translator.trans('Widget') + '</li>');
+		optionalAttributes.append(optionalAttribute);
+		if (field.widget) {
+			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-widget', 'select', 'widget', Translator.trans('Widget'), field.widget, false, Translator.trans('Select a widget'), JSON.stringify(widgets)));
+			optionalAttribute.hide();
+		} 
 		optionalAttributesPanel.append(optionalAttributes);
 		attributesContainer.append(optionalAttributesPanel);
 		fieldContainerBody.append(attributesContainer);
@@ -3412,7 +3463,8 @@ THE SOFTWARE.
 				help: '0',
 				emphasize: '0',
 				explanation: '',
-				expanded: '0'
+				expanded: '0',
+				widget: ''
 			};
 			field['stepId'] = stepId;
 			field['panelId'] = panelId;
@@ -3422,7 +3474,7 @@ THE SOFTWARE.
 			attributes.find('input.simple-value, select.simple-value').each(function (index) {
 				// field[$(this).attr('data-attribute')] = $(this).val();
 				if ($(this).is(':checkbox')) {
-					field[$(this).attr('data-attribute')] = $(this).is(':checked') ? 1 : 0;
+					field[$(this).attr('data-attribute')] = $(this).is(':checked') ? '1' : '0';
 				} else {
 					field[$(this).attr('data-attribute')] = $(this).val();
 				}
@@ -3683,7 +3735,7 @@ THE SOFTWARE.
 		blockinfoPanel.append('<div class="panel-heading" role="tab" id="' + blockinfoElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + blockinfoElementId + '" href="#collapse' + blockinfoElementId + '" aria-expanded="true" aria-controls="collapse' + blockinfoElementId + '">#' + blockinfo.id + ' : ' + blockinfo.label + '</a></h4></div>');
 		var blockinfoPanelCollapse = $('<div id="collapse' + blockinfoElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + blockinfoElementId + '-panel"></div>');
 		var blockinfoPanelBody = $('<div class="panel-body"></div>');
-		var blockinfoContainer = $('<div class="panel panel-default block-container blockinfo" id="' + blockinfoElementId + '-attributes-panel" data-step="' + blockinfo.stepId + '" data-panel="' + blockinfo.panelId + '" data-id="' + blockinfo.id + '"></div>');
+		var blockinfoContainer = $('<div class="panel panel-default block-container blockinfo" id="' + blockinfoElementId + '-attributes-panel" data-step="' + blockinfo.stepId + '" data-panel="' + blockinfo.panelId + '" data-id="' + blockinfo.id + '" data-name="' + blockinfo.name + '"></div>');
 		var blockinfoContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -3839,17 +3891,33 @@ THE SOFTWARE.
 		});
 	}
 
-	Simulators.checkBlockInfo = function(blockinfoContainer) {
-		var blockinfoElementId = blockinfoContainer.attr('id');
+	Simulators.checkBlockInfo = function(blockinfoPanelContainer) {
+		var blockinfoElementId = blockinfoPanelContainer.attr('id');
 		var blockinfoName = $.trim($('#' + blockinfoElementId + '-name').val());
 		if (blockinfoName === '') {
-			blockinfoContainer.find('.error-message').text(Translator.trans('The blockinfo name is required'));
-			blockinfoContainer.find('.alert').show();
+			blockinfoPanelContainer.find('.error-message').text(Translator.trans('The blockinfo name is required'));
+			blockinfoPanelContainer.find('.alert').show();
 			return false;
 		}
 		if (! /^\w+$/.test(blockinfoName)) {
-			blockinfoContainer.find('.error-message').text(Translator.trans('Incorrect blockinfo name'));
-			blockinfoContainer.find('.alert').show();
+			blockinfoPanelContainer.find('.error-message').text(Translator.trans('Incorrect blockinfo name'));
+			blockinfoPanelContainer.find('.alert').show();
+			return false;
+		}
+		var stepId = blockinfoPanelContainer.find('.block-container.blockinfo').attr('data-step');
+		var panelId = blockinfoPanelContainer.find('.block-container.blockinfo').attr('data-panel');
+		var id = blockinfoPanelContainer.find('.block-container.blockinfo').attr('data-id');
+		var panel = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId }]);
+		var exists = false;
+		$.each(panel.blocks, function(b, block) {
+			if (block.type == 'blockinfo' && block.id != id && block.name == blockinfoName) {
+				exists = true;
+				return false;
+			}
+		});
+		if (exists) {
+			blockinfoPanelContainer.find('.error-message').text(Translator.trans('This blockinfo name already exists'));
+			blockinfoPanelContainer.find('.alert').show();
 			return false;
 		}
 		return true;
@@ -4069,7 +4137,7 @@ THE SOFTWARE.
 		chapterPanel.append('<div class="panel-heading" role="tab" id="' + chapterElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + chapterElementId + '" href="#collapse' + chapterElementId + '" aria-expanded="true" aria-controls="collapse' + chapterElementId + '">#' + chapter.id + ' : ' + chapter.label + '</a></h4></div>');
 		var chapterPanelCollapse = $('<div id="collapse' + chapterElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + chapterElementId + '-panel"></div>');
 		var chapterPanelBody = $('<div class="panel-body"></div>');
-		var chapterContainer = $('<div class="panel panel-default chapter-container" id="' + chapterElementId + '-attributes-panel" data-step="' + chapter.stepId + '" data-panel="' + chapter.panelId + '" data-blockinfo="' + chapter.blockinfoId + '" data-id="' + chapter.id + '"></div>');
+		var chapterContainer = $('<div class="panel panel-default chapter-container" id="' + chapterElementId + '-attributes-panel" data-step="' + chapter.stepId + '" data-panel="' + chapter.panelId + '" data-blockinfo="' + chapter.blockinfoId + '" data-id="' + chapter.id + '" data-name="' + chapter.name + '"></div>');
 		var chapterContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -4242,17 +4310,34 @@ THE SOFTWARE.
 		});
 	}
 
-	Simulators.checkChapter = function(chapterContainer) {
-		var chapterElementId = chapterContainer.attr('id');
+	Simulators.checkChapter = function(chapterPanelContainer) {
+		var chapterElementId = chapterPanelContainer.attr('id');
 		var chapterName = $.trim($('#' + chapterElementId + '-name').val());
 		if (chapterName === '') {
-			chapterContainer.find('.error-message').text(Translator.trans('The chapter name is required'));
-			chapterContainer.find('.alert').show();
+			chapterPanelContainer.find('.error-message').text(Translator.trans('The chapter name is required'));
+			chapterPanelContainer.find('.alert').show();
 			return false;
 		}
 		if (! /^\w+$/.test(chapterName)) {
-			chapterContainer.find('.error-message').text(Translator.trans('Incorrect chapter name'));
-			chapterContainer.find('.alert').show();
+			chapterPanelContainer.find('.error-message').text(Translator.trans('Incorrect chapter name'));
+			chapterPanelContainer.find('.alert').show();
+			return false;
+		}
+		var stepId = chapterPanelContainer.find('.chapter-container').attr('data-step');
+		var panelId = chapterPanelContainer.find('.chapter-container').attr('data-panel');
+		var blockinfoId = chapterPanelContainer.find('.chapter-container').attr('data-blockinfo');
+		var id = chapterPanelContainer.find('.chapter-container').attr('data-id');
+		var blockinfo = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: blockinfoId }]);
+		var exists = false;
+			$.each(blockinfo.chapters, function(c, chapter) {
+			if (chapter.id != id && chapter.name == chapterName) {
+				exists = true;
+				return false;
+			}
+		});
+		if (exists) {
+			chapterPanelContainer.find('.error-message').text(Translator.trans('This chapter name already exists'));
+			chapterPanelContainer.find('.alert').show();
 			return false;
 		}
 		return true;
@@ -4475,7 +4560,7 @@ THE SOFTWARE.
 		sectionPanel.append('<div class="panel-heading" role="tab" id="' + sectionElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sectionElementId + '" href="#collapse' + sectionElementId + '" aria-expanded="true" aria-controls="collapse' + sectionElementId + '">#' + section.id + ' : ' + section.label + '</a></h4></div>');
 		var sectionPanelCollapse = $('<div id="collapse' + sectionElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sectionElementId + '-panel"></div>');
 		var sectionPanelBody = $('<div class="panel-body"></div>');
-		var sectionContainer = $('<div class="panel panel-default section-container" id="' + sectionElementId + '-attributes-panel" data-step="' + section.stepId + '" data-panel="' + section.panelId + '" data-blockinfo="' + section.blockinfoId + '" data-chapter="' + section.chapterId + '" data-id="' + section.id + '"></div>');
+		var sectionContainer = $('<div class="panel panel-default section-container" id="' + sectionElementId + '-attributes-panel" data-step="' + section.stepId + '" data-panel="' + section.panelId + '" data-blockinfo="' + section.blockinfoId + '" data-chapter="' + section.chapterId + '" data-id="' + section.id + '" data-name="' + section.name + '"></div>');
 		var sectionContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
@@ -4595,6 +4680,7 @@ THE SOFTWARE.
 			delete section['blockinfoId'];
 			delete section['chapterId'];
 			sectionPanelContainer.replaceWith(newSectionPanel);
+			Simulators.bindSectionButtons(newSectionPanel);
 			if ($(this).hasClass('validate-edit-section')) {
 				var oldSection = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: blockinfoId, list: 'chapters' }, { key: 'id', val: chapterId, list: 'sections' }, { key: 'id', val: section.id }]);
 				if (section.label != oldSection.label) {
@@ -4602,7 +4688,6 @@ THE SOFTWARE.
 				}
 				Simulators.updateInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: blockinfoId, list: 'chapters' }, { key: 'id', val: chapterId, list: 'sections' }, { key: 'id', val: section.id }], section);
 			} else {
-				Simulators.bindSectionButtons(newSectionPanel);
 				Simulators.addInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: blockinfoId, list: 'chapters' }, { key: 'id', val: chapterId, list: 'sections' }], section);
 			}
 			$('.update-button').show();
@@ -4637,23 +4722,41 @@ THE SOFTWARE.
 		});
 	}
 
-	Simulators.checkSection = function(sectionContainer) {
-		var sectionElementId = sectionContainer.attr('id');
+	Simulators.checkSection = function(sectionPanelContainer) {
+		var sectionElementId = sectionPanelContainer.attr('id');
 		var sectionName = $.trim($('#' + sectionElementId + '-name').val());
 		if (sectionName === '') {
-			sectionContainer.find('.error-message').text(Translator.trans('The section name is required'));
-			sectionContainer.find('.alert').show();
+			sectionPanelContainer.find('.error-message').text(Translator.trans('The section name is required'));
+			sectionPanelContainer.find('.alert').show();
 			return false;
 		}
 		if (! /^\w+$/.test(sectionName)) {
-			sectionContainer.find('.error-message').text(Translator.trans('Incorrect section name'));
-			sectionContainer.find('.alert').show();
+			sectionPanelContainer.find('.error-message').text(Translator.trans('Incorrect section name'));
+			sectionPanelContainer.find('.alert').show();
 			return false;
 		}
 		var sectionContent = $.trim($('#' + sectionElementId + '-content').val());
 		if (sectionContent === '') {
-			sectionContainer.find('.error-message').text(Translator.trans('The section content is required'));
-			sectionContainer.find('.alert').show();
+			sectionPanelContainer.find('.error-message').text(Translator.trans('The section content is required'));
+			sectionPanelContainer.find('.alert').show();
+			return false;
+		}
+		var stepId = sectionPanelContainer.find('.section-container').attr('data-step');
+		var panelId = sectionPanelContainer.find('.section-container').attr('data-panel');
+		var blockinfoId = sectionPanelContainer.find('.section-container').attr('data-blockinfo');
+		var chapterId = sectionPanelContainer.find('.section-container').attr('data-chapter');
+		var id = sectionPanelContainer.find('.section-container').attr('data-id');
+		var chapter = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: blockinfoId, list: 'chapters' }, { key: 'id', val: chapterId }]);
+		var exists = false;
+			$.each(chapter.sections, function(s, section) {
+			if (section.id != id && section.name == sectionName) {
+				exists = true;
+				return false;
+			}
+		});
+		if (exists) {
+			sectionPanelContainer.find('.error-message').text(Translator.trans('This section name already exists'));
+			sectionPanelContainer.find('.alert').show();
 			return false;
 		}
 		return true;

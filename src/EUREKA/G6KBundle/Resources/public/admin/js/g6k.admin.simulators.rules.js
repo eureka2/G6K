@@ -3360,6 +3360,9 @@ THE SOFTWARE.
 			Simulators.updating = false;
 		});
 		ruleContainer.find('.validate-add-rule, .validate-edit-rule').click(function() {
+			if (! Simulators.checkRule(ruleContainer)) {
+				return false;
+			}
 			var conditions = ruleContainer.find('.conditions').conditionsBuilder("conditions");
 			var editedrule = {
 				elementId: '',
@@ -3699,7 +3702,7 @@ THE SOFTWARE.
 		} else if (name === 'hideObject' || name === 'showObject') {
 			var actionNode = Simulators.findAction(name, actions);
 			actionContainer.append('<span class="action-name">' + (name === 'hideObject' ? Translator.trans('hide') : Translator.trans('show')) + '</span>');
-			var optionNode = Simulators.findActionOption('objectId', target, actionNode);;
+			var optionNode = Simulators.findActionOption('objectId', target, actionNode);
 			actionContainer.append('<span class="action-target"> ' + Translator.trans(target) + '</span>');
 			switch (target) {
 				case 'step':
@@ -3858,6 +3861,110 @@ THE SOFTWARE.
 		return ruleContainer;
 	}
 
+	Simulators.checkRule = function(ruleContainer) {
+		var ruleName = ruleContainer.find('input.input-rule-name').val();
+		if (ruleName === '') {
+			ruleContainer.find('.error-message').text(Translator.trans('The rule name is required'));
+			ruleContainer.find('.alert').show();
+			return false;
+		}
+		if (! /^\w+$/.test(ruleName)) {
+			ruleContainer.find('.error-message').text(Translator.trans('Incorrect rule name'));
+			ruleContainer.find('.alert').show();
+			return false;
+		}
+		var ruleLabel = ruleContainer.find('input.input-rule-label').val();
+		if (ruleLabel === '') {
+			ruleContainer.find('.error-message').text(Translator.trans('The rule label is required'));
+			ruleContainer.find('.alert').show();
+			return false;
+		}
+		var conditions = ruleContainer.find('.conditions');
+		if (conditions.find('.rule').length == 0) {
+			ruleContainer.find('.error-message').text(Translator.trans('Please enter at least one condition'));
+			ruleContainer.find('.alert').show();
+			return false;
+		}
+		var incompleteConditions = false;
+		conditions.find('.editable-select').each(function(c) {
+			if ($(this).attr('data-value') == '') {
+				incompleteConditions = true;
+				return false;
+			}
+		});
+		conditions.find('.expression').each(function(c) {
+			if (! $(this).expressionbuilder('completed')) {
+				incompleteConditions = true;
+				return false;
+			}
+		});
+		if (incompleteConditions) {
+			ruleContainer.find('.error-message').text(Translator.trans('Please, complete the input of the rule conditions'));
+			ruleContainer.find('.alert').show();
+			return false;
+		}
+		var actions = ruleContainer.find('.actions');
+		if (actions.find('.action').length == 0) {
+			ruleContainer.find('.error-message').text(Translator.trans('Please enter at least one action'));
+			ruleContainer.find('.alert').show();
+			return false;
+		}
+		var incompleteActions = false;
+		actions.find('.editable-select, .editable-textarea, .editable-text').each(function(c) {
+			if ($(this).attr('data-value') == '') {
+				incompleteActions = true;
+				return false;
+			}
+		});
+		actions.find('.expression').each(function(c) {
+			if (! $(this).expressionbuilder('completed')) {
+				incompleteActions = true;
+				return false;
+			}
+		});
+		if (incompleteActions) {
+			ruleContainer.find('.error-message').text(Translator.trans('Please, complete the input of the rule actions'));
+			ruleContainer.find('.alert').show();
+			return false;
+		}
+		var circularReference = false;
+		actions.find('.editable-select[data-value=setAttribute]').each(function(s) {
+			$(this).next().find('.editable-select[name=attributeId]').each(function(a) {
+				if ($(this).attr('data-value') == 'content' || $(this).attr('data-value') == 'default') {
+					var fieldName = $(this).next().find('.editable-select[name=fieldName]').attr('data-value');
+					conditions.find('.editable-select.field').each(function(c) {
+						if ($(this).attr('data-value') == fieldName) {
+							circularReference = true;
+							return false;
+						}
+					});
+					if (circularReference) {
+						return false;
+					}
+					var dataId = Simulators.dataset[fieldName].id;
+					conditions.find('.value.expression').each(function(v) {
+						if (! Simulators.checkDataInExpression(dataId, $(this))) {
+							circularReference = true;
+							return false;
+						}
+					});
+					if (circularReference) {
+						return false;
+					}
+				}
+			});
+			if (circularReference) {
+				return false;
+			}
+		});
+		if (circularReference) {
+			ruleContainer.find('.error-message').text(Translator.trans('You can not change the content or the default value of a data when it is used in a condition'));
+			ruleContainer.find('.alert').show();
+			return false;
+		}
+		return true;
+	}
+
 	Simulators.addRule = function(ruleContainerGroup) {
 		try {
 			var id = Simulators.maxRuleId()+ 1;
@@ -3906,8 +4013,7 @@ THE SOFTWARE.
 			$('.toggle-collapse-all').hide();
 			var ruleInputContainer = Simulators.drawRuleForInput(rule);
 			rule.elementId = ruleInputContainer.attr('id');
-			ruleDisplayContainer.after(ruleInputContainer);
-			Simulators.ruleBackup = ruleDisplayContainer.detach();
+			Simulators.ruleBackup = ruleDisplayContainer.replaceWith(ruleInputContainer);
 			Simulators.bindRule(rule);
 			$("#collapse" + ruleInputContainer.attr('id')).collapse('show');
 			$("html, body").animate({ scrollTop: ruleInputContainer.offset().top - $('#navbar').height() }, 500);

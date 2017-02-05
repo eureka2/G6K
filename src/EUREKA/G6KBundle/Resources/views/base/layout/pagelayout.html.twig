@@ -59,6 +59,11 @@ if (/no-js=/.test(window.location.search)) {
 <link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/base/css/g6k.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('bundles/eurekag6k/base/js/oaa-datepicker/css/datepicker.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('bundles/eurekag6k/base/js/oaa-listbox/css/listbox.css') }}" />
+{% for widget, props in widgets %}
+{% for css in props.css %}
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/eurekag6k/base/widgets/' ~ widget ~ '/' ~ css ) }}" />
+{% endfor %}
+{% endfor %}
 {% endblock %}
 {% block hscripts %}
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/modernizr.min.js') }}"></script>
@@ -93,6 +98,11 @@ if (/no-js=/.test(window.location.search)) {
 <script type="text/javascript" src="{{ asset('js/translations/config.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/accounting.min.js') }}"></script>
+{% for widget, props in widgets %}
+{% for js in props.js %}
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/widgets/' ~ widget ~ '/' ~ js ) }}"></script>
+{% endfor %}
+{% endfor %}
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(document).ready(function(){
@@ -105,6 +115,14 @@ jQuery(document).ready(function(){
 	{% endif %}
 	var g6k = new G6k({%- if step.dynamic or (step.simulator.dynamic and step.id == 0) -%}true{%- else -%}false{%- endif %}, {% if ua.mobile -%}true{%- else -%}false{%- endif -%}, "{{ app.request.locale }}");
 	g6k.run();
+	$('input[data-widget]').each(function() {
+		var widget = window[$(this).attr('data-widget')];
+		var that = $(this);
+		widget.call(null, that, function (value, text) {
+			that.val(value);
+			that.trigger('change');
+		});
+	});
 });
 </script>
 {% endblock %}

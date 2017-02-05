@@ -220,7 +220,14 @@ ul.rule-conditions > li {
 #page-simulators #steps div.panels-panel + div {
 	margin-top: 1em;
 }
-
+#page-simulators .profiles-container .attributes-container .form-group,
+#page-simulators .profiles-container .attributes-container button,
+#page-simulators .profiles-container .buttons-panel {
+	margin-top: 0.5em;
+}
+#business-rules .actions button.remove {
+	color: #999;
+} 
 .source-container .form-control {
 	z-index: auto !important;
 }
@@ -239,7 +246,7 @@ ul.rule-conditions > li {
 .edit-table-button, .drop-table-button, .import-table-button,
 .export-datasource-button, .edit-datasource-button, .drop-datasource-button,
 .view-button, .drop-view-button ,
-.add-profile, .edit-profile, .delete-profile, .add-profile-data, .edit-profile-data, .delete-profile-data,
+.edit-profiles-label, .add-profile, .edit-profile, .delete-profile, .add-profile-data, .edit-profile-data, .delete-profile-data,
 .edit-source, .delete-source, .add-source-parameter, .delete-source-parameter,
 .btn-group.update-button {
 	margin-top: -9px;

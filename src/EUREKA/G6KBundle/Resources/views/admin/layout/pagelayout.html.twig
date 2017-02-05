@@ -53,6 +53,7 @@ var actions = {{ actions|json_encode(constant('JSON_PRETTY_PRINT') b-or constant
 var rules = {{ rules|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}
 var views = {{ views|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}
 var datasources = {{ datasources|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}
+var widgets = {{ widgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}
 </script>
 {% endif %}				
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-1.11.1.min.js') }}"></script>

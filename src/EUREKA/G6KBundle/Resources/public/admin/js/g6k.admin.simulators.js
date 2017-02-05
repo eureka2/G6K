@@ -192,6 +192,21 @@ THE SOFTWARE.
 		});
 	}
 
+	Simulators.checkDataInExpression = function(dataId, expression) {
+		var val = expression.expressionbuilder('val');
+		var ids = val.match(/#\d+/g);
+		var found = false;
+		if (ids != null) {
+			$.each(ids, function(k, v) {
+				if (v == '#' + dataId) {
+					found = true;
+					return false;
+				}
+			});
+		}
+		return ! found;
+	}
+
 	Simulators.simpleAttributeForDisplay = function(element, type, name, label, value, display, required, placeholder, options) {
 		if (required || (value && value !== '')) {
 			var attribute = '<div class="form-group col-sm-12">';
@@ -201,7 +216,7 @@ THE SOFTWARE.
 			if (type === 'text' || type === 'number') {
 				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + value + '">' + display + '</p>';
 			} else if (type === 'checkbox') {
-				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + (value !== '' && value !== '0' ? 1 : 0) + '">' + (value !== '' && value !== '0' ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
+				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + (value !== '' && value !== '0' && value !== 0 ? 1 : 0) + '">' + (value !== '' && value !== '0'  && value !== 0 ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
 			} else if (type === 'select') {
 				options = jQuery.parseJSON(options);
 				$.each(options, function(ovalue, olabel) {
@@ -302,7 +317,6 @@ THE SOFTWARE.
 			Simulators.expressionAttributeForInput(id, name, label, '', false, placeholder) :
 			Simulators.simpleAttributeForInput(id, type, name, label, '', false, placeholder, decodeURI(ui.attr('data-options')) );
 		target.append(attribute);
-		var expression = $( attribute ).find(".attribute-expression");
 		$( attribute ).find(".attribute-expression").expressionbuilder({
 			fields: Simulators.dataset,
 			constants: Simulators.expressionOptions.constants,
@@ -316,10 +330,6 @@ THE SOFTWARE.
 			operatorHolder: Simulators.expressionOptions.operatorHolder,
 			nestedExpression: Simulators.expressionOptions.nestedExpression
 		});
-		// attribute.find('select.simple-value').select2({
-			// language: Admin.lang,
-			// minimumResultsForSearch: 50
-		// });
 		attribute.find('span.delete-attribute').click(function() {
 			Simulators.removeAttribute($(this));
 		});
@@ -486,10 +496,6 @@ THE SOFTWARE.
 
 	Simulators.bindSimulatorOptions = function(simulatorContainer) {
 		simulatorContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
-		// simulatorContainer.find('select[data-attribute=dateFormat], select[data-attribute=moneySymbol], select[data-attribute=symbolPosition]').select2({
-			// language: Admin.lang,
-			// minimumResultsForSearch: 50
-		// });
 		simulatorContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -714,10 +720,6 @@ $(document).ready(function() {
 		Simulators.bindSortableProfileDatas();
 		Simulators.bindSortableProfiles();
 		$('#page-simulators textarea').wysihtml5(Admin.wysihtml5Options);
-		// $('#page-simulators select').select2({
-			// language: Admin.lang,
-			// minimumResultsForSearch: 50
-		// });
 		$('#page-simulators .delete-attribute').click(function() {
 			Simulators.removeAttribute($(this));
 		});

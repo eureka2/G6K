@@ -83,8 +83,10 @@ THE SOFTWARE.
 		events: {
 			'change': function(e) {
 				var val = this.getValue();
-				val = val.replace(/^(\<br\>)+/i, '');
-				val = val.replace(/(\<br\>)+$/i, '');
+				val = val.replace(/^(\s*\<br\>\s*)+/mi, '');
+				val = val.replace(/(\s*\<br\>\s*)+$/mi, '');
+				val = val.replace(/^\<p\>(\s*\<br\>\s*)+/mi, '<p>');
+				val = val.replace(/(\s*\<br\>\s*)+\<\/p\>$/mi, '</p>');
 				this.setValue(val);
 			},
 			"beforeload": function() { 

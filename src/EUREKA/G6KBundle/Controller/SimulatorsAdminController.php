@@ -53,6 +53,8 @@ use EUREKA\G6KBundle\Entity\BusinessRule;
 use EUREKA\G6KBundle\Entity\Connector;
 use EUREKA\G6KBundle\Entity\Condition;
 use EUREKA\G6KBundle\Entity\RuleAction;
+use EUREKA\G6KBundle\Entity\Profiles;
+use EUREKA\G6KBundle\Entity\Profile;
 use EUREKA\G6KBundle\Entity\DOMClient as Client;
 use EUREKA\G6KBundle\Entity\ResultFilter;
 use EUREKA\G6KBundle\Entity\SQLSelectTokenizer;
@@ -282,13 +284,24 @@ class SimulatorsAdminController extends BaseAdminController {
 					'rules' => $this->rules,
 					'datasources' => $datasources,
 					'views' => $views,
-					'hiddens' => $hiddens
+					'hiddens' => $hiddens,
+					'widgets' => $this->getWidgets()
 				)
 			);
 		} catch (\Exception $e) {
 			echo $e->getMessage();
 			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
 		}
+	}
+
+	public function getWidgets() {
+		$widgets = array();
+		if ($this->container->hasParameter('widgets')) {
+			foreach ($this->container->getParameter('widgets') as $name => $widget) {
+				$widgets[$name] = $this->get('translator')->trans($widget['label']);
+			}
+		}
+		return $widgets;
 	}
 
 	public function validateAction(Request $request) {
@@ -526,6 +539,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									$fieldObj->setEmphasize($field['emphasize'] == '1');
 									$fieldObj->setExplanation($field['explanation']);
 									$fieldObj->setExpanded($field['expanded'] == '1');
+									$fieldObj->setWidget($field['widget']);
 									if ($field['Note']) {
 										$note = $field['Note'];
 										if ($note['position'] == 'beforeField') {
@@ -556,6 +570,7 @@ class SimulatorsAdminController extends BaseAdminController {
 								$fieldObj->setEmphasize($field['emphasize'] == '1');
 								$fieldObj->setExplanation($field['explanation']);
 								$fieldObj->setExpanded($field['expanded'] == '1');
+								$fieldObj->setWidget($field['widget']);
 								if (isset($field['Note'])) {
 									$note = $field['Note'];
 									if ($note['position'] == 'beforeField') {
@@ -934,6 +949,23 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			$this->simu->addSource($sourceObj);
 		}
+
+		$profiles = json_decode($form['profiles'], true);
+		// file_put_contents($simu_dir."/work/".$simulator."-profiles.json", var_export($profiles, true));
+
+		$profilesObj = new Profiles($this->simu);
+		$profilesObj->setLabel($profiles['label']);
+		foreach ($profiles['profiles'] as $profile) {
+			$profileObj = new Profile($profile['id'], $profile['name']);
+			$profileObj->setLabel($profile['label']);
+			$profileObj->setDescription($profile['description']);
+			foreach ($profile['datas'] as $data) {
+				$profileObj->addData((int)$data['id'], $data['default']);
+			}
+			$profilesObj->addProfile($profileObj);
+		}
+		$this->simu->setProfiles($profilesObj);
+
 		if (isset($form['create'])) {
 			$this->simu->save($simu_dir."/".$simulator.".xml");
 		} else {
@@ -1440,7 +1472,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'label' => $step->getLabel(),
 					'template' => $step->getTemplate(),
 					'output' => $step->getOutput(),
-					'dynamic' => $step->isDynamic() ? 1 : 0,
+					'dynamic' => $step->isDynamic() ? '1' : '0',
 					'description' => $step->getDescription(),
 					'panels' => array(),
 					'actions' => array(),
@@ -1530,16 +1562,17 @@ class SimulatorsAdminController extends BaseAdminController {
 										'data' => $field->getData(),
 										'usage' => $field->getUsage(),
 										'label' => $field->getLabel(),
-										'newline' => $field->isNewline() ? 1 : 0,
+										'newline' => $field->isNewline() ? '1' : '0',
 										'prompt' => $field->getPrompt(),
-										'required' => $field->isRequired() ? 1 : 0,
-										'visibleRequired' => $field->isVisibleRequired() ? 1: 0,
-										'colon' => $field->hasColon() ? 1 : 0,
-										'underlabel' => $field->isUnderlabel() ? 1 : 0,
-										'help' => $field->hasHelp() ? 1 : 0,
-										'emphasize' => $field->isEmphasized() ? 1 : 0,
+										'required' => $field->isRequired() ? '1' : '0',
+										'visibleRequired' => $field->isVisibleRequired() ? '1' : '0',
+										'colon' => $field->hasColon() ? '1' : '0',
+										'underlabel' => $field->isUnderlabel() ? '1' : '0',
+										'help' => $field->hasHelp() ? '1' : '0',
+										'emphasize' => $field->isEmphasized() ? '1' : '0',
 										'explanation' => $field->getExplanation(),
-										'expanded' => $field->isExpanded() ? 1 : 0
+										'expanded' => $field->isExpanded() ? '1' : '0',
+										'widget' => $field->getWidget()
 									);
 									$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
 									$ofields[] = array (
@@ -1639,9 +1672,9 @@ class SimulatorsAdminController extends BaseAdminController {
 										'type' => 'fieldrow',
 										'id' => $fieldrow->getId(),
 										'label' => $fieldrow->getLabel(),
-										'help' => $fieldrow->hasHelp() ? 1 : 0,
-										'colon' => $fieldrow->hasColon() ? 1 : 0,
-										'emphasize' => $fieldrow->isEmphasized() ? 1 : 0,
+										'help' => $fieldrow->hasHelp() ? '1' : '0',
+										'colon' => $fieldrow->hasColon() ? '1' : '0',
+										'emphasize' => $fieldrow->isEmphasized() ? '1' : '0',
 										'datagroup' => $fieldrow->getDatagroup(),
 										'fields' => array()
 									);
@@ -1659,16 +1692,17 @@ class SimulatorsAdminController extends BaseAdminController {
 											'data' => $field->getData(),
 											'usage' => $field->getUsage(),
 											'label' => $field->getLabel(),
-											'newline' => $field->isNewline() ? 1 : 0,
+											'newline' => $field->isNewline() ? '1' : '0',
 											'prompt' => $field->getPrompt(),
-											'required' => $field->isRequired() ? 1 : 0,
-											'visibleRequired' => $field->isVisibleRequired() ? 1: 0,
-											'colon' => $field->hasColon() ? 1 : 0,
-											'underlabel' => $field->isUnderlabel() ? 1 : 0,
-											'help' => $field->hasHelp() ? 1 : 0,
-											'emphasize' => $field->isEmphasized() ? 1 : 0,
+											'required' => $field->isRequired() ? '1' : '0',
+											'visibleRequired' => $field->isVisibleRequired() ? '1' : '0',
+											'colon' => $field->hasColon() ? '1' : '0',
+											'underlabel' => $field->isUnderlabel() ? '1' : '0',
+											'help' => $field->hasHelp() ? '1' : '0',
+											'emphasize' => $field->isEmphasized() ? '1' : '0',
 											'explanation' => $field->getExplanation(),
-											'expanded' => $field->isExpanded() ? 1 : 0
+											'expanded' => $field->isExpanded() ? '1' : '0',
+											'widget' => $field->getWidget()
 										);
 										$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
 										$ofields[] = array (
@@ -1805,7 +1839,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									'name' => $chapter->getName(),
 									'label' => $chapter->getLabel(),
 									'icon' => $chapter->getIcon(),
-									'collapsible' => $chapter->isCollapsible() ? 1 : 0,
+									'collapsible' => $chapter->isCollapsible() ? '1' : '0',
 									'sections' => array()
 								);
 								$chapterLabel = $chapter->getLabel() != '' ? $chapter->getLabel() : $this->get('translator')->trans('Chapter %id% (nolabel)', array('%id%' => $chapter->getId()));
@@ -3015,6 +3049,42 @@ class SimulatorsAdminController extends BaseAdminController {
 			$datas[] = $clause;
 		}
 		return $datas;
+	}
+
+	public function findAction($name, $fromNode) {
+		foreach ($fromNode as $action) {
+			if ($action['name'] == $name) {
+				return $action;
+			}
+		}
+		return null;
+	}
+
+	public function findActionField($fields, $currentNode) {
+		foreach ($fields as $field) {
+			$name = array_keys($field)[0];
+			$value = $field[$name];
+			$currentNode = $this->findActionOption($name, $value, $currentNode);
+			if ($currentNode == null) { 
+				return null; 
+			}
+		}
+		return $currentNode;
+	}
+
+	public function findActionOption($name, $value, $node) {
+		$fields = isset($node['fields']) ? $node['fields'] : array();
+		foreach ($fields as $field) {
+			if ($field['name'] == $name) {
+				$options =  isset($field['options']) ? $field['options'] : array();
+				foreach ($options as $option) {
+					if ($option['name'] == $value) {
+						return $option;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	protected function formatParamValue($param) {

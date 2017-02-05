@@ -385,7 +385,8 @@ class DefaultController extends Controller {
 					'log' => $this->log,
 					'step' => $step,
 					'data' => $datas,
-					'hiddens' => $hiddens
+					'hiddens' => $hiddens,
+					'widgets' => $this->container->getParameter('widgets')
 				)
 			);
 			foreach($this->memo as $name => $value) {

@@ -42,6 +42,7 @@ class Field {
 	private $help = true; // false, true
 	private $emphasize = false; // false, true
 	private $explanation = ""; //expression;
+	private $widget = ""; //string;
 	private $expanded = true;
 	private $preNote = null;
 	private $postNote = null;
@@ -168,6 +169,14 @@ class Field {
 
 	public function setExpanded($expanded) {
 		$this->expanded = $expanded;
+	}
+
+	public function getWidget() {
+		return $this->widget;
+	}
+
+	public function setWidget($widget) {
+		$this->widget = $widget;
 	}
 
 	public function getPreNote() {

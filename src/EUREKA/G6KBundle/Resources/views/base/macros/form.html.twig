@@ -102,6 +102,7 @@ THE SOFTWARE.
 					{% set value = data.value %}
 					{% set plainValue = data.plainValue %}
 					{% set prompt = field.prompt ? field.prompt : '---------' %}
+					{% set widget = field.widget ? ' data-widget="' ~ field.widget ~ '"' : '' %}
 					{%- if type == 'money' or type == 'percent' -%}
 						{% set value = value|replace(".", ",") %}
 					{% elseif type == 'number' %}
@@ -129,7 +130,7 @@ THE SOFTWARE.
 								{% endfor %}
 								</div>
 								{% else %}
-									<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" class="{{ fieldClass }}" id="{{ name }}" name="{{ name }}"{% if field.required %} aria-required="true"{% endif %}>
+									<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" class="{{ fieldClass }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }}{% if field.required %} aria-required="true"{% endif %}>
 									{%- if not(data.default) -%}<option id="{{ name }}_none" value="">{{ prompt }}</option>{% endif %}
 									{%- for choice in data.choices -%}
 										{%- if choice.class == 'ChoiceGroup' -%}
@@ -168,16 +169,16 @@ THE SOFTWARE.
 								<input aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" class="{{ fieldClass }}" type="checkbox" id="{{ name }}" name="{{ name }}" value="true"{%- if value == 'true' %} checked="checked"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
 							{% elseif type == 'date' %}
 								{%- if context.ua.mobile -%}
-								<input type="date" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}" value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
+								<input type="date" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
 								{% elseif context.script == 0 %}
-								<input type="date" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}" value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="jj/mm/aaaa" title="format : jj/mm/aaaa"{% if field.required %} aria-required="true"{% endif %} />
+								<input type="date" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="jj/mm/aaaa" title="format : jj/mm/aaaa"{% if field.required %} aria-required="true"{% endif %} />
 								{% else %}
-								<input type="text" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}" value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="jj/mm/aaaa"  title="format : jj/mm/aaaa"{% if field.required %} aria-required="true"{% endif %} />
+								<input type="text" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="jj/mm/aaaa"  title="format : jj/mm/aaaa"{% if field.required %} aria-required="true"{% endif %} />
 								{% endif %}
 							{% elseif type == 'day' %}
 								{% set min = data.min ?: 01 %}
 								{% set max = data.max ?: 31 %}
-								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner le jour dans la liste déroulante" id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner le jour dans la liste déroulante" id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{%- if not(data.default) -%}<option value="00">--</option>{% endif %}
 								{% for i in min..max %}
 								<option value="{{ i }}"{%- if i == value %} selected="selected"{% endif %}>{{ i }}</option>
@@ -186,7 +187,7 @@ THE SOFTWARE.
 							{% elseif type == 'month' %}
 								{% set min = data.min|default(01) %}
 								{% set max = data.max|default(12) %}
-								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner le mois dans la liste déroulante" id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner le mois dans la liste déroulante" id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{%- if not(data.default) -%}<option value="00">-------------------</option>{% endif %}
 								{% for i in min..max %}
 								<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ _self.monthname(i)|trans }}</option>
@@ -195,30 +196,30 @@ THE SOFTWARE.
 							{% elseif type == 'year' %}
 								{% set min = data.min|default(1964) %}
 								{% set max = data.max|default(min + 100) %}
-								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner l'année dans la liste déroulante" id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner l'année dans la liste déroulante" id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{%- if not(data.default) -%}<option value="">----</option>{% endif %}
 								{% for i in min..max %}
 								<option value="{{ i }}"{%- if i == value %} selected="selected"{% endif %}>{{ i }}</option>
 								{% endfor %}
 								</select>
 							{% elseif type == 'region' %}
-								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner la région dans la liste déroulante" id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner la région dans la liste déroulante" id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{{ _self.regions() }}
 								</select>
 							{% elseif type == 'department' %}
-								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner le département dans la liste déroulante" id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }} : sélectionner le département dans la liste déroulante" id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{{ _self.departments(value, prompt) }}
 								</select>
 							{% elseif type == 'textarea' %}
-							<textarea aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>{{ value }}</textarea>
+							<textarea aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>{{ value }}</textarea>
 							{% elseif type == 'number' %}
-							<input type="{{ type }}" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}" value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}/>
+							<input type="{{ type }}" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}/>
 							{% elseif type == 'percent' %}
-							<input type="text" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}" value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: pourcentage"{% if field.required %} aria-required="true"{% endif %} />
+							<input type="text" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: pourcentage"{% if field.required %} aria-required="true"{% endif %} />
 							{% elseif type == 'money' %}
-							<input type="{{ type }}" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}" value="{{ value }}"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: montant en euros"{% if field.required %} aria-required="true"{% endif %}/>
+							<input type="{{ type }}" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: montant en euros"{% if field.required %} aria-required="true"{% endif %}/>
 							{% else %}
-							<input type="{{ type }}" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}" value="{{ value }}"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
+							<input type="{{ type }}" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
 							{% endif %}
 						</div>
 						{%- if type == 'money' and simu.symbolPosition == 'after' %}
@@ -300,6 +301,7 @@ THE SOFTWARE.
 					{% set value = data.value %}
 					{% set plainValue = data.plainValue %}
 					{% set prompt = field.prompt ? field.prompt : '---------' %}
+					{% set widget = field.widget ? ' data-widget="' ~ field.widget ~ '"' : '' %}
 					{%- if type == 'money' or type == 'percent' -%}
 						{% set value = value|replace(".", ",") %}
 					{% elseif type == 'number' %}
@@ -337,7 +339,7 @@ THE SOFTWARE.
 								{% endfor %}
 								</fieldset>
 								{% else %}
-									<select class="{{ fieldClass }}" id="{{ name }}" name="{{ name }}"{% if field.required %} aria-required="true"{% endif %}>
+									<select class="{{ fieldClass }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }}{% if field.required %} aria-required="true"{% endif %}>
 									{%- if not(data.default) -%}<option id="{{ name }}_none" value="">{{ prompt }}</option>{% endif %}
 									{%- for choice in data.choices -%}
 										{%- if choice.class == 'ChoiceGroup' -%}
@@ -361,11 +363,11 @@ THE SOFTWARE.
 									{%- if choice.class == 'ChoiceGroup' -%}
 									{%- for gchoice in choice.choices -%}
 										{%- if gchoice.selected -%}
-										<label class="choice" for="{{ name }}_{{ gchoice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ gchoice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]" value="{{ gchoice.value }}"{%- if gchoice.value in value %} checked="checked"{% endif %} />{{ gchoice.label }}</label>
+										<label class="choice" for="{{ name }}_{{ gchoice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ gchoice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|raw }} value="{{ gchoice.value }}"{%- if gchoice.value in value %} checked="checked"{% endif %} />{{ gchoice.label }}</label>
 										{% endif %}
 									{% endfor %}
 									{%- elseif choice.class == 'Choice' and choice.selected -%}
-									<label class="choice" for="{{ name }}_{{ choice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ choice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]" value="{{ choice.value }}"{%- if choice.value in value %} checked="checked"{% endif %} />{{ choice.label }}</label>
+									<label class="choice" for="{{ name }}_{{ choice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ choice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|raw }} value="{{ choice.value }}"{%- if choice.value in value %} checked="checked"{% endif %} />{{ choice.label }}</label>
 									{% endif %}
 								{% endfor %}
 								</fieldset>
@@ -374,10 +376,10 @@ THE SOFTWARE.
 								{{ plainValue }}
 								</div>
 							{% elseif type == 'boolean' %}
-							<input class="{{ fieldClass }}" type="checkbox" id="{{ name }}" name="{{ name }}" value="true"{%- if value == 'true' %} checked="checked"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
+							<input class="{{ fieldClass }}" type="checkbox" id="{{ name }}"{{ widget|raw }} name="{{ name }}" value="true"{%- if value == 'true' %} checked="checked"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
 							{% elseif type == 'date' %}
 								{%- if context.ua.mobile -%}
-								<input type="date" id="{{ name }}" name="{{ name }}" value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
+								<input type="date" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
 								{% elseif context.script == 0 %}
 								{#
 								<div class="g6k-date">
@@ -409,15 +411,15 @@ THE SOFTWARE.
 								</select>
 								</div>
 								#}
-								<input type="date" id="{{ name }}" name="{{ name }}" value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="jj/mm/aaaa" title="format : jj/mm/aaaa"{% if field.required %} aria-required="true"{% endif %}/>
+								<input type="date" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="jj/mm/aaaa" title="format : jj/mm/aaaa"{% if field.required %} aria-required="true"{% endif %}/>
 								{% else %}
-								<input type="text" aria-describedby="{{ name }}-aria-description" id="{{ name }}" name="{{ name }}" value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="jj/mm/aaaa" title="format : jj/mm/aaaa"{% if field.required %} aria-required="true"{% endif %} />
+								<input type="text" aria-describedby="{{ name }}-aria-description" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="jj/mm/aaaa" title="format : jj/mm/aaaa"{% if field.required %} aria-required="true"{% endif %} />
 								<span id="{{ name }}-aria-description" class="sr-only">Saisir la date sous la forme jj/mm/aaaa ou tabuler pour activer le sélecteur de date à droite de ce champ de saisie</span>
 								{% endif %}
 							{% elseif type == 'day' %}
 								{% set min = data.min ?: 01 %}
 								{% set max = data.max ?: 31 %}
-								<select id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{%- if not(data.default) -%}<option value="00">--</option>{% endif %}
 								{% for i in min..max %}
 								<option value="{{ i }}"{%- if i == value %} selected="selected"{% endif %}>{{ i }}</option>
@@ -426,7 +428,7 @@ THE SOFTWARE.
 							{% elseif type == 'month' %}
 								{% set min = data.min|default(01) %}
 								{% set max = data.max|default(12) %}
-								<select id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{%- if not(data.default) -%}<option value="00">{{ prompt }}</option>{% endif %}
 								{% for i in min..max %}
 								<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ _self.monthname(i)|trans }}</option>
@@ -435,30 +437,30 @@ THE SOFTWARE.
 							{% elseif type == 'year' %}
 								{% set min = data.min|default(1964) %}
 								{% set max = data.max|default(min + 100) %}
-								<select id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{%- if not(data.default) -%}<option value="">----</option>{% endif %}
 								{% for i in min..max %}
 								<option value="{{ i }}"{%- if i == value %} selected="selected"{% endif %}>{{ i }}</option>
 								{% endfor %}
 								</select>
 							{% elseif type == 'region' %}
-								<select id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{{ _self.regions() }}
 								</select>
 							{% elseif type == 'department' %}
-								<select id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
+								<select id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 								{{ _self.departments(value, prompt) }}
 								</select>
 							{% elseif type == 'textarea' %}
-							<textarea id="{{ name }}" name="{{ name }}" class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>{{ value }}</textarea>
+							<textarea id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>{{ value }}</textarea>
 							{% elseif type == 'number' %}
-							<input type="{{ type }}" id="{{ name }}" name="{{ name }}" value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}/>
+							<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}/>
 							{% elseif type == 'percent' %}
-							<input type="text" id="{{ name }}" name="{{ name }}" value="{{ value }}" aria-describedby="{{ name }}-percent-symbol"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}  title="format: pourcentage"{% if field.required %} aria-required="true"{% endif %}/>
+							<input type="text" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" aria-describedby="{{ name }}-percent-symbol"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}  title="format: pourcentage"{% if field.required %} aria-required="true"{% endif %}/>
 							{% elseif type == 'money' %}
-							<input type="{{ type }}" id="{{ name }}" name="{{ name }}" value="{{ value }}" aria-describedby="{{ name }}-money-symbol"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: montant en euros"{% if field.required %} aria-required="true"{% endif %} />
+							<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" aria-describedby="{{ name }}-money-symbol"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: montant en euros"{% if field.required %} aria-required="true"{% endif %} />
 							{% else %}
-							<input type="{{ type }}" id="{{ name }}" name="{{ name }}" value="{{ value }}"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
+							<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
 							{% endif %}
 						</div>
 						{%- if type == 'money' and simu.symbolPosition == 'after' %}

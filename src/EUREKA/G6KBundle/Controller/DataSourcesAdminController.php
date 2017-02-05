@@ -262,11 +262,13 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 			} elseif ($dstype == 'uri') {
 				$dsuri = (string)$ds['uri'];
+				$dsmethod = (string)$ds['method'];
 				$datasources[] = array(
 					'id' => $ds_id,
 					'type' => $dstype,
 					'name' => $dsname,
-					'uri' => $dsuri
+					'uri' => $dsuri,
+					'method' => $dsmethod
 				);
 			}
 		}
@@ -300,6 +302,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						'name' => $this->get('translator')->trans('Import Datasource'),
 						'label' => $this->get('translator')->trans('Import Datasource'),
 						'uri' => '',
+						'method' => '',
 						'description' => '',
 					);
 				} else {
@@ -320,6 +323,7 @@ class DataSourcesAdminController extends BaseAdminController {
 							'password' => ''
 						),
 						'uri' => '',
+						'method' => '',
 						'description' => '',
 					);
 				}
@@ -336,6 +340,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						'host' => '', 'port' => 0, 'user' => '', 'password' => ''
 					),
 					'uri' => (string)$dss[0]['uri'],
+					'method' => (string)$dss[0]['method'],
 					'description' => (string)$dss[0]->Description,
 				);
 				if ($datasource['type'] == 'internal' || $datasource['type'] == 'database') {
@@ -729,7 +734,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$uri = (string)$datasources[0]['uri'];
 				$client = Client::createClient();
 				$data = array(); // TODO : add parameters elements in DataSources.xsd
-				if ((string)$datasources[0]['method'] == "" || (string)$datasources[0]['method'] == "GET") {
+				if ((string)$datasources[0]['method'] == "" || (string)$datasources[0]['method'] == "GET" || (string)$datasources[0]['method'] == "get") {
 					$result = $client->get($uri);
 				} else {
 					$result = $client->post($uri, $data);

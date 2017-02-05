@@ -416,6 +416,7 @@
 		<xs:attribute name="emphasize" type="xs:boolean"/>
 		<xs:attribute name="explanation" type="xs:string"/>
 		<xs:attribute name="expanded" type="xs:boolean" default="1"/>
+		<xs:attribute name="widget" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="DataType">
 		<xs:sequence minOccurs="0">

@@ -1782,7 +1782,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.drawSourceParameterForInput = function(datasource, parameter) {
-		var parameterPanel = $('<div>', { 'class': 'panel panel-default source-parameter-panel',  'data-id': parameter.id  });
+		var parameterPanel = $('<div>', { 'class': 'panel panel-default source-parameter-panel',  'data-id': parameter.id,  'data-name': parameter.name  });
 		parameterPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-source-parameter" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
 		var parameterPanelBody = $('<div>', { 'class': 'panel-body', id: 'data-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
@@ -1844,6 +1844,7 @@ THE SOFTWARE.
 			parametersContainer.append(parameterPanel);
 			Simulators.bindParameter(parameterPanel);
 			parameterPanel.find('select[data-attribute=data]').trigger('change');
+			$("html, body").animate({ scrollTop: parameterPanel.offset().top - $('#navbar').height() }, 500);
 		});
 	}
 
@@ -1879,18 +1880,49 @@ THE SOFTWARE.
 		});
 	}
 
-	Simulators.checkParameter = function(parameterContainer, sourceContainer) {
+	Simulators.checkParameter = function(parameterContainer, sourcePanelContainer) {
+		var sourceId = sourcePanelContainer.find('.source-container').attr('data-id');
 		var parameterId = parameterContainer.attr('data-id');
+		var parameterOldName = parameterContainer.attr('data-name');
 		var parameterName = $.trim(parameterContainer.find('input[data-attribute=name]').val());
 		if (parameterName === '') {
-			sourceContainer.find('.error-message').text(Translator.trans('Parameter %id% : the name is required', { 'id': parameterId }));
-			sourceContainer.find('.alert').show();
+			sourcePanelContainer.find('.error-message').text(Translator.trans('Parameter %id% : the name is required', { 'id': parameterId }));
+			sourcePanelContainer.find('.alert').show();
 			return false;
 		}
 		if (! /^\w+$/.test(parameterName)) {
-			sourceContainer.find('.error-message').text(Translator.trans('Parameter %id% : Incorrect name', { 'id': parameterId }));
-			sourceContainer.find('.alert').show();
+			sourcePanelContainer.find('.error-message').text(Translator.trans('Parameter %id% : Incorrect name', { 'id': parameterId }));
+			sourcePanelContainer.find('.alert').show();
 			return false;
+		}
+		if (parameterName != parameterOldName) {
+			var exists = false;
+			$.each(Simulators.parameterset, function(num, parameter) {
+				if (parameterName == parameter.name && parameterId != num) {
+					exists = true;
+					return false;
+				}
+			});
+			if (exists) {
+				sourcePanelContainer.find('.error-message').text(Translator.trans('Parameter %id% : This parameter name already exists', { 'id': parameterId }));
+				sourcePanelContainer.find('.alert').show();
+				return false;
+			}
+		}
+		var dataName = parameterContainer.find('select[data-attribute=data]').val();
+		var dataId = Simulators.dataset[dataName].id;
+		if ($("#datas").find(".data-container[data-id=" + dataId + "] p[data-attribute='source'][data-value=" + sourceId + "]").length > 0) {
+			sourcePanelContainer.find('.error-message').text(Translator.trans('Circular reference between parameter %id% and data «%data%»', { 'id': parameterId, data: Simulators.dataset[dataName].label }));
+			sourcePanelContainer.find('.alert').show();
+			return false;
+		}
+		if (Simulators.dataset[dataName].type == 'date') {
+			var format = parameterContainer.find('select[data-attribute=format]').val();
+			if (! format) {
+				sourcePanelContainer.find('.error-message').text(Translator.trans('Parameter %id% : the format is required', { 'id': parameterId }));
+				sourcePanelContainer.find('.alert').show();
+				return false;
+			}
 		}
 		return true;
 	}

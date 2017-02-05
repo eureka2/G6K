@@ -124,7 +124,7 @@ THE SOFTWARE.
 							{{ _self.showSources ( simulator ) }}
 							{{ _self.showDatas ( simulator ) }}
 							{{ _self.showSteps ( simulator ) }}
-							{{ _self.showBusinessRules ( simulator ) }}
+							{{ _self.showBusinessRules ( simulator, _context ) }}
 							{{ _self.showProfiles ( simulator ) }}
 							</div>
 						</div>
@@ -188,7 +188,7 @@ THE SOFTWARE.
 {{ _self.openCollapsiblePanel('datas' , 'Datas'|trans, 'primary', '', 'sortable', [{ 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign', 'dropdown': [{ 'class': 'add-data', 'label': 'Add data'|trans }, { 'class': 'add-datagroup', 'label': 'Add datagroup'|trans} ] }] ) }}
 {% for data in simulator.datas %}
 	{% if data.class == "DataGroup" %}
-	{{ _self.openCollapsiblePanel('datagroup-' ~ data.id , 'Group ' ~ data.label, 'success', loop.index == 1 ? 'in' : '', 'sortable', [{ 'class': 'delete-datagroup', 'label': 'Delete'|trans , 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-data', 'label': 'Add data'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-datagroup', 'label': 'Edit datagroup'|trans, 'icon': 'glyphicon-pencil' }] ) }}
+	{{ _self.openCollapsiblePanel('datagroup-' ~ data.id , 'Group'|trans ~ ' ' ~ data.label, 'success', loop.index == 1 ? 'in' : '', 'sortable', [{ 'class': 'delete-datagroup', 'label': 'Delete'|trans , 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-data', 'label': 'Add data'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-datagroup', 'label': 'Edit datagroup'|trans, 'icon': 'glyphicon-pencil' }] ) }}
 	<div class="panel panel-default data-container datagroup" id="datagroup-{{ data.id }}-attributes-panel" data-id="{{ data.id }}">
 		<div class="panel-body">
 			<div class="attributes-container">
@@ -222,7 +222,7 @@ THE SOFTWARE.
 {{ _self.closeCollapsiblePanel() }}  
 {% endmacro %}
 
-{% macro showBusinessRules(simulator) %}
+{% macro showBusinessRules(simulator, context) %}
 {{ _self.openCollapsiblePanel('businessrules' , 'Business rules'|trans, 'primary', '', 'sortable', [{ 'class': 'add-rule', 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
 <div id="business-rules">
 {% for rule in simulator.businessRules %}
@@ -248,7 +248,7 @@ THE SOFTWARE.
 				<div class="panel-heading"><h4>{{ 'then do ...'|trans }}</h4></div>
 				<div class="panel-body">
 					{% for action in rule.ifActions %}
-					{{ _self.showRuleAction(action, simulator) }}
+					{{ _self.showRuleAction(action, simulator, context.actions) }}
 					{% endfor %}
 				</div>
 			</div>
@@ -258,7 +258,7 @@ THE SOFTWARE.
 				<div class="panel-heading"><h4>{{ 'else do ...'|trans }}</h4></div>
 				<div class="panel-body">
 					{% for action in rule.elseActions %}
-					{{ _self.showRuleAction(action, simulator) }}
+					{{ _self.showRuleAction(action, simulator, context.actions) }}
 					{% endfor %}
 				</div>
 			</div>
@@ -270,7 +270,7 @@ THE SOFTWARE.
 {{ _self.closeCollapsiblePanel() }}  
 {% endmacro %}
 
-{% macro showRuleAction(action, simulator) %}
+{% macro showRuleAction(action, simulator, actions) %}
 <div class="rule-action" data-id="{{ action.id }}" data-name="{{ action.name }}" data-target="{{ action.target }}" data-data="{{ action.data }}" data-datagroup="{{ action.datagroup }}" data-step="{{ action.step }}" data-panel="{{ action.panel }}" data-fieldset="{{ action.fieldset }}" data-column="{{ action.column }}" data-fieldrow="{{ action.fieldrow }}" data-field="{{ action.field }}" data-blockinfo="{{ action.blockinfo }}" data-chapter="{{ action.chapter }}" data-section="{{ action.section }}" data-prenote="{{ action.prenote }}" data-postnote="{{ action.postnote }}" data-action="{{ action.action }}" data-footnote="{{ action.footnote }}" data-choice="{{ action.choice }}" data-value="{{ action.value }}">
 {% if action.name == 'notifyError' or action.name == 'notifyWarning' %}
 	<span class="action-name">{{ action.name == 'notifyError' ? 'notify Error'|trans : 'notify Warning'|trans }} : </span> <span class="action-value">«{{ action.value }}»</span> <span class="action-target"> {{ 'on'|trans }} {{ action.target|trans }} </span>
@@ -280,87 +280,89 @@ THE SOFTWARE.
 		<span class="action-datagroup"><var class="datagroup" data-id="{{ action.datagroup }}">«{{ simulator.getDataGroupById(action.datagroup).label }}»</var></span>
 	{% endif %}
 {% elseif action.name == 'hideObject' or action.name == 'showObject' %}
+	{% set actionNode = simulator.controller.findAction(action.name, actions) %}
 	{% set step = simulator.getStepById(action.step) %}
+	{% set optionNode = simulator.controller.findActionOption('objectId', action.target, actionNode) %}
 	<span class="action-name">{{ action.name == 'hideObject' ? 'hide'|trans : 'show'|trans }}</span> <span class="action-target">{{ action.target|trans }}</span>
 	{% if action.target == 'step' %}
-		<span class="action-step">«{{ step.label }}»</span>
+		<span class="action-step">«{{ simulator.controller.findActionField([{'stepId': action.step}], optionNode).label }}»</span>
 	{% elseif action.target == 'panel' %}
-		<span class="action-panel">«{{ action.panel }}»</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-panel">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label }}»</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label}) }}</span>
 	{% elseif action.target == 'fieldset' %}
-		<span class="action-fieldset">«{{ action.fieldset }}»</span>
-		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-fieldset">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label }}»</span>
+		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label}) }}</span>
 	{% elseif action.target == 'column' %}
-		<span class="action-column">«{{ step.panelById(action.panel).fieldSetById(action.fieldset).columnById(action.column).label }}»</span>
-		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': action.fieldset}) }}</span>
-		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-column">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'columnId': action.column}], optionNode).label }}»</span>
+		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label}) }}</span>
 	{% elseif action.target == 'fieldrow' %}
-		<span class="action-fieldrow">«{{ step.panelById(action.panel).fieldSetById(action.fieldset).fieldRowById(action.fieldrow).label }}»</span>
-		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': action.fieldset}) }}</span>
-		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-fieldrow">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}], optionNode).label }}»</span>
+		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label}) }}</span>
 	{% elseif action.target == 'field' %}
 		{% set fieldset = step.panelById(action.panel).fieldSetById(action.fieldset) %}
 		{% if fieldset.disposition == 'grid' %}
-		<span class="action-field">«{{ fieldset.fieldRowById(action.fieldrow).fieldByPosition(action.field).label }}»</span>
-		<span class="action-fieldrow"> {{ 'in'|trans }} «{{ fieldset.fieldRowById(action.fieldrow).label }}»</span>
-		<span class="action-fieldset"> {{ 'of fieldset «%label%»'|trans({'%label%': action.fieldset}) }}</span>
+		<span class="action-field">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}, {'fieldId': action.field}], optionNode).label }}»</span>
+		<span class="action-fieldrow"> {{ 'in'|trans }} «{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}], optionNode).label }}»</span>
+		<span class="action-fieldset"> {{ 'of fieldset «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
 		{% else %}
-		<span class="action-field">«{{ fieldset.fieldByPosition(action.field).label }}»</span>
-		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': action.fieldset}) }}</span>
+		<span class="action-field">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldId': action.field}], optionNode).label }}»</span>
+		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
 		{% endif %}
-		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label}) }}</span>
 	{% elseif action.target == 'blockinfo' %}
-		<span class="action-blockinfo">«{{ action.blockinfo }}»</span>
-		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-blockinfo">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'blockinfoId': action.blockinfo}], optionNode).label }}»</span>
+		<span class="action-panel"> {{ 'in panel «%panel%»'|trans({'%panel%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label}) }}</span>
 	{% elseif action.target == 'chapter' %}
-		<span class="action-chapter">«{{ step.panelById(action.panel).blockInfoById(action.blockinfo).chapterById(action.chapter).label }}»</span>
-		<span class="action-blockinfo"> {{ 'in blockinfo «%blockinfo%»'|trans({'%blockinfo%': action.blockinfo}) }}</span>
-		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-chapter">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'blockinfoId': action.blockinfo}, {'chapterId': action.chapter}], optionNode).label }}»</span>
+		<span class="action-blockinfo"> {{ 'in blockinfo «%blockinfo%»'|trans({'%blockinfo%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'blockinfoId': action.blockinfo}], optionNode).label }) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%':simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label}) }}</span>
 	{% elseif action.target == 'section' %}
-		<span class="action-section">«{{ step.panelById(action.panel).blockInfoById(action.blockinfo).chapterById(action.chapter).sectionById(action.section).label }}»</span>
-		<span class="action-chapter"> {{ 'in'|trans }} «{{ step.panelById(action.panel).blockInfoById(action.blockinfo).chapterById(action.chapter).label }}»</span>
-		<span class="action-blockinfo"> {{ 'of blockinfo «%blockinfo%»'|trans({'%blockinfo%': action.blockinfo}) }}</span>
-		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-section">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'blockinfoId': action.blockinfo}, {'chapterId': action.chapter}, {'sectionId': action.section}], optionNode).label }}»</span>
+		<span class="action-chapter"> {{ 'in'|trans }} «{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'blockinfoId': action.blockinfo}, {'chapterId': action.chapter}], optionNode).label }}»</span>
+		<span class="action-blockinfo"> {{ 'of blockinfo «%blockinfo%»'|trans({'%blockinfo%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'blockinfoId': action.blockinfo}], optionNode).label }) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label}) }}</span>
 	{% elseif action.target == 'prenote' %}
 		{% set fieldset = step.panelById(action.panel).fieldSetById(action.fieldset) %}
 		{% if fieldset.disposition == 'grid' %}
-		<span class="action-prenote"> {{ 'of field «%label%»'|trans({'%label%': fieldset.fieldRowById(action.fieldrow).fieldByPosition(action.prenote).label}) }}</span>
-		<span class="action-fieldrow"> {{ 'in'|trans }} «{{ fieldset.fieldRowById(action.fieldrow).label }}»</span>
-		<span class="action-fieldset"> {{ 'of fieldset «%label%»'|trans({'%label%': action.fieldset}) }}</span>
+		<span class="action-prenote"> {{ 'of field «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}, {'fieldId': action.prenote}], optionNode).label}) }}</span>
+		<span class="action-fieldrow"> {{ 'in'|trans }} «{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}], optionNode).label }}»</span>
+		<span class="action-fieldset"> {{ 'of fieldset «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
 		{% else %}
-		<span class="action-prenote"> {{ 'of field «%label%»'|trans({'%label%': fieldset.fieldByPosition(action.prenote).label}) }}</span>
-		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': action.fieldset}) }}</span>
+		<span class="action-prenote"> {{ 'of field «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldId': action.prenote}], optionNode).label }) }}</span>
+		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
 		{% endif %}
-		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label}) }}</span>
 	{% elseif action.target == 'postnote' %}
 		{% set fieldset = step.panelById(action.panel).fieldSetById(action.fieldset) %}
 		{% if fieldset.disposition == 'grid' %}
-		<span class="action-postnote"> {{ 'of field «%label%»'|trans({'%label%': fieldset.fieldRowById(action.fieldrow).fieldByPosition(action.postnote).label}) }}</span>
-		<span class="action-fieldrow"> {{ 'in'|trans }} «{{ fieldset.fieldRowById(action.fieldrow).label }}»</span>
-		<span class="action-fieldset"> {{ 'of fieldset «%label%»'|trans({'%label%': action.fieldset}) }}</span>
+		<span class="action-postnote"> {{ 'of field «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}, {'fieldId': action.postnote}], optionNode).label }) }}</span>
+		<span class="action-fieldrow"> {{ 'in'|trans }} «{{ simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}], optionNode).label }}»</span>
+		<span class="action-fieldset"> {{ 'of fieldset «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
 		{% else %}
-		<span class="action-postnote"> {{ 'of field «%label%»'|trans({'%label%': fieldset.fieldByPosition(action.postnote).label}) }}</span>
-		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': action.fieldset}) }}</span>
+		<span class="action-postnote"> {{ 'of field «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldId': action.postnote}], optionNode).label }) }}</span>
+		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
 		{% endif %}
-		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': action.panel}) }}</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': simulator.controller.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label }) }}</span>
 	{% elseif action.target == 'footnote' %}
-		<span class="action-footnote">«{{ action.footnote }}»</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-footnote">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'footnoteId': action.footnote}], optionNode).label }}»</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label }) }}</span>
 	{% elseif action.target == 'action' %}
-		<span class="action-action">«{{ action.action }}»</span>
-		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': step.label}) }}</span>
+		<span class="action-action">«{{ simulator.controller.findActionField([{'stepId': action.step}, {'actionId': action.action}], optionNode).label }}»</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.findActionField([{'stepId': action.step}], optionNode).label }) }}</span>
 	{% elseif action.target == 'choice' %}
-		<span class="action-choice">«{{ action.choice }}»</span>
-		<span class="action-data"> {{ 'of data «%label%»'|trans({'%label%': simulator.replaceByDataLabel(action.data).label}) }}</span>
+		<span class="action-choice">«{{ simulator.controller.findActionField([action.data, action.choice], optionNode).label }}»</span>
+		<span class="action-data"> {{ 'of data «%label%»'|trans({'%label%': simulator.replaceByDataLabel(action.data).label }) }}</span>
 	{% endif %}
 {% elseif action.name == 'setAttribute' %}
 	<span class="action-name">{{ 'set'|trans }}</span> <span class="action-target">{{ action.target|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span> <span class="action-value"> {{ 'to'|trans }} {{ simulator.replaceByDataLabel(action.value)|raw }}</span>
@@ -467,7 +469,7 @@ THE SOFTWARE.
 			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'label', 'Label'|trans, action.label, action.label, true, 'Button label'|trans) }}
 			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'what', 'What'|trans, action.what, action.what, true, 'Select an action'|trans, { 'submit':'Submit'|trans, 'reset':'Reset'|trans } ) }}
 			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'for', 'For'|trans, action.for, action.for, true, 'Select a target step'|trans, { 'priorStep':'Prior step'|trans, 'currentStep':'Current step'|trans, 'nextStep':'Next step'|trans, 'jumpToStep':'Jump to step'|trans, 'newSimulation':'New simulation'|trans, 'externalPage':'External page'|trans } ) }}
-			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'uri', 'URI'|trans, action.uri, action.uri, false, 'Button uri'|trans) }}
+			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'uri', 'URI / Step'|trans, action.uri, action.uri, false, 'Button uri'|trans) }}
 			{{ _self.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'class', 'Class'|trans, action.class, action.class, false, 'Button class'|trans) }}
 			</div>
 		</div>
@@ -766,6 +768,7 @@ THE SOFTWARE.
 			{{ _self.showAttribute(elementId, 'checkbox', 'emphasize', 'Emphasize the text label ?'|trans, field.emphasize, field.emphasize, false, 'emphasize') }}
 			{{ _self.showAttribute(elementId, 'checkbox', 'expanded', 'Show choices as radio buttons ?'|trans, field.expanded, field.expanded, false, 'expanded') }}
 			{{ _self.showAttribute(elementId, 'text', 'explanation', 'Explanation'|trans, field.explanation, field.explanation, false, 'Explanation'|trans) }}
+			{{ _self.showAttribute(elementId, 'select', 'widget', 'Widget'|trans, field.widget, field.widget, false, 'Select a widget'|trans, step.simulator.controller.widgets) }}
 			</div>
 		</div>
 		{% if field.preNote %}
@@ -936,7 +939,6 @@ THE SOFTWARE.
 				</a>
 			</h4>
 		</div>
-		{# <div id="collapse{{ id }}" class="panel-collapse collapse {{ in }}" role="tabpanel" aria-labelledby="{{ id }}-panel"> #}
 		<div id="collapse{{ id }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ id }}-panel">
 			<div class="panel-body {{ sortable }}">
 {% endmacro %}
@@ -1056,10 +1058,27 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro showProfiles(simulator) %}
-{{ _self.openCollapsiblePanel('profiles' , 'Profiles'|trans, 'primary', '', 'sortable', [{ 'class': 'add-profile', 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
-{% for profile in simulator.profiles.profiles %}
-	{{ _self.showProfile(simulator, profile, 'profile', loop.index == 1 ? 'in' : '') }}
-{% endfor %}
+{{ _self.openCollapsiblePanel('profiles' , 'Profiles'|trans, 'primary', '', '', [{ 'class': 'add-profile', 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
+<div class="panel panel-default profiles-container" id="profiles-attributes-panel">
+	<div class="panel-body">
+		<div class="attributes-container">
+			<div class="form-group col-sm-12">
+				<label class="col-sm-2 control-label">{{ 'Title'|trans }}</label>
+				<div class="col-sm-10">
+					<p data-attribute="label" data-value="{{ simulator.profiles.label }}" class="form-control-static simple-value">{{ simulator.profiles.label }}</p>
+				</div>
+			</div>
+			<button class="btn btn-default pull-right update-button edit-profiles-label" data-parent="#profiles-attributes-panel" title="{{ button.label }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></button>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default profiles-panel" id="profiles-profiles-panel">
+	<div class="panel-body sortable">
+		{% for profile in simulator.profiles.profiles %}
+			{{ _self.showProfile(simulator, profile, 'profile', loop.index == 1 ? 'in' : '') }}
+		{% endfor %}
+	</div>
+</div>
 {{ _self.closeCollapsiblePanel() }}  
 {% endmacro %}
 
@@ -1105,7 +1124,7 @@ THE SOFTWARE.
 {% set data = simulator.dataById(pdata[0]) %}
 {% set deflt = pdata[1] %}
 {% set profileDataElementId = 'profile-'~profileId~'-profile-data-'~id %}
-{{ _self.openCollapsiblePanel(profileDataElementId , 'Data %id%'|trans({ '%id%' : id }), 'default', '', '', [{ 'class': 'delete-profile-data', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-profile-data', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' }] ) }}
+{{ _self.openCollapsiblePanel(profileDataElementId , 'Data %id%'|trans({ '%id%' : id }) ~ ' : ' ~ data.label, 'default', '', '', [{ 'class': 'delete-profile-data', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-profile-data', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' }] ) }}
 <div class="panel panel-default profile-data-container" id="{{ profileDataElementId }}-attributes-panel" data-profile="{{ profileId }}" data-id="{{ id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
