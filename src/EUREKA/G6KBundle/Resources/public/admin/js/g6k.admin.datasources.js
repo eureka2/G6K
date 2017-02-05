@@ -995,9 +995,14 @@ $(document).ready(function() {
 		}
 		if ( $("#import-table-form" ).length) {
 			$("#import-table-form input[name='table-data-file']").change(function (e) {
-			Datasources.hideErrors();
-			var files = e.target.files;
+				Datasources.hideErrors();
+				var files = e.target.files;
 				var $file = $(this);
+				if (/\.txt$/.test(files[0].name)) {
+					$("#import-table-form select[name='table-data-separator']").val('t');
+				} else if (/\.csv$/.test(files[0].name)) {
+					$("#import-table-form select[name='table-data-separator']").val(';');
+				}
 				var reader = new FileReader();
 				reader.onload = function(e) {
 					$file.data('content', e.target.result);
