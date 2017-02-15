@@ -40,6 +40,12 @@ parameters:
             js: 
                 - lib/jquery.auto-complete.min.js
                 - js/geoAPILocalities.js
+        geoAPILocalitiesEditable:
+            label: Insee code obtained by autocompletion on the name of the commune or its postal code (In place mode)
+            css: 
+            js: 
+                - js/jquery.jeditable.geoAPILocalities.js
+                - js/geoAPILocalitiesEditable.js
         geoAPIZipCode:
             label: Postal code obtained by autocompletion on the name of the commune or its postal code
             css: 

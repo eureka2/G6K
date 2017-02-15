@@ -3226,7 +3226,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				if ($datasource->getMethod() == "GET") {
 					$result = $client->get($uri);
 				} else {
-					$result = $client->post($uri, $data);
+					$result = $client->post($uri, $datas);
 				}
 				break;
 			case 'database':
