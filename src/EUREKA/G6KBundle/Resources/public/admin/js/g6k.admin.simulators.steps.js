@@ -434,7 +434,11 @@ THE SOFTWARE.
 			};
 			var attributes = stepContainer.find('.attributes-container');
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
-				step[$(this).attr('data-attribute')] = $(this).val();
+				if ($(this).is(':checkbox')) {
+					step[$(this).attr('data-attribute')] = $(this).is(':checked') ? 1 : 0;
+				} else {
+					step[$(this).attr('data-attribute')] = $(this).val();
+				}
 			});
 			step['description'] =  stepPanelContainer.find('.step-description').val();
 			var oldLabel = '';
@@ -1983,7 +1987,7 @@ THE SOFTWARE.
 		var fieldsetContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, fieldset.disposition, false, Translator.trans('Select a Disposition'), JSON.stringify({ 'classic':Translator.trans('Classic'), 'grid':Translator.trans('Grid') })));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, fieldset.disposition, false, Translator.trans('Select a Disposition'), JSON.stringify({ 'classic':Translator.trans('Classic'), 'grid':Translator.trans('Grid'), 'inline':Translator.trans('Inline') })));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'display', Translator.trans('Display'), fieldset.display, fieldset.display, false, Translator.trans('Select a Display'), JSON.stringify({ 'inline':Translator.trans('Inline'), 'pop-in':Translator.trans('Pop-in') })));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'text', 'popinLink', Translator.trans('Pop-in Link'), fieldset.popinLink, fieldset.popinLink, false, Translator.trans('Pop-in Link')));
 		attributesContainer.append(requiredAttributes);
@@ -2014,7 +2018,7 @@ THE SOFTWARE.
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldsetElementId + '" data-type="select" data-name="disposition" data-placeholder="' + Translator.trans('FieldSet disposition') + '" data-options="' + encodeURI(JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid') } )) + '">' + Translator.trans('Disposition') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldset.disposition) {
-			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-disposition', 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, false, Translator.trans('FieldSet disposition'), JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid') } )));
+			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-disposition', 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, false, Translator.trans('FieldSet disposition'), JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid'), 'inline': Translator.trans('Inline') } )));
 			optionalAttribute.hide();
 		} 
 		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldsetElementId + '" data-type="select" data-name="display" data-placeholder="' + Translator.trans('FieldSet display') + '" data-options="' + encodeURI(JSON.stringify( {'inline': Translator.trans('Inline'), 'pop-in': Translator.trans('Pop-in') } )) + '">' + Translator.trans('Display') + '</li>');

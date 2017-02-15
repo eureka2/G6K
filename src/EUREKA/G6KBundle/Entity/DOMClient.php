@@ -59,11 +59,11 @@ class DOMClient extends BaseClient {
 		),
 		'HTTP_PROXY' => array(
 			'proxy' => "", // e.g   "192.168.50.12:8080",
-			'authorization' => ""
+			'authorization' => "USER:PASSWORD"
 		),
 		'HTTPS_PROXY' => array(
 			'proxy' => "", // e.g  "192.168.50.12:8080",
-			'authorization' => ""
+			'authorization' => "USER:PASSWORD"
 		),
 	);
 
@@ -137,17 +137,20 @@ class DOMClient extends BaseClient {
 		}
 		$context = stream_context_create($ctxConfig);
 		$content = @file_get_contents($request->getUri(), false, $context);
-		$responseHeaders = $http_response_header;
-		$status = array_shift($responseHeaders);
-		if (preg_match("/^HTTP\/1\.[01] (\d+)/", $status, $m)) {
-			$status = $m[1];
-		} else {
-			$status = '500';
-		}
 		$headers = array();
-		foreach($responseHeaders as $h) {
-			if (preg_match("/^([^\:]+):\s*(.+)$/", $h, $m)) {
-				$headers[trim($m[1])] = trim($m[2]);
+		$status = '500';
+		if (isset($http_response_header)) {
+			$responseHeaders = $http_response_header;
+			$status = array_shift($responseHeaders);
+			if (preg_match("/^HTTP\/1\.[01] (\d+)/", $status, $m)) {
+				$status = $m[1];
+			} else {
+				$status = '500';
+			}
+			foreach($responseHeaders as $h) {
+				if (preg_match("/^([^\:]+):\s*(.+)$/", $h, $m)) {
+					$headers[trim($m[1])] = trim($m[2]);
+				}
 			}
 		}
 		if (isset($headers['transfer-encoding']) && $headers['transfer-encoding'] == 'chunked') {

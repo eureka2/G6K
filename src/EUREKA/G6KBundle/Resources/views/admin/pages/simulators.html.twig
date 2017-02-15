@@ -576,7 +576,6 @@ THE SOFTWARE.
 	<div class="panel-body">
 		{% for parameter in source.parameters %}
 		{% set paramId = loop.index %}
-		{% set data = simulator.dataById(parameter.data) %}
 		<div class="panel panel-default source-parameter-container" data-id="{{ paramId }}">
 			<div class="panel-heading">
 				{{ 'Parameter %id%'|trans({ '%id%' : paramId }) }}
@@ -588,6 +587,9 @@ THE SOFTWARE.
 						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'select', 'type', 'Type'|trans, parameter.type, parameter.type, true, 'Select a type'|trans, { 'queryString':'Query string parameter'|trans, 'path':'PATH'|trans, 'data':'POST data'|trans, 'columnValue':'Column value'|trans } ) }}
 						{% endif %}
 						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'text', 'name', 'Name'|trans, parameter.name, parameter.name, false, 'Parameter name'|trans) }}
+						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'select', 'origin', 'Origin'|trans, parameter.origin, parameter.origin, true, 'Select an origin'|trans, { 'data':'Data'|trans, 'constant':'Constant'|trans } ) }}
+						{% if parameter.origin == 'data' %}
+						{% set data = simulator.dataById(parameter.data) %}
 						<div class="form-group col-sm-12">
 							<label class="col-sm-4 control-label">{{ 'Data'|trans }}</label>
 							<div class="col-sm-8">
@@ -597,6 +599,10 @@ THE SOFTWARE.
 						{% if data.type == 'date' or data.type == 'day' or data.type == 'month' or data.type == 'year' %}
 						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'text', 'format', 'Format'|trans, parameter.format, parameter.format|trans, false, 'Date format of the parameter'|trans) }}
 						{% endif %}
+						{% else %}
+						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'text', 'constant', 'Constant'|trans, parameter.constant, parameter.constant, false, 'Constant value of the parameter'|trans) }}
+						{% endif %}
+						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'checkbox', 'optional', 'Optional'|trans, parameter.optional, parameter.optional, false, 'Optional'|trans) }}
 					</div>
 				</div>
 			</div>
@@ -644,7 +650,7 @@ THE SOFTWARE.
 	<div class="panel-body">
 		<div class="attributes-container">
 			<div>
-			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'disposition', 'Disposition'|trans, fieldset.disposition, fieldset.disposition, false, 'Select a Disposition'|trans, {'classic':'Classic'|trans, 'grid':'Grid'|trans}) }}
+			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'disposition', 'Disposition'|trans, fieldset.disposition, fieldset.disposition, false, 'Select a Disposition'|trans, {'classic':'Classic'|trans, 'grid':'Grid'|trans, 'inline':'Inline'|trans}) }}
 			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'display', 'Display'|trans, fieldset.display, fieldset.display, false, 'Select a Display'|trans, {'inline':'Inline'|trans, 'pop-in':'Pop-in'|trans}) }}
 			{{ _self.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'text', 'popinLink', 'Pop-in Link'|trans, fieldset.popinLink, fieldset.popinLink, false, 'Pop-in Link'|trans) }}
 			</div>

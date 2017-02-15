@@ -110,6 +110,7 @@
 																				<xs:restriction base="xs:NMTOKEN">
 																					<xs:enumeration value="classic"/>
 																					<xs:enumeration value="grid"/>
+																					<xs:enumeration value="inline"/>
 																				</xs:restriction>
 																			</xs:simpleType>
 																		</xs:attribute>
@@ -262,8 +263,18 @@
 													</xs:simpleType>
 												</xs:attribute>
 												<xs:attribute name="name" type="xs:string"/>
-												<xs:attribute name="format" type="xs:string"/>
+												<xs:attribute name="origin" default="data">
+													<xs:simpleType>
+														<xs:restriction base="xs:NMTOKEN">
+															<xs:enumeration value="data"/>
+															<xs:enumeration value="constant"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
 												<xs:attribute name="data"/>
+												<xs:attribute name="format" type="xs:string"/>
+												<xs:attribute name="constant" type="xs:string"/>
+												<xs:attribute name="optional" type="xs:boolean"/>
 											</xs:complexType>
 										</xs:element>
 									</xs:sequence>

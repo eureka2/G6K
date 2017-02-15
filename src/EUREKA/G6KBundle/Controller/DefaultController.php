@@ -445,11 +445,13 @@ class DefaultController extends Controller {
 		$source = $this->simu->getSourceById((int)$form['source']);
 		$params = $source->getParameters();
 		foreach ($params as $param) {
-			$name = $param->getName();
-			$value = $form[$name];
-			$data = $this->simu->getDataById($param->getData());
-			if ($data !== null) {
-				$data->setValue($value);
+			if ($param->getOrigin() == 'data') {
+				$data = $this->simu->getDataById($param->getData());
+				if ($data !== null) {
+					$name = $param->getName();
+					$value = isset($form[$name]) ? $form[$name] : '';
+					$data->setValue($value);
+				}
 			}
 		}
 		if (isset($form['returnPath'])) {
@@ -563,8 +565,20 @@ class DefaultController extends Controller {
 					if ($result !== null) {
 						$n = 0;
 						foreach ($result as $row) {
-							$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
-							$choice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
+							$id = '';
+							$value = '';
+							$label = '';
+							foreach ($row as $col => $cell) {
+								if (strcasecmp($col, $choiceSource->getIdColumn()) == 0) {
+									$id = $cell;
+								} else if (strcasecmp($col, $choiceSource->getValueColumn()) == 0) {
+									$value = $cell;
+								} else if (strcasecmp($col, $choiceSource->getLabelColumn()) == 0) {
+									$label = $cell;
+								}
+							}
+							$id = $id != '' ? $id : ++$n;
+							$choice = new Choice($data, $id, $value, $label);
 							$data->addChoice($choice);
 						}
 					}
@@ -585,9 +599,21 @@ class DefaultController extends Controller {
 								if ($result !== null) {
 									$n = 0;
 									foreach ($result as $row) {
-										$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
-										$gchoice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
-										$choice->addChoice($gchoice);
+										$id = '';
+										$value = '';
+										$label = '';
+										foreach ($row as $col => $cell) {
+											if (strcasecmp($col, $choiceSource->getIdColumn()) == 0) {
+												$id = $cell;
+											} else if (strcasecmp($col, $choiceSource->getValueColumn()) == 0) {
+												$value = $cell;
+											} else if (strcasecmp($col, $choiceSource->getLabelColumn()) == 0) {
+												$label = $cell;
+											}
+										}
+										$id = $id != '' ? $id : ++$n;
+										$choice = new Choice($data, $id, $value, $label);
+										$data->addChoice($choice);
 									}
 								}
 							}
@@ -1077,12 +1103,22 @@ class DefaultController extends Controller {
 				$path = "";
 				$datas = array();
 				foreach ($params as $param) {
-					$value = $this->formatParamValue($param);
-					if ($value === null) {
-						return null;
+					if ($param->getOrigin() == 'data') {
+						$value = $this->formatParamValue($param);
+					} else {
+						$value = $param->getConstant();
 					}
+					if ($value === null) { 
+						if (! $param->isOptional()) {
+							return null;
+						}
+						$value = '';
+					}
+					$value = urlencode($value);
 					if ($param->getType() == 'path') {
-						$path .= "/".$value;
+						if ($value != '' || ! $param->isOptional()) {
+							$path .= "/".$value;
+						}
 					} elseif ($param->getType() == 'data') {
 						$name = $param->getName();
 						if (isset($datas[$name])) {
@@ -1090,8 +1126,8 @@ class DefaultController extends Controller {
 						}  else {
 							$datas[$name] = array($value);
 						}
-					} else {
-						$query .= "&".$param->getName()."=".$value;
+					} elseif ($value != '' || ! $param->isOptional()) {
+						$query .= "&".urlencode($param->getName())."=".$value;
 					}
 				}
 				$uri = $datasource->getUri();
@@ -1118,9 +1154,16 @@ class DefaultController extends Controller {
 				$args = array();
 				$args[] = $source->getRequest();
 				foreach ($params as $param) {
-					$value = $this->formatParamValue($param);
-					if ($value === null) {
-						return null;
+					if ($param->getOrigin() == 'data') {
+						$value = $this->formatParamValue($param);
+					} else {
+						$value = $param->getConstant();
+					}
+					if ($value === null) { 
+						if (! $param->isOptional()) {
+							return null;
+						}
+						$value = '';
 					}
 					$args[] = $value;
 				}

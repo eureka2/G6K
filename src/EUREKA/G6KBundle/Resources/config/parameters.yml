@@ -5,6 +5,34 @@ parameters:
         Demo: www.mysite.com
     page404: /404.html
     widgets:
+        abListbox:
+            label: Accessible and customizable listbox
+            css:
+                - css/listbox.css
+            js: 
+                - js/listbox.js
+                - js/abListbox.js
+        abDatepicker:
+            label: Accessible and customizable datepicker
+            css: 
+                - css/datepicker.css
+            js: 
+                - js/locales/%locale%.js
+                - js/datepicker.js
+                - js/abDatepicker.js
+        jEditable:
+            label: In place form field editor
+            css: 
+            js: 
+                - lib/jquery.auto-grow-input.min.js
+                - lib/jquery.inputmask.bundle.min.js
+                - js/jquery.jeditable.js
+                - js/jquery.jeditable.autogrow.js
+                - js/jquery.jeditable.number.js
+                - js/jquery.jeditable.date.js
+                - js/jquery.jeditable.money.js
+                - js/jquery.jeditable.percent.js
+                - js/jEditable.js
         geoAPILocalities:
             label: Insee code obtained by autocompletion on the name of the commune or its postal code
             css: 
@@ -12,3 +40,14 @@ parameters:
             js: 
                 - lib/jquery.auto-complete.min.js
                 - js/geoAPILocalities.js
+        geoAPIZipCode:
+            label: Postal code obtained by autocompletion on the name of the commune or its postal code
+            css: 
+            js: 
+                - js/geoAPIZipCode.js
+        geoAPIZipCodeEditable:
+            label: Postal code obtained by autocompletion on the name of the commune or its postal code (In place mode)
+            css: 
+            js: 
+                - js/jquery.jeditable.geoAPIZipCode.js
+                - js/geoAPIZipCodeEditable.js

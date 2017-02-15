@@ -216,7 +216,7 @@ THE SOFTWARE.
 			if (type === 'text' || type === 'number') {
 				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + value + '">' + display + '</p>';
 			} else if (type === 'checkbox') {
-				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + (value !== '' && value !== '0' && value !== 0 ? 1 : 0) + '">' + (value !== '' && value !== '0'  && value !== 0 ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
+				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + (value == '1' || value == 1 ? 1 : 0) + '">' + (value == '1' || value == 1 ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
 			} else if (type === 'select') {
 				options = jQuery.parseJSON(options);
 				$.each(options, function(ovalue, olabel) {
@@ -250,7 +250,7 @@ THE SOFTWARE.
 		if (type === 'text' || type === 'number') {
 			attribute    += '        <input type="' + type + '" name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" placeholder="' + placeholder + '"  value="' + value + '" />';
 		} else if (type === 'checkbox') {
-			attribute    += '        <input type="checkbox" name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" value="1" checked="checked"';
+			attribute    += '        <input type="checkbox" name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" value="1"';
 			if (value == '1') {
 				attribute    += ' checked="checked"';
 			}

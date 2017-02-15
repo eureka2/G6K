@@ -158,7 +158,9 @@ class ResultFilter {
 	}
 
 	protected function filterJSON($json, $path) {
-		if (preg_match("/^\\$/", $path)) { // jsonpath
+		if ($path == '') {
+			$result = $json;
+		} elseif (preg_match("/^\\$/", $path)) { // jsonpath
 			$store = new JsonStore($json);
 			$result = $store->get($path);
 		} else { // xpath

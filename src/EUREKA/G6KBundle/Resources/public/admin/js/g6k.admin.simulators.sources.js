@@ -475,12 +475,14 @@ THE SOFTWARE.
 		var attributes = $('<div></div>');
 		var datasList = {};
 		var type = '';
-		$.each(Simulators.dataset, function( name, data) {
-			datasList[name] = data.label;
-			if (name == parameter.data) {
-				type = data.type;
-			}
-		});
+		if (parameter.origin == 'data') {
+			$.each(Simulators.dataset, function( name, data) {
+				datasList[name] = data.label;
+				if (name == parameter.data) {
+					type = data.type;
+				}
+			});
+		}
 		var typesList;
 		if (datasources[datasource].type === 'uri') {
 			typesList = { 
@@ -491,16 +493,22 @@ THE SOFTWARE.
 				typesList.data = Translator.trans('POST data');
 			}
 			attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'type', Translator.trans('Type'), parameter.type, parameter.type, true, Translator.trans('Select a type'), JSON.stringify(typesList)));
-		} else {
-			typesList = { 
-				columnValue: Translator.trans('Column value') 
-			}
 		}
+		var originsList = { 
+			'data': Translator.trans('Data'), 
+			'constant': Translator.trans('Constant') 
+		};
 		attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'name', Translator.trans('Name'), parameter.name, parameter.name, true, Translator.trans('Parameter name')));
-		attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'data', Translator.trans('Data'), parameter.data, parameter.data, true, Translator.trans('Select a data'), JSON.stringify(datasList)));
-		if (type === 'date' || type === 'day' || type === 'month' || type === 'year') {
-			attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'format', Translator.trans('Format'), parameter.format, Translator.trans(parameter.format), true, Translator.trans('Parameter format')));
+		attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'origin', Translator.trans('Origin'), parameter.origin, parameter.origin, true, Translator.trans('Select an origin'), JSON.stringify(originsList)));
+		if (parameter.origin == 'data') {
+			attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'data', Translator.trans('Data'), parameter.data, parameter.data, true, Translator.trans('Select a data'), JSON.stringify(datasList)));
+			if (type === 'date' || type === 'day' || type === 'month' || type === 'year') {
+				attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'format', Translator.trans('Format'), parameter.format, Translator.trans(parameter.format), true, Translator.trans('Parameter format')));
+			}
+		} else {
+			attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'constant', Translator.trans('Constant'), parameter.constant, parameter.constant, true, Translator.trans('Parameter constant')));
 		}
+		attributes.append(Simulators.simpleAttributeForDisplay('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'checkbox', 'optional', Translator.trans('Optional'), parameter.optional, parameter.optional, true, Translator.trans('Optional')));
 		attributesContainer.append(attributes);
 		parameterPanelBody.append(attributesContainer);
 		parameterPanel.append(parameterPanelBody);
@@ -1403,7 +1411,11 @@ THE SOFTWARE.
 			var attributes = sourceContainer.find('.attributes-container');
 			var source = { id: sourceContainer.attr('data-id') };
 			attributes.find('input.simple-value:visible, select.simple-value:visible').each(function (index) {
-				source[$(this).attr('data-attribute')] = $(this).val();
+				if ($(this).is(':checkbox')) {
+					source[$(this).attr('data-attribute')] = $(this).is(':checked') ? 1 : 0;
+				} else {
+					source[$(this).attr('data-attribute')] = $(this).val();
+				}
 			});
 			if ($(this).hasClass('validate-edit-source')) {
 				var oldLabel = Simulators.sourceBackup.find('p[data-attribute=label]').attr('data-value') || '';
@@ -1477,6 +1489,8 @@ THE SOFTWARE.
 						var value;
 						if ($(this).hasClass('attribute-expression')) {
 							value = $(this).expressionbuilder('val');
+						} else if ($(this).is(':checkbox')) {
+							value = $(this).is(':checked') ? 1 : 0;
 						} else {
 							value = $(this).val();
 						}
@@ -1806,15 +1820,30 @@ THE SOFTWARE.
 			}
 			parameter.type = 'columnValue';
 		}
+		var originsList = { 
+			'data': Translator.trans('Data'), 
+			'constant': Translator.trans('Constant') 
+		};
 		var ptype = Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'type', Translator.trans('Type'), parameter.type, true, Translator.trans('Select a type'), JSON.stringify(typesList));
 		attributes.append(ptype);
 		if (datasources[datasource].type !== 'uri') {
 			ptype.hide();
 		}
 		attributes.append(Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'name', Translator.trans('Name'), parameter.name, true, Translator.trans('Parameter name')));
-		attributes.append(Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'data', Translator.trans('Data'), parameter.data, true, Translator.trans('Select a data'), JSON.stringify(datasList)));
-		var format = Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'format', Translator.trans('Format'), parameter.format, true, Translator.trans('Date format of the parameter'), JSON.stringify(Simulators.parameterDateFormats));
-		attributes.append(format);
+		attributes.append(Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'origin', Translator.trans('Origin'), parameter.origin, true, Translator.trans('Select an origin'), JSON.stringify(originsList)));
+		var pdata = Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'data', Translator.trans('Data'), parameter.data, true, Translator.trans('Select a data'), JSON.stringify(datasList));
+		attributes.append(pdata);
+		var pformat = Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'select', 'format', Translator.trans('Format'), parameter.format, true, Translator.trans('Date format of the parameter'), JSON.stringify(Simulators.parameterDateFormats));
+		attributes.append(pformat);
+		var pconstant = Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'text', 'constant', Translator.trans('Constant'), parameter.constant, true, Translator.trans('Constant value of the parameter'));
+		attributes.append(pconstant);
+		attributes.append(Simulators.simpleAttributeForInput('source-' + parameter.sourceId + '-source-parameter-' + parameter.id, 'checkbox', 'optional', Translator.trans('Optional'), parameter.optional, true, Translator.trans('Optional')));
+		if (parameter.origin === 'data') {
+			pconstant.hide();
+		} else {
+			pdata.hide();
+			pformat.hide();
+		}
 		attributesContainer.append(attributes);
 		parameterPanelBody.append(attributesContainer);
 		parameterPanel.append(parameterPanelBody);
@@ -1832,8 +1861,11 @@ THE SOFTWARE.
 				sourceId: sourceId,
 				type: '',
 				name: '',
+				origin: 'data',
+				data: '',
 				format: '',
-				data: ''
+				constant: '',
+				optional: '0'
 			};
 			Simulators.parameterset[id] = {
 				num: id,
@@ -1854,6 +1886,22 @@ THE SOFTWARE.
 			delete Simulators.parameterset[num];
 			var parametersPanel = parameterPanel.parents('.source-parameters-panel');
 			parameterPanel.remove();
+		});
+		parameterPanel.find('select[data-attribute=origin]').change(function(e) {
+			var origin = $(this).val();
+			var num = $(this).parents('.source-parameter-panel').attr('data-id');
+			if (origin === 'data') {
+				parameterPanel.find('input[data-attribute=constant]').parent().parent().hide();
+				parameterPanel.find('input[data-attribute=constant]').val('');
+				parameterPanel.find('select[data-attribute=data]').parent().parent().show();
+				parameterPanel.find('select[data-attribute=data]').trigger('change');
+			} else {
+				parameterPanel.find('input[data-attribute=constant]').parent().parent().show();
+				parameterPanel.find('select[data-attribute=data]').parent().parent().hide();
+				parameterPanel.find('select[data-attribute=format]').parent().parent().hide();
+				parameterPanel.find('select[data-attribute=format]').val('');
+				Simulators.parameterset[num].type = 'text';
+			}
 		});
 		parameterPanel.find('select[data-attribute=data]').change(function(e) {
 			var data = $(this).val();
@@ -1909,17 +1957,27 @@ THE SOFTWARE.
 				return false;
 			}
 		}
-		var dataName = parameterContainer.find('select[data-attribute=data]').val();
-		var dataId = Simulators.dataset[dataName].id;
-		if ($("#datas").find(".data-container[data-id=" + dataId + "] p[data-attribute='source'][data-value=" + sourceId + "]").length > 0) {
-			sourcePanelContainer.find('.error-message').text(Translator.trans('Circular reference between parameter %id% and data «%data%»', { 'id': parameterId, data: Simulators.dataset[dataName].label }));
-			sourcePanelContainer.find('.alert').show();
-			return false;
-		}
-		if (Simulators.dataset[dataName].type == 'date') {
-			var format = parameterContainer.find('select[data-attribute=format]').val();
-			if (! format) {
-				sourcePanelContainer.find('.error-message').text(Translator.trans('Parameter %id% : the format is required', { 'id': parameterId }));
+		var origin = parameterContainer.find('select[data-attribute=origin]').val();
+		if (origin === 'data') {
+			var dataName = parameterContainer.find('select[data-attribute=data]').val();
+			var dataId = Simulators.dataset[dataName].id;
+			if ($("#datas").find(".data-container[data-id=" + dataId + "] p[data-attribute='source'][data-value=" + sourceId + "]").length > 0) {
+				sourcePanelContainer.find('.error-message').text(Translator.trans('Circular reference between parameter %id% and data «%data%»', { 'id': parameterId, data: Simulators.dataset[dataName].label }));
+				sourcePanelContainer.find('.alert').show();
+				return false;
+			}
+			if (Simulators.dataset[dataName].type == 'date') {
+				var format = parameterContainer.find('select[data-attribute=format]').val();
+				if (! format) {
+					sourcePanelContainer.find('.error-message').text(Translator.trans('Parameter %id% : the format is required', { 'id': parameterId }));
+					sourcePanelContainer.find('.alert').show();
+					return false;
+				}
+			}
+		} else {
+			var constant = $.trim(parameterContainer.find('input[data-attribute=constant]').val());
+			if (constant == '') {
+				sourcePanelContainer.find('.error-message').text(Translator.trans('Parameter %id% : the constant value is required', { 'id': parameterId }));
 				sourcePanelContainer.find('.alert').show();
 				return false;
 			}
@@ -2133,10 +2191,11 @@ THE SOFTWARE.
 		var parameterContainers = sourceContainerGroup.find('div.source-parameter-container');
 		if (parameterContainers.length > 0) {
 			parameterContainers.each(function(c) {
+				var origin = $(this).find("p[data-attribute='origin']").attr('data-value') || 'data';
 				Simulators.parameterset[c + 1] = {
 					num: c + 1,
 					name: $(this).find("p[data-attribute='name']").attr('data-value'),
-					type: Simulators.dataset[$(this).find("p[data-attribute='data']").attr('data-value')].type
+					type: origin === 'data' ? Simulators.dataset[$(this).find("p[data-attribute='data']").attr('data-value')].type : 'text'
 				};
 			});
 		}
@@ -2197,13 +2256,16 @@ THE SOFTWARE.
 					sourceId: source.id,
 					type: $(this).find("p[data-attribute='type']").attr('data-value') || 'columnValue',
 					name: $(this).find("p[data-attribute='name']").attr('data-value'),
+					origin: $(this).find("p[data-attribute='origin']").attr('data-value') || 'data',
+					data: $(this).find("p[data-attribute='data']").attr('data-value')  || '',
 					format: $(this).find("p[data-attribute='format']").attr('data-value') || '',
-					data: $(this).find("p[data-attribute='data']").attr('data-value')  || ''
+					constant: $(this).find("p[data-attribute='constant']").attr('data-value')  || '',
+					optional: $(this).find("p[data-attribute='optional']").attr('data-value')  || '0'
 				};
 				Simulators.parameterset[ c + 1] = {
 					num: c + 1,
 					name: $(this).find("p[data-attribute='name']").attr('data-value'),
-					type: Simulators.dataset[$(this).find("p[data-attribute='data']").attr('data-value')].type
+					type: parameter.origin === 'data' ? Simulators.dataset[$(this).find("p[data-attribute='data']").attr('data-value')].type : 'text'
 				};
 				var parameterPanel = Simulators.drawSourceParameterForInput(source.datasource, parameter);
 				parametersPanel.find('> .panel-body').append(parameterPanel);
@@ -2284,8 +2346,11 @@ THE SOFTWARE.
 				parameters.push({
 					type: $(this).find("p[data-attribute='type']").attr('data-value') || 'columnValue',
 					name: $(this).find("p[data-attribute='name']").attr('data-value'),
+					origin: $(this).find("p[data-attribute='origin']").attr('data-value') || 'data',
+					data: $(this).find("p[data-attribute='data']").attr('data-value')  || '',
 					format: $(this).find("p[data-attribute='format']").attr('data-value') || '',
-					data: $(this).find("p[data-attribute='data']").attr('data-value')  || ''
+					constant: $(this).find("p[data-attribute='constant']").attr('data-value')  || '',
+					optional: $(this).find("p[data-attribute='optional']").attr('data-value')  || '0'
 				});
 			});
 			var source;

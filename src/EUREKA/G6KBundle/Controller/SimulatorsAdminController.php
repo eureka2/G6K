@@ -603,7 +603,9 @@ class SimulatorsAdminController extends BaseAdminController {
 								$sectionObj->setName($section['name']);
 								$sectionObj->setLabel($section['label']);
 								$sectionObj->setContent($section['content']);
-								$sectionObj->setAnnotations($section['annotations']);
+								if (isset($section['annotations'])) {
+									$sectionObj->setAnnotations($section['annotations']);
+								}
 								$chapterObj->addSection($sectionObj);
 							}
 							$blockinfoObj->addChapter($chapterObj);
@@ -940,10 +942,15 @@ class SimulatorsAdminController extends BaseAdminController {
 			if (isset($source['parameters'])) {
 				foreach ($source['parameters'] as $parameter) {
 					$parameterObj = new Parameter($sourceObj, $parameter['type']);
+					$parameterObj->setOrigin($parameter['origin']);
 					$parameterObj->setName($parameter['name']);
 					$parameterObj->setFormat($parameter['format']);
-					$data = $this->simu->getDataByName($parameter['data']);
-					$parameterObj->setData($data->getId());
+					if ($parameter['origin'] == 'data') {
+						$data = $this->simu->getDataByName($parameter['data']);
+						$parameterObj->setData($data->getId());
+					}
+					$parameterObj->setConstant($parameter['constant']);
+					$parameterObj->setOptional($parameter['optional'] == '1');
 					$sourceObj->addParameter($parameterObj);
 				}
 			}
@@ -3186,10 +3193,15 @@ class SimulatorsAdminController extends BaseAdminController {
 				$path = "";
 				$datas = array();
 				foreach ($params as $param) {
-					$value = $this->formatParamValue($param);
+					if ($param->getOrigin() == 'data') {
+						$value = $this->formatParamValue($param);
+					} else {
+						$value = $param->getConstant();
+					}
 					if ($value === null) {
 						return null;
 					}
+					$value = urlencode($value);
 					if ($param->getType() == 'path') {
 						$path .= "/".$value;
 					} elseif ($param->getType() == 'data') {
@@ -3199,8 +3211,8 @@ class SimulatorsAdminController extends BaseAdminController {
 						}  else {
 							$datas[$name] = array($value);
 						}
-					} else {
-						$query .= "&".$param->getName()."=".$value;
+					} elseif ($value != '' || ! $param->isOptional()) {
+						$query .= "&".urlencode($param->getName())."=".$value;
 					}
 				}
 				$uri = $datasource->getUri();
@@ -3222,7 +3234,11 @@ class SimulatorsAdminController extends BaseAdminController {
 				$args = array();
 				$args[] = $source->getRequest();
 				foreach ($params as $param) {
-					$value = $this->formatParamValue($param);
+					if ($param->getOrigin() == 'data') {
+						$value = $this->formatParamValue($param);
+					} else {
+						$value = $param->getConstant();
+					}
 					if ($value === null) {
 						return null;
 					}

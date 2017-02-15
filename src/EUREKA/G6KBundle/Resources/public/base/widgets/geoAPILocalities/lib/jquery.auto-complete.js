@@ -75,7 +75,7 @@
                 if (v || item.hasClass('autocomplete-suggestion')) { // else outside click
                     that.val(v);
                     o.onSelect(e, v, item);
-                    that.sc.hide();
+                    setTimeout(function(){ that.sc.hide(); }, 20);
                 }
                 return false;
             });

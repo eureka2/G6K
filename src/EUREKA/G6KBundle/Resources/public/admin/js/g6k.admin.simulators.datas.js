@@ -717,8 +717,11 @@ THE SOFTWARE.
 			var attributes = dataContainer.find('.attributes-container');
 			var datagroup = { id: dataContainer.attr('data-id') };
 			attributes.find('input.simple-value').each(function (index) {
-				var value = $(this).val();
-				datagroup[$(this).attr('data-attribute')] = value;
+				if ($(this).is(':checkbox')) {
+					datagroup[$(this).attr('data-attribute')] = $(this).is(':checked') ? 1 : 0;
+				} else {
+					datagroup[$(this).attr('data-attribute')] = $(this).val();
+				}
 			});
 			datagroup['description'] =  dataPanelContainer.find('.datagroup-description').val();
 			var newDataPanel = Simulators.drawDatagroupForDisplay(datagroup);
@@ -1300,7 +1303,7 @@ THE SOFTWARE.
 			}
 			bootbox.confirm({
 				title: Translator.trans('Deleting data'),
-				message: Translator.trans("Are you sure you want to delete the data : %label%", { 'label': dataLabel }), 
+				message: Translator.trans("Are you sure you want to delete the data : %label% ?", { 'label': dataLabel }), 
 				callback: function(confirmed) {
 					if (confirmed) {
 						delete Simulators.dataset[name];

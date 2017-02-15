@@ -427,6 +427,7 @@
 		changeRangeButtonLabel: Date.dp_locales.texts.changeRangeButtonLabel,
 		closeButtonTitle: Date.dp_locales.texts.closeButtonTitle,
 		closeButtonLabel: Date.dp_locales.texts.closeButtonLabel,
+		onUpdate: function (value) {},
 		theme: 'default',
 		modal: false,
 		inline: false,
@@ -2013,10 +2014,14 @@
 	Datepicker.prototype.update = function() {
 		var $curDay = $('#' + this.$grid.attr('aria-activedescendant'));
 		var date = new Date(this.year, this.month, parseInt($curDay.attr('data-value'), 10));
-		this.$target.val(this.formatDate(date, this.options.outputFormat));
+		var val = this.formatDate(date, this.options.outputFormat);
+		this.$target.val(val);
 		this.$target.removeAttr('aria-invalid');
 		this.$target.parents('.form-group').removeClass('has-error');
 		this.$target.trigger('change');
+		if (this.options.onUpdate) {
+			this.options.onUpdate(val);
+		}
 	} // end update()
 	
 	/** 

@@ -161,7 +161,10 @@
 
 	Listbox.DEFAULTS = {
 		size: 10,
-		theme: 'default'
+		theme: 'default',
+		onSelected: function (value, text) {
+			
+		}
 	}
 
 	/** 
@@ -465,6 +468,7 @@
 		this.$edit.text($id.text());
 		this.$input.attr('value', $id.attr('data-value'));
 		this.$input.trigger('change');
+		this.options.onSelected($id.attr('data-value'), $id.text());
 	} // end selectOption
 
 	/** 

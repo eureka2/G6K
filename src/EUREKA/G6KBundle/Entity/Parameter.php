@@ -30,49 +30,78 @@ class Parameter {
 
 	private $source = null;
 	private $type = "";
+	private $origin = "data"; // 'data' or 'constant'
 	private $name = "";
 	private $format = "";
 	private $data = 0;
-	
+	private $constant = "";
+	private $optional = false;
+
 	public function __construct($source, $type) {
 		$this->source = $source;
 		$this->type = $type;
 	}
-	
+
 	public function getSource() {
 		return $this->source;
 	}
-	
+
 	public function getType() {
 		return $this->type;
 	}
-	
+
 	public function setType($type) {
 		$this->type = $type;
 	}
-	
+
+	public function getOrigin() {
+		return $this->origin;
+	}
+
+	public function setOrigin($origin) {
+		if ($origin != '') {
+			$this->origin = $origin;
+		}
+	}
+
 	public function getName() {
 		return $this->name;
 	}
-	
+
 	public function setName($name) {
 		$this->name = $name;
 	}
-	
+
 	public function getFormat() {
 		return $this->format;
 	}
-	
+
 	public function setFormat($format) {
 		$this->format = $format;
 	}
-	
+
 	public function getData() {
 		return $this->data;
 	}
-	
+
 	public function setData($data) {
 		$this->data = $data;
+	}
+
+	public function getConstant() {
+		return $this->constant;
+	}
+
+	public function setConstant($constant) {
+		$this->constant = $constant;
+	}
+
+	public function isOptional() {
+		return $this->optional;
+	}
+
+	public function setOptional($optional) {
+		$this->optional = $optional;
 	}
 }
 

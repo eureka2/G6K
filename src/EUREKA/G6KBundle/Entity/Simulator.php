@@ -729,9 +729,12 @@ class Simulator {
 				$sourceObj->setReturnPath((string)$source['returnPath']);
 				foreach ($source->Parameter as $parameter) {
 					$parameterObj = new Parameter($sourceObj, (string)$parameter['type']);
+					$parameterObj->setOrigin((string)$parameter['origin']);
 					$parameterObj->setName((string)$parameter['name']);
 					$parameterObj->setFormat((string)$parameter['format']);
 					$parameterObj->setData((int)$parameter['data']);
+					$parameterObj->setConstant((string)$parameter['constant']);
+					$parameterObj->setOptional((string)$parameter['optional'] == '1');
 					$sourceObj->addParameter($parameterObj);
 				}
 				$this->sources[] = $sourceObj;
@@ -896,9 +899,12 @@ class Simulator {
 				$sourceObj->setReturnPath((string)$source['returnPath']);
 				foreach ($source->Parameter as $parameter) {
 					$parameterObj = new Parameter($sourceObj, (string)$parameter['type']);
+					$parameterObj->setOrigin((string)$parameter['origin']);
 					$parameterObj->setName((string)$parameter['name']);
 					$parameterObj->setFormat((string)$parameter['format']);
 					$parameterObj->setData((int)$parameter['data']);
+					$parameterObj->setConstant((string)$parameter['constant']);
+					$parameterObj->setOptional((string)$parameter['optional'] == '1');
 					$sourceObj->addParameter($parameterObj);
 				}
 				$this->sources[] = $sourceObj;
@@ -1357,11 +1363,15 @@ class Simulator {
 		$sources = array();
 		$rules = array();
 		$dataIdMax = 0;
+		$datasrc = dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml';
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
 			$xml = $this->loadFileFromCache($url);
 			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
+			$xml = $this->loadFileFromCache($datasrc);
+			$datasources = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
 		} else {
 			$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
+			$datasources = new \SimpleXMLElement($datasrc, LIBXML_NOWARNING, true);
 		}
 		if ($simulator->DataSet) {
 			foreach ($simulator->DataSet->children() as $child) {
@@ -1479,16 +1489,24 @@ class Simulator {
 								$chapters = array();
 								foreach ($blockinfo->Chapter as $chapter) {
 									$sections = array();
+									$this->dependencies = 'sectionContentDependencies';
 									foreach ($chapter->Section as $section) {
-										$sections[] = array(
+										$this->name = (string)$step['name']."-panel-".$panel['id']."-blockinfo-".$blockinfo['id']."-chapter-".$chapter['id']."-section-".$section['id'];
+										$content = preg_replace_callback(
+											'/#(\d+)|\<var\s+class="data"\s+data-id="(\d+)L?"\>[^\<]+\<\/var\>/', 
+											array($this, 'addNoteDependency'), 
+											(string)$section->Content
+										);
+										$sections[$this->name] = array(
 											'id'	 => (int)$section['id'],
 											'name' => (string)$section['name'],
 											'label' => (string)$section['label'],
-											'content' => (string)$section->Content,
+											'content' => $content,
 											'annotations' => (string)$section->Annotations
 										); 
 									}
-									$chapters[] = array(
+									$this->name = (string)$step['name']."-panel-".$panel['id']."-blockinfo-".$blockinfo['id']."-chapter-".$chapter['id'];
+									$chapters[$this->name] = array(
 										'id'	 => (int)$chapter['id'],
 										'name' => (string)$chapter['name'],
 										'label' => (string)$chapter['label'],
@@ -1541,18 +1559,43 @@ class Simulator {
 		if ($simulator->Sources) {
 			foreach ($simulator->Sources->Source as $source) {
 				$id = (int)$source['id'];
+				$datasource =(string)$source['datasource'];
+				if (is_numeric($datasource)) {
+					$dss = $datasources->xpath("/DataSources/DataSource[@id='".$datasource."']");
+				} else {
+					$dss = $datasources->xpath("/DataSources/DataSource[@name='".$datasource."']");
+				}
+				$datasource = $dss[0];
+				$sources[$id]['datasource']['type'] = (string)$datasource['type'];
+				if ((string)$datasource['type'] == 'uri') {
+					$sources[$id]['datasource']['uri'] = (string)$datasource['uri'];
+					$sources[$id]['datasource']['method'] = (string)$datasource['method'] != '' ? (string)$datasource['method'] : 'get';
+				}
 				$this->name = $id;
 				$this->dependencies = 'sourceDependencies';
 				$parameters = array();
-				foreach ($source->Parameter as $parameter) {
-					$data = $this->datas[(int)$parameter['data']];
-					$parameters[(string)$parameter['name']] = $data['name'];
-					$this->addDependency(array(null, (int)$parameter['data']));
+				foreach ($source->Parameter as $param) {
+					$parameter = array(
+						'name' => (string)$param['name'],
+						'type' => (string)$param['type'] != '' ? (string)$param['type'] : 'queryString',
+						'format' => (string)$param['format'],
+						'origin' => (string)$param['origin'] != '' ? (string)$param['origin'] : 'data',
+						'optional' => (string)$param['optional'] != '' ? (string)$param['optional'] : '0'
+					);
+					if ((string)$param['origin'] == 'constant') {
+						$parameter['constant'] = (string)$param['constant'];
+					} else {
+						$data = $this->datas[(int)$param['data']];
+						$parameter['data'] = $data['name'];
+						$this->addDependency(array(null, (int)$param['data']));
+					}
+					$parameters[] = $parameter;
 				}
 				$sources[$id]['label'] = (string)$source['label'];
 				$sources[$id]['separator'] = (string)$source['separator'];
 				$sources[$id]['delimiter'] = (string)$source['delimiter'];
 				$sources[$id]['parameters'] = $parameters;
+				$sources[$id]['returnType'] = (string)$source['returnType'];
 				$sources[$id]['returnPath'] = $this->replaceIdByName((string)$source['returnPath']);
 			}
 		}
@@ -2094,6 +2137,7 @@ class Simulator {
 					$xml[] = '		<Source ' . $attrs . '>';
 					foreach ($source->getParameters() as $parameter) {
 						$attrs = 'type="' . $parameter->getType() . '"';
+						$attrs .= ' origin="' . $parameter->getOrigin() . '"';
 						if ($parameter->getName() != '') {
 							$attrs .= ' name="' . $parameter->getName() . '"';
 						}
@@ -2102,6 +2146,12 @@ class Simulator {
 						}
 						if ($parameter->getData() != '') {
 							$attrs .= ' data="' . $parameter->getData() . '"';
+						}
+						if ($parameter->getConstant() != '') {
+							$attrs .= ' constant="' . $parameter->getConstant() . '"';
+						}
+						if ($parameter->isOptional()) {
+							$attrs .= ' optional="1"';
 						}
 						$xml[] = '			<Parameter ' . $attrs . ' />';
 					}
