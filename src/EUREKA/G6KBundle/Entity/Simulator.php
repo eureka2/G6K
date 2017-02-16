@@ -1349,6 +1349,15 @@ class Simulator {
 						}
 					}
 					break;
+				case 'unsetAttribute':
+					$clause = array('name' => 'action-select', 'value' => 'unsetAttribute', 'fields' => array(
+							array('name' => 'attributeId', 'value' => $target, 'fields' => array(
+									array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'])
+								)
+							)
+						)
+					);
+					break;
 			}
 			$datas[] = $clause;
 		}
@@ -2313,14 +2322,14 @@ class Simulator {
 			$conditions = $connector->getConditions();
 			if (empty($conditions)) {
 				$htmlconnector .= ' />';
-				$xml[] = $indent . $htmlconnector;
+				$xml[] = $indent . "\t" . $htmlconnector;
 			} else {
 				$htmlconnector .= '>';
-				$xml[] = $indent . $htmlconnector;
+				$xml[] = $indent . "\t" . $htmlconnector;
 				foreach ($conditions as $cond) {
-					$this->saveConnector($cond, $indent . "", $xml);
+					$this->saveConnector($cond, $indent . "\t", $xml);
 				}
-				$xml[] = $indent . '</Connector>';
+				$xml[] = $indent . "\t" . '</Connector>';
 			}
 		}
 	}

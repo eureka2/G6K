@@ -963,6 +963,31 @@ class DefaultController extends Controller {
 							break;
 					}
 					break;
+				case 'unsetAttribute':
+					$data =  $this->simu->getDataById($action->getData());
+					switch ($action->getTarget()) {
+						case 'content':
+							$data->setContent('');
+							break;
+						case 'default':
+							$data->setUnparsedDefault('');
+							break;
+						case 'explanation':
+							break;
+						case 'index':
+							$data->setUnparsedIndex('');
+							break;
+						case 'min':
+							$data->setUnparsedMin('');
+							break;
+						case 'max':
+							$data->setUnparsedMax('');
+							break;
+						case 'source':
+							$data->setSource('');
+							break;
+					}
+					break;
 			}
 		}
 	}

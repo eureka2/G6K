@@ -67,17 +67,17 @@ THE SOFTWARE.
 				{%- if choice.class == 'ChoiceGroup' -%}
 				{%- for gchoice in choice.choices -%}
 				{%- if gchoice.selected -%}
-				<label class="choice" for="{{ name }}_{{ gchoice.id }}"><input id="{{ name }}_{{ gchoice.id }}" type="radio" name="{{ name }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} checked="checked"{% endif %} />{{ gchoice.label }}</label>
+				<label class="choice{%- if gchoice.value == value %} checked{% endif %}" for="{{ name }}_{{ gchoice.id }}"><input id="{{ name }}_{{ gchoice.id }}" type="radio" name="{{ name }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} checked="checked"{% endif %} />{{ gchoice.label }}</label>
 				{% endif %}
 				{% endfor %}
 				{%- elseif choice.class == 'Choice' and choice.selected -%}
-				<label class="choice" for="{{ name }}_{{ choice.id }}"><input id="{{ name }}_{{ choice.id }}" type="radio" name="{{ name }}" value="{{ choice.value }}"{%- if choice.value == value %} checked="checked"{% endif %} />{{ choice.label }}</label>
+				<label class="choice{%- if choice.value == value %} checked{% endif %}" for="{{ name }}_{{ choice.id }}"><input id="{{ name }}_{{ choice.id }}" type="radio" name="{{ name }}" value="{{ choice.value }}"{%- if choice.value == value %} checked="checked"{% endif %} />{{ choice.label }}</label>
 				{% endif %}
 				{% endfor %}
 			</fieldset>
 		{% else %}
-			<select class="{{ fieldClass }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }}{% if field.required %} aria-required="true"{% endif %}>
-			{%- if not(data.default) -%}<option id="{{ name }}_none" value="">{{ prompt }}</option>{% endif %}
+			<select class="{{ fieldClass }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }}{% if field.required %} aria-required="true"{% endif %}{% if field.widget and field.prompt %} placeholder="{{ field.prompt }}"{% endif %}>
+			{%- if not(data.default) and not(field.widget) -%}<option id="{{ name }}_none" value="">{{ prompt }}</option>{% endif %}
 			{%- for choice in data.choices -%}
 			{%- if choice.class == 'ChoiceGroup' -%}
 			<optgroup label="{{ choice.label }}">

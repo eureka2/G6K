@@ -366,6 +366,8 @@ THE SOFTWARE.
 	{% endif %}
 {% elseif action.name == 'setAttribute' %}
 	<span class="action-name">{{ 'set'|trans }}</span> <span class="action-target">{{ action.target|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span> <span class="action-value"> {{ 'to'|trans }} {{ simulator.replaceByDataLabel(action.value)|raw }}</span>
+{% elseif action.name == 'unsetAttribute' %}
+	<span class="action-name">{{ 'unset'|trans }}</span> <span class="action-target">{{ action.target|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span>
 {% endif %}
 </div>
 {% endmacro %}

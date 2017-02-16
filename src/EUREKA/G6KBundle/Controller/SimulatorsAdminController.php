@@ -689,6 +689,13 @@ class SimulatorsAdminController extends BaseAdminController {
 						$ruleActionObj->setValue($value);
 						$ruleActionObj->setData($data->getId());
 						break;
+					case 'unsetAttribute':
+						$target = $action['fields'][0]['value'];
+						$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setTarget($target);
+						$ruleActionObj->setValue('');
+						$ruleActionObj->setData($data->getId());
+						break;
 					case 'hideObject':
 					case 'showObject':
 						$target = $action['fields'][0]['value'];
@@ -812,6 +819,13 @@ class SimulatorsAdminController extends BaseAdminController {
 						$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
 						$ruleActionObj->setTarget($target);
 						$ruleActionObj->setValue($value);
+						$ruleActionObj->setData($data->getId());
+						break;
+					case 'unsetAttribute':
+						$target = $action['fields'][0]['value'];
+						$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setTarget($target);
+						$ruleActionObj->setValue('');
 						$ruleActionObj->setData($data->getId());
 						break;
 					case 'hideObject':
@@ -2690,6 +2704,91 @@ class SimulatorsAdminController extends BaseAdminController {
 						)
 					)
 				)
+			),
+			array(
+				'label' => $this->get('translator')->trans("Unset"), 
+				'name' => "unsetAttribute", 
+				'fields' => array(
+					array(
+						'label' => "",
+						'name' => "attributeId",
+						'fieldType' => "select",
+						'options' => array(
+							array(
+								'label' => $this->get('translator')->trans("content"), 
+								'name' => "content", 
+								'fields' => array(
+									array(
+										'label' => $this->get('translator')->trans("of"),
+										'name' => "fieldName",
+										'fieldType' => "field",
+										'newValue' => false
+									)
+								)
+							),
+							array(
+								'label' => $this->get('translator')->trans("default"), 
+								'name' => "default", 
+								'fields' => array(
+									array(
+										'label' => $this->get('translator')->trans("of"),
+										'name' => "fieldName",
+										'fieldType' => "field",
+										'newValue' => false
+									)
+								)
+							),
+							array(
+								'label' => $this->get('translator')->trans("minimum"), 
+								'name' => "min", 
+								'fields' => array(
+									array(
+										'label' => $this->get('translator')->trans("of"),
+										'name' => "fieldName",
+										'fieldType' => "field",
+										'newValue' => false
+									)
+								)
+							),
+							array(
+								'label' => $this->get('translator')->trans("maximum"), 
+								'name' => "max", 
+								'fields' => array(
+									array(
+										'label' => $this->get('translator')->trans("of"),
+										'name' => "fieldName",
+										'fieldType' => "field",
+										'newValue' => false
+									)
+								)
+							),
+							array(
+								'label' => $this->get('translator')->trans("Result index"), 
+								'name' => "index", 
+								'fields' => array(
+									array(
+										'label' => $this->get('translator')->trans("of"),
+										'name' => "fieldName",
+										'fieldType' => "field",
+										'newValue' => false
+									)
+								)
+							),
+							array(
+								'label' => $this->get('translator')->trans("explanation"), 
+								'name' => "explanation", 
+								'fields' => array(
+									array(
+										'label' => $this->get('translator')->trans("of"),
+										'name' => "fieldName",
+										'fieldType' => "field",
+										'newValue' => false
+									)
+								)
+							)
+						)
+					)
+				)
 			)
 		);
 		if (count($datagroups) > 0) {
@@ -3051,6 +3150,15 @@ class SimulatorsAdminController extends BaseAdminController {
 							$dataset[$name]['rulesActionsDependency'][] = $ruleID;
 						}
 					}
+					break;
+				case 'unsetAttribute':
+					$clause = array('name' => 'action-select', 'value' => 'unsetAttribute', 'fields' => array(
+							array('name' => 'attributeId', 'value' => $target, 'fields' => array(
+									array('name' => 'fieldName', 'value' => $this->findDataNameById($action->getData()))
+								)
+							)
+						)
+					);
 					break;
 			}
 			$datas[] = $clause;

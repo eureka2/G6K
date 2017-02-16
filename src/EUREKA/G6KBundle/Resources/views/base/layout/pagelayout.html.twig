@@ -111,7 +111,9 @@ if (/no-js=/.test(window.location.search)) {
 jQuery(document).ready(function(){
 	{%- if not(ua.mobile) -%}
 		$('.disposition-classic input.date, .disposition-grid input.date').each(function() {
-			$(this).attr('data-widget', 'abDatepicker'); {# Temporarily #}
+			if (! this.hasAttribute('data-widget')) {
+				$(this).attr('data-widget', 'abDatepicker'); {# Temporarily #}
+			}
 		});
 	{% endif %}
 	var g6k = new G6k({%- if step.dynamic or (step.simulator.dynamic and step.id == 0) -%}true{%- else -%}false{%- endif %}, {% if ua.mobile -%}true{%- else -%}false{%- endif -%}, "{{ app.request.locale }}");

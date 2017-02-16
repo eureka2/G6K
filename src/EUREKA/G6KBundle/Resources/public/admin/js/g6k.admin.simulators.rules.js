@@ -38,7 +38,7 @@ THE SOFTWARE.
 				return false;
 			}
 			$.each(rule.ifdata, function(a, action) {
-				if (action.value == "setAttribute") {
+				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
 						inRules = rule.id;
@@ -47,7 +47,7 @@ THE SOFTWARE.
 				}
 			});
 			$.each(rule.elsedata, function(a, action) {
-				if (action.value == "setAttribute") {
+				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
 						inRules = rule.id;
@@ -80,7 +80,7 @@ THE SOFTWARE.
 			if (this.hasAttribute('data-data') && $(this).attr('data-data') == oldId) {
 				$(this).attr('data-data', id);
 			}
-			if (this.hasAttribute('data-name') && $(this).attr('data-name') == "setAttribute" && re.test($(this).attr('data-value'))) {
+			if (this.hasAttribute('data-name') && ($(this).attr('data-name') == "setAttribute" || $(this).attr('data-name') == "unsetAttribute") && re.test($(this).attr('data-value'))) {
 				var val = $(this).attr('data-value');
 				val = val.replace(re, "#" + id + '$1');
 				$(this).attr('data-value', val);
@@ -100,7 +100,7 @@ THE SOFTWARE.
 				Simulators.changeDataIdInConnector(rule.connector, oldId, id);
 			}
 			$.each(rule.ifdata, function(a, action) {
-				if (action.value == "setAttribute") {
+				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
 						val = val.replace(re, "#" + id + '$1');
@@ -109,7 +109,7 @@ THE SOFTWARE.
 				}
 			});
 			$.each(rule.elsedata, function(a, action) {
-				if (action.value == "setAttribute") {
+				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
 						val = val.replace(re, "#" + id + '$1');
@@ -128,7 +128,7 @@ THE SOFTWARE.
 				return false;
 			}
 			$.each(rule.ifdata, function(a, action) {
-				if (action.value == "setAttribute") {
+				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					if (action.fields[0].fields[0].value == name) {
 						inRules = rule.id;
 						return false;
@@ -136,7 +136,7 @@ THE SOFTWARE.
 				}
 			});
 			$.each(rule.elsedata, function(a, action) {
-				if (action.value == "setAttribute") {
+				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					if (action.fields[0].fields[0].value == name) {
 						inRules = rule.id;
 						return false;
@@ -153,14 +153,14 @@ THE SOFTWARE.
 				Simulators.changeDataNameInConnector(rule.connector, oldName, name);
 			}
 			$.each(rule.ifdata, function(a, action) {
-				if (action.value == "setAttribute") {
+				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					if (action.fields[0].fields[0].value == oldName) {
 						action.fields[0].fields[0].value = name;
 					}
 				}
 			});
 			$.each(rule.elsedata, function(a, action) {
-				if (action.value == "setAttribute") {
+				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					if (action.fields[0].fields[0].value == oldName) {
 						action.fields[0].fields[0].value = name;
 					}
@@ -3172,6 +3172,24 @@ THE SOFTWARE.
 						]
 					};
 					break;
+				case 'unsetAttribute':
+					clause = {
+						name: 'action-select', 
+						value: 'unsetAttribute', 
+						fields: [
+							{
+								name: 'attributeId', 
+								value: target, 
+								fields: [
+									{
+										name: 'fieldName', 
+										value: Simulators.findDataNameById($(this).attr('data-data')) 
+									}
+								]
+							}
+						]
+					};
+					break;
 			}
 			actions.push(clause);
 		}); 
@@ -3606,6 +3624,11 @@ THE SOFTWARE.
 				dataObj = Simulators.dataset[ruleAction.fields[0].fields[0].value];
 				data = dataObj.id;
 				break;
+			case 'unsetAttribute':
+				target = ruleAction.fields[0].value;
+				dataObj = Simulators.dataset[ruleAction.fields[0].fields[0].value];
+				data = dataObj.id;
+				break;
 			case 'hideObject':
 			case 'showObject':
 				target = ruleAction.fields[0].value;
@@ -3798,6 +3821,8 @@ THE SOFTWARE.
 			}
 		} else if (name === 'setAttribute') {
 			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans(target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByDataLabel(value)) + '</span>');
+		} else if (name === 'unsetAttribute') {
+			actionContainer.append('<span class="action-name">' + Translator.trans('unset') + '</span> <span class="action-target">' + Translator.trans(target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span>');
 		}
 		return actionContainer;
 	}

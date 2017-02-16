@@ -199,12 +199,14 @@ THE SOFTWARE.
 
 	Simulators.getChoiceLabel = function(data, name) {
 		var result = "";
-		$.each(data.options, function(o, option) {
-			if (option.name == name) {
-				result = option.label;
-				return false;
-			}
-		});
+		if (data.options) {
+			$.each(data.options, function(o, option) {
+				if (option.name == name) {
+					result = option.label;
+					return false;
+				}
+			});
+		}
 		return result;
 	}
 

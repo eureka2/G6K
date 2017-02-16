@@ -33,12 +33,17 @@ parameters:
                 - js/jquery.jeditable.money.js
                 - js/jquery.jeditable.percent.js
                 - js/jEditable.js
-        geoAPILocalities:
-            label: Insee code obtained by autocompletion on the name of the commune or its postal code
+        AutocompletionListbox:
+            label: List box with auto-completion
             css: 
                 - lib/jquery.auto-complete.css
             js: 
                 - lib/jquery.auto-complete.min.js
+                - js/AutocompletionListbox.js
+        geoAPILocalities:
+            label: Insee code obtained by autocompletion on the name of the commune or its postal code
+            css: 
+            js: 
                 - js/geoAPILocalities.js
         geoAPILocalitiesEditable:
             label: Insee code obtained by autocompletion on the name of the commune or its postal code (In place mode)
