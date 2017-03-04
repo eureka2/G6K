@@ -437,7 +437,9 @@ var.data {
 #toTop .fa {
 	margin-right: 5px;
 }
-
+.rich-text p {
+	margin: 0;
+}
 .toast {
 	border: 1px solid #AAA;
 	background: #FFFFE0;

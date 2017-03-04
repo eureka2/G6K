@@ -1703,12 +1703,21 @@ class Simulator {
 		return $connector;
 	}
 
+	private function cleanRichText($text) {
+		$lines = explode("\n", $text);
+		foreach($lines as &$line) {
+			$line = trim(str_replace(array("<p>&nbsp;</p>", "<p>", "</p>", "<br>", "\t", "&nbsp;"), array(PHP_EOL, "", PHP_EOL, PHP_EOL, " ", " "), $line));
+		}
+		$cleaned = implode(PHP_EOL ,$lines);
+		return trim($cleaned);
+	}
+
 	public function save($file) {
 		$xml = array();
 		$xml[] = '<?xml version="1.0" encoding="utf-8"?>';
 		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . $this->getLabel() . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '">';
 		$xml[] = '	<Description><![CDATA[';
-		$xml[] = trim($this->getDescription());
+		$xml[] = $this->cleanRichText($this->getDescription());
 		$xml[] = '	]]></Description>';
 		$xml[] = '	<DataSet dateFormat="' . $this->getDateFormat() . '" decimalPoint="' . $this->getDecimalPoint() . '" moneySymbol="' . $this->getMoneySymbol() . '" symbolPosition="' . $this->getSymbolPosition() . '">';
 		foreach ($this->getDatas() as $data) {
@@ -1743,11 +1752,12 @@ class Simulator {
 					if ($gdata->isMemorize()) {
 						$attrs .= ' memorize="1"'; 
 					}
-					if ($gdata->getDescription() != '' || $gdata->getType() == 'choice') {
+					$description = $this->cleanRichText($gdata->getDescription());
+					if ($description != '' || $gdata->getType() == 'choice') {
 						$xml[] = '			<Data ' . $attrs . '>';
-						if ($gdata->getDescription() != '') {
+						if ($description != '') {
 							$xml[] = '				<Description><![CDATA[';
-							$xml[] = trim($gdata->getDescription());
+							$xml[] = $description;
 							$xml[] = '				]]></Description>';
 						}
 						if ($gdata->getType() == 'choice') {
@@ -1819,11 +1829,12 @@ class Simulator {
 				if ($data->isMemorize()) {
 					$attrs .= ' memorize="1"'; 
 				}
-				if ($data->getDescription() != '' || $data->getType() == 'choice') {
+				$description = $this->cleanRichText($data->getDescription());
+				if ($description != '' || $data->getType() == 'choice') {
 					$xml[] = '		<Data ' . $attrs . '>';
-					if ($data->getDescription() != '') {
+					if ($description != '') {
 						$xml[] = '			<Description><![CDATA[';
-						$xml[] = trim($data->getDescription());
+						$xml[] = $description;
 						$xml[] = '			]]></Description>';
 					}
 					if ($data->getType() == 'choice') {
@@ -1871,9 +1882,10 @@ class Simulator {
 			$xml[] = '	<Profiles label="' . $this->profiles->getLabel() . '">';
 			foreach ($this->profiles->getProfiles() as $profile) {
 				$xml[] = '		<Profile id="' . $profile->getId() . '" name="' . $profile->getName() . '" label="' . $profile->getLabel() . '">';
-				if ($profile->getDescription() != '') {
+				$description = $this->cleanRichText($profile->getDescription());
+				if ($description != '') {
 					$xml[] = '			<Description><![CDATA[';
-					$xml[] = trim($profile->getDescription());
+					$xml[] = $description;
 					$xml[] = '			]]></Description>';
 				}
 				foreach ($profile->getDatas() as $data) {
@@ -1894,9 +1906,10 @@ class Simulator {
 					$attrs .= ' dynamic="1"'; 
 				}
 				$xml[] = '		<Step ' . $attrs . '>';
-				if ($step->getDescription() != '') {
+				$description = $this->cleanRichText($step->getDescription());
+				if ($description != '') {
 					$xml[] = '			<Description><![CDATA[';
-					$xml[] = trim($step->getDescription());
+					$xml[] = $description;
 					$xml[] = '			]]></Description>';
 				}
 				$xml[] = '			<Panels>';
@@ -1919,9 +1932,10 @@ class Simulator {
 								$attrs .= ' popinLink="' . $fieldset->getPopinLink() . '"'; 
 							}
 							$xml[] = '					<FieldSet ' . $attrs . '>';
-							if ($fieldset->getLegend() != '') {
+							$legend = $this->cleanRichText($fieldset->getLegend());
+							if ($legend != '') {
 								$xml[] = '						<Legend><![CDATA[';
-								$xml[] = trim($fieldset->getLegend());
+								$xml[] = $legend;
 								$xml[] = '						]]></Legend>';
 							}
 							if (count($fieldset->getColumns()) > 0) {
@@ -1991,12 +2005,12 @@ class Simulator {
 											$xml[] = '							<Field ' . $attrs . '>';
 											if ($field->getPreNote() !== null) {
 												$xml[] = '							<PreNote><![CDATA[';
-												$xml[] = trim($field->getPreNote()->getText());
+												$xml[] = $this->cleanRichText($field->getPreNote()->getText());
 												$xml[] = '							]]></PreNote>';
 											}
 											if ($field->getPostNote() !== null) {
 												$xml[] = '							<PostNote><![CDATA[';
-												$xml[] = trim($field->getPostNote()->getText());
+												$xml[] = $this->cleanRichText($field->getPostNote()->getText());
 												$xml[] = '							]]></PostNote>';
 											}
 											$xml[] = '							</Field>';
@@ -2042,12 +2056,12 @@ class Simulator {
 										$xml[] = '						<Field ' . $attrs . '>';
 										if ($field->getPreNote() !== null) {
 											$xml[] = '							<PreNote><![CDATA[';
-											$xml[] = trim($field->getPreNote()->getText());
+											$xml[] = $this->cleanRichText($field->getPreNote()->getText());
 											$xml[] = '							]]></PreNote>';
 										}
 										if ($field->getPostNote() !== null) {
 											$xml[] = '							<PostNote><![CDATA[';
-											$xml[] = trim($field->getPostNote()->getText());
+											$xml[] = $this->cleanRichText($field->getPostNote()->getText());
 											$xml[] = '							]]></PostNote>';
 										}
 										$xml[] = '						</Field>';
@@ -2080,10 +2094,10 @@ class Simulator {
 									$attrs .= ' label="' . $section->getLabel() . '"';
 									$xml[] = '							<Section ' . $attrs . '>';
 									$xml[] = '								<Content><![CDATA[';
-									$xml[] = trim($section->getContent());
+									$xml[] = $this->cleanRichText($section->getContent());
 									$xml[] = '								]]></Content>';
 									$xml[] = '								<Annotations><![CDATA[';
-									$xml[] = trim($section->getAnnotations());
+									$xml[] = $this->cleanRichText($section->getAnnotations());
 									$xml[] = '								]]></Annotations>';
 									$xml[] = '							</Section>';
 								}
@@ -2122,7 +2136,7 @@ class Simulator {
 							$attrs .= ' id="' . $footnote->getId() . '"'; 
 						}
 						$xml[] = '				<FootNote' . $attrs . '><![CDATA[';
-						$xml[] = trim($footnote->getText());
+						$xml[] = $this->cleanRichText($footnote->getText());
 						$xml[] = '				]]></FootNote>';
 					}
 					$xml[] = '			</FootNotes>';
@@ -2313,7 +2327,7 @@ class Simulator {
 			}
 			$xml[] = '	</BusinessRules>';
 		}
-		$relatedInformations = trim($this->getRelatedInformations());
+		$relatedInformations = $this->cleanRichText($this->getRelatedInformations());
 		if ($relatedInformations != '') {
 			$xml[] = '	<RelatedInformations><![CDATA[';
 			$xml[] = $relatedInformations;
