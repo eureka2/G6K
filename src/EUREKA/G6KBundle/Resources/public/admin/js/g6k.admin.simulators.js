@@ -163,13 +163,13 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeDataIdInRichText = function(oldId, id) {
-		var re1 = new RegExp("#" + oldId + '([^\\d])?', 'g');
+		var re1 = new RegExp("#" + oldId + '\\b', 'g');
 		var re2 = new RegExp('\\<var\\s+([^\\s]*\\s*)data\\-id=\\"' + oldId + '\\"', 'g');
 		$('#simulator').find('.rich-text').each(function(r) {
 			var updated = false;
 			var richtext = $(this).html();
 			if (re1.test(richtext)) {
-				richtext = richtext.replace(re1, "#" + id + '$1');
+				richtext = richtext.replace(re1, "#" + id);
 				updated = true;
 			}
 			if (re2.test(richtext)) {
@@ -183,11 +183,11 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeDataIdInExpression = function(oldId, id) {
-		var re1 = new RegExp("#" + oldId + '([^\\d])?', 'g');
+		var re1 = new RegExp("#" + oldId + '\\b', 'g');
 		$('#simulator').find('span.attribute-expression').each(function(a) {
 			var val = $(this).attr('data-value');
 			if (re1.test(val)) {
-				$(this).attr('data-value', val.replace(re1, "#" + id + '$1'));
+				$(this).attr('data-value', val.replace(re1, "#" + id));
 			}
 		});
 	}
@@ -733,6 +733,11 @@ $(document).ready(function() {
 				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
 				stop: function( event, ui ) { ui.helper.css('border', 'none') }
 			});
+		});
+		$('#collapsedatas .choices-panel').each(function(k) {
+			if ($(this).find('.choice-source-container').length > 0) {
+				$(this).find('.choice-container').hide();
+			}
 		});
 
 		$( "#page-simulators .optional-attributes li" ).dblclick(function() {

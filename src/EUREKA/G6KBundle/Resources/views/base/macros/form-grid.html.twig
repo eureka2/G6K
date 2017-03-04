@@ -41,7 +41,7 @@ THE SOFTWARE.
 				{%- for row in fieldset.fields -%}
 				{% set gid = row.dataGroup %}
 				{% set datagroup = simu.dataGroupById(gid) %}
-				<tr id="{{ datagroup.name }}-datagroup" role="row">
+				<tr id="{{ step.name }}-panel-{{ fieldset.panel.id }}-fieldset-{{ fieldset.id }}-fieldrow-{{ row.id }}" role="row">
 					<th scope="row" role="rowheader" rowspan="2" data-label="{{ row.label }}">{{ row.label }}</th>
 					{%- for field in row.fields -%}
 					{%- if field.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
@@ -211,6 +211,8 @@ THE SOFTWARE.
 							{{context.form.monthname(value)|trans }}
 						{%- elseif type == 'department' -%}
 							{{context.form.departmentname(value) }}
+						{%- elseif type == 'money' -%}
+							{{ data.value|number_format(2, simu.decimalPoint, ' ') }}
 						{%- else -%}
 							{{ value }}
 						{%- endif -%}
@@ -229,7 +231,7 @@ THE SOFTWARE.
 				{% endfor %}
 				</tr>
 				<tr>
-					<td colspan="{{ row.fields|length }}">
+					<td colspan="{{ row.fields|length + 1 }}">
 						{%- if (step.dynamic or (simu.dynamic and step.id == 0)) -%}
 						<div aria-live="polite" id="{{ datagroup.name }}-error" class="group-error{%- if datagroup.error %} has-error{%- elseif datagroup.warning %} has-warning{%- else %} hidden{%- endif -%}">{%- if datagroup.error -%}{%- for errorMessage in datagroup.errorMessages -%}<p>{{ errorMessage }}</p>{%- endfor -%}{% endif %}</div>
 						{%- else -%}

@@ -1127,6 +1127,7 @@ class DefaultController extends Controller {
 				$query = "";
 				$path = "";
 				$datas = array();
+				$headers = array();
 				foreach ($params as $param) {
 					if ($param->getOrigin() == 'data') {
 						$value = $this->formatParamValue($param);
@@ -1151,6 +1152,13 @@ class DefaultController extends Controller {
 						}  else {
 							$datas[$name] = array($value);
 						}
+					} elseif ($param->getType() == 'header') {
+						if ($value != '') {
+							$name = 'HTTP_' . str_replace('-', '_', strtoupper($param->getName()));
+							$headers[] = array(
+								$name => $value
+							);
+						}
 					} elseif ($value != '' || ! $param->isOptional()) {
 						$query .= "&".urlencode($param->getName())."=".$value;
 					}
@@ -1167,9 +1175,9 @@ class DefaultController extends Controller {
 				} else {
 					$client = Client::createClient();
 					if (strcasecmp($datasource->getMethod(), "GET") == 0) {
-						$result = $client->get($uri);
+						$result = $client->get($uri, $headers);
 					} else {
-						$result = $client->post($uri, $datas);
+						$result = $client->post($uri, $headers, $datas);
 					}
 					$this->uricache[$uri] = $result;
 				}

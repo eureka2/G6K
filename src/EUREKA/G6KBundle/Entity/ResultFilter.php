@@ -319,7 +319,8 @@ class ResultFilter {
 
 	protected function replaceTextKeys(&$array) {
 		if (count($array) == 1) {
-			$key = array_keys($array)[0];
+			$keys = array_keys($array);
+			$key = $keys[0];
 			if ($key == '#text') {
 				$array = $array[$key];
 			} elseif ($key == 0 && is_array($array[0])) {

@@ -108,7 +108,6 @@ THE SOFTWARE.
 	Admin.types = { 
 		date: Translator.trans('date'), 
 		day: Translator.trans('day'), 
-		today: Translator.trans('today'), 
 		month: Translator.trans('month'), 
 		year: Translator.trans('year'), 
 		'boolean': Translator.trans('boolean'), 

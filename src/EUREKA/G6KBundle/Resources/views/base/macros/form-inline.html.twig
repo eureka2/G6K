@@ -234,6 +234,8 @@ THE SOFTWARE.
 		{{ context.form.monthname(value)|trans }}
 	{%- elseif type == 'department' -%}
 		{{ context.form.departmentname(value) }}
+	{%- elseif type == 'money' -%}
+		{{ data.value|number_format(2, simu.decimalPoint, ' ') }}
 	{%- else -%}
 		{{ value }}
 	{%- endif -%}

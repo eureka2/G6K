@@ -259,6 +259,7 @@
 															<xs:enumeration value="path"/>
 															<xs:enumeration value="data"/>
 															<xs:enumeration value="columnValue"/>
+															<xs:enumeration value="header"/>
 														</xs:restriction>
 													</xs:simpleType>
 												</xs:attribute>
@@ -508,6 +509,7 @@
 					<xs:enumeration value="notifyError"/>
 					<xs:enumeration value="notifyWarning"/>
 					<xs:enumeration value="setAttribute"/>
+					<xs:enumeration value="unsetAttribute"/>
 					<xs:enumeration value="hideObject"/>
 					<xs:enumeration value="showObject"/>
 				</xs:restriction>
@@ -522,6 +524,7 @@
 					<xs:enumeration value="step"/>
 					<xs:enumeration value="panel"/>
 					<xs:enumeration value="fieldset"/>
+					<xs:enumeration value="fieldrow"/>
 					<xs:enumeration value="field"/>
 					<xs:enumeration value="blockinfo"/>
 					<xs:enumeration value="chapter"/>
@@ -544,6 +547,7 @@
 		<xs:attribute name="step" type="xs:nonNegativeInteger"/>
 		<xs:attribute name="panel"/>
 		<xs:attribute name="fieldset" type="xs:positiveInteger"/>
+		<xs:attribute name="fieldrow"/>
 		<xs:attribute name="field" type="xs:positiveInteger"/>
 		<xs:attribute name="blockinfo" type="xs:positiveInteger"/>
 		<xs:attribute name="chapter"/>

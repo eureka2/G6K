@@ -1245,6 +1245,24 @@ class Simulator {
 								)
 							);
 							break;
+						case 'fieldrow':
+							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+									array('name' => 'objectId',	'value' => $target, 'fields' => array(
+											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+															array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
+																	array('name' => 'fieldrowId', 'value' => (string)$action[$target])
+																)
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							);
+							break;
 						case 'blockinfo':
 							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
 									array('name' => 'objectId', 'value' => $target, 'fields' => array(
@@ -1849,7 +1867,7 @@ class Simulator {
 			}
 		}
 		$xml[] = '	</DataSet>';
-		if ($this->profiles !== null) {
+		if ($this->profiles !== null && (count($this->profiles->getProfiles()) > 0)) {
 			$xml[] = '	<Profiles label="' . $this->profiles->getLabel() . '">';
 			foreach ($this->profiles->getProfiles() as $profile) {
 				$xml[] = '		<Profile id="' . $profile->getId() . '" name="' . $profile->getName() . '" label="' . $profile->getLabel() . '">';
@@ -1999,12 +2017,8 @@ class Simulator {
 									if ($field->getPrompt() != '') {
 										$attrs .= ' prompt="' . $field->getPrompt() . '"'; 
 									}
-									if (! $field->isRequired()) {
-										$attrs .= ' required="0"'; 
-									}
-									if (! $field->isVisibleRequired()) {
-										$attrs .= ' visibleRequired="0"'; 
-									}
+									$attrs .= $field->isRequired() ? ' required="1"' : ' required="0"'; 
+									$attrs .= $field->isVisibleRequired() ? ' visibleRequired="1"' : ' visibleRequired="0"'; 
 									if (! $field->hasColon()) {
 										$attrs .= ' colon="0"'; 
 									}
@@ -2299,9 +2313,12 @@ class Simulator {
 			}
 			$xml[] = '	</BusinessRules>';
 		}
-		$xml[] = '	<RelatedInformations><![CDATA[';
-		$xml[] = trim($this->getRelatedInformations());
-		$xml[] = '	]]></RelatedInformations>';
+		$relatedInformations = trim($this->getRelatedInformations());
+		if ($relatedInformations != '') {
+			$xml[] = '	<RelatedInformations><![CDATA[';
+			$xml[] = $relatedInformations;
+			$xml[] = '	]]></RelatedInformations>';
+		}
 		$xml[] = '</Simulator>';
 		$xmlstring = implode("\r\n", $xml);
 		$xmlstring = str_replace('&gt;', '>', $xmlstring);

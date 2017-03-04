@@ -63,7 +63,7 @@ THE SOFTWARE.
 				<div class="panel-group" id="simulator" role="tablist" aria-multiselectable="true">
 					<div class="panel panel-primary">
 						<div id="simulator-options-panel" class="panel-heading" role="tab">
-							{% if hiddens.action != 'create' %}
+							{% if hiddens.action != 'create' and valid %}
 							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name, 'view': simulator.defaultView }) }}" class="btn btn-primary pull-right view-button" title="{{ 'Try it'|trans }}" target="_blank"><span class="button-label">{{ 'Try it'|trans }}</span> <span class="glyphicon glyphicon-eye-open"></span></a>
 							{% endif %}
 							<button class="btn btn-primary pull-right update-button edit-simulator" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></button>
@@ -272,8 +272,9 @@ THE SOFTWARE.
 
 {% macro showRuleAction(action, simulator, actions) %}
 <div class="rule-action" data-id="{{ action.id }}" data-name="{{ action.name }}" data-target="{{ action.target }}" data-data="{{ action.data }}" data-datagroup="{{ action.datagroup }}" data-step="{{ action.step }}" data-panel="{{ action.panel }}" data-fieldset="{{ action.fieldset }}" data-column="{{ action.column }}" data-fieldrow="{{ action.fieldrow }}" data-field="{{ action.field }}" data-blockinfo="{{ action.blockinfo }}" data-chapter="{{ action.chapter }}" data-section="{{ action.section }}" data-prenote="{{ action.prenote }}" data-postnote="{{ action.postnote }}" data-action="{{ action.action }}" data-footnote="{{ action.footnote }}" data-choice="{{ action.choice }}" data-value="{{ action.value }}">
+{% set targetlib = 'the ' ~ action.target %}
 {% if action.name == 'notifyError' or action.name == 'notifyWarning' %}
-	<span class="action-name">{{ action.name == 'notifyError' ? 'notify Error'|trans : 'notify Warning'|trans }} : </span> <span class="action-value">«{{ action.value }}»</span> <span class="action-target"> {{ 'on'|trans }} {{ action.target|trans }} </span>
+	<span class="action-name">{{ action.name == 'notifyError' ? 'notify Error'|trans : 'notify Warning'|trans }} : </span> <span class="action-value">«{{ action.value }}»</span> <span class="action-target"> {{ 'on'|trans }} {{ targetlib|trans }} </span>
 	{% if action.target == 'data' %}
 		<span class="action-data"><var class="data" data-id="{{ action.data }}">«{{ simulator.getDataById(action.data).label }}»</var></span>
 	{% elseif action.target == 'datagroup' %}
@@ -283,7 +284,7 @@ THE SOFTWARE.
 	{% set actionNode = simulator.controller.findAction(action.name, actions) %}
 	{% set step = simulator.getStepById(action.step) %}
 	{% set optionNode = simulator.controller.findActionOption('objectId', action.target, actionNode) %}
-	<span class="action-name">{{ action.name == 'hideObject' ? 'hide'|trans : 'show'|trans }}</span> <span class="action-target">{{ action.target|trans }}</span>
+	<span class="action-name">{{ action.name == 'hideObject' ? 'hide'|trans : 'show'|trans }}</span> <span class="action-target">{{ targetlib|trans }}</span>
 	{% if action.target == 'step' %}
 		<span class="action-step">«{{ simulator.controller.findActionField([{'stepId': action.step}], optionNode).label }}»</span>
 	{% elseif action.target == 'panel' %}
@@ -365,9 +366,9 @@ THE SOFTWARE.
 		<span class="action-data"> {{ 'of data «%label%»'|trans({'%label%': simulator.replaceByDataLabel(action.data).label }) }}</span>
 	{% endif %}
 {% elseif action.name == 'setAttribute' %}
-	<span class="action-name">{{ 'set'|trans }}</span> <span class="action-target">{{ action.target|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span> <span class="action-value"> {{ 'to'|trans }} {{ simulator.replaceByDataLabel(action.value)|raw }}</span>
+	<span class="action-name">{{ 'set'|trans }}</span> <span class="action-target">{{ targetlib|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span> <span class="action-value"> {{ 'to'|trans }} {{ simulator.replaceByDataLabel(action.value)|raw }}</span>
 {% elseif action.name == 'unsetAttribute' %}
-	<span class="action-name">{{ 'unset'|trans }}</span> <span class="action-target">{{ action.target|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span>
+	<span class="action-name">{{ 'unset'|trans }}</span> <span class="action-target">{{ targetlib|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span>
 {% endif %}
 </div>
 {% endmacro %}
@@ -586,7 +587,7 @@ THE SOFTWARE.
 				<div class="attributes-container">
 					<div>
 						{% if datasource.type == 'uri' %}
-						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'select', 'type', 'Type'|trans, parameter.type, parameter.type, true, 'Select a type'|trans, { 'queryString':'Query string parameter'|trans, 'path':'PATH'|trans, 'data':'POST data'|trans, 'columnValue':'Column value'|trans } ) }}
+						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'select', 'type', 'Type'|trans, parameter.type, parameter.type, true, 'Select a type'|trans, { 'queryString':'Query string parameter'|trans, 'path':'PATH'|trans, 'data':'POST data'|trans, 'columnValue':'Column value'|trans, 'header':'HTTP header'|trans } ) }}
 						{% endif %}
 						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'text', 'name', 'Name'|trans, parameter.name, parameter.name, false, 'Parameter name'|trans) }}
 						{{ _self.showAttribute('source-'~source.id~'-source-parameter-'~paramId, 'select', 'origin', 'Origin'|trans, parameter.origin, parameter.origin, true, 'Select an origin'|trans, { 'data':'Data'|trans, 'constant':'Constant'|trans } ) }}
@@ -1020,6 +1021,7 @@ THE SOFTWARE.
 		{% if data.choiceSource is not empty %}
 		<div class="attributes-container choice-source-container" data-id="{{ data.choiceSource.id }}">
 			<div>
+			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'select', 'id', 'Source'|trans, data.choiceSource.id, data.choiceSource.id, true, 'Source'|trans, { (data.choiceSource.id): data.simulator.sourceById(data.choiceSource.id).label }) }}
 			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'idColumn', 'Source column id'|trans, data.choiceSource.idColumn, data.choiceSource.idColumn, false, 'Source column id'|trans) }}
 			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'valueColumn', 'Source column value'|trans, data.choiceSource.valueColumn, data.choiceSource.valueColumn, true, 'Source column value'|trans) }}
 			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'labelColumn', 'Source column label'|trans, data.choiceSource.labelColumn, data.choiceSource.labelColumn, true, 'Source column label'|trans) }}

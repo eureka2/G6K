@@ -22,6 +22,10 @@
                         that.removeAttr('autocomplete');
                     $(that.data('sc')).remove();
                     that.removeData('sc').removeData('autocomplete');
+                } else if (options == 'clearSuggestions') { // added by Eureka2
+                    that.val('');
+                    that.last_val = '\n';
+                    setTimeout(function(){ that.focus(); }, o.delay + 360);
                 }
             });
             return this;
@@ -37,10 +41,11 @@
             that.last_val = '';
 
             that.updateSC = function(resize, next){
+                var positioner = o.alignOnParent ? that.parent() : that; // added by Eureka2
                 that.sc.css({
-                    top: that.offset().top + that.outerHeight(),
-                    left: that.offset().left,
-                    width: that.outerWidth()
+                    top:  positioner.offset().top + positioner.outerHeight(),
+                    left: positioner.offset().left,
+                    width: positioner.outerWidth()
                 });
                 if (!resize) {
                     that.sc.show();
@@ -159,6 +164,7 @@
         minChars: 3,
         delay: 150,
         cache: 1,
+        alignOnParent: false, // added by Eureka2
         menuClass: '',
         renderItem: function (item, search){
             // escape special characters

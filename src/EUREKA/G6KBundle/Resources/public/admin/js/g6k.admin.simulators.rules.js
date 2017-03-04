@@ -60,12 +60,12 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeDataIdInRules = function(oldId, id) {
-		var re = new RegExp("#" + oldId + '([^\d])?', 'g');
+		var re = new RegExp("#" + oldId + '\\b', 'g');
 		var ruleConditions = $('#business-rules').find('.rule-conditions');
 		ruleConditions.each(function(r) {
 			if (re.test($(this).attr('data-value'))) {
 				var val = $(this).attr('data-value');
-				val = val.replace(re, "#" + id + '$1');
+				val = val.replace(re, "#" + id);
 				$(this).attr('data-value', val);
 			}
 			var datas = $(this).find('var.data');
@@ -82,7 +82,7 @@ THE SOFTWARE.
 			}
 			if (this.hasAttribute('data-name') && ($(this).attr('data-name') == "setAttribute" || $(this).attr('data-name') == "unsetAttribute") && re.test($(this).attr('data-value'))) {
 				var val = $(this).attr('data-value');
-				val = val.replace(re, "#" + id + '$1');
+				val = val.replace(re, "#" + id);
 				$(this).attr('data-value', val);
 			}
 			var datas = $(this).find('var.data');
@@ -94,7 +94,7 @@ THE SOFTWARE.
 		});
 		$.each(rules, function(r, rule) {
 			if (re.test(rule.conditions)) {
-				rule.conditions = rule.conditions.replace(re, "#" + id + '$1');
+				rule.conditions = rule.conditions.replace(re, "#" + id);
 			}
 			if (rule.connector) {
 				Simulators.changeDataIdInConnector(rule.connector, oldId, id);
@@ -103,7 +103,7 @@ THE SOFTWARE.
 				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
-						val = val.replace(re, "#" + id + '$1');
+						val = val.replace(re, "#" + id);
 						action.fields[0].fields[0].fields[0].value = val;
 					}
 				}
@@ -112,7 +112,7 @@ THE SOFTWARE.
 				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
-						val = val.replace(re, "#" + id + '$1');
+						val = val.replace(re, "#" + id);
 						action.fields[0].fields[0].fields[0].value = val;
 					}
 				}
@@ -227,9 +227,9 @@ THE SOFTWARE.
 				Simulators.changeDataIdInConnector(conn, oldId, id);
 			});
 		} else {
-			var re = new RegExp("#" + oldId + '([^\\d])?', 'g');
+			var re = new RegExp("#" + oldId + '\\b', 'g');
 			if (connector.value && re.test(connector.value)) {
-				connector.value = connector.value.replace(re, "#" + id + '$1');
+				connector.value = connector.value.replace(re, "#" + id);
 			}
 		}
 	}
@@ -267,15 +267,15 @@ THE SOFTWARE.
 	Simulators.changeDataNameInConnector = function(connector, oldName, name) {
 		if (connector.all) {
 			$.each(connector.all, function(c, conn) {
-				Simulators.changeDataIdInConnector(conn, oldName, name);
+				Simulators.changeDataNameInConnector(conn, oldName, name);
 			});
 		} else if (connector.any) {
 			$.each(connector.any, function(c, conn) {
-				Simulators.changeDataIdInConnector(conn, oldName, name);
+				Simulators.changeDataNameInConnector(conn, oldName, name);
 			});
 		} else if (connector.none) {
 			$.each(connector.none, function(c, conn) {
-				Simulators.changeDataIdInConnector(conn, oldName, name);
+				Simulators.changeDataNameInConnector(conn, oldName, name);
 			});
 		} else if (connector.name == oldName) {
 			connector.name = name;
@@ -3716,7 +3716,7 @@ THE SOFTWARE.
 		var actionContainer = $('<div>', { 'class': 'rule-action', 'data-id': id, 'data-name': name, 'data-target': target, 'data-data': data, 'data-datagroup': datagroup, 'data-step': step, 'data-panel': panel, 'data-fieldset': fieldset, 'data-column': column, 'data-fieldrow': fieldrow, 'data-field': field, 'data-blockinfo': blockinfo, 'data-chapter': chapter, 'data-section': section, 'data-prenote': prenote, 'data-postnote': postnote, 'data-action': action, 'data-footnote': footnote, 'data-choice': choice, 'data-value': value });
 		if (name === 'notifyError' || name === 'notifyWarning') {
 			var actionName = name === 'notifyError' ? Translator.trans('notify Error') : Translator.trans('notify Warning');
-			actionContainer.append('<span class="action-name">' + actionName + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans(target) + ' </span>');
+			actionContainer.append('<span class="action-name">' + actionName + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans('the ' + target) + ' </span>');
 			if (target === 'data') {
 				actionContainer.append('<span class="action-data"><var class="data" data-id="' + dataObj.id + '">«' + dataObj.label + '»</var></span>');
 			} else if (target === 'datagroup') {
@@ -3726,7 +3726,7 @@ THE SOFTWARE.
 			var actionNode = Simulators.findAction(name, actions);
 			actionContainer.append('<span class="action-name">' + (name === 'hideObject' ? Translator.trans('hide') : Translator.trans('show')) + '</span>');
 			var optionNode = Simulators.findActionOption('objectId', target, actionNode);
-			actionContainer.append('<span class="action-target"> ' + Translator.trans(target) + '</span>');
+			actionContainer.append('<span class="action-target"> ' + Translator.trans('the ' + target) + '</span>');
 			switch (target) {
 				case 'step':
 					actionContainer.append('<span class="action-step"> «' + Simulators.findActionField([{stepId: step}], optionNode).label + '»</span>');
@@ -3820,9 +3820,9 @@ THE SOFTWARE.
 					break;
 			}
 		} else if (name === 'setAttribute') {
-			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans(target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByDataLabel(value)) + '</span>');
+			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans('the ' + target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByDataLabel(value)) + '</span>');
 		} else if (name === 'unsetAttribute') {
-			actionContainer.append('<span class="action-name">' + Translator.trans('unset') + '</span> <span class="action-target">' + Translator.trans(target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span>');
+			actionContainer.append('<span class="action-name">' + Translator.trans('unset') + '</span> <span class="action-target">' + Translator.trans('the ' + target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span>');
 		}
 		return actionContainer;
 	}

@@ -89,7 +89,8 @@
 					renderItem: function (item,  search) {
 						search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 						var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-						return '<div class="autocomplete-suggestion" data-value="' + item.codePostal + '" data-text="' + item.nom + '" data-insee="' + item.code + '">' +  item.nom.replace(re, "<b>$1</b>") + ' (' + item.codePostal + ')</div>'; 
+						var val = item.nom + ' (' + item.codePostal + ')';
+						return '<div class="autocomplete-suggestion" data-val="' + val + '" data-value="' + item.codePostal + '" data-text="' + item.nom + '" data-insee="' + item.code + '">' +  item.nom.replace(re, "<b>$1</b>") + ' (' + item.codePostal + ')</div>'; 
 					},
 					onSelect: function(e, term, item){
 						holder.attr("data-value", item.data('value'));

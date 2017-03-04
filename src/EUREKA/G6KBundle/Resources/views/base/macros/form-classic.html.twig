@@ -76,8 +76,8 @@ THE SOFTWARE.
 				{% endfor %}
 			</fieldset>
 		{% else %}
-			<select class="{{ fieldClass }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }}{% if field.required %} aria-required="true"{% endif %}{% if field.widget and field.prompt %} placeholder="{{ field.prompt }}"{% endif %}>
-			{%- if not(data.default) and not(field.widget) -%}<option id="{{ name }}_none" value="">{{ prompt }}</option>{% endif %}
+			<select class="{{ fieldClass }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }}{% if field.required %} aria-required="true"{% endif %}>
+			{%- if not(data.default) -%}<option id="{{ name }}_none" value="">{{ prompt }}</option>{% endif %}
 			{%- for choice in data.choices -%}
 			{%- if choice.class == 'ChoiceGroup' -%}
 			<optgroup label="{{ choice.label }}">
@@ -234,6 +234,8 @@ THE SOFTWARE.
 		{{ context.form.monthname(value)|trans }}
 	{%- elseif type == 'department' -%}
 		{{ context.form.departmentname(value) }}
+	{%- elseif type == 'money' -%}
+		{{ data.value|number_format(2, simu.decimalPoint, ' ') }}
 	{%- else -%}
 		{{ value }}
 	{%- endif -%}

@@ -96,12 +96,12 @@ class DOMClient extends BaseClient {
 		}
 	}
  
-	public function get($uri) {
-		return $this->request("GET", $uri);
+	public function get($uri, $headers = array()) {
+		return $this->request("GET", $uri, array(), array(), $headers);
 	}
 
-	public function post($uri, $data) {
-		return $this->request("POST", $uri, array(), array(), array(), $data);
+	public function post($uri, $headers, $data) {
+		return $this->request("POST", $uri, array(), array(), $headers, $data);
 	}
 
 	protected function doRequest($request) {

@@ -487,7 +487,8 @@ THE SOFTWARE.
 		if (datasources[datasource].type === 'uri') {
 			typesList = { 
 				queryString: Translator.trans('Query string parameter'), 
-				path: Translator.trans('PATH')
+				path: Translator.trans('PATH'),
+				header: Translator.trans('HTTP header')
 			}
 			if (datasources[datasource].method === 'post') {
 				typesList.data = Translator.trans('POST data');
@@ -1809,7 +1810,8 @@ THE SOFTWARE.
 		if (datasources[datasource].type === 'uri') {
 			typesList = { 
 				queryString: Translator.trans('Query string parameter'), 
-				path: Translator.trans('PATH')
+				path: Translator.trans('PATH'),
+				header: Translator.trans('HTTP header')
 			}
 			if (datasources[datasource].method === 'post') {
 				typesList.data = Translator.trans('POST data');

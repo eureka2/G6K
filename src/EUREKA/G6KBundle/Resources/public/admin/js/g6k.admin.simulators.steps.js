@@ -39,24 +39,28 @@ THE SOFTWARE.
 	Simulators.sectionBackup = null;
 
 	Simulators.findInArray = function(array, path) {
-		var obj = path.shift();
-		for (var i = 0; i < array.length; i++) {
-			if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
-				return obj.list ? Simulators.findInArray(array[i][obj.list], path) : array[i];
+		if (array) {
+			var obj = path.shift();
+			for (var i = 0; i < array.length; i++) {
+				if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
+					return obj.list ? Simulators.findInArray(array[i][obj.list], path) : array[i];
+				}
 			}
 		}
 		return null;
 	}
 
 	Simulators.updateInArray = function(array, path, newObj) {
-		var obj = path.shift();
-		for (var i = 0; i < array.length; i++) {
-			if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
-				if (obj.list) {
-					return Simulators.updateInArray(array[i][obj.list], path, newObj);
-				} else {
-					array[i] = newObj;
-					return true;
+		if (array) {
+			var obj = path.shift();
+			for (var i = 0; i < array.length; i++) {
+				if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
+					if (obj.list) {
+						return Simulators.updateInArray(array[i][obj.list], path, newObj);
+					} else {
+						array[i] = newObj;
+						return true;
+					}
 				}
 			}
 		}
@@ -64,28 +68,32 @@ THE SOFTWARE.
 	}
 
 	Simulators.addInArray = function(array, path, newObj) {
-		if (path.length == 0) {
-			array.push(newObj);
-			return true;
-		}
-		var obj = path.shift();
-		for (var i = 0; i < array.length; i++) {
-			if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
-				return Simulators.addInArray(array[i][obj.list], path, newObj);
+		if (array) {
+			if (path.length == 0) {
+				array.push(newObj);
+				return true;
+			}
+			var obj = path.shift();
+			for (var i = 0; i < array.length; i++) {
+				if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
+					return Simulators.addInArray(array[i][obj.list], path, newObj);
+				}
 			}
 		}
 		return false;
 	}
 
 	Simulators.deleteInArray = function(array, path) {
-		var obj = path.shift();
-		for (var i = 0; i < array.length; i++) {
-			if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
-				if (obj.list) {
-					return Simulators.deleteInArray(array[i][obj.list], path);
-				} else {
-					array.splice(i, 1);
-					return true;
+		if (array) {
+			var obj = path.shift();
+			for (var i = 0; i < array.length; i++) {
+				if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
+					if (obj.list) {
+						return Simulators.deleteInArray(array[i][obj.list], path);
+					} else {
+						array.splice(i, 1);
+						return true;
+					}
 				}
 			}
 		}
@@ -93,18 +101,20 @@ THE SOFTWARE.
 	}
 
 	Simulators.moveInArray = function(array, path, toIndex) {
-		var obj = path.shift();
-		for (var i = 0; i < array.length; i++) {
-			if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
-				if (obj.list) {
-					return Simulators.moveInArray(array[i][obj.list], path, toIndex);
-				} else {
-					if (i == toIndex) {
-						return false;
+		if (array) {
+			var obj = path.shift();
+			for (var i = 0; i < array.length; i++) {
+				if (array[i][obj.key] != undefined && array[i][obj.key] == obj.val) {
+					if (obj.list) {
+						return Simulators.moveInArray(array[i][obj.list], path, toIndex);
+					} else {
+						if (i == toIndex) {
+							return false;
+						}
+						var removed = array.splice(i, 1);
+						array.splice(toIndex, 0, removed[0]);
+						return true;
 					}
-					var removed = array.splice(i, 1);
-					array.splice(toIndex, 0, removed[0]);
-					return true;
 				}
 			}
 		}
@@ -115,12 +125,131 @@ THE SOFTWARE.
 		return steps;
 	}
 
+	Simulators.isDataIdInSteps = function(id) {
+		var re1 = new RegExp("#" + id + '\\b', 'g');
+		var re2 = new RegExp('\\<var\\s+([^\\s]*\\s*)data\\-id=\\"' + id + '\\"', 'g');
+		var found = false;
+		$.each(steps, function(s, step) {
+			if (re1.test(step.description)) {
+				found = step.id;
+				return false;
+			}
+			if (re2.test(step.description)) {
+				found = step.id;
+				return false;
+			}
+			if (step.footNotes && step.footNotes.footNotes) {
+				$.each(step.footNotes.footNotes, function(fn, footnote) {
+					if (re1.test(footnote.text)) {
+						found = step.id;
+						return false;
+					}
+					if (re2.test(footnote.text)) {
+						found = step.id;
+						return false;
+					}
+				});
+			}
+			if (found !== false) {
+				return false;
+			}
+			$.each(step.panels || [], function(p, panel) {
+				$.each(panel.blocks || [], function(b, block) {
+					if (block.type == 'fieldset') {
+						if (re1.test(block.legend)) {
+							found = step.id;
+							return false;
+						}
+						if (re2.test(block.legend)) {
+							found = step.id;
+							return false;
+						}
+						if (block.fieldrows) {
+							$.each(block.fieldrows || [], function(fr, fieldrow) {
+								$.each(fieldrow.fields, function(f, field) {
+									if (field.data == id) {
+										found = step.id;
+										return false;
+									}
+									if (field.Note && field.Note.text) {
+										if (re1.test(field.Note.text)) {
+											found = step.id;
+											return false;
+										}
+										if (re2.test(field.Note.text)) {
+											found = step.id;
+											return false;
+										}
+									}
+								});
+								if (found !== false) {
+									return false;
+								}
+							});
+						} else if (block.fields) {
+							$.each(block.fields, function(f, field) {
+								if (field.data == id) {
+									found = step.id;
+									return false;
+								}
+								if (field.Note && field.Note.text) {
+									if (re1.test(field.Note.text)) {
+										found = step.id;
+										return false;
+									}
+									if (re2.test(field.Note.text)) {
+										found = step.id;
+										return false;
+									}
+								}
+							});
+						}
+					} else { // blockinfo
+						$.each(block.chapters || [], function(c, chapter) {
+							$.each(chapter.sections || [], function(sn, section) {
+								if (re1.test(section.content)) {
+									found = step.id;
+									return false;
+								}
+								if (re2.test(section.content)) {
+									found = step.id;
+									return false;
+								}
+								if (re1.test(section.annotations)) {
+									found = step.id;
+									return false;
+								}
+								if (re2.test(section.content)) {
+									found = step.id;
+									return false;
+								}
+							});
+							if (found !== false) {
+								return false;
+							}
+						});
+					}
+					if (found !== false) {
+						return false;
+					}
+				});
+				if (found !== false) {
+					return false;
+				}
+			});
+			if (found !== false) {
+				return false;
+			}
+		});
+		return found;
+	}
+
 	Simulators.changeDataIdInSteps = function(oldId, id) {
-		var re1 = new RegExp("#" + oldId + '([^\\d])?', 'g');
+		var re1 = new RegExp("#" + oldId + '\\b', 'g');
 		var re2 = new RegExp('\\<var\\s+([^\\s]*\\s*)data\\-id=\\"' + oldId + '\\"', 'g');
 		$.each(steps, function(s, step) {
 			if (re1.test(step.description)) {
-				step.description = step.description.replace(re1, "#" + id + '$1');
+				step.description = step.description.replace(re1, "#" + id);
 			}
 			if (re2.test(step.description)) {
 				step.description = step.description.replace(re2, '<var $1data-id="' + id + '"');
@@ -128,7 +257,7 @@ THE SOFTWARE.
 			if (step.footNotes && step.footNotes.footNotes) {
 				$.each(step.footNotes.footNotes, function(fn, footnote) {
 					if (re1.test(footnote.text)) {
-						footnote.text = footnote.text.replace(re1, "#" + id + '$1');
+						footnote.text = footnote.text.replace(re1, "#" + id);
 					}
 					if (re2.test(footnote.text)) {
 						footnote.text = footnote.text.replace(re2, '<var $1data-id="' + id + '"');
@@ -139,53 +268,53 @@ THE SOFTWARE.
 				$.each(panel.blocks || [], function(b, block) {
 					if (block.type == 'fieldset') {
 						if (re1.test(block.legend)) {
-							block.legend = block.legend.replace(re1, "#" + id + '$1');
+							block.legend = block.legend.replace(re1, "#" + id);
 						}
 						if (re2.test(block.legend)) {
 							block.legend = block.legend.replace(re2, '<var $1data-id="' + id + '"');
 						}
-						$.each(block.fieldrows || [], function(fr, fieldrow) {
-							$.each(fieldrow.fields, function(f, field) {
-								if (field.type == 'field') {
+						if (block.fieldrows) {
+							$.each(block.fieldrows || [], function(fr, fieldrow) {
+								$.each(fieldrow.fields, function(f, field) {
 									if (field.data == oldId) {
 										field.data = id;
 									}
 									if (field.Note && field.Note.text) {
 										if (re1.test(field.Note.text)) {
-											field.Note.text = field.Note.text.replace(re1, "#" + id + '$1');
+											field.Note.text = field.Note.text.replace(re1, "#" + id);
 										}
 										if (re2.test(field.Note.text)) {
 											field.Note.text = field.Note.text.replace(re2, '<var $1data-id="' + id + '"');
 										}
 									}
-								} else if (field.type == 'fieldrow') {
-									$.each(field.fields, function(sf, sfield) {
-										if (sfield.data == oldId) {
-											sfield.data = id;
-										}
-										if (sfield.Note && sfield.Note.text) {
-											if (re1.test(sfield.Note.text)) {
-												sfield.Note.text = sfield.Note.text.replace(re1, "#" + id + '$1');
-											}
-											if (re2.test(sfield.Note.text)) {
-												sfield.Note.text = sfield.Note.text.replace(re2, '<var $1data-id="' + id + '"');
-											}
-										}
-									});
+								});
+							});
+						} else if (block.fields) {
+							$.each(block.fields, function(f, field) {
+								if (field.data == oldId) {
+									field.data = id;
+								}
+								if (field.Note && field.Note.text) {
+									if (re1.test(field.Note.text)) {
+										field.Note.text = field.Note.text.replace(re1, "#" + id);
+									}
+									if (re2.test(field.Note.text)) {
+										field.Note.text = field.Note.text.replace(re2, '<var $1data-id="' + id + '"');
+									}
 								}
 							});
-						});
+						}
 					} else { // blockinfo
 						$.each(block.chapters || [], function(c, chapter) {
 							$.each(chapter.sections || [], function(sn, section) {
 								if (re1.test(section.content)) {
-									section.content = section.content.replace(re1, "#" + id + '$1');
+									section.content = section.content.replace(re1, "#" + id);
 								}
 								if (re2.test(section.content)) {
 									section.content = section.content.replace(re2, '<var $1data-id="' + id + '"');
 								}
 								if (re1.test(section.annotations)) {
-									section.annotations = section.annotations.replace(re1, "#" + id + '$1');
+									section.annotations = section.annotations.replace(re1, "#" + id);
 								}
 								if (re2.test(section.content)) {
 									section.annotations = section.annotations.replace(re2, '<var $1data-id="' + id + '"');
