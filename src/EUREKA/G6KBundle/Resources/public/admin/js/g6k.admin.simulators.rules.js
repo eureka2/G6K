@@ -282,6 +282,33 @@ THE SOFTWARE.
 		}
 	}
 
+	Simulators.changeDatagroupNameInRules = function(oldName, name) {
+		var ruleActions = $('#business-rules').find('.rule-action');
+		ruleActions.each(function(r) {
+			if (this.hasAttribute('data-datagroup') && $(this).attr('data-datagroup') == oldName) {
+				$(this).attr('data-datagroup', name);
+			}
+			var datas = $(this).find('var.datagroup');
+			datas.each(function(d) {
+				if ($(this).attr('data-id') == oldName) {
+					$(this).attr('data-id', name);
+				}
+			});
+		});
+	}
+
+	Simulators.changeDatagroupLabelInRules = function(name, label) {
+		var rulesObj= $('#business-rules').find('.rule-action');
+		rulesObj.each(function(r) {
+			var datas = $(this).find('var.datagroup');
+			datas.each(function(d) {
+				if ($(this).attr('data-id') == name) {
+					$(this).text('«' + label + '»');
+				}
+			});
+		});
+	}
+
 	Simulators.deleteDatagroupInActions = function(name) {
 		Simulators.deleteInArray(actions, [{ key: 'name', val: 'notifyError', list: 'fields' }, { key: 'name', val: 'target', list: 'options' }, { key: 'name', val: 'datagroup', list: 'fields' }, { key: 'name', val: 'datagroupName', list: 'options' }, { key: 'name', val: name }]);
 		Simulators.deleteInArray(actions, [{ key: 'name', val: 'notifyWarning', list: 'fields' }, { key: 'name', val: 'target', list: 'options' }, { key: 'name', val: 'datagroup', list: 'fields' }, { key: 'name', val: 'datagroupName', list: 'options' }, { key: 'name', val: name }]);
@@ -3612,7 +3639,7 @@ THE SOFTWARE.
 						break;
 					case 'datagroup':
 						datagroupObj = Simulators.datagroups[ruleAction.fields[1].fields[0].value];
-						datagroup = datagroupObj.id;
+						datagroup = datagroupObj.name;
 						break;
 					case 'dataset':
 						break;
@@ -3720,7 +3747,7 @@ THE SOFTWARE.
 			if (target === 'data') {
 				actionContainer.append('<span class="action-data"><var class="data" data-id="' + dataObj.id + '">«' + dataObj.label + '»</var></span>');
 			} else if (target === 'datagroup') {
-				actionContainer.append('<span class="action-datagroup"><var class="datagroup" data-id="' + datagroupObj.id + '">«' + datagroupObj.label + '»</var></span>');
+				actionContainer.append('<span class="action-datagroup"><var class="datagroup" data-id="' + datagroupObj.name + '">«' + datagroupObj.label + '»</var></span>');
 			}
 		} else if (name === 'hideObject' || name === 'showObject') {
 			var actionNode = Simulators.findAction(name, actions);

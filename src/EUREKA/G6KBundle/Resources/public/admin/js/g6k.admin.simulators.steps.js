@@ -327,8 +327,37 @@ THE SOFTWARE.
 		});
 	}
 
+	Simulators.changeDatagroupIdInSteps = function(oldId, id) {
+		var re1 = new RegExp("#" + oldId + '\\b', 'g');
+		$.each(steps, function(s, step) {
+			$.each(step.panels || [], function(p, panel) {
+				$.each(panel.blocks || [], function(b, block) {
+					if (block.type == 'fieldset') {
+						if (block.fieldrows) {
+							$.each(block.fieldrows || [], function(fr, fieldrow) {
+								if (fieldrow.datagroup == oldId) {
+									fieldrow.datagroup = id;
+								}
+							});
+						}
+					}
+				});
+			});
+		});
+	}
+
 	Simulators.changeDataLabelInSteps = function(id, oldLabel, label) {
 		var fields = $("#steps").find(".field-container p[data-attribute='data']");
+		fields.each(function(f) {
+			if ($(this).attr('data-value') == oldLabel) {
+				$(this).attr('data-value', label);
+				$(this).html(label);
+			}
+		});
+	}
+
+	Simulators.changeDatagroupLabelInSteps = function(id, oldLabel, label) {
+		var fields = $("#steps").find(".fieldrow-container p[data-attribute='datagroup']");
 		fields.each(function(f) {
 			if ($(this).attr('data-value') == oldLabel) {
 				$(this).attr('data-value', label);

@@ -378,7 +378,7 @@ THE SOFTWARE.
 							$(this).attr('aria-labelledby', attr);
 						}
 					});
-					// Simulators.changeDatagroupIdInSteps(oldId, 'X' + id)
+					Simulators.changeDatagroupIdInSteps(oldId, 'X' + id)
 				}
 			}
 		});
@@ -392,7 +392,7 @@ THE SOFTWARE.
 					dataContainer.attr('data-id', id);
 					var datagroup = Simulators.findDatagroupById(oldId);
 					datagroup.id = id;
-					// Simulators.changeDatagroupIdInSteps('X' + datagroup.id, datagroup.id);
+					Simulators.changeDatagroupIdInSteps('X' + datagroup.id, datagroup.id);
 				}
 			}
 		});
@@ -739,6 +739,23 @@ THE SOFTWARE.
 			var newDataPanel = Simulators.drawDatagroupForDisplay(datagroup);
 			newDataPanel.find('.description-panel').after(dataPanelContainer.find('.datas-panel'));
 			dataPanelContainer.replaceWith(newDataPanel);
+			if ($(this).hasClass('validate-edit-datagroup')) {
+				var oldName = Simulators.datagroupBackup.find("p[data-attribute='name']").attr('data-value');
+				var oldLabel = Simulators.datagroups[oldName].label;
+				if (datagroup.label != oldLabel) {
+					Simulators.changeDatagroupLabelInSteps(datagroup.id, oldLabel, datagroup.label);
+					Simulators.changeDatagroupLabelInRules(oldName, datagroup.label);
+				}
+				if (datagroup.name != oldName) {
+					Simulators.changeDatagroupNameInRules(oldName, datagroup.name);
+					delete Simulators.datagroups[oldName];
+				}
+			}
+			Simulators.datagroups[datagroup.name] = {
+				id: datagroup.id,
+				label: datagroup.label,
+				description: datagroup.description
+			}
 			newDataPanel.find('button.edit-datagroup').click(function(e) {
 				e.preventDefault();
 				Simulators.editDatagroup($($(this).attr('data-parent')));

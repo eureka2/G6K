@@ -278,7 +278,7 @@ THE SOFTWARE.
 	{% if action.target == 'data' %}
 		<span class="action-data"><var class="data" data-id="{{ action.data }}">«{{ simulator.getDataById(action.data).label }}»</var></span>
 	{% elseif action.target == 'datagroup' %}
-		<span class="action-datagroup"><var class="datagroup" data-id="{{ action.datagroup }}">«{{ simulator.getDataGroupById(action.datagroup).label }}»</var></span>
+		<span class="action-datagroup"><var class="datagroup" data-id="{{ action.datagroup }}">«{{ simulator.getDataGroupByName(action.datagroup).label }}»</var></span>
 	{% endif %}
 {% elseif action.name == 'hideObject' or action.name == 'showObject' %}
 	{% set actionNode = simulator.controller.findAction(action.name, actions) %}

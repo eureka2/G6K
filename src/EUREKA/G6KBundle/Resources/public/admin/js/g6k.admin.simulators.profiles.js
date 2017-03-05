@@ -43,12 +43,12 @@ THE SOFTWARE.
 
 
 	Simulators.changeDataIdInProfiles = function(oldId, id) {
-		var re = new RegExp("-data-" + oldId + '([^\d])?', 'g');
+		var re = new RegExp("-data-" + oldId + '\\b', 'g');
 		var profileDataContainers = $('#profiles').find('.profile-data-container');
 		profileDataContainers.each(function(p) {
 			if (re.test($(this).attr('id'))) {
 				var val = $(this).attr('id');
-				val = val.replace(re, "-data-" + id + '$1');
+				val = val.replace(re, "-data-" + id);
 				$(this).attr('id', val);
 			}
 			if (this.hasAttribute('data-id') && $(this).attr('data-id') == oldId) {
@@ -58,7 +58,7 @@ THE SOFTWARE.
 			descendants.each(function(d) {
 				if (this.hasAttribute('id') && re.test($(this).attr('id'))) {
 					var val = $(this).attr('id');
-					val = val.replace(re, "-data-" + id + '$1');
+					val = val.replace(re, "-data-" + id);
 					$(this).attr('id', val);
 				}
 			});
@@ -125,7 +125,7 @@ THE SOFTWARE.
 			var id = index + 1;
 			if (id != oldId) {
 				$(this).attr('id', 'profile-' + id);
-				var re = new RegExp("profile-" + oldId + '([^\\d])?', 'g');
+				var re = new RegExp("profile-" + oldId + '\\b', 'g');
 				var a = $(this).find('> .panel > .panel-heading').find('> h4 > a');
 				var label = a.text();
 				label = label.replace("#" + oldId, "#" + id);
@@ -137,27 +137,27 @@ THE SOFTWARE.
 					}
 					if (this.hasAttribute('id')) {
 						var attr = $(this).attr('id');
-						attr = attr.replace(re, "profile-" + id + '$1');
+						attr = attr.replace(re, "profile-" + id);
 						$(this).attr('id', attr);
 					}
 					if (this.hasAttribute('data-parent')) {
 						var attr = $(this).attr('data-parent');
-						attr = attr.replace(re, "profile-" + id + '$1');
+						attr = attr.replace(re, "profile-" + id);
 						$(this).attr('data-parent', attr);
 					}
 					if (this.hasAttribute('href')) {
 						var attr = $(this).attr('href');
-						attr = attr.replace(re, "profile-" + id + '$1');
+						attr = attr.replace(re, "profile-" + id);
 						$(this).attr('href', attr);
 					}
 					if (this.hasAttribute('aria-controls')) {
 						var attr = $(this).attr('aria-controls');
-						attr = attr.replace(re, "profile-" + id + '$1');
+						attr = attr.replace(re, "profile-" + id);
 						$(this).attr('aria-controls', attr);
 					}
 					if (this.hasAttribute('aria-labelledby')) {
 						var attr = $(this).attr('aria-labelledby');
-						attr = attr.replace(re, "profile-" + id + '$1');
+						attr = attr.replace(re, "profile-" + id);
 						$(this).attr('aria-labelledby', attr);
 					}
 				});

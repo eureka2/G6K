@@ -2806,18 +2806,20 @@ class SimulatorsAdminController extends BaseAdminController {
 			)
 		);
 		if (count($datagroups) > 0) {
-			$this->actions[1]['fields'][1]['options'][] = array(
-				'label' => 'datagroup',
-				'name' => 'datagroup',
-				'fields' => array(
-					array(
-						'label' => "",
-						'name' => "datagroupName",
-						'fieldType' => "select",
-						'options' => $datagroups
+			foreach (array(1, 2) as $a) {
+				$this->actions[$a]['fields'][1]['options'][] = array(
+					'label' => $this->get('translator')->trans('the datagroup'),
+					'name' => 'datagroup',
+					'fields' => array(
+						array(
+							'label' => "",
+							'name' => "datagroupName",
+							'fieldType' => "select",
+							'options' => $datagroups
+						)
 					)
-				)
-			);
+				);
+			}
 		}
 		$this->dataset['script'] = array(
 			'id' => 20000, 
