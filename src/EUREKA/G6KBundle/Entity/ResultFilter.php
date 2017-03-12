@@ -331,7 +331,8 @@ class ResultFilter {
 			foreach ($array as $i => $value) {
 				if (is_array($value)) {
 					if (count($value) == 1) {
-						$key = array_keys($value)[0];
+						$keys = array_keys($value);
+						$key = $keys[0];
 						if ($key == '#text') {
 							$array[$i] = $value[$key];
 						}
@@ -405,7 +406,8 @@ class ResultFilter {
 				if (is_object($value) && strpos(get_class($value),"SimpleXML")!==false) {
 						$result[$key] = self::xml2array($value);
 				} elseif ($key == '@attributes') {
-					$key = array_keys($item)[0];
+					$keys = array_keys($item);
+					$key = $keys[0];
 					$item = $item[$key];
 					$result[$key] = $item;
 				} else {

@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 #}
 
+{% import "EUREKAG6KBundle:base/macros:form-grid.html.twig" as grid %}
+{% import "EUREKAG6KBundle:base/macros:form-classic.html.twig" as classic %}
+{% import "EUREKAG6KBundle:base/macros:form-inline.html.twig" as inline %}
+{% import "EUREKAG6KBundle:base/macros:form-blockinfo.html.twig" as blockinfo %}
+
 {% macro row(context, fieldsetContainerClass, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass, chapterContainerClass, chapterHeadingClass, chapterContentClass) %}
 
 {% set step = context.step %}

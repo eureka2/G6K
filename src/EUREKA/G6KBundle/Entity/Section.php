@@ -89,6 +89,10 @@ class Section {
 		return $this->displayable;
 	}
 
+	public function getDisplayable() {
+		return $this->displayable;
+	}
+
 	public function setDisplayable($displayable) {
 		$this->displayable = $displayable;
 	}

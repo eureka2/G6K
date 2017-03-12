@@ -40,7 +40,7 @@ THE SOFTWARE.
 		{% set prompt = field.prompt ? field.prompt : '---------' %}
 		{% set widget = field.widget ? ' data-widget="' ~ field.widget ~ '"' : '' %}
 		{%- if type == 'money' or type == 'percent' -%}
-		{% set value = value|replace(".", ",") %}
+		{% set value = value|replace({".": ","}) %}
 		{% elseif type == 'number' %}
 		{% elseif type == 'integer' %}
 		{% set type = 'number' %}

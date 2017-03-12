@@ -151,6 +151,10 @@ class Database {
 		return $this->connected;
 	}
 	
+	public function getConnected() {
+		return $this->connected;
+	}
+	
 	public function setConnected($connected) {
 		$this->connected = $connected;
 	}

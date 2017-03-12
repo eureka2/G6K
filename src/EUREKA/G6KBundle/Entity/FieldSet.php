@@ -92,11 +92,19 @@ class FieldSet {
 		return $this->displayable;
 	}
 
+	public function getDisplayable() {
+		return $this->displayable;
+	}
+
 	public function setDisplayable($displayable) {
 		$this->displayable = $displayable;
 	}
 
 	public function hasInputFields() {
+		return $this->inputFields;
+	}
+
+	public function getInputFields() {
 		return $this->inputFields;
 	}
 

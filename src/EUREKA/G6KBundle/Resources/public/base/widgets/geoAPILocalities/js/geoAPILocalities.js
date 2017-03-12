@@ -3,9 +3,10 @@
 		
 	function geoAPILocalities (input, onComplete) {
 		var input2 = $('<input>', {id: 'geoAPILocalities' + input.attr('name'), type: 'text', tabindex: 0 });
+		input2.attr('placeholder', Translator.trans('Enter a locality or a zipcode'));
 		var attributes = input.prop("attributes");
 		$.each(attributes, function() {
-			if (this.name != 'id' && this.name != 'name' && this.name != 'value' && this.name != 'type') {
+			if (this.name != 'id' && this.name != 'name' && this.name != 'value' && this.name != 'type' && this.name != 'data-widget') {
 				input2.attr(this.name, this.value);
 			}
 		});

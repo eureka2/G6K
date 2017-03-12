@@ -327,8 +327,37 @@ THE SOFTWARE.
 		});
 	}
 
+	Simulators.isDatagroupIdInSteps = function(id) {
+		var found = false;
+		$.each(steps, function(s, step) {
+			$.each(step.panels || [], function(p, panel) {
+				$.each(panel.blocks || [], function(b, block) {
+					if (block.type == 'fieldset') {
+						if (block.fieldrows) {
+							$.each(block.fieldrows || [], function(fr, fieldrow) {
+								if (fieldrow.datagroup == id) {
+									found = step.id;
+									return false;
+								}
+							});
+						}
+					}
+					if (found !== false) {
+						return false;
+					}
+				});
+				if (found !== false) {
+					return false;
+				}
+			});
+			if (found !== false) {
+				return false;
+			}
+		});
+		return found;
+	}
+
 	Simulators.changeDatagroupIdInSteps = function(oldId, id) {
-		var re1 = new RegExp("#" + oldId + '\\b', 'g');
 		$.each(steps, function(s, step) {
 			$.each(step.panels || [], function(p, panel) {
 				$.each(panel.blocks || [], function(b, block) {
@@ -692,9 +721,10 @@ THE SOFTWARE.
 			stepContainer.find('.alert').show();
 			return false;
 		}
+		var stepId = stepContainer.find('.step-container').attr('data-id');
 		var exists = false;
 		$.each(steps, function(s, step) {
-			if (step.name == stepName) {
+			if (step.id != stepId && step.name == stepName) {
 				exists = true;
 				return false;
 			}
@@ -4491,7 +4521,7 @@ THE SOFTWARE.
 		var id = chapterPanelContainer.find('.chapter-container').attr('data-id');
 		var blockinfo = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: blockinfoId }]);
 		var exists = false;
-			$.each(blockinfo.chapters, function(c, chapter) {
+		$.each(blockinfo.chapters, function(c, chapter) {
 			if (chapter.id != id && chapter.name == chapterName) {
 				exists = true;
 				return false;
@@ -4910,7 +4940,7 @@ THE SOFTWARE.
 		var id = sectionPanelContainer.find('.section-container').attr('data-id');
 		var chapter = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: blockinfoId, list: 'chapters' }, { key: 'id', val: chapterId }]);
 		var exists = false;
-			$.each(chapter.sections, function(s, section) {
+		$.each(chapter.sections, function(s, section) {
 			if (section.id != id && section.name == sectionName) {
 				exists = true;
 				return false;

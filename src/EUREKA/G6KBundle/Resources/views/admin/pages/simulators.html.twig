@@ -109,7 +109,7 @@ THE SOFTWARE.
 									{{ 'Description'|trans }}
 								</div>
 								<div class="panel-body simulator-description rich-text">
-									{{ _self.paragraphs(simulator.description) }}
+									{{ _self.paragraphs(simulator.replaceByDataLabel(simulator.description)|raw) }}
 								</div>
 							</div>
 							<div class="panel panel-default" id="simulator-related-informations-panel-holder">
@@ -117,7 +117,7 @@ THE SOFTWARE.
 									{{ 'Related informations'|trans }}
 								</div>
 								<div class="panel-body simulator-related-informations rich-text">
-									{{ _self.paragraphs(simulator.relatedInformations) }}
+									{{ _self.paragraphs(simulator.replaceByDataLabel(simulator.relatedInformations)|raw) }}
 								</div>
 							</div>
 							<div class="panel panel-default" id="simulator-elements-panel">
@@ -204,7 +204,7 @@ THE SOFTWARE.
 			{{ 'Description'|trans }}
 		</div>
 		<div class="panel-body  datagroup-description rich-text">
-			{{ _self.paragraphs(data.description) }}
+			{{ _self.paragraphs(simulator.replaceByDataLabel(data.description)|raw) }}
 		</div>
 	</div>
 	<div class="panel panel-default datas-panel" id="datagroup-{{ data.id }}-datas-panel">
@@ -400,7 +400,7 @@ THE SOFTWARE.
 					{{ 'Description'|trans }}
 				</div>
 				<div class="panel-body step-description rich-text">
-					{{ _self.paragraphs(step.description) }}
+					{{ _self.paragraphs(simulator.replaceByDataLabel(step.description)|raw) }}
 				</div>
 			</div>
 		</div>
@@ -444,7 +444,7 @@ THE SOFTWARE.
 		</h4>
 	</div>
 	<div class="panel-body step-footnote rich-text">
-	{{ _self.paragraphs(footnote.text) }}
+	{{ _self.paragraphs(step.simulator.replaceByDataLabel(footnote.text)|raw) }}
 	</div>
 </div>
 {% endfor %}
@@ -663,7 +663,7 @@ THE SOFTWARE.
 			{{ 'Legend'|trans }}
 			</div>
 			<div class="panel-body fieldset-legend rich-text">
-				{{ _self.paragraphs(fieldset.legend) }}
+				{{ _self.paragraphs(step.simulator.replaceByDataLabel(fieldset.legend)|raw) }}
 			</div>
 		</div>
 	</div>
@@ -787,7 +787,7 @@ THE SOFTWARE.
 				{{ 'Note'|trans }}
 			</div>
 			<div class="panel-body field-note rich-text">
-			{{ _self.paragraphs(field.preNote.text) }}
+			{{ _self.paragraphs(step.simulator.replaceByDataLabel(field.preNote.text)|raw) }}
 			</div>
 		</div>
 		{% elseif field.postNote %}
@@ -797,7 +797,7 @@ THE SOFTWARE.
 				{{ 'Note'|trans }}
 			</div>
 			<div class="panel-body field-note rich-text">
-			{{ _self.paragraphs(field.postNote.text) }}
+			{{ _self.paragraphs(step.simulator.replaceByDataLabel(field.postNote.text)|raw) }}
 			</div>
 		</div>
 		{% endif %}
@@ -870,7 +870,7 @@ THE SOFTWARE.
 		{{ 'Content'|trans }}
 	</div>
 	<div class="panel-body section-content rich-text">
-		{{ _self.paragraphs(section.content) }}
+		{{ _self.paragraphs(step.simulator.replaceByDataLabel(section.content)|raw) }}
 	</div>
 </div>
 <div class="panel panel-default annotations-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-annotations-panel">
@@ -878,7 +878,7 @@ THE SOFTWARE.
 		{{ 'Annotations'|trans }}
 	</div>
 	<div class="panel-body section-annotations rich-text">
-		{{ _self.paragraphs(section.annotations) }}
+		{{ _self.paragraphs(step.simulator.replaceByDataLabel(section.annotations)|raw) }}
 	</div>
 </div>
 {{ _self.closeCollapsiblePanel() }}  
@@ -994,7 +994,7 @@ THE SOFTWARE.
 		{{ 'Description'|trans }}
 	</div>
 	<div class="panel-body data-description rich-text">
-		{{ _self.paragraphs(data.description) }}
+		{{ _self.paragraphs(data.simulator.replaceByDataLabel(data.description)|raw) }}
 	</div>
 </div>
 {% if data.choices is not empty or data.choiceSource is not empty %}
@@ -1019,6 +1019,7 @@ THE SOFTWARE.
 		</div>
 		{% endfor %}
 		{% if data.choiceSource is not empty %}
+		{% set void = data.choiceSource.setCaseInsensitive(false) %}
 		<div class="attributes-container choice-source-container" data-id="{{ data.choiceSource.id }}">
 			<div>
 			{{ _self.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'select', 'id', 'Source'|trans, data.choiceSource.id, data.choiceSource.id, true, 'Source'|trans, { (data.choiceSource.id): data.simulator.sourceById(data.choiceSource.id).label }) }}
@@ -1107,7 +1108,7 @@ THE SOFTWARE.
 				{{ 'Description'|trans }}
 			</div>
 			<div class="panel-body profile-description rich-text">
-				{{ _self.paragraphs(profile.description) }}
+				{{ _self.paragraphs(simulator.replaceByDataLabel(profile.description)|raw) }}
 			</div>
 		</div>
 	</div>

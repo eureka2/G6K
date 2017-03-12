@@ -308,32 +308,34 @@ THE SOFTWARE.
 	Simulators.dropAttribute = function(ui, target) {
 		var element = ui.attr('data-element');
 		var name = ui.attr('data-name');
-		var type = ui.attr('data-type');
-		var label = ui.text();
-		var placeholder = ui.attr('data-placeholder');
 		var id = element + '-' + name;
-		var expression = ui.attr('data-expression') ? ui.attr('data-expression') === 'true' : false;
-		var attribute = expression ?
-			Simulators.expressionAttributeForInput(id, name, label, '', false, placeholder) :
-			Simulators.simpleAttributeForInput(id, type, name, label, '', false, placeholder, decodeURI(ui.attr('data-options')) );
-		target.append(attribute);
-		$( attribute ).find(".attribute-expression").expressionbuilder({
-			fields: Simulators.dataset,
-			constants: Simulators.expressionOptions.constants,
-			functions: Simulators.expressionOptions.functions,
-			operators: Simulators.expressionOptions.operators,
-			onCompleted: Simulators.expressionOptions.onCompleted,
-			onEditing: Simulators.expressionOptions.onEditing,
-			onError: Simulators.expressionOptions.onError,
-			language: Simulators.expressionOptions.language,
-			operandHolder: Simulators.expressionOptions.operandHolder,
-			operatorHolder: Simulators.expressionOptions.operatorHolder,
-			nestedExpression: Simulators.expressionOptions.nestedExpression
-		});
-		attribute.find('span.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		ui.hide();
+		if (! $('#' + id).length) {
+			var type = ui.attr('data-type');
+			var label = ui.text();
+			var placeholder = ui.attr('data-placeholder');
+			var expression = ui.attr('data-expression') ? ui.attr('data-expression') === 'true' : false;
+			var attribute = expression ?
+				Simulators.expressionAttributeForInput(id, name, label, '', false, placeholder) :
+				Simulators.simpleAttributeForInput(id, type, name, label, '', false, placeholder, decodeURI(ui.attr('data-options')) );
+			target.append(attribute);
+			$( attribute ).find(".attribute-expression").expressionbuilder({
+				fields: Simulators.dataset,
+				constants: Simulators.expressionOptions.constants,
+				functions: Simulators.expressionOptions.functions,
+				operators: Simulators.expressionOptions.operators,
+				onCompleted: Simulators.expressionOptions.onCompleted,
+				onEditing: Simulators.expressionOptions.onEditing,
+				onError: Simulators.expressionOptions.onError,
+				language: Simulators.expressionOptions.language,
+				operandHolder: Simulators.expressionOptions.operandHolder,
+				operatorHolder: Simulators.expressionOptions.operatorHolder,
+				nestedExpression: Simulators.expressionOptions.nestedExpression
+			});
+			attribute.find('span.delete-attribute').click(function() {
+				Simulators.removeAttribute($(this));
+			});
+			ui.hide();
+		}
 	}
 	
 	Simulators.openCollapsiblePanel = function(id, header, style, inClass, sortable, buttons) {

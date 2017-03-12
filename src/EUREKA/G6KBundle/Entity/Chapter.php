@@ -82,6 +82,10 @@ class Chapter {
 		return $this->collapsible;
 	}
 
+	public function getCollapsible() {
+		return $this->collapsible;
+	}
+
 	public function setCollapsible($collapsible) {
 		$this->collapsible = $collapsible;
 	}

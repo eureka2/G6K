@@ -105,8 +105,21 @@ class DOMClient extends BaseClient {
 	}
 
 	protected function doRequest($request) {
+		$urlParts = parse_url($request->getUri());
+		$scheme = $urlParts['scheme'];
+		$path = isset($urlParts['path']) ? $urlParts['path'] : '';
+		$query = isset($urlParts['query']) ? $urlParts['query'] : '';
+		if ($urlParts['host'] == $_SERVER['HTTP_HOST'] && 
+			$query == '' &&
+			file_exists($_SERVER['DOCUMENT_ROOT'] . $path)) {
+			return $this->doLocalRequest($request, $path);
+		} else {
+			return $this->doRemoteRequest($request, $scheme);
+		}
+	}
+
+	private function doRemoteRequest($request, $scheme) {
 		$server = $request->getServer();
-		$scheme = parse_url($request->getUri(), PHP_URL_SCHEME);
 		$proxy = $scheme == 'https' ? $server['HTTPS_PROXY']['proxy'] : $server['HTTP_PROXY']['proxy'];
 		if ($proxy) {
 			$ctxConfig = array(
@@ -160,7 +173,25 @@ class DOMClient extends BaseClient {
 			$content = substr($content, 10); // See http://www.php.net/manual/en/function.gzencode.php
 			$content = gzinflate($content);
 		}
+		error_log(json_encode($headers));
 		return new Response($content, $status, $headers);
+	}
+
+	private function doLocalRequest($request, $path) {
+		try {
+			$file = $_SERVER['DOCUMENT_ROOT'] . $path;
+			$content = @file_get_contents($file);
+			$headers = array(
+				'Date' => gmdate('D, d M Y H:i:s', time()).' GMT',
+				'Content-Type' => mime_content_type($file),
+				'Connection' => 'close',
+				'Access-Control-Allow-Origin' => '*',
+				'Cache-Control' => 'max-age=86400'
+			);
+			return new Response($content, '200', $headers);
+		} catch (\Exception $e) {
+			return new Response($e->getMessage(), '500', array());
+		}
 	}
 
 	private function decodeChunked($chunked) {

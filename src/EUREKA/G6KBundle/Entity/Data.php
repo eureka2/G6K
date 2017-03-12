@@ -228,6 +228,10 @@ class Data {
 		return $this->memorize;
 	}
 
+	public function getMemorize() {
+		return $this->memorize;
+	}
+
 	public function setMemorize($memorize) {
 		$this->memorize = $memorize;
 	}
@@ -389,11 +393,19 @@ class Data {
 		return $this->used;
 	}
 
+	public function getUsed() {
+		return $this->used;
+	}
+
 	public function setUsed($used) {
 		$this->used = $used;
 	}
 
 	public function isError() {
+		return $this->error;
+	}
+
+	public function getError() {
 		return $this->error;
 	}
 
@@ -420,6 +432,10 @@ class Data {
 	}
 
 	public function isWarning() {
+		return $this->warning;
+	}
+
+	public function getWarning() {
 		return $this->warning;
 	}
 
@@ -578,7 +594,5 @@ class Data {
 		return end($classPath);
 	}
 }
-
-
 
 ?>

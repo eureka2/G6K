@@ -33,48 +33,61 @@ class ChoiceSource {
 	private $idColumn = "";
 	private $valueColumn = "";
 	private $labelColumn = "";
-	
+	private $caseInsensitive = true;
+
 	public function __construct($data, $id, $valueColumn, $labelColumn) {
 		$this->data = $data;
 		$this->id = $id;
 		$this->setValueColumn($valueColumn);
 		$this->setLabelColumn($labelColumn);
 	}
-	
+
 	public function getData() {
 		return $this->data;
 	}
-	
+
 	public function getId() {
 		return $this->id;
 	}
-	
+
 	public function setId($id) {
 		$this->id = $id;
 	}
-	
+
+	public function isCaseInsensitive() {
+		return $this->caseInsensitive;
+	}
+
+	public function getCaseInsensitive() {
+		return $this->caseInsensitive;
+	}
+
+	public function setCaseInsensitive($caseInsensitive = true) {
+		$this->caseInsensitive = $caseInsensitive;
+	}
+
 	public function getIdColumn() {
-		return $this->idColumn;
+		return $this->caseInsensitive ? strtolower($this->idColumn) : $this->idColumn;
 	}
-	
+
 	public function setIdColumn($idColumn) {
-		$this->idColumn = strtolower($idColumn);
+		$this->idColumn = $idColumn;
 	}
-	
+
 	public function getValueColumn() {
-		return $this->valueColumn;
+		return $this->caseInsensitive ? strtolower($this->valueColumn) : $this->valueColumn;
 	}
-	
+
 	public function setValueColumn($valueColumn) {
-		$this->valueColumn = strtolower($valueColumn);
+		$this->valueColumn = $valueColumn;
 	}
-	
+
 	public function getLabelColumn() {
-		return $this->labelColumn;
+		return $this->caseInsensitive ? strtolower($this->labelColumn) : $this->labelColumn;
 	}
-	
+
 	public function setLabelColumn($labelColumn) {
-		$this->labelColumn = strtolower($labelColumn);
+		$this->labelColumn = $labelColumn;
 	}
 }
 

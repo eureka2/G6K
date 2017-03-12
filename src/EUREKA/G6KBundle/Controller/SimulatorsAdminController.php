@@ -376,8 +376,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->setReferer($simulatorData["referer"]);
 		$this->simu->setDynamic($simulatorData['dynamic'] == '1');
 		$this->simu->setMemo($simulatorData['memo'] == '1');
-		$this->simu->setDescription(trim($simulatorData['description']));
-		$this->simu->setRelatedInformations(trim($simulatorData['relatedInformations']));
+		$this->simu->setDescription(trim($this->replaceVarTagByVariable($simulatorData['description'])));
+		$this->simu->setRelatedInformations(trim($this->replaceVarTagByVariable($simulatorData['relatedInformations'])));
 		$this->simu->setDateFormat($simulatorData['dateFormat']);
 		$this->simu->setDecimalPoint($simulatorData['decimalPoint']);
 		$this->simu->setMoneySymbol($simulatorData['moneySymbol']);
@@ -393,7 +393,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			if ($data['element'] == 'datagroup') {
 				$dataGroupObj = new DataGroup($this->simu, (int)$data['id'], $data['name']);
 				$dataGroupObj->setLabel($data['label']);
-				$dataGroupObj->setDescription($data['description']);
+				$dataGroupObj->setDescription(trim($this->replaceVarTagByVariable($data['description'])));
 				foreach ($data['datas'] as $gdata) {
 					$dataObj = new Data($this, (int)$gdata['id'], $gdata['name']);
 					$dataObj->setLabel($gdata['label']);
@@ -439,7 +439,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						}
 					}
 					if (isset($gdata['description'])) {
-						$dataObj->setDescription(trim($gdata['description']));
+						$dataObj->setDescription(trim($this->replaceVarTagByVariable($gdata['description'])));
 					}
 					$dataGroupObj->addData($dataObj);
 				}
@@ -489,7 +489,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					}
 				}
 				if (isset($data['description'])) {
-					$dataObj->setDescription(trim($data['description']));
+					$dataObj->setDescription(trim($this->replaceVarTagByVariable($data['description'])));
 				}
 				$this->simu->addData($dataObj);
 			}
@@ -516,7 +516,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					if ($block['type'] == 'fieldset') {
 						$fieldset = $block;
 						$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
-						$fieldsetObj->setLegend($fieldset['legend']);
+						$fieldsetObj->setLegend(trim($this->replaceVarTagByVariable($fieldset['legend'])));
 						if ($fieldset['disposition'] != "") {
 							$fieldsetObj->setDisposition($fieldset['disposition']);
 						}
@@ -589,11 +589,11 @@ class SimulatorsAdminController extends BaseAdminController {
 									$note = $field['Note'];
 									if ($note['position'] == 'beforeField') {
 										$noteObj = new FieldNote($this);
-										$noteObj->setText($note['text']);
+										$noteObj->setText(trim($this->replaceVarTagByVariable($note['text'])));
 										$fieldObj->setPreNote($noteObj);
 									} elseif ($note['position'] == 'afterField') {
 										$noteObj = new FieldNote($this);
-										$noteObj->setText($note['text']);
+										$noteObj->setText(trim($this->replaceVarTagByVariable($note['text'])));
 										$fieldObj->setPostNote($noteObj);
 									}
 								}
@@ -616,9 +616,9 @@ class SimulatorsAdminController extends BaseAdminController {
 								$sectionObj = new Section($chapterObj, (int)$section['id']);
 								$sectionObj->setName($section['name']);
 								$sectionObj->setLabel($section['label']);
-								$sectionObj->setContent($section['content']);
+								$sectionObj->setContent(trim($this->replaceVarTagByVariable($section['content'])));
 								if (isset($section['annotations'])) {
-									$sectionObj->setAnnotations($section['annotations']);
+									$sectionObj->setAnnotations(trim($this->replaceVarTagByVariable($section['annotations'])));
 								}
 								$chapterObj->addSection($sectionObj);
 							}
@@ -646,7 +646,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					}
 					foreach ($footnotes['footNotes'] as $footnote) {
 						$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
-						$footnoteObj->setText($footnote['text']);
+						$footnoteObj->setText(trim($this->replaceVarTagByVariable($footnote['text'])));
 						$footnotesObj->addFootNote($footnoteObj);
 					}
 					$stepObj->setFootNotes($footnotesObj);
@@ -993,7 +993,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		foreach ($profiles['profiles'] as $profile) {
 			$profileObj = new Profile($profile['id'], $profile['name']);
 			$profileObj->setLabel($profile['label']);
-			$profileObj->setDescription($profile['description']);
+			$profileObj->setDescription(trim($this->replaceVarTagByVariable($profile['description'])));
 			foreach ($profile['datas'] as $data) {
 				$profileObj->addData((int)$data['id'], $data['default']);
 			}
@@ -3193,7 +3193,8 @@ class SimulatorsAdminController extends BaseAdminController {
 
 	public function findActionField($fields, $currentNode) {
 		foreach ($fields as $field) {
-			$name = array_keys($field)[0];
+			$names = array_keys($field);
+			$name = $names[0];
 			$value = $field[$name];
 			$currentNode = $this->findActionOption($name, $value, $currentNode);
 			if ($currentNode == null) { 
@@ -3269,8 +3270,20 @@ class SimulatorsAdminController extends BaseAdminController {
 					if ($result !== null) {
 						$n = 0;
 						foreach ($result as $row) {
-						$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
-							$choice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
+							$id = '';
+							$value = '';
+							$label = '';
+							foreach ($row as $col => $cell) {
+								if (strcasecmp($col, $choiceSource->getIdColumn()) == 0) {
+									$id = $cell;
+								} else if (strcasecmp($col, $choiceSource->getValueColumn()) == 0) {
+									$value = $cell;
+								} else if (strcasecmp($col, $choiceSource->getLabelColumn()) == 0) {
+									$label = $cell;
+								}
+							}
+							$id = $id != '' ? $id : ++$n;
+							$choice = new Choice($data, $id, $value, $label);
 							$data->addChoice($choice);
 						}
 					}
@@ -3290,8 +3303,20 @@ class SimulatorsAdminController extends BaseAdminController {
 								if ($result !== null) {
 									$n = 0;
 									foreach ($result as $row) {
-										$id = $choiceSource->getIdColumn() != '' ? $row[$choiceSource->getIdColumn()] : ++$n;
-										$gchoice = new Choice($data, $id, $row[$choiceSource->getValueColumn()], $row[$choiceSource->getLabelColumn()]);
+										$id = '';
+										$value = '';
+										$label = '';
+										foreach ($row as $col => $cell) {
+											if (strcasecmp($col, $choiceSource->getIdColumn()) == 0) {
+												$id = $cell;
+											} else if (strcasecmp($col, $choiceSource->getValueColumn()) == 0) {
+												$value = $cell;
+											} else if (strcasecmp($col, $choiceSource->getLabelColumn()) == 0) {
+												$label = $cell;
+											}
+										}
+										$id = $id != '' ? $id : ++$n;
+										$choice = new Choice($data, $id, $value, $label);
 										$choice->addChoice($gchoice);
 									}
 								}
@@ -3303,14 +3328,19 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 	}
 
-	protected function processSource(Source $source) {
-		$params = $source->getParameters();
+	protected function getDatasource(Source $source) {
 		$datasource = $source->getDatasource();
 		if (is_numeric($datasource)) {
 			$datasource = $this->simu->getDatasourceById((int)$datasource);
 		} else {
 			$datasource = $this->simu->getDatasourceByName($datasource);
 		}
+		return $datasource;
+	}
+
+	protected function processSource(Source $source) {
+		$params = $source->getParameters();
+		$datasource = $this->getDatasource($source);
 		switch ($datasource->getType()) {
 			case 'uri':
 				$query = "";
@@ -3467,14 +3497,32 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 	}
 
+	private function replaceVariableTag($matches)
+	{
+		$variable = '#' . $matches[1];
+		if ($matches[2] == 'L') {
+			$variable .= 'L';
+		}
+		return $variable;
+	}
+
+	private function replaceVarTagByVariable($target) {
+		$result = preg_replace_callback(
+			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
+			array($this, 'replaceVariableTag'),
+			$target
+		);
+		return $result;
+	}
+
 	private function replaceVariables($target) {
 		$result = preg_replace_callback(
-			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
-			array($this, 'replaceVariable'),
+			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
+			array($this, 'replaceVariableTag'),
 			$target
 		);
 		$result = preg_replace_callback(
-			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
+			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
 			array($this, 'replaceVariable'),
 			$result
 		);

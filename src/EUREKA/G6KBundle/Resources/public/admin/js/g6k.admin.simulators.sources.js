@@ -260,6 +260,25 @@ THE SOFTWARE.
 
 	Simulators.sourceBackup = null;
 	
+	Simulators.isDataNameInSources = function(name) {
+		var found = false;
+		var parameters = $('#sources').find('.source-parameter-container');
+		parameters.each(function(p) {
+			var sourceId = $(this).attr('data-id');
+			var pdatas = $(this).find("p[data-attribute='data']");
+			pdatas.each(function(d) {
+				if ($(this).attr('data-value') == name) {
+					found = sourceId;
+					return false;
+				}
+			});
+			if (found !== false) {
+				return false;
+			}
+		});
+		return found;
+	}
+
 	Simulators.changeDataNameInSources = function(oldName, name) {
 		var parameters = $('#sources').find('.source-parameter-container');
 		parameters.each(function(p) {

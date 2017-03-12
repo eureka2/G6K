@@ -133,11 +133,21 @@ THE SOFTWARE.
 						inRules = rule.id;
 						return false;
 					}
+				} else if (action.value == "notifyError" || action.value == "notifyWarning") {
+					if (action.fields[1].value == 'data' && action.fields[1].fields[0].value == name) {
+						inRules = rule.id;
+						return false;
+					}
 				}
 			});
 			$.each(rule.elsedata, function(a, action) {
 				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					if (action.fields[0].fields[0].value == name) {
+						inRules = rule.id;
+						return false;
+					}
+				} else if (action.value == "notifyError" || action.value == "notifyWarning") {
+					if (action.fields[1].value == 'data' && action.fields[1].fields[0].value == name) {
 						inRules = rule.id;
 						return false;
 					}
@@ -157,12 +167,20 @@ THE SOFTWARE.
 					if (action.fields[0].fields[0].value == oldName) {
 						action.fields[0].fields[0].value = name;
 					}
+				} else if (action.value == "notifyError" || action.value == "notifyWarning") {
+					if (action.fields[1].value == 'data' && action.fields[1].fields[0].value == oldName) {
+						action.fields[1].fields[0].value == name;
+					}
 				}
 			});
 			$.each(rule.elsedata, function(a, action) {
 				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
 					if (action.fields[0].fields[0].value == oldName) {
 						action.fields[0].fields[0].value = name;
+					}
+				} else if (action.value == "notifyError" || action.value == "notifyWarning") {
+					if (action.fields[1].value == 'data' && action.fields[1].fields[0].value == oldName) {
+						action.fields[1].fields[0].value == name;
 					}
 				}
 			});
@@ -282,6 +300,29 @@ THE SOFTWARE.
 		}
 	}
 
+	Simulators.isDatagroupNameInRules = function(name) {
+		var inRules = false;
+		$.each(rules, function(r, rule) {
+			$.each(rule.ifdata, function(a, action) {
+				if (action.value == "notifyError" || action.value == "notifyWarning") {
+					if (action.fields[1].value == 'datagroup' && action.fields[1].fields[0].value == name) {
+						inRules = rule.id;
+						return false;
+					}
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				if (action.value == "notifyError" || action.value == "notifyWarning") {
+					if (action.fields[1].value == 'datagroup' && action.fields[1].fields[0].value == name) {
+						inRules = rule.id;
+						return false;
+					}
+				}
+			});
+		});
+		return inRules;
+	}
+
 	Simulators.changeDatagroupNameInRules = function(oldName, name) {
 		var ruleActions = $('#business-rules').find('.rule-action');
 		ruleActions.each(function(r) {
@@ -292,6 +333,38 @@ THE SOFTWARE.
 			datas.each(function(d) {
 				if ($(this).attr('data-id') == oldName) {
 					$(this).attr('data-id', name);
+				}
+			});
+		});
+		$.each(actions, function(a, action) {
+			if (action.name == "notifyError" || action.name == "notifyWarning") {
+				$.each(action.fields[1].options, function(o, option) {
+					if (option.name == 'datagroup') {
+						$.each(option.fields, function(f, field) {
+							$.each(field.options, function(o2, option2) {
+								if (option2.name == oldName) {
+									option2.name = name;
+									return false;
+								}
+							});
+						});
+					}
+				});
+			}
+		});
+		$.each(rules, function(r, rule) {
+			$.each(rule.ifdata, function(a, action) {
+				if (action.value == "notifyError" || action.value == "notifyWarning") {
+					if (action.fields[1].value == 'datagroup' && action.fields[1].fields[0].value == oldName) {
+						action.fields[1].fields[0].value == name;
+					}
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				if (action.value == "notifyError" || action.value == "notifyWarning") {
+					if (action.fields[1].value == 'datagroup' && action.fields[1].fields[0].value == oldName) {
+						action.fields[1].fields[0].value == name;
+					}
 				}
 			});
 		});
@@ -306,6 +379,22 @@ THE SOFTWARE.
 					$(this).text('«' + label + '»');
 				}
 			});
+		});
+		$.each(actions, function(a, action) {
+			if (action.name == "notifyError" || action.name == "notifyWarning") {
+				$.each(action.fields[1].options, function(o, option) {
+					if (option.name == 'datagroup') {
+						$.each(option.fields, function(f, field) {
+							$.each(field.options, function(o2, option2) {
+								if (option2.name == name) {
+									option2.label = label;
+									return false;
+								}
+							});
+						});
+					}
+				});
+			}
 		});
 	}
 

@@ -75,6 +75,10 @@ class FieldRow {
 		return $this->colon;
 	}
 
+	public function getColon() {
+		return $this->colon;
+	}
+
 	public function setColon($colon) {
 		$this->colon = $colon;
 	}
@@ -83,11 +87,19 @@ class FieldRow {
 		return $this->help;
 	}
 
+	public function getHelp() {
+		return $this->help;
+	}
+
 	public function setHelp($help) {
 		$this->help = $help;
 	}
 
 	public function isEmphasized() {
+		return $this->emphasize;
+	}
+
+	public function getEmphasize() {
 		return $this->emphasize;
 	}
 

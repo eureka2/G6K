@@ -222,7 +222,8 @@ class DataSourcesAdminController extends BaseAdminController {
 			$dsname = (string)$ds['name'];
 			if ($dstype == 'internal' || $dstype == 'database') {
 				$dsdatabase = (string)$ds['database'];
-				$db = $this->datasources->xpath("/DataSources/Databases/Database[@id='".$dsdatabase."']")[0];
+				$dbs = $this->datasources->xpath("/DataSources/Databases/Database[@id='".$dsdatabase."']");
+				$db = $dbs[0];
 				$id = (string)$db['id'];
 				$type = (string)$db['type'];
 				$name = (string)$db['name'];
@@ -473,7 +474,8 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	protected function doExportDatasource($dsid) {
-		$datasource = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']")[0];
+		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
+		$datasource = $datasources[0];
 		$container = $this->get('kernel')->getContainer();
 		$driver = $container->getParameter('database_driver');
 		$parameters = array(
@@ -1131,7 +1133,8 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	protected function migrateDB($dsid, $dbtype, $fromDatabase) {
-		$datasource = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']")[0];
+		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
+		$datasource = $datasources[0];
 		try {
 			if ($dbtype == 'jsonsql' || $dbtype == 'sqlite') {
 				$database = $this->getDatabase($dsid);

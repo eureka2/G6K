@@ -516,7 +516,6 @@
                             form.submit();
                         });
                     }
-					// $('select', this).trigger('change');
                 }
             }
         },

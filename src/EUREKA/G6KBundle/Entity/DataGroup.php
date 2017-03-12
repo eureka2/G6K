@@ -120,11 +120,19 @@ class DataGroup {
 		return $this->used;
 	}
 
+	public function getUsed() {
+		return $this->used;
+	}
+
 	public function setUsed($used) {
 		$this->used = $used;
 	}
 
 	public function isError() {
+		return $this->error;
+	}
+
+	public function getError() {
 		return $this->error;
 	}
 
@@ -151,6 +159,10 @@ class DataGroup {
 	}
 
 	public function isWarning() {
+		return $this->warning;
+	}
+
+	public function getWarning() {
 		return $this->warning;
 	}
 
@@ -182,7 +194,5 @@ class DataGroup {
 	}
 
 }
-
-
 
 ?>

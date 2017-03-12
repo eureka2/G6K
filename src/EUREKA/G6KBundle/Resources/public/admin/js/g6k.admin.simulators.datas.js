@@ -192,7 +192,7 @@ THE SOFTWARE.
 			/#(\d+)/g, 
 			function(match, p1) {
 				var data = Simulators.findDataById(p1);
-				return data != null ? '<var class="data" data-id="' + data.id + '">«' + data.label + '»</var>' : "#" + p1;
+				return data != null ? '<var data-id="' + data.id + '" class="data">«' + data.label + '»</var>' : "#" + p1;
 			}
 		);
 	}
@@ -530,16 +530,15 @@ THE SOFTWARE.
 					}));
 				});
 				dataPanelContainer.find('.choice-source-container').each(function (index) {
-					var values = $(this).find('select');
 					var choiceSource = {
-						id: values.eq(0).val(),
-						valueColumn: values.eq(1).val(),
-						labelColumn: values.eq(2).val(),
-						idColumn: ''
+						id: '',
+						idColumn: '',
+						valueColumn: '',
+						labelColumn: ''
 					};
-					if (values.length > 3) {
-						choiceSource.idColumn = values.eq(3).val();
-					}
+					$(this).find('input.simple-value, select.simple-value').each(function (v) {
+						choiceSource[$(this).attr('data-attribute')] = $(this).val();
+					});
 					choicesContainer.append(Simulators.drawChoiceSourceForDisplay(choiceSource));
 				});
 				newDataPanel.find('.collapse').find('> .panel-body').append(choicesPanel);
@@ -876,33 +875,106 @@ THE SOFTWARE.
 		choiceSourceContainer.find('select[data-attribute=id]').change(function(e) {
 			var source = $(this).val();
 			var columns = $('#collapsesources').find('.source-container[data-id=' + source + ']').find('span[data-attribute=column]');
-			var valueColumn = choiceSourceContainer.find('select[data-attribute=valueColumn]');
-			if (valueColumn.length > 0) {
-				valueColumn.empty();
+			if (columns.length > 0) {
+				var valueColumn = choiceSourceContainer.find('select[data-attribute=valueColumn]');
+				if (valueColumn.length > 0) {
+					valueColumn.empty();
+				} else {
+					var input = choiceSourceContainer.find('input[data-attribute=valueColumn]');
+					valueColumn = $('<select>', {
+						'name': input.attr('name'),
+						'id': input.attr('id'),
+						'data-attribute': input.attr('data-attribute'),
+						'class': input.attr('class'),
+						'data-placeholder': input.attr('placeholder')
+					});
+					input.replaceWith(valueColumn);
+				}
 				columns.each(function(k) {
 					valueColumn.append($('<option>', {value: $(this).attr('data-alias'), text: $(this).attr('data-alias')}));
 				});
-			}
-			var labelColumn = choiceSourceContainer.find('select[data-attribute=labelColumn]');
-			if (labelColumn.length > 0) {
-				labelColumn.empty();
+				var labelColumn = choiceSourceContainer.find('select[data-attribute=labelColumn]');
+				if (labelColumn.length > 0) {
+					labelColumn.empty();
+				} else {
+					var input = choiceSourceContainer.find('input[data-attribute=labelColumn]');
+					labelColumn = $('<select>', {
+						'name': input.attr('name'),
+						'id': input.attr('id'),
+						'data-attribute': input.attr('data-attribute'),
+						'class': input.attr('class'),
+						'data-placeholder': input.attr('placeholder')
+					});
+					input.replaceWith(labelColumn);
+				}
 				columns.each(function(k) {
 					labelColumn.append($('<option>', {value: $(this).attr('data-alias'), text: $(this).attr('data-alias')}));
 				});
-			}
-			var idColumn = choiceSourceContainer.find('select[data-attribute=idColumn]');
-			if (idColumn.length > 0) {
-				idColumn.empty();
+				var idColumn = choiceSourceContainer.find('select[data-attribute=idColumn]');
+				if (idColumn.length > 0) {
+					idColumn.empty();
+				} else {
+					var input = choiceSourceContainer.find('input[data-attribute=idColumn]');
+					idColumn = $('<select>', {
+						'name': input.attr('name'),
+						'id': input.attr('id'),
+						'data-attribute': input.attr('data-attribute'),
+						'class': input.attr('class'),
+						'data-placeholder': input.attr('placeholder')
+					});
+					input.replaceWith(idColumn);
+				}
 				columns.each(function(k) {
 					idColumn.append($('<option>', {value: $(this).attr('data-alias'), text: $(this).attr('data-alias')}));
 				});
+				idColumn = choiceSourceContainer.find('.optional-attributes').find('li[data-name=idColumn]');
+				var sourceFieldsList = {};
+				columns.each(function(k) {
+					sourceFieldsList[$(this).attr('data-alias')] = $(this).attr('data-alias');
+				});
+				idColumn.attr('data-type', 'select');
+				idColumn.attr('data-options', encodeURI(JSON.stringify( sourceFieldsList )));
+			} else {
+				var valueColumn = choiceSourceContainer.find('select[data-attribute=valueColumn]');
+				if (valueColumn.length > 0) {
+					var input = $('<input>', {
+						'type': 'text',
+						'name': valueColumn.attr('name'),
+						'id': valueColumn.attr('id'),
+						'data-attribute': valueColumn.attr('data-attribute'),
+						'class': valueColumn.attr('class'),
+						'placeholder': valueColumn.attr('data-placeholder')
+					});
+					valueColumn.replaceWith(input);
+				}
+				var labelColumn = choiceSourceContainer.find('select[data-attribute=labelColumn]');
+				if (labelColumn.length > 0) {
+					var input = $('<input>', {
+						'type': 'text',
+						'name': labelColumn.attr('name'),
+						'id': labelColumn.attr('id'),
+						'data-attribute': labelColumn.attr('data-attribute'),
+						'class': labelColumn.attr('class'),
+						'placeholder': labelColumn.attr('data-placeholder')
+					});
+					labelColumn.replaceWith(input);
+				}
+				var idColumn = choiceSourceContainer.find('select[data-attribute=idColumn]');
+				if (idColumn.length > 0) {
+					var input = $('<input>', {
+						'type': 'text',
+						'name': idColumn.attr('name'),
+						'id': idColumn.attr('id'),
+						'data-attribute': idColumn.attr('data-attribute'),
+						'class': idColumn.attr('class'),
+						'placeholder': idColumn.attr('data-placeholder')
+					});
+					idColumn.replaceWith(input);
+				}
+				idColumn = choiceSourceContainer.find('.optional-attributes').find('li[data-name=idColumn]');
+				idColumn.attr('data-type', 'text');
+				idColumn.removeAttr('data-options');
 			}
-			idColumn = choiceSourceContainer.find('.optional-attributes').find('li[data-name=idColumn]');
-			var sourceFieldsList = {};
-			columns.each(function(k) {
-				sourceFieldsList[$(this).attr('data-alias')] = $(this).attr('data-alias');
-			});
-			idColumn.attr('data-options', encodeURI(JSON.stringify( sourceFieldsList )));
 		});
 		choiceSourceContainer.find('.delete-attribute').click(function() {
 			Simulators.removeAttribute($(this));
@@ -957,8 +1029,13 @@ THE SOFTWARE.
 		var attributesContainer = $('<div class="attributes-container choice-source-container" data-id="' + choiceSource.id + '"></div>');
 		var attributes = $('<div></div>');
 		attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-id', 'select', 'id', Translator.trans('Source'), choiceSource.id, true, Translator.trans('Select a source'), JSON.stringify(sourcesList))); 
-		attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-valueColumn', 'select', 'valueColumn', Translator.trans('Source column value'), choiceSource.valueColumn, true, Translator.trans('Source column value'), JSON.stringify(sourceFieldsList)));
-		attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-labelColumn', 'select', 'labelColumn', Translator.trans('Source column label'), choiceSource.labelColumn, true, Translator.trans('Source column label'), JSON.stringify(sourceFieldsList)));
+		if (columns.length > 0) {
+			attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-valueColumn', 'select', 'valueColumn', Translator.trans('Source column value'), choiceSource.valueColumn, true, Translator.trans('Source column value'), JSON.stringify(sourceFieldsList)));
+			attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-labelColumn', 'select', 'labelColumn', Translator.trans('Source column label'), choiceSource.labelColumn, true, Translator.trans('Source column label'), JSON.stringify(sourceFieldsList)));
+		} else {
+			attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-valueColumn', 'text', 'valueColumn', Translator.trans('Source column value'), choiceSource.valueColumn, true, Translator.trans('Source column value')));
+			attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-labelColumn', 'text', 'labelColumn', Translator.trans('Source column label'), choiceSource.labelColumn, true, Translator.trans('Source column label')));
+		}
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
@@ -966,7 +1043,11 @@ THE SOFTWARE.
 		optionalAttributes.append(optionalAttribute);
 		optionalAttributesPanel.append(optionalAttributes);
 		if (choiceSource.idColumn) {
-			attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-idColumn', 'select', 'idColumn', Translator.trans('Source column id'), choiceSource.idColumn, false, Translator.trans('Source column id'), JSON.stringify(sourceFieldsList)));
+			if (columns.length > 0) {
+				attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-idColumn', 'select', 'idColumn', Translator.trans('Source column id'), choiceSource.idColumn, false, Translator.trans('Source column id'), JSON.stringify(sourceFieldsList)));
+			} else {
+				attributes.append(Simulators.simpleAttributeForInput('data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '-idColumn', 'text', 'idColumn', Translator.trans('Source column id'), choiceSource.idColumn, false, Translator.trans('Source column id')));
+			}
 			optionalAttribute.hide();
 		}
 		attributesContainer.append(attributes);
@@ -1351,6 +1432,49 @@ THE SOFTWARE.
 		}
 	}
 
+	Simulators.isDataDeleteable = function(id, name) {
+		var source;
+		if ((source = Simulators.isDataNameInSources(name)) !== false) {
+			bootbox.alert({
+				title: Translator.trans('Deleting data'),
+				message: Translator.trans("This data is used in source #%id%. You must modify this source before you can delete this data", { 'id': source }) 
+			});
+			return false;
+		}
+		var step;
+		if ((step = Simulators.isDataIdInSteps(id)) !== false) {
+			bootbox.alert({
+				title: Translator.trans('Deleting data'),
+				message: Translator.trans("This data is used in step #%id%. You must modify this step before you can delete this data", { 'id': step }) 
+			});
+			return false;
+		}
+		var rule;
+		if ((rule = Simulators.isDataIdInRules(id)) !== false) {
+			bootbox.alert({
+				title: Translator.trans('Deleting data'),
+				message: Translator.trans("This data is used in rule #%id%. You must modify this rule before you can delete this data", { 'id': rule }) 
+			});
+			return false;
+		}
+		if ((rule = Simulators.isDataNameInRules(name)) !== false) {
+			bootbox.alert({
+				title: Translator.trans('Deleting data'),
+				message: Translator.trans("This data is used in rule #%id%. You must modify this rule before you can delete this data", { 'id': rule }) 
+			});
+			return false;
+		}
+		var profile;
+		if ((profile = Simulators.isDataInProfiles(id)) !== false) {
+			bootbox.alert({
+				title: Translator.trans('Deleting data'),
+				message: Translator.trans("This data is used in profile #%id%. You must modify this profile before you can delete this data", { 'id': profile }) 
+			});
+			return false;
+		}
+		return true;
+	}
+
 	Simulators.deleteData = function(dataContainerGroup) {
 		try {
 			var dataContainer = dataContainerGroup.find('.data-container, .datagroup-data-container');
@@ -1358,35 +1482,7 @@ THE SOFTWARE.
 			var attributesContainer = dataContainer.find('.attributes-container');
 			var name = attributesContainer.find("p[data-attribute='name']").attr('data-value');
 			var dataLabel = attributesContainer.find("p[data-attribute='label']").attr('data-value');
-			var step;
-			if ((step = Simulators.isDataIdInSteps(id)) !== false) {
-				bootbox.alert({
-					title: Translator.trans('Deleting data'),
-					message: Translator.trans("This data is used in step #%id%. You must modify this step before you can delete this data", { 'id': step }) 
-				});
-				return;
-			}
-			var rule;
-			if ((rule = Simulators.isDataIdInRules(id)) !== false) {
-				bootbox.alert({
-					title: Translator.trans('Deleting data'),
-					message: Translator.trans("This data is used in rule #%id%. You must modify this rule before you can delete this data", { 'id': rule }) 
-				});
-				return;
-			}
-			if ((rule = Simulators.isDataNameInRules(name)) !== false) {
-				bootbox.alert({
-					title: Translator.trans('Deleting data'),
-					message: Translator.trans("This data is used in rule #%id%. You must modify this rule before you can delete this data", { 'id': rule }) 
-				});
-				return;
-			}
-			var profile;
-			if ((profile = Simulators.isDataInProfiles(id)) !== false) {
-				bootbox.alert({
-					title: Translator.trans('Deleting data'),
-					message: Translator.trans("This data is used in profile #%id%. You must modify this profile before you can delete this data", { 'id': profile }) 
-				});
+			if (! Simulators.isDataDeleteable(id, name)) {
 				return;
 			}
 			bootbox.confirm({
@@ -1485,24 +1581,52 @@ THE SOFTWARE.
 		}
 	}
 
-	Simulators.deleteDatagroup = function(dataContainerGroup) {
+	Simulators.deleteDatagroup = function(datagroupContainerGroup) {
 		try {
-			var dataContainer = dataContainerGroup.find('.data-container.datagroup');
-			var attributesContainer = dataContainer.find('.attributes-container');
-			var dataLabel = attributesContainer.find("p[data-attribute='label']").attr('data-value');
-			// TODO : check if datagroup is in rules
+			var datagroupContainer = datagroupContainerGroup.find('.data-container.datagroup');
+			var attributesContainer = datagroupContainer.find('.attributes-container');
+			var datagroupLabel = attributesContainer.find("p[data-attribute='label']").attr('data-value');
+			var step;
+			if ((step = Simulators.isDatagroupIdInSteps(datagroupContainer.attr('data-id'))) !== false) {
+				bootbox.alert({
+					title: Translator.trans('Deleting datagroup'),
+					message: Translator.trans("This datagroup is used in step #%id%. You must modify this step before you can delete this datagroup", { 'id': step }) 
+				});
+				return;
+			}
+			var rule;
+			if ((rule = Simulators.isDatagroupNameInRules(name)) !== false) {
+				bootbox.alert({
+					title: Translator.trans('Deleting datagroup'),
+					message: Translator.trans("This datagroup is used in rule #%id%. You must modify this rule before you can delete this datagroup", { 'id': rule }) 
+				});
+				return;
+			}
+			var dataContainerGroups = datagroupContainer.find('.datas-panel > div.panel-body > div.panel-group');
+			dataContainerGroups.each(function(k) {
+				var dataContainerGroup = $(this);
+				var dataContainer = dataContainerGroup.find('.data-container, .datagroup-data-container');
+				var id = dataContainer.attr('data-id');
+				var name = dataContainer.find(".attributes-container p[data-attribute='name']").attr('data-value');
+				if (! Simulators.isDataDeleteable(id, name)) {
+					return;
+				}
+			});
 			bootbox.confirm({
 				title: Translator.trans('Deleting datagroup'),
-				message: Translator.trans("Are you sure you want to delete the data group : %label% ?", { 'label': dataLabel }), 
+				message: Translator.trans("Are you sure you want to delete the data group : %label% ?", { 'label': datagroupLabel }), 
 				callback: function(confirmed) {
 					if (confirmed) {
-						// TODO : update dataset to delete all data in this datagroup
-						var dataName = attributesContainer.find("p[data-attribute='name']").attr('data-value');
-						var dparent = dataContainerGroup.parent();
-						dataContainerGroup.remove();
+						dataContainerGroups.each(function(k) {
+							var dataContainerGroup = $(this);
+							Simulators.deleteData(dataContainerGroup);
+						});
+						var datagroupName = attributesContainer.find("p[data-attribute='name']").attr('data-value');
+						var dparent = datagroupContainerGroup.parent();
+						datagroupContainerGroup.remove();
 						Simulators.renumberDatagroups(dparent.find('> div'));
-						Simulators.deleteDatagroupInActions(dataName);
-						delete Simulators.datagroups[dataName];
+						Simulators.deleteDatagroupInActions(datagroupName);
+						delete Simulators.datagroups[datagroupName];
 						$('.save-simulator').show();
 						Admin.updated = true;
 					}

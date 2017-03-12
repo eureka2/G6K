@@ -105,6 +105,10 @@ class Step {
 		return $this->dynamic;
 	}
 
+	public function getDynamic() {
+		return $this->dynamic;
+	}
+
 	public function setDynamic($dynamic) {
 		$this->dynamic = $dynamic;
 	}
@@ -168,6 +172,10 @@ class Step {
 	}
 
 	public function isDisplayable() {
+		return $this->displayable;
+	}
+
+	public function getDisplayable() {
 		return $this->displayable;
 	}
 

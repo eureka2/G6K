@@ -100,6 +100,10 @@ class Parameter {
 		return $this->optional;
 	}
 
+	public function getOptional() {
+		return $this->optional;
+	}
+
 	public function setOptional($optional) {
 		$this->optional = $optional;
 	}

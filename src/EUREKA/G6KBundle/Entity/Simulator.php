@@ -101,6 +101,10 @@ class Simulator {
 		return $this->dynamic;
 	}
 
+	public function getDynamic() {
+		return $this->dynamic;
+	}
+
 	public function setDynamic($dynamic) {
 		$this->dynamic = $dynamic;
 	}
@@ -110,6 +114,10 @@ class Simulator {
 	}
 
 	public function hasMemo() {
+		return $this->memo;
+	}
+
+	public function getMemo() {
 		return $this->memo;
 	}
 
@@ -348,6 +356,10 @@ class Simulator {
 		return $this->warning;
 	}
 
+	public function getWarning() {
+		return $this->warning;
+	}
+
 	public function setWarning($warning) {
 		$this->warning = $warning;
 	}
@@ -371,6 +383,10 @@ class Simulator {
 	}
 
 	public function isError() {
+		return $this->error;
+	}
+
+	public function getError() {
 		return $this->error;
 	}
 
@@ -399,7 +415,7 @@ class Simulator {
 	private function replaceIdByDataLabel($matches) {
 		$id = $matches[1];
 		$data = $this->getDataById($id);
-		return $data !== null ? '<var class="data" data-id="' . $data->getId() . '">«' . $data->getLabel() . '»</var>' : "#" . $id;
+		return $data !== null ? '<var data-id="' . $data->getId() . '" class="data">«' . $data->getLabel() . '»</var>' : "#" . $id;
 	}
 
 	public function replaceByDataLabel($target) {
@@ -937,10 +953,15 @@ class Simulator {
 	}
 
 	private function replaceIdByName($target) {
+		$result = preg_replace_callback(
+			'/\<var\s+[^\s]*\s*data-id="(\d+)"[^\>]*\>[^\<]+\<\/var\>/',
+			array($this, 'replaceDataIdByName'),
+			$target
+		);
 		return preg_replace_callback(
 			"/#(\d+)/", 
 			array($this, 'replaceDataIdByName'),
-			$target
+			$result
 		);
 	}
 
@@ -957,7 +978,7 @@ class Simulator {
 		);
 	}
 
-	private function paragraphs ($text) {
+	public function paragraphs ($text) {
 		$result = "";
 		$paras = explode("\n", trim($text));
 		foreach ($paras as $para) {
@@ -1522,14 +1543,14 @@ class Simulator {
 										$content = preg_replace_callback(
 											'/#(\d+)|\<var\s+class="data"\s+data-id="(\d+)L?"\>[^\<]+\<\/var\>/', 
 											array($this, 'addNoteDependency'), 
-											(string)$section->Content
+											 $this->paragraphs((string)$section->Content)
 										);
 										$sections[$this->name] = array(
 											'id'	 => (int)$section['id'],
 											'name' => (string)$section['name'],
 											'label' => (string)$section['label'],
 											'content' => $content,
-											'annotations' => (string)$section->Annotations
+											'annotations' =>  $this->paragraphs((string)$section->Annotations)
 										); 
 									}
 									$this->name = (string)$step['name']."-panel-".$panel['id']."-blockinfo-".$blockinfo['id']."-chapter-".$chapter['id'];
@@ -1850,6 +1871,7 @@ class Simulator {
 								}
 								if ($choice->getChoiceSource() !== null) {
 									$source = $choice->getChoiceSource();
+									$source->setCaseInsensitive(false);
 									$attrs = 'id="' . $source->getId() . '"';
 									if ($source->getIdColumn() != '') {
 										$attrs .= ' idColumn="' . $source->getIdColumn() . '"';
@@ -1862,6 +1884,7 @@ class Simulator {
 						}
 						if ($data->getChoiceSource() !== null) {
 							$source = $data->getChoiceSource();
+							$source->setCaseInsensitive(false);
 							$attrs = 'id="' . $source->getId() . '"';
 							if ($source->getIdColumn() != '') {
 								$attrs .= ' idColumn="' . $source->getIdColumn() . '"';

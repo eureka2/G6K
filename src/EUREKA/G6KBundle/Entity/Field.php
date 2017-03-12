@@ -71,6 +71,10 @@ class Field {
 		return $this->newline;
 	}
 
+	public function getNewline() {
+		return $this->newline;
+	}
+
 	public function setNewline($newline) {
 		$this->newline = $newline;
 	}
@@ -111,11 +115,19 @@ class Field {
 		return $this->required;
 	}
 
+	public function getRequired() {
+		return $this->required;
+	}
+
 	public function setRequired($required) {
 		$this->required = $required;
 	}
 
 	public function isVisibleRequired() {
+		return $this->visibleRequired;
+	}
+
+	public function getVisibleRequired() {
 		return $this->visibleRequired;
 	}
 
@@ -127,11 +139,19 @@ class Field {
 		return $this->colon;
 	}
 
+	public function getColon() {
+		return $this->colon;
+	}
+
 	public function setColon($colon) {
 		$this->colon = $colon;
 	}
 
 	public function isUnderlabel() {
+		return $this->underlabel;
+	}
+
+	public function getUnderlabel() {
 		return $this->underlabel;
 	}
 
@@ -151,6 +171,10 @@ class Field {
 		return $this->emphasize;
 	}
 
+	public function getEmphasize() {
+		return $this->emphasize;
+	}
+
 	public function setEmphasize($emphasize) {
 		$this->emphasize = $emphasize;
 	}
@@ -164,6 +188,10 @@ class Field {
 	}
 
 	public function isExpanded() {
+		return $this->expanded;
+	}
+
+	public function getExpanded() {
 		return $this->expanded;
 	}
 
@@ -196,6 +224,10 @@ class Field {
 	}
 
 	public function isDisplayable() {
+		return $this->displayable;
+	}
+
+	public function getDisplayable() {
 		return $this->displayable;
 	}
 

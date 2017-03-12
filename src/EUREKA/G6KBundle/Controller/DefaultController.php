@@ -1113,15 +1113,20 @@ class DefaultController extends Controller {
 		return $value;
 	}
 
-	protected function processSource(Source $source) 
-	{
-		$params = $source->getParameters();
+	protected function getDatasource(Source $source) {
 		$datasource = $source->getDatasource();
 		if (is_numeric($datasource)) {
 			$datasource = $this->simu->getDatasourceById((int)$datasource);
 		} else {
 			$datasource = $this->simu->getDatasourceByName($datasource);
 		}
+		return $datasource;
+	}
+
+	protected function processSource(Source $source) 
+	{
+		$params = $source->getParameters();
+		$datasource = $this->getDatasource($source);
 		switch ($datasource->getType()) {
 			case 'uri':
 				$query = "";
@@ -1292,6 +1297,15 @@ class DefaultController extends Controller {
 		return false;
 	}
 
+	private function replaceVariableTag($matches)
+	{
+		$variable = '#' . $matches[1];
+		if ($matches[2] == 'L') {
+			$variable .= 'L';
+		}
+		return $variable;
+	}
+
 	private function replaceVariable($matches)
 	{
 		if (preg_match("/^\d+$/", $matches[1])) {
@@ -1331,12 +1345,12 @@ class DefaultController extends Controller {
 	private function replaceVariables($target)
 	{
 		$result = preg_replace_callback(
-			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
-			array($this, 'replaceVariable'),
+			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
+			array($this, 'replaceVariableTag'),
 			$target
 		);
 		$result = preg_replace_callback(
-			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
+			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
 			array($this, 'replaceVariable'),
 			$result
 		);

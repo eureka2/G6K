@@ -64,6 +64,7 @@
 					placeholder: placeholder,
 					tooltip: Translator.trans("click to edit this value"),
 					style: "inherit",
+					onblur: 'submit',
 					callback: function() {
 					}
 				}

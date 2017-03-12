@@ -73,6 +73,10 @@ class Choice {
 		return $this->selected;
 	}
 
+	public function getSelected() {
+		return $this->selected;
+	}
+
 	public function setSelected($selected) {
 		$this->selected = $selected;
 	}
