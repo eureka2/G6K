@@ -26,6 +26,8 @@ THE SOFTWARE.
 
 {% macro row(context, fieldset, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass) %}
 
+{% import "EUREKAG6KBundle:base/macros:form.html.twig" as form %}
+
 {% set step = context.step %}
 {% set simu = step.simulator %}
 {%- for field in fieldset.fields -%}
@@ -47,7 +49,7 @@ THE SOFTWARE.
 		{% endif %}
 		<div id="{{ name }}-container" data-type="{{ type }}"{%- if type == 'choice' and field.usage == 'input' and field.expanded == 1 %} data-expanded="true"{% endif %} data-field-position="{{ field.position }}" class="field-container {{ fieldContainerClass }}{%- if not(loop.first) and field.newline %} new-line{% endif %}{%- if field.underlabel == 1 %} underlabel{% endif %}">			
 		{%- if field.preNote and field.preNote.displayable -%}
-		<div class="pre-note">{{ context.form.paragraphs(field.preNote.text) }}</div>
+		<div class="pre-note">{{ form.paragraphs(field.preNote.text) }}</div>
 		{% endif %}
 		{%- if field.usage == 'input' -%}
 		{%- if label == '' -%}
@@ -115,9 +117,7 @@ THE SOFTWARE.
 	{% elseif type == 'boolean' %}
 		<input class="{{ fieldClass }}" type="checkbox" id="{{ name }}"{{ widget|raw }} name="{{ name }}" value="true"{%- if value == 'true' %} checked="checked"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
 	{% elseif type == 'date' %}
-		{%- if context.ua.mobile -%}
-		<input type="date" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
-		{% elseif context.script == 0 %}
+		{%- if context.script == 0 %}
 		<input type="date" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}" title="format : {{ simu.dateFormat|trans }}"{% if field.required %} aria-required="true"{% endif %}/>
 		{% else %}
 		<input type="text" aria-describedby="{{ name }}-aria-description" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}" title="format : {{ simu.dateFormat|trans }}"{% if field.required %} aria-required="true"{% endif %} />
@@ -138,7 +138,7 @@ THE SOFTWARE.
 		<select id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
 		{%- if not(data.default) -%}<option value="00">{{ prompt }}</option>{% endif %}
 		{% for i in min..max %}
-		<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ context.form.monthname(i)|trans }}</option>
+		<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ form.monthname(i)|trans }}</option>
 		{% endfor %}
 		</select>
 	{% elseif type == 'year' %}
@@ -152,11 +152,11 @@ THE SOFTWARE.
 		</select>
 	{% elseif type == 'region' %}
 		<select id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
-		{{ context.form.regions() }}
+		{{ form.regions() }}
 		</select>
 	{% elseif type == 'department' %}
 		<select id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
-		{{ context.form.departments(value, prompt) }}
+		{{ form.departments(value, prompt) }}
 		</select>
 	{% elseif type == 'textarea' %}
 		<textarea id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>{{ value }}</textarea>
@@ -231,9 +231,9 @@ THE SOFTWARE.
 	{%- elseif type == 'boolean' -%}
 		{{ value == 'true' ? 'oui' : 'non' }}
 	{%- elseif type == 'month' -%}
-		{{ context.form.monthname(value)|trans }}
+		{{ form.monthname(value)|trans }}
 	{%- elseif type == 'department' -%}
-		{{ context.form.departmentname(value) }}
+		{{ form.departmentname(value) }}
 	{%- elseif type == 'money' -%}
 		{{ data.value|number_format(2, simu.decimalPoint, ' ') }}
 	{%- else -%}
@@ -260,7 +260,7 @@ THE SOFTWARE.
 		<span id="{{ name }}-explanation" class="explanation">{{ field.explanation }}</span>
 		{% endif %}
 		{%- if field.postNote and field.postNote.displayable -%}
-		<div class="post-note">{{ context.form.paragraphs(field.postNote.text) }}</div>
+		<div class="post-note">{{ form.paragraphs(field.postNote.text) }}</div>
 		{% endif %}
 		{%- if field.hasHelp %}
 		{% set paragraphs = data.description|trim|split("\n") %}

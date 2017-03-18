@@ -24,12 +24,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 #}
 
+{% macro row(context, fieldsetContainerClass, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass, chapterContainerClass, chapterHeadingClass, chapterContentClass) %}
+
+{% import _self as form %}
 {% import "EUREKAG6KBundle:base/macros:form-grid.html.twig" as grid %}
 {% import "EUREKAG6KBundle:base/macros:form-classic.html.twig" as classic %}
 {% import "EUREKAG6KBundle:base/macros:form-inline.html.twig" as inline %}
 {% import "EUREKAG6KBundle:base/macros:form-blockinfo.html.twig" as blockinfo %}
-
-{% macro row(context, fieldsetContainerClass, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass, chapterContainerClass, chapterHeadingClass, chapterContentClass) %}
 
 {% set step = context.step %}
 {% set simu = step.simulator %}
@@ -82,29 +83,28 @@ THE SOFTWARE.
 			{%- if fieldset.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
 			<{%- if blocks > 1 and fieldset.hasInputFields -%}fieldset class="fieldset-container disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% else %}div class="fieldset disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% endif %} id="{{ step.name }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}">
 			{%- if fieldset.display is not empty and fieldset.display == 'pop-in' -%}
-			{{ _self.popinheader(context, fieldset) }}
+			{{ form.popinheader(context, fieldset) }}
 			{%- endif -%}
 			{%- if blocks > 1  and fieldset.hasInputFields %}
 				<legend>{%- if fieldset.legend is not empty -%}{{ fieldset.legend }}{%- else -%}{{ step.label }}{%- endif -%}</legend>
 			{% else %}
-				{%- if fieldset.legend is not empty -%}{{ _self.heading(fieldset.legend, 3, "legend") }}{%- endif -%}
+				{%- if fieldset.legend is not empty -%}{{ form.heading(fieldset.legend, 3, "legend") }}{%- endif -%}
 			{% endif %}
 			{%- if disposition == "grid" -%}
-			{{ context.grid.row(context, fieldset, fieldsetContainerClass, fieldContainerClass, fieldGroupClass, fieldClass) }}
+			{{ grid.row(context, fieldset, fieldsetContainerClass, fieldContainerClass, fieldGroupClass, fieldClass) }}
 			{%- elseif disposition == "inline" -%}
-			{{ context.inline.row(context, fieldset) }}
+			{{ inline.row(context, fieldset) }}
 			{% else %}
-			{{ context.classic.row(context, fieldset, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass) }}
+			{{ classic.row(context, fieldset, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass) }}
 			{% endif %}
 			{%- if fieldset.display is not empty and fieldset.display == 'pop-in' -%}
-			{{ _self.popinfooter(context) }}
+			{{ form.popinfooter(context) }}
 			{%- endif -%}
 			</{%- if blocks > 1 and fieldset.hasInputFields -%}fieldset{% else %}div{% endif %}>
 			{% endif %} {# end fieldset.displayable #}
 		{%- elseif blck.class == 'BlockInfo' -%}
-			{% set blockinfo = blck %}
-			{%- if blockinfo.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-			{{ context.blockinfo.row(context, blockinfo, chapterContainerClass, chapterHeadingClass, chapterContentClass) }}
+			{%- if blck.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
+			{{ blockinfo.row(context, blck, chapterContainerClass, chapterHeadingClass, chapterContentClass) }}
 			{%- endif -%}
 		{%- endif -%}
 	{% endfor %} {# end for blck in panel.fieldSets #}
@@ -124,16 +124,16 @@ THE SOFTWARE.
 </div>
 {% endif %}
 {%- if step.footNotes and step.footNotes.position == "beforeActions" %}
-{{ _self.footnotes(context) }}
+{{ form.footnotes(context) }}
 {% endif %}
 
-{{ _self.actions(context) }}
+{{ form.actions(context) }}
 
 {%- if step.footNotes and step.footNotes.position == "afterActions" %}
-{{ _self.footnotes(context) }}
+{{ form.footnotes(context) }}
 {% endif %}
 
-{{ _self.hiddens(context) }}
+{{ form.hiddens(context) }}
 
 {% endmacro %}
 

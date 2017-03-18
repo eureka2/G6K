@@ -24,13 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 #}
 
-
-{% import "EUREKAG6KBundle:base/macros:form-grid.html.twig" as grid %}
-{% import "EUREKAG6KBundle:base/macros:form-classic.html.twig" as classic %}
-{% import "EUREKAG6KBundle:base/macros:form-inline.html.twig" as inline %}
-{% import "EUREKAG6KBundle:base/macros:form-blockinfo.html.twig" as blockinfo %}
-{% import "EUREKAG6KBundle:base/macros:form.html.twig" as form %}
-
 {% block doctype %}<!DOCTYPE html>{% endblock %}
 {% block html %}<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7 ]> <html lang="fr" class="no-js ie ie6" dir="ltr"> <![endif]-->
@@ -109,13 +102,11 @@ if (/no-js=/.test(window.location.search)) {
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.min.js') }}"></script>
 <script type="text/javascript">
 jQuery(document).ready(function(){
-	{%- if not(ua.mobile) -%}
-		$('.disposition-classic input.date, .disposition-grid input.date').each(function() {
-			if (! this.hasAttribute('data-widget')) {
-				$(this).attr('data-widget', 'abDatepicker'); {# Temporarily #}
-			}
-		});
-	{% endif %}
+	$('.disposition-classic input.date, .disposition-grid input.date').each(function() {
+		if (! this.hasAttribute('data-widget')) {
+			$(this).attr('data-widget', 'abDatepicker'); {# Temporarily #}
+		}
+	});
 	var g6k = new G6k({%- if step.dynamic or (step.simulator.dynamic and step.id == 0) -%}true{%- else -%}false{%- endif %}, {% if ua.mobile -%}true{%- else -%}false{%- endif -%}, "{{ app.request.locale }}");
 	g6k.run();
 	$(':input[data-widget]').each(function() {

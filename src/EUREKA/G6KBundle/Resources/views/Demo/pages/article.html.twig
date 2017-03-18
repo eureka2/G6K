@@ -1,5 +1,7 @@
 {% extends "EUREKAG6KBundle:Demo/layout:pagelayout.html.twig" %}
 
+{% import "EUREKAG6KBundle:base/macros:form.html.twig" as form %}
+
 {% block title %}{{step.simulator.label }} - {{ step.label }} - {{ parent() }}{% endblock %}
 
 {% block styles %}

@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 {% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
 
+{% import _self as page %}
+
 {% block content %}
 <h2>{{ 'Views management'|trans }}</h2>
 <div class="navbar-default navbar-side" role="navigation">
@@ -101,7 +103,7 @@ THE SOFTWARE.
 								<div id="templates-tree-container">
 									<table id="templates-tree" class="table tree table-bordered table-striped table-condensed">
 									{% for node in view.templates %}
-									{{ _self.makeRow(view.name, "templates-tree", node, 0) }}
+									{{ page.makeRow(view.name, "templates-tree", node, 0) }}
 									{% endfor %}
 									</table>
 								</div>
@@ -112,7 +114,7 @@ THE SOFTWARE.
 								<div id="assets-tree-container">
 									<table id="assets-tree" class="table tree table-bordered table-striped table-condensed">
 									{% for node in view.assets %}
-									{{ _self.makeRow(view.name, "assets-tree", node, 0) }}
+									{{ page.makeRow(view.name, "assets-tree", node, 0) }}
 									{% endfor %}
 									</table>
 								</div>
@@ -203,6 +205,7 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 {% endblock %}
 
 {% macro makeRow(viewname, tableId, node, parent) %}
+{% import _self as page %}
 <tr id="{{ tableId }}-node-{{ node.num }}" class="treegrid-{{ node.num }}{% if ( parent > 0 ) %} treegrid-parent-{{ parent }}{% endif %}"> 
 	<td>
 		{% if not node.isdir and (node.mode == 'javascript' or node.mode == 'css' or node.mode == 'twig') %}
@@ -217,7 +220,7 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 		{% endif %}
 		{% if node.isdir %}
 		<form class="add-folder-or-file-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'add-node'}) }}" enctype="multipart/form-data">
-		{{ _self.popinheader(viewname ~ node.num, 'popin-add-tree-node', 'Add a sub-folder or a file into «%folder%»'|trans({'%folder%': node.name}), '<span class="glyphicon glyphicon-import"></span>'|raw, 'btn btn-sm btn-default add-tree-node' ) }}
+		{{ page.popinheader(viewname ~ node.num, 'popin-add-tree-node', 'Add a sub-folder or a file into «%folder%»'|trans({'%folder%': node.name}), '<span class="glyphicon glyphicon-import"></span>'|raw, 'btn btn-sm btn-default add-tree-node' ) }}
 		<div class="add-node-container" data-node-type="{{ node.type }}">
 			<fieldset id="add-folder-or-file-{{ node.num }}">
 				<div class="form-group radio"><label class="control-label"><input type="radio" id="add-folder-{{ node.num }}" name="add-folder-or-file" value="folder" />{{ 'sub-folder'|trans }}</label></div>
@@ -225,16 +228,16 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 			</fieldset>
 			<div class="form-group"><label class="control-label">{{ 'Name'|trans }}<input type="text" id="add-node-name-{{ node.num }}" name="add-node-name" value="" class="form-control input-sm" required="required"/></label></div>
 		</div>
-		{{ _self.popinfooter() }}
+		{{ page.popinfooter() }}
 		</form>
 		{% endif %}
 		<form class="rename-node-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'rename-node'}) }}" enctype="multipart/form-data">
 		<input type="hidden" name="node-name" value="{{ node.name }}" />
-		{{ _self.popinheader('rename-' ~ viewname ~ node.num, 'popin-rename-tree-node', 'Rename «%node%»'|trans({'%node%': node.name}), '<span class="glyphicon glyphicon-edit"></span>'|raw, 'btn btn-sm btn-default rename-tree-node' ) }}
+		{{ page.popinheader('rename-' ~ viewname ~ node.num, 'popin-rename-tree-node', 'Rename «%node%»'|trans({'%node%': node.name}), '<span class="glyphicon glyphicon-edit"></span>'|raw, 'btn btn-sm btn-default rename-tree-node' ) }}
 		<div class="rename-node-container" data-node-type="{% if node.isdir -%}folder{% else %}file{% endif %}">
 			<div class="form-group"><label class="control-label">{{ 'New name'|trans }}<input type="text" id="rename-node-name-{{ node.num }}" name="rename-node-name" value="{{ node.name }}" class="form-control input-sm" required="required"/></label></div>
 		</div>
-		{{ _self.popinfooter() }}
+		{{ page.popinfooter() }}
 		</form>
 		{% if parent > 0 %}
 		<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'remove-node'}) }}" class="btn btn-sm btn-default remove-tree-node" alt="{{ 'Remove this element'|trans }}" title="{{ 'Remove this element'|trans }}" data-confirm="{{ 'Are you sure you want to drop this element ?'|trans }}"> <span class="glyphicon glyphicon-trash"></span></a>
@@ -243,7 +246,7 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 </tr>
 {% if node.children is not empty %}
 {% for child in node.children %}
-{{ _self.makeRow(viewname, tableId, child, node.num) }}
+{{ page.makeRow(viewname, tableId, child, node.num) }}
 {% endfor %}
 {% endif %}
 {% endmacro %}
