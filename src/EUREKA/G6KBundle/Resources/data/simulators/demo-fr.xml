@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="demo" label="Simulateur de calcul de pension alimentaire" dynamic="1">
+<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="demo" defaultView="Demo" label="Simulateur de calcul de pension alimentaire" dynamic="1">
 	<Description><![CDATA[
 Le montant de la pension par enfant est calculé en proportion du revenu, net d'un minimum vital (RSA), du parent débiteur. Cette proportion est différente selon le nombre total d'enfants à la charge du parent débiteur (quelle que soit l'union dont ils sont nés) et l'amplitude du droit de visite et d'hébergement (réduit, classique, ou alterné sans partage spontané des frais).
 	]]></Description>
