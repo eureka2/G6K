@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015 Jacques ArchimÃ¨de
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -144,7 +144,10 @@ class ScriptHandler
 	}
 
 	public static function installDemo(Event $event) {
-		$event->getIO()->write("Installing the demo database");
+		if (!$event->getIO()->askConfirmation('Would you like to install the demo simulator? [y/N] ', true)) {
+			return;
+		}
+		$event->getIO()->write("Installing the demo simulator");
 		$extras = $event->getComposer()->getPackage()->getExtra();
 		$symfonyDir = dirname(dirname(dirname(dirname(__DIR__))));
 		$appDir = $symfonyDir . DIRECTORY_SEPARATOR . $extras['symfony-app-dir'];
