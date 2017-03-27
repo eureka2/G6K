@@ -158,7 +158,6 @@ Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pensi
 			</ElseActions>
 		</BusinessRule>
 		<BusinessRule id="3" name="R3" label="Condition d'affichage du fieldset 'Pension alimentaire' et du bouton 'Recommencer'">
-			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6)" />
 			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6)">
 				<Connector type="all">
 					<Condition operand="revenus" operator="present" />
