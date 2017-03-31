@@ -1399,7 +1399,7 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'what', Translator.trans('What'), action.what, action.what, true, Translator.trans('Select an action'), JSON.stringify( { 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset') } )));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'for', Translator.trans('For'), action.for, action.for, true, Translator.trans('Select a target step'), JSON.stringify( { 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'uri', Translator.trans('URI / Step'), action.uri, action.uri, false, Translator.trans('Button uri')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'class', Translator.trans('Class'), action.class, action.class, false, Translator.trans('Button class')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'class', Translator.trans('Class'), action.class, action.class, false, Translator.trans('Button class'), JSON.stringify({ 'btn-primary': Translator.trans('Primary'), 'btn-default': Translator.trans('Secondary') } )));
 		attributesContainer.append(requiredAttributes);
 		actionContainerBody.append(attributesContainer);
 		actionContainer.append(actionContainerBody);
@@ -1430,10 +1430,10 @@ THE SOFTWARE.
 			requiredAttributes.append(attribute);
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="text" data-name="class" data-placeholder="' + Translator.trans('Button class') + '">' + Translator.trans('Class') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="select" data-name="class" data-placeholder="' + Translator.trans('Button class') + '" data-options="' + encodeURI(JSON.stringify( { 'btn-primary': Translator.trans('Primary'), 'btn-default': Translator.trans('Secondary') } )) + '">' + Translator.trans('Class') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (action.class) {
-			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-class', 'text', 'class', Translator.trans('Class'), action.class, false, Translator.trans('Button class'));
+			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-class', 'select', 'class', Translator.trans('Class'), action.class, false, Translator.trans('Button class'), JSON.stringify({ 'btn-primary': Translator.trans('Primary'), 'btn-default': Translator.trans('Secondary') } ) );
 			requiredAttributes.append(attribute);
 			optionalAttribute.hide();
 		} 

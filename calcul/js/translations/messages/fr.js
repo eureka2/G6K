@@ -12,6 +12,8 @@
     Translator.add("action", "action", "messages", "fr");
     Translator.add("actionbutton", "bouton d'action", "messages", "fr");
     Translator.add("Action Button", "Bouton d'action", "messages", "fr");
+    Translator.add("Action button label", "Libell\u00e9 du bouton", "messages", "fr");
+    Translator.add("Action button name without spaces or special characters", "Nom du bouton sans espaces ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Actions Buttons", "Boutons d'action", "messages", "fr");
     Translator.add("Add", "Ajouter", "messages", "fr");
     Translator.add("Add Action", "Ajouter une action", "messages", "fr");
@@ -90,8 +92,8 @@
     Translator.add("Back to Top", "Retour en haut de page", "messages", "fr");
     Translator.add("before action buttons", "avant les boutons d'action", "messages", "fr");
     Translator.add("before currency", "avant le montant", "messages", "fr");
-    Translator.add("blockinfo", "bloc d'infos", "messages", "fr");
     Translator.add("BlockInfo", "Bloc d'infos", "messages", "fr");
+    Translator.add("blockinfo", "bloc d'infos", "messages", "fr");
     Translator.add("Blockinfo #%id% : %label%", "Bloc d'infos #%id% : %label%", "messages", "fr");
     Translator.add("Blockinfo %id% (nolabel)", "Bloc d'infos %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("BlockInfo label", "Etiquette du bloc d'infos", "messages", "fr");
@@ -121,8 +123,8 @@
     Translator.add("Can't update %table% : %error%", "Impossible de mettre \u00e0 jour %table% : %error%", "messages", "fr");
     Translator.add("Cancel", "Annuler", "messages", "fr");
     Translator.add("ceil", "arrondiParExces", "messages", "fr");
-    Translator.add("chapter", "chap\u00eetre", "messages", "fr");
     Translator.add("Chapter", "Chap\u00eetre", "messages", "fr");
+    Translator.add("chapter", "chap\u00eetre", "messages", "fr");
     Translator.add("Chapter #%id% : %label%", "Chap\u00eetre #%id% : %label%", "messages", "fr");
     Translator.add("Chapter %id% (nolabel)", "Chap\u00eetre %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Chapter icon", "Ic\u00f4ne du chap\u00eetre", "messages", "fr");
@@ -181,8 +183,8 @@
     Translator.add("Constant", "Constante", "messages", "fr");
     Translator.add("Constant value of the parameter", "Valeur de la constante", "messages", "fr");
     Translator.add("contains", "contient", "messages", "fr");
-    Translator.add("content", "contenu", "messages", "fr");
     Translator.add("Content", "Contenu", "messages", "fr");
+    Translator.add("content", "contenu", "messages", "fr");
     Translator.add("Content can not refer to the data itself", "Contenu ne peut pas se r\u00e9f\u00e9rer \u00e0 la donn\u00e9e elle-m\u00eame", "messages", "fr");
     Translator.add("contributor", "contributeur", "messages", "fr");
     Translator.add("corresponds to", "est \u00e9gale \u00e0", "messages", "fr");
@@ -261,8 +263,8 @@
     Translator.add("Delimiter", "D\u00e9limiteur", "messages", "fr");
     Translator.add("department", "d\u00e9partement", "messages", "fr");
     Translator.add("Description", "Description", "messages", "fr");
-    Translator.add("Disabled", "D\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("disabled", "d\u00e9sactiv\u00e9", "messages", "fr");
+    Translator.add("Disabled", "D\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("Display", "Affichage", "messages", "fr");
     Translator.add("Disposition", "Disposition", "messages", "fr");
     Translator.add("does not corresponds to", "est diff\u00e9rente de", "messages", "fr");
@@ -323,12 +325,12 @@
     Translator.add("Fieldrow %id% (nolabel)", "Rang\u00e9e %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Fieldrow label", "Libell\u00e9 de la rang\u00e9e", "messages", "fr");
     Translator.add("Fields", "Champs", "messages", "fr");
-    Translator.add("fieldset", "groupe de champs", "messages", "fr");
     Translator.add("FieldSet", "Groupe de champs", "messages", "fr");
+    Translator.add("fieldset", "groupe de champs", "messages", "fr");
     Translator.add("Fieldset %id% (nolegend)", "Groupe de champs %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Fields marked with an %asterisk% are required.", "Les champs marqu\u00e9s d'un %asterisk% sont obligatoires.", "messages", "fr");
-    Translator.add("File", "Fichier", "messages", "fr");
     Translator.add("file", "fichier", "messages", "fr");
+    Translator.add("File", "Fichier", "messages", "fr");
     Translator.add("File \u00ab%file%\u00bb", "Fichier \u00ab%file%\u00bb", "messages", "fr");
     Translator.add("Filter", "Filtre", "messages", "fr");
     Translator.add("first click \u00abCancel\u00bb or \u00abValidate\u00bb", "cliquez d'abord sur \u00abAnnuler\u00bb ou terminez votre saisie puis cliquez sur \u00abValider\u00bb", "messages", "fr");
@@ -338,8 +340,8 @@
     Translator.add("footnote", "note de bas de page", "messages", "fr");
     Translator.add("FootNote #%id%", "Note de bas de page #%id%", "messages", "fr");
     Translator.add("FootNotes", "Notes de bas de page", "messages", "fr");
-    Translator.add("for", "pour", "messages", "fr");
     Translator.add("For", "Vers", "messages", "fr");
+    Translator.add("for", "pour", "messages", "fr");
     Translator.add("Forgot password?", "Mot de passe oubli\u00e9 ?", "messages", "fr");
     Translator.add("Format", "Format", "messages", "fr");
     Translator.add("From", "\u00e0 partir de", "messages", "fr");
@@ -354,8 +356,8 @@
     Translator.add("Group Name", "Nom du groupe", "messages", "fr");
     Translator.add("Group name without spaces or special characters", "Nom du groupe de donn\u00e9es sans espaces ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Help", "Aide", "messages", "fr");
-    Translator.add("Hide", "Cacher", "messages", "fr");
     Translator.add("hide", "cacher", "messages", "fr");
+    Translator.add("Hide", "Cacher", "messages", "fr");
     Translator.add("Home", "Accueil", "messages", "fr");
     Translator.add("HTTP header", "En-t\u00eate HTTP", "messages", "fr");
     Translator.add("Icon", "Ic\u00f4ne", "messages", "fr");
@@ -523,8 +525,8 @@
     Translator.add("or", "ou", "messages", "fr");
     Translator.add("Order by", "Tri\u00e9 par", "messages", "fr");
     Translator.add("Origin", "Provenance", "messages", "fr");
-    Translator.add("output", "restitution \u00e0 l'utilisateur", "messages", "fr");
     Translator.add("Output", "Sortie", "messages", "fr");
+    Translator.add("output", "restitution \u00e0 l'utilisateur", "messages", "fr");
     Translator.add("Page %pageno% of %numberofpages%", "Page %pageno%\/%numberofpages%", "messages", "fr");
     Translator.add("Panel", "Panneau", "messages", "fr");
     Translator.add("panel", "panneau", "messages", "fr");
@@ -580,9 +582,10 @@
     Translator.add("postnote", "post note", "messages", "fr");
     Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("pow", "puissance", "messages", "fr");
-    Translator.add("PreNote", "Pre Note", "messages", "fr");
     Translator.add("prenote", "pre note", "messages", "fr");
+    Translator.add("PreNote", "Pre Note", "messages", "fr");
     Translator.add("Previous", "Pr\u00e9c\u00e9dent", "messages", "fr");
+    Translator.add("Primary", "Principal", "messages", "fr");
     Translator.add("Prior step", "Etape pr\u00e9c\u00e9dente", "messages", "fr");
     Translator.add("Profile", "Profil", "messages", "fr");
     Translator.add("Profile data", "Donn\u00e9e profil", "messages", "fr");
@@ -620,6 +623,7 @@
     Translator.add("Rule", "R\u00e8gle", "messages", "fr");
     Translator.add("Save", "Enregistrer", "messages", "fr");
     Translator.add("Search", "Rechercher", "messages", "fr");
+    Translator.add("Secondary", "Secondaire", "messages", "fr");
     Translator.add("Section", "Section", "messages", "fr");
     Translator.add("section", "section", "messages", "fr");
     Translator.add("Section #%id%", "Section #%id%", "messages", "fr");

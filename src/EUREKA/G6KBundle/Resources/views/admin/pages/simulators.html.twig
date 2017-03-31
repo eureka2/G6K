@@ -481,7 +481,7 @@ THE SOFTWARE.
 			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'what', 'What'|trans, action.what, action.what, true, 'Select an action'|trans, { 'submit':'Submit'|trans, 'reset':'Reset'|trans } ) }}
 			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'for', 'For'|trans, action.for, action.for, true, 'Select a target step'|trans, { 'priorStep':'Prior step'|trans, 'currentStep':'Current step'|trans, 'nextStep':'Next step'|trans, 'jumpToStep':'Jump to step'|trans, 'newSimulation':'New simulation'|trans, 'externalPage':'External page'|trans } ) }}
 			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'uri', 'URI / Step'|trans, action.uri, action.uri, false, 'Button uri'|trans) }}
-			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'class', 'Class'|trans, action.class, action.class, false, 'Button class'|trans) }}
+			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'class', 'Class'|trans, action.class, action.class, false, 'Button class'|trans, { 'btn-primary':'Primary'|trans, 'btn-default':'Secondary'|trans } ) }}
 			</div>
 		</div>
 	</div>
