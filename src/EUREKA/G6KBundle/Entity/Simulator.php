@@ -1580,7 +1580,9 @@ class Simulator {
 							$this->name = (string)$action['name'];
 							$this->dependencies = 'actionDependencies';
 							$naction = array(
-								'label'	 => (string)$action['label']
+								'label'	 => (string)$action['label'],
+								'what'	 => (string)$action['what'],
+								'for'	 => (string)$action['for']
 							);
 							$actions[$this->name] = $naction;
 						}
@@ -2119,9 +2121,12 @@ class Simulator {
 									$xml[] = '								<Content><![CDATA[';
 									$xml[] = $this->cleanRichText($section->getContent());
 									$xml[] = '								]]></Content>';
-									$xml[] = '								<Annotations><![CDATA[';
-									$xml[] = $this->cleanRichText($section->getAnnotations());
-									$xml[] = '								]]></Annotations>';
+									$annotations = $this->cleanRichText($section->getAnnotations());
+									if ($annotations != '') {
+										$xml[] = '								<Annotations><![CDATA[';
+										$xml[] = $annotations;
+										$xml[] = '								]]></Annotations>';
+									}
 									$xml[] = '							</Section>';
 								}
 								$xml[] = '						</Chapter>';
