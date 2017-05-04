@@ -251,13 +251,13 @@
 		'	<table class="datepicker-grid" role="grid" aria-readonly="true" aria-activedescendant="datepicker-err-msg-CALENDARID" aria-labelledby="datepicker-month-CALENDARID" tabindex="0">',
 		'		<thead role="presentation">',
 		'			<tr class="datepicker-weekdays" role="row">',
-		'				<th scope="col" class="datepicker-day" role="columnheader" aria-label="Sunday"><abbr title="Sunday">Su</abbr></th>',
-		'				<th scope="col" class="datepicker-day" role="columnheader" aria-label="Monday"><abbr title="Monday">Mo</abbr></th>',
-		'				<th scope="col" class="datepicker-day" role="columnheader" aria-label="Tuesday"><abbr title="Tuesday">Tu</abbr></th>',
-		'				<th scope="col" class="datepicker-day" role="columnheader" aria-label="Wednesday"><abbr title="Wednesday">We</abbr></th>',
-		'				<th scope="col" class="datepicker-day" role="columnheader" aria-label="Thursday"><abbr title="Thursday">Th</abbr></th>',
-		'				<th scope="col" class="datepicker-day" role="columnheader" aria-label="Friday"><abbr title="Friday">Fr</abbr></th>',
-		'				<th scope="col" class="datepicker-day" role="columnheader" aria-label="Saturday"><abbr title="Saturday">Sa</abbr></th>',
+		'				<th scope="col" id="day0-header-CALENDARID" class="datepicker-day" role="columnheader" aria-label="Sunday"><abbr title="Sunday">Su</abbr></th>',
+		'				<th scope="col" id="day1-header-CALENDARID" class="datepicker-day" role="columnheader" aria-label="Monday"><abbr title="Monday">Mo</abbr></th>',
+		'				<th scope="col" id="day2-header-CALENDARID" class="datepicker-day" role="columnheader" aria-label="Tuesday"><abbr title="Tuesday">Tu</abbr></th>',
+		'				<th scope="col" id="day3-header-CALENDARID" class="datepicker-day" role="columnheader" aria-label="Wednesday"><abbr title="Wednesday">We</abbr></th>',
+		'				<th scope="col" id="day4-header-CALENDARID" class="datepicker-day" role="columnheader" aria-label="Thursday"><abbr title="Thursday">Th</abbr></th>',
+		'				<th scope="col" id="day5-header-CALENDARID" class="datepicker-day" role="columnheader" aria-label="Friday"><abbr title="Friday">Fr</abbr></th>',
+		'				<th scope="col" id="day6-header-CALENDARID" class="datepicker-day" role="columnheader" aria-label="Saturday"><abbr title="Saturday">Sa</abbr></th>',
 		'			</tr>',
 		'		</thead>',
 		'		<tbody role="presentation">',
@@ -588,7 +588,7 @@
 			gridCells += ' data-value="' + curDay + '"';
 			gridCells += ' title="' + longdate + '"';
 			gridCells += ' aria-label="' + longdate + '"';
-			gridCells += ' headers="row' + rowCount + '-' + this.id + ' ' + this.locales.day_names[weekday] + '" role="gridcell" tabindex="-1" aria-selected="false">' + curDay;
+			gridCells += ' headers="day' + weekday + '-header-' + this.id + '" role="gridcell" tabindex="-1" aria-selected="false">' + curDay;
 			gridCells +=  '</td>';
 			if (weekday == lastDayOfWeek && curDay < numDays) {
 				// This was the last day of the week, close it out
