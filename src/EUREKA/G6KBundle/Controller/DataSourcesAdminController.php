@@ -356,7 +356,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$datasource['database']['port'] = $database->getPort();
 					$datasource['database']['user'] = $database->getUser();
 					$datasource['database']['password'] = $database->getPassword();
-					if ($datasource['type'] == 'internal' && $table !== null && $table != 'dummy') {
+					if ($table !== null && $table != 'dummy') {
 						$tabledef['action'] = $table != 'new' ? $action : 'create-table';
 						$tabledef['name'] = $table;
 						$tabledef['label'] = $this->get('translator')->trans('New Table');
@@ -364,7 +364,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						if ($table != 'new') {
 							$tableinfos = $this->tableInfos($database, $table);
 							foreach($tableinfos as $i => $info) {
-								$dss = $this->datasources->xpath("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']");
+								$dss = $this->datasources->xpath("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']");
 								$column = null;
 								foreach ($dss[0]->children() as $child) {
 									if ($child->getName() == 'Table' && strcasecmp((string)$child['name'], $table) == 0) {
@@ -403,29 +403,31 @@ class DataSourcesAdminController extends BaseAdminController {
 									$tableinfos[$i]['choices'] = $choices;
 								}
 							}
-							$tabledatas = $database->query("SELECT * FROM ".$table);
-							foreach($tabledatas as $r => $row) {
-								$i = 0;
-								foreach ($row as $c => $cell) {
-									if ($tableinfos[$i]['g6k_type'] == 'date' && $cell !== null) {
-										$date = $this->parseDate('Y-m-d', substr($cell, 0, 10));
-										$tabledatas[$r][$c] = $date->format('d/m/Y');
-									} elseif ($tableinfos[$i]['g6k_type'] == 'money' || $tableinfos[$i]['g6k_type'] == 'percent') {
-										$tabledatas[$r][$c] = number_format ( (float) $cell, 2, ",", "" );
-									} elseif ($tableinfos[$i]['g6k_type'] == 'number') {
-										$tabledatas[$r][$c] = str_replace ( ".", ",", $cell);
-									} elseif ($tableinfos[$i]['g6k_type'] == 'choice') {
-										$tabledatas[$r][$c] = $tableinfos[$i]['choices'][$cell];
+							if ($datasource['type'] == 'internal') {
+								$tabledatas = $database->query("SELECT * FROM ".$table);
+								foreach($tabledatas as $r => $row) {
+									$i = 0;
+									foreach ($row as $c => $cell) {
+										if ($tableinfos[$i]['g6k_type'] == 'date' && $cell !== null) {
+											$date = $this->parseDate('Y-m-d', substr($cell, 0, 10));
+											$tabledatas[$r][$c] = $date->format('d/m/Y');
+										} elseif ($tableinfos[$i]['g6k_type'] == 'money' || $tableinfos[$i]['g6k_type'] == 'percent') {
+											$tabledatas[$r][$c] = number_format ( (float) $cell, 2, ",", "" );
+										} elseif ($tableinfos[$i]['g6k_type'] == 'number') {
+											$tabledatas[$r][$c] = str_replace ( ".", ",", $cell);
+										} elseif ($tableinfos[$i]['g6k_type'] == 'choice') {
+											$tabledatas[$r][$c] = $tableinfos[$i]['choices'][$cell];
+										}
+										$i++;
 									}
-									$i++;
 								}
 							}
 						}
 					}
-					if ($datasource['type'] == 'internal') {
+					if ($datasource['type'] == 'internal' || $datasource['type'] == 'database') {
 						$tables = $this->tablesList($database);
 						foreach($tables as $i => $tbl) {
-							$dss = $this->datasources->xpath("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']");
+							$dss = $this->datasources->xpath("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']");
 							$dstable = null;
 							foreach ($dss[0]->children() as $child) {
 								if ($child->getName() == 'Table' && strcasecmp((string)$child['name'], $tbl['name']) == 0) {
@@ -997,7 +999,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		foreach($tableinfos as $i => $info) {
 			$infosColumns[$info['name']]['notnull'] = $info['notnull'];
 			$infosColumns[$info['name']]['dflt_value'] = $info['dflt_value'];
-			$datasources = $this->datasources->xpath("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']");
+			$datasources = $this->datasources->xpath("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']");
 			$column = null;
 			foreach ($datasources[0]->children() as $child) {
 				if ($child->getName() == 'Table' && strcasecmp((string)$child['name'], $table) == 0) {
@@ -1770,7 +1772,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $xpath->query("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']")->item(0);
+		$datasource = $xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0);
 		$tables = $datasource->getElementsByTagName('Table');
 		$len = $tables->length;
 		for($i = 0; $i < $len; $i++) {
@@ -1863,7 +1865,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $xpath->query("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']")->item(0);
+		$datasource = $xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0);
 		$tables = $datasource->getElementsByTagName('Table');
 		$len = $tables->length;
 		$maxId = 0;
@@ -1900,7 +1902,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			}
 		}
 		$sameDatabase = true;
-		if ($type == 'internal' && $oldType == 'internal') {
+		if (($type == 'internal' && $oldType == 'internal') || ($type == 'database' && $oldType == 'database')) {
 			$database = $xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0);
 			if ($database->getAttribute('type') != $form['datasource-database-type']) {
 				$sameDatabase = false;

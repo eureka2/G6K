@@ -283,6 +283,18 @@
 		this.$target = $(target); // textbox that will receive the selected date string and focus (if modal)
 		this.options = $.extend({}, Datepicker.DEFAULTS, options)
 		this.locales = Date.dp_locales;
+		switch (this.options.startView) {
+			case 1: 
+			case 'months':
+				this.options.startView = 1;
+				break;
+			case 2:
+			case 'years':
+				this.options.startView = 2;
+				break;
+			default:
+				this.options.startView = 0;
+		}
 		if (typeof this.options.inputFormat === 'string') {
 			this.options.inputFormat = [this.options.inputFormat];
 		}
@@ -410,6 +422,7 @@
 	Datepicker.DEFAULTS = {
 		firstDayOfWeek: Date.dp_locales.firstday_of_week, // Determines the first column of the calendar grid
 		weekDayFormat: 'short', // Display format of the weekday names - values are 'short' or 'narrow'
+		startView: 0, // Initial calendar - values are 0 or 'days', 1 or 'months', 2 or 'years'
 		daysOfWeekDisabled: [],
 		inputFormat: [Date.dp_locales.short_format],
 		outputFormat: Date.dp_locales.short_format,
@@ -435,7 +448,6 @@
 		max: null
 	}
 
-
 	/**
 	 *	initializeDate() is a member function to initialize the Datepicker date with the content of the target textbox
 	 *
@@ -444,7 +456,29 @@
 	 */
 	Datepicker.prototype.initializeDate = function() {
 		var val = this.$target.val();
-		this.dateObj = val === '' ? new Date() :  this.parseDate(val);
+		var date = val === '' ? new Date() :  this.parseDate(val);
+		this.setDate(date);
+	} // end initializeDate()
+
+	/**
+	 * getDate() is a member function to retrieve the current Datepicker date.
+	 * @return the Date object
+	 */
+	Datepicker.prototype.getDate = function () {
+		var val = this.$target.val();
+		var date = val === '' ? new Date() :  this.parseDate(val);
+		return date;
+	} // end getDate()
+
+	/**
+	 *	setDate() is a member function to set the Datepicker date with the content of newDate
+	 *
+	 *	@param	(newDate Date) the new value of the Datepicker date.
+	 *	@return N/A
+	 *
+	 */
+	Datepicker.prototype.setDate = function(newDate) {
+		this.dateObj = newDate;
 		if (this.dateObj == null) {
 			this.$target.attr('aria-invalid', true);
 			this.$target.parents('.form-group').addClass('has-error');
@@ -460,17 +494,31 @@
 			this.$target.parents('.form-group').addClass('has-error');
 			this.dateObj = this.options.max;
 		}
+		this.$target.val(this.format(this.dateObj));
 		this.curYear = this.dateObj.getFullYear();
 		this.year = this.curYear;
 		this.curMonth = this.dateObj.getMonth();
 		this.month = this.curMonth;
 		this.date = this.dateObj.getDate();
 		// populate the calendar grid
-		this.populateDaysCalendar();
-		// update the table's activedescdendant to point to the current day
-		this.$grid.attr('aria-activedescendant', this.$grid.find('.curDay').attr('id'));
-	} // end initializeDate()
-	
+		switch (this.options.startView) {
+			case 1: // months
+				this.populateMonthsCalendar();
+				// update the table's activedescdendant to point to the current month
+				this.$grid.attr('aria-activedescendant', this.$grid.find('.curMonth').attr('id'));
+				break;
+			case 2: // years
+				this.populateYearsCalendar();
+				// update the table's activedescdendant to point to the current year
+				this.$grid.attr('aria-activedescendant', this.$grid.find('.curYear').attr('id'));
+				break;
+			default:
+				this.populateDaysCalendar();
+				// update the table's activedescdendant to point to the current day
+				this.$grid.attr('aria-activedescendant', this.$grid.find('.curDay').attr('id'));
+		}
+	} // end setDate()
+
 	/** 
 	 *	drawCalendarHeader() is a member function to populate the calendar header with the days name. 
 	 *

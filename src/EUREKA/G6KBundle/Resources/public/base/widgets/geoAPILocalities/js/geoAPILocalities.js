@@ -43,6 +43,7 @@
 				} else if (term == '2A' || term == '2B') {
 					param = { codeDepartement: term };
 				}
+				param['fields'] = 'code,nom,codesPostaux,surface,population,centre,contour,departement,region';
 				$.getJSON(
 					'https://geo.api.gouv.fr/communes', 
 					param, 
@@ -54,7 +55,13 @@
 									items.push({
 										code: d.code,
 										nom: d.nom,
-										codePostal: cp
+										codePostal: cp,
+										departement: d.departement.nom,
+										region: d.region.nom,
+										surface: d.surface,
+										population: d.population,
+										coordinates: d.centre.coordinates,
+										contour: d.contour.coordinates[0]
 									});
 								}
 							});
@@ -68,11 +75,11 @@
 				search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 				var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
 				var val = item.nom + ' (' + item.codePostal + ')';
-				return '<div class="autocomplete-suggestion" data-val="' + val + '" data-value="' + item.code + '" data-text="' + item.nom + '" data-zipcode="' + item.codePostal + '">' +  item.nom.replace(re, "<b>$1</b>") + ' (' + item.codePostal + ')</div>'; 
+				return '<div class="autocomplete-suggestion" data-val="' + val + '" data-value="' + item.code + '" data-text="' + item.nom + '" data-zipcode="' + item.codePostal + '" data-departement="' + item.departement + '" data-region="' + item.region + '" data-surface="' + item.surface + '" data-population="' + item.population + '" data-longitude="' + item.coordinates[0] + '" data-latitude="' + item.coordinates[1] + '" data-contour="' + JSON.stringify(item.contour) + '">' +  item.nom.replace(re, "<b>$1</b>") + ' (' + item.codePostal + ')</div>'; 
 			},
 			onSelect: function(e, term, item){
 				// input2.val(item.data('text') + ' (' + item.data('zipcode') + ')');
-				onComplete(item.data('value'), item.data('text'));
+				onComplete(item.data('value'), item.data('text'), item.data('zipcode'), item.data('departement'), item.data('region'), item.data('surface'), item.data('population'), item.data('latitude'), item.data('longitude'), item.data('contour'));
 			}
 		});
 		

@@ -39,7 +39,11 @@ THE SOFTWARE.
 				<h4>{{ 'Tables'|trans }} :</h4>
 				<ul class="nav nav-pills nav-stacked">
 					{% for tbl in tables %}
+					{% if datasource.type == 'database' %}
+					<li><a href="{{ path('eureka_g6k_admin_datasources') }}/{{ dsid }}/{{ tbl.tbl_name }}/edit">{{ tbl.label }}</a></li>
+					{% else %}
 					<li><a href="{{ path('eureka_g6k_admin_datasources') }}/{{ dsid }}/{{ tbl.tbl_name }}">{{ tbl.label }}</a></li>
+					{% endif %}
 					{% endfor %}
 				</ul>
 			</div>

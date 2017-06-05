@@ -272,6 +272,24 @@ THE SOFTWARE.
 		return $(attribute);
 	}
 
+	Simulators.simpleToggleAttributeForInput = function(id, name, label, value, required, placeholder) {
+		var attribute = '<div class="form-group col-sm-12">';
+		attribute    += '    <label class="control-label">';
+		if (! required) {
+			attribute+= '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
+		}
+		attribute    += '    <span class="col-sm-4">' + label + '</span>';
+		attribute    += '    <div style="display: inline-block;" class="col-sm-8 input-group checkbox-slider--b-flat checkbox-slider-primary">';
+		attribute    += '        <input type="checkbox" name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" value="1"';
+		if (value == '1') {
+			attribute+= ' checked="checked"';
+		}
+		attribute    += ' /><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+		attribute    += '    </div></label>';
+		attribute    += '</div>';
+		return $(attribute);
+	}
+
 	Simulators.expressionAttributeForDisplay = function(element, name, label, value, plainvalue, required, placeholder) {
 		if (required || value !== '') {
 			var attribute = '<div class="form-group col-sm-12">';

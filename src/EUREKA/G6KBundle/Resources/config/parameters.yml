@@ -62,3 +62,14 @@ parameters:
             js: 
                 - js/jquery.jeditable.geoAPIZipCode.js
                 - js/geoAPIZipCodeEditable.js
+        geoAPIMaps:
+            label: Insee code obtained from a France map
+            css: 
+                - lib/leaflet.css
+                - css/geoapimaps.css
+            js: 
+                - lib/leaflet.js
+                - lib/leaflet-color-markers.js
+                - lib/leaflet-providers.js
+                - lib/Leaflet.GoogleMutant.js
+                - js/geoAPIMaps.js

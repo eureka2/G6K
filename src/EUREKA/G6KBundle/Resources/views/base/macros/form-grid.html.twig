@@ -162,8 +162,10 @@ THE SOFTWARE.
 								</select>
 							{% elseif type == 'textarea' %}
 							<textarea aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>{{ value }}</textarea>
-							{% elseif type == 'number' %}
+							{% elseif type == 'number' and data.type == 'integer' %}
 							<input type="{{ type }}" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}/>
+							{% elseif type == 'number' %}
+							<input type="{{ type }}" step="any" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}/>
 							{% elseif type == 'percent' %}
 							<input type="text" aria-label="{{ row.label }} {{ fieldset.columns[loop.index0].label }}" id="{{ name }}" name="{{ name }}"{{ widget|raw }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: pourcentage"{% if field.required %} aria-required="true"{% endif %} />
 							{% elseif type == 'money' %}

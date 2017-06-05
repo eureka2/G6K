@@ -1,0 +1,39 @@
+.step-page .geoAPIMaps-map {
+	width: 100%;
+	height: 330px;
+}
+.step-page .geoAPIMaps-geoloc {
+	margin: 0;
+	padding: 0;
+	float: left;
+}
+.step-page .geoAPIMaps-geoloc button {
+	width: 24px;
+	height: 24px;
+	border: none;
+	cursor: pointer;
+}
+.step-page .geoAPIMaps-gps {
+	background: url(images/geolocation.ico) no-repeat;
+	background-size: 100%;
+}
+.step-page .geoAPIMaps-loading {
+	background: url(images/ajax-loader.gif) no-repeat;
+	background-size: 100%;
+}
+.step-page .geoAPIMaps-message {
+	margin: 4px 0 0 4px;
+	vertical-align: middle;
+	clear: both;
+}
+.step-page .leaflet-control-layers input {
+	min-width: auto !important;
+	float: none !important;
+	text-align: left !important;
+}
+.step-page .leaflet-control-layers label {
+	float: none !important;
+	text-align: left !important;
+	display: block !important;
+}
+
