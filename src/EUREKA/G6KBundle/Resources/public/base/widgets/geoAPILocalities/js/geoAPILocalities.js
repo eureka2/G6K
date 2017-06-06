@@ -1,6 +1,38 @@
 (function (global) {
 	"use strict";
-		
+
+	function geoAPIFromInseeCode (code, onComplete) {
+		var param = {
+			code: code,
+			fields:'code,nom,codesPostaux,surface,population,centre,contour,departement,region'
+		};
+		$.getJSON(
+			'https://geo.api.gouv.fr/communes', 
+			param, 
+			function(data) {
+				var items = [];
+				$.each(data, function(k, d) {
+					$.each(d.codesPostaux, function(c, cp) {
+						items.push({
+							code: d.code,
+							nom: d.nom,
+							codePostal: cp,
+							departement: d.departement.nom,
+							region: d.region.nom,
+							surface: d.surface,
+							population: d.population,
+							longitude: d.centre.coordinates[0],
+							latitude: d.centre.coordinates[1],
+							contour: d.contour.coordinates[0]
+						});
+					});
+				});
+				onComplete(items); 
+			}
+		);
+
+	}
+
 	function geoAPILocalities (input, onComplete) {
 		var input2 = $('<input>', {id: 'geoAPILocalities' + input.attr('name'), type: 'text', tabindex: 0 });
 		input2.attr('placeholder', Translator.trans('Enter a locality or a zipcode'));
@@ -43,7 +75,7 @@
 				} else if (term == '2A' || term == '2B') {
 					param = { codeDepartement: term };
 				}
-				param['fields'] = 'code,nom,codesPostaux,surface,population,centre,contour,departement,region';
+				param['fields'] = 'code,nom,codesPostaux';
 				$.getJSON(
 					'https://geo.api.gouv.fr/communes', 
 					param, 
@@ -55,13 +87,7 @@
 									items.push({
 										code: d.code,
 										nom: d.nom,
-										codePostal: cp,
-										departement: d.departement.nom,
-										region: d.region.nom,
-										surface: d.surface,
-										population: d.population,
-										coordinates: d.centre.coordinates,
-										contour: d.contour.coordinates[0]
+										codePostal: cp
 									});
 								}
 							});
@@ -75,11 +101,14 @@
 				search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 				var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
 				var val = item.nom + ' (' + item.codePostal + ')';
-				return '<div class="autocomplete-suggestion" data-val="' + val + '" data-value="' + item.code + '" data-text="' + item.nom + '" data-zipcode="' + item.codePostal + '" data-departement="' + item.departement + '" data-region="' + item.region + '" data-surface="' + item.surface + '" data-population="' + item.population + '" data-longitude="' + item.coordinates[0] + '" data-latitude="' + item.coordinates[1] + '" data-contour="' + JSON.stringify(item.contour) + '">' +  item.nom.replace(re, "<b>$1</b>") + ' (' + item.codePostal + ')</div>'; 
+				return '<div class="autocomplete-suggestion" data-val="' + val + '" data-value="' + item.code + '" data-text="' + item.nom + '" data-zipcode="' + item.codePostal + '">' +  item.nom.replace(re, "<b>$1</b>") + ' (' + item.codePostal + ')</div>'; 
 			},
 			onSelect: function(e, term, item){
-				// input2.val(item.data('text') + ' (' + item.data('zipcode') + ')');
-				onComplete(item.data('value'), item.data('text'), item.data('zipcode'), item.data('departement'), item.data('region'), item.data('surface'), item.data('population'), item.data('latitude'), item.data('longitude'), item.data('contour'));
+				geoAPIFromInseeCode (item.data('value'), function(items) {
+					if (items.length > 0) {
+						onComplete(item.data('value'), item.data('text'), item.data('zipcode'), items[0].departement, items[0].region, items[0].surface, items[0].population, items[0].latitude, items[0].longitude, items[0].contour);
+					}
+				});
 			}
 		});
 		

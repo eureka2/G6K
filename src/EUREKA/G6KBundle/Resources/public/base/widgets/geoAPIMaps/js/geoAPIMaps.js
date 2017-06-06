@@ -22,7 +22,7 @@
 		}
 		if ("geolocation" in navigator) {
 			var geoloc = $('<div></div>', { id: 'geoAPIMaps' + input.attr('name') + '-geoloc', class: 'geoAPIMaps-geoloc' } );
-			var geolocIcon = $('<button></button>', { class: 'geoAPIMaps-gps', title: 'Click for geolocation' } );
+			var geolocIcon = $('<button></button>', { class: 'geoAPIMaps-gps', title: Translator.trans('Click for geolocation') } );
 			var geolocMess = $('<span></span>', { class: 'geoAPIMaps-message' } );
 			geoloc.append(geolocIcon);
 			geoloc.append(geolocMess);
@@ -151,7 +151,7 @@
 
 	function geoAPIContour(coordinates, map) {
 		var latLngs = [];
-		for (i = 0; i < coordinates.length; i++) {
+		for (var i = 0; i < coordinates.length; i++) {
 			latLngs.push(new L.LatLng(coordinates[i][1], coordinates[i][0]));
 		}
 		var polygon = L.polygon(latLngs, {color: 'maroon'}).addTo(map);
