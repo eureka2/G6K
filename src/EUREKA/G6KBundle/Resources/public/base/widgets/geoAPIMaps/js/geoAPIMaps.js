@@ -4,16 +4,16 @@
 	function geoAPIMaps(input, onComplete) {
 		var cities = L.layerGroup();
 		var baseLayers = {};
-		baseLayers['Stamen watercoler'] = L.tileLayer.provider('Stamen.Watercolor');
-		baseLayers['Mapbox light'] = L.tileLayer.provider('MapBox', {id: 'mapbox.light', accessToken: 'YOUR API KEY HERE'});
-		baseLayers['Mapbox streets'] = L.tileLayer.provider('MapBox', {id: 'mapbox.streets', accessToken: 'YOUR API KEY HERE'});
+		// baseLayers['Stamen watercoler'] = L.tileLayer.provider('Stamen.Watercolor');
+		baseLayers['Mapbox light'] = L.tileLayer.provider('MapBox', {id: 'mapbox.light', accessToken: '<YOUR ACCESS TOKEN HERE>'});
+		baseLayers['Mapbox streets'] = L.tileLayer.provider('MapBox', {id: 'mapbox.streets', accessToken: '<YOUR ACCESS TOKEN HERE>'});
 		baseLayers['OpenStreetMap France'] = L.tileLayer.provider('OpenStreetMap.France');
-		baseLayers['OpenStreetMap HOT'] = L.tileLayer.provider('OpenStreetMap.HOT');
-		baseLayers['OpenStreetMap Mapnik'] = L.tileLayer.provider('OpenStreetMap.Mapnik');
-		baseLayers['OpenStreetMap BlackAndWhite'] = L.tileLayer.provider('OpenStreetMap.BlackAndWhite');
-		baseLayers['OpenStreetMap DE'] = L.tileLayer.provider('OpenStreetMap.DE');
-		baseLayers['OpenTopoMap'] = L.tileLayer.provider('OpenTopoMap');
-	//	baseLayers['Google streets'] = L.tileLayer.provider('GoogleStreets');
+		// baseLayers['OpenStreetMap HOT'] = L.tileLayer.provider('OpenStreetMap.HOT');
+		// baseLayers['OpenStreetMap Mapnik'] = L.tileLayer.provider('OpenStreetMap.Mapnik');
+		// baseLayers['OpenStreetMap BlackAndWhite'] = L.tileLayer.provider('OpenStreetMap.BlackAndWhite');
+		// baseLayers['OpenStreetMap DE'] = L.tileLayer.provider('OpenStreetMap.DE');
+		// baseLayers['OpenTopoMap'] = L.tileLayer.provider('OpenTopoMap');
+		baseLayers['IGN Geoportail'] = L.tileLayer.provider('IGNGeoPortail', { layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGN', apiKey: '<YOUR API KEY HERE>'});
 	//	baseLayers['Google streets'] = L.gridLayer.googleMutant({type: 'roadmap'});
 
 		var anch = input.parent('label');
@@ -76,7 +76,7 @@
 			});
 			anch = geoloc;
 		}
-		var mapDiv = $('<div></div>', { id: 'geoAPIMaps' + input.attr('name') + '-map', class: 'geoAPIMaps-map', title: 'Cliquez pour sélectionner la commune' } );
+		var mapDiv = $('<div></div>', { id: 'geoAPIMaps' + input.attr('name') + '-map', class: 'geoAPIMaps-map', title: Translator.trans('Click to select the city') } );
 		anch.after(mapDiv);
 		var map = L.map('geoAPIMaps' + input.attr('name') + '-map', {
 			center: [48.84495371275856, 2.3760858842364394], // Paris

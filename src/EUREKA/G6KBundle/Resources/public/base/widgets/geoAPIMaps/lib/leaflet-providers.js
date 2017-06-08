@@ -668,7 +668,20 @@
 				maxZoom: 20,
 				subdomains:['mt0','mt1','mt2','mt3']
 			}
+		},
+		IGNGeoPortail : {
+			url: 'https://wxs.ign.fr/{apiKey}/geoportail/wmts?service=WMTS&request=GetTile&version=1.0.0&tilematrixset=PM&tilematrix={z}&tilecol={x}&tilerow={y}&layer={layer}&format=image/jpeg&style=normal',
+			options: {
+				attribution: '<a href="http://www.ign.fr/"><img src="https://wxs.ign.fr/static/logos/IGN/IGN.gif" title="Institut national de l\'information géographique et forestière" alt="IGN"</a>',
+				minZoom: 0,
+				maxZoom: 18,
+				tileSize: 256,
+				opacity: 0.75,
+				layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+				apiKey: '<insert your api key here>'
+			}
 		}
+
 	};
 
 	L.tileLayer.provider = function (provider, options) {

@@ -59,6 +59,7 @@ class DefaultController extends Controller {
 	protected $parser;
 	protected $error;
 	protected $recursion = 0;
+	protected $simuWidgets = array('abListbox', 'abDatepicker');
 	protected $variables = array();
 	protected $memo = array();
 	protected $sources = null;
@@ -374,6 +375,14 @@ class DefaultController extends Controller {
 		$hiddens['view'] = $view;
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
+		$availWidgets = $this->container->getParameter('widgets');
+		$widgets = array();
+		foreach ($this->simuWidgets as $widget) {
+			if (isset($availWidgets[$widget]) && ! isset($widgets[$widget])) {
+				$this->widgetDeps($widget, $widgets, $availWidgets);
+				$widgets[$widget] = $availWidgets[$widget];
+			}
+		}
 		try {
 			$response =  $this->render(
 				'EUREKAG6KBundle:'.$view.'/'.$step->getTemplate(),
@@ -386,7 +395,7 @@ class DefaultController extends Controller {
 					'step' => $step,
 					'data' => $datas,
 					'hiddens' => $hiddens,
-					'widgets' => $this->container->getParameter('widgets')
+					'widgets' => $widgets
 				)
 			);
 			foreach($this->memo as $name => $value) {
@@ -395,6 +404,23 @@ class DefaultController extends Controller {
 			return $response;
 		} catch (\Exception $e) {
 			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+		}
+	}
+
+	public function addWidget($widget) {
+		if (! in_array($widget, $this->simuWidgets)) {
+			$this->simuWidgets[] = $widget;
+		}
+	}
+
+	private function widgetDeps($widget, &$widgets, &$availWidgets) {
+		if (isset($availWidgets[$widget]['deps'])) {
+			foreach ($availWidgets[$widget]['deps'] as $dep) {
+				if (isset($availWidgets[$dep]) && ! isset($widgets[$dep])) {
+					$this->widgetDeps($dep, $widgets, $availWidgets);
+					$widgets[$dep] = $availWidgets[$dep];
+				}
+			}
 		}
 	}
 
@@ -540,12 +566,26 @@ class DefaultController extends Controller {
 			}
 			if ($field->getUsage() == 'input') {
 				$data->setUsed(true);
+				if ($field->getWidget() != '') {
+					$this->addWidget($field->getWidget());
+				} elseif ($data->getType() == 'date') {
+					$this->addWidget('abDatepicker');
+				} elseif ($data->getType() == 'choice' && ! $field->isExpanded()) {
+					$this->addWidget('abListbox');
+				}
 			}
 			$this->populateChoiceWithSource($data);
 			$this->replaceFieldNotes($field);
 		} elseif ($step->getId() == 0 || $step->isDynamic()) {
 			if ($field->getUsage() == 'input') {
 				$data->setUsed(true);
+				if ($field->getWidget() != '') {
+					$this->addWidget($field->getWidget());
+				} elseif ($data->getType() == 'date') {
+					$this->addWidget('abDatepicker');
+				} elseif ($data->getType() == 'choice' && ! $field->isExpanded()) {
+					$this->addWidget('abListbox');
+				}
 			}
 			$this->populateChoiceWithSource($data);
 			$this->replaceFieldNotes($field);

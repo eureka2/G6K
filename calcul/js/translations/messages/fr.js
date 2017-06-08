@@ -164,6 +164,7 @@
     Translator.add("click to enter the message", "cliquez pour saisir le message", "messages", "fr");
     Translator.add("click to enter the sort order", "Cliquez pour entrer l'ordre de tri", "messages", "fr");
     Translator.add("click to select ...", "cliquez pour s\u00e9lectionner ...", "messages", "fr");
+    Translator.add("Click to select the city", "Cliquez pour s\u00e9lectionner la commune", "messages", "fr");
     Translator.add("click to select the operator", "Cliquez pour s\u00e9lectionner l'op\u00e9rateur", "messages", "fr");
     Translator.add("Close", "Fermer", "messages", "fr");
     Translator.add("Collapse all", "Tout replier", "messages", "fr");
@@ -467,8 +468,8 @@
     Translator.add("Method", "M\u00e9thode", "messages", "fr");
     Translator.add("min", "min", "messages", "fr");
     Translator.add("min can not refer to the data itself", "min ne peut pas se r\u00e9f\u00e9rer \u00e0 la donn\u00e9e elle-m\u00eame", "messages", "fr");
-    Translator.add("minimum", "valeur minimale", "messages", "fr");
     Translator.add("Minimum", "Minimum", "messages", "fr");
+    Translator.add("minimum", "valeur minimale", "messages", "fr");
     Translator.add("Minimum value", "valeur minimale", "messages", "fr");
     Translator.add("min value", "valeur min", "messages", "fr");
     Translator.add("money", "montant", "messages", "fr");
@@ -666,8 +667,8 @@
     Translator.add("Set", "Mettre", "messages", "fr");
     Translator.add("set", "mettre", "messages", "fr");
     Translator.add("Set value", "Mettre la valeur", "messages", "fr");
-    Translator.add("Show", "Montrer", "messages", "fr");
     Translator.add("show", "montrer", "messages", "fr");
+    Translator.add("Show", "Montrer", "messages", "fr");
     Translator.add("Show choices as radio buttons ?", "Afficher les choix avec des boutons radio ?", "messages", "fr");
     Translator.add("Show colon after field label ?", "Afficher ':' apr\u00e8s l'\u00e9tiquette de champ?", "messages", "fr");
     Translator.add("Show data description as help ?", "Utiliser la description de donn\u00e9es comme aide ?", "messages", "fr");

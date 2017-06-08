@@ -42,28 +42,40 @@ parameters:
                 - js/AutocompletionListbox.js
         geoAPILocalities:
             label: Insee code obtained by autocompletion on the name of the commune or its postal code
+            deps:
+                - AutocompletionListbox
             css: 
             js: 
                 - js/geoAPILocalities.js
         geoAPILocalitiesEditable:
             label: Insee code obtained by autocompletion on the name of the commune or its postal code (In place mode)
+            deps:
+                - AutocompletionListbox
+                - jEditable
             css: 
             js: 
                 - js/jquery.jeditable.geoAPILocalities.js
                 - js/geoAPILocalitiesEditable.js
         geoAPIZipCode:
             label: Postal code obtained by autocompletion on the name of the commune or its postal code
+            deps:
+                - AutocompletionListbox
             css: 
             js: 
                 - js/geoAPIZipCode.js
         geoAPIZipCodeEditable:
             label: Postal code obtained by autocompletion on the name of the commune or its postal code (In place mode)
+            deps:
+                - AutocompletionListbox
+                - jEditable
             css: 
             js: 
                 - js/jquery.jeditable.geoAPIZipCode.js
                 - js/geoAPIZipCodeEditable.js
         geoAPIMaps:
             label: Insee code obtained from a France map
+            deps:
+                - geoAPILocalities
             css: 
                 - lib/leaflet.css
                 - css/geoapimaps.css
