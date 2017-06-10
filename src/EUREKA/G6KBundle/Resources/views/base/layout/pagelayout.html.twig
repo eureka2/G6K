@@ -58,7 +58,11 @@ if (/no-js=/.test(window.location.search)) {
 <link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/base/css/g6k.css') }}" />
 {% for widget, props in widgets %}
 {% for css in props.css %}
+{% if css starts with 'http://' or css starts with 'https://' %}
+<link rel="stylesheet" type="text/css" href="{{ css }}" />
+{% else %}
 <link rel="stylesheet" type="text/css" href="{{ asset('bundles/eurekag6k/base/widgets/' ~ widget ~ '/' ~ css ) }}" />
+{% endif %}
 {% endfor %}
 {% endfor %}
 {% endblock %}
@@ -96,7 +100,12 @@ if (/no-js=/.test(window.location.search)) {
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/JSONPath/jsonpath.js') }}"></script>
 {% for widget, props in widgets %}
 {% for js in props.js %}
-<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/widgets/' ~ widget ~ '/' ~ js ) }}"></script>
+{% set ajs = js|split(' ') %}
+{% if ajs[0] starts with 'http://' or ajs[0] starts with 'https://' %}
+<script type="text/javascript" src="{{ ajs[0] }}"{% if ajs|length > 1 -%}{%- for i in range(1, ajs|length - 1) %} {{ ajs[i] }}{%- endfor -%}{%- endif -%}></script>
+{% else %}
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/widgets/' ~ widget ~ '/' ~ ajs[0] ) }}"{% if ajs|length > 1 -%}{%- for i in range(1, ajs|length - 1) %} {{ ajs[i] }}{%- endfor -%}{%- endif -%}></script>
+{% endif %}
 {% endfor %}
 {% endfor %}
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.min.js') }}"></script>

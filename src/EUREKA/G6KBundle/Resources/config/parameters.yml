@@ -79,7 +79,8 @@ parameters:
             css: 
                 - lib/leaflet.css
                 - css/geoapimaps.css
-            js: 
+            js:
+                - https://maps.googleapis.com/maps/api/js?key=<YOUR_API_KEY_HERE> async defer
                 - lib/leaflet.js
                 - lib/leaflet-color-markers.js
                 - lib/leaflet-providers.js
