@@ -944,7 +944,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				break;
 			case 'mysql':
 			case 'mysqli':
-				$dbname = str_replace('-', '_', $database->getName());
+				$dbname = $database->getName();
 				$tableslist = $database->query("SELECT 'table' as type, table_name as name, table_name as tbl_name FROM information_schema.tables where table_schema = '$dbname' and table_name != 'fos_user';");
 				break;
 			default:
@@ -980,7 +980,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				break;
 			case 'mysql':
 			case 'mysqli':
-				$dbname = str_replace('-', '_', $database->getName());
+				$dbname = $database->getName();
 				$tableinfos = $database->query("SELECT ordinal_position as cid, column_name as name, data_type as type, is_nullable, column_default as dflt_value, column_key FROM information_schema.columns where table_schema = '$dbname' and table_name = '$table' order by ordinal_position");
 				foreach($tableinfos as &$info) {
 					$info['notnull'] = $info['is_nullable'] == 'NO' ? 1 : 0;
@@ -1159,7 +1159,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				break;
 			case 'mysql':
 			case 'mysqli':
-				$dbschema = str_replace('-', '_', $database->getName());
+				$dbname = $database->getName();
 				try {
 					$database->exec("CREATE DATABASE IF NOT EXISTS " . $dbschema . " character set utf8");
 					$database->setConnected(false);
