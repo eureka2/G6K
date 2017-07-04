@@ -257,14 +257,18 @@ class SQLToJSONConverter {
 			$row = array();
 			foreach ($resultrow as $column => $value) {
 				$type = "";
+				$g6ktype = "";
 				foreach ($schema as $col => $props) {
 					if (strcasecmp($col, $column) == 0) {
 						$type = $props['type'];
 						$column = $col;
+						if (preg_match("/type:([^,\]]+)/", $props['title'], $m)) {
+							$g6ktype = $m[1];
+						}
 						break;
 					}
 				}
-				if ($type == 'integer') {
+				if ($type == 'integer' && $g6ktype != 'date') {
 					if (!is_int($value)) {
 						$value = (int)$value;
 					}
