@@ -268,7 +268,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 		}
 		$valid = true;
-		if ($simulator != null) {
+		if ($simulator != null && $simulator != 'new') {
 			$schema = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/doc/Simulator.xsd";
 			$dom = new \DOMDocument();
 			$dom->preserveWhiteSpace  = false;
