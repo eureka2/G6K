@@ -78,7 +78,11 @@ class DefaultController extends Controller {
 
 	public function runCalcul(Request $request, $simu, $view, $test = false)
 	{
-		$form = $request->request->all();
+		if ($view == 'api') {
+			$form = $request->query->all();
+		} else {
+			$form = $request->request->all();
+		}
 		$no_js = $request->query->get('no-js') || 0;
 		$this->parser = new ExpressionParser();
 		$this->uricache = array();
@@ -349,6 +353,9 @@ class DefaultController extends Controller {
 		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
 		$step->setDescription($this->replaceVariables($step->getDescription()));
 
+		if ($view == "api") {
+			return $this->apiOutput($request, $step);
+		}
 		$datas = array();
 		foreach ($this->simu->getDatas() as $data) {
 			if ($data instanceof DataGroup) {
@@ -1335,6 +1342,109 @@ class DefaultController extends Controller {
 
 		$mpdf->Output($this->simu->getName().".pdf", $step->getOutput() == 'inlinePDF' ? 'I' : 'D'); // I = inline, D = download
 		return false;
+	}
+
+	protected function apiOutput(Request $request, $step)
+	{
+		$datas = array();
+		$form = $request->query->all();
+		foreach ($this->simu->getDatas() as $data) {
+			if ($data instanceof DataGroup) {
+				foreach ($data->getDatas() as $gdata) {
+					if (isset($form[$gdata->getName()])) {
+						$datas[$gdata->getName()] = $gdata->getValue();
+					}
+				}
+			} elseif ($data instanceof Data) {
+				if (isset($form[$data->getName()])) {
+					$datas[$data->getName()] = $data->getValue();
+				}
+			}
+		}
+		$errors = array();
+		if ($this->simu->isError()) {
+			$errors[$this->simu->getName()] = $this->simu->getErrorMessages();
+		}
+		foreach ($step->getPanels() as $panel) {
+			if ($panel->isDisplayable()) {
+				foreach ($panel->getFieldSets() as $block) {
+					if ($block instanceof FieldSet) {
+						$fieldset = $block;
+						if ($fieldset->isDisplayable()) {
+							foreach ($fieldset->getFields() as $child) {
+								if ($child instanceof Field) {
+									$field = $child;
+									if ($field->isDisplayable()) {
+										$id = $field->getData();
+										$data = $this->simu->getDataById($id);
+										if ($data instanceof DataGroup) {
+											if ($data->isError()) {
+												$errors[$data->getName()] = $data->getErrorMessages();
+											}
+											foreach ($data->getDatas() as $gdata) {
+												$datas[$gdata->getName()] = $gdata->getValue();
+												if ($gdata->isError()) {
+													$errors[$gdata->getName()] = $gdata->getErrorMessages();
+												}
+											}
+										} elseif ($data instanceof Data) {
+											$datas[$data->getName()] = $data->getValue();
+											if ($data->isError()) {
+												$errors[$data->getName()] = $data->getErrorMessages();
+											}
+										}
+									}
+								} elseif ($child instanceof FieldRow) {
+									$fieldrow = $child;
+									foreach ($fieldrow->getFields() as $field) {
+										if ($field->isDisplayable()) {
+											$id = $field->getData();
+											$data = $this->simu->getDataById($id);
+											if ($data instanceof DataGroup) {
+												if ($data->isError()) {
+													$errors[$data->getName()] = $data->getErrorMessages();
+												}
+												foreach ($data->getDatas() as $gdata) {
+													$datas[$gdata->getName()] = $gdata->getValue();
+													if ($gdata->isError()) {
+														$errors[$gdata->getName()] = $gdata->getErrorMessages();
+													}
+												}
+											} elseif ($data instanceof Data) {
+												$datas[$data->getName()] = $data->getValue();
+												if ($data->isError()) {
+													$errors[$data->getName()] = $data->getErrorMessages();
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		$response = new Response();
+		$response->headers->set('Content-Type', 'application/json');
+		if ($this->error) {
+			$response->setContent(
+				json_encode(array(
+						'errors' => $errors,
+						'data' => $datas
+					)
+				)
+			);
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+		} else {
+			$response->setContent(
+				json_encode(array(
+						'data' => $datas
+					)
+				)
+			);
+		}
+		return $response;
 	}
 
 	private function replaceVariableTag($matches)
