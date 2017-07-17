@@ -18,9 +18,18 @@ eureka_g6k_calcul:
     path:     /{simu}
     defaults: { _controller: EUREKAG6KBundle:Default:calcul }
 
+eureka_g6k_api:
+    path:     /{simu}/api
+    defaults: { _controller: EUREKAG6KBundle:API:calcul }
+
 eureka_g6k_calcul_view:
     path:     /{simu}/{view}
     defaults: { _controller: EUREKAG6KBundle:Default:calcul }
+
+eureka_g6k_calcul_api_try:
+    path:     /{simu}/api/tryIt
+    defaults: { _controller: EUREKAG6KBundle:API:tryIt }
+
 
 eureka_g6k_calcul_view_try:
     path:     /{simu}/{view}/tryIt
