@@ -55,7 +55,7 @@ class APIController extends BaseController {
 	public function runCalcul(Request $request, $simu, $test = false)
 	{
 		try {
-			$api = $this->container->getParameter('api2');
+			$api = $this->container->getParameter('api');
 		} catch (\Exception $e) {
 			throw $this->createNotFoundException($this->get('translator')->trans("API for this simulator is not implemented"));
 		}
