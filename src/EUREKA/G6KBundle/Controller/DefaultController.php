@@ -55,6 +55,26 @@ class DefaultController extends BaseController {
 		return $this->runCalcul($request, $simu, $view, true);
 	}
 
+	public function fieldsAction(Request $request, $simu)
+	{
+		return $this->runFields($request, $simu);
+	}
+
+	public function fieldsTryItAction(Request $request, $simu)
+	{
+		return $this->runFields($request, $simu, true);
+	}
+
+	public function sourceAction(Request $request, $simu)
+	{
+		return $this->runSource($request, $simu);
+	}
+
+	public function sourceTryItAction(Request $request, $simu)
+	{
+		return $this->runSource($request, $simu, true);
+	}
+
 	public function runCalcul(Request $request, $simu, $view, $test = false)
 	{
 		$form = $request->request->all();
@@ -82,6 +102,11 @@ class DefaultController extends BaseController {
 		if ( ! $this->error && ($step->getOutput() == 'inlinePDF' || $step->getOutput() == 'downloadablePDF')) {
 			return $this->pdfOutput($request, $step, $datas, $view);
 		}
+		return $this->htmlOutput($request, $step, $datas, $view);
+	}
+
+	protected function htmlOutput(Request $request, &$step, &$datas, $view)
+	{
  		$hiddens = array();
 		$hiddens['step'] = $step->getId();
 		$hiddens['sequence'] = implode('|', $this->sequence);
@@ -121,26 +146,6 @@ class DefaultController extends BaseController {
 		}
 	}
 
-	public function fieldsAction(Request $request, $simu)
-	{
-		return $this->runFields($request, $simu);
-	}
-
-	public function fieldsTryItAction(Request $request, $simu)
-	{
-		return $this->runFields($request, $simu, true);
-	}
-
-	public function sourceAction(Request $request, $simu)
-	{
-		return $this->runSource($request, $simu);
-	}
-
-	public function sourceTryItAction(Request $request, $simu)
-	{
-		return $this->runSource($request, $simu, true);
-	}
-
 	protected function pdfOutput(Request $request, $step, $datas, $view = "Default")
 	{
  		$silex = new Application();
@@ -175,134 +180,6 @@ class DefaultController extends BaseController {
 
 		$mpdf->Output($this->simu->getName().".pdf", $step->getOutput() == 'inlinePDF' ? 'I' : 'D'); // I = inline, D = download
 		return false;
-	}
-
-	protected function apiOutput(Request $request, $step)
-	{
-		$datas = array();
-		$metas = array();
-		$errors = array();
-		$fields = array_fill_keys(preg_split('/\s*,\s*/', $request->query->get('fields', '')), 1);
-		foreach ($fields as $field => $val) {
-			if ($field != '') {
-				$data = $this->simu->getDataByName($field);
-				if (is_null($data)) {
-					$this->error = true;
-					$errors[$field] = array($this->get('translator')->trans("This field doesn't exists"));
-				} else {
-					$datas[$data->getName()] = $data->getValue();
-					$metas[$data->getName()] = $data->getLabel();
-				}
-			}
-		}
-		if ($this->simu->isError()) {
-			$errors[$this->simu->getName()] = $this->simu->getErrorMessages();
-		}
-		foreach ($step->getPanels() as $panel) {
-			if ($panel->isDisplayable()) {
-				foreach ($panel->getFieldSets() as $block) {
-					if ($block instanceof FieldSet) {
-						$fieldset = $block;
-						if ($fieldset->isDisplayable()) {
-							foreach ($fieldset->getFields() as $child) {
-								if ($child instanceof Field) {
-									$field = $child;
-									if ($field->isDisplayable()) {
-										$id = $field->getData();
-										$data = $this->simu->getDataById($id);
-										if ($data instanceof DataGroup) {
-											if ($data->isError()) {
-												$errors[$data->getName()] = $data->getErrorMessages();
-											}
-											foreach ($data->getDatas() as $gdata) {
-												$datas[$gdata->getName()] = $gdata->getValue();
-												$metas[$gdata->getName()] = $gdata->getLabel();
-												if ($gdata->isError()) {
-													$errors[$gdata->getName()] = $gdata->getErrorMessages();
-												}
-											}
-										} elseif ($data instanceof Data) {
-											$datas[$data->getName()] = $data->getValue();
-											$metas[$data->getName()] = $data->getLabel();
-											if ($data->isError()) {
-												$errors[$data->getName()] = $data->getErrorMessages();
-											}
-										}
-									}
-								} elseif ($child instanceof FieldRow) {
-									$fieldrow = $child;
-									foreach ($fieldrow->getFields() as $field) {
-										if ($field->isDisplayable()) {
-											$id = $field->getData();
-											$data = $this->simu->getDataById($id);
-											if ($data instanceof DataGroup) {
-												if ($data->isError()) {
-													$errors[$data->getName()] = $data->getErrorMessages();
-												}
-												foreach ($data->getDatas() as $gdata) {
-													$datas[$gdata->getName()] = $gdata->getValue();
-													$metas[$gdata->getName()] = $gdata->getLabel();
-													if ($gdata->isError()) {
-														$errors[$gdata->getName()] = $gdata->getErrorMessages();
-													}
-												}
-											} elseif ($data instanceof Data) {
-												$datas[$data->getName()] = $data->getValue();
-												$metas[$data->getName()] = $data->getLabel();
-												if ($data->isError()) {
-													$errors[$data->getName()] = $data->getErrorMessages();
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		// $id = array_shift( unpack('H*', $request->getQueryString()) );
-		// $qs =  urldecode(pack('H*', $id)); // for unpack
-		$id = urlencode(base64_encode( gzcompress($request->getQueryString())));
-		$qs = urldecode(gzuncompress(base64_decode(urldecode($id))));
-		$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo() . '?' . $request->getQueryString();
-		$response = new Response();
-		$response->headers->set('Content-Type', 'application/json');
-		if ($this->error) {
-			$response->setContent(
-				json_encode(array(
-						'links' => array(
-							'self' => $self,
-						),
-						'errors' => $errors,
-						'data' => array(
-							'type' => $this->simu->getName(),
-							'id' => $id,
-							'attributes' => $datas,
-							'meta' => $metas
-						)
-					)
-				)
-			);
-			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-		} else {
-			$response->setContent(
-				json_encode(array(
-						'links' => array(
-							'self' => $self,
-						),
-						'data' => array(
-							'type' => $this->simu->getName(),
-							'id' => $id,
-							'attributes' => $datas,
-							'meta' => $metas
-						)
-					)
-				)
-			);
-		}
-		return $response;
 	}
 
 }

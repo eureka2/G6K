@@ -54,7 +54,17 @@ class APIController extends BaseController {
 
 	public function runCalcul(Request $request, $simu, $test = false)
 	{
+		try {
+			$api = $this->container->getParameter('api2');
+		} catch (\Exception $e) {
+			throw $this->createNotFoundException($this->get('translator')->trans("API for this simulator is not implemented"));
+		}
+		if (! is_array($api) || !isset($api[$simu])) {
+			throw $this->createNotFoundException($this->get('translator')->trans("API for this simulator is not implemented"));
+		}
 		$form = $request->query->all();
+		$form['step'] = $api[$simu]['step'];
+		$form[$api[$simu]['action']] = 1;
 		try {
 			$step = $this->runStep($request, $form, $simu, $view, $test);
 		} catch (\Exception $e) {
@@ -110,6 +120,17 @@ class APIController extends BaseController {
 						$actionButton = $name;
 						break;
 					}
+				}
+				if ($actionButton == "") {
+					$this->error = true;
+					$errors[] = array(
+							'status' => "" . Response::HTTP_UNPROCESSABLE_ENTITY,
+							'title' => $this->get('translator')->trans("Missing action parameter"),
+							'detail' => $this->get('translator')->trans("The action parameter is required"),
+							'source' => array(
+								'pointer' => "/data/" . $this->simu->getName()
+							)
+					);
 				}
 			}
 		}
