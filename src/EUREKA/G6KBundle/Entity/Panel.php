@@ -115,6 +115,10 @@ class Panel {
 		return false;
 	}
 
+	public function getCollapsibles() {
+		return $this->hasCollapsibles();
+	}
+
 	public function isDisplayable() {
 		return $this->displayable;
 	}

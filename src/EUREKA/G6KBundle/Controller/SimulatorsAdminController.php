@@ -300,6 +300,8 @@ class SimulatorsAdminController extends BaseAdminController {
 					'datasources' => $datasources,
 					'views' => $views,
 					'hiddens' => $hiddens,
+					'script' => $script,
+					'view' => null,
 					'widgets' => $this->getWidgets()
 				)
 			);

@@ -466,7 +466,10 @@ class DataSourcesAdminController extends BaseAdminController {
 					'table' => $tabledef,
 					'tableinfos' => $tableinfos,
 					'tabledatas' => $tabledatas,
-					'hiddens' => $hiddens
+					'hiddens' => $hiddens,
+					'script' => $this->script,
+					'simulator' => null,
+					'view' => null
 				)
 			);
 		} catch (\Exception $e) {

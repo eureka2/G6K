@@ -939,7 +939,7 @@ THE SOFTWARE.
 		<div class="panel-heading" role="tab" id="{{ id }}-panel">
 			{% if buttons is not empty %}
 			{% for button in buttons %}
-			{% if button.dropdown %}
+			{% if button.dropdown is defined and button.dropdown is not empty%}
 			<div class="btn-group pull-right update-button">
 				<button class="btn btn-{{ style }} dropdown-toggle" title="{{ button.label }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<span class="button-label">{{ button.label }}</span> <span class="glyphicon {{ button.icon }}"></span>
@@ -1065,19 +1065,19 @@ THE SOFTWARE.
 
 {% macro showCondition(condition) %}
 {% import _self as page %}
-{% if condition.all is not empty %}
+{% if condition.all is defined and condition.all is not empty %}
 	<li class="condition">{{ 'All of the following conditions are met'|trans }} : 
 	<ul>
 	{{ page.showConditions(condition.all) }}
 	</ul>
 	</li>
-{% elseif condition.any is not empty %}
+{% elseif condition.any is defined and condition.any is not empty %}
 	<li class="condition">{{ 'Any of the following conditions is met'|trans }} : 
 	<ul>
 	{{ page.showConditions(condition.any) }}
 	</ul>
 	</li>
-{% elseif condition.none is not empty %}
+{% elseif condition.none is defined and condition.none is not empty %}
 	<li class="condition">{{ 'None of the following conditions is met'|trans }} : 
 	<ul>
 	{{ page.showConditions(condition.none) }}
@@ -1098,18 +1098,21 @@ THE SOFTWARE.
 			<div class="form-group col-sm-12">
 				<label class="col-sm-2 control-label">{{ 'Title'|trans }}</label>
 				<div class="col-sm-10">
-					<p data-attribute="label" data-value="{{ simulator.profiles.label }}" class="form-control-static simple-value">{{ simulator.profiles.label }}</p>
+					{% set profilesLabel = simulator.profiles is not empty ? simulator.profiles.label : '' %}
+					<p data-attribute="label" data-value="{{ profilesLabel }}" class="form-control-static simple-value">{{ profilesLabel }}</p>
 				</div>
 			</div>
-			<button class="btn btn-default pull-right update-button edit-profiles-label" data-parent="#profiles-attributes-panel" title="{{ button.label }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></button>
+			<button class="btn btn-default pull-right update-button edit-profiles-label" data-parent="#profiles-attributes-panel" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></button>
 		</div>
 	</div>
 </div>
 <div class="panel panel-default profiles-panel" id="profiles-profiles-panel">
 	<div class="panel-body sortable">
+		{% if simulator.profiles is not empty %}
 		{% for profile in simulator.profiles.profiles %}
 			{{ page.showProfile(simulator, profile, 'profile', loop.index == 1 ? 'in' : '') }}
 		{% endfor %}
+		{% endif %}
 	</div>
 </div>
 {{ page.closeCollapsiblePanel() }}  

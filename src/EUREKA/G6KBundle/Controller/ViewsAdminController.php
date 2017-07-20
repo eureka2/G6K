@@ -128,7 +128,9 @@ class ViewsAdminController extends BaseAdminController {
 					'view' => $viewInfos,
 					'node' => $this->node,
 					'file' => $this->nodeFile,
-					'hiddens' => $hiddens
+					'hiddens' => $hiddens,
+					'script' => $script,
+					'simulator' => null
 				)
 			);
 		} catch (\Exception $e) {

@@ -163,6 +163,10 @@ class Field {
 		return $this->help;
 	}
 
+	public function getHelp() {
+		return $this->help;
+	}
+
 	public function setHelp($help) {
 		$this->help = $help;
 	}

@@ -81,7 +81,10 @@ class HomeAdminController extends BaseAdminController {
 					'usersCount' => count($users),
 					'simulatorsCount' => $simulatorsCount,
 					'viewsCount' => $viewsCount,
-					'hiddens' => $hiddens
+					'hiddens' => $hiddens,
+					'script' => $script,
+					'simulator' => null,
+					'view' => null
 				)
 		);
 		} catch (\Exception $e) {
