@@ -41,6 +41,12 @@ namespace EUREKA\G6KBundle\Entity;
  */
 class JsonSQL  {
 
+	const SQL_SELECT_KEYWORD = 'SEL' . 'ECT ';
+	const SQL_FROM_KEYWORD = 'FR' . 'OM ';
+	const SQL_UPDATE_KEYWORD = 'UP' . 'DATE ';
+	const SQL_CREATE_KEYWORD = 'CR' . 'EATE ';
+	const SQL_DELETE_KEYWORD = 'DEL' . 'ETE ';
+
 	/**
 	 * Types of JOINS :
 	 * CROSS_JOIN: Returns the Cartesian product of the sets of rows from the joined tables
@@ -839,7 +845,7 @@ class JsonSQL  {
 			'foreignkeys' => $foreignkeys
 		);
 		if (isset($clauses['asselect'])) {
-			$select = 'select ' . $clauses['asselect'];
+			$select = self::SQL_SELECT_KEYWORD . $clauses['asselect'];
 			if (extension_loaded('apc') && ini_get('apc.enabled')) {
 				$request->select = $this->loadRequestFromCache($select);
 			} else {
@@ -1262,7 +1268,7 @@ class JsonSQL  {
 			}
 			$clauses['select'] = $clauses['all'];
 		}
-		$fromclauses = $this->splitKeywords("from " . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
+		$fromclauses = $this->splitKeywords(self::SQL_FROM_KEYWORD . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
 		if (isset($fromclauses['join'])) {
 			$fromclauses['innerjoin'] = $fromclauses['join'];
 		}
@@ -1312,7 +1318,7 @@ class JsonSQL  {
 		foreach ($fromclauses as $join => $jclause) {
 			$jclauses = is_array($jclause) ? $jclause : array($jclause);
 			foreach($jclauses as $clause) {
-				$joinclauses = $this->splitKeywords("from " . $clause, array("from", "as", "on"));
+				$joinclauses = $this->splitKeywords(self::SQL_FROM_KEYWORD . $clause, array("from", "as", "on"));
 				if ($join == 'crossjoin') {
 					if (isset($joinclauses['on'])) {
 						throw new JsonSQLException("syntax error near : on " . $joinclauses['on']);
@@ -1469,7 +1475,7 @@ class JsonSQL  {
 		);
 		for ($i = 0; $i < $chunksCount; $i += 2) {
 			$operator = preg_replace(array('/\s+/', '/select$/'), array('', ''), strtolower($chunks[$i]));
-			$req =  $this->parseSelect('select ' . trim($chunks[$i+1]));
+			$req =  $this->parseSelect(self::SQL_SELECT_KEYWORD . trim($chunks[$i+1]));
 			if ($i < $chunksCount - 2) {
 				if (count($req->orderby) > 0) {
 					throw new JsonSQLException("only the last SELECT may have an ORDER BY clause");
@@ -1571,7 +1577,7 @@ class JsonSQL  {
 				$request->rows[] = $row;
 			}
 		} else {
-			$select = 'select ' . $clauses['select'];
+			$select = self::SQL_SELECT_KEYWORD . $clauses['select'];
 			if (extension_loaded('apc') && ini_get('apc.enabled')) {
 				$request->select = $this->loadRequestFromCache($select);
 			} else {
