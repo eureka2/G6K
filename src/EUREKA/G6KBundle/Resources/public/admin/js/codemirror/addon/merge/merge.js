@@ -205,7 +205,7 @@
     arr.length = 0;
   }
 
-  // FIXME maybe add a margin around viewport to prevent too many updates
+  // FIX_ME maybe add a margin around viewport to prevent too many updates
   function updateMarks(editor, diff, state, type, classes) {
     var vp = editor.getViewport();
     editor.operation(function() {
