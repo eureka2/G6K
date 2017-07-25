@@ -27,6 +27,8 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+use Flow\JSONPath\JSONPath;
+
 class ResultFilter {
 
 	private $functions = array(
@@ -161,8 +163,8 @@ class ResultFilter {
 		if ($path == '') {
 			$result = $json;
 		} elseif (preg_match("/^\\$/", $path)) { // jsonpath
-			$store = new JsonStore($json);
-			$result = $store->get($path);
+			$store = new JSONPath($json);
+			$result = $store->find($path)->data();
 		} else { // xpath
 			$result = $this->xPathFilter( "json", $json, $path);
 		}
@@ -395,7 +397,7 @@ class ResultFilter {
 		return $result;
 	}
 
-	static function xml2array($xml) {
+	public static function xml2array($xml) {
 		$result = (array)$xml;
 		if (count($result) == 0) {
 			$result = (string)$xml;  
@@ -418,7 +420,7 @@ class ResultFilter {
 		return $result;
 	}
 
-	static function timestamp($format, $dateStr) {
+	public static function timestamp($format, $dateStr) {
 		$result = null;
 		$dateStr = trim($dateStr);
 		if ($dateStr != '') {

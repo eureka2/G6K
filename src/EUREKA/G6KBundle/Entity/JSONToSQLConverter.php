@@ -74,7 +74,7 @@ class JSONToSQLConverter {
 		$this->parameters = array_merge($this->parameters, $fparameters);
 	}
 
-	private function get_type($coldef) {
+	private function getType($coldef) {
 		$driver = $this->parameters['database_driver'];
 		if ($coldef->type == 'string') {
 			if(isset($coldef->format)) {
@@ -92,7 +92,7 @@ class JSONToSQLConverter {
 		return $type;
 	}
 
-	private function get_value($type, $value) {
+	private function getValue($type, $value) {
 		if ($type == 'string') {
 			$value = $this->database->quote($value, \PDO::PARAM_STR);
 		} elseif ($type == 'integer') {
@@ -116,13 +116,13 @@ class JSONToSQLConverter {
 	public function convert($name, $schemafile, $datafile) {
 		$schema = file_get_contents($schemafile);
 		if ($schema === false) {
-			throw new Exception("JSON schema file '$schemafile' schema doesn't exists");
+			throw new \Exception("JSON schema file '$schemafile' schema doesn't exists");
 		} else {
 			$schema = json_decode($schema);
 		}
 		$data = file_get_contents($datafile);
 		if ($data === false) {
-			throw new Exception("JSON data file '$datafile' data doesn't exists");
+			throw new \Exception("JSON data file '$datafile' data doesn't exists");
 		} else {
 			$data = json_decode($data);
 		}
@@ -196,7 +196,7 @@ class JSONToSQLConverter {
 				if ($this->parameters['database_driver'] == 'pdo_pgsql' && isset($props->autoincrement)) {
 					$type = 'serial';
 				} else {
-					$type = $this->get_type($coldef);
+					$type = $this->getType($coldef);
 				}
 				if (isset($props->autoincrement)) {
 					$autoincremented = $col;
@@ -220,7 +220,7 @@ class JSONToSQLConverter {
 					$primarykeys[$props->primarykey - 1] = $col;
 				}
 				if (isset($coldef->default)) {
-					$create_table .= " DEFAULT " . $this->get_value($coldef->type, $coldef->default);
+					$create_table .= " DEFAULT " . $this->getValue($coldef->type, $coldef->default);
 				}
 				$create_table .= ",\n";
 				$column = array(
@@ -274,7 +274,7 @@ class JSONToSQLConverter {
 					}
 					$type = $descr->items->properties->$col->type;
 					$cols[] = $col;
-					$values[] = $this->get_value($type, $value);
+					$values[] = $this->getValue($type, $value);
 				}
 				$insert_row = "insert into $table (";
 				$insert_row .= implode(", ", $cols);

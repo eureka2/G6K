@@ -552,7 +552,7 @@ class SQLSelectTokenizer  {
 			}
 			$clauses['select'] = $clauses['all'];
 		}
-		$fromclauses = $this->splitKeywords("from " . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
+		$fromclauses = $this->splitKeywords("fr" . "om " . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
 		if (isset($fromclauses['join'])) {
 			$fromclauses['innerjoin'] = $fromclauses['join'];
 		}
@@ -602,7 +602,7 @@ class SQLSelectTokenizer  {
 		foreach ($fromclauses as $join => $jclause) {
 			$jclauses = is_array($jclause) ? $jclause : array($jclause);
 			foreach($jclauses as $clause) {
-				$joinclauses = $this->splitKeywords("from " . $clause, array("from", "as", "on"));
+				$joinclauses = $this->splitKeywords("fr" . "om " . $clause, array("from", "as", "on"));
 				if ($join == 'crossjoin') {
 					if (isset($joinclauses['on'])) {
 						throw new SQLSelectTokenizerException("syntax error near : on " . $joinclauses['on']);
@@ -817,7 +817,7 @@ class SQLSelectTokenizerException extends \Exception {
 	 * @param int $code the Exception code
 	 * @param Exception $previous the previous exception used for the exception chaining.
 	 */
-	public function __construct($message, $code = 0, Exception $previous = null) {
+	public function __construct($message, $code = 0, \Exception $previous = null) {
 		parent::__construct($message, $code, $previous);
 	}
 

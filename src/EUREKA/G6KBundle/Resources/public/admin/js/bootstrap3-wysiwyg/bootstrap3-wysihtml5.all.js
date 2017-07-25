@@ -7322,7 +7322,6 @@ wysihtml5.dom.getAttributes = function(node) {
   return attributes;
 };;/**
    * Check whether the given node is a proper loaded image
-   * FIXME: Returns undefined when unknown (Chrome, Safari)
 */
 
 wysihtml5.dom.isLoadedImage = function (node) {
@@ -9264,7 +9263,6 @@ wysihtml5.quirks.ensureProperClearing = (function() {
 
     /**
      * Scroll the current caret position into the view
-     * FIXME: This is a bit hacky, there might be a smarter way of doing this
      *
      * @example
      *    selection.scrollIntoView();

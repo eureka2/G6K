@@ -194,7 +194,7 @@ THE SOFTWARE.
 						</form>
 						{% else %}
 						<div class="table-responsive">
-							{{ table.description|raw }}
+							{{ table.description|jscode }}
 							<button id="btnAddNewRow" class="btn btn-default" title="{{ 'Add record'|trans }}"><span class="button-label">{{ 'Add record'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
 							<table id="{{ table.name }}" class="table table-condensed table-striped table-bordered table-hover">
 								<thead>
@@ -276,7 +276,7 @@ THE SOFTWARE.
 								{{ 'Description'|trans }}
 							</div>
 							<div class="panel-body datasource-description">
-								{{ datasource.description|raw }}
+								{{ datasource.description|jscode }}
 							</div>
 						</div>
 						{% if datasource.type == "internal" or datasource.type == "database" %}

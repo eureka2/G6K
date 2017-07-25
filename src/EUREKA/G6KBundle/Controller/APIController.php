@@ -52,7 +52,7 @@ class APIController extends BaseController {
 		return $this->runCalcul($request, $simu, true);
 	}
 
-	public function runCalcul(Request $request, $simu, $test = false)
+	protected function runCalcul(Request $request, $simu, $test = false)
 	{
 		try {
 			$api = $this->container->getParameter('api');

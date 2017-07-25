@@ -3941,7 +3941,7 @@ class JsonSQLException extends \Exception {
 	 * @param int $code the Exception code
 	 * @param Exception $previous the previous exception used for the exception chaining.
 	 */
-	public function __construct($message, $code = 0, Exception $previous = null) {
+	public function __construct($message, $code = 0, \Exception $previous = null) {
 		parent::__construct($message, $code, $previous);
 	}
 

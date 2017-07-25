@@ -1146,7 +1146,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			} else {
 				$database = $this->getDatabase($dsid, false);
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $this->get('translator')->trans("Can't get database : %error%", array('%error%' => $e->getMessage()));
 		}
 		switch ($database->getType()) {
@@ -1156,7 +1156,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$database->exec("CREATE DATABASE " . $dbschema. " encoding 'UTF8'");
 					$database->setConnected(false);
 					$database->connect();
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
 				}
 				break;
@@ -1167,7 +1167,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$database->exec("CREATE DATABASE IF NOT EXISTS " . $dbschema . " character set utf8");
 					$database->setConnected(false);
 					$database->connect();
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
 				}
 				break;
@@ -1197,7 +1197,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$insert = "INSERT INTO " . $table . " (" . $fields . ") values (" . implode(", ", $values) . ")";
 					try {
 						$database->exec($insert);
-					} catch (Exception $e) {
+					} catch (\Exception $e) {
 						return $this->get('translator')->trans("Can't insert into %table% of database %database% : %error%", array('%table%' => $table, '%database%' => $dbschema, '%error%' => $e->getMessage()));
 					}
 				}
@@ -1261,7 +1261,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$alter = "alter table " . $form['table-name'] . " modify comment  " . $database->quote($form['table-description']);
 				$database->exec($alter);
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $this->get('translator')->trans("Can't create table %table% : %error%", array('%table%' => $form['table-name'], '%error%' => $e->getMessage()));
 		}
 		if (!in_array('id', $form['field'])) {
@@ -1280,7 +1280,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			$rename = "ALTER TABLE $table RENAME TO {$form['table-name']}";
 			try {
 				$database->exec($rename);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				return $this->get('translator')->trans("Can't rename table %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 			}
 		}
@@ -1305,7 +1305,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					}
 					try {
 						$database->exec($rename);
-					} catch (Exception $e) {
+					} catch (\Exception $e) {
 						return $this->get('translator')->trans("Can't rename column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 					}
 				}
@@ -1319,7 +1319,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						$changetype = "ALTER TABLE $table MODIFY COLUMN $name SET TYPE {$form['type'][$col]}";
 						try {
 							$database->exec($changetype);
-						} catch (Exception $e) {
+						} catch (\Exception $e) {
 							return $this->get('translator')->trans("Can't modify type of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 						}
 					} else {
@@ -1336,7 +1336,7 @@ class DataSourcesAdminController extends BaseAdminController {
 							}
 							try {
 								$database->exec($changetype);
-							} catch (Exception $e) {
+							} catch (\Exception $e) {
 								return $this->get('translator')->trans("Can't modify type of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 							}
 						}
@@ -1372,7 +1372,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					}
 					try {
 						$database->exec($changenullable);
-					} catch (Exception $e) {
+					} catch (\Exception $e) {
 						return $this->get('translator')->trans("Can't alter 'NOT NULL' property of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 					}
 				}
@@ -1390,7 +1390,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$changelabel = "ALTER TABLE $table MODIFY COLUMN $name SET TITLE " . $database->quote($form['label'][$col]);
 				try {
 					$database->exec($changelabel);
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					return $this->get('translator')->trans("Can't modify title of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 				}
 			}
@@ -1398,7 +1398,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$changedescription = "ALTER TABLE $table MODIFY COLUMN $name SET COMMENT " . $database->quote($form['description'][$col]);
 				try {
 					$database->exec($changedescription);
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					return $this->get('translator')->trans("Can't modify description of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 				}
 			}
@@ -1433,7 +1433,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 				try {
 					$database->exec($addcolumn);
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					return $this->get('translator')->trans("Can't add the column '%column%' into table '%table%' : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
 				}
 			}
@@ -1584,7 +1584,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$sql = "INSERT INTO ".$table." (".implode(', ', $insertNames).") VALUES (".implode(', ', $insertValues).")";
 		try {
 			$database->exec($sql);
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $this->get('translator')->trans("Can't insert into %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 		}
 		return true;
@@ -1616,7 +1616,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$sql = "UPDATE ".$table." SET ".implode(', ', $updateFields)." WHERE id=".$form['id'];
 		try {
 			$database->exec($sql);
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $this->get('translator')->trans("Can't update %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 		}
 		return true;
@@ -1625,7 +1625,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	protected function deleteDBTableRow($form, $table, $database) {
 		try {
 			$database->exec("DELETE FROM ".$table." WHERE id=".$form['id']);
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $this->get('translator')->trans("Can't delete from %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 		}
 		return true;
@@ -1634,7 +1634,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	protected function dropDBTable($table, $database) {
 		try {
 			$database->exec("DROP TABLE ".$table);
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return $this->get('translator')->trans("Can't drop %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 		}
 		return true;
@@ -2017,18 +2017,20 @@ class DataSourcesAdminController extends BaseAdminController {
 				switch ($dbtype) { 
 					case 'jsonsql':
 						try {
-							$database = dirname(dirname(__FILE__)).'/Resources/data/databases/' . $dbname;
+							$database = $this->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/' . $dbname);
 							$fs = new Filesystem();
 							$fs->remove($database . ".json");
 							$fs->remove($database . ".schema.json");
+						} catch (\Exception $e) {
 						} catch (IOExceptionInterface $ioe) {
 						}
 						break;
 					case'sqlite':
 						try {
-							$database = dirname(dirname(__FILE__)).'/Resources/data/databases/' . $dbname;
+							$database = $this->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/' . $dbname);
 							$fs = new Filesystem();
 							$fs->remove($database );
+						} catch (\Exception $e) {
 						} catch (IOExceptionInterface $ioe) {
 						}
 						break;

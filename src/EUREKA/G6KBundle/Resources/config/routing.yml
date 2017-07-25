@@ -1,37 +1,45 @@
 eureka_g6k_fields:
     path:     /{simu}/Default/fields
+    methods: [ post ]
     defaults: { _controller: EUREKAG6KBundle:Default:fields }
 
 eureka_g6k_fields_try:
     path:     /{simu}/tryIt/Default/fields
+    methods: [ post ]
     defaults: { _controller: EUREKAG6KBundle:Default:fieldsTryIt }
 
 eureka_g6k_source:
     path:     /{simu}/Default/source
+    methods: [ post ]
     defaults: { _controller: EUREKAG6KBundle:Default:source }
 
 eureka_g6k_source_try:
     path:     /{simu}/tryIt/Default/source
+    methods: [ post ]
     defaults: { _controller: EUREKAG6KBundle:Default:sourceTryIt }
 
 eureka_g6k_calcul:
     path:     /{simu}
+    methods: [ get, post ]
     defaults: { _controller: EUREKAG6KBundle:Default:calcul }
 
 eureka_g6k_api:
     path:     /{simu}/api
+    methods: [ get ]
     defaults: { _controller: EUREKAG6KBundle:API:calcul }
 
 eureka_g6k_calcul_view:
     path:     /{simu}/{view}
+    methods: [ get, post ]
     defaults: { _controller: EUREKAG6KBundle:Default:calcul }
 
 eureka_g6k_calcul_api_try:
     path:     /{simu}/api/tryIt
+    methods: [ get ]
     defaults: { _controller: EUREKAG6KBundle:API:tryIt }
-
 
 eureka_g6k_calcul_view_try:
     path:     /{simu}/{view}/tryIt
+    methods: [ get, post ]
     defaults: { _controller: EUREKAG6KBundle:Default:tryIt }
 

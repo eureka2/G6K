@@ -74,11 +74,7 @@ class BaseController extends Controller {
 		$this->uricache = array();
 		try {
 			$this->simu = new Simulator($this);
-			if ($test && file_exists(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml')) {
-				$this->simu->load(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml');
-			} else {
-				$this->simu->load(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml');
-			}
+			$this->simu->load($this->getSimuPath($simu, $test));
 		} catch (\Exception $e) {
 			$page404Url = $request->getScheme() . '://' . $request->getHttpHost() . $this->container->getParameter('page404');
 			$page404 = @file_get_contents($page404Url);
@@ -365,11 +361,7 @@ class BaseController extends Controller {
 	{
 		$form = $request->request->all();
 		$this->simu = new Simulator($this);
-		if ($test && file_exists(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml')) {
-			$fields = $this->simu->toJSON(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml', $form['stepId']);
-		} else {
-			$fields = $this->simu->toJSON(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml', $form['stepId']);
-		}
+		$fields = $this->simu->toJSON($this->getSimuPath($simu, $test), $form['stepId']);
 		$response = new Response();
 		$response->setContent($fields);
 		$response->headers->set('Content-Type', 'application/json');
@@ -380,11 +372,7 @@ class BaseController extends Controller {
 	{
 		$form = $request->request->all();
 		$this->simu = new Simulator($this);
-		if ($test && file_exists(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml')) {
-			$this->simu->loadForSource(dirname(dirname(__FILE__)).'/Resources/data/simulators/work/'.$simu.'.xml');
-		} else {
-			$this->simu->loadForSource(dirname(dirname(__FILE__)).'/Resources/data/simulators/'.$simu.'.xml');
-		}
+		$this->simu->loadForSource($this->getSimuPath($simu, $test));
 		$source = $this->simu->getSourceById((int)$form['source']);
 		$params = $source->getParameters();
 		foreach ($params as $param) {
@@ -415,6 +403,21 @@ class BaseController extends Controller {
 		}
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
+	}
+
+	protected function getSimuPath($simu, $test = false) {
+		$path = null;
+		if ($test) {
+			try {
+				$path = $this->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/simulators/work/'.$simu.'.xml');
+			} catch (\Exception $e) {
+				$path = null;
+			}
+		} 
+		if ($path === null) {
+			$path = $this->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/simulators/'.$simu.'.xml');
+		}
+		return $path;
 	}
 
 	protected function checkField($field, $form, $skipValidation) 

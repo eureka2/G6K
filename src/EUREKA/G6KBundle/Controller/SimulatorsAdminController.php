@@ -283,6 +283,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
+		$widgets = $this->getWidgets();
 		try {
 			return $this->render(
 				'EUREKAG6KBundle:admin/pages:simulators.html.twig',
@@ -302,7 +303,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'hiddens' => $hiddens,
 					'script' => $script,
 					'view' => null,
-					'widgets' => $this->getWidgets()
+					'widgets' => $widgets
 				)
 			);
 		} catch (\Exception $e) {

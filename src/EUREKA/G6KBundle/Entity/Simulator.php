@@ -486,7 +486,7 @@ class Simulator {
 	}
 
 	public function load($url) {
-		$datasrc = dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml';
+		$datasrc = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/DataSources.xml');
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
 			$xml = $this->loadFileFromCache($url);
 			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
@@ -846,7 +846,7 @@ class Simulator {
 	}
 
 	public function loadForSource($url) {
-		$datasrc = dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml';
+		$datasrc = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/DataSources.xml');
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
 			$xml = $this->loadFileFromCache($url);
 			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
@@ -1411,7 +1411,7 @@ class Simulator {
 		$sources = array();
 		$rules = array();
 		$dataIdMax = 0;
-		$datasrc = dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml';
+		$datasrc = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/DataSources.xml');
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
 			$xml = $this->loadFileFromCache($url);
 			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
@@ -2408,7 +2408,7 @@ class Simulator {
 	}
 
 	public function loadEmptySimulator() {
-		$datasrc = dirname(dirname(__FILE__)).'/Resources/data/databases/DataSources.xml';
+		$datasrc = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/DataSources.xml');
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
 			$xml = $this->loadFileFromCache($datasrc);
 			$datasources = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);

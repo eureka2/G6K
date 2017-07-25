@@ -2,7 +2,6 @@
 
 namespace EUREKA\G6KBundle\EventListener;
 
-
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -17,22 +16,52 @@ class G6KExceptionListener
 	}
 
 	public function onKernelException(GetResponseForExceptionEvent $event) {
-		$exception = $event->getException();
 		$request = $event->getRequest();
+		$exception = $event->getException();
+		$route = $request->get("_route");
+		if ($route == 'eureka_g6k_api') {
+			$response = $this->jsonResponse($request, $exception);
+		} else {
+			$response = $this->htmlResponse($request, $exception);
+		}
+		$event->setResponse($response);
+	}
+
+	protected function htmlResponse($request, $exception) {
 		$domain = $request->getHost();
 		$domainview = $this->container->getParameter('domainview');
-		$view = "Default";
-		foreach ($domainview as $d => $v) {
-			if (preg_match("/".$d."$/", $domain)) {
-				$view = $v;
-				break;
+		$view = $request->get("view", "");
+		if ($view == "") {
+			foreach ($domainview as $d => $v) {
+				if (preg_match("/".$d."$/", $domain)) {
+					$view = $v;
+					break;
+				}
+			}
+			if ($view == "") {
+				$view = "Default";
 			}
 		}
-		$loader = new \Twig_Loader_Array(array(
-			'error.html.twig' => 'Error : {{ message }} with code : {{ code }}',
+		$viewsDir = dirname(__DIR__). '/Resources/views';
+		$fsloader = new FileSystemLoader(
+			array(
+				$viewsDir . '/' . $view . '/layout',
+				$viewsDir
+			)
+		);
+		$aloader = new \Twig_Loader_Array(array(
+			'error.html.twig' => '{% extends "pagelayout.html.twig" %}{% block content %}Error : {{ message }} with code : {{ code }}{% endblock %}',
 		));
+		$loader = new \Twig_Loader_Chain(array($fsloader, $aloader));
 		$twig = new \Twig_Environment($loader);
-
+		$twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset) use ($request) {
+			return sprintf($request->getBaseUrl().'/%s', ltrim($asset, '/'));
+		}));
+		$twig->registerUndefinedFunctionCallback(function ($name) {
+			return new \Twig_SimpleFunction($name, function() use($name) {
+				return null;
+			});
+		});
 		$response = new Response();
 		$response->setContent(
 			$twig->render(
@@ -50,8 +79,35 @@ class G6KExceptionListener
 		} else {
 			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
 		}
+		return $response;
+	}
 
-		// Send the modified response object to the event
-		$event->setResponse($response);
+	protected function jsonResponse($request, $exception) {
+		$simu = $request->get("simu", "");
+		$errors = array();
+		$errors[] = array(
+			'status' => "" . Response::HTTP_UNPROCESSABLE_ENTITY,
+			'title' => "Unprocessable entity",
+			'detail' => $exception->getMessage(),
+			'source' => array(
+				'pointer' => "/data/" . $simu
+			)
+		);
+		$id = urlencode(base64_encode( gzcompress($request->getQueryString())));
+		$qs = urldecode(gzuncompress(base64_decode(urldecode($id))));
+		$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo() . '?' . $request->getQueryString();
+		$response = new Response();
+		$response->headers->set('Content-Type', 'application/json');
+		$response->setContent(
+			json_encode(array(
+					'links' => array(
+						'self' => $self,
+					),
+					'errors' => $errors
+				)
+			)
+		);
+		$response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+		return $response;
 	}
 }

@@ -2,7 +2,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2016 Jacques ArchimÃ¨de
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -136,7 +136,7 @@ class SQLToJSONConverter {
 				if ($columninfos['pk'] != "0") {
 					$extra[] = 'primarykey:' . $columninfos['pk'];
 					if ($columnname == 'id') {
-						$extra[] = 'autoincrement:'."1"; // TODO : calculer maxId en recherchant les données
+						$extra[] = 'autoincrement:'."1"; // TODO : calculer maxId en recherchant les donnÃ©es
 					}
 				}
 				$extra['type'] = 'type:' . (string)$column['type'];

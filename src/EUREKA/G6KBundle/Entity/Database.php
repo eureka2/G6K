@@ -163,18 +163,6 @@ class Database {
 		if (! $this->isConnected()) {
 			switch ($this->type) {
 				case "mysql":
-					$this->link = @mysql_connect($this->host, $this->user, $this->password);
-					if ($withDbName) {
-						if ($this->link) {
-							if (@mysql_select_db(str_replace('-', '_', $this->name), $this->link)) {
-								@mysql_query("SET NAMES UTF8", $this->link);
-								return $this->link;
-							} else
-								throw new \Exception ('Unable to select database. MySQL reported: '.mysql_error());
-						} else
-							throw new \Exception('Unable to connect to MySQL server. MySQL reported: '.mysql_error());
-					}
-					break;
 				case "mysqli":
 					if (strpos($this->host, ':') !== false)
 						list($this->host, $this->port) = explode(':', $this->host);
@@ -233,22 +221,8 @@ class Database {
 		$query_result = false;
 		switch ($this->type) {
 			case "mysql":
-				if ($unbuffered) {
-					$stmt = @mysql_unbuffered_query($sql, $this->link);
-				} else {
-					$stmt = @mysql_query($sql, $this->link);
-				}
-				if (!$stmt) {
-					$query_result = false;
-				} else {
-					$query_result = array();
-					while ($row = @mysql_fetch_assoc($stmt)) {
-						$query_result[] = $row;
-					}
-				}
-				break;
-			case "pgsql":
 			case "mysqli":
+			case "pgsql":
 			case "sqlite":
 			case "jsonsql":
 				$stmt = $this->link->query($sql);
@@ -263,10 +237,8 @@ class Database {
 		$stmt = false;
 		switch ($this->type) {
 			case "mysql":
-				throw new \Exception ('prepare is not implemented for this driver');
-				break;
-			case "pgsql":
 			case "mysqli":
+			case "pgsql":
 			case "sqlite":
 			case "jsonsql":
 				$stmt = $this->link->prepare($sql);
@@ -279,10 +251,8 @@ class Database {
 		$result = false;
 		switch ($this->type) {
 			case "mysql":
-				throw new \Exception ('bindParam is not implemented for this driver');
-				break;
-			case "pgsql":
 			case "mysqli":
+			case "pgsql":
 			case "sqlite":
 			case "jsonsql":
 				switch ($type) {
@@ -308,10 +278,8 @@ class Database {
 		$result = false;
 		switch ($this->type) {
 			case "mysql":
-				throw new \Exception ('bindValue is not implemented for this driver');
-				break;
-			case "pgsql":
 			case "mysqli":
+			case "pgsql":
 			case "sqlite":
 			case "jsonsql":
 				switch ($type) {
@@ -337,10 +305,8 @@ class Database {
 		$query_result = false;
 		switch ($this->type) {
 			case "mysql":
-				throw new \Exception ('execute is not implemented for this driver');
-				break;
-			case "pgsql":
 			case "mysqli":
+			case "pgsql":
 			case "sqlite":
 			case "jsonsql":
 				if ($stmt->execute()) {
@@ -355,15 +321,8 @@ class Database {
 		$affected = false;
 		switch ($this->type) {
 			case "mysql":
-				$result = @mysql_query($sql, $this->link);
-				if ($result) {
-					$affected = mysql_affected_rows($this->link);
-				} else if (mysql_errno()) {
-					throw new \Exception(mysql_errno().": ".mysql_error());
-				} 
-				break;
-			case "pgsql":
 			case "mysqli":
+			case "pgsql":
 			case "sqlite":
 			case "jsonsql":
 				$affected = $this->link->exec($sql);
@@ -383,9 +342,8 @@ class Database {
 		$query_result = false;
 		switch ($this->type) {
 			case "mysql":
-				return mysql_real_escape_string($value);
-			case "pgsql":
 			case "mysqli":
+			case "pgsql":
 			case "sqlite":
 			case "jsonsql":
 				return $this->link->quote($value);
@@ -396,9 +354,8 @@ class Database {
 	public function lastInsertId($tablename) {
 		switch ($this->type) {
 			case "mysql":
-				return mysql_insert_id($this->link);
-			case "pgsql":
 			case "mysqli":
+			case "pgsql":
 			case "sqlite":
 			case "jsonsql":
 				return $this->link->lastInsertId();

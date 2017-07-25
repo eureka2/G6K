@@ -1,7 +1,9 @@
-{#
+<?php
+
+/*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +22,26 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-#}
+*/
 
-{% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
+namespace EUREKA\G6KBundle\Twig\Extension;
 
-{% block content %}
-<h2>{{ 'Caches management'|trans }}</h2>
+class Filters extends \Twig_Extension {
 
-{% for l in log %}
-{{ l|jscode }}
-{% endfor %}
+	public function getName() {
+		return 'filters_extension';
+	}
 
-{% endblock %}
+	public function getFilters() {
+		return array(
+			new \Twig_SimpleFilter('jscode', array($this, 'jscodeFilter'), array('is_safe' => array('html'))),
+		);
+	}
+
+	public function jscodeFilter($string) {
+		return $string;
+	}
+
+}
+
+?>

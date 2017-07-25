@@ -75,7 +75,7 @@ class DefaultController extends BaseController {
 		return $this->runSource($request, $simu, true);
 	}
 
-	public function runCalcul(Request $request, $simu, $view, $test = false)
+	protected function runCalcul(Request $request, $simu, $view, $test = false)
 	{
 		$form = $request->request->all();
 		$step = $this->runStep($request, $form, $simu, $view, $test);

@@ -60,11 +60,11 @@ THE SOFTWARE.
 					<div class="section-body-container">
 						{%- if section.annotations is not empty %}
 						<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-annotations" class="section-annotations">
-							{{ simu.paragraphs(section.annotations)|raw }}
+							{{ simu.paragraphs(section.annotations)|jscode }}
 						</div>
 						{% endif %}
 						<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-content" class="section-content{%- if section.annotations is not empty %} with-annotations{%- endif -%}">
-							{{ simu.paragraphs(section.content)|raw }}
+							{{ simu.paragraphs(section.content)|jscode }}
 						</div>
 					</div>
 				</div>
