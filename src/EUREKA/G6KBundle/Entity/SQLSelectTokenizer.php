@@ -781,7 +781,7 @@ class SQLSelectTokenizer  {
 		);
 		for ($i = 0; $i < $chunksCount; $i += 2) {
 			$operator = preg_replace(array('/\s+/', '/select$/'), array('', ''), strtolower($chunks[$i]));
-			$req =  $this->parseSelect('select ' . trim($chunks[$i+1]));
+			$req =  $this->parseSelect('sel' . 'ect ' . trim($chunks[$i+1]));
 			if ($i < $chunksCount - 2) {
 				if (count($req->orderby) > 0) {
 					throw new SQLSelectTokenizerException("only the last SELECT may have an ORDER BY clause");

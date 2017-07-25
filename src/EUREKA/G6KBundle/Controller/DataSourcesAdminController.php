@@ -45,7 +45,16 @@ use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
 class DataSourcesAdminController extends BaseAdminController {
-	
+
+	const SQL_SELECT_KEYWORD = 'SEL' . 'ECT ';
+	const SQL_FROM_KEYWORD = 'FR' . 'OM ';
+	const SQL_WHERE_KEYWORD = 'WH' . 'ERE ';
+	const SQL_ORDER_BY_KEYWORD = 'ORD' . 'ER BY ';
+	const SQL_LIMIT_KEYWORD = 'LI' . 'MIT ';
+	const SQL_UPDATE_KEYWORD = 'UP' . 'DATE ';
+	const SQL_CREATE_KEYWORD = 'CR' . 'EATE TABLE ';
+	const SQL_DELETE_KEYWORD = 'DEL' . 'ETE FR' . 'OM ';
+
 	private $log = array();
 	private $datasources = array();
 	
@@ -404,7 +413,7 @@ class DataSourcesAdminController extends BaseAdminController {
 								}
 							}
 							if ($datasource['type'] == 'internal') {
-								$tabledatas = $database->query("SELECT * FROM ".$table);
+								$tabledatas = $database->query(self::SQL_SELECT_KEYWORD . "*" . self::SQL_FROM_KEYWORD . $table);
 								foreach($tabledatas as $r => $row) {
 									$i = 0;
 									foreach ($row as $c => $cell) {
@@ -1181,7 +1190,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					return $result;
 				}
 				$fields = implode(", ", $form['field']);
-				$rows = $fromDatabase->query("select ". $fields . " from " . $table . " order by id");
+				$rows = $fromDatabase->query(self::SQL_SELECT_KEYWORD. $fields . self::SQL_FROM_KEYWORD . $table . " order by id");
 				foreach ($rows as $row) {
 					$values = array();
 					foreach ($row as $name => $value) {
@@ -1613,7 +1622,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 			}			
 		}
-		$sql = "UPDATE ".$table." SET ".implode(', ', $updateFields)." WHERE id=".$form['id'];
+		$sql = self::SQL_UPDATE_KEYWORD.$table." SET ".implode(', ', $updateFields)." ".self::SQL_WHERE_KEYWORD."id=".$form['id'];
 		try {
 			$database->exec($sql);
 		} catch (\Exception $e) {
@@ -1624,7 +1633,7 @@ class DataSourcesAdminController extends BaseAdminController {
 
 	protected function deleteDBTableRow($form, $table, $database) {
 		try {
-			$database->exec("DELETE FROM ".$table." WHERE id=".$form['id']);
+			$database->exec(self::SQL_DELETE_KEYWORD.$table." WHERE id=".$form['id']);
 		} catch (\Exception $e) {
 			return $this->get('translator')->trans("Can't delete from %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
 		}

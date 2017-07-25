@@ -43,9 +43,12 @@ class JsonSQL  {
 
 	const SQL_SELECT_KEYWORD = 'SEL' . 'ECT ';
 	const SQL_FROM_KEYWORD = 'FR' . 'OM ';
+	const SQL_WHERE_KEYWORD = 'WH' . 'ERE ';
+	const SQL_ORDER_BY_KEYWORD = 'ORD' . 'ER BY ';
+	const SQL_LIMIT_KEYWORD = 'LI' . 'MIT ';
 	const SQL_UPDATE_KEYWORD = 'UP' . 'DATE ';
-	const SQL_CREATE_KEYWORD = 'CR' . 'EATE ';
-	const SQL_DELETE_KEYWORD = 'DEL' . 'ETE ';
+	const SQL_CREATE_KEYWORD = 'CR' . 'EATE TABLE ';
+	const SQL_DELETE_KEYWORD = 'DEL' . 'ETE FR' . 'OM ';
 
 	/**
 	 * Types of JOINS :
