@@ -1085,6 +1085,7 @@ class Expression {
 			"get" => array(2, array(Token::T_ARRAY, Token::T_NUMBER), Token::T_TEXT, function($a, $b) { return isset($a[$b - 1]) ? $a[$b - 1] : ""; }),
 			"lastday" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return Expression::lastDay($b, $a); }),
 			"lastDayOfMonth" => array(1, array(Token::T_DATE), Token::T_DATE, function($a) { return Expression::lastDayOfMonth($a); }),
+			"lcfirst" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return lcfirst($a); }),
 			"length" => array(1, array(Token::T_TEXT), Token::T_NUMBER, function($a) { return mb_strlen($a, 'utf8'); }),
 			"log" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log($a); }),
 			"log10" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log10($a); }),
@@ -1104,6 +1105,8 @@ class Expression {
 			"size" => array(1, array(Token::T_ARRAY), Token::T_NUMBER, function($a) { return count($a); }),
 			"split" => array(2, array(Token::T_TEXT, Token::T_TEXT), Token::T_ARRAY, function($a, $b) { return explode($a, $b); }),
 			"sqrt" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return sqrt($a); }),
+			"strftime" => array(2, array(Token::T_TEXT, Token::T_NUMBER), Token::T_TEXT, function($a, $b) { return strftime($a, $b); }),
+			"strtotime" => array(1, array(Token::T_TEXT), Token::T_NUMBER, function($a) { return strtotime($a); }),
 			"substr" => array(3, array(Token::T_TEXT, Token::T_NUMBER, Token::T_NUMBER), Token::T_TEXT, function($a, $b, $c) { return substr($a, $b - 1, $c); }),
 			"sum" => array(-1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { 
 				$s = 0;
@@ -1116,6 +1119,8 @@ class Expression {
 			}),
 			"tan" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return tan($a); }),
 			"tanh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return tanh($a); }),
+			"trim" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return trim($a); }),
+			"ucfirst" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return ucfirst($a); }),
 			"upper" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return strtoupper($a); }),
 			"workdays" => array(2, array(Token::T_DATE, Token::T_DATE), Token::T_NUMBER, function($a, $b) { return Expression::workdays($a, $b); }),
 			"year" => array(1, array(Token::T_DATE), Token::T_NUMBER, function($a) { return (float)$a->format('Y'); })

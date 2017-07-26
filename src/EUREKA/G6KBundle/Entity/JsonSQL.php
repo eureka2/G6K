@@ -3073,6 +3073,7 @@ class JsonSQLStatement  {
 	private $result = null;
 	private $rowCount = null;
 	private $params = array();
+	private $parser = null;
 
 	/**
 	 * Class Constructor
@@ -3082,6 +3083,7 @@ class JsonSQLStatement  {
 	 * @param object $request the prepared statement
 	 */
 	public function __construct($jsonsql, &$request) {
+		$this->parser = new ExpressionParser();
 		$this->jsonsql = $jsonsql;
 		$this->request = $request;
 		$this->result = array();
@@ -3623,10 +3625,15 @@ class JsonSQLStatement  {
 	 */
 	protected function evaluate($conditions, &$row) {
 		$variables = $this->makeExpressionVariables($row);
-		extract($variables);
-		$ret = @eval("return " . $conditions . ";");
-		if ($ret === false && ($error = error_get_last()) !== null) {
-			throw new JsonSQLException($error['type'] == E_PARSE ? "Syntax error" : $error['message'], $error['type']);
+		$conditions = preg_replace("/\\$(\w+)/", "$1", $conditions); 
+		$expr = $this->parser->parse($conditions);
+		$expr->postfix();
+		$expr->setVariables($variables);
+		$ret = $expr->evaluate();
+		if ($ret == 'false') {
+			$ret = false;
+		} elseif ($ret == 'true') {
+			$ret = true;
 		}
 		return $ret;
 	}

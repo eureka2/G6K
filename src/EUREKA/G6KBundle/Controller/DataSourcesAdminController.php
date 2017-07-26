@@ -1463,8 +1463,10 @@ class DataSourcesAdminController extends BaseAdminController {
  */
 	protected function alterSQLiteTable($table, $alterdefs, $database){
 		if ($alterdefs != ''){
-			$result = $database->query("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = '".$table."' ORDER BY type DESC");
-			if (count($result) > 0) {
+			$stmt = $database->prepare("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = :table ORDER BY type DESC");
+			$database->bindValue($stmt, ':table', $table);
+			$result = $database->execute($stmt);
+			if ($result !== false && count($result) > 0) {
 				$row = $result[0];
 				$tmpname = 't'.time();
 				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ", preg_replace("/[\(]/", "( ", $row['sql'], 1))));
