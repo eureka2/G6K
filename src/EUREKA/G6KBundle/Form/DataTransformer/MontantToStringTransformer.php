@@ -43,3 +43,5 @@ class MontantToStringTransformer implements DataTransformerInterface
         return round(floatval($montant), 2, PHP_ROUND_HALF_EVEN);
     }
 } 
+
+?>

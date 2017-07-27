@@ -93,6 +93,8 @@ class G6KExceptionListener
 				'pointer' => "/data/" . $simu
 			)
 		);
+		// $id = array_shift( unpack('H*', $request->getQueryString()) );
+		// $qs =  urldecode(pack('H*', $id)); // for unpack
 		$id = urlencode(base64_encode( gzcompress($request->getQueryString())));
 		$qs = urldecode(gzuncompress(base64_decode(urldecode($id))));
 		$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo() . '?' . $request->getQueryString();
@@ -111,3 +113,5 @@ class G6KExceptionListener
 		return $response;
 	}
 }
+
+?>

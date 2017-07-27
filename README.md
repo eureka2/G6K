@@ -25,7 +25,7 @@
 1. Create a database using administration tool of your RDBMS.
 2. Be placed in the <DOCUMENT_ROOT> Web Server
 3. Download composer.phar (https://getcomposer.org/download/) in <DOCUMENT_ROOT>
-4. Under a shell or DOS, execute: ``php composer.phar create-project eureka2/g6k simulator/`` 
+4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/`` 
 5. Enter the parameter values required by the installer, including:
   * database_driver => pdo_pgsl, pdo_mysql or pdo_sqlite
   * database_host => name or IP address of your database server (simply &lt;Enter&gt; in case of SQLite)

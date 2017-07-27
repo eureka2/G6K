@@ -58,11 +58,11 @@ class DOMClient extends BaseClient {
 			"gzip"
 		),
 		'HTTP_PROXY' => array(
-			'proxy' => "192.168.50.12:8080", // e.g   "192.168.50.12:8080",
+			'proxy' => "", // e.g   "192.168.50.12:8080",
 			'authorization' => "USER:PASSWORD"
 		),
 		'HTTPS_PROXY' => array(
-			'proxy' => "192.168.50.12:8080", // e.g  "192.168.50.12:8080",
+			'proxy' => "", // e.g  "192.168.50.12:8080",
 			'authorization' => "USER:PASSWORD"
 		),
 	);

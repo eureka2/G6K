@@ -37,3 +37,5 @@ class HiddenDateTimeType extends AbstractType
         ));
     }    
 }
+
+?>

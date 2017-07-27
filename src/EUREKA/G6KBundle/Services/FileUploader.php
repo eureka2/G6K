@@ -40,4 +40,5 @@ class FileUploader {
 		return $fileName;
 	}
 }
+
 ?>
