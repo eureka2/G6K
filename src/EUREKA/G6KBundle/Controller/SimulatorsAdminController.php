@@ -222,7 +222,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'tables' => $tables
 			);
 		}
-		if ($this->simu != null) {
+		if ($this->simu !== null) {
 			$tokenizer = new SQLSelectTokenizer();
 			foreach ($this->simu->getSources() as $source) {
 				$datasource = $source->getDatasource();
@@ -282,7 +282,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 		}
 		$valid = true;
-		if ($simulator != null && $simulator != 'new') {
+		if ($simulator !== null && $simulator != 'new') {
 			$schema = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/doc/Simulator.xsd";
 			$dom = new \DOMDocument();
 			$dom->preserveWhiteSpace  = false;
@@ -2866,7 +2866,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'name' => $brule->getName(),
 				'label' => $brule->getLabel(),
 				'conditions' => $brule->getConditions(),
-				'connector' => $brule->getConnector() != null ? $this->ruleConnector($brule->getConnector()) : null,
+				'connector' => $brule->getConnector() !== null ? $this->ruleConnector($brule->getConnector()) : null,
 				'ifdata' =>  $this->actionsData($brule->getId(), $brule->getIfActions()),
 				'elsedata' => $this->actionsData($brule->getId(), $brule->getElseActions())
 			);
@@ -2896,7 +2896,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		if ($pconnector instanceof Condition) {
 			$data = $this->simu->getDataById($pconnector->getOperand());
 			return array(
-				'name' => $data == null ? $pconnector->getOperand() : $data->getName(),
+				'name' => $data === null ? $pconnector->getOperand() : $data->getName(),
 				'operator' => $pconnector->getOperator(),
 				'value' =>  $pconnector->getExpression()
 			);
@@ -3232,7 +3232,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function populateChoiceWithSource($data) 
 	{
 		$choiceSource = $data->getChoiceSource();
-		if ($choiceSource != null) {
+		if ($choiceSource !== null) {
 			$source = $choiceSource->getId();
 			if ($source != "") {
 				$source = $this->simu->getSourceById($source);
@@ -3265,7 +3265,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			if ($choice instanceof ChoiceGroup) {
 				if ($choice->getChoiceSource() !== null) {
 					$choiceSource = $choice->getChoiceSource();
-					if ($choiceSource != null) {
+					if ($choiceSource !== null) {
 						$source = $choiceSource->getId();
 						if ($source != "") {
 							$source = $this->simu->getSourceById($source);

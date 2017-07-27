@@ -516,12 +516,12 @@ class Data {
 				if ($this->value == $this->default) {
 					return true;
 				}
-				if ($this->choiceSource != null) {
+				if ($this->choiceSource !== null) {
 					return true;
 				}
 				foreach ($this->choices as $choice) {
 					if ($choice instanceof ChoiceGroup) {
-						if ($choice->getChoiceSource() != null) {
+						if ($choice->getChoiceSource() !== null) {
 							return true;
 						}
 						foreach ($choice as $gchoice) {
@@ -536,14 +536,14 @@ class Data {
 				return false;
 				break;
 			case 'multichoice':
-				if ($this->choiceSource != null) {
+				if ($this->choiceSource !== null) {
 					return true;
 				}
 				foreach ($this->value as $value) {
 					$found = false;
 					foreach ($this->choices as $choice) {
 						if ($choice instanceof ChoiceGroup) {
-							if ($choice->getChoiceSource() != null) {
+							if ($choice->getChoiceSource() !== null) {
 								return true;
 							}
 							foreach ($choice as $gchoice) {

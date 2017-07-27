@@ -2233,7 +2233,7 @@ class Simulator {
 				$attrs = 'id="' . $rule->getId() . '" name="' . $rule->getName() . '" label="' . $rule->getLabel() . '"';
 				$xml[] = '		<BusinessRule ' . $attrs . '>';
 				$xml[] = '			<Conditions value="' . htmlspecialchars($rule->getConditions(), ENT_COMPAT) . '">';
-				if ($rule->getConnector() != null) {
+				if ($rule->getConnector() !== null) {
 					$this->saveConnector($rule->getConnector(), "			", $xml);
 				}
 				$xml[] = '			</Conditions>';
@@ -2371,7 +2371,7 @@ class Simulator {
 		if ($connector instanceof Condition) {
 			$htmlcondition = '<Condition operand="' . $connector->getOperand() . '" operator="' . str_replace('<', '&lt;', $connector->getOperator()) . '"';
 			$expression = $connector->getExpression();
-			if ($expression != null && $expression != '') {
+			if ($expression !== null && $expression != '') {
 				$htmlcondition .= ' expression="' . str_replace('<', '&lt;', $expression) . '"';
 			}
 			$htmlcondition .= ' />';

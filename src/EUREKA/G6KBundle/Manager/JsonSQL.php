@@ -818,7 +818,7 @@ class JsonSQL  {
 				} elseif ($type == 'string' && $length >= 0) {
 					$columns[$column]->maxLength = $length;
 				}
-				if ($props['default'] != null) {
+				if ($props['default'] !== null) {
 					$columns[$column]->default = $props['default'];
 				}
 				if ($props['notnull']) {
@@ -1201,7 +1201,7 @@ class JsonSQL  {
 				$columnDef->type = 'string';
 				$columnDef->format = 'time';
 			}
-			if ($props['default'] != null) {
+			if ($props['default'] !== null) {
 				$columnDef->default = $props['default'];
 			}
 			if ($props['notnull']) {
@@ -3650,7 +3650,7 @@ class JsonSQLStatement  {
 		}
 		$len = count($this->request->from);
 		$result = array();
-		while(($row = $this->joins($len)) != null) {
+		while(($row = $this->joins($len)) !== null) {
 			if ($this->evaluate($this->request->where, $row) === true) {
 				$result[] = $row;
 			}
@@ -3842,7 +3842,7 @@ class JsonSQLStatement  {
 		$prev = null;
 		foreach ($result as $row) {
 			$curr = array_intersect_key((array)$row, array_flip($this->request->groupby));
-			if ($prev != null && $curr != $prev) {
+			if ($prev !== null && $curr != $prev) {
 				$res = (object)array_merge(array('count__all' => $countast), $aggregates, $prev);
 				if ($this->evaluate($this->request->having, $res) === true) {
 					$grouped[] = $res;
@@ -3856,17 +3856,17 @@ class JsonSQLStatement  {
 				if (isset($row->$column)) {
 					$aggregates['count__'.$column]++;
 					$aggregates['sum__'.$column] += $row->$column;
-					if ($aggregates['max__'.$column] == null || $row->$column > $aggregates['max__'.$column]) {
+					if ($aggregates['max__'.$column] === null || $row->$column > $aggregates['max__'.$column]) {
 						$aggregates['max__'.$column] = $row->$column;
 					}
-					if ($aggregates['min__'.$column] == null || $row->$column < $aggregates['min__'.$column]) {
+					if ($aggregates['min__'.$column] === null || $row->$column < $aggregates['min__'.$column]) {
 						$aggregates['min__'.$column] = $row->$column;
 					}
 					$aggregates['avg__'.$column] = $aggregates['sum__'.$column] / $aggregates['count__'.$column];
 				}
 			}
 		}
-		if ($prev != null) {
+		if ($prev !== null) {
 			$res = (object)array_merge(array('count__all' => $countast), $aggregates, $prev);
 			if ($this->evaluate($this->request->having, $res) === true) {
 				$grouped[] = $res;

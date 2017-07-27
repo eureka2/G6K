@@ -143,7 +143,7 @@ class BusinessRule {
 	}
 	
 	public function getExtendedConditions() {
-		if ($this->connector != null) {
+		if ($this->connector !== null) {
 			$extended = $this->ruleConnector($this->connector);
 		} else {
 			$extended = $this->parseConditions();
@@ -157,7 +157,7 @@ class BusinessRule {
 		if ($pconnector instanceof Condition) {
 			$data = $this->simulator->getDataById($pconnector->getOperand());
 			return array(
-				'name' => $data == null ? $pconnector->getOperand() : $data->getName(),
+				'name' => $data === null ? $pconnector->getOperand() : $data->getName(),
 				'operator' => $pconnector->getOperator(),
 				'value' =>  $pconnector->getExpression()
 			);

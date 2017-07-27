@@ -518,7 +518,7 @@ class BaseController extends Controller {
 	protected function populateChoiceWithSource($data) 
 	{
 		$choiceSource = $data->getChoiceSource();
-		if ($choiceSource != null) {
+		if ($choiceSource !== null) {
 			$source = $choiceSource->getId();
 			if ($source != "") {
 				$source = $this->evaluate($source);
@@ -552,7 +552,7 @@ class BaseController extends Controller {
 			if ($choice instanceof ChoiceGroup) {
 				if ($choice->getChoiceSource() !== null) {
 					$choiceSource = $choice->getChoiceSource();
-					if ($choiceSource != null) {
+					if ($choiceSource !== null) {
 						$source = $choiceSource->getId();
 						if ($source != "") {
 							$source = $this->evaluate($source);

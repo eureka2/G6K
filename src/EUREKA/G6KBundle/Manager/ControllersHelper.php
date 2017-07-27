@@ -65,7 +65,7 @@ class ControllersHelper {
 			$name = $names[0];
 			$value = $field[$name];
 			$currentNode = $this->findActionOption($name, $value, $currentNode);
-			if ($currentNode == null) { 
+			if ($currentNode === null) { 
 				return null; 
 			}
 		}

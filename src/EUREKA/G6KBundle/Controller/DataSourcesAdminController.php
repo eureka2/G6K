@@ -393,10 +393,10 @@ class DataSourcesAdminController extends BaseAdminController {
 										break;
 									}
 								}
-								$tableinfos[$i]['g6k_type'] = ($column != null) ? (string)$column['type'] : $info['type'];
-								$tableinfos[$i]['label'] = ($column != null) ? (string)$column['label'] : $info['name'];
-								$tableinfos[$i]['description'] = ($column != null) ? (string)$column->Description : '';
-								if ($tableinfos[$i]['g6k_type'] == 'choice' && $column != null && $column->Choices) {
+								$tableinfos[$i]['g6k_type'] = ($column !== null) ? (string)$column['type'] : $info['type'];
+								$tableinfos[$i]['label'] = ($column !== null) ? (string)$column['label'] : $info['name'];
+								$tableinfos[$i]['description'] = ($column !== null) ? (string)$column->Description : '';
+								if ($tableinfos[$i]['g6k_type'] == 'choice' && $column !== null && $column->Choices) {
 									if ($column->Choices->Source) {
 										$source = $column->Choices->Source;
 										$result = $this->processSource($source);
@@ -452,8 +452,8 @@ class DataSourcesAdminController extends BaseAdminController {
 								}
 							}
 						
-							$tables[$i]['label'] = ($dstable != null) ? (string)$dstable['label'] : $tbl['name'];
-							$tables[$i]['description'] = ($dstable != null) ? (string)$dstable->Description : '';
+							$tables[$i]['label'] = ($dstable !== null) ? (string)$dstable['label'] : $tbl['name'];
+							$tables[$i]['description'] = ($dstable !== null) ? (string)$dstable->Description : '';
 							if ($table !== null && $tbl['name'] == $table) {
 								$tabledef['label'] = $tables[$i]['label'];
 								$tabledef['description'] = $tables[$i]['description'];
@@ -1031,11 +1031,11 @@ class DataSourcesAdminController extends BaseAdminController {
 					break;
 				}
 			}
-			$infosColumns[$info['name']]['g6k_type'] = ($column != null) ? (string)$column['type'] : $info['type'];
+			$infosColumns[$info['name']]['g6k_type'] = ($column !== null) ? (string)$column['type'] : $info['type'];
 			$infosColumns[$info['name']]['type'] = $info['type'];
-			$infosColumns[$info['name']]['label'] = ($column != null) ? (string)$column['label'] : $info['name'];
-			$infosColumns[$info['name']]['description'] = ($column != null) ? (string)$column->Description : '';
-			if ($infosColumns[$info['name']]['g6k_type'] == 'choice' && $column != null && $column->Choices) {
+			$infosColumns[$info['name']]['label'] = ($column !== null) ? (string)$column['label'] : $info['name'];
+			$infosColumns[$info['name']]['description'] = ($column !== null) ? (string)$column->Description : '';
+			if ($infosColumns[$info['name']]['g6k_type'] == 'choice' && $column !== null && $column->Choices) {
 				if ($column->Choices->Source) {
 					$source = $column->Choices->Source;
 					$infosColumns[$info['name']]['choicesource']['datasource'] = (string)$source['datasource'];
