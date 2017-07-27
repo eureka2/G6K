@@ -109,9 +109,9 @@ class DOMClient extends BaseClient {
 		$scheme = $urlParts['scheme'];
 		$path = isset($urlParts['path']) ? $urlParts['path'] : '';
 		$query = isset($urlParts['query']) ? $urlParts['query'] : '';
-		if ($urlParts['host'] == $_SERVER['HTTP_HOST'] && 
+		if ($urlParts['host'] == getenv('HTTP_HOST') && 
 			$query == '' &&
-			file_exists($_SERVER['DOCUMENT_ROOT'] . $path)) {
+			file_exists(getenv('DOCUMENT_ROOT') . $path)) {
 			return $this->doLocalRequest($request, $path);
 		} else {
 			return $this->doRemoteRequest($request, $scheme);
@@ -179,7 +179,7 @@ class DOMClient extends BaseClient {
 
 	private function doLocalRequest($request, $path) {
 		try {
-			$file = $_SERVER['DOCUMENT_ROOT'] . $path;
+			$file = getenv('DOCUMENT_ROOT') . $path;
 			$content = @file_get_contents($file);
 			$headers = array(
 				'Date' => gmdate('D, d M Y H:i:s', time()).' GMT',

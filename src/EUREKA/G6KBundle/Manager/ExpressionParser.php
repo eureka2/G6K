@@ -1141,23 +1141,23 @@ class Expression {
 		if (! isset($functions[$func->value])) {
 			throw new \Exception("Unknown function : " . $func);
 		}
-		$argc = $functions[$func->value][0];
+		$argscount = $functions[$func->value][0];
 		$variableArgsCount = false;
-		if ($argc == -1) {
-			$argc = count($args);
+		if ($argscount == -1) {
+			$argscount = count($args);
 			$variableArgsCount = true;
 		}
-		if (count($args) < $argc) {
+		if (count($args) < $argscount) {
 			throw new \Exception("Illegal number (".count($args).") of operands for function" . $func);
 		}
-		$argv = array();
-		for (; $argc > 0; --$argc) {
+		$argslist = array();
+		for (; $argscount > 0; --$argscount) {
 			$arg = array_pop($args);
 			if (! $variableArgsCount) {
 				if ($arg->isVariable()) {
 					return new Token(Token::T_UNDEFINED, array($arg));
 				}
-				$type = $functions[$func->value][1][$argc - 1];
+				$type = $functions[$func->value][1][$argscount - 1];
 				if ($arg->type != $type) { 
 					$expected = "";
 					switch ($type) {
@@ -1179,17 +1179,17 @@ class Expression {
 					}
 					throw new \Exception("Illegal type for argument '".$arg."' : operand must be a ".$expected." for ".$func);
 				}
-				array_unshift($argv, $arg->value); 
+				array_unshift($argslist, $arg->value); 
 			} else if ($arg->isVariable()) {
 				unset($arg->value);
 			} else {
-				array_unshift($argv, $arg->value); 
+				array_unshift($argslist, $arg->value); 
 			}
 		}
 		if ($variableArgsCount) {
-			$argv = array($argv);
+			$argslist = array($argslist);
 		}
-		return new Token($functions[$func->value][2], call_user_func_array($functions[$func->value][3], $argv));
+		return new Token($functions[$func->value][2], call_user_func_array($functions[$func->value][3], $argslist));
 	}
 
 }

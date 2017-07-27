@@ -4190,7 +4190,7 @@ PropertyValuePart.parseString = function(str) {
             if (String.fromCodePoint) {
                 return String.fromCodePoint(codePoint);
             } else {
-                // XXX No support for surrogates on old JavaScript engines.
+                // No support for surrogates on old JavaScript engines.
                 return String.fromCharCode(codePoint);
             }
         }
