@@ -92,6 +92,11 @@ class SimulatorsAdminController extends BaseAdminController {
 	public function indexAction(Request $request, $simulator = null, $crud = null)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
+		return $this->runIndex($request, $simulator, $crud);
+	}
+
+	protected function runIndex(Request $request, $simulator, $crud)
+	{
 		if ($crud == 'export') {
 			return $this->doExportSimulator($simulator);
 		} elseif ($crud == 'publish') {
@@ -323,6 +328,10 @@ class SimulatorsAdminController extends BaseAdminController {
 
 	public function validateAction(Request $request) {
 		$this->helper = new ControllersHelper($this, $this->container);
+		return $this->runValidation($request);
+	}
+
+	protected function runValidation(Request $request) {
 		$form = $request->request->all();
 		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
 		$schema = $bundle->getPath()."/Resources/doc/Simulator.xsd";

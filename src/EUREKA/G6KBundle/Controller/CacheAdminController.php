@@ -44,6 +44,11 @@ class CacheAdminController extends BaseAdminController {
 	public function clearAction(Request $request, $env = 'prod')
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
+		return $this->runClear($request, $env);
+	}
+	
+	protected function runClear(Request $request, $env)
+	{
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;

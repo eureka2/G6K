@@ -40,6 +40,11 @@ class UsersAdminController extends BaseAdminController {
 	public function indexAction(Request $request, $crud = null)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
+		return $this->runIndex($request, $crud);
+	}
+
+	protected function runIndex(Request $request, $crud)
+	{
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;

@@ -44,6 +44,11 @@ class HomeAdminController extends BaseAdminController {
 	public function indexAction(Request $request)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
+		return $this->runIndex($request);
+	}
+	
+	protected function runIndex(Request $request)
+	{
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;

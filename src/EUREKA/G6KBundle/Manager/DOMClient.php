@@ -148,12 +148,12 @@ class DOMClient extends BaseClient {
 				'SNI_server_name' => $sniServer
 			);
 		}
-		$context = stream_context_create($ctxConfig);
-		$content = @file_get_contents($request->getUri(), false, $context);
+		stream_context_set_default($ctxConfig);
 		$headers = array();
 		$status = '500';
-		if (isset($http_response_header)) {
-			$responseHeaders = $http_response_header;
+		$content = "";
+		$responseHeaders = get_headers($request->getUri());
+		if (isset($responseHeaders)) {
 			$status = array_shift($responseHeaders);
 			if (preg_match("/^HTTP\/1\.[01] (\d+)/", $status, $m)) {
 				$status = $m[1];
@@ -166,14 +166,17 @@ class DOMClient extends BaseClient {
 				}
 			}
 		}
-		if (isset($headers['transfer-encoding']) && $headers['transfer-encoding'] == 'chunked') {
-			$content = $this->decodeChunked($content);
+		if ($status == '200') {
+			$context = stream_context_create($ctxConfig);
+			$content = @file_get_contents($request->getUri(), false, $context);
+			if (isset($headers['transfer-encoding']) && $headers['transfer-encoding'] == 'chunked') {
+				$content = $this->decodeChunked($content);
+			}
+			if (isset($headers['content-encoding']) && $headers['content-encoding'] == 'gzip') {
+				$content = substr($content, 10); // See http://www.php.net/manual/en/function.gzencode.php
+				$content = gzinflate($content);
+			}
 		}
-		if (isset($headers['content-encoding']) && $headers['content-encoding'] == 'gzip') {
-			$content = substr($content, 10); // See http://www.php.net/manual/en/function.gzencode.php
-			$content = gzinflate($content);
-		}
-		error_log(json_encode($headers));
 		return new Response($content, $status, $headers);
 	}
 

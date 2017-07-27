@@ -165,6 +165,10 @@ class DataSourcesAdminController extends BaseAdminController {
 
 	public function indexAction(Request $request, $dsid = null, $table = null, $crud = null) {
 		$this->helper = new ControllersHelper($this, $this->container);
+		return $this->runIndex($request, $dsid, $table, $crud);
+	}
+
+	protected function runIndex(Request $request, $dsid, $table, $crud) {
 		$this->request = $request;
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
