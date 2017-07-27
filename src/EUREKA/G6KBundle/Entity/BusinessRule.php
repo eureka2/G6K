@@ -27,6 +27,7 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Entity;
 
 use EUREKA\G6KBundle\Manager\ExpressionParser;
+use EUREKA\G6KBundle\Manager\Token;
 
 class BusinessRule {
 	

@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager;
 
+use EUREKA\G6KBundle\Entity\Database;
+
 class SQLToJSONConverter {
 
 	private $parameters = array(
