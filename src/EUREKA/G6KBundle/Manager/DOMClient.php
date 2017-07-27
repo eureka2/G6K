@@ -25,14 +25,14 @@ THE SOFTWARE.
 */
 
 /* Usage :
- * use EUREKA\G6KBundle\Entity\DOMClient as Client;
+ * use EUREKA\G6KBundle\Manager\DOMClient as Client;
  *
  * $client = Client::createClient();
  * $crawler = $client->request('GET', $uri);
  * $result = $crawler->getNode(0)->ownerDocument->saveXML();
  */
  
-namespace EUREKA\G6KBundle\Entity;
+namespace EUREKA\G6KBundle\Manager;
 
 use Symfony\Component\BrowserKit\Client as BaseClient;
 use Symfony\Component\BrowserKit\Request;
@@ -58,11 +58,11 @@ class DOMClient extends BaseClient {
 			"gzip"
 		),
 		'HTTP_PROXY' => array(
-			'proxy' => "", // e.g   "192.168.50.12:8080",
+			'proxy' => "192.168.50.12:8080", // e.g   "192.168.50.12:8080",
 			'authorization' => "USER:PASSWORD"
 		),
 		'HTTPS_PROXY' => array(
-			'proxy' => "", // e.g  "192.168.50.12:8080",
+			'proxy' => "192.168.50.12:8080", // e.g  "192.168.50.12:8080",
 			'authorization' => "USER:PASSWORD"
 		),
 	);

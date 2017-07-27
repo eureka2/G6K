@@ -1693,7 +1693,7 @@ class Simulator {
 		$json["step"] = $nstep;
 		$json["sources"] = $sources;
 		$json["rules"] = $rules;
-		if ($this->controller->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
+		if ($this->controller->helper->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
 			return json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES);
 		} else {
 			return json_encode($json);

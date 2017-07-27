@@ -29,7 +29,6 @@ namespace EUREKA\G6KBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use EUREKA\G6KBundle\Entity\Simulator;
-use EUREKA\G6KBundle\Entity\ExpressionParser;
 use EUREKA\G6KBundle\Entity\Source;
 use EUREKA\G6KBundle\Entity\ChoiceGroup;
 use EUREKA\G6KBundle\Entity\Choice;
@@ -41,9 +40,11 @@ use EUREKA\G6KBundle\Entity\Field;
 use EUREKA\G6KBundle\Entity\BlockInfo;
 use EUREKA\G6KBundle\Entity\Chapter;
 use EUREKA\G6KBundle\Entity\Section;
-use EUREKA\G6KBundle\Entity\DOMClient as Client;
-use EUREKA\G6KBundle\Entity\ResultFilter;
 use EUREKA\G6KBundle\Entity\Step;
+
+use EUREKA\G6KBundle\Manager\ExpressionParser;
+use EUREKA\G6KBundle\Manager\DOMClient as Client;
+use EUREKA\G6KBundle\Manager\ResultFilter;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,6 +52,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Cookie;
 
 class BaseController extends Controller {
+
+	public $helper;
 
 	protected $simu;
 	protected $parser;
@@ -396,7 +399,7 @@ class BaseController extends Controller {
 			}
 		}
 		$response = new Response();
-		if ($this->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
+		if ($this->helper->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
 			$response->setContent(json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES | JSON_HEX_APOS | JSON_HEX_QUOT));
 		} else {
 			$response->setContent(json_encode($result));
@@ -1300,9 +1303,6 @@ class BaseController extends Controller {
 		return $date;
 	}
 
-	public function isDevelopmentEnvironment()
-	{
-		return in_array($this->get('kernel')->getEnvironment(), array('test', 'dev'));
-	}
-
 }
+
+?>

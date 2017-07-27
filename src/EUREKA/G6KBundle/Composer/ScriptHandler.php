@@ -31,7 +31,7 @@ use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 use EUREKA\G6KBundle\Entity\Database;
-use EUREKA\G6KBundle\Entity\JSONToSQLConverter;
+use EUREKA\G6KBundle\Manager\JSONToSQLConverter;
 
 class ScriptHandler
 {

@@ -36,10 +36,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use EUREKA\G6KBundle\Entity\Database;
-use EUREKA\G6KBundle\Entity\JSONToSQLConverter;
-use EUREKA\G6KBundle\Entity\SQLToJSONConverter;
-use EUREKA\G6KBundle\Entity\DOMClient as Client;
-use EUREKA\G6KBundle\Entity\ResultFilter;
+
+use EUREKA\G6KBundle\Manager\ControllersHelper;
+use EUREKA\G6KBundle\Manager\JSONToSQLConverter;
+use EUREKA\G6KBundle\Manager\SQLToJSONConverter;
+use EUREKA\G6KBundle\Manager\DOMClient as Client;
+use EUREKA\G6KBundle\Manager\ResultFilter;
 
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
@@ -162,6 +164,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	);
 
 	public function indexAction(Request $request, $dsid = null, $table = null, $crud = null) {
+		$this->helper = new ControllersHelper($this, $this->container);
 		$this->request = $request;
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;

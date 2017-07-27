@@ -30,6 +30,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+use EUREKA\G6KBundle\Manager\ControllersHelper;
+
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
@@ -37,6 +39,7 @@ class UsersAdminController extends BaseAdminController {
 
 	public function indexAction(Request $request, $crud = null)
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
@@ -223,3 +226,5 @@ class UsersAdminController extends BaseAdminController {
 	}
 	
 }
+
+?>

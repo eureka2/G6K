@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace EUREKA\G6KBundle\Entity;
+namespace EUREKA\G6KBundle\Manager;
 
 use Flow\JSONPath\JSONPath;
 
@@ -231,7 +231,7 @@ class ResultFilter {
 			$path = preg_replace("/". $func . "\s*\(/", "php:functionString('" . $func . "', ", $path);
 		}
 		foreach ($this->functions as $func) {
-			$path = preg_replace("/". $func . "\s*\(/", "php:function('EUREKA\G6KBundle\Entity\ResultFilter::" . $func . "', ", $path);
+			$path = preg_replace("/". $func . "\s*\(/", "php:function('EUREKA\G6KBundle\Manager\ResultFilter::" . $func . "', ", $path);
 		}
 		return $path;
 	}

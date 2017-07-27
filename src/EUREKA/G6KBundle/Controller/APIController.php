@@ -36,6 +36,8 @@ use EUREKA\G6KBundle\Entity\FieldRow;
 use EUREKA\G6KBundle\Entity\Field;
 use EUREKA\G6KBundle\Entity\Step;
 
+use EUREKA\G6KBundle\Manager\ControllersHelper;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -54,6 +56,7 @@ class APIController extends BaseController {
 
 	protected function runCalcul(Request $request, $simu, $test = false)
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		try {
 			$api = $this->container->getParameter('api');
 		} catch (\Exception $e) {
@@ -302,3 +305,5 @@ class APIController extends BaseController {
 		}
 	}
 }
+
+?>

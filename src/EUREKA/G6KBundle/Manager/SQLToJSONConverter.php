@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace EUREKA\G6KBundle\Entity;
+namespace EUREKA\G6KBundle\Manager;
 
 class SQLToJSONConverter {
 

@@ -36,6 +36,8 @@ use EUREKA\G6KBundle\Entity\FieldRow;
 use EUREKA\G6KBundle\Entity\Field;
 use EUREKA\G6KBundle\Entity\Step;
 
+use EUREKA\G6KBundle\Manager\ControllersHelper;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -47,31 +49,37 @@ class DefaultController extends BaseController {
 
 	public function calculAction(Request $request, $simu, $view = null)
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runCalcul($request, $simu, $view);
 	}
 
 	public function tryItAction(Request $request, $simu, $view = null)
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runCalcul($request, $simu, $view, true);
 	}
 
 	public function fieldsAction(Request $request, $simu)
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runFields($request, $simu);
 	}
 
 	public function fieldsTryItAction(Request $request, $simu)
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runFields($request, $simu, true);
 	}
 
 	public function sourceAction(Request $request, $simu)
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runSource($request, $simu);
 	}
 
 	public function sourceTryItAction(Request $request, $simu)
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runSource($request, $simu, true);
 	}
 
@@ -183,3 +191,5 @@ class DefaultController extends BaseController {
 	}
 
 }
+
+?>

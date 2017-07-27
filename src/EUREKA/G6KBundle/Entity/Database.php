@@ -26,6 +26,8 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+use EUREKA\G6KBundle\Manager\JsonSQL;
+
 class Database {
 
 	private $simulator = null;

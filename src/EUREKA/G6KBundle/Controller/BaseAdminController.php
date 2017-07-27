@@ -34,6 +34,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class BaseAdminController extends Controller {
 
+	public $helper;
+
 	protected function errorResponse($form, $error)	{
 		$form['error'] = $error;
 		$response = new Response();
@@ -148,8 +150,6 @@ class BaseAdminController extends Controller {
 			| ($timearray['seconds'] >> 1);
 	}
 
-	public function isDevelopmentEnvironment() {
-		return in_array($this->get('kernel')->getEnvironment(), array('test', 'dev'));
-	}
-
 }
+
+?>

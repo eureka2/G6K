@@ -55,9 +55,11 @@ use EUREKA\G6KBundle\Entity\Condition;
 use EUREKA\G6KBundle\Entity\RuleAction;
 use EUREKA\G6KBundle\Entity\Profiles;
 use EUREKA\G6KBundle\Entity\Profile;
-use EUREKA\G6KBundle\Entity\DOMClient as Client;
-use EUREKA\G6KBundle\Entity\ResultFilter;
-use EUREKA\G6KBundle\Entity\SQLSelectTokenizer;
+
+use EUREKA\G6KBundle\Manager\ControllersHelper;
+use EUREKA\G6KBundle\Manager\DOMClient as Client;
+use EUREKA\G6KBundle\Manager\ResultFilter;
+use EUREKA\G6KBundle\Manager\SQLSelectTokenizer;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -89,6 +91,7 @@ class SimulatorsAdminController extends BaseAdminController {
 
 	public function indexAction(Request $request, $simulator = null, $crud = null)
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		if ($crud == 'export') {
 			return $this->doExportSimulator($simulator);
 		} elseif ($crud == 'publish') {
@@ -289,7 +292,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
-		$widgets = $this->getWidgets();
+		$widgets = $this->helper->getWidgets();
 		try {
 			return $this->render(
 				'EUREKAG6KBundle:admin/pages:simulators.html.twig',
@@ -318,17 +321,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 	}
 
-	public function getWidgets() {
-		$widgets = array();
-		if ($this->container->hasParameter('widgets')) {
-			foreach ($this->container->getParameter('widgets') as $name => $widget) {
-				$widgets[$name] = $this->get('translator')->trans($widget['label']);
-			}
-		}
-		return $widgets;
-	}
-
 	public function validateAction(Request $request) {
+		$this->helper = new ControllersHelper($this, $this->container);
 		$form = $request->request->all();
 		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
 		$schema = $bundle->getPath()."/Resources/doc/Simulator.xsd";
@@ -360,10 +354,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		$response->setContent(json_encode($result));
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
-	}
-
-	public function getDataById($id) {
-		return $this->simu !== null ? $this->simu->getDataById($id) : null;
 	}
 
 	protected function doCreate($simulator, $form) {
@@ -3191,43 +3181,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $datas;
 	}
 
-	public function findAction($name, $fromNode) {
-		foreach ($fromNode as $action) {
-			if ($action['name'] == $name) {
-				return $action;
-			}
-		}
-		return null;
-	}
-
-	public function findActionField($fields, $currentNode) {
-		foreach ($fields as $field) {
-			$names = array_keys($field);
-			$name = $names[0];
-			$value = $field[$name];
-			$currentNode = $this->findActionOption($name, $value, $currentNode);
-			if ($currentNode == null) { 
-				return null; 
-			}
-		}
-		return $currentNode;
-	}
-
-	public function findActionOption($name, $value, $node) {
-		$fields = isset($node['fields']) ? $node['fields'] : array();
-		foreach ($fields as $field) {
-			if ($field['name'] == $name) {
-				$options =  isset($field['options']) ? $field['options'] : array();
-				foreach ($options as $option) {
-					if ($option['name'] == $value) {
-						return $option;
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	protected function formatParamValue($param) {
 		$data = $this->simu->getDataById($param->getData());
 		$value = $data->getValue();
@@ -3559,3 +3512,5 @@ class SimulatorsAdminController extends BaseAdminController {
 		return null;
 	}
 }
+
+?>

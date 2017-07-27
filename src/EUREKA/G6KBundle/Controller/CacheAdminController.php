@@ -32,6 +32,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+use EUREKA\G6KBundle\Manager\ControllersHelper;
+
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
@@ -41,6 +43,7 @@ class CacheAdminController extends BaseAdminController {
 
 	public function clearAction(Request $request, $env = 'prod')
 	{
+		$this->helper = new ControllersHelper($this, $this->container);
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
@@ -114,3 +117,5 @@ class CacheAdminController extends BaseAdminController {
 	}
 	
 }
+
+?>
