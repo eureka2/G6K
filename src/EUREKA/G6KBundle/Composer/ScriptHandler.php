@@ -52,7 +52,7 @@ class ScriptHandler
 		$driver = $parameters->database_driver;
 		switch ($driver) {
 			case 'pdo_mysql':
-				$database = new Database(null, 1, 'mysqli', $parameters->database_name);
+				$database = new Database(null, $databasesDir, 1, 'mysqli', $parameters->database_name);
 				$database->setHost($parameters->database_host);
 				if (isset($parameters->database_port)) {
 					$database->setPort($parameters->database_port);
@@ -63,7 +63,7 @@ class ScriptHandler
 				}
 				break;
 			case 'pdo_pgsql':
-				$database = new Database(null, 1, 'pgsql', $parameters->database_name);
+				$database = new Database(null, $databasesDir, 1, 'pgsql', $parameters->database_name);
 				$database->setHost($parameters->database_host);
 				if (isset($parameters->database_port)) {
 					$database->setPort($parameters->database_port);
@@ -75,7 +75,7 @@ class ScriptHandler
 				break;
 			case 'pdo_sqlite':
 				$name = basename($parameters->database_path);
-				$database = new Database(null, 1, 'sqlite', $name);
+				$database = new Database(null, $databasesDir, 1, 'sqlite', $name);
 				break;
 			default:
 				$event->getIO()->write(sprintf("Unsupported database driver: %s", $driver));
@@ -166,7 +166,7 @@ class ScriptHandler
 		$name = 'demo';
 		$schemafile = $databasesDir . DIRECTORY_SEPARATOR . $name . '.schema.json';
 		$datafile = $databasesDir . DIRECTORY_SEPARATOR . $name . '.json';
-		$converter = new JSONToSQLConverter($parameters);
+		$converter = new JSONToSQLConverter($parameters, $databasesDir);
 		$form = $converter->convert($name, $schemafile, $datafile);
 		$datasource = self::doCreateDatasource($form);
 		$dom = $datasource->ownerDocument;

@@ -578,7 +578,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$parameters['database_password'] = $container->getParameter('database_password');
 				}
 			}
-			$converter = new JSONToSQLConverter($parameters);
+			$converter = new JSONToSQLConverter($parameters, $this->db_dir);
 			$form = $converter->convert($name, $schemafile, $datafile);
 			$datasource = $this->doCreateDatasource($form);
 			$dom = $datasource->ownerDocument;
@@ -766,7 +766,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			case 'database':
 			case 'internal':
 				$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".(string)$datasources[0]['database']."']");
-				$database = new Database(null, (int)$databases[0]['id'], (string)$databases[0]['type'], (string)$databases[0]['name']);
+				$database = new Database(null, $this->db_dir, (int)$databases[0]['id'], (string)$databases[0]['type'], (string)$databases[0]['name']);
 				if ((string)$databases[0]['host'] != "") {
 					$database->setHost((string)$databases[0]['host']);
 				}
@@ -842,7 +842,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".$dbid."']");
 		$dbtype = (string)$databases[0]['type'];
 		$dbname = (string)$databases[0]['name'];
-		$database = new Database(null, $dbid, $dbtype, $dbname);
+		$database = new Database(null, $this->db_dir, $dbid, $dbtype, $dbname);
 		if ((string)$databases[0]['label'] != "") {
 			$database->setLabel((string)$databases[0]['label']);
 		} else {

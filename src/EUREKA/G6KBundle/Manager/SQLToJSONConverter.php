@@ -196,7 +196,7 @@ class SQLToJSONConverter {
 		$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".$dbid."']");
 		$dbtype = (string)$databases[0]['type'];
 		$dbname = (string)$databases[0]['name'];
-		$database = new Database(null, $dbid, $dbtype, $dbname);
+		$database = new Database(null, $this->databasesDir, $dbid, $dbtype, $dbname);
 		if ((string)$databases[0]['label'] != "") {
 			$database->setLabel((string)$databases[0]['label']);
 		} else {

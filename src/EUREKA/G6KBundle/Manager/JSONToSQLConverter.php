@@ -70,9 +70,11 @@ class JSONToSQLConverter {
 		)
 	);
 
+	private $databasesDir;
 	private $database;
 
-	public function __construct($fparameters) {
+	public function __construct($fparameters, $databasesDir) {
+		$this->databasesDir = $databasesDir;
 		$this->parameters = array_merge($this->parameters, $fparameters);
 	}
 
@@ -138,12 +140,12 @@ class JSONToSQLConverter {
 			case 'pdo_sqlite':
 				$dbtype = 'sqlite';
 				$dbschema =  $name . ".db";
-				$this->database = new Database(null, 1, $dbtype, $dbschema);
+				$this->database = new Database(null, $this->databasesDir, 1, $dbtype, $dbschema);
 				break;
 			case 'pdo_mysql':
 				$dbtype = 'mysqli';
 				$dbschema = $name;
-				$this->database = new Database(null, 1, $dbtype, str_replace('-', '_', $dbschema));
+				$this->database = new Database(null, $this->databasesDir, 1, $dbtype, str_replace('-', '_', $dbschema));
 				if ($this->parameters['database_host'] != "") {
 					$this->database->setHost($this->parameters['database_host']);
 				}
@@ -163,7 +165,7 @@ class JSONToSQLConverter {
 			case 'pdo_pgsql':
 				$dbtype = 'pgsql';
 				$dbschema = $name;
-				$this->database = new Database(null, 1, $dbtype, str_replace('-', '_', $dbschema));
+				$this->database = new Database(null, $this->databasesDir, 1, $dbtype, str_replace('-', '_', $dbschema));
 				if ($this->parameters['database_host'] != "") {
 					$this->database->setHost($this->parameters['database_host']);
 				}

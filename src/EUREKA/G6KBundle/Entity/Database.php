@@ -31,6 +31,7 @@ use EUREKA\G6KBundle\Manager\JsonSQL;
 class Database {
 
 	private $simulator = null;
+	private $databasesDir;
 	private $id;
 	private $type;
 	private $name;
@@ -70,8 +71,9 @@ class Database {
 		'Y' => 'YYYY'
 	);
 
-	public function __construct($simulator, $id, $type, $name) {
+	public function __construct($simulator, $databasesDir, $id, $type, $name) {
 		$this->simulator = $simulator;
+		$this->databasesDir = $databasesDir;
 		$this->id = $id;
 		$this->type = $type;
 		$this->name = $name;
@@ -204,13 +206,13 @@ class Database {
 					$this->link->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
 					break;
 				case "sqlite":
-					$this->link = new \PDO('sqlite:'.dirname(dirname(__FILE__)).'/Resources/data/databases/'.$this->name);
+					$this->link = new \PDO('sqlite:'.$this->databasesDir.'/'.$this->name);
 					$this->link->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 					$this->link->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 					$this->link->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
 					break;
 				case "jsonsql":
-					$this->link = JsonSQL::open(dirname(dirname(__FILE__)).'/Resources/data/databases/'.$this->name, true);
+					$this->link = JsonSQL::open($this->databasesDir.'/'.$this->name, true);
 					break;
 			}
 			$this->setConnected(true);

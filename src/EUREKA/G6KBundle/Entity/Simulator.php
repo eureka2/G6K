@@ -513,8 +513,9 @@ class Simulator {
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {
+			$databaseDir = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases');
 			foreach ($datasources->Databases->Database as $database) {
-				$databaseObj = new Database($this, (int)$database['id'], (string)$database['type'], (string)$database['name']);
+				$databaseObj = new Database($this, $databaseDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
 				$databaseObj->setLabel((string)$database['label']);
 				$databaseObj->setHost((string)$database['host']);
 				$databaseObj->setPort((int)$database['port']);
@@ -865,8 +866,9 @@ class Simulator {
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {
+			$databaseDir = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases');
 			foreach ($datasources->Databases->Database as $database) {
-				$databaseObj = new Database($this, (int)$database['id'], (string)$database['type'], (string)$database['name']);
+				$databaseObj = new Database($this, $databaseDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
 				$databaseObj->setLabel((string)$database['label']);
 				$databaseObj->setHost((string)$database['host']);
 				$databaseObj->setPort((int)$database['port']);
