@@ -36,19 +36,15 @@ use EUREKA\G6KBundle\Manager\JSONToSQLConverter;
 class ScriptHandler
 {
 	public static function installUsers(Event $event) {
+		$event->getIO()->write("Installing the users of the administration interface");
+		$extras = $event->getComposer()->getPackage()->getExtra();
 		$installationManager = $event->getComposer()->getInstallationManager();
 		$package = $event->getComposer()->getPackage();
 		$installPath = $installationManager->getInstallPath($package);
-		$event->getIO()->write("Package : ". $package->getPrettyName());
-		$event->getIO()->write("Target Dir : ". $package->getTargetDir());
-		$event->getIO()->write("Install path : ". $installPath);
-
-		$event->getIO()->write("Installing the users of the administration interface");
-		$extras = $event->getComposer()->getPackage()->getExtra();
-		$symfonyDir = dirname(dirname(dirname(dirname(__DIR__))));
+		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 		$appDir = $symfonyDir . DIRECTORY_SEPARATOR . $extras['symfony-app-dir'];
 		$configDir = $appDir . DIRECTORY_SEPARATOR  .'config';
-		$databasesDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
+		$databasesDir = $symfonyDir . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "EUREKA" . DIRECTORY_SEPARATOR . "G6KBundle" . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
 		if (($parameters = self::getParameters($event, $configDir)) === false) {
 			return;
 		}
@@ -156,10 +152,14 @@ class ScriptHandler
 		}
 		$event->getIO()->write("Installing the demo simulator");
 		$extras = $event->getComposer()->getPackage()->getExtra();
-		$symfonyDir = dirname(dirname(dirname(dirname(__DIR__))));
+		$installationManager = $event->getComposer()->getInstallationManager();
+		$package = $event->getComposer()->getPackage();
+		$installPath = $installationManager->getInstallPath($package);
+		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 		$appDir = $symfonyDir . DIRECTORY_SEPARATOR . $extras['symfony-app-dir'];
 		$configDir = $appDir . DIRECTORY_SEPARATOR  .'config';
-		$databasesDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
+		$databasesDir = $symfonyDir . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "EUREKA" . DIRECTORY_SEPARATOR . "G6KBundle" . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
+		$simusDir = $symfonyDir . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "EUREKA" . DIRECTORY_SEPARATOR . "G6KBundle" . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
 		if (($parameters = self::getParameters($event, $configDir)) === false) {
 			return;
 		}
@@ -231,7 +231,6 @@ class ScriptHandler
 		}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
 		file_put_contents($databasesDir."/DataSources.xml", $formatted);
 		$parameters = (object)$parameters;
-		$simusDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
 		if (file_exists($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->locale . '.xml')) {
 			rename($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->locale . '.xml', $simusDir . DIRECTORY_SEPARATOR . 'demo.xml');
 		}
