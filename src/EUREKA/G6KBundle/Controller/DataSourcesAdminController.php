@@ -516,7 +516,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$parameters['database_password'] = $container->getParameter('database_password');
 			}
 		}
-		$converter = new SQLToJSONConverter($parameters);
+		$converter = new SQLToJSONConverter($parameters, $this->db_dir);
 		$result = $converter->convert($datasource);
 		$content = array(
 			array(

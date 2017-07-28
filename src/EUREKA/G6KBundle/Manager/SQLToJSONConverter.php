@@ -98,12 +98,14 @@ class SQLToJSONConverter {
 		)
 	);
 
+	private $databasesDir;
 	private $datasources;
 	private $maxId = 0;
 
-	public function __construct($fparameters) {
+	public function __construct($fparameters, $databasesDir) {
 		$this->parameters = array_merge($this->parameters, $fparameters);
-		$this->datasources =  new \SimpleXMLElement(dirname(__DIR__)."/Resources/data/databases/Datasources.xml", LIBXML_NOWARNING, true);
+		$this->databasesDir = $databasesDir;
+		$this->datasources =  new \SimpleXMLElement($this->databasesDir."/Datasources.xml", LIBXML_NOWARNING, true);
 	}
 
 	public function convert($datasource) {
