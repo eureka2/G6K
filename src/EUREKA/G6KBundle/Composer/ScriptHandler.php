@@ -36,6 +36,13 @@ use EUREKA\G6KBundle\Manager\JSONToSQLConverter;
 class ScriptHandler
 {
 	public static function installUsers(Event $event) {
+		$installationManager = $event->getComposer()->getInstallationManager();
+		$package = $event->getComposer()->getPackage();
+		$installPath = $installationManager->getInstallPath($package);
+		$event->getIO()->write("Package : ". $package->getPrettyName());
+		$event->getIO()->write("Target Dir : ". $package->getTargetDir());
+		$event->getIO()->write("Install path : ". $installPath);
+
 		$event->getIO()->write("Installing the users of the administration interface");
 		$extras = $event->getComposer()->getPackage()->getExtra();
 		$symfonyDir = dirname(dirname(dirname(dirname(__DIR__))));
