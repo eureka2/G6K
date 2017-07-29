@@ -1423,13 +1423,14 @@ class DataSourcesAdminController extends BaseAdminController {
 		if (count($alterdefsSQLite) > 0) {
 			$this->alterSQLiteTable($table, implode(" ", $alterdefsSQLite), $database);
 		}
-		for ($i = $col; $i < count($form['field']); $i++) {
+		$fieldsCount = count($form['field']);
+		for ($i = $col; $i < $fieldsCount; $i++) {
 			$name = $form['field'][$i];
 			if ($name !='') {
 				$type = $form['type'][$i];
 				$label = $form['label'][$i];
 				$description = $form['description'][$i];
-				$notnull = $form['notnull'][$i] == 1 ? 'NOT NULL' : '';
+				$notnull = isset($form['notnull'][$i]) && $form['notnull'][$i] == 1 ? 'NOT NULL' : '';
 				$dbype = $this->datatypes[$database->getType()][$type];
 				$addcolumn = "";
 				switch ($database->getType()) {
@@ -1484,7 +1485,8 @@ class DataSourcesAdminController extends BaseAdminController {
 				$prevword = $table;
 				$oldcols = preg_split("/[,]+/", substr(trim($createtemptableSQL), strpos(trim($createtemptableSQL), '(') + 1), -1, PREG_SPLIT_NO_EMPTY);
 				$newcols = array();
-				for($i = 0; $i < sizeof($oldcols); $i++){
+				$oldcolsSize = sizeof($oldcols);
+				for($i = 0; $i < $oldcolsSize; $i++){
 					$colparts = preg_split("/[\s]+/", $oldcols[$i], -1, PREG_SPLIT_NO_EMPTY);
 					$oldcols[$i] = $colparts[0];
 					$newcols[$colparts[0]] = $colparts[0];
@@ -1492,7 +1494,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$newcolumns = '';
 				$oldcolumns = '';
 				reset($newcols);
-				while (list($key, $val) = each($newcols)) {
+				foreach($newcols as $key => $val) {
 					$newcolumns .= ($newcolumns ? ', ' : '') . $val;
 					$oldcolumns .= ($oldcolumns ? ', ' : '') . $key;
 				}
@@ -1501,18 +1503,19 @@ class DataSourcesAdminController extends BaseAdminController {
 				foreach ($defs as $def) {
 					$defparts = preg_split("/[\s]+/", $def, -1, PREG_SPLIT_NO_EMPTY);
 					$action = strtolower($defparts[0]);
+					$defpartsSize = sizeof($defparts);
 					switch($action){
 						case 'add':
-							if(sizeof($defparts) <= 2){
+							if ($defpartsSize <= 2) {
 								throw new \Exception('near "'.$defparts[0].($defparts[1]?' '.$defparts[1]:'').'": syntax error');
 							}
 							$createtesttableSQL = substr($createtesttableSQL,0,strlen($createtesttableSQL)-1).',';
-							for($i=1;$i<sizeof($defparts);$i++)
+							for($i = 1; $i < $defpartsSize; $i++)
 								$createtesttableSQL.=' '.$defparts[$i];
 							$createtesttableSQL.=')';
 							break;
 						case 'change':
-							if(sizeof($defparts) <= 3){
+							if ($defpartsSize <= 3) {
 								throw new \Exception('near "'.$defparts[0].($defparts[1]?' '.$defparts[1]:'').($defparts[2]?' '.$defparts[2]:'').'": syntax error');
 							}
 							if($severpos = strpos($createtesttableSQL,' '.$defparts[1].' ')){
@@ -1522,7 +1525,7 @@ class DataSourcesAdminController extends BaseAdminController {
 								$newcols[$defparts[1]] = $defparts[2];
 								$nextcommapos = strpos($createtesttableSQL,',',$severpos);
 								$insertval = '';
-								for ($i = 2; $i < sizeof($defparts); $i++) {
+								for ($i = 2; $i < $defpartsSize; $i++) {
 									$insertval .= ' ' . $defparts[$i];
 								}
 								if ($nextcommapos)
@@ -1534,7 +1537,7 @@ class DataSourcesAdminController extends BaseAdminController {
 							}
 							break;
 						case 'drop':
-							if (sizeof($defparts) < 2) {
+							if ($defpartsSize < 2) {
 								throw new \Exception('near "' . $defparts[0] . ($defparts[1] ? ' ' . $defparts[1] : '') . '" : syntax error');
 							}
 							if ($severpos = strpos($createtesttableSQL, ' ' . $defparts[1] . ' ')) {
@@ -1551,13 +1554,13 @@ class DataSourcesAdminController extends BaseAdminController {
 						default:
 							throw new \Exception('near "' . $prevword . '": syntax error');
 					}
-					$prevword = $defparts[sizeof($defparts) - 1];
+					$prevword = $defparts[$defpartsSize - 1];
 				}
 				$createnewtableSQL = 'CREATE ' . substr(trim(preg_replace("'" . $tmpname . "'", $table, $createtesttableSQL, 1)), 17);
 				$newcolumns = '';
 				$oldcolumns = '';
 				reset($newcols);
-				while(list($key,$val) = each($newcols)){
+				foreach($newcols as $key => $val) {
 					$newcolumns .= ($newcolumns ? ', ' : '') . $val;
 					$oldcolumns .= ($oldcolumns ? ', ' : '') . $key;
 				}

@@ -770,10 +770,11 @@ class JsonSQL  {
 				if ($m[4] != '') {
 					$colDef = $this->encodeLiteral($m[4]);
 					$chunks = preg_split("/(constraint|not\s+null|nullable|default|primary\s+key|autoincrement|auto_increment|serial|title|comment)/i", $colDef . ' ', -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-					if (count($chunks) % 2 > 0) {
+					$chunksCount = count($chunks);
+					if ($chunksCount % 2 > 0) {
 						throw new JsonSQLException("syntax error near : " . $m[4]);
 					}
-					for ($i = 0; $i < count($chunks); $i += 2) {
+					for ($i = 0; $i < $chunksCount; $i += 2) {
 						$prop = strtolower(preg_replace('/\s+/', '', $chunks[$i]));
 						$val = trim($this->decodeLiteral($chunks[$i+1]));
 						if ($prop == 'default') {
@@ -1153,10 +1154,11 @@ class JsonSQL  {
 			if ($columnDef != '') {
 				$columnDef = $this->encodeLiteral($columnDef);
 				$chunks = preg_split("/(not\s+null|nullable|default|primary\s+key|autoincrement|auto_increment|serial|title|comment)/i", $columnDef . ' ', -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-				if (count($chunks) % 2 > 0) {
+				$chunksCount = count($chunks);
+				if ($chunksCount % 2 > 0) {
 					throw new JsonSQLException("syntax error near : " . $clauses['modify']);
 				}
-				for ($i = 0; $i < count($chunks); $i += 2) {
+				for ($i = 0; $i < $chunksCount; $i += 2) {
 					$prop = strtolower(preg_replace('/\s+/', '', $chunks[$i]));
 					$val = trim($this->decodeLiteral($chunks[$i+1]));
 					if ($prop == 'default') {
@@ -2894,10 +2896,11 @@ class JsonSQL  {
 		$clauses = array();
 		$positions = array();
 		$chunks = preg_split("/\b(" . implode("|", $keywords) . ")\b/i", $stmt, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE);
-		if (count($chunks) % 2 > 0) {
+		$chunksCount = count($chunks);
+		if ($chunksCount % 2 > 0) {
 			throw new JsonSQLException("syntax error near : " . $stmt);
 		}
-		for ($i = 0; $i < count($chunks); $i += 2) {
+		for ($i = 0; $i < $chunksCount; $i += 2) {
 			$keyword = strtolower(preg_replace('/\s+/', '', $chunks[$i][0]));
 			$value = trim($chunks[$i+1][0]);
 			if (isset($clauses[$keyword])) {

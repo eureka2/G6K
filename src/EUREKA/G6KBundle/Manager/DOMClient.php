@@ -168,7 +168,7 @@ class DOMClient extends BaseClient {
 		}
 		if ($status == '200') {
 			$context = stream_context_create($ctxConfig);
-			$content = @file_get_contents($request->getUri(), false, $context);
+			$content = file_get_contents($request->getUri(), false, $context);
 			if (isset($headers['transfer-encoding']) && $headers['transfer-encoding'] == 'chunked') {
 				$content = $this->decodeChunked($content);
 			}
@@ -183,7 +183,7 @@ class DOMClient extends BaseClient {
 	private function doLocalRequest($request, $path) {
 		try {
 			$file = getenv('DOCUMENT_ROOT') . $path;
-			$content = @file_get_contents($file);
+			$content = file_get_contents($file);
 			$headers = array(
 				'Date' => gmdate('D, d M Y H:i:s', time()).' GMT',
 				'Content-Type' => mime_content_type($file),

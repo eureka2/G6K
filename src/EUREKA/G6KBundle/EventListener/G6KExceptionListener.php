@@ -10,9 +10,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class G6KExceptionListener
 {
 	protected $container;
+	protected $viewsDir;
 
-	public function __construct(ContainerInterface $container) {
+	public function __construct(ContainerInterface $container, $kernel) {
 		$this->container = $container;
+		$this->viewsDir = $kernel->locateResource('@EUREKAG6KBundle/Resources/views');
 	}
 
 	public function onKernelException(GetResponseForExceptionEvent $event) {
@@ -42,11 +44,10 @@ class G6KExceptionListener
 				$view = "Default";
 			}
 		}
-		$viewsDir = dirname(__DIR__). '/Resources/views';
 		$fsloader = new FileSystemLoader(
 			array(
-				$viewsDir . '/' . $view . '/layout',
-				$viewsDir
+				$this->viewsDir . '/' . $view . '/layout',
+				$this->viewsDir
 			)
 		);
 		$aloader = new \Twig_Loader_Array(array(

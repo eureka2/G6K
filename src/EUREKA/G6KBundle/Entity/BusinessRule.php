@@ -308,7 +308,8 @@ class BusinessRule {
 							array_push($conds, $scond);
 						}
 						array_splice($ruleData["all"], $i, 1, array($conds[0]));
-						for ($j = 1; $j < count($conds); $j++) {
+						$condsCount = count($conds);
+						for ($j = 1; $j < $condsCount; $j++) {
 							array_splice($ruleData["all"], $i + $j, 0, array($conds[$j]));
 						}
 						$optimized = true;
@@ -322,7 +323,8 @@ class BusinessRule {
 							array_push($conds, $scond);
 						}
 						array_splice($ruleData["any"], $i, 1, array($conds[0]));
-						for ($j = 1; $j < count($conds); $j++) {
+						$condsCount = count($conds);
+						for ($j = 1; $j < $condsCount; $j++) {
 							array_splice($ruleData["any"], $i + $j, 0, array($conds[$j]));
 						}
 						$optimized = true;
@@ -336,7 +338,8 @@ class BusinessRule {
 							array_push($conds, $scond);
 						}
 						array_splice($ruleData["none"], $i, 1, array($conds[0]));
-						for ($j = 1; $j < count($conds); $j++) {
+						$condsCount = count($conds);
+						for ($j = 1; $j < $condsCount; $j++) {
 							array_splice($ruleData["none"], $i + $j, 0, array($conds[$j]));
 						}
 						$optimized = true;

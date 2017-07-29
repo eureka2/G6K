@@ -79,12 +79,18 @@ class BaseController extends Controller {
 			$this->simu = new Simulator($this);
 			$this->simu->load($this->getSimuPath($simu, $test));
 		} catch (\Exception $e) {
-			$page404Url = $request->getScheme() . '://' . $request->getHttpHost() . $this->container->getParameter('page404');
-			$page404 = @file_get_contents($page404Url);
-			if ($page404 !== FALSE) {
-				return new Response($page404, 404, array('Content-Type', 'text/html')); 
-			} elseif ($page404Url) {
-				return new RedirectResponse($page404Url);
+			if ($this->container->hasParameter('page404')) {
+				$page404Url = $request->getScheme() . '://' . $request->getHttpHost() . $this->container->getParameter('page404');
+				try {
+					$page404 = file_get_contents($page404Url);
+				} catch (\Exception $e) {
+					$page404 = FALSE;
+				}
+				if ($page404 !== FALSE) {
+					return new Response($page404, 404, array('Content-Type', 'text/html')); 
+				} else {
+					return new RedirectResponse($page404Url);
+				}
 			} else {
 				throw $this->createNotFoundException($this->get('translator')->trans("This simulator does not exist"));
 			}

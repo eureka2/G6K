@@ -415,10 +415,11 @@ class SQLSelectTokenizer  {
 		$clauses = array();
 		$positions = array();
 		$chunks = preg_split("/\b(" . implode("|", $keywords) . ")\b/i", $stmt, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE);
-		if (count($chunks) % 2 > 0) {
+		$chunksCount = count($chunks);
+		if ($chunksCount % 2 > 0) {
 			throw new SQLSelectTokenizerException("syntax error near : " . $stmt);
 		}
-		for ($i = 0; $i < count($chunks); $i += 2) {
+		for ($i = 0; $i < $chunksCount; $i += 2) {
 			$keyword = strtolower(preg_replace('/\s+/', '', $chunks[$i][0]));
 			$value = trim($chunks[$i+1][0]);
 			if (isset($clauses[$keyword])) {
