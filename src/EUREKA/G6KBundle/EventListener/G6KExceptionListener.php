@@ -5,15 +5,15 @@ namespace EUREKA\G6KBundle\EventListener;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 class G6KExceptionListener
 {
-	protected $container;
+	protected $domainview;
 	protected $viewsDir;
 
-	public function __construct(ContainerInterface $container, $kernel) {
-		$this->container = $container;
+	public function __construct(Kernel $kernel) {
+		$this->domainview = $kernel->getContainer()->getParameter('domainview');
 		$this->viewsDir = $kernel->locateResource('@EUREKAG6KBundle/Resources/views');
 	}
 
@@ -31,10 +31,9 @@ class G6KExceptionListener
 
 	protected function htmlResponse($request, $exception) {
 		$domain = $request->getHost();
-		$domainview = $this->container->getParameter('domainview');
 		$view = $request->get("view", "");
 		if ($view == "") {
-			foreach ($domainview as $d => $v) {
+			foreach ($this->domainview as $d => $v) {
 				if (preg_match("/".$d."$/", $domain)) {
 					$view = $v;
 					break;
