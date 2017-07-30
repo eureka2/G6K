@@ -251,7 +251,7 @@ class Database {
 		return $stmt;
 	}
 
-	public function bindParam($stmt, $parameter, &$variable, $type='text') {
+	public function bindParam(\PDOStatement $stmt, $parameter, &$variable, $type='text') {
 		$result = false;
 		switch ($this->type) {
 			case "mysql":
@@ -278,7 +278,7 @@ class Database {
 		return $result;
 	}
 
-	public function bindValue($stmt, $parameter, $value, $type='text') {
+	public function bindValue(\PDOStatement $stmt, $parameter, $value, $type='text') {
 		$result = false;
 		switch ($this->type) {
 			case "mysql":
@@ -305,7 +305,7 @@ class Database {
 		return $result;
 	}
 
-	public function execute($stmt) {
+	public function execute(\PDOStatement $stmt) {
 		$query_result = false;
 		switch ($this->type) {
 			case "mysql":

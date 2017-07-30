@@ -40,8 +40,6 @@ class Simulator {
 	private $decimalPoint = "";
 	private $moneySymbol = "";
 	private $symbolPosition = "";
-	private $globalConstraints = array();
-	private $groupConstraints = array();
 	private $datas = array();
 	private $profiles = null;
 	private $steps = array();
@@ -499,7 +497,7 @@ class Simulator {
 		$this->loadEntities($simulator, $datasources);
 	}
 
-	protected function loadEntities($simulator, $datasources) {
+	protected function loadEntities(\SimpleXMLElement $simulator, \SimpleXMLElement $datasources) {
 		foreach ($datasources->DataSource as $datasource) {
 			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
 			$datasourceObj->setUri((string)$datasource['uri']);
@@ -1138,7 +1136,7 @@ class Simulator {
 		}
 	}
 
-	private function actionsData($ruleID, $actions, &$dataset) {
+	private function actionsData($ruleID, \SimpleXMLElement $actions, &$dataset) {
 		$datas = array();
 		foreach ($actions->Action as $action) {
 			$target = (string)$action['target'];
@@ -1409,7 +1407,6 @@ class Simulator {
 		$json = array();
 		$datas = array();
 		$profiles = array();
-		$constraints = array();
 		$sources = array();
 		$rules = array();
 		$dataIdMax = 0;
@@ -1787,7 +1784,6 @@ class Simulator {
 						}
 						if ($gdata->getType() == 'choice') {
 							$xml[] = '				<Choices>';
-							$options = array();
 							foreach ($gdata->getChoices() as $choice) {
 								if ($choice instanceof Choice) {
 									$xml[] = '					<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . $choice->getLabel() . '" />';
@@ -1864,7 +1860,6 @@ class Simulator {
 					}
 					if ($data->getType() == 'choice') {
 						$xml[] = '			<Choices>';
-						$options = array();
 						foreach ($data->getChoices() as $choice) {
 							if ($choice instanceof Choice) {
 								$xml[] = '				<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . $choice->getLabel() . '" />';

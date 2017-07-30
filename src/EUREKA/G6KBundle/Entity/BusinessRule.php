@@ -58,7 +58,7 @@ class BusinessRule {
 		"isFalse" => "isTrue"
 	);
 
-	public function __construct($simulator, $elementId, $id, $name) {
+	public function __construct(Simulator $simulator, $elementId, $id, $name) {
 		$this->simulator = $simulator;
 		$this->translator = $simulator->getController()->get('translator');
 		$this->elementId = $elementId;

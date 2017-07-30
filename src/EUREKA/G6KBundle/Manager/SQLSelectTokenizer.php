@@ -288,7 +288,7 @@ class SQLSelectTokenizer  {
 		return $conditions;
 	}
 
-	protected function addTokenInCondition(&$condition, $token) {
+	protected function addTokenInCondition(&$condition, Token $token) {
 		if ($token->isBinaryOperator() && $token->type != Token::T_MOD) {
 			$value = ' ' . $token->value . ' ';
 		} else if ($token->type == Token::T_TEXT) {

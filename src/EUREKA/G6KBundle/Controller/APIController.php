@@ -242,7 +242,7 @@ class APIController extends BaseController {
 		// $id = array_shift( unpack('H*', $request->getQueryString()) );
 		// $qs =  urldecode(pack('H*', $id)); // for unpack
 		$id = urlencode(base64_encode( gzcompress($request->getQueryString())));
-		$qs = urldecode(gzuncompress(base64_decode(urldecode($id))));
+		// $qs = urldecode(gzuncompress(base64_decode(urldecode($id)))); // for unpack
 		$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo() . '?' . $request->getQueryString();
 		$response = new Response();
 		$response->headers->set('Content-Type', 'application/json');

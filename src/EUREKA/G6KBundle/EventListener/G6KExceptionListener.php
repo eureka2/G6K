@@ -6,6 +6,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpFoundation\Request;
 
 class G6KExceptionListener
 {
@@ -29,7 +30,7 @@ class G6KExceptionListener
 		$event->setResponse($response);
 	}
 
-	protected function htmlResponse($request, $exception) {
+	protected function htmlResponse(Request $request, \Exception $exception) {
 		$domain = $request->getHost();
 		$view = $request->get("view", "");
 		if ($view == "") {
@@ -82,7 +83,7 @@ class G6KExceptionListener
 		return $response;
 	}
 
-	protected function jsonResponse($request, $exception) {
+	protected function jsonResponse(Request $request, \Exception $exception) {
 		$simu = $request->get("simu", "");
 		$errors = array();
 		$errors[] = array(

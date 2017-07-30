@@ -81,9 +81,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	const SQL_ORDER_BY_KEYWORD = 'ORD' . 'ER BY ';
 	const SQL_LIMIT_KEYWORD = 'LI' . 'MIT ';
 
-	private $log = array();
 	private $simu = null;
-	private $datasources = array();
 	private $dataset = array();
 	private $actions = array();
 	private $rules = array();

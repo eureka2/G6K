@@ -226,7 +226,7 @@ class SQLToJSONConverter {
 		return $database;
 	}
 
-	protected function tableInfos($database, $table) {
+	protected function tableInfos(Database $database, $table) {
 		switch ($database->getType()) {
 			case 'sqlite':
 				$tableinfos = $database->query("PRAGMA table_info('".$table."')");
@@ -252,7 +252,7 @@ class SQLToJSONConverter {
 		return $tableinfos;
 	}
 
-	protected function getData($database, $table, &$schema) {
+	protected function getData(Database $database, $table, &$schema) {
 		$query = "SELECT * FROM $table";
 		$result = $database->query($query);
 		$rows = array();

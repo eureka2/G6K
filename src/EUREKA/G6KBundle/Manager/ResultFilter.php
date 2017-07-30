@@ -27,6 +27,7 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager;
 
+use Symfony\Component\DomCrawler\Crawler;
 use Flow\JSONPath\JSONPath;
 
 class ResultFilter {
@@ -216,7 +217,7 @@ class ResultFilter {
 		return $result;
 	}
 
-	protected function filterXML($crawler, $path, $namespaces = array()) {
+	protected function filterXML(Crawler $crawler, $path, $namespaces = array()) {
 		$result = $crawler->getNode(0)->ownerDocument->saveXML();
 		$xml = new \SimpleXMLElement($result);
 		foreach ($namespaces as $prefix => $nsuri) {
@@ -255,7 +256,7 @@ class ResultFilter {
 		return preg_match($pattern, $tag, $matches) && $matches[0] == $tag;
 	}
 
-	protected function &convertToXML(&$dom, $node_name, $arr=array()) {
+	protected function &convertToXML(\DomDocument &$dom, $node_name, $arr=array()) {
 		$node = $dom->createElement($node_name);
 		if(is_array($arr)){
 			if(isset($arr['@attributes'])) {
@@ -346,7 +347,7 @@ class ResultFilter {
 		}
 	}
 	
-	protected function nodeHasChild( $node ) {
+	protected function nodeHasChild( \DOMNode $node ) {
 		if ( $node->hasChildNodes() ) {
 			foreach ( $node->childNodes as $child ) {
 				if ( $child->nodeType == XML_ELEMENT_NODE ) {
