@@ -69,10 +69,9 @@ class BaseAdminController extends Controller {
 		$eof_ctrl_dir = "\x50\x4b\x05\x06\x00\x00\x00\x00";
 		$old_offset = 0;
 		foreach($contents as $content) {
-			$name = $content['name'];
 			$data = $content['data'];
 			$modtime = isset($content['modtime']) ? $content['modtime'] : time();
-			$name = str_replace('\\', '/', $name);
+			$name = str_replace('\\', '/', $content['name']);
 			$hexdtime = pack('V', $this->unix2DosTime($modtime));
 			$fr = "\x50\x4b\x03\x04";
 			$fr .= "\x14\x00"; // ver needed to extract
@@ -128,8 +127,7 @@ class BaseAdminController extends Controller {
 			pack('V', $old_offset) . //offset to start of central dir
 			"\x00\x00"; //.zip file comment length
 		// Return entire ZIP archive as string
-		$data = implode('', $datasec);
-		return $data . $header;
+		return implode('', $datasec) . $header;
 	}
 
 	protected function unix2DosTime($unixtime = 0) {

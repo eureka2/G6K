@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace EUREKA\G6KBundle\Manager;
+namespace EUREKA\G6KBundle\Manager\Json;
 
 use EUREKA\G6KBundle\Entity\Database;
 

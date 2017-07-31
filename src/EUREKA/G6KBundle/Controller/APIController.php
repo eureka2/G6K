@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44,6 +44,10 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class APIController extends BaseController {
 
+	private $datas = array();
+	private $metas = array();
+	private $errors = array();
+
 	public function calculAction(Request $request, $simu)
 	{
 		return $this->runCalcul($request, $simu);
@@ -78,41 +82,30 @@ class APIController extends BaseController {
 		return $this->apiOutput($request, $form, $step);
 	}
 
-	protected function apiOutput(Request $request, $form, $step)
+	protected function apiOutput(Request $request, $form, Step $step)
 	{
-		$datas = array();
-		$metas = array();
-		$errors = array();
 		$fields = array_fill_keys(preg_split('/\s*,\s*/', $request->query->get('fields', '')), 1);
 		foreach ($fields as $field => $val) {
 			if ($field != '') {
 				$data = $this->simu->getDataByName($field);
 				if (is_null($data)) {
-					$this->error = true;
-					$errors[] = array(
-						'status' => "" . Response::HTTP_BAD_REQUEST,
-						'title' => $this->get('translator')->trans("Invalid fields parameter"),
-						'detail' => $this->get('translator')->trans("This field doesn't exists"),
-						'source' => array(
-							'parameter' => $field
-						)
+					$this->addParameterError(
+						$field,
+						$this->get('translator')->trans("Invalid fields parameter"), 
+						$this->get('translator')->trans("This field doesn't exists")
 					);
 				} else {
-					$datas[$data->getName()] = $data->getValue();
-					$metas[$data->getName()] = $data->getLabel();
+					$this->datas[$data->getName()] = $data->getValue();
+					$this->metas[$data->getName()] = $data->getLabel();
 				}
 			}
 		}
 		$actionButton = "";
 		if (! isset($form['step'])) {
-			$this->error = true;
-			$errors[] = array(
-				'status' => "" . Response::HTTP_BAD_REQUEST,
-				'title' => $this->get('translator')->trans("Invalid step parameter"),
-				'detail' => $this->get('translator')->trans("The step parameter is required"),
-				'source' => array(
-					'parameter' => 'step'
-				)
+			$this->addParameterError(
+				'step',
+				$this->get('translator')->trans("Invalid step parameter"), 
+				$this->get('translator')->trans("The step parameter is required")
 			);
 		} else {
 			$cstep = $this->simu->getStepById($form['step']);
@@ -125,14 +118,10 @@ class APIController extends BaseController {
 					}
 				}
 				if ($actionButton == "") {
-					$this->error = true;
-					$errors[] = array(
-							'status' => "" . Response::HTTP_UNPROCESSABLE_ENTITY,
-							'title' => $this->get('translator')->trans("Missing action parameter"),
-							'detail' => $this->get('translator')->trans("The action parameter is required"),
-							'source' => array(
-								'pointer' => "/data/" . $this->simu->getName()
-							)
+					$this->addEntityError(
+						"/data/" . $this->simu->getName(),
+						$this->get('translator')->trans("Missing action parameter"), 
+						$this->get('translator')->trans("The action parameter is required")
 					);
 				}
 			}
@@ -141,37 +130,26 @@ class APIController extends BaseController {
 			if ($param != 'fields' && $param != 'step' && $param != $actionButton) {
 				$data = $this->simu->getDataByName($param);
 				if (is_null($data)) {
-					$this->error = true;
-					$errors[] = array(
-						'status' => "" . Response::HTTP_BAD_REQUEST,
-						'title' => $this->get('translator')->trans("Invalid parameter"),
-						'detail' => $this->get('translator')->trans("This parameter doesn't exists"),
-						'source' => array(
-							'parameter' => $param
-						)
+					$this->addParameterError(
+						$param,
+						$this->get('translator')->trans("Invalid parameter"), 
+						$this->get('translator')->trans("This parameter doesn't exists")
 					);
 				}
 			}
 		}
 		if ($this->simu->isError()) {
-			$errors[] = array(
-				'status' => "" . Response::HTTP_UNPROCESSABLE_ENTITY,
-				'title' => $this->get('translator')->trans("Global error"),
-				'detail' => implode("\n", $this->simu->getErrorMessages()),
-				'source' => array(
-					'pointer' => "/data/" . $this->simu->getName()
-				)
+			$this->addEntityError(
+				"/data/" . $this->simu->getName(),
+				$this->get('translator')->trans("Global error"), 
+				implode("\n", $this->simu->getErrorMessages())
 			);
 		}
 		if (is_null($step)) {
-			$this->error = true;
-			$errors[] = array(
-				'status' => "" . Response::HTTP_BAD_REQUEST,
-				'title' => $this->get('translator')->trans("Invalid step"),
-				'detail' => $this->get('translator')->trans("This step doesn't exists"),
-				'source' => array(
-					'parameter' => 'step'
-				)
+			$this->addParameterError(
+				'step',
+				$this->get('translator')->trans("Invalid step"), 
+				$this->get('translator')->trans("This step doesn't exists")
 			);
 		} else {
 			foreach ($step->getPanels() as $panel) {
@@ -182,54 +160,11 @@ class APIController extends BaseController {
 							if ($fieldset->isDisplayable()) {
 								foreach ($fieldset->getFields() as $child) {
 									if ($child instanceof Field) {
-										$field = $child;
-										if ($field->isDisplayable()) {
-											$id = $field->getData();
-											$data = $this->simu->getDataById($id);
-											if ($data instanceof DataGroup) {
-												if ($data->isError()) {
-													$errors[] = $this->makeResponseError($form, $data);
-												}
-												foreach ($data->getDatas() as $gdata) {
-													$datas[$gdata->getName()] = $gdata->getValue();
-													$metas[$gdata->getName()] = $gdata->getLabel();
-													if ($gdata->isError()) {
-														$errors[] = $this->makeResponseError($form, $gdata);
-													}
-												}
-											} elseif ($data instanceof Data) {
-												$datas[$data->getName()] = $data->getValue();
-												$metas[$data->getName()] = $data->getLabel();
-												if ($data->isError()) {
-													$errors[] = $this->makeResponseError($form, $data);;
-												}
-											}
-										}
+										$this->processApiField($form, $child);
 									} elseif ($child instanceof FieldRow) {
 										$fieldrow = $child;
 										foreach ($fieldrow->getFields() as $field) {
-											if ($field->isDisplayable()) {
-												$id = $field->getData();
-												$data = $this->simu->getDataById($id);
-												if ($data instanceof DataGroup) {
-													if ($data->isError()) {
-														$errors[] = $this->makeResponseError($form, $data);
-													}
-													foreach ($data->getDatas() as $gdata) {
-														$datas[$gdata->getName()] = $gdata->getValue();
-														$metas[$gdata->getName()] = $gdata->getLabel();
-														if ($gdata->isError()) {
-															$errors[] = $this->makeResponseError($form, $gdata);
-														}
-													}
-												} elseif ($data instanceof Data) {
-													$datas[$data->getName()] = $data->getValue();
-													$metas[$data->getName()] = $data->getLabel();
-													if ($data->isError()) {
-														$errors[] = $this->makeResponseError($form, $data);
-													}
-												}
-											}
+											$this->processApiField($form, $field);
 										}
 									}
 								}
@@ -239,71 +174,100 @@ class APIController extends BaseController {
 				}
 			}
 		}
-		// $id = array_shift( unpack('H*', $request->getQueryString()) );
-		// $qs =  urldecode(pack('H*', $id)); // for unpack
 		$id = urlencode(base64_encode( gzcompress($request->getQueryString())));
-		// $qs = urldecode(gzuncompress(base64_decode(urldecode($id)))); // for unpack
+		// steps to get the query string from the id :
+		// 1. urldecode the id
+		// 2. base64_decode the result
+		// 3. gzuncompress the result
+		// 4. urldecode the result
 		$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo() . '?' . $request->getQueryString();
 		$response = new Response();
 		$response->headers->set('Content-Type', 'application/json');
+		$content = array(
+			'links' => array(
+				'self' => $self
+			)
+		);
 		if ($this->error) {
-			$response->setContent(
-				json_encode(array(
-						'links' => array(
-							'self' => $self,
-						),
-						'errors' => $errors,
-						'data' => array(
-							'type' => $this->simu->getName(),
-							'id' => $id,
-							'attributes' => $datas,
-							'meta' => $metas
-						)
-					)
-				)
-			);
+			$content['errors'] = $this->errors;
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-		} else {
-			$response->setContent(
-				json_encode(array(
-						'links' => array(
-							'self' => $self,
-						),
-						'data' => array(
-							'type' => $this->simu->getName(),
-							'id' => $id,
-							'attributes' => $datas,
-							'meta' => $metas
-						)
-					)
-				)
-			);
 		}
+		$content['data'] = array(
+			'type' => $this->simu->getName(),
+			'id' => $id,
+			'attributes' => $this->datas,
+			'meta' => $this->metas
+		);
+		$response->setContent(json_encode($content));
 		return $response;
 	}
 
-	protected function makeResponseError($form, $data) {
+	private function processApiField($form, Field $field) {
+		if ($field->isDisplayable()) {
+			$id = $field->getData();
+			$data = $this->simu->getDataById($id);
+			if ($data instanceof DataGroup) {
+				if ($data->isError()) {
+					$this->addResponseError($form, $data);
+				}
+				foreach ($data->getDatas() as $gdata) {
+					$this->processApiFieldData($form, $gdata);
+				}
+			} elseif ($data instanceof Data) {
+				$this->processApiFieldData($form, $data);
+			}
+		}
+	}
+
+	private function processApiFieldData($form, Data $data) {
+		$this->datas[$data->getName()] = $data->getValue();
+		$this->metas[$data->getName()] = $data->getLabel();
+		if ($data->isError()) {
+			$this->addResponseError($form, $data);
+		}
+	}
+
+	private function addResponseError($form, Data $data) {
 		$name = $data->getName();
 		if (isset($form[$name])) {
-			return array(
-				'status' => "" . Response::HTTP_BAD_REQUEST,
-				'title' => $this->get('translator')->trans("Invalid parameter"),
-				'detail' => implode("\n", $data->getErrorMessages()),
-				'source' => array(
-					'parameter' => $name
-				)
+			$this->addParameterError(
+				$name,
+				$this->get('translator')->trans("Invalid parameter"), 
+				implode("\n", $data->getErrorMessages())
 			);
 		} else {
-			return array(
-				'status' => "" . Response::HTTP_UNPROCESSABLE_ENTITY,
-				'title' => $this->get('translator')->trans("Error on data"),
-				'detail' => implode("\n", $data->getErrorMessages()),
-				'source' => array(
-					'pointer' => "/data/attribute/" . $name
-				)
+			$this->addEntityError(
+				"/data/attribute/" . $name,
+				$this->get('translator')->trans("Error on data"), 
+				implode("\n", $data->getErrorMessages())
 			);
 		}
 	}
+
+	private function addParameterError($parameter, $title, $detail) {
+		$this->errors[] = array(
+			'status' => "" . Response::HTTP_BAD_REQUEST,
+			'title' => $title,
+			'detail' => $detail,
+			'source' => array(
+				'parameter' => $parameter
+			)
+		);
+		$this->error = true;
+	}
+
+	private function addEntityError($entity, $title, $detail) {
+		$this->errors[] = array(
+			'status' => "" . Response::HTTP_UNPROCESSABLE_ENTITY,
+			'title' => $title,
+			'detail' => $detail,
+			'source' => array(
+				'pointer' => $parameter
+			)
+		);
+		$this->error = true;
+	}
+
 }
 
 ?>

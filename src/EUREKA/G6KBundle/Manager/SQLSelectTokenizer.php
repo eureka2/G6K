@@ -25,8 +25,11 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager;
 
+use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
+use EUREKA\G6KBundle\Manager\ExpressionParser\Token;
+
 /**
- * @package EUREKA\G6KBundle\Entity
+ * @package EUREKA\G6KBundle\Manager
  * @version 1.0
  * @author Jacques Archimède
  */
@@ -332,7 +335,7 @@ class SQLSelectTokenizer  {
 	}
 
 	protected function parseWhere($where) {
-		$parser = new ExpressionParser();
+		$parser = new Parser();
 		$expr = str_replace(array(' and ', ' AND ', ' or ', ' OR '), array(' && ', ' && ', ' || ', ' || '), $where);
 		$expr = $parser->parse($expr);
 		$tokens = $expr->get();
@@ -799,38 +802,6 @@ class SQLSelectTokenizer  {
 		return $request;
 	}
 
-}
-
-/**
- * This class Represents an error raised by SQLSelectTokenizer.
- *
- * @package EUREKA\G6KBundle\Entity
- * @version 1.0
- * @author Jacques Archimède
- */
-class SQLSelectTokenizerException extends \Exception {
-
-	/**
-	 * Class constructor
-	 *
-	 * @access public
-	 * @param string $message the Exception message to throw. 
-	 * @param int $code the Exception code
-	 * @param Exception $previous the previous exception used for the exception chaining.
-	 */
-	public function __construct($message, $code = 0, \Exception $previous = null) {
-		parent::__construct($message, $code, $previous);
-	}
-
-	/**
-	 * Returns the string representation of the exception.
-	 *
-	 * @access public
-	 * @return string the string representation of the exception.
-	 */
-	public function __toString() {
-		return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
-	}
 }
 
 ?>

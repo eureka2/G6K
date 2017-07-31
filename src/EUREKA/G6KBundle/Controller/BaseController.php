@@ -42,7 +42,7 @@ use EUREKA\G6KBundle\Entity\Chapter;
 use EUREKA\G6KBundle\Entity\Section;
 use EUREKA\G6KBundle\Entity\Step;
 
-use EUREKA\G6KBundle\Manager\ExpressionParser;
+use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
 
@@ -73,7 +73,7 @@ class BaseController extends Controller {
 	protected function runStep(Request $request, $form, $simu, &$view, $test)
 	{
 		$no_js = $request->query->get('no-js') || 0;
-		$this->parser = new ExpressionParser();
+		$this->parser = new Parser();
 		$this->uricache = array();
 		try {
 			$this->simu = new Simulator($this);

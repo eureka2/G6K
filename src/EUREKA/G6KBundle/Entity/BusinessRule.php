@@ -26,8 +26,8 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
-use EUREKA\G6KBundle\Manager\ExpressionParser;
-use EUREKA\G6KBundle\Manager\Token;
+use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
+use EUREKA\G6KBundle\Manager\ExpressionParser\Token;
 
 class BusinessRule {
 	
@@ -393,7 +393,7 @@ class BusinessRule {
 			"year" => 1
 		);
 		
-		$parser = new ExpressionParser();
+		$parser = new Parser();
 		if (preg_match("/^#\d+$/", $this->conditions)) {
 			$this->conditions .= ' = true';
 		}

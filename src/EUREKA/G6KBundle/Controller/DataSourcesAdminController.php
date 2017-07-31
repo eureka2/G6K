@@ -38,8 +38,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use EUREKA\G6KBundle\Entity\Database;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
-use EUREKA\G6KBundle\Manager\JSONToSQLConverter;
-use EUREKA\G6KBundle\Manager\SQLToJSONConverter;
+use EUREKA\G6KBundle\Manager\Json\JSONToSQLConverter;
+use EUREKA\G6KBundle\Manager\Json\SQLToJSONConverter;
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
 
@@ -794,6 +794,10 @@ class DataSourcesAdminController extends BaseAdminController {
 				$result = $database->query($query);
 				break;
 		}
+		return $this->filterResult($result, $source);
+	}
+
+	protected function filterResult($result, $source) {
 		switch ((string)$source['returnType']) {
 			case 'json':
 				$json = json_decode($result, true);

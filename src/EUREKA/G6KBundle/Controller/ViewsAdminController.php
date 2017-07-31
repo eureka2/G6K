@@ -46,15 +46,19 @@ class ViewsAdminController extends BaseAdminController {
 	private $nodeNum = 0;
 	private $nodeFile = null;
 	private $node;
+	private $viewdir;
+	private $publicdir;
 
 	public function indexAction(Request $request, $view = null, $node = 0, $crud = null)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
-		return $this->runIndex($request, $view, $node, $crud);
+		$this->viewdir = $this->get('kernel')->getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/views";
+		$this->publicdir = $this->get('kernel')->getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/public";
+		$this->node = $node;
+		return $this->runIndex($request, $view, $crud);
 	}
 
-	protected function runIndex(Request $request, $view, $node, $crud)
-	{
+	protected function runIndex(Request $request, $view, $crud) {
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
@@ -64,29 +68,26 @@ class ViewsAdminController extends BaseAdminController {
 		} elseif ($crud == 'drop-view') {
 			return $this->dropView($view);
 		} elseif ($crud == 'doedit-node') {
-			return $this->doEditNode($form, $view, $node);
+			return $this->doEditNode($form, $view);
 		} elseif ($crud == 'rename-node') {
-			return $this->renameNode($form, $view, $node);
+			return $this->renameNode($form, $view);
 		} elseif ($crud == 'add-node') {
-			return $this->addViewNode($form, $request->files->all(), $view, $node);
+			return $this->addViewNode($form, $request->files->all(), $view);
 		} elseif ($crud == 'remove-node') {
-			return $this->removeViewNode($view, $node);
+			return $this->removeViewNode($view);
 		} elseif ($crud == 'export') {
-			return $this->exportViewNode($view, $node);
+			return $this->exportViewNode($view);
 		}
-		$this->node = $node;
-		$views_dir = $this->get('kernel')->getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/views";
-		$public_dir = $this->get('kernel')->getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/public";
-		$views = array_filter(scandir($views_dir), function ($simu) { return preg_match("/.xml$/", $simu); } );
+		$views = array_filter(scandir($this->viewdir), function ($simu) { return preg_match("/.xml$/", $simu); } );
 
 		$hiddens = array();
 		$hiddens['script'] = $script;
 		$hiddens['action'] = $crud == 'edit-node' ? 'edit' : 'show';
 		$views = array();
 		$finder = new Finder();
-		$finder->directories()->depth('< 1')->exclude(array('admin', 'base', 'Theme'))->in($views_dir)->sortByName();
+		$finder->directories()->depth('< 1')->exclude(array('admin', 'base', 'Theme'))->in($this->viewdir)->sortByName();
 		foreach ($finder as $file) {
-			if (file_exists($public_dir . '/' . $file->getRelativePathname())) {
+			if (file_exists($this->publicdir . '/' . $file->getRelativePathname())) {
 				$views[] = array(
 					'name' => $file->getBasename()
 				);
@@ -97,7 +98,7 @@ class ViewsAdminController extends BaseAdminController {
 			if ($view != 'new') {
 				$this->nodeNum = 0;
 				$viewInfos['name'] = $view;
-				$this->root = $views_dir;
+				$this->root = $this->viewdir;
 				$this->nodeNum++;
 				$viewInfos['templates'][] = array(
 					'name' => $view,
@@ -108,7 +109,7 @@ class ViewsAdminController extends BaseAdminController {
 					'isdir' => true,
 					'children' => $this->makeTree($view, 'template')
 				);
-				$this->root = $public_dir;
+				$this->root = $this->publicdir;
 				$this->nodeNum++;
 				$viewInfos['assets'][] = array(
 					'name' => $view,
@@ -142,7 +143,6 @@ class ViewsAdminController extends BaseAdminController {
 				)
 			);
 		} catch (\Exception $e) {
-			echo $e->getMessage();
 			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
 		}
 	}
@@ -150,11 +150,7 @@ class ViewsAdminController extends BaseAdminController {
 	protected function doCreateView($form, $files) {
 		$view = $form['view-name'];
 		$fs = new Filesystem();
-		$container = $this->get('kernel')->getContainer();
-		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
-		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
-		$viewdir = $bundle->getPath()."/Resources/views";
-		$publicdir = $bundle->getPath()."/Resources/public";
+		$uploadDir = str_replace("\\", "/", $this->get('kernel')->getContainer()->getParameter('g6k_upload_directory'));
 		$templatesfile = '';
 		$assetsfile = '';
 		foreach ($files as $fieldname => $file) {
@@ -177,24 +173,24 @@ class ViewsAdminController extends BaseAdminController {
 					array_push($extract, $info['name']);
 				}
 			}
-			$zip->extractTo($viewdir . '/' . $view, $extract);
+			$zip->extractTo($this->viewdir . '/' . $view, $extract);
 			$zip->close();
 			$fs->remove($templatesfile);
 		} else {
 			try {
-				$fs->mkdir($viewdir . '/' . $view);
+				$fs->mkdir($this->viewdir . '/' . $view);
 				// TODO: copy default view to this view
 			} catch (IOExceptionInterface $e) {
 			}
 		}
 		if ($assetsfile != '') {
 			$result =$zip->open($assetsfile, \ZipArchive::CHECKCONS);
-			$zip->extractTo($publicdir . '/' . $view);
+			$zip->extractTo($this->publicdir . '/' . $view);
 			$zip->close();
 			$fs->remove($assetsfile);
 		} else {
 			try {
-				$fs->mkdir($publicdir . '/' . $view);
+				$fs->mkdir($this->publicdir . '/' . $view);
 				// TODO: copy default view to this view
 			} catch (IOExceptionInterface $e) {
 			}
@@ -204,47 +200,33 @@ class ViewsAdminController extends BaseAdminController {
 
 	protected function dropView($view) {
 		$fs = new Filesystem();
-		$container = $this->get('kernel')->getContainer();
-		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
-		$viewdir = $bundle->getPath()."/Resources/views";
-		$publicdir = $bundle->getPath()."/Resources/public";
 		try {
-			$fs->remove($viewdir . '/' . $view);
-			$fs->remove($publicdir . '/' . $view);
+			$fs->remove($this->viewdir . '/' . $view);
+			$fs->remove($this->publicdir . '/' . $view);
 		} catch (IOExceptionInterface $e) {
 		}
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_views'));
 	}
 
-	protected function doEditNode($form, $view, $node) {
-		$this->node = $node;
+	protected function doEditNode($form, $view) {
 		$fs = new Filesystem();
-		$container = $this->get('kernel')->getContainer();
-		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
-		$viewdir = $bundle->getPath()."/Resources/views";
-		$publicdir = $bundle->getPath()."/Resources/public";
-		$nodePath = $this->searchNodePath($viewdir, $publicdir, $view);
-		if ($nodePath == $viewdir . "/" . $form['file'] || $nodePath == $publicdir . "/" . $form['file']) { // security check
+		$nodePath = $this->searchNodePath($view);
+		if ($nodePath == $this->viewdir . "/" . $form['file'] || $nodePath == $this->publicdir . "/" . $form['file']) { // security check
 			$fs->dumpFile($nodePath, $form['file-content']);
 		}
-		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view_node', array('view' => $view, 'node' => $node)));
+		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view_node', array('view' => $view, 'node' => $this->node)));
 	}
 
-	protected function renameNode($form, $view, $node) {
-		$this->node = $node;
+	protected function renameNode($form, $view) {
 		$fs = new Filesystem();
-		$container = $this->get('kernel')->getContainer();
-		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
-		$viewdir = $bundle->getPath()."/Resources/views";
-		$publicdir = $bundle->getPath()."/Resources/public";
-		$nodePath = $this->searchNodePath($viewdir, $publicdir, $view);
+		$nodePath = $this->searchNodePath($view);
 		$newName = $form['rename-node-name'];
-		if (basename($nodePath) == $view && (dirname($nodePath) == $viewdir || dirname($nodePath) == $publicdir)) {
-			$oldpath = $viewdir . '/' . basename($nodePath);
-			$newpath = $viewdir . '/' . $newName;
+		if (basename($nodePath) == $view && (dirname($nodePath) == $this->viewdir || dirname($nodePath) == $this->publicdir)) {
+			$oldpath = $this->viewdir . '/' . basename($nodePath);
+			$newpath = $this->viewdir . '/' . $newName;
 			$fs->rename($oldpath, $newpath);
-			$oldpath = $publicdir . '/' . basename($nodePath);
-			$newpath = $publicdir . '/' . $newName;
+			$oldpath = $this->publicdir . '/' . basename($nodePath);
+			$newpath = $this->publicdir . '/' . $newName;
 			$fs->rename($oldpath, $newpath);
 			$view =$newName;
 		} else {
@@ -254,14 +236,9 @@ class ViewsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
 	}
 
-	protected function removeViewNode($view, $node) {
-		$this->node = $node;
+	protected function removeViewNode($view) {
 		$fs = new Filesystem();
-		$container = $this->get('kernel')->getContainer();
-		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
-		$viewdir = $bundle->getPath()."/Resources/views";
-		$publicdir = $bundle->getPath()."/Resources/public";
-		$nodePath = $this->searchNodePath($viewdir, $publicdir, $view);
+		$nodePath = $this->searchNodePath($view);
 		if ($nodePath != '') {
 			try {
 				$fs->remove($nodePath);
@@ -271,15 +248,11 @@ class ViewsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
 	}
 
-	protected function addViewNode($form, $files, $view, $node) {
-		$this->node = $node;
+	protected function addViewNode($form, $files, $view) {
 		$fs = new Filesystem();
 		$container = $this->get('kernel')->getContainer();
-		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
-		$viewdir = $bundle->getPath()."/Resources/views";
-		$publicdir = $bundle->getPath()."/Resources/public";
 		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
-		$nodePath = $this->searchNodePath($viewdir, $publicdir, $view);
+		$nodePath = $this->searchNodePath($view);
 		if ($nodePath != '') {
 			$nodeName = $form['add-node-name'];
 			if ($form['add-folder-or-file'] == 'file') {
@@ -309,14 +282,9 @@ class ViewsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
 	}
 
-	protected function exportViewNode($view, $node) {
-		$this->node = $node;
+	protected function exportViewNode($view) {
 		$fs = new Filesystem();
-		$container = $this->get('kernel')->getContainer();
-		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
-		$viewdir = $bundle->getPath()."/Resources/views";
-		$publicdir = $bundle->getPath()."/Resources/public";
-		$nodePath = $this->searchNodePath($viewdir, $publicdir, $view);
+		$nodePath = $this->searchNodePath($view);
 		$content = array();
 		if ($nodePath != '') {
 			$finder = new Finder();
@@ -329,7 +297,7 @@ class ViewsAdminController extends BaseAdminController {
 				);
 			}
 		}
-		$filename = $node == 1 ? $view . "-templates" : $view . "-assets";
+		$filename = $this->node == 1 ? $view . "-templates" : $view . "-assets";
 		$zipcontent = $this->zip($content);
 		$response = new Response();
 		$response->headers->set('Cache-Control', 'private');
@@ -341,19 +309,19 @@ class ViewsAdminController extends BaseAdminController {
 		return $response;
 	}
 
-	private function searchNodePath($viewdir, $publicdir, $view) {
+	private function searchNodePath($view) {
 		$this->nodeNum = 1;
 		if ($this->nodeNum == $this->node) {
-			return $viewdir . "/" . $view;
+			return $this->viewdir . "/" . $view;
 		}
-		$this->root = $viewdir;
+		$this->root = $this->viewdir;
 		$nodePath = $this->findNodePath($view);
 		if ($nodePath == '') {
 			$this->nodeNum++;
 			if ($this->nodeNum == $this->node) {
-				return $publicdir . "/" . $view;
+				return $this->publicdir . "/" . $view;
 			}
-			$this->root = $publicdir;
+			$this->root = $this->publicdir;
 			$nodePath = $this->findNodePath($view);
 		}
 		return $nodePath;

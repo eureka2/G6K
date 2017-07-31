@@ -170,7 +170,6 @@ class DefaultController extends BaseController {
 			)
 		);
 
-		// define('_MPDF_TTFONTDATAPATH', dirname($this->get('kernel')->getCacheDir()) . '/mpdf/ttfontdata/'); 
 		$mpdfService = $this->get('tfox.mpdfport');
 		$mpdf = $mpdfService->getMpdf();
 		$mpdf->PDFA = true;
