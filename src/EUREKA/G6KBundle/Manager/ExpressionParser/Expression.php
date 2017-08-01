@@ -119,28 +119,7 @@ class Expression {
 		foreach ($this->tokens as $token) {
 			if ($token->type == Token::T_FIELD && count($fields) >= $token->value) {
 				$value = $fields[$token->value - 1];
-				if (is_array($value)) {
-					$token->type = Token::T_ARRAY;
-					$token->value = $value;
-				} elseif (is_numeric($value)) {
-					$token->type = Token::T_NUMBER;
-					$token->value = $value;
-				} else if (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
-                	$token->type = Token::T_DATE;
-					$date = \DateTime::createFromFormat("d/m/Y", $value, new \DateTimeZone( 'Europe/Paris' ));
-					$error = \DateTime::getLastErrors();
-					if ($error['error_count'] > 0) {
-						throw new \Exception($error['errors'][0]);
-					}
-					$date->setTime(0, 0, 0);
-					$token->value = $date;
-				} elseif (in_array($value, array('true', 'false'))) {
-					$token->type = Token::T_BOOLEAN;
-					$token->value = $value == 'true';
-				} else {
-					$token->type = Token::T_TEXT;
-					$token->value = $value;
-				}
+				$this->setToken($token, $value);
 			}
 		}
 	}
@@ -149,28 +128,7 @@ class Expression {
 		foreach ($this->tokens as $token) {
 			if ($token->type == Token::T_IDENT && isset($fields[$token->value])) {
 				$value = $fields[$token->value];
-				if (is_array($value)) {
-					$token->type = Token::T_ARRAY;
-					$token->value = $value;
-				} elseif (is_numeric($value)) {
-					$token->type = Token::T_NUMBER;
-					$token->value = $value;
-				} else if (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
-					$token->type = Token::T_DATE;
-					$date = \DateTime::createFromFormat("d/m/Y", $value, new \DateTimeZone( 'Europe/Paris' ));
-					$error = \DateTime::getLastErrors();
-					if ($error['error_count'] > 0) {
-						throw new \Exception($error['errors'][0]);
-					}
-					$date->setTime(0, 0, 0);
-					$token->value = $date;
-				} elseif (in_array($value, array('true', 'false'))) {
-					$token->type = Token::T_BOOLEAN;
-					$token->value = $value == 'true';
-				} else {
-					$token->type = Token::T_TEXT;
-					$token->value = $value;
-				}
+				$this->setToken($token, $value);
 			}
 		}
 	}
@@ -178,63 +136,48 @@ class Expression {
 	public function setVariables($variables) {
 		$completed = true;
 		foreach ($this->tokens as $token) {
-			if ($token->type == Token::T_FIELD && isset($variables[''.$token->value])) {
+			if (($token->type == Token::T_FIELD && isset($variables[''.$token->value])) || 
+				($token->type == Token::T_IDENT && isset($variables[$token->value]))) {
 				$value = $variables[''.$token->value];
 				if ((is_array($value) && count($value) == 0) || (is_string($value) && strlen($value) == 0)) {
 					$completed = false;
-				} elseif (is_array($value)) {
-					$token->type = Token::T_ARRAY;
-					$token->value = $value;
-				} elseif (is_numeric($value)) {
-					$token->type = Token::T_NUMBER;
-					$token->value = $value;
-				} elseif (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
-					$token->type = Token::T_DATE;
-					$date = \DateTime::createFromFormat("d/m/Y", $value, new \DateTimeZone( 'Europe/Paris' ));
-					$error = \DateTime::getLastErrors();
-					if ($error['error_count'] > 0) {
-						throw new \Exception($error['errors'][0]);
-					}
-					$date->setTime(0, 0, 0);
-					$token->value = $date;
-				} elseif (in_array($value, array('true', 'false'))) {
-					$token->type = Token::T_BOOLEAN;
-					$token->value = $value == 'true';
-				} else {
-					$token->type = Token::T_TEXT;
-					$token->value = $value;
+					continue;
 				}
-			} else if ($token->type == Token::T_IDENT && isset($variables[$token->value])) {
-				$value = $variables[$token->value];
-				if ((is_array($value) && count($value) == 0) || (is_string($value) && strlen($value) == 0)) {
-					$completed = false;
-				} elseif (is_array($value)) {
-					$token->type = Token::T_ARRAY;
-					$token->value = $value;
-				} elseif (is_numeric($value)) {
-					$token->type = Token::T_NUMBER;
-					$token->value = $value;
-				} elseif (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
-					$token->type = Token::T_DATE;
-					$date = \DateTime::createFromFormat("d/m/Y", $value, new \DateTimeZone( 'Europe/Paris' ));
-					$error = \DateTime::getLastErrors();
-					if ($error['error_count'] > 0) {
-						throw new \Exception($error['errors'][0]);
-					}
-					$date->setTime(0, 0, 0);
-					$token->value = $date;
-				} elseif (in_array($value, array('true', 'false'))) {
-					$token->type = Token::T_BOOLEAN;
-					$token->value = $value == 'true';
-				} else {
-					$token->type = Token::T_TEXT;
-					$token->value = $value;
-				}
+				$this->setToken($token, $value);
 			} elseif ($token->type == Token::T_FIELD || $token->type == Token::T_IDENT)  {
 				$completed = false;
 			}
 		}
 		return $completed;
+	}
+
+	protected function setToken(Token &$token, $value) {
+		if (is_array($value)) {
+			$token->type = Token::T_ARRAY;
+			$token->value = $value;
+		} elseif (is_numeric($value)) {
+			$token->type = Token::T_NUMBER;
+			$token->value = $value;
+		} elseif (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
+			$this->setDateToken($token, $value);
+		} elseif (in_array($value, array('true', 'false'))) {
+			$token->type = Token::T_BOOLEAN;
+			$token->value = $value == 'true';
+		} else {
+			$token->type = Token::T_TEXT;
+			$token->value = $value;
+		}
+	}
+
+	protected function setDateToken(Token &$token, $value) {
+		$token->type = Token::T_DATE;
+		$date = \DateTime::createFromFormat("d/m/Y", $value, new \DateTimeZone( 'Europe/Paris' ));
+		$error = \DateTime::getLastErrors();
+		if ($error['error_count'] > 0) {
+			throw new \Exception($error['errors'][0]);
+		}
+		$date->setTime(0, 0, 0);
+		$token->value = $date;
 	}
 
 	public function evaluate() {

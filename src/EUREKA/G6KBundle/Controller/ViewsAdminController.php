@@ -77,7 +77,12 @@ class ViewsAdminController extends BaseAdminController {
 			return $this->removeViewNode($view);
 		} elseif ($crud == 'export') {
 			return $this->exportViewNode($view);
+		} else {
+			return $this->showViews($request, $view, $crud);
 		}
+	}
+
+	protected function showViews(Request $request, $view, $crud) {
 		$views = array_filter(scandir($this->viewdir), function ($simu) { return preg_match("/.xml$/", $simu); } );
 		$hiddens = array();
 		$hiddens['script'] = $this->script;

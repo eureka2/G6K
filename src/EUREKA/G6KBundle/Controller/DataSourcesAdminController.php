@@ -164,14 +164,14 @@ class DataSourcesAdminController extends BaseAdminController {
 
 	public function indexAction(Request $request, $dsid = null, $table = null, $crud = null) {
 		$this->helper = new ControllersHelper($this, $this->container);
+		$no_js = $request->query->get('no-js') || 0;
+		$this->script = $no_js == 1 ? 0 : 1;
 		return $this->runIndex($request, $dsid, $table, $crud);
 	}
 
 	protected function runIndex(Request $request, $dsid, $table, $crud) {
 		$this->request = $request;
 		$form = $request->request->all();
-		$no_js = $request->query->get('no-js') || 0;
-		$this->script = $no_js == 1 ? 0 : 1;
 
 		$this->db_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/databases";
 		if (file_exists($this->db_dir."/DataSources.xml")) {
