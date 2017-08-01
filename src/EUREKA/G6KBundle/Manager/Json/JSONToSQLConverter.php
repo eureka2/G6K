@@ -132,10 +132,6 @@ class JSONToSQLConverter {
 		}
 		$dbtype = '';
 		$dbschema = '';
-		$dbhost = '';
-		$dbport = '';
-		$dbuser = '';
-		$dbpassword = '';
 		switch($this->parameters['database_driver']) {
 			case 'pdo_sqlite':
 				$dbtype = 'sqlite';

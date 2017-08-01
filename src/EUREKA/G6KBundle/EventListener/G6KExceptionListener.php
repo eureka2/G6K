@@ -59,7 +59,7 @@ class G6KExceptionListener
 			return sprintf($request->getBaseUrl().'/%s', ltrim($asset, '/'));
 		}));
 		$twig->registerUndefinedFunctionCallback(function ($name) {
-			return new \Twig_SimpleFunction($name, function() use($name) {
+			return new \Twig_SimpleFunction($name, function() {
 				return null;
 			});
 		});
@@ -94,10 +94,7 @@ class G6KExceptionListener
 				'pointer' => "/data/" . $simu
 			)
 		);
-		// $id = array_shift( unpack('H*', $request->getQueryString()) );
-		// $qs =  urldecode(pack('H*', $id)); // for unpack
 		$id = urlencode(base64_encode( gzcompress($request->getQueryString())));
-		$qs = urldecode(gzuncompress(base64_decode(urldecode($id))));
 		$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo() . '?' . $request->getQueryString();
 		$response = new Response();
 		$response->headers->set('Content-Type', 'application/json');

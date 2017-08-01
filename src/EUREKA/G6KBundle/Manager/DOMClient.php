@@ -24,14 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/* Usage :
- * use EUREKA\G6KBundle\Manager\DOMClient as Client;
- *
- * $client = Client::createClient();
- * $crawler = $client->request('GET', $uri);
- * $result = $crawler->getNode(0)->ownerDocument->saveXML();
- */
- 
 namespace EUREKA\G6KBundle\Manager;
 
 use Symfony\Component\BrowserKit\Client as BaseClient;
@@ -207,7 +199,7 @@ class DOMClient extends BaseClient {
 		return $decoded;
 	}
 
-	private function makeRemote($server) {
+	public function makeRemote($server) {
 		$host = $server['HTTP_HOST'];
 		if (!preg_match("/:\d+$/", $host)) {
 			$port = $server['HTTPS'] ? "443" : "80";
@@ -217,7 +209,7 @@ class DOMClient extends BaseClient {
 		return $transport . '://' . $host;
 	}
 
-	private function getPath($uri) {
+	public function getPath($uri) {
 		$path = parse_url($uri, PHP_URL_PATH);
 		$query = parse_url($uri, PHP_URL_QUERY);
 		if ($query !== null) {
@@ -226,7 +218,7 @@ class DOMClient extends BaseClient {
 		return $path;
 	}
 
-	private function encodeData($data) {
+	public function encodeData($data) {
 		if (is_array($data))  {
 			$encoded = "";
 			foreach ($data as $key => $val) {
@@ -244,7 +236,7 @@ class DOMClient extends BaseClient {
 		}
 	}
 
-	private function randomNonce($bits = 256) {
+	public function randomNonce($bits = 256) {
 		$bytes = ceil($bits / 8);
 		$return = '';
 		for ($i = 0; $i < $bytes; $i++) {

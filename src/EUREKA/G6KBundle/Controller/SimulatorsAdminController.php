@@ -392,7 +392,6 @@ class SimulatorsAdminController extends BaseAdminController {
 			$simulator = $simulatorData["name"];
 		}
 		$datas = json_decode($form['datas'], true);
-		// file_put_contents($simu_dir."/work/".$simulator."-datas.json", var_export($datas, true));
 
 		$this->simu->setDatas(array());
 		foreach($datas as $i => $data) {
@@ -502,7 +501,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 
 		$steps = json_decode($form['steps'], true);
-		// file_put_contents($simu_dir."/work/".$simulator."-steps.json", var_export($steps, true));
 
 		$this->simu->setSteps(array());
 		$step0 = false;
@@ -665,7 +663,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 
 		$rulesData = json_decode($form['rules'], true);
-		// file_put_contents($simu_dir."/work/".$simulator."-rules.json", var_export($rulesData, true));
 
 		$this->simu->setBusinessRules(array());
 
@@ -948,7 +945,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 
 		$sources = json_decode($form['sources'], true);
-		// file_put_contents($simu_dir."/work/".$simulator."-sources.json", var_export($sources, true));
 
 		$this->simu->setSources(array());
 		foreach($sources as $id => $source) {
@@ -992,7 +988,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 
 		$profiles = json_decode($form['profiles'], true);
-		// file_put_contents($simu_dir."/work/".$simulator."-profiles.json", var_export($profiles, true));
 
 		$profilesObj = new Profiles($this->simu);
 		$profilesObj->setLabel($profiles['label']);

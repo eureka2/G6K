@@ -976,7 +976,7 @@ class BaseController extends Controller {
 	{
 		$businessrules = $this->simu->getBusinessRules();
 		foreach ($businessrules as $businessrule) {
-			$result = $this->processRule($businessrule, $istep) ;
+			$this->processRule($businessrule, $istep) ;
 		}
 	}
 
@@ -985,12 +985,8 @@ class BaseController extends Controller {
 		$this->sources = array();
 		foreach ($this->simu->getDatas() as $data) {
 			if ($data instanceof DataGroup) {
-				$inputStepId = false;
 				foreach ($data->getDatas() as $gdata) {
 					$this->processData($gdata, $istep);
-					if ($gdata->getInputStepId() == $istep) {
-						$inputStepId = true;
-					}
 				}
 			} elseif ($data instanceof Data) {
 				$this->processData($data, $istep);

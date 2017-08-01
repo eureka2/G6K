@@ -220,7 +220,7 @@ class Database {
 		return $this->isConnected();
 	}
 
-	public function query($sql, $unbuffered = false) {
+	public function query($sql) {
 		$sql = $this->convertSQLFunctions($sql);
 		$query_result = false;
 		switch ($this->type) {
@@ -343,7 +343,6 @@ class Database {
 	}
 
 	public function quote($value) {
-		$query_result = false;
 		switch ($this->type) {
 			case "mysql":
 			case "mysqli":
@@ -355,7 +354,7 @@ class Database {
 		return $value;
 	}
 
-	public function lastInsertId($tablename) {
+	public function lastInsertId() {
 		switch ($this->type) {
 			case "mysql":
 			case "mysqli":

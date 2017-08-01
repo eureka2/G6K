@@ -48,6 +48,7 @@ class ViewsAdminController extends BaseAdminController {
 	private $node;
 	private $viewdir;
 	private $publicdir;
+	private $script;
 
 	public function indexAction(Request $request, $view = null, $node = 0, $crud = null)
 	{
@@ -55,14 +56,13 @@ class ViewsAdminController extends BaseAdminController {
 		$this->viewdir = $this->get('kernel')->getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/views";
 		$this->publicdir = $this->get('kernel')->getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/public";
 		$this->node = $node;
+		$no_js = $request->query->get('no-js') || 0;
+		$this->script = $no_js == 1 ? 0 : 1;
 		return $this->runIndex($request, $view, $crud);
 	}
 
 	protected function runIndex(Request $request, $view, $crud) {
 		$form = $request->request->all();
-		$no_js = $request->query->get('no-js') || 0;
-		$script = $no_js == 1 ? 0 : 1;
-
 		if ($crud == 'docreate-view') {
 			return $this->doCreateView($form, $request->files->all());
 		} elseif ($crud == 'drop-view') {
@@ -79,9 +79,8 @@ class ViewsAdminController extends BaseAdminController {
 			return $this->exportViewNode($view);
 		}
 		$views = array_filter(scandir($this->viewdir), function ($simu) { return preg_match("/.xml$/", $simu); } );
-
 		$hiddens = array();
-		$hiddens['script'] = $script;
+		$hiddens['script'] = $this->script;
 		$hiddens['action'] = $crud == 'edit-node' ? 'edit' : 'show';
 		$views = array();
 		$finder = new Finder();
@@ -138,7 +137,7 @@ class ViewsAdminController extends BaseAdminController {
 					'node' => $this->node,
 					'file' => $this->nodeFile,
 					'hiddens' => $hiddens,
-					'script' => $script,
+					'script' => $this->script,
 					'simulator' => null
 				)
 			);
@@ -165,7 +164,7 @@ class ViewsAdminController extends BaseAdminController {
 		}
 		$zip = new \ZipArchive();
 		if ($templatesfile != '') {
-			$result =$zip->open($templatesfile, \ZipArchive::CHECKCONS);
+			$zip->open($templatesfile, \ZipArchive::CHECKCONS);
 			$extract = array();
 			for( $i = 0; $i < $zip->numFiles; $i++ ){
 				$info = $zip->statIndex( $i );
@@ -184,7 +183,7 @@ class ViewsAdminController extends BaseAdminController {
 			}
 		}
 		if ($assetsfile != '') {
-			$result =$zip->open($assetsfile, \ZipArchive::CHECKCONS);
+			$zip->open($assetsfile, \ZipArchive::CHECKCONS);
 			$zip->extractTo($this->publicdir . '/' . $view);
 			$zip->close();
 			$fs->remove($assetsfile);
@@ -283,7 +282,6 @@ class ViewsAdminController extends BaseAdminController {
 	}
 
 	protected function exportViewNode($view) {
-		$fs = new Filesystem();
 		$nodePath = $this->searchNodePath($view);
 		$content = array();
 		if ($nodePath != '') {

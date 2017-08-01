@@ -64,17 +64,6 @@ class SQLSelectTokenizer  {
 	const RIGHT_JOIN = 3;
 
 	/**
-	 * Conversion table of SQL functions in PHP functions
-	 *
-	 * @var array
-	 * @access private
-	 */
-	private $synonyms = array(
-		'power' => 'pow',
-		'random' => 'rand',
-	);
-
-	/**
 	 * Allowed PHP functions in conditions
 	 *
 	 * @var array
@@ -190,24 +179,6 @@ class SQLSelectTokenizer  {
 
 	public function setTables($tables) {
 		$this->tables = $tables;
-	}
-
-	/**
-	 * Replaces into an expression, the SQL functions by their PHP equivalents
-	 *
-	 * @access private
-	 * @param string $expr the SQL expression
-	 * @return string the new expression with PHP functions.
-	 */
-	private function replaceSynonyms($expr) {
-		return preg_replace_callback(
-			'/(\W*)('.implode('|', array_keys($this->synonyms)).'|'.implode('|', array_values($this->synonyms)).')\s*\(/i', 
-			function ($matches) {
-				$func = strtolower($matches[2]);
-				return isset($this->synonyms[$func]) ? $matches[1].$this->synonyms[$func].'(' : $matches[1].$func.'(';
-			}, 
-			$expr
-		);
 	}
 
 	/**
@@ -667,9 +638,6 @@ class SQLSelectTokenizer  {
 			} else {
 				$column = $alias = $field;
 			}
-			// $column = preg_replace('/(\s*)count\s*\(\s*\*\s*\)/i', '$1count__all', $column);
-			// $column = preg_replace('/(\s*)(count|sum|avg|min|max)\s*\(([^\)]+)\)/i', '$1$2__$3', $column);
-			// $column = preg_replace("/(\w+)\.(\w+)/", "$1__$2", $column);
 			$column = $this->parseExpression($column);
 			$selectList[$column] = $alias;
 			$columnsAliases[$alias] = $column;
@@ -686,8 +654,6 @@ class SQLSelectTokenizer  {
 		}
 		$request->where = $this->parseConditions($request->where);
 		$request->having = $this->parseConditions($request->having);
-		// $request->having = preg_replace('/(\s*)count\s*\(\s*\*\s*\)/i', '$1count__all', $request->having);
-		// $request->having = preg_replace('/(\s*)(count|sum|avg|min|max)\s*\(([^\)]+)\)/i', '$1$2__$3', $request->having);
 		foreach($request->from as &$from) {
 			$from->on = $this->parseConditions($from->on);
 		}

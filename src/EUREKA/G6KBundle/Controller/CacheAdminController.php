@@ -49,7 +49,6 @@ class CacheAdminController extends BaseAdminController {
 	
 	protected function runClear(Request $request, $env)
 	{
-		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
 		

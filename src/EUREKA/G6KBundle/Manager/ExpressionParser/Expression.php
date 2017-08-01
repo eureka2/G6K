@@ -650,7 +650,7 @@ class Expression {
 		return $easter;
 	}
 
-	private function nthDayOfMonth($nth, $day, $month, $year) {
+	public function nthDayOfMonth($nth, $day, $month, $year) {
 	$dayname = array('sunday',  'monday',  'tuesday',  'wednesday',  'thursday',  'friday',  'saturday',  'sun',  'mon',  'tue',  'wed',  'thu',  'fri',  'sat',  'sun');
 		$monthname = array('january',  'february',  'march',  'april',  'may',  'june',  'july',  'august',  'september',  'october',  'november',  'december',  'jan',  'feb',  'mar',  'apr',  'may',  'jun',  'jul',  'aug',  'sep',  'sept',  'oct',  'nov',  'dec');
 		$ordinal = array('first',  'second',  'third',  'fourth',  'fifth',  'sixth',  'seventh',  'eighth',  'ninth',  'tenth',  'eleventh',  'twelfth');
@@ -795,8 +795,6 @@ class Expression {
 		}
 		$date = clone $dateObject;
 		$newDate = $date->add($int);
-		// goes back 1 day from date, remove if you want same day of month
-		// $newDate->sub(new \DateInterval('P1D')); 
 		return $newDate;
 	}
 

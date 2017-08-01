@@ -1465,7 +1465,6 @@ class JsonSQL  {
 	 * @throws JsonSQLException
 	 */
 	protected function parseSetOperations($sql) {
-		$clauses = array();
 		$chunks = preg_split("/\b(union|union\s+all|intersect|except|minus)\s+select\b/i", "union all " . $sql, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		$chunksCount = count($chunks);
 		if ($chunksCount % 2 > 0) {
@@ -2914,7 +2913,6 @@ class JsonSQL  {
 			}
 			$positions[$keyword] = $chunks[$i][1];
 		}
-		$prev = '';
 		foreach ($keywords as $i => $keyword) {
 			if ($i > 0 && isset($positions[$keyword]) && isset($positions[$keywords[$i -1]]) && $positions[$keyword] < $positions[$keywords[$i -1]]) {
 				throw new JsonSQLException("syntax error near : " . $keyword . ' ' . $clauses[$keyword]);

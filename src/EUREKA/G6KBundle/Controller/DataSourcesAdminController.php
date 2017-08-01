@@ -57,7 +57,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	const SQL_CREATE_KEYWORD = 'CR' . 'EATE TABLE ';
 	const SQL_DELETE_KEYWORD = 'DEL' . 'ETE FR' . 'OM ';
 
-	private $log = array();
 	private $datasources = array();
 	
 	private $db_dir;
@@ -647,7 +646,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	protected function doImportTable($form, $dsid, $table, $database, $files) {
 		$container = $this->get('kernel')->getContainer();
 		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
-		$datas = array();
 		$csvfile = '';
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
@@ -1182,7 +1180,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				break;
 			case 'mysql':
 			case 'mysqli':
-				$dbname = $database->getName();
+				$dbschema = $database->getName();
 				try {
 					$database->exec("CREATE DATABASE IF NOT EXISTS " . $dbschema . " character set utf8");
 					$database->setConnected(false);
@@ -1483,7 +1481,6 @@ class DataSourcesAdminController extends BaseAdminController {
 				$tmpname = 't'.time();
 				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ", preg_replace("/[\(]/", "( ", $row['sql'], 1))));
 				$createtemptableSQL = 'CREATE TEMPORARY '.substr(trim(preg_replace("'" . $table . "'", $tmpname, $origsql, 1)), 6);
-				$createindexsql = array();
 				$i = 0;
 				$defs = preg_split("/[,]+/", $alterdefs, -1, PREG_SPLIT_NO_EMPTY);
 				$prevword = $table;
@@ -1761,7 +1758,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		if (($result = $this->addDBTableRow($form, $table, $database)) !== true) {
 			return $this->errorResponse($form, $result);
 		}
-		$form['id'] = $database->lastInsertId($table);
+		$form['id'] = $database->lastInsertId();
 		$response = new Response();
 		$response->setContent(json_encode($form));
 		$response->headers->set('Content-Type', 'application/json');
@@ -1896,7 +1893,6 @@ class DataSourcesAdminController extends BaseAdminController {
 		$datasource = $xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0);
 		$tables = $datasource->getElementsByTagName('Table');
 		$len = $tables->length;
-		$maxId = 0;
 		for($i = 0; $i < $len; $i++) {
 			$name = $tables->item($i)->getAttribute('name');
 			if ($name == $table) {
@@ -2032,7 +2028,6 @@ class DataSourcesAdminController extends BaseAdminController {
 		$xpath = new \DOMXPath($dom);
 		$datasource = $xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0);
 		$type = $datasource->getAttribute('type');
-		$descr = $datasource->getElementsByTagName('Description');
 		if ($type == 'internal' || $type == 'database') {
 			$dbs = $xpath->query("/DataSources/Databases");
 			$db = $xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0);
@@ -2065,7 +2060,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						$tables = $datasource->getElementsByTagName('Table');
 						foreach ($tables as $table) {
 							$this->dropDBTable($table->getAttribute("name"), $database);
-							if (($result = $this->dropDBTable($table->getAttribute("name"), $database)) !== true) {
+							if (($this->dropDBTable($table->getAttribute("name"), $database)) !== true) {
 								// Do something ????
 							}
 						}

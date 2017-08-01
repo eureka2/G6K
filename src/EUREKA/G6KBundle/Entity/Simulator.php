@@ -1696,7 +1696,6 @@ class Simulator {
 			return json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES);
 		} else {
 			return json_encode($json);
-			// return json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES);
 		}
 	}
 

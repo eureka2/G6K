@@ -41,8 +41,8 @@ class Field {
 	private $underlabel = false; // false, true
 	private $help = true; // false, true
 	private $emphasize = false; // false, true
-	private $explanation = ""; //expression;
-	private $widget = ""; //string;
+	private $explanation = ""; // expression
+	private $widget = ""; // string
 	private $expanded = true;
 	private $preNote = null;
 	private $postNote = null;

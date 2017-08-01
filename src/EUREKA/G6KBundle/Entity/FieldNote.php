@@ -37,7 +37,7 @@ class FieldNote {
 	}
 
 	public function getField() {
-		return $this->step;
+		return $this->field;
 	}
 
 	public function isDisplayable() {

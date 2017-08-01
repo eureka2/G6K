@@ -38,7 +38,6 @@ use Binfo\Silex\MobileDetectServiceProvider;
 
 class HomeAdminController extends BaseAdminController {
 	
-	private $log = array();
 	private $datasources = array();
 
 	public function indexAction(Request $request)
@@ -49,7 +48,6 @@ class HomeAdminController extends BaseAdminController {
 	
 	protected function runIndex(Request $request)
 	{
-		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
 
