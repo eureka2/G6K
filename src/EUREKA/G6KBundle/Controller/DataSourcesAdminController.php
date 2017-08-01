@@ -38,7 +38,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use EUREKA\G6KBundle\Entity\Database;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
-use EUREKA\G6KBundle\Manager\Json\JSONToSQLConverter;
+use EUREKA\G6KBundle\Manager\DatasourcesHelper;
 use EUREKA\G6KBundle\Manager\Json\SQLToJSONConverter;
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
@@ -577,61 +577,8 @@ class DataSourcesAdminController extends BaseAdminController {
 					$parameters['database_password'] = $container->getParameter('database_password');
 				}
 			}
-			$converter = new JSONToSQLConverter($parameters, $this->db_dir);
-			$form = $converter->convert($name, $schemafile, $datafile);
-			$datasource = $this->doCreateDatasource($form);
-			$dom = $datasource->ownerDocument;
-			$tableid = 1;
-			foreach ($form['datasource-tables'] as $tbl) {
-				$table = $dom->createElement("Table");
-				$table->setAttribute('id', $tableid++);
-				$table->setAttribute('name', $tbl['name']);
-				$table->setAttribute('label', $tbl['label']);
-				$descr = $dom->createElement("Description");
-				$descr->appendChild($dom->createCDATASection($tbl['description']));
-				$table->appendChild($descr);
-				$columnid = 1;
-				foreach ($tbl['columns'] as $col) {
-					$column = $dom->createElement("Column");
-					$column->setAttribute('id', $columnid++);
-					$column->setAttribute('name', $col['name']);
-					$column->setAttribute('type', $col['type']);
-					$column->setAttribute('label', $col['label']);
-					$descr = $dom->createElement("Description");
-					$descr->appendChild($dom->createCDATASection($col['description']));
-					$column->appendChild($descr);
-					if (isset($col['choices'])) {
-						$choices = $dom->createElement("Choices");
-						$choiceid = 1;
-						foreach ($col['choices'] as $ch) {
-							$choice = $dom->createElement("Choice");
-							$choice->setAttribute('id', $choiceid++);
-							$choice->setAttribute('value', $ch['value']);
-							$choice->setAttribute('label', $ch['label']);
-							$choices->appendChild($choice);
-						}
-						$column->appendChild($choices);
-					} elseif (isset($col['source'])) {
-						$choices = $dom->createElement("Choices");
-						$source = $dom->createElement("Source");
-						$source->setAttribute('id', 1);
-						$source->setAttribute('datasource', $col['source']['datasource']);
-						if (isset($col['source']['request'])) {
-							$source->setAttribute('request', $col['source']['request']);
-						}
-						$source->setAttribute('returnType', $col['source']['returnType']);
-						if (isset($col['source']['returnPath'])) {
-							$source->setAttribute('returnPath', $col['source']['returnPath']);
-						}
-						$source->setAttribute('valueColumn', $col['source']['valueColumn']);
-						$source->setAttribute('labelColumn', $col['source']['labelColumn']);
-						$choices->appendChild($source);
-						$column->appendChild($choices);
-					}
-					$table->appendChild($column);
-				}
-				$datasource->appendChild($table);
-			}
+			$helper = new DatasourcesHelper($this->datasources);
+			$dom = $helper->makeDatasourceDom($name, $schemafile, $datafile, $parameters, $this->db_dir);
 			$this->saveDatasources($dom);
 		}
 		if ($schemafile != '') {
@@ -1084,74 +1031,17 @@ class DataSourcesAdminController extends BaseAdminController {
 		);
 	}
 
-	protected function doCreateDatasource ($form) {
-		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
-		$xpath = new \DOMXPath($dom);
-		$dss = $xpath->query("/DataSources");
-		$dbs = $xpath->query("/DataSources/Databases");
+	protected function createDatasource($form) {
+		$helper = new DatasourcesHelper($this->datasources);
+		$datasource = $helper->doCreateDatasource($form);
+		$this->saveDatasources($datasource->ownerDocument);
 		$type = $form['datasource-type'];
-		$ds = $dss->item(0)->getElementsByTagName('DataSource');
-		$len = $ds->length;
-		$maxId = 0;
-		for($i = 0; $i < $len; $i++) {
-			$id = (int)$ds->item($i)->getAttribute('id');
-			if ($id > $maxId) {
-				$maxId = $id;
+		$dbtype = $form['datasource-database-type'];
+		if ($type == 'internal') {
+			if (($result = $this->createDB($datasource->getAttribute('id'), $dbtype)) !== true) {
+				return $this->errorResponse($form, $result);
 			}
 		}
-		$datasource = $dom->createElement("DataSource");
-		$datasource->setAttribute('id', $maxId + 1);
-		$datasource->setAttribute('type', $type);
-		$datasource->setAttribute('name', $form['datasource-name']);
-		$descr = $dom->createElement("Description");
-		$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['datasource-description'])));
-		$datasource->appendChild($descr);
-		switch($type) {
-			case 'internal':
-			case 'database':
-				$db = $dbs->item(0)->getElementsByTagName('Database');
-				$len = $db->length;
-				$maxId = 0;
-				for($i = 0; $i < $len; $i++) {
-					$id = (int)$db->item($i)->getAttribute('id');
-					if ($id > $maxId) {
-						$maxId = $id;
-					}
-				}
-				$dbtype = $form['datasource-database-type'];
-				$dbname = $form['datasource-database-name'];
-				if ($dbtype == 'sqlite' && ! preg_match("/\.db$/", $dbname)) {
-					$dbname .= '.db';
-				}
-				$database = $dom->createElement("Database");
-				$database->setAttribute('id', $maxId + 1);
-				$database->setAttribute('type', $dbtype);
-				$database->setAttribute('name', $dbname);
-				$database->setAttribute('label', $form['datasource-database-label']);
-				if ($dbtype == 'mysqli' || $dbtype == 'pgsql') {
-					$database->setAttribute('host', $form['datasource-database-host']);
-					$database->setAttribute('port', $form['datasource-database-port']);
-					$database->setAttribute('user', $form['datasource-database-user']);
-					if (isset($form['datasource-database-password'])) {
-						$database->setAttribute('password', $form['datasource-database-password']);
-					}
-				}
-				$dbs->item(0)->appendChild($database);
-				$datasource->setAttribute('database', $database->getAttribute('id'));
-				break;
-			case 'uri':
-				$datasource->setAttribute('name', $form['datasource-name']);
-				$datasource->setAttribute('uri', $form['datasource-uri']);
-				$datasource->setAttribute('method', $form['datasource-method']);
-				break;
-		}
-		$dss->item(0)->insertBefore($datasource, $dbs->item(0));
-		return $datasource;
-	}
-
-	protected function createDatasource($form) {
-		$datasource = $this->doCreateDatasource($form);
-		$this->saveDatasources($datasource->ownerDocument);
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
 	}
 
@@ -1223,6 +1113,44 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		if ($database->gettype() == 'jsonsql') {
 			$database->getConnection()->commit();
+		}
+		return true;
+	}
+
+	protected function createDB($dsid, $dbtype) {
+		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
+		$datasource = $datasources[0];
+		try {
+			if ($dbtype == 'jsonsql' || $dbtype == 'sqlite') {
+				$database = $this->getDatabase($dsid);
+			} else {
+				$database = $this->getDatabase($dsid, false);
+			}
+		} catch (\Exception $e) {
+			return $this->get('translator')->trans("Can't get database : %error%", array('%error%' => $e->getMessage()));
+		}
+		switch ($database->getType()) {
+			case 'pgsql':
+				$dbschema = str_replace('-', '_', $database->getName());
+				try {
+					$database->exec("CREATE DATABASE " . $dbschema. " encoding 'UTF8'");
+					$database->setConnected(false);
+					$database->connect();
+				} catch (\Exception $e) {
+					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
+				}
+				break;
+			case 'mysql':
+			case 'mysqli':
+				$dbschema = $database->getName();
+				try {
+					$database->exec("CREATE DATABASE IF NOT EXISTS " . $dbschema . " character set utf8");
+					$database->setConnected(false);
+					$database->connect();
+				} catch (\Exception $e) {
+					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
+				}
+				break;
 		}
 		return true;
 	}

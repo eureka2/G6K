@@ -94,7 +94,6 @@ class G6KExceptionListener
 				'pointer' => "/data/" . $simu
 			)
 		);
-		$id = urlencode(base64_encode( gzcompress($request->getQueryString())));
 		$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo() . '?' . $request->getQueryString();
 		$response = new Response();
 		$response->headers->set('Content-Type', 'application/json');
