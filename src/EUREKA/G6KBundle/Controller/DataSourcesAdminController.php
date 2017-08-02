@@ -1046,40 +1046,12 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	protected function migrateDB($dsid, $dbtype, $fromDatabase) {
+		if (($result = $this->createDB($dsid, $dbtype)) !== true) {
+			return $result;
+		}
 		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
 		$datasource = $datasources[0];
-		try {
-			if ($dbtype == 'jsonsql' || $dbtype == 'sqlite') {
-				$database = $this->getDatabase($dsid);
-			} else {
-				$database = $this->getDatabase($dsid, false);
-			}
-		} catch (\Exception $e) {
-			return $this->get('translator')->trans("Can't get database : %error%", array('%error%' => $e->getMessage()));
-		}
-		switch ($database->getType()) {
-			case 'pgsql':
-				$dbschema = str_replace('-', '_', $database->getName());
-				try {
-					$database->exec("CREATE DATABASE " . $dbschema. " encoding 'UTF8'");
-					$database->setConnected(false);
-					$database->connect();
-				} catch (\Exception $e) {
-					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
-				}
-				break;
-			case 'mysql':
-			case 'mysqli':
-				$dbschema = $database->getName();
-				try {
-					$database->exec("CREATE DATABASE IF NOT EXISTS " . $dbschema . " character set utf8");
-					$database->setConnected(false);
-					$database->connect();
-				} catch (\Exception $e) {
-					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
-				}
-				break;
-		}
+		$database = $this->getDatabase($dsid);
 		foreach ($datasource->children() as $child) {
 			if ($child->getName() == 'Table') {
 				$table = (string)$child['name'];
@@ -1119,7 +1091,6 @@ class DataSourcesAdminController extends BaseAdminController {
 
 	protected function createDB($dsid, $dbtype) {
 		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
-		$datasource = $datasources[0];
 		try {
 			if ($dbtype == 'jsonsql' || $dbtype == 'sqlite') {
 				$database = $this->getDatabase($dsid);

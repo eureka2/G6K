@@ -57,8 +57,6 @@ use EUREKA\G6KBundle\Entity\Profiles;
 use EUREKA\G6KBundle\Entity\Profile;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
-use EUREKA\G6KBundle\Manager\DOMClient as Client;
-use EUREKA\G6KBundle\Manager\ResultFilter;
 use EUREKA\G6KBundle\Manager\SQLSelectTokenizer;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -81,15 +79,17 @@ class SimulatorsAdminController extends BaseAdminController {
 	const SQL_ORDER_BY_KEYWORD = 'ORD' . 'ER BY ';
 	const SQL_LIMIT_KEYWORD = 'LI' . 'MIT ';
 
-	private $simu = null;
+	public $simu = null;
 	private $dataset = array();
 	private $actions = array();
 	private $rules = array();
 	private $steps = array();
+	public $uricache = array();
 
 	public function indexAction(Request $request, $simulator = null, $crud = null)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
+		$this->uricache = array();
 		return $this->runIndex($request, $simulator, $crud);
 	}
 
@@ -375,6 +375,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
 		$publicdir = $bundle->getPath()."/Resources/public";
 		$simu_dir = $bundle->getPath()."/Resources/data/simulators";
+
 		$simulatorData = json_decode($form['simulator'], true);
 		$this->simu->setName($simulatorData["name"]);
 		$this->simu->setLabel($simulatorData["label"]);
@@ -382,8 +383,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->setReferer($simulatorData["referer"]);
 		$this->simu->setDynamic($simulatorData['dynamic'] == '1');
 		$this->simu->setMemo($simulatorData['memo'] == '1');
-		$this->simu->setDescription(trim($this->replaceVarTagByVariable($simulatorData['description'])));
-		$this->simu->setRelatedInformations(trim($this->replaceVarTagByVariable($simulatorData['relatedInformations'])));
+		$this->simu->setDescription(trim($this->helper->replaceVarTagByVariable($simulatorData['description'])));
+		$this->simu->setRelatedInformations(trim($this->helper->replaceVarTagByVariable($simulatorData['relatedInformations'])));
 		$this->simu->setDateFormat($simulatorData['dateFormat']);
 		$this->simu->setDecimalPoint($simulatorData['decimalPoint']);
 		$this->simu->setMoneySymbol($simulatorData['moneySymbol']);
@@ -391,270 +392,24 @@ class SimulatorsAdminController extends BaseAdminController {
 		if (isset($form['create'])) {
 			$simulator = $simulatorData["name"];
 		}
-		$datas = json_decode($form['datas'], true);
 
+		$datas = json_decode($form['datas'], true);
 		$this->simu->setDatas(array());
 		foreach($datas as $i => $data) {
 			if ($data['element'] == 'datagroup') {
-				$dataGroupObj = new DataGroup($this->simu, (int)$data['id'], $data['name']);
-				$dataGroupObj->setLabel($data['label']);
-				$dataGroupObj->setDescription(trim($this->replaceVarTagByVariable($data['description'])));
-				foreach ($data['datas'] as $gdata) {
-					$dataObj = new Data($this, (int)$gdata['id'], $gdata['name']);
-					$dataObj->setLabel($gdata['label']);
-					$dataObj->setType($gdata['type']);
-					if (isset($gdata['min'])) {
-						$dataObj->setUnparsedMin($gdata['min']);
-					}
-					if (isset($gdata['max'])) {
-						$dataObj->setUnparsedMax($gdata['max']);
-					}
-					if (isset($gdata['default'])) {
-						$dataObj->setUnparsedDefault($gdata['default']);
-					}
-					if (isset($gdata['unit'])) {
-						$dataObj->setUnit($gdata['unit']);
-					}
-					if (isset($gdata['round'])) {
-						$dataObj->setRound((int)$gdata['round']);
-					}
-					if (isset($gdata['content'])) {
-						$dataObj->setContent($gdata['content']);
-					}
-					if (isset($gdata['source'])) {
-						$dataObj->setSource($gdata['source']);
-					}
-					if (isset($gdata['index'])) {
-						$dataObj->setUnparsedIndex($gdata['index']);
-					}
-					if (isset($gdata['memorize'])) {
-						$dataObj->setMemorize($gdata['memorize']);
-					}
-					if (isset($gdata['choicesource']) && !empty($gdata['choicesource'])) {
-						$source = $gdata['choicesource'];
-						$choiceSourceObj = new ChoiceSource($dataObj, (int)$source['id'], $source['valueColumn'], $source['labelColumn']);
-						if (isset($source['idColumn'])) {
-							$choiceSourceObj->setIdColumn($source['idColumn']);
-						}
-						$dataObj->setChoiceSource($choiceSourceObj);
-					} elseif (isset($gdata['choices']) && count($gdata['choices']) > 0) {
-						foreach ($gdata['choices'] as $choice) {
-							$choiceObj = new Choice($dataObj, $choice['id'], $choice['value'], $choice['label']);
-							$dataObj->addChoice($choiceObj);
-						}
-					}
-					if (isset($gdata['description'])) {
-						$dataObj->setDescription(trim($this->replaceVarTagByVariable($gdata['description'])));
-					}
-					$dataGroupObj->addData($dataObj);
-				}
-				$this->simu->addData($dataGroupObj);
+				$this->simu->addData($this->makeDataGroup($data));
 			} else {
-				$dataObj = new Data($this, (int)$data['id'], $data['name']);
-				$dataObj->setLabel($data['label']);
-				$dataObj->setType($data['type']);
-				if (isset($data['min'])) {
-					$dataObj->setUnparsedMin($data['min']);
-				}
-				if (isset($data['max'])) {
-					$dataObj->setUnparsedMax($data['max']);
-				}
-				if (isset($data['default'])) {
-					$dataObj->setUnparsedDefault($data['default']);
-				}
-				if (isset($data['unit'])) {
-					$dataObj->setUnit($data['unit']);
-				}
-				if (isset($data['round'])) {
-					$dataObj->setRound((int)$data['round']);
-				}
-				if (isset($data['content'])) {
-					$dataObj->setContent($data['content']);
-				}
-				if (isset($data['source'])) {
-					$dataObj->setSource($data['source']);
-				}
-				if (isset($data['index'])) {
-					$dataObj->setUnparsedIndex($data['index']);
-				}
-				if (isset($data['memorize'])) {
-					$dataObj->setMemorize($data['memorize']);
-				}
-				if (isset($data['choicesource']) && !empty($data['choicesource'])) {
-					$source = $data['choicesource'];
-					$choiceSourceObj = new ChoiceSource($dataObj, (int)$source['id'], $source['valueColumn'], $source['labelColumn']);
-					if (isset($source['idColumn'])) {
-						$choiceSourceObj->setIdColumn($source['idColumn']);
-					}
-					$dataObj->setChoiceSource($choiceSourceObj);
-				} elseif (isset($data['choices']) && count($data['choices']) > 0) {
-					foreach ($data['choices'] as $choice) {
-						$choiceObj = new Choice($dataObj, $choice['id'], $choice['value'], $choice['label']);
-						$dataObj->addChoice($choiceObj);
-					}
-				}
-				if (isset($data['description'])) {
-					$dataObj->setDescription(trim($this->replaceVarTagByVariable($data['description'])));
-				}
-				$this->simu->addData($dataObj);
+				$this->simu->addData($this->makeData($data));
 			}
 		}
 
 		$steps = json_decode($form['steps'], true);
-
 		$this->simu->setSteps(array());
 		$step0 = false;
 		foreach($steps as $s => $step) {
-			$stepObj = new Step($this, (int)$step['id'], $step['name'], $step['label'], $step['template']);
+			$stepObj = $this->makeStep($step);
 			if ($stepObj->getId() == 0) {
 				$step0 = true;
-			}
-			$stepObj->setOutput($step['output']);
-			$stepObj->setDescription($step['description']);
-			$stepObj->setDynamic($step['dynamic'] == '1');
-			foreach ($step['panels'] as $p => $panel) {
-				$panelObj = new Panel($stepObj, (int)$panel['id']);
-				$panelObj->setName($panel['name']);
-				$panelObj->setLabel($panel['label']);
-				foreach ($panel['blocks'] as $b => $block) {
-					if ($block['type'] == 'fieldset') {
-						$fieldset = $block;
-						$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
-						$fieldsetObj->setLegend(trim($this->replaceVarTagByVariable($fieldset['legend'])));
-						if ($fieldset['disposition'] != "") {
-							$fieldsetObj->setDisposition($fieldset['disposition']);
-						}
-						if ($fieldset['display'] != "") {
-							$fieldsetObj->setDisplay($fieldset['display']);
-						}
-						if ($fieldset['popinLink'] != "") {
-							$fieldsetObj->setPopinLink($fieldset['popinLink']);
-						}
-						if ($fieldset['disposition'] == "grid") {
-							if (isset($fieldset['columns'])) {
-								foreach ($fieldset['columns'] as $column) {
-									$columnObj = new Column(null, (int)$column['id'], $column['name'], $column['type']);
-									$columnObj->setLabel($column['label']);
-									$fieldsetObj->addColumn($columnObj);
-								}
-							}
-							foreach ($fieldset['fieldrows'] as $fieldrow) {
-								$fieldRowObj = new FieldRow($fieldsetObj, (int)$fieldrow['id'], $fieldrow['label']);
-								$fieldRowObj->setColon($fieldrow['colon'] == '' || $fieldrow['colon'] == '1');
-								$fieldRowObj->setHelp($fieldrow['help'] == '1');
-								$fieldRowObj->setEmphasize($fieldrow['emphasize'] == '1');
-								$fieldRowObj->setDataGroup($fieldrow['datagroup']);
-								foreach ($fieldrow['fields'] as $field) {
-									$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], $field['label']);
-									$fieldObj->setUsage($field['usage']);
-									$fieldObj->setPrompt($field['prompt']);
-									$fieldObj->setNewline($field['newline'] == '' || $field['newline'] == '1');
-									$fieldObj->setRequired($field['required'] == '1');
-									$fieldObj->setVisibleRequired($field['visibleRequired'] == '1');
-									$fieldObj->setColon($field['colon'] == '' || $field['colon'] == '1');
-									$fieldObj->setUnderlabel($field['underlabel'] == '1');
-									$fieldObj->setHelp($field['help'] == '1');
-									$fieldObj->setEmphasize($field['emphasize'] == '1');
-									$fieldObj->setExplanation($field['explanation']);
-									$fieldObj->setExpanded($field['expanded'] == '1');
-									$fieldObj->setWidget($field['widget']);
-									if (isset($field['Note'])) {
-										$note = $field['Note'];
-										if ($note['position'] == 'beforeField') {
-											$noteObj = new FieldNote($this);
-											$noteObj->setText($note['text']);
-											$fieldObj->setPreNote($noteObj);
-										} elseif ($note['position'] == 'afterField') {
-											$noteObj = new FieldNote($this);
-											$noteObj->setText($note['text']);
-											$fieldObj->setPostNote($noteObj);
-										}
-									}
-									$fieldRowObj->addField($fieldObj);
-								}
-								$fieldsetObj->addField($fieldRowObj);
-							} 
-						} else {
-							foreach ($fieldset['fields'] as $field) {
-								$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], $field['label']);
-								$fieldObj->setUsage($field['usage']);
-								$fieldObj->setPrompt($field['prompt']);
-								$fieldObj->setNewline($field['newline'] == '' || $field['newline'] == '1');
-								$fieldObj->setRequired($field['required'] == '1');
-								$fieldObj->setVisibleRequired($field['visibleRequired'] == '1');
-								$fieldObj->setColon($field['colon'] == '' || $field['colon'] == '1');
-								$fieldObj->setUnderlabel($field['underlabel'] == '1');
-								$fieldObj->setHelp($field['help'] == '1');
-								$fieldObj->setEmphasize($field['emphasize'] == '1');
-								$fieldObj->setExplanation($field['explanation']);
-								$fieldObj->setExpanded($field['expanded'] == '1');
-								$fieldObj->setWidget($field['widget']);
-								if (isset($field['Note'])) {
-									$note = $field['Note'];
-									if ($note['position'] == 'beforeField') {
-										$noteObj = new FieldNote($this);
-										$noteObj->setText(trim($this->replaceVarTagByVariable($note['text'])));
-										$fieldObj->setPreNote($noteObj);
-									} elseif ($note['position'] == 'afterField') {
-										$noteObj = new FieldNote($this);
-										$noteObj->setText(trim($this->replaceVarTagByVariable($note['text'])));
-										$fieldObj->setPostNote($noteObj);
-									}
-								}
-								$fieldsetObj->addField($fieldObj);
-							}
-						}
-						$panelObj->addFieldSet($fieldsetObj);
-					} elseif ($block['type'] == 'blockinfo') {
-						$blockinfo = $block;
-						$blockinfoObj = new BlockInfo($panelObj, (int)$blockinfo['id']);
-						$blockinfoObj->setName($blockinfo['name']);
-						$blockinfoObj->setLabel($blockinfo['label']);
-						foreach ($blockinfo['chapters'] as $c => $chapter) {
-							$chapterObj = new Chapter($blockinfoObj, (int)$chapter['id']);
-							$chapterObj->setName($chapter['name']);
-							$chapterObj->setLabel($chapter['label']);
-							$chapterObj->setIcon($chapter['icon']);
-							$chapterObj->setCollapsible($chapter['collapsible'] == '1');
-							foreach ($chapter['sections'] as $section) {
-								$sectionObj = new Section($chapterObj, (int)$section['id']);
-								$sectionObj->setName($section['name']);
-								$sectionObj->setLabel($section['label']);
-								$sectionObj->setContent(trim($this->replaceVarTagByVariable($section['content'])));
-								if (isset($section['annotations'])) {
-									$sectionObj->setAnnotations(trim($this->replaceVarTagByVariable($section['annotations'])));
-								}
-								$chapterObj->addSection($sectionObj);
-							}
-							$blockinfoObj->addChapter($chapterObj);
-						}
-						$panelObj->addFieldSet($blockinfoObj);
-					}
-				}
-				$stepObj->addPanel($panelObj);
-			}
-			foreach ($step['actions'] as $action) {
-				$actionObj = new Action($stepObj, $action['name'], $action['label']);
-				$actionObj->setClass($action['class']);
-				$actionObj->setWhat($action['what']);
-				$actionObj->setFor($action['for']);
-				$actionObj->setUri($action['uri']);
-				$stepObj->addAction($actionObj);
-			}
-			if (isset($step['footNotes'])) {
-				$footnotes = $step['footNotes'];
-				if (isset($footnotes['footNotes']) && count($footnotes['footNotes']) > 0) {
-					$footnotesObj = new FootNotes($stepObj);
-					if ($footnotes['position'] != "") {
-						$footnotesObj->setPosition($footnotes['position']);
-					}
-					foreach ($footnotes['footNotes'] as $footnote) {
-						$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
-						$footnoteObj->setText(trim($this->replaceVarTagByVariable($footnote['text'])));
-						$footnotesObj->addFootNote($footnoteObj);
-					}
-					$stepObj->setFootNotes($footnotesObj);
-				}
 			}
 			$this->simu->addStep($stepObj);
 		}
@@ -663,344 +418,19 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 
 		$rulesData = json_decode($form['rules'], true);
-
 		$this->simu->setBusinessRules(array());
-
 		foreach($rulesData as $id => $brule) {
-			$businessRuleObj = new BusinessRule($this->simu, 'rule-'.mt_rand(), (int)$brule['id'], (string)$brule['name']);
-			$businessRuleObj->setLabel((string)$brule['label']);
-			if (isset($brule["connector"])) {
-				if (isset($brule["connector"]["name"])) {
-					$businessRuleObj->setConditions($this->makeCond($brule["connector"]));
-				} else {
-					$businessRuleObj->setConditions($this->infix($brule["connector"]));
-				}
-				$businessRuleObj->setConnector($this->loadConnector($brule["connector"]));
-			}
-			foreach ($brule["ifdata"] as $ida => $action) {
-				$ruleActionObj = new RuleAction((int)$ida + 1, (string)$action['value']);
-				switch ($action['value']) {
-					case 'notifyError':
-					case 'notifyWarning':
-						$target = $action['fields'][1]['value'];
-						$value = $action['fields'][0]['value'];
-						$ruleActionObj->setTarget($target);
-						$ruleActionObj->setValue($value);
-						switch ($target) {
-							case 'data':
-								$data = $this->simu->getDataByName($action['fields'][1]['fields'][0]['value']);
-								$ruleActionObj->setData($data->getId());
-								break;
-							case 'datagroup':
-								$ruleActionObj->setDatagroup($action['fields'][1]['fields'][0]['value']);
-								break;
-							case 'dataset':
-								break;
-						}
-						break;
-					case 'setAttribute':
-						$target = $action['fields'][0]['value'];
-						$value = $action['fields'][0]['fields'][0]['fields'][0]['value'];
-						$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
-						$ruleActionObj->setTarget($target);
-						$ruleActionObj->setValue($value);
-						$ruleActionObj->setData($data->getId());
-						break;
-					case 'unsetAttribute':
-						$target = $action['fields'][0]['value'];
-						$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
-						$ruleActionObj->setTarget($target);
-						$ruleActionObj->setValue('');
-						$ruleActionObj->setData($data->getId());
-						break;
-					case 'hideObject':
-					case 'showObject':
-						$target = $action['fields'][0]['value'];
-						$step = $action['fields'][0]['fields'][0]['value'];
-						$ruleActionObj->setTarget($target);
-						$ruleActionObj->setStep($step);
-						switch ($target) {
-							case 'field':
-								$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
-								$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-								$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
-								$ruleActionObj->setPanel($panel);
-								$ruleActionObj->setFieldset($fieldset);
-								if ($disposition == 'grid') {
-									$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-									$ruleActionObj->setField($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								} else {
-									$ruleActionObj->setField($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								}
-								break;
-							case 'prenote':
-								$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
-								$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-								$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
-								$ruleActionObj->setPanel($panel);
-								$ruleActionObj->setFieldset($fieldset);
-								if ($disposition == 'grid') {
-									$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-									$ruleActionObj->setPrenote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								} else {
-									$ruleActionObj->setPrenote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								}
-								break;
-							case 'postnote':
-								$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
-								$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-								$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
-								$ruleActionObj->setPanel($panel);
-								$ruleActionObj->setFieldset($fieldset);
-								if ($disposition == 'grid') {
-									$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-									$ruleActionObj->setPostnote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								} else {
-									$ruleActionObj->setPostnote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								}
-								break;
-							case 'column':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setFieldset($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setColumn($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'fieldrow':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setFieldset($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'fieldset':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setFieldset($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'section':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setBlockinfo($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setChapter($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setSection($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'chapter':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setBlockinfo($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setChapter($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'blockinfo':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setBlockinfo($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'panel':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'footnote':
-								$ruleActionObj->setFootnote($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'action':
-								$ruleActionObj->setAction($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'step':
-								break;
-							case 'choice':
-								$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setData($data->getId());
-								$ruleActionObj->setChoice($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-						}
-						break;
-				}
-				$businessRuleObj->addIfAction($ruleActionObj);
-			}
-			foreach ($brule["elsedata"] as $ida => $action) {
-				$ruleActionObj = new RuleAction((int)$ida + 1, (string)$action['value']);
-				switch ($action['value']) {
-					case 'notifyError':
-					case 'notifyWarning':
-						$target = $action['fields'][1]['value'];
-						$value = $action['fields'][0]['value'];
-						$ruleActionObj->setTarget($target);
-						$ruleActionObj->setValue($value);
-						switch ($target) {
-							case 'data':
-								$data = $this->simu->getDataByName($action['fields'][1]['fields'][0]['value']);
-								$ruleActionObj->setData($data->getId());
-								break;
-							case 'datagroup':
-								$ruleActionObj->setDatagroup($action['fields'][1]['fields'][0]['value']);
-								break;
-							case 'dataset':
-								break;
-						}
-						break;
-					case 'setAttribute':
-						$target = $action['fields'][0]['value'];
-						$value = $action['fields'][0]['fields'][0]['fields'][0]['value'];
-						$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
-						$ruleActionObj->setTarget($target);
-						$ruleActionObj->setValue($value);
-						$ruleActionObj->setData($data->getId());
-						break;
-					case 'unsetAttribute':
-						$target = $action['fields'][0]['value'];
-						$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
-						$ruleActionObj->setTarget($target);
-						$ruleActionObj->setValue('');
-						$ruleActionObj->setData($data->getId());
-						break;
-					case 'hideObject':
-					case 'showObject':
-						$target = $action['fields'][0]['value'];
-						$step = $action['fields'][0]['fields'][0]['value'];
-						$ruleActionObj->setTarget($target);
-						$ruleActionObj->setStep($step);
-						switch ($target) {
-							case 'field':
-								$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
-								$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-								$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
-								$ruleActionObj->setPanel($panel);
-								$ruleActionObj->setFieldset($fieldset);
-								if ($disposition == 'grid') {
-									$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-									$ruleActionObj->setField($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								} else {
-									$ruleActionObj->setField($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								}
-								break;
-							case 'prenote':
-								$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
-								$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-								$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
-								$ruleActionObj->setPanel($panel);
-								$ruleActionObj->setFieldset($fieldset);
-								if ($disposition == 'grid') {
-									$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-									$ruleActionObj->setPrenote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								} else {
-									$ruleActionObj->setPrenote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								}
-								break;
-							case 'postnote':
-								$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
-								$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-								$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
-								$ruleActionObj->setPanel($panel);
-								$ruleActionObj->setFieldset($fieldset);
-								if ($disposition == 'grid') {
-									$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-									$ruleActionObj->setPostnote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								} else {
-									$ruleActionObj->setPostnote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								}
-								break;
-							case 'column':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setFieldset($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setColumn($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'fieldrow':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setFieldset($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'fieldset':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setFieldset($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'section':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setBlockinfo($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setChapter($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setSection($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'chapter':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setBlockinfo($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setChapter($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'blockinfo':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setBlockinfo($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'panel':
-								$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'footnote':
-								$ruleActionObj->setFootnote($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'action':
-								$ruleActionObj->setAction($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-							case 'step':
-								break;
-							case 'choice':
-								$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
-								$ruleActionObj->setData($data->getId());
-								$ruleActionObj->setChoice($action['fields'][0]['fields'][0]['fields'][0]['value']);
-								break;
-						}
-						break;
-				}
-				$businessRuleObj->addElseAction($ruleActionObj);
-			}
-			$this->simu->addBusinessRule($businessRuleObj);
+			$this->simu->addBusinessRule($this->makeBusinessRule($brule));
 		}
 
 		$sources = json_decode($form['sources'], true);
-
 		$this->simu->setSources(array());
 		foreach($sources as $id => $source) {
-			$sourceObj = new Source($this, (int)$source['id'], $source['datasource'], $source['returnType']);
-			if (isset($source['label'])) {
-				$sourceObj->setLabel($source['label']);
-			}
-			if (isset($source['requestType']) && $source['requestType'] == 'simple') {
-				$sourceObj->setRequest($this->composeSimpleSQLRequest($source));
-			} elseif (isset($source['request'])) {
-				$sourceObj->setRequest($source['request']);
-			}
-			if (isset($source['requestType'])) {
-				$sourceObj->setRequestType($source['requestType']);
-			}
-			if (isset($source['separator'])) {
-				$sourceObj->setSeparator($source['separator']);
-			}
-			if (isset($source['delimiter'])) {
-				$sourceObj->setDelimiter($source['delimiter']);
-			}
-			if (isset($source['returnPath'])) {
-				$sourceObj->setReturnPath($source['returnPath']);
-			}
-			if (isset($source['parameters'])) {
-				foreach ($source['parameters'] as $parameter) {
-					$parameterObj = new Parameter($sourceObj, $parameter['type']);
-					$parameterObj->setOrigin($parameter['origin']);
-					$parameterObj->setName($parameter['name']);
-					$parameterObj->setFormat($parameter['format']);
-					if ($parameter['origin'] == 'data') {
-						$data = $this->simu->getDataByName($parameter['data']);
-						$parameterObj->setData($data->getId());
-					}
-					$parameterObj->setConstant($parameter['constant']);
-					$parameterObj->setOptional($parameter['optional'] == '1');
-					$sourceObj->addParameter($parameterObj);
-				}
-			}
-			$this->simu->addSource($sourceObj);
+			$this->simu->addSource($this->makeSource($source));
 		}
 
 		$profiles = json_decode($form['profiles'], true);
-
-		$profilesObj = new Profiles($this->simu);
-		$profilesObj->setLabel($profiles['label']);
-		foreach ($profiles['profiles'] as $profile) {
-			$profileObj = new Profile($profile['id'], $profile['name']);
-			$profileObj->setLabel($profile['label']);
-			$profileObj->setDescription(trim($this->replaceVarTagByVariable($profile['description'])));
-			foreach ($profile['datas'] as $data) {
-				$profileObj->addData((int)$data['id'], $data['default']);
-			}
-			$profilesObj->addProfile($profileObj);
-		}
-		$this->simu->setProfiles($profilesObj);
+		$this->simu->setProfiles($this->makeProfiles($profiles));
 
 		if (isset($form['create'])) {
 			$this->simu->save($simu_dir."/".$simulator.".xml");
@@ -1013,6 +443,439 @@ class SimulatorsAdminController extends BaseAdminController {
 				$fs->dumpFile($publicdir.'/'.$view.'/css/'.$simulator.'.css', '@import "common.css";'."\n");
 			}
 		}
+	}
+
+	protected function makeSource($source) {
+		$sourceObj = new Source($this, (int)$source['id'], $source['datasource'], $source['returnType']);
+		if (isset($source['label'])) {
+			$sourceObj->setLabel($source['label']);
+		}
+		if (isset($source['requestType']) && $source['requestType'] == 'simple') {
+			$sourceObj->setRequest($this->composeSimpleSQLRequest($source));
+		} elseif (isset($source['request'])) {
+			$sourceObj->setRequest($source['request']);
+		}
+		if (isset($source['requestType'])) {
+			$sourceObj->setRequestType($source['requestType']);
+		}
+		if (isset($source['separator'])) {
+			$sourceObj->setSeparator($source['separator']);
+		}
+		if (isset($source['delimiter'])) {
+			$sourceObj->setDelimiter($source['delimiter']);
+		}
+		if (isset($source['returnPath'])) {
+			$sourceObj->setReturnPath($source['returnPath']);
+		}
+		if (isset($source['parameters'])) {
+			foreach ($source['parameters'] as $parameter) {
+				$sourceObj->addParameter($this->makeParameter($parameter, $sourceObj));
+			}
+		}
+		return $sourceObj;
+	}
+
+	protected function makeParameter($parameter, $sourceObj) {
+		$parameterObj = new Parameter($sourceObj, $parameter['type']);
+		$parameterObj->setOrigin($parameter['origin']);
+		$parameterObj->setName($parameter['name']);
+		$parameterObj->setFormat($parameter['format']);
+		if ($parameter['origin'] == 'data') {
+			$data = $this->simu->getDataByName($parameter['data']);
+			$parameterObj->setData($data->getId());
+		}
+		$parameterObj->setConstant($parameter['constant']);
+		$parameterObj->setOptional($parameter['optional'] == '1');
+		return $parameterObj;
+	}
+
+	protected function makeDataGroup($datagroup) {
+		$dataGroupObj = new DataGroup($this->simu, (int)$datagroup['id'], $datagroup['name']);
+		$dataGroupObj->setLabel($datagroup['label']);
+		$dataGroupObj->setDescription(trim($this->helper->replaceVarTagByVariable($datagroup['description'])));
+		foreach ($datagroup['datas'] as $data) {
+			$dataGroupObj->addData($this->makeData($data));
+		}
+		return $dataGroupObj;
+	}
+
+	protected function makeData($data) {
+		$dataObj = new Data($this, (int)$data['id'], $data['name']);
+		$dataObj->setLabel($data['label']);
+		$dataObj->setType($data['type']);
+		if (isset($data['min'])) {
+			$dataObj->setUnparsedMin($data['min']);
+		}
+		if (isset($data['max'])) {
+			$dataObj->setUnparsedMax($data['max']);
+		}
+		if (isset($data['default'])) {
+			$dataObj->setUnparsedDefault($data['default']);
+		}
+		if (isset($data['unit'])) {
+			$dataObj->setUnit($data['unit']);
+		}
+		if (isset($data['round'])) {
+			$dataObj->setRound((int)$data['round']);
+		}
+		if (isset($data['content'])) {
+			$dataObj->setContent($data['content']);
+		}
+		if (isset($data['source'])) {
+			$dataObj->setSource($data['source']);
+		}
+		if (isset($data['index'])) {
+			$dataObj->setUnparsedIndex($data['index']);
+		}
+		if (isset($data['memorize'])) {
+			$dataObj->setMemorize($data['memorize']);
+		}
+		if (isset($data['choicesource']) && !empty($data['choicesource'])) {
+			$source = $data['choicesource'];
+			$choiceSourceObj = new ChoiceSource($dataObj, (int)$source['id'], $source['valueColumn'], $source['labelColumn']);
+			if (isset($source['idColumn'])) {
+				$choiceSourceObj->setIdColumn($source['idColumn']);
+			}
+			$dataObj->setChoiceSource($choiceSourceObj);
+		} elseif (isset($data['choices']) && count($data['choices']) > 0) {
+			foreach ($data['choices'] as $choice) {
+				$choiceObj = new Choice($dataObj, $choice['id'], $choice['value'], $choice['label']);
+				$dataObj->addChoice($choiceObj);
+			}
+		}
+		if (isset($data['description'])) {
+			$dataObj->setDescription(trim($this->helper->replaceVarTagByVariable($data['description'])));
+		}
+		return $dataObj;
+	}
+
+	protected function makeStep($step) {
+		$stepObj = new Step($this, (int)$step['id'], $step['name'], $step['label'], $step['template']);
+		$stepObj->setOutput($step['output']);
+		$stepObj->setDescription($step['description']);
+		$stepObj->setDynamic($step['dynamic'] == '1');
+		foreach ($step['panels'] as $p => $panel) {
+			$stepObj->addPanel($this->makePanel($panel, $stepObj));
+		}
+		foreach ($step['actions'] as $action) {
+			$stepObj->addAction($this->makeAction($action, $stepObj));
+		}
+		if (isset($step['footNotes'])) {
+			$footnotes = $step['footNotes'];
+			if (isset($footnotes['footNotes']) && count($footnotes['footNotes']) > 0) {
+				$footnotesObj = new FootNotes($stepObj);
+				if ($footnotes['position'] != "") {
+					$footnotesObj->setPosition($footnotes['position']);
+				}
+				foreach ($footnotes['footNotes'] as $footnote) {
+					$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
+					$footnoteObj->setText(trim($this->helper->replaceVarTagByVariable($footnote['text'])));
+					$footnotesObj->addFootNote($footnoteObj);
+				}
+				$stepObj->setFootNotes($footnotesObj);
+			}
+		}
+		return $stepObj;
+	}
+
+	protected function makePanel($panel, $stepObj) {
+		$panelObj = new Panel($stepObj, (int)$panel['id']);
+		$panelObj->setName($panel['name']);
+		$panelObj->setLabel($panel['label']);
+		foreach ($panel['blocks'] as $b => $block) {
+			if ($block['type'] == 'fieldset') {
+				$panelObj->addFieldSet($this->makeFieldSet($block, $panelObj));
+			} elseif ($block['type'] == 'blockinfo') {
+				$panelObj->addFieldSet($this->makeBlockInfo($block, $panelObj));
+			}
+		}
+		return $panelObj;
+	}
+
+	protected function makeFieldSet($fieldset, $panelObj) {
+		$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
+		$fieldsetObj->setLegend(trim($this->helper->replaceVarTagByVariable($fieldset['legend'])));
+		if ($fieldset['disposition'] != "") {
+			$fieldsetObj->setDisposition($fieldset['disposition']);
+		}
+		if ($fieldset['display'] != "") {
+			$fieldsetObj->setDisplay($fieldset['display']);
+		}
+		if ($fieldset['popinLink'] != "") {
+			$fieldsetObj->setPopinLink($fieldset['popinLink']);
+		}
+		if ($fieldset['disposition'] == "grid") {
+			if (isset($fieldset['columns'])) {
+				foreach ($fieldset['columns'] as $column) {
+					$columnObj = new Column(null, (int)$column['id'], $column['name'], $column['type']);
+					$columnObj->setLabel($column['label']);
+					$fieldsetObj->addColumn($columnObj);
+				}
+			}
+			foreach ($fieldset['fieldrows'] as $fieldrow) {
+				$fieldsetObj->addField($this->makeFieldRow($fieldrow, $fieldsetObj));
+			} 
+		} else {
+			foreach ($fieldset['fields'] as $field) {
+				$fieldsetObj->addField($this->makeField($field, $fieldsetObj));
+			}
+		}
+		return $fieldsetObj;
+	}
+
+	protected function makeFieldRow($fieldrow, $fieldsetObj) {
+		$fieldRowObj = new FieldRow($fieldsetObj, (int)$fieldrow['id'], $fieldrow['label']);
+		$fieldRowObj->setColon($fieldrow['colon'] == '' || $fieldrow['colon'] == '1');
+		$fieldRowObj->setHelp($fieldrow['help'] == '1');
+		$fieldRowObj->setEmphasize($fieldrow['emphasize'] == '1');
+		$fieldRowObj->setDataGroup($fieldrow['datagroup']);
+		foreach ($fieldrow['fields'] as $field) {
+			$fieldRowObj->addField($this->makeField($field, $fieldsetObj));
+		}
+		return $fieldRowObj;
+	}
+
+	protected function makeField($field, $fieldsetObj) {
+		$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], $field['label']);
+		$fieldObj->setUsage($field['usage']);
+		$fieldObj->setPrompt($field['prompt']);
+		$fieldObj->setNewline($field['newline'] == '' || $field['newline'] == '1');
+		$fieldObj->setRequired($field['required'] == '1');
+		$fieldObj->setVisibleRequired($field['visibleRequired'] == '1');
+		$fieldObj->setColon($field['colon'] == '' || $field['colon'] == '1');
+		$fieldObj->setUnderlabel($field['underlabel'] == '1');
+		$fieldObj->setHelp($field['help'] == '1');
+		$fieldObj->setEmphasize($field['emphasize'] == '1');
+		$fieldObj->setExplanation($field['explanation']);
+		$fieldObj->setExpanded($field['expanded'] == '1');
+		$fieldObj->setWidget($field['widget']);
+		if (isset($field['Note'])) {
+			$note = $field['Note'];
+			if ($note['position'] == 'beforeField') {
+				$noteObj = new FieldNote($this);
+				$noteObj->setText(trim($this->helper->replaceVarTagByVariable($note['text'])));
+				$fieldObj->setPreNote($noteObj);
+			} elseif ($note['position'] == 'afterField') {
+				$noteObj = new FieldNote($this);
+				$noteObj->setText(trim($this->helper->replaceVarTagByVariable($note['text'])));
+				$fieldObj->setPostNote($noteObj);
+			}
+		}
+		return $fieldObj;
+	}
+
+	protected function makeBlockInfo($blockinfo, $panelObj) {
+		$blockinfoObj = new BlockInfo($panelObj, (int)$blockinfo['id']);
+		$blockinfoObj->setName($blockinfo['name']);
+		$blockinfoObj->setLabel($blockinfo['label']);
+		foreach ($blockinfo['chapters'] as $c => $chapter) {
+			$blockinfoObj->addChapter($this->makeChapter($chapter, $blockinfoObj));
+		}
+		return $blockinfoObj;
+	}
+
+	protected function makeChapter($chapter, $blockinfoObj) {
+		$chapterObj = new Chapter($blockinfoObj, (int)$chapter['id']);
+		$chapterObj->setName($chapter['name']);
+		$chapterObj->setLabel($chapter['label']);
+		$chapterObj->setIcon($chapter['icon']);
+		$chapterObj->setCollapsible($chapter['collapsible'] == '1');
+		foreach ($chapter['sections'] as $section) {
+			$chapterObj->addSection($this->makeSection($section, $chapterObj));
+		}
+		return $chapterObj;
+	}
+
+	protected function makeSection($section, $chapterObj) {
+		$sectionObj = new Section($chapterObj, (int)$section['id']);
+		$sectionObj->setName($section['name']);
+		$sectionObj->setLabel($section['label']);
+		$sectionObj->setContent(trim($this->helper->replaceVarTagByVariable($section['content'])));
+		if (isset($section['annotations'])) {
+			$sectionObj->setAnnotations(trim($this->helper->replaceVarTagByVariable($section['annotations'])));
+		}
+		return $sectionObj;
+	}
+
+	protected function makeBusinessRule($brule) {
+		$businessRuleObj = new BusinessRule($this->simu, 'rule-'.mt_rand(), (int)$brule['id'], (string)$brule['name']);
+		$businessRuleObj->setLabel((string)$brule['label']);
+		if (isset($brule["connector"])) {
+			if (isset($brule["connector"]["name"])) {
+				$businessRuleObj->setConditions($this->makeCond($brule["connector"]));
+			} else {
+				$businessRuleObj->setConditions($this->infix($brule["connector"]));
+			}
+			$businessRuleObj->setConnector($this->loadConnector($brule["connector"]));
+		}
+		foreach ($brule["ifdata"] as $ida => $action) {
+			$businessRuleObj->addIfAction($this->makeRuleAction($ida, $action));
+		}
+		foreach ($brule["elsedata"] as $ida => $action) {
+			$businessRuleObj->addElseAction($this->makeRuleAction($ida, $action));
+		}
+		return $businessRuleObj;
+	}
+
+	protected function makeRuleAction($id, $action) {
+		$ruleActionObj = new RuleAction((int)$id + 1, (string)$action['value']);
+		switch ($action['value']) {
+			case 'notifyError':
+			case 'notifyWarning':
+				$target = $action['fields'][1]['value'];
+				$value = $action['fields'][0]['value'];
+				$ruleActionObj->setTarget($target);
+				$ruleActionObj->setValue($value);
+				switch ($target) {
+					case 'data':
+						$data = $this->simu->getDataByName($action['fields'][1]['fields'][0]['value']);
+						$ruleActionObj->setData($data->getId());
+						break;
+					case 'datagroup':
+						$ruleActionObj->setDatagroup($action['fields'][1]['fields'][0]['value']);
+						break;
+					case 'dataset':
+						break;
+				}
+				break;
+			case 'setAttribute':
+				$target = $action['fields'][0]['value'];
+				$value = $action['fields'][0]['fields'][0]['fields'][0]['value'];
+				$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
+				$ruleActionObj->setTarget($target);
+				$ruleActionObj->setValue($value);
+				$ruleActionObj->setData($data->getId());
+				break;
+			case 'unsetAttribute':
+				$target = $action['fields'][0]['value'];
+				$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
+				$ruleActionObj->setTarget($target);
+				$ruleActionObj->setValue('');
+				$ruleActionObj->setData($data->getId());
+				break;
+			case 'hideObject':
+			case 'showObject':
+				$target = $action['fields'][0]['value'];
+				$step = $action['fields'][0]['fields'][0]['value'];
+				$ruleActionObj->setTarget($target);
+				$ruleActionObj->setStep($step);
+				switch ($target) {
+					case 'field':
+						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
+						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
+						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+						$ruleActionObj->setPanel($panel);
+						$ruleActionObj->setFieldset($fieldset);
+						if ($disposition == 'grid') {
+							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+							$ruleActionObj->setField($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						} else {
+							$ruleActionObj->setField($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						}
+						break;
+					case 'prenote':
+						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
+						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
+						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+						$ruleActionObj->setPanel($panel);
+						$ruleActionObj->setFieldset($fieldset);
+						if ($disposition == 'grid') {
+							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+							$ruleActionObj->setPrenote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						} else {
+							$ruleActionObj->setPrenote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						}
+						break;
+					case 'postnote':
+						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
+						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
+						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+						$ruleActionObj->setPanel($panel);
+						$ruleActionObj->setFieldset($fieldset);
+						if ($disposition == 'grid') {
+							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+							$ruleActionObj->setPostnote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						} else {
+							$ruleActionObj->setPostnote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						}
+						break;
+					case 'column':
+						$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setFieldset($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setColumn($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+					case 'fieldrow':
+						$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setFieldset($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+					case 'fieldset':
+						$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setFieldset($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+					case 'section':
+						$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setBlockinfo($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setChapter($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setSection($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+					case 'chapter':
+						$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setBlockinfo($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setChapter($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+					case 'blockinfo':
+						$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setBlockinfo($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+					case 'panel':
+						$ruleActionObj->setPanel($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+					case 'footnote':
+						$ruleActionObj->setFootnote($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+					case 'action':
+						$ruleActionObj->setAction($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+					case 'step':
+						break;
+					case 'choice':
+						$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
+						$ruleActionObj->setData($data->getId());
+						$ruleActionObj->setChoice($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						break;
+				}
+				break;
+		}
+		return $ruleActionObj;
+	}
+
+	protected function makeProfiles($profiles) {
+		$profilesObj = new Profiles($this->simu);
+		$profilesObj->setLabel($profiles['label']);
+		foreach ($profiles['profiles'] as $profile) {
+			$profilesObj->addProfile($this->makeProfile($profile));
+		}
+		return $profilesObj;
+	}
+
+	protected function makeProfile($profile) {
+		$profileObj = new Profile($profile['id'], $profile['name']);
+		$profileObj->setLabel($profile['label']);
+		$profileObj->setDescription(trim($this->helper->replaceVarTagByVariable($profile['description'])));
+		foreach ($profile['datas'] as $data) {
+			$profileObj->addData((int)$data['id'], $data['default']);
+		}
+		return $profileObj;
+	}
+
+	protected function makeAction($action, $stepObj) {
+		$actionObj = new Action($stepObj, $action['name'], $action['label']);
+		$actionObj->setClass($action['class']);
+		$actionObj->setWhat($action['what']);
+		$actionObj->setFor($action['for']);
+		$actionObj->setUri($action['uri']);
+		return $actionObj;
 	}
 
 	private function composeSimpleSQLRequest($source) {
@@ -3183,45 +3046,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $datas;
 	}
 
-	protected function formatParamValue($param) {
-		$data = $this->simu->getDataById($param->getData());
-		$value = $data->getValue();
-		if (strlen($value) == 0) {
-			return null;
-		}
-		switch ($data->getType()) {
-			case "date":
-				$format = $param->getFormat();
-				if ($format != "" && $value != "") {
-					$date = \DateTime::createFromFormat("j/n/Y", $value);
-					$value = $date->format($format);
-				}
-				break;
-			case "day":
-				$format = $param->getFormat();
-				if ($format != "" && $value != "") {
-					$date = \DateTime::createFromFormat("j/n/Y", $value."/1/2015");
-					$value = $date->format($format);
-				}
-				break;
-			case "month":
-				$format = $param->getFormat();
-				if ($format != "" && $value != "") {
-					$date = \DateTime::createFromFormat("j/n/Y", "1/".$value."/2015");
-					$value = $date->format($format);
-				}
-				break;
-			case "year":
-				$format = $param->getFormat();
-				if ($format != "" && $value != "") {
-					$date = \DateTime::createFromFormat("j/n/Y", "1/1/".$value);
-					$value = $date->format($format);
-				}
-				break;
-		}
-		return $value;
-	}
-
 	protected function populateChoiceWithSource($data) 
 	{
 		$choiceSource = $data->getChoiceSource();
@@ -3230,7 +3054,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			if ($source != "") {
 				$source = $this->simu->getSourceById($source);
 				if ($source !== null) {
-					$result = $this->processSource($source);
+					$result = $this->helper->processSource($source);
 					if ($result !== null) {
 						$n = 0;
 						foreach ($result as $row) {
@@ -3263,7 +3087,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						if ($source != "") {
 							$source = $this->simu->getSourceById($source);
 							if ($source !== null) {
-								$result = $this->processSource($source);
+								$result = $this->helper->processSource($source);
 								if ($result !== null) {
 									$n = 0;
 									foreach ($result as $row) {
@@ -3290,207 +3114,6 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 			}
 		}
-	}
-
-	protected function getDatasource(Source $source) {
-		$datasource = $source->getDatasource();
-		if (is_numeric($datasource)) {
-			$datasource = $this->simu->getDatasourceById((int)$datasource);
-		} else {
-			$datasource = $this->simu->getDatasourceByName($datasource);
-		}
-		return $datasource;
-	}
-
-	protected function processSource(Source $source) {
-		$params = $source->getParameters();
-		$datasource = $this->getDatasource($source);
-		switch ($datasource->getType()) {
-			case 'uri':
-				$query = "";
-				$path = "";
-				$datas = array();
-				$headers = array();
-				foreach ($params as $param) {
-					if ($param->getOrigin() == 'data') {
-						$value = $this->formatParamValue($param);
-					} else {
-						$value = $param->getConstant();
-					}
-					if ($value === null) {
-						return null;
-					}
-					$value = urlencode($value);
-					if ($param->getType() == 'path') {
-						$path .= "/".$value;
-					} elseif ($param->getType() == 'data') {
-						$name = $param->getName();
-						if (isset($datas[$name])) {
-							$datas[$name][] = $value;
-						}  else {
-							$datas[$name] = array($value);
-						}
-					} elseif ($param->getType() == 'header') {
-						if ($value != '') {
-							$name = 'HTTP_' . str_replace('-', '_', strtoupper($param->getName()));
-							$headers[] = array(
-								$name => $value
-							);
-						}
-					} elseif ($value != '' || ! $param->isOptional()) {
-						$query .= "&".urlencode($param->getName())."=".$value;
-					}
-				}
-				$uri = $datasource->getUri();
-				if ($path != "") {
-					$uri .= $path;
-				} 
-				if ($query != "") {
-					$uri .= "?".substr($query, 1);
-				}
-				$client = Client::createClient();
-				if ($datasource->getMethod() == "GET") {
-					$result = $client->get($uri, $headers);
-				} else {
-					$result = $client->post($uri, $headers, $datas);
-				}
-				break;
-			case 'database':
-			case 'internal':
-				$args = array();
-				$args[] = $source->getRequest();
-				foreach ($params as $param) {
-					if ($param->getOrigin() == 'data') {
-						$value = $this->formatParamValue($param);
-					} else {
-						$value = $param->getConstant();
-					}
-					if ($value === null) {
-						return null;
-					}
-					$args[] = $value;
-				}
-				$query = call_user_func_array('sprintf', $args);
-				$database = $this->simu->getDatabaseById($datasource->getDatabase());
-				$database->connect();
-				$result = $database->query($query);
-				break;
-		}
-		switch ($source->getReturnType()) {
-			case 'singleValue':
-				return $result;
-			case 'json':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$json = json_decode($result, true);
-				$result = ResultFilter::filter("json", $json, $returnPath);
-				return $result;
-			case 'assocArray':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$keys = explode("/", $returnPath);
-				foreach ($keys as $key) {
-					if (preg_match("/^([^\[]+)\[([^\]]+)\]$/", $key, $matches)) {
-						$key1 = $matches[1];
-						if (! isset($result[$key1])) {
-							break;
-						}
-						$result = $result[$key1];
-						$key = $matches[2];
-					}
-					if (ctype_digit($key)) {
-						$key = (int)$key;
-					}
-					if (! isset($result[$key])) {
-						break;
-					}
-					$result = $result[$key];
-				}
-				return $result;
-			case 'html':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$result = ResultFilter::filter("html", $result, $returnPath, $datasource->getNamespaces());
-				return $result;
-			case 'xml':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$result = ResultFilter::filter("xml", $result, $returnPath, $datasource->getNamespaces());
-				return $result;
-			case 'csv':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$result = ResultFilter::filter("csv", $result, $returnPath, null, $source->getSeparator(), $source->getDelimiter());
-				return $result;
-		}
-		return null;
-	}
-
-	private function replaceVariable($matches) {
-		if (preg_match("/^\d+$/", $matches[1])) {
-			$id = (int)$matches[1];
-			$data = $this->simu->getDataById($id);
-		} else {
-			$name = $matches[3];
-			$data = $this->simu->getDataByName($name);
-		}
-		if ($data === null) {
-			return $matches[0];
-		}
-		if ($matches[2] == 'L') { 
-			$value = $data->getChoiceLabel();
-			if ($data->getType() == 'multichoice') {
-				$value = implode(',', $value);
-			}
-			return $value;
-		} else {
-			$value = $data->getValue();
-			switch ($data->getType()) {
-				case 'money': 
-					$value = number_format ( (float)$value , 2 , "." , " "); 
-				case 'percent':
-				case 'number': 
-					$value = str_replace('.', ',', $value);
-					break;
-				case 'array': 
-				case 'multichoice': 
-					$value = implode(',', $value);
-					break;
-			}
-			return $value;
-		}
-	}
-
-	private function replaceVariableTag($matches)
-	{
-		$variable = '#' . $matches[1];
-		if ($matches[2] == 'L') {
-			$variable .= 'L';
-		}
-		return $variable;
-	}
-
-	private function replaceVarTagByVariable($target) {
-		$result = preg_replace_callback(
-			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
-			array($this, 'replaceVariableTag'),
-			$target
-		);
-		return $result;
-	}
-
-	private function replaceVariables($target) {
-		$result = preg_replace_callback(
-			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
-			array($this, 'replaceVariableTag'),
-			$target
-		);
-		$result = preg_replace_callback(
-			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
-			array($this, 'replaceVariable'),
-			$result
-		);
-		return $result;
 	}
 
 	private function paragraphs ($text) {

@@ -135,10 +135,10 @@ class UsersAdminController extends BaseAdminController {
 			$user->addRole($role);
 		}
 		$userManager->updateUser($user);
-		$form['id'] = $user->getId();
 		$response = new Response();
 		$response->setContent(json_encode($form));
 		$response->headers->set('Content-Type', 'application/json');
+		$form['id'] = $user->getId();
 		return $response;
 	}
 
@@ -209,10 +209,10 @@ class UsersAdminController extends BaseAdminController {
 			}
 		}		
 		$userManager->updateUser($user);
-		$form['password'] = $user->getPassword();
 		$response = new Response();
 		$response->setContent(json_encode($form));
 		$response->headers->set('Content-Type', 'application/json');
+		$form['password'] = $user->getPassword();
 		return $response;
 	}
 

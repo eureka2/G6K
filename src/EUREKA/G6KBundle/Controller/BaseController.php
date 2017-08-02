@@ -43,7 +43,6 @@ use EUREKA\G6KBundle\Entity\Section;
 use EUREKA\G6KBundle\Entity\Step;
 
 use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
-use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -55,7 +54,7 @@ class BaseController extends Controller {
 
 	public $helper;
 
-	protected $simu;
+	public $simu;
 	protected $parser;
 	protected $error;
 	protected $recursion = 0;
@@ -63,11 +62,11 @@ class BaseController extends Controller {
 	protected $variables = array();
 	protected $memo = array();
 	protected $sources = null;
-	protected $uricache = array();
 	protected $log = array();
 	protected $script = 0;
 	protected $sequence = array();
 	protected $path = "";
+	public $uricache = array();
 
 
 	protected function runStep(Request $request, $form, $simu, &$view, $test)
@@ -308,7 +307,7 @@ class BaseController extends Controller {
 								}
 							}
 						}
-						$fieldset->setLegend($this->replaceVariables($fieldset->getLegend()));
+						$fieldset->setLegend($this->helper->replaceVariables($fieldset->getLegend()));
 					} elseif ($block instanceof BlockInfo) {
 						$blocinfo = $block;
 						$blocinfo->setDisplayable($blocinfo->isDisplayable() && $panel->isDisplayable());
@@ -321,7 +320,7 @@ class BaseController extends Controller {
 								if ($section->isDisplayable()) {
 									$sectionDisplayables++;
 								}
-								$section->setContent($this->replaceVariables($section->getContent()));
+								$section->setContent($this->helper->replaceVariables($section->getContent()));
 							}
 							$chapter->setDisplayable($chapter->isDisplayable() && $sectionDisplayables > 0);
 							if ($chapter->isDisplayable()) {
@@ -337,7 +336,7 @@ class BaseController extends Controller {
 				$disp = false;
 				foreach ($footnotes->getFootNotes() as $footnote) {
 					if ($footnote->isDisplayable()) {
-						$footnote->setText($this->replaceVariables($footnote->getText()));
+						$footnote->setText($this->helper->replaceVariables($footnote->getText()));
 						$disp = true;
 					}
 				}
@@ -345,7 +344,7 @@ class BaseController extends Controller {
 			}
 			$istep += $direction;
 		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
-		$step->setDescription($this->replaceVariables($step->getDescription()));
+		$step->setDescription($this->helper->replaceVariables($step->getDescription()));
 		return $step;
 	}
 
@@ -397,7 +396,7 @@ class BaseController extends Controller {
 		if (isset($form['returnPath'])) {
 			$source->setReturnPath($form['returnPath']);
 		}
-		$result = $this->processSource($source);
+		$result = $this->helper->processSource($source);
 		if ($source->getReturnType() == 'xml') {
 			$result =  ResultFilter::xml2array($result);
 			if (count($result) == 1 && is_array($result[0])) {
@@ -530,7 +529,7 @@ class BaseController extends Controller {
 				$source = $this->evaluate($source);
 				if ($source !== false) {
 					$source = $this->simu->getSourceById($source);
-					$result = $this->processSource($source);
+					$result = $this->helper->processSource($source);
 					if ($result !== null) {
 						$n = 0;
 						foreach ($result as $row) {
@@ -564,7 +563,7 @@ class BaseController extends Controller {
 							$source = $this->evaluate($source);
 							if ($source !== false) {
 								$source = $this->simu->getSourceById($source);
-								$result = $this->processSource($source);
+								$result = $this->helper->processSource($source);
 								if ($result !== null) {
 									$n = 0;
 									foreach ($result as $row) {
@@ -597,11 +596,11 @@ class BaseController extends Controller {
 	{
 		if ($field->getPreNote() !== null) {
 			$note = $field->getPreNote();
-			$note->setText($this->replaceVariables($note->getText()));
+			$note->setText($this->helper->replaceVariables($note->getText()));
 		}
 		if ($field->getPostNote() !== null) {
 			$note = $field->getPostNote();
-			$note->setText($this->replaceVariables($note->getText()));
+			$note->setText($this->helper->replaceVariables($note->getText()));
 		}
 	}
 
@@ -782,7 +781,7 @@ class BaseController extends Controller {
 							$data =  $this->simu->getDataById($action->getData());
 							if ($istep == 0 || $data->getInputStepId() == $istep) {
 								$data->setError(true);
-								$data->addErrorMessage($this->replaceVariables($action->getValue()));
+								$data->addErrorMessage($this->helper->replaceVariables($action->getValue()));
 								$this->error = true;
 							}
 							break;
@@ -796,13 +795,13 @@ class BaseController extends Controller {
 							}
 							if ($istep == 0 || $inputStepId) {
 								$datagroup->setError(true);
-								$datagroup->addErrorMessage($this->replaceVariables($action->getValue()));
+								$datagroup->addErrorMessage($this->helper->replaceVariables($action->getValue()));
 								$this->error = true;
 							}
 							break;
 						case 'dataset':
 							$$this->simu->setError(true);
-							$$this->simu->addErrorMessage($this->replaceVariables($action->getValue()));
+							$$this->simu->addErrorMessage($this->helper->replaceVariables($action->getValue()));
 							$this->error = true;
 							break;
 					}
@@ -813,7 +812,7 @@ class BaseController extends Controller {
 							$data =  $this->simu->getDataById($action->getData());
 							if ($istep == 0 || $data->getInputStepId() == $istep) {
 								$data->setWarning(true);
-								$data->addWarningMessage($this->replaceVariables($action->getValue()));
+								$data->addWarningMessage($this->helper->replaceVariables($action->getValue()));
 							}
 							break;
 						case 'datagroup':
@@ -826,12 +825,12 @@ class BaseController extends Controller {
 							}
 							if ($istep == 0 || $inputStepId) {
 								$datagroup->setWarning(true);
-								$datagroup->addWarningMessage($this->replaceVariables($action->getValue()));
+								$datagroup->addWarningMessage($this->helper->replaceVariables($action->getValue()));
 							}
 							break;
 						case 'dataset':
 							$$this->simu->setWarning(true);
-							$$this->simu->addWarningMessage($this->replaceVariables($action->getValue()));
+							$$this->simu->addWarningMessage($this->helper->replaceVariables($action->getValue()));
 							break;
 					}
 					break;
@@ -997,7 +996,7 @@ class BaseController extends Controller {
 			foreach ($this->simu->getSources() as $source) {
 				$id = (string)$source->getId();
 				if (isset($this->sources[$id])) {
-					$result = $this->processSource($source);
+					$result = $this->helper->processSource($source);
 					if ($result !== null) {
 						$datas = $this->sources[$id];
 						foreach ($datas as $d) {
@@ -1042,254 +1041,6 @@ class BaseController extends Controller {
 				$this->processDatas($istep);
 			}
 		}
-	}
-
-	protected function formatParamValue($param)
-	{
-		$data = $this->simu->getDataById($param->getData());
-		$value = $data->getValue();
-		if (strlen($value) == 0) {
-			return null;
-		}
-		switch ($data->getType()) {
-			case "date":
-				$format = $param->getFormat();
-				if ($format != "" && $value != "") {
-					$date = \DateTime::createFromFormat("j/n/Y", $value);
-					$value = $date->format($format);
-				}
-				break;
-			case "day":
-				$format = $param->getFormat();
-				if ($format != "" && $value != "") {
-					$date = \DateTime::createFromFormat("j/n/Y", $value."/1/2015");
-					$value = $date->format($format);
-				}
-				break;
-			case "month":
-				$format = $param->getFormat();
-				if ($format != "" && $value != "") {
-					$date = \DateTime::createFromFormat("j/n/Y", "1/".$value."/2015");
-					$value = $date->format($format);
-				}
-				break;
-			case "year":
-				$format = $param->getFormat();
-				if ($format != "" && $value != "") {
-					$date = \DateTime::createFromFormat("j/n/Y", "1/1/".$value);
-					$value = $date->format($format);
-				}
-				break;
-		}
-		return $value;
-	}
-
-	protected function getDatasource(Source $source) {
-		$datasource = $source->getDatasource();
-		if (is_numeric($datasource)) {
-			$datasource = $this->simu->getDatasourceById((int)$datasource);
-		} else {
-			$datasource = $this->simu->getDatasourceByName($datasource);
-		}
-		return $datasource;
-	}
-
-	protected function processSource(Source $source) 
-	{
-		$params = $source->getParameters();
-		$datasource = $this->getDatasource($source);
-		switch ($datasource->getType()) {
-			case 'uri':
-				$query = "";
-				$path = "";
-				$datas = array();
-				$headers = array();
-				foreach ($params as $param) {
-					if ($param->getOrigin() == 'data') {
-						$value = $this->formatParamValue($param);
-					} else {
-						$value = $param->getConstant();
-					}
-					if ($value === null) { 
-						if (! $param->isOptional()) {
-							return null;
-						}
-						$value = '';
-					}
-					$value = urlencode($value);
-					if ($param->getType() == 'path') {
-						if ($value != '' || ! $param->isOptional()) {
-							$path .= "/".$value;
-						}
-					} elseif ($param->getType() == 'data') {
-						$name = $param->getName();
-						if (isset($datas[$name])) {
-							$datas[$name][] = $value;
-						}  else {
-							$datas[$name] = array($value);
-						}
-					} elseif ($param->getType() == 'header') {
-						if ($value != '') {
-							$name = 'HTTP_' . str_replace('-', '_', strtoupper($param->getName()));
-							$headers[] = array(
-								$name => $value
-							);
-						}
-					} elseif ($value != '' || ! $param->isOptional()) {
-						$query .= "&".urlencode($param->getName())."=".$value;
-					}
-				}
-				$uri = $datasource->getUri();
-				if ($path != "") {
-					$uri .= $path;
-				} 
-				if ($query != "") {
-					$uri .= "?".substr($query, 1);
-				}
-				if (isset($this->uricache[$uri])) {
-					$result = $this->uricache[$uri];
-				} else {
-					$client = Client::createClient();
-					if (strcasecmp($datasource->getMethod(), "GET") == 0) {
-						$result = $client->get($uri, $headers);
-					} else {
-						$result = $client->post($uri, $headers, $datas);
-					}
-					$this->uricache[$uri] = $result;
-				}
-				break;
-			case 'database':
-			case 'internal':
-				$args = array();
-				$args[] = $source->getRequest();
-				foreach ($params as $param) {
-					if ($param->getOrigin() == 'data') {
-						$value = $this->formatParamValue($param);
-					} else {
-						$value = $param->getConstant();
-					}
-					if ($value === null) { 
-						if (! $param->isOptional()) {
-							return null;
-						}
-						$value = '';
-					}
-					$args[] = $value;
-				}
-				$query = call_user_func_array('sprintf', $args);
-				$database = $this->simu->getDatabaseById($datasource->getDatabase());
-				$database->connect();
-				$result = $database->query($query);
-				break;
-		}
-		switch ($source->getReturnType()) {
-			case 'singleValue':
-				return $result;
-			case 'json':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$json = json_decode($result, true);
-				$result = ResultFilter::filter("json", $json, $returnPath);
-				return $result;
-			case 'assocArray':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$keys = explode("/", $returnPath);
-				foreach ($keys as $key) {
-					if (preg_match("/^([^\[]+)\[([^\]]+)\]$/", $key, $matches)) {
-						$key1 = $matches[1];
-						if (! isset($result[$key1])) {
-							break;
-						}
-						$result = $result[$key1];
-						$key = $matches[2];
-					}
-					if (ctype_digit($key)) {
-						$key = (int)$key;
-					}
-					if (! isset($result[$key])) {
-						break;
-					}
-					$result = $result[$key];
-				}
-				return $result;
-			case 'html':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$result = ResultFilter::filter("html", $result, $returnPath, $datasource->getNamespaces());
-				return $result;
-			case 'xml':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$result = ResultFilter::filter("xml", $result, $returnPath, $datasource->getNamespaces());
-				return $result;
-			case 'csv':
-				$returnPath = $source->getReturnPath();
-				$returnPath = $this->replaceVariables($returnPath);
-				$result = ResultFilter::filter("csv", $result, $returnPath, null, $source->getSeparator(), $source->getDelimiter());
-				return $result;
-		}
-		return null;
-	}
-
-	protected function replaceVariableTag($matches)
-	{
-		$variable = '#' . $matches[1];
-		if ($matches[2] == 'L') {
-			$variable .= 'L';
-		}
-		return $variable;
-	}
-
-	protected function replaceVariable($matches)
-	{
-		if (preg_match("/^\d+$/", $matches[1])) {
-			$id = (int)$matches[1];
-			$data = $this->simu->getDataById($id);
-		} else {
-			$name = $matches[3];
-			$data = $this->simu->getDataByName($name);
-		}
-		if ($data === null) {
-			return $matches[0];
-		}
-		if ($matches[2] == 'L') { 
-			$value = $data->getChoiceLabel();
-			if ($data->getType() == 'multichoice') {
-				$value = implode(',', $value);
-			}
-			return $value;
-		} else {
-			$value = $data->getValue();
-			switch ($data->getType()) {
-				case 'money': 
-					$value = number_format ( (float)$value , 2 , "." , " "); 
-				case 'percent':
-				case 'number': 
-					$value = str_replace('.', ',', $value);
-					break;
-				case 'array': 
-				case 'multichoice': 
-					$value = implode(',', $value);
-					break;
-			}
-			return $value;
-		}
-	}
-
-	protected function replaceVariables($target)
-	{
-		$result = preg_replace_callback(
-			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
-			array($this, 'replaceVariableTag'),
-			$target
-		);
-		$result = preg_replace_callback(
-			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
-			array($this, 'replaceVariable'),
-			$result
-		);
-		return $result;
 	}
 
 	protected function parseDate($format, $dateStr)
