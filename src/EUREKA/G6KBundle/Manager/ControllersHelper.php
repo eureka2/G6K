@@ -39,6 +39,11 @@ class ControllersHelper {
 	public function __construct($controller, $container) {
 		$this->controller = $controller;
 		$this->container = $container;
+		$resourcesDir = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources');
+		$this->controller->databasesDir = $resourcesDir . '/data/databases';
+		$this->controller->simulatorsDir = $resourcesDir . '/data/simulators';
+		$this->controller->publicDir = $resourcesDir . '/public';
+		$this->controller->viewsDir = $resourcesDir . '/views';
 	}
 
 	protected function formatParamValue($param)	{
@@ -343,6 +348,18 @@ class ControllersHelper {
 			}
 		}
 		return null;
+	}
+
+	public function parseDate($format, $dateStr) {
+		if (empty($dateStr)) {
+			return null;
+		}
+		$date = \DateTime::createFromFormat($format, $dateStr);
+		$errors = \DateTime::getLastErrors();
+		if ($errors['error_count'] > 0) {
+			throw new \Exception("Error on date '$dateStr', expected format '$format' : " . implode(" ", $errors['errors']));
+		}
+		return $date;
 	}
 
 	public function isDevelopmentEnvironment() {

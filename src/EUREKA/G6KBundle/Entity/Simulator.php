@@ -484,7 +484,7 @@ class Simulator {
 	}
 
 	public function load($url) {
-		$datasrc = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/DataSources.xml');
+		$datasrc = $this->controller->databasesDir . '/DataSources.xml';
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
 			$xml = $this->loadFileFromCache($url);
 			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
@@ -511,9 +511,8 @@ class Simulator {
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {
-			$databaseDir = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases');
 			foreach ($datasources->Databases->Database as $database) {
-				$databaseObj = new Database($this, $databaseDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
+				$databaseObj = new Database($this, $this->controller->databasesDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
 				$databaseObj->setLabel((string)$database['label']);
 				$databaseObj->setHost((string)$database['host']);
 				$databaseObj->setPort((int)$database['port']);
@@ -845,7 +844,7 @@ class Simulator {
 	}
 
 	public function loadForSource($url) {
-		$datasrc = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/DataSources.xml');
+		$datasrc = $this->controller->databasesDir . '/DataSources.xml';
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
 			$xml = $this->loadFileFromCache($url);
 			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
@@ -864,9 +863,8 @@ class Simulator {
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {
-			$databaseDir = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases');
 			foreach ($datasources->Databases->Database as $database) {
-				$databaseObj = new Database($this, $databaseDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
+				$databaseObj = new Database($this, $this->controller->databasesDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
 				$databaseObj->setLabel((string)$database['label']);
 				$databaseObj->setHost((string)$database['host']);
 				$databaseObj->setPort((int)$database['port']);
@@ -1410,7 +1408,7 @@ class Simulator {
 		$sources = array();
 		$rules = array();
 		$dataIdMax = 0;
-		$datasrc = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/DataSources.xml');
+		$datasrc = $this->controller->databasesDir . '/DataSources.xml';
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
 			$xml = $this->loadFileFromCache($url);
 			$simulator = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);
@@ -2404,7 +2402,7 @@ class Simulator {
 	}
 
 	public function loadEmptySimulator() {
-		$datasrc = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/DataSources.xml');
+		$datasrc = $this->controller->databasesDir . '/DataSources.xml';
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
 			$xml = $this->loadFileFromCache($datasrc);
 			$datasources = new \SimpleXMLElement($xml, LIBXML_NOWARNING, false);

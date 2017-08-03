@@ -105,8 +105,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
 
-		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
-		$simus = array_filter(scandir($simu_dir), function ($simu) { return preg_match("/.xml$/", $simu); } );
+		$simus = array_filter(scandir($this->simulatorsDir), function ($simu) { return preg_match("/.xml$/", $simu); } );
 
 		$hiddens = array();
 		$hiddens['script'] = $script;
@@ -114,7 +113,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$simulators = array();
 		$updated = false;
 		foreach($simus as $simu) {
-			$s = new \SimpleXMLElement($simu_dir."/".$simu, LIBXML_NOWARNING, true);
+			$s = new \SimpleXMLElement($this->simulatorsDir."/".$simu, LIBXML_NOWARNING, true);
 			$file = preg_replace("/.xml$/", "", $simu);
 			$simulators[] = array(
 				'file' => $file, 
@@ -125,11 +124,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			if ($simulator !== null && $file == $simulator) {
 				$this->simu = new Simulator($this);
 				try {
-					if (file_exists($simu_dir."/work/".$simu)) {
-						$this->simu->load($simu_dir."/work/".$simu);
+					if (file_exists($this->simulatorsDir."/work/".$simu)) {
+						$this->simu->load($this->simulatorsDir."/work/".$simu);
 						$updated = true;
 					} else {
-						$this->simu->load($simu_dir."/".$simu);
+						$this->simu->load($this->simulatorsDir."/".$simu);
 					}
 					$this->loadBusinessRules();
 				} catch (\Exception $e) {
@@ -157,19 +156,17 @@ class SimulatorsAdminController extends BaseAdminController {
 		} elseif ($crud == 'doimport') {
 			return $this->doImportSimulator($request->files->all());
 		}
-		$views_dir = $this->get('kernel')->getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/views";
 		$views = array();
-		$dirs = scandir($views_dir);
+		$dirs = scandir($this->viewsDir);
 		foreach ($dirs as $dir) {
 			if ($dir != "." && $dir != ".." && $dir != "admin" && $dir != "base" && $dir != "Theme") {
-				$o = $views_dir . "/" . $dir;
+				$o = $this->viewsDir . "/" . $dir;
 				if (filetype($o) == "dir") {
 					$views[$dir] = $dir;
 				}
 			}
 		}
-		$databasedir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/databases";
-		$sources = new \SimpleXMLElement($databasedir."/DataSources.xml", LIBXML_NOWARNING, true);
+		$sources = new \SimpleXMLElement($this->databasesDir."/DataSources.xml", LIBXML_NOWARNING, true);
 		$datasources = array();
 		$dss = $sources->xpath("/DataSources/DataSource");
 		foreach ($dss as $ds) {
@@ -285,10 +282,10 @@ class SimulatorsAdminController extends BaseAdminController {
 			$dom = new \DOMDocument();
 			$dom->preserveWhiteSpace  = false;
 			$dom->formatOutput = true;
-			if (file_exists($simu_dir . '/work/' . $simulator . '.xml')) {
-				$dom->load( $simu_dir . '/work/' . $simulator . '.xml');
+			if (file_exists($this->simulatorsDir . '/work/' . $simulator . '.xml')) {
+				$dom->load( $this->simulatorsDir . '/work/' . $simulator . '.xml');
 			} else {
-				$dom->load( $simu_dir . '/' . $simulator . '.xml');
+				$dom->load( $this->simulatorsDir . '/' . $simulator . '.xml');
 			}
 			libxml_use_internal_errors(true);
 			$valid = $dom->schemaValidate($schema);
@@ -372,10 +369,6 @@ class SimulatorsAdminController extends BaseAdminController {
 
 	protected function update($simulator, $form) {
 		$fs = new Filesystem();
-		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
-		$publicdir = $bundle->getPath()."/Resources/public";
-		$simu_dir = $bundle->getPath()."/Resources/data/simulators";
-
 		$simulatorData = json_decode($form['simulator'], true);
 		$this->simu->setName($simulatorData["name"]);
 		$this->simu->setLabel($simulatorData["label"]);
@@ -433,14 +426,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->setProfiles($this->makeProfiles($profiles));
 
 		if (isset($form['create'])) {
-			$this->simu->save($simu_dir."/".$simulator.".xml");
+			$this->simu->save($this->simulatorsDir."/".$simulator.".xml");
 		} else {
-			$this->simu->save($simu_dir."/work/".$simulator.".xml");
+			$this->simu->save($this->simulatorsDir."/work/".$simulator.".xml");
 		}
 		$view = $this->simu->getDefaultView();
-		if ($view != '' && ! $fs->exists($publicdir.'/'.$view.'/css/'.$simulator.'.css')) {
-			if ($fs->exists($publicdir.'/'.$view.'/css/common.css')) {
-				$fs->dumpFile($publicdir.'/'.$view.'/css/'.$simulator.'.css', '@import "common.css";'."\n");
+		if ($view != '' && ! $fs->exists($this->publicDir.'/'.$view.'/css/'.$simulator.'.css')) {
+			if ($fs->exists($this->publicDir.'/'.$view.'/css/common.css')) {
+				$fs->dumpFile($this->publicDir.'/'.$view.'/css/'.$simulator.'.css', '@import "common.css";'."\n");
 			}
 		}
 	}
@@ -939,12 +932,10 @@ class SimulatorsAdminController extends BaseAdminController {
 	}
 
 	protected function doExportSimulator($simu) {
-		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
-		$public_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/public";
-		if (file_exists($simu_dir . "/work/" . $simu . ".xml")) {
-			$simu_file = $simu_dir . "/work/" . $simu . ".xml";
+		if (file_exists($this->simulatorsDir . "/work/" . $simu . ".xml")) {
+			$simu_file = $this->simulatorsDir . "/work/" . $simu . ".xml";
 		} else {
-			$simu_file = $simu_dir . "/" . $simu . ".xml";
+			$simu_file = $this->simulatorsDir . "/" . $simu . ".xml";
 		}
 		$simulator = new \SimpleXMLElement($simu_file, LIBXML_NOWARNING, true);
 		$view = (string)$simulator["defaultView"];
@@ -955,11 +946,11 @@ class SimulatorsAdminController extends BaseAdminController {
 				'modtime' => filemtime($simu_file)
 			)
 		);
-		if (file_exists($public_dir . "/" . $view . "/css/" . $simu . ".css")) {
+		if (file_exists($this->publicDir . "/" . $view . "/css/" . $simu . ".css")) {
 			$content[] = array(
 				'name' => $simu . ".css",
-				'data' => file_get_contents($public_dir . "/" . $view . "/css/" . $simu . ".css"),
-				'modtime' => filemtime($public_dir . "/" . $view . "/css/" . $simu . ".css")
+				'data' => file_get_contents($this->publicDir . "/" . $view . "/css/" . $simu . ".css"),
+				'modtime' => filemtime($this->publicDir . "/" . $view . "/css/" . $simu . ".css")
 
 			);
 		}
@@ -975,13 +966,12 @@ class SimulatorsAdminController extends BaseAdminController {
 	}
 
 	protected function doPublishSimulator($simu) {
-		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
 		$schema_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/doc";
 		$fs = new Filesystem();
-		if ($fs->exists($simu_dir . "/work/" . $simu . ".xml")) {
+		if ($fs->exists($this->simulatorsDir . "/work/" . $simu . ".xml")) {
 			libxml_use_internal_errors(true);
 			$xml = new \DOMDocument();
-			$xml->load($simu_dir . "/work/" . $simu . ".xml");
+			$xml->load($this->simulatorsDir . "/work/" . $simu . ".xml");
 			if (!$xml->schemaValidate($schema_dir . "/Simulator.xsd")) {
 				$libxmlErrors = libxml_get_errors();
 				$response = new StreamedResponse();
@@ -1010,7 +1000,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				libxml_clear_errors();
 				return $response;
 			} else {
-				$fs->copy($simu_dir . "/work/" . $simu . ".xml", $simu_dir . "/" . $simu . ".xml");
+				$fs->copy($this->simulatorsDir . "/work/" . $this->simulatorsDir . ".xml", $this->simulatorsDir . "/" . $simu . ".xml");
 				return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
 			}
 		}
@@ -1021,9 +1011,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		$container = $this->get('kernel')->getContainer();
 		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
 		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
-		$simudir = $bundle->getPath()."/Resources/data/simulators";
-		$viewdir = $bundle->getPath()."/Resources/views";
-		$publicdir = $bundle->getPath()."/Resources/public";
 		$schema = $bundle->getPath()."/Resources/doc/Simulator.xsd";
 		$simu = '';
 		$simufile = '';
@@ -1062,7 +1049,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			$xpath = new \DOMXPath($dom);
 			$view = $dom->documentElement->getAttribute('defaultView');
-			if (! $fs->exists(array($viewdir.'/'.$view, $publicdir.'/'.$view))) {
+			if (! $fs->exists(array($this->viewsDir.'/'.$view, $this->publicDir.'/'.$view))) {
 				$view = 'Demo';
 				$dom->documentElement->setAttribute('defaultView', $view);
 			}
@@ -1077,20 +1064,20 @@ class SimulatorsAdminController extends BaseAdminController {
 			$formatted = preg_replace_callback('/^( +)</m', function($a) { 
 				return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
 			}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
-			$fs->dumpFile($simudir.'/'.$simu.'.xml', $formatted);
+			$fs->dumpFile($this->simulatorsDir.'/'.$simu.'.xml', $formatted);
 			if ($stylesheet != '') {
-				if (! $fs->exists($publicdir.'/'.$view.'/css')) {
-					$fs->mkdir($publicdir.'/'.$view.'/css');
+				if (! $fs->exists($this->publicDir.'/'.$view.'/css')) {
+					$fs->mkdir($this->publicDir.'/'.$view.'/css');
 				}
-				$fs->copy($stylesheet, $publicdir.'/'.$view.'/css/'.$simu.'.css', true);
-			} else if (! $fs->exists($publicdir.'/'.$view.'/css/'.$simu.'.css')) {
+				$fs->copy($stylesheet, $this->publicDir.'/'.$view.'/css/'.$simu.'.css', true);
+			} else if (! $fs->exists($this->publicDir.'/'.$view.'/css/'.$simu.'.css')) {
 				if ($view == 'Demo') {
-					$fs->dumpFile($publicdir.'/'.$view.'/css/'.$simu.'.css', '@import "common.css";'."\n");
+					$fs->dumpFile($this->publicDir.'/'.$view.'/css/'.$simu.'.css', '@import "common.css";'."\n");
 				} else {
-					if (! $fs->exists($publicdir.'/'.$view.'/css')) {
-						$fs->mkdir($publicdir.'/'.$view.'/css');
+					if (! $fs->exists($this->publicDir.'/'.$view.'/css')) {
+						$fs->mkdir($this->publicDir.'/'.$view.'/css');
 					}
-					$fs->copy($publicdir.'/Demo/css/common.css', $publicdir.'/'.$view.'/css/'.$simu.'.css');
+					$fs->copy($this->publicDir.'/Demo/css/common.css', $this->publicDir.'/'.$view.'/css/'.$simu.'.css');
 				}
 			}
 		}

@@ -58,9 +58,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	const SQL_DELETE_KEYWORD = 'DEL' . 'ETE FR' . 'OM ';
 
 	private $datasources = array();
-	
-	private $db_dir;
-	
 	private $request;
 	private $script;
 	
@@ -173,9 +170,8 @@ class DataSourcesAdminController extends BaseAdminController {
 		$this->request = $request;
 		$form = $request->request->all();
 
-		$this->db_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/databases";
-		if (file_exists($this->db_dir."/DataSources.xml")) {
-			$this->datasources = new \SimpleXMLElement($this->db_dir."/DataSources.xml", LIBXML_NOWARNING, true);
+		if (file_exists($this->databasesDir."/DataSources.xml")) {
+			$this->datasources = new \SimpleXMLElement($this->databasesDir."/DataSources.xml", LIBXML_NOWARNING, true);
 		} else {
 			$this->datasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd"><Databases></Databases></DataSources>', LIBXML_NOWARNING);
 		}
@@ -183,47 +179,53 @@ class DataSourcesAdminController extends BaseAdminController {
 			if (! $this->get('security.context')->isGranted('ROLE_CONTRIBUTOR')) {
 				return $this->errorResponse($form, $this->get('translator')->trans("Access denied!"));
 			}
-			if ($crud == 'create-datasource') {
-				return $this->createDatasource ($form);
-			} elseif ($crud == 'import-datasource') {
-				return $this->showDatasources(0, null, "import");
-			} elseif ($crud == 'doimport-datasource') {
-				return $this->doImportDatasource($request->files->all());
-			} elseif ($crud == 'export-datasource') {
-				return $this->doExportDatasource($dsid);
-			} elseif ($crud == 'edit-datasource') {
-				return $this->showDatasources($dsid, null, "edit");
-			} elseif ($crud == 'doedit-datasource') {
-				return $this->doEditDatasource ($dsid, $form);
-			} elseif ($crud == 'drop-datasource') {
-				return $this->dropDatasource ($dsid);
-			} elseif ($crud == 'edit') {
-				return $this->showDatasources($dsid, $table, 'edit-table');
-			} elseif ($crud == 'import') {
-				return $this->showDatasources($dsid, $table, 'import-table');
-			} else {
-				$database = $this->getDatabase($dsid);
-				switch ($crud) {
-					case 'add':
-						return $this->addTableRow ($form, $table, $database);
-					case 'update':
-						return $this->updateTableRow ($form, $table, $database);
-					case 'delete':
-						return $this->deleteTableRow ($form, $table, $database);
-					case 'create':
-						return $this->createTable ($form, $database);
-					case 'doedit':
-						return $this->doEditTable ($form, $table, $database);
-					case 'doimport':
-						return $this->doImportTable($form, $dsid, $table, $database, $request->files->all());
-					case 'drop':
-						return $this->dropTable ($table, $database);
-				}
-			}
+			return $this->dispatch($request, $dsid, $table, $crud, $form);
 		} else if (! $this->get('security.context')->isGranted('ROLE_CONTRIBUTOR')) {
-			throw $this->AccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 		} else {
 			return $this->showDatasources($dsid, $table);
+		}
+	}
+
+	protected function dispatch(Request $request, $dsid, $table, $crud, $form) {
+		if ($crud == 'create-datasource') {
+			return $this->createDatasource ($form);
+		} elseif ($crud == 'import-datasource') {
+			return $this->showDatasources(0, null, "import");
+		} elseif ($crud == 'doimport-datasource') {
+			return $this->doImportDatasource($request->files->all());
+		} elseif ($crud == 'export-datasource') {
+			return $this->doExportDatasource($dsid);
+		} elseif ($crud == 'edit-datasource') {
+			return $this->showDatasources($dsid, null, "edit");
+		} elseif ($crud == 'doedit-datasource') {
+			return $this->doEditDatasource ($dsid, $form);
+		} elseif ($crud == 'drop-datasource') {
+			return $this->dropDatasource ($dsid);
+		} elseif ($crud == 'edit') {
+			return $this->showDatasources($dsid, $table, 'edit-table');
+		} elseif ($crud == 'import') {
+			return $this->showDatasources($dsid, $table, 'import-table');
+		} else {
+			$database = $this->getDatabase($dsid);
+			switch ($crud) {
+				case 'add':
+					return $this->addTableRow ($form, $table, $database);
+				case 'update':
+					return $this->updateTableRow ($form, $table, $database);
+				case 'delete':
+					return $this->deleteTableRow ($form, $table, $database);
+				case 'create':
+					return $this->createTable ($form, $database);
+				case 'doedit':
+					return $this->doEditTable ($form, $table, $database);
+				case 'doimport':
+					return $this->doImportTable($form, $dsid, $table, $database, $request->files->all());
+				case 'drop':
+					return $this->dropTable ($table, $database);
+				default:
+					throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+			}
 		}
 	}
 
@@ -244,7 +246,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$name = (string)$db['name'];
 				$label = (string)$db['label'];
 				if ($type == 'sqlite') {
-					if (preg_match('/^(.*)\.db$/',$name, $matches) && file_exists($this->db_dir.'/'.$name)) {
+					if (preg_match('/^(.*)\.db$/',$name, $matches) && file_exists($this->databasesDir.'/'.$name)) {
 						$datasources[] = array(
 							'id' => $ds_id,
 							'type' => $dstype,
@@ -253,7 +255,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						);
 					}
 				} elseif ($type == 'jsonsql') {
-					if (file_exists($this->db_dir.'/'.$name.".schema.json") && file_exists($this->db_dir.'/'.$name.".json")) {
+					if (file_exists($this->databasesDir.'/'.$name.".schema.json") && file_exists($this->databasesDir.'/'.$name.".json")) {
 						$datasources[] = array(
 							'id' => $ds_id,
 							'type' => $dstype,
@@ -424,7 +426,7 @@ class DataSourcesAdminController extends BaseAdminController {
 									$i = 0;
 									foreach ($row as $c => $cell) {
 										if ($tableinfos[$i]['g6k_type'] == 'date' && $cell !== null) {
-											$date = $this->parseDate('Y-m-d', substr($cell, 0, 10));
+											$date = $this->helper->parseDate('Y-m-d', substr($cell, 0, 10));
 											$tabledatas[$r][$c] = $date->format('d/m/Y');
 										} elseif ($tableinfos[$i]['g6k_type'] == 'money' || $tableinfos[$i]['g6k_type'] == 'percent') {
 											$tabledatas[$r][$c] = number_format ( (float) $cell, 2, ",", "" );
@@ -515,7 +517,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$parameters['database_password'] = $container->getParameter('database_password');
 			}
 		}
-		$converter = new SQLToJSONConverter($parameters, $this->db_dir);
+		$converter = new SQLToJSONConverter($parameters, $this->databasesDir);
 		$result = $converter->convert($datasource);
 		$content = array(
 			array(
@@ -578,7 +580,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 			}
 			$helper = new DatasourcesHelper($this->datasources);
-			$dom = $helper->makeDatasourceDom($name, $schemafile, $datafile, $parameters, $this->db_dir);
+			$dom = $helper->makeDatasourceDom($name, $schemafile, $datafile, $parameters, $this->databasesDir);
 			$this->saveDatasources($dom);
 		}
 		if ($schemafile != '') {
@@ -711,7 +713,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			case 'database':
 			case 'internal':
 				$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".(string)$datasources[0]['database']."']");
-				$database = new Database(null, $this->db_dir, (int)$databases[0]['id'], (string)$databases[0]['type'], (string)$databases[0]['name']);
+				$database = new Database(null, $this->databasesDir, (int)$databases[0]['id'], (string)$databases[0]['type'], (string)$databases[0]['name']);
 				if ((string)$databases[0]['host'] != "") {
 					$database->setHost((string)$databases[0]['host']);
 				}
@@ -791,7 +793,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".$dbid."']");
 		$dbtype = (string)$databases[0]['type'];
 		$dbname = (string)$databases[0]['name'];
-		$database = new Database(null, $this->db_dir, $dbid, $dbtype, $dbname);
+		$database = new Database(null, $this->databasesDir, $dbid, $dbtype, $dbname);
 		if ((string)$databases[0]['label'] != "") {
 			$database->setLabel((string)$databases[0]['label']);
 		} else {
@@ -1090,7 +1092,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	protected function createDB($dsid, $dbtype) {
-		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
 		try {
 			if ($dbtype == 'jsonsql' || $dbtype == 'sqlite') {
 				$database = $this->getDatabase($dsid);
@@ -1492,7 +1493,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				if ($value === null || $value == '') {
 					$insertValues[] = "NULL";
 				} else if ($info['g6k_type'] == 'date') {
-					$insertValues[] = $database->quote($this->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d'));
+					$insertValues[] = $database->quote($this->helper->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d'));
 				} else if ($info['g6k_type'] == 'multichoice') {
 					$insertValues[] = $database->quote(json_encode($value));
 				} else if ( $info['g6k_type'] == 'text' || preg_match("/^(text|char|varchar)/i", $info['type'])) {
@@ -1523,7 +1524,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				if ($value === null || $value == '') {
 					$updateFields[] = $name . "=NULL";
 				} else if ($info['g6k_type'] == 'date') {
-					$updateFields[] = $name . "='" . $this->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d') . "'";
+					$updateFields[] = $name . "='" . $this->helper->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d') . "'";
 				} else if ($info['g6k_type'] == 'multichoice') {
 					$updateFields[] = $name . "='" . $database->quote(json_encode($value)) . "'";
 				} else if ( $info['g6k_type'] == 'text' || preg_match("/^(text|char|varchar)/i", $info['type'])) {
@@ -1647,7 +1648,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$formatted = preg_replace_callback('/^( +)</m', function($a) { 
 			return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
 		}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
-		file_put_contents($this->db_dir."/DataSources.xml", $formatted);
+		file_put_contents($this->databasesDir."/DataSources.xml", $formatted);
 	}
 
 	protected function addTableRow($form, $table, $database) {
@@ -1936,7 +1937,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				switch ($dbtype) { 
 					case 'jsonsql':
 						try {
-							$database = $this->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/' . $dbname);
+							$database = $this->databasesDir . '/' . $dbname;
 							$fs = new Filesystem();
 							$fs->remove($database . ".json");
 							$fs->remove($database . ".schema.json");
@@ -1946,7 +1947,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						break;
 					case'sqlite':
 						try {
-							$database = $this->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/databases/' . $dbname);
+							$database = $this->databasesDir . '/' . $dbname;
 							$fs = new Filesystem();
 							$fs->remove($database );
 						} catch (\Exception $e) {

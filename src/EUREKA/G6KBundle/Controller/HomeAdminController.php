@@ -51,9 +51,8 @@ class HomeAdminController extends BaseAdminController {
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
 
-		$db_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/databases";
 		try {
-			$this->datasources = new \SimpleXMLElement($db_dir."/DataSources.xml", LIBXML_NOWARNING, true);
+			$this->datasources = new \SimpleXMLElement($this->databasesDir."/DataSources.xml", LIBXML_NOWARNING, true);
 			$datasourcesCount = $this->datasources->DataSource->count();
 		} catch (\Exception $e) {
 			$datasourcesCount = 0;
@@ -63,13 +62,11 @@ class HomeAdminController extends BaseAdminController {
 		$users = $userManager->findUsers();
 
 		$finder = new Finder();
-		$simu_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/data/simulators";
-		$finder->depth('== 0')->files()->name('*.xml')->in($simu_dir);
+		$finder->depth('== 0')->files()->name('*.xml')->in($this->simulatorsDir);
 		$simulatorsCount = $finder->count();
 
 		$finder = new Finder();
-		$views_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/views";
-		$finder->depth('== 0')->ignoreVCS(true)->exclude(array('admin', 'base', 'Theme'))->directories()->in($views_dir);
+		$finder->depth('== 0')->ignoreVCS(true)->exclude(array('admin', 'base', 'Theme'))->directories()->in($this->viewsDir);
 		$viewsCount = $finder->count();
 
  		$hiddens = array();

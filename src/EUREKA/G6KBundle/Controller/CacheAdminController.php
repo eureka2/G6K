@@ -53,7 +53,7 @@ class CacheAdminController extends BaseAdminController {
 		$script = $no_js == 1 ? 0 : 1;
 		
 		if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
-			throw $this->AccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 		}
 		$cache_dir = dirname($this->get('kernel')->getCacheDir());
 		$this->log[] = "<b>" . $this->get('translator')->trans("cache directory : %cachedir%", array('%cachedir%' => $cache_dir)) . "</b>";

@@ -35,25 +35,17 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class BaseAdminController extends Controller {
 
 	public $helper;
+	public $databasesDir;
+	public $simulatorsDir;
+	public $publicDir;
+	public $viewsDir;
 
 	protected function errorResponse($form, $error)	{
 		$form['error'] = $error;
 		$response = new Response();
 		$response->setContent(json_encode($form));
 		$response->headers->set('Content-Type', 'application/json');
-		return $response;	
-	}
-
-	protected function parseDate($format, $dateStr) {
-		if (empty($dateStr)) {
-			return null;
-		}
-		$date = \DateTime::createFromFormat($format, $dateStr);
-		$errors = \DateTime::getLastErrors();
-		if ($errors['error_count'] > 0) {
-			throw new \Exception("Error on date '$dateStr', expected format '$format' : " . implode(" ", $errors['errors']));
-		}
-		return $date;
+		return $response;
 	}
 
 /**

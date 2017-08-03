@@ -62,7 +62,7 @@ class UsersAdminController extends BaseAdminController {
 					return $this->deleteUser ($form);
 			}
 		} else if (! $this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
-			throw $this->AccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 		} else {
 			$userManager = $this->get('fos_user.user_manager');
 			$users = $userManager->findUsers();
@@ -97,9 +97,9 @@ class UsersAdminController extends BaseAdminController {
 		$enabled = isset($form['enabled']) ? $form['enabled'] == 1 : false;
 		$locked = isset($form['locked']) ? $form['locked'] == 1 : false;
 		$expired = isset($form['expired']) ? $form['expired'] == 1 : false;
-		$expiresAt = isset($form['expiresAt']) && $form['expiresAt'] != "" ? $this->parseDate('d/m/Y', $form['expiresAt']) : null;
+		$expiresAt = isset($form['expiresAt']) && $form['expiresAt'] != "" ? $this->helper->parseDate('d/m/Y', $form['expiresAt']) : null;
 		$credentialsExpired = isset($form['credentialsExpired']) ? $form['credentialsExpired'] == 1 : false;
-		$credentialExpireAt = isset($form['credentialExpireAt']) && $form['credentialExpireAt'] != "" ? $this->parseDate('d/m/Y', $form['credentialExpireAt']) : null;
+		$credentialExpireAt = isset($form['credentialExpireAt']) && $form['credentialExpireAt'] != "" ? $this->helper->parseDate('d/m/Y', $form['credentialExpireAt']) : null;
 		$roles = isset($form['roles']) ? $form['roles'] : array() ;
 		if ($userName == "" || strlen($userName)  < 3) {
 			return $this->errorResponse($form, "The username field is required  (3 car .min)!");
@@ -158,9 +158,9 @@ class UsersAdminController extends BaseAdminController {
 		$enabled = isset($form['enabled']) ? $form['enabled'] == 1 : false;
 		$locked = isset($form['locked']) ? $form['locked'] == 1 : false;
 		$expired = isset($form['expired']) ? $form['expired'] == 1 : false;
-		$expiresAt = isset($form['expiresAt']) && $form['expiresAt'] != "" ? $this->parseDate('d/m/Y', $form['expiresAt']) : null;
+		$expiresAt = isset($form['expiresAt']) && $form['expiresAt'] != "" ? $this->helper->parseDate('d/m/Y', $form['expiresAt']) : null;
 		$credentialsExpired = isset($form['credentialsExpired']) ? $form['credentialsExpired'] == 1 : false;
-		$credentialExpireAt = isset($form['credentialExpireAt']) && $form['credentialExpireAt'] != "" ? $this->parseDate('d/m/Y', $form['credentialExpireAt']) : null;
+		$credentialExpireAt = isset($form['credentialExpireAt']) && $form['credentialExpireAt'] != "" ? $this->helper->parseDate('d/m/Y', $form['credentialExpireAt']) : null;
 		$roles = isset($form['roles']) ? $form['roles'] : array() ;
 		if ($userName != $user->getUserName() && ($userName== "" || strlen($userName)  < 3)) {
 			return $this->errorResponse($form, "The username field is required  (3 car .min)!");

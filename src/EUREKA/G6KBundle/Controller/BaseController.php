@@ -43,6 +43,7 @@ use EUREKA\G6KBundle\Entity\Section;
 use EUREKA\G6KBundle\Entity\Step;
 
 use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
+use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -67,6 +68,10 @@ class BaseController extends Controller {
 	protected $sequence = array();
 	protected $path = "";
 	public $uricache = array();
+	public $databasesDir;
+	public $simulatorsDir;
+	public $publicDir;
+	public $viewsDir;
 
 
 	protected function runStep(Request $request, $form, $simu, &$view, $test)
@@ -81,14 +86,18 @@ class BaseController extends Controller {
 			if ($this->container->hasParameter('page404')) {
 				$page404Url = $request->getScheme() . '://' . $request->getHttpHost() . $this->container->getParameter('page404');
 				try {
-					$page404 = file_get_contents($page404Url);
+					$client = Client::createClient();
+					$page404 = $client->get($page404Url);
+					if ($page404 == '') {
+						$page404 = FALSE;
+					}
 				} catch (\Exception $e) {
 					$page404 = FALSE;
 				}
 				if ($page404 !== FALSE) {
 					return new Response($page404, 404, array('Content-Type', 'text/html')); 
 				} else {
-					return new RedirectResponse($page404Url);
+					throw $this->createNotFoundException($this->get('translator')->trans("This simulator does not exist"));
 				}
 			} else {
 				throw $this->createNotFoundException($this->get('translator')->trans("This simulator does not exist"));
@@ -417,13 +426,16 @@ class BaseController extends Controller {
 		$path = null;
 		if ($test) {
 			try {
-				$path = $this->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/simulators/work/'.$simu.'.xml');
+				$path = $this->simulatorsDir. '/work/'.$simu.'.xml';
+				if (! file_exists($path)) {
+					$path = null;
+				}
 			} catch (\Exception $e) {
 				$path = null;
 			}
 		} 
 		if ($path === null) {
-			$path = $this->get('kernel')->locateResource('@EUREKAG6KBundle/Resources/data/simulators/'.$simu.'.xml');
+			$path = $this->simulatorsDir. '/'.$simu.'.xml';
 		}
 		return $path;
 	}
@@ -1020,7 +1032,7 @@ class BaseController extends Controller {
 								$value = $result;
 							}
 							if ($d->getType() == "date" && preg_match("/^\d\d\d\d-\d{1,2}-\d{1,2}$/", $value)) {
-								$value = $this->parseDate("Y-m-d", $value)->format("d/m/Y");
+								$value = $this->helper->parseDate("Y-m-d", $value)->format("d/m/Y");
 							}
 							$oValue = $d->getValue();
 							$d->setValue($value);
@@ -1041,19 +1053,6 @@ class BaseController extends Controller {
 				$this->processDatas($istep);
 			}
 		}
-	}
-
-	protected function parseDate($format, $dateStr)
-	{
-		if (empty($dateStr)) {
-			return null;
-		}
-		$date = \DateTime::createFromFormat($format, $dateStr);
-		$errors = \DateTime::getLastErrors();
-		if ($errors['error_count'] > 0) {
-			throw new \Exception($errors['errors'][0]);
-		}
-		return $date;
 	}
 
 }

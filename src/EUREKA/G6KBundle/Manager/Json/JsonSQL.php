@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace EUREKA\G6KBundle\Manager;
+namespace EUREKA\G6KBundle\Manager\Json;
 
 /**
  * This class allows you  to store and retrieve data from files in JSON format using SQL standard.

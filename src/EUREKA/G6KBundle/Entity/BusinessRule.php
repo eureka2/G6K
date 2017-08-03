@@ -30,7 +30,7 @@ use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
 use EUREKA\G6KBundle\Manager\ExpressionParser\Token;
 
 class BusinessRule {
-	
+
 	private $simulator = null;
 	private $elementId = 0;
 	private $id = "";
@@ -41,8 +41,7 @@ class BusinessRule {
 	private $ifActions = array();
 	private $elseActions = array();	
 	private $translator = null;
-	
-		
+
 	private $inverseOperators = array(
 		"present" => "blank",
 		"blank"   => "present",
@@ -65,31 +64,31 @@ class BusinessRule {
 		$this->id = $id;
 		$this->name = $name;
 	}
-	
+
 	public function getSimulator() {
 		return $this->simulator;
 	}
-	
+
 	public function getElementId() {
 		return $this->elementId;
 	}
-	
+
 	public function setElementId($elementId) {
 		$this->elementId = $elementId;
 	}
-	
+
 	public function getId() {
 		return $this->id;
 	}
-	
+
 	public function setId($id) {
 		$this->id = $id;
 	}
-	
+
 	public function getName() {
 		return $this->name;
 	}
-	
+
 	public function setName($name) {
 		$this->name = $name;
 	}
@@ -121,27 +120,27 @@ class BusinessRule {
 	public function getIfActions() {
 		return $this->ifActions;
 	}
-	
+
 	public function setIfActions($ifActions) {
 		$this->ifActions = $ifActions;
 	}
-	
+
 	public function addIfAction($ifAction) {
 		$this->ifActions[] = $ifAction;
 	}
-	
+
 	public function getElseActions() {
 		return $this->elseActions;
 	}
-	
+
 	public function setElseActions($elseActions) {
 		$this->elseActions = $elseActions;
 	}
-	
+
 	public function addElseAction($elseAction) {
 		$this->elseActions[] = $elseAction;
 	}
-	
+
 	public function getExtendedConditions() {
 		if ($this->connector !== null) {
 			$extended = $this->ruleConnector($this->connector);
@@ -206,7 +205,7 @@ class BusinessRule {
 			return isset($operators[$operator]) ? $operators[$operator] : $operator;
 		}
 	}
-	
+
 	protected function plainConditions(&$ruleData) {
 		if ($ruleData !== array_values($ruleData)) {
 			if (isset($ruleData["name"])) {
@@ -269,7 +268,7 @@ class BusinessRule {
 			}
 		}
 	}
-		
+
 	protected function negate(&$ruleData) {
 		if ($ruleData !== array_values($ruleData)) {
 			if (isset($ruleData["all"])) {
@@ -291,7 +290,7 @@ class BusinessRule {
 			}
 		}
 	}
-	
+
 	protected function optimize (&$ruleData) {
 		if (isset($ruleData["all"]) && count($ruleData["all"]) == 1) {
 			$ruleData = $ruleData['all'][0];
@@ -301,54 +300,34 @@ class BusinessRule {
 		do {
 			$optimized = false;
 			if (isset($ruleData["all"])) {
-				$conds = array();
-				foreach ($ruleData["all"] as $i => $cond) {
-					if (isset($cond["all"])) {
-						foreach ($cond["all"] as $j => $scond) {
-							array_push($conds, $scond);
-						}
-						array_splice($ruleData["all"], $i, 1, array($conds[0]));
-						$condsCount = count($conds);
-						for ($j = 1; $j < $condsCount; $j++) {
-							array_splice($ruleData["all"], $i + $j, 0, array($conds[$j]));
-						}
-						$optimized = true;
-					}
-				}
+				$optimized = $this->optimizeCond($ruleData, "all") || $optimized;
 			} else if (isset($ruleData["any"])) {
-				$conds = array();
-				foreach ($ruleData["any"] as $i => $cond) {
-					if (isset($cond["any"])) {
-						foreach ($cond["any"] as $j => $scond) {
-							array_push($conds, $scond);
-						}
-						array_splice($ruleData["any"], $i, 1, array($conds[0]));
-						$condsCount = count($conds);
-						for ($j = 1; $j < $condsCount; $j++) {
-							array_splice($ruleData["any"], $i + $j, 0, array($conds[$j]));
-						}
-						$optimized = true;
-					}
-				}
+				$optimized = $this->optimizeCond($ruleData, "any") || $optimized;
 			} else if (isset($ruleData["none"])) {
-				$conds = array();
-				foreach ($ruleData["none"] as $i => $cond) {
-					if (isset($cond["none"])) {
-						foreach ($cond["none"] as $j => $scond) {
-							array_push($conds, $scond);
-						}
-						array_splice($ruleData["none"], $i, 1, array($conds[0]));
-						$condsCount = count($conds);
-						for ($j = 1; $j < $condsCount; $j++) {
-							array_splice($ruleData["none"], $i + $j, 0, array($conds[$j]));
-						}
-						$optimized = true;
-					}
-				}
+				$optimized = $this->optimizeCond($ruleData, "none") || $optimized;
 			}
 		} while ($optimized);
 	}
-	
+
+	protected function optimizeCond(&$ruleData, $connector) {
+		$optimized = false;
+		$conds = array();
+		foreach ($ruleData[$connector] as $i => $cond) {
+			if (isset($cond[$connector])) {
+				foreach ($cond[$connector] as $j => $scond) {
+					array_push($conds, $scond);
+				}
+				array_splice($ruleData[$connector], $i, 1, array($conds[0]));
+				$condsCount = count($conds);
+				for ($j = 1; $j < $condsCount; $j++) {
+					array_splice($ruleData[$connector], $i + $j, 0, array($conds[$j]));
+				}
+				$optimized = true;
+			}
+		}
+		return $optimized;
+	}
+
 	protected function parseConditions() {
 		
 		$arities = array(
