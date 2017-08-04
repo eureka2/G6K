@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace EUREKA\G6KBundle\Manager\Json;
+namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
 use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
 
@@ -31,7 +31,7 @@ use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
  *  The class JsonSQLStatement Represents a prepared statement and, 
  *  after the statement is executed, an associated result set.
  */
-class JsonSQLStatement  {
+class Statement  {
 	private $jsonsql = null;
 	private $builtins = null;
 	private $request = null;
@@ -39,6 +39,7 @@ class JsonSQLStatement  {
 	private $rowCount = null;
 	private $params = array();
 	private $parser = null;
+	private $engine = null;
 
 	/**
 	 * Class Constructor
@@ -50,6 +51,7 @@ class JsonSQLStatement  {
 	public function __construct($jsonsql, &$request) {
 		$this->parser = new Parser();
 		$this->jsonsql = $jsonsql;
+		$this->engine = $jsonsql->getEngine();
 		$this->request = $request;
 		$this->result = array();
 		$this->rowCount = 0;
@@ -76,7 +78,7 @@ class JsonSQLStatement  {
 	 */
 	public function bindValue($parameter, $value, $type=\PDO::PARAM_STR) {
 		$this->checkValue($value);
-		$value = $this->jsonsql->quote($value, $type);
+		$value = $this->engine->quote($value, $type);
 		if (in_array($this->request->statement, array('select', 'delete'))) {
 			if (is_int($parameter)) {
 				$this->request->where = preg_replace_callback("/\?/",
@@ -312,11 +314,11 @@ class JsonSQLStatement  {
 						$value = $this->builtins[strtoupper($value)];
 					}
 				}
-				$this->jsonsql->insert($this->request->into, $row);
+				$this->engine->insert($this->request->into, $row);
 				$this->rowCount++;
 			}
 		} else {
-			$stmt = new JsonSQLStatement($this->jsonsql, $this->request->select);
+			$stmt = new Statement($this->jsonsql, $this->request->select);
 			foreach($this->params as $param) {
 				$stmt->bindParam($param[0], $param[1], $param[2]);
 			}
@@ -326,7 +328,7 @@ class JsonSQLStatement  {
 			$values = $stmt->fetchAll();
 			array_walk($values, function ($v, $i) {
 				$row = array_combine($this->request->fields, $v);
-				$this->jsonsql->insert($this->request->into, $row);
+				$this->engine->insert($this->request->into, $row);
 			});
 			$this->rowCount = $stmt->rowCount();
 		}
@@ -340,7 +342,7 @@ class JsonSQLStatement  {
 	 * @return bool TRUE.
 	 */
 	protected function executeUpdate() {
-		$table = $this->jsonsql->table($this->request->update);
+		$table = $this->engine->table($this->request->update);
 		$this->rowCount = 0;
 		while($table->valid()) {
 			$row = $table->current();
@@ -354,7 +356,7 @@ class JsonSQLStatement  {
 						$row->{$field} = $value;
 					}
 				}
-				$this->jsonsql->replace($this->request->update, $table->key(), $row);
+				$this->engine->replace($this->request->update, $table->key(), $row);
 				$this->rowCount++;
 			}
 			$table->next();
@@ -369,12 +371,12 @@ class JsonSQLStatement  {
 	 * @return bool TRUE.
 	 */
 	protected function executeDelete() {
-		$table = $this->jsonsql->table($this->request->from);
+		$table = $this->engine->table($this->request->from);
 		$this->rowCount = 0;
 		while($table->valid()) {
 			$row = $table->current();
 			if ($this->evaluate($this->request->where, $row) === true) {
-				$this->jsonsql->delete($this->request->from, $table->key());
+				$this->engine->delete($this->request->from, $table->key());
 				$this->rowCount++;
 			}
 			$table->next();
@@ -389,9 +391,9 @@ class JsonSQLStatement  {
 	 * @return bool TRUE.
 	 */
 	protected function executeCreateTable() {
-		$this->jsonsql->createTable($this->request->table, $this->request->columns, $this->request->required, $this->request->foreignkeys, $this->request->ifnotexists);
+		$this->engine->createTable($this->request->table, $this->request->columns, $this->request->required, $this->request->foreignkeys, $this->request->ifnotexists);
 		if (isset( $this->request->select) && $this->request->withdata) {
-			$stmt = new JsonSQLStatement($this->jsonsql, $this->request->select);
+			$stmt = new Statement($this->jsonsql, $this->request->select);
 			foreach($this->params as $param) {
 				$stmt->bindParam($param[0], $param[1], $param[2]);
 			}
@@ -411,7 +413,7 @@ class JsonSQLStatement  {
 					$values = array_values($v);
 				}
 				$row = array_combine($fields, $values);
-				$this->jsonsql->insert($this->request->table, $row);
+				$this->engine->insert($this->request->table, $row);
 			});
 			$this->rowCount = $stmt->rowCount();
 		} else {
@@ -429,73 +431,73 @@ class JsonSQLStatement  {
 	protected function executeAlterTable() {
 		switch ($this->request->alter) {
 			case 'rename table':
-				$this->jsonsql->renameTable($this->request->table, $this->request->newtable);
+				$this->engine->renameTable($this->request->table, $this->request->newtable);
 				break;
 			case 'rename column':
-				$this->jsonsql->renameColumn($this->request->table, $this->request->column->name, $this->request->column->newname);
+				$this->engine->renameColumn($this->request->table, $this->request->column->name, $this->request->column->newname);
 				break;
 			case 'drop column':
-				$this->jsonsql->dropColumn($this->request->table, $this->request->column->name, $this->request->column->ifexists);
+				$this->engine->dropColumn($this->request->table, $this->request->column->name, $this->request->column->ifexists);
 				break;
 			case 'modify title':
-				$this->jsonsql->setTableTitle($this->request->table, $this->request->title);
+				$this->engine->setTableTitle($this->request->table, $this->request->title);
 				break;
 			case 'drop title':
-				$this->jsonsql->setTableTitle($this->request->table, false);
+				$this->engine->setTableTitle($this->request->table, false);
 				break;
 			case 'modify comment':
-				$this->jsonsql->setTableDescription($this->request->table, $this->request->comment);
+				$this->engine->setTableDescription($this->request->table, $this->request->comment);
 				break;
 			case 'drop comment':
-				$this->jsonsql->setTableDescription($this->request->table, false);
+				$this->engine->setTableDescription($this->request->table, false);
 				break;
 			case 'modify column':
 				switch ($this->request->column->action) {
 					case 'set type':
-						$this->jsonsql->setColumnType($this->request->table, $this->request->column->name, $this->request->column->type, $this->request->column->format, $this->request->column->datatype);
+						$this->engine->setColumnType($this->request->table, $this->request->column->name, $this->request->column->type, $this->request->column->format, $this->request->column->datatype);
 						break;
 					case 'set not null':
-						$this->jsonsql->setNotNull($this->request->table, $this->request->column->name, false);
+						$this->engine->setNotNull($this->request->table, $this->request->column->name, false);
 						break;
 					case 'set primary key':
-						$this->jsonsql->setPrimaryKey($this->request->table, $this->request->column->name, false);
+						$this->engine->setPrimaryKey($this->request->table, $this->request->column->name, false);
 						break;
 					case 'set autoincrement':
-						$this->jsonsql->setAutoincrement($this->request->table, $this->request->column->name, false);
+						$this->engine->setAutoincrement($this->request->table, $this->request->column->name, false);
 						break;
 					case 'set default':
-						$this->jsonsql->setDefault($this->request->table, $this->request->column->name, $this->request->column->default);
+						$this->engine->setDefault($this->request->table, $this->request->column->name, $this->request->column->default);
 						break;
 					case 'set title':
-						$this->jsonsql->setColumnTitle($this->request->table, $this->request->column->name, $this->request->column->title);
+						$this->engine->setColumnTitle($this->request->table, $this->request->column->name, $this->request->column->title);
 						break;
 					case 'set comment':
-						$this->jsonsql->setColumnDescription($this->request->table, $this->request->column->name, $this->request->column->comment);
+						$this->engine->setColumnDescription($this->request->table, $this->request->column->name, $this->request->column->comment);
 						break;
 					case 'remove not null':
-						$this->jsonsql->setNotNull($this->request->table, $this->request->column->name, true);
+						$this->engine->setNotNull($this->request->table, $this->request->column->name, true);
 						break;
 					case 'remove primary key':
-						$this->jsonsql->setPrimaryKey($this->request->table, $this->request->column->name, true);
+						$this->engine->setPrimaryKey($this->request->table, $this->request->column->name, true);
 						break;
 					case 'remove autoincrement':
-						$this->jsonsql->setAutoincrement($this->request->table, $this->request->column->name, true);
+						$this->engine->setAutoincrement($this->request->table, $this->request->column->name, true);
 						break;
 					case 'remove default':
-						$this->jsonsql->setDefault($this->request->table, $this->request->column->name, false);
+						$this->engine->setDefault($this->request->table, $this->request->column->name, false);
 						break;
 					case 'remove title':
-						$this->jsonsql->setColumnTitle($this->request->table, $this->request->column->name, false);
+						$this->engine->setColumnTitle($this->request->table, $this->request->column->name, false);
 						break;
 					case 'remove comment':
-						$this->jsonsql->setColumnDescription($this->request->table, $this->request->column->name, false);
+						$this->engine->setColumnDescription($this->request->table, $this->request->column->name, false);
 						break;
 					default:
 						return false;
 				}
 				break;
 			case 'add column':
-				$this->jsonsql->addColumn($this->request->table, $this->request->column->name, $this->request->column->definition, $this->request->required);
+				$this->engine->addColumn($this->request->table, $this->request->column->name, $this->request->column->definition, $this->request->required);
 				break;
 			default:
 				return false;
@@ -511,7 +513,7 @@ class JsonSQLStatement  {
 	 */
 	protected function executeTruncate() {
 		foreach($this->request->tables as $table) {
-			$this->jsonsql->truncate($table);
+			$this->engine->truncate($table);
 		}
 		$this->rowCount = 0;
 		return true;
@@ -525,7 +527,7 @@ class JsonSQLStatement  {
 	 */
 	protected function executeDropTable() {
 		foreach($this->request->tables as $table) {
-			$this->jsonsql->dropTable($table, $this->request->ifexists);
+			$this->engine->dropTable($table, $this->request->ifexists);
 		}
 		$this->rowCount = 0;
 		return true;
@@ -550,7 +552,7 @@ class JsonSQLStatement  {
 				throw new JsonSQLException("syntax error : bool value expected");
 			}
 		} else {
-			$this->jsonsql->checkSafety($value);
+			$this->engine->checkSafety($value);
 		}
 	}
 
@@ -611,7 +613,7 @@ class JsonSQLStatement  {
 	 */
 	protected function select() {
 		foreach($this->request->from as $k => &$t) {
-			$t->table = $this->jsonsql->table($t->table);
+			$t->table = $this->engine->table($t->table);
 		}
 		$len = count($this->request->from);
 		$result = array();

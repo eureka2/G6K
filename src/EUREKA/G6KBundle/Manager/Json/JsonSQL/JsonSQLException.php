@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace EUREKA\G6KBundle\Manager\Json;
+namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
 /**
  * This class Represents an error raised by JsonSQL.
