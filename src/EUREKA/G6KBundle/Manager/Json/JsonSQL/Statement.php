@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
+use EUREKA\G6KBundle\Manager\Json\JsonSQL;
+
 use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
 
 /**
@@ -48,7 +50,7 @@ class Statement  {
 	 * @param JsonSQL $jsonsql the JsonSQL instance
 	 * @param object $request the prepared statement
 	 */
-	public function __construct($jsonsql, &$request) {
+	public function __construct(JsonSQL $jsonsql, &$request) {
 		$this->parser = new Parser();
 		$this->jsonsql = $jsonsql;
 		$this->engine = $jsonsql->getEngine();

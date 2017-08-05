@@ -27,6 +27,7 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Manager;
 
 use EUREKA\G6KBundle\Entity\Source;
+use EUREKA\G6KBundle\Entity\Parameter;
 
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
@@ -46,7 +47,7 @@ class ControllersHelper {
 		$this->controller->viewsDir = $resourcesDir . '/views';
 	}
 
-	protected function formatParamValue($param)	{
+	protected function formatParamValue(Parameter $param) {
 		$data = $this->controller->simu->getDataById($param->getData());
 		$value = $data->getValue();
 		if (strlen($value) == 0) {

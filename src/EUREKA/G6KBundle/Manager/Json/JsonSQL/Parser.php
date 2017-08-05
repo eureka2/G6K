@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
+use EUREKA\G6KBundle\Manager\Json\JsonSQL;
+
 /**
  * This class allows you  to store and retrieve data from files in JSON format using SQL standard.
  * - The data are described by a json schema in compliance with the spécifications of http://json-schema.org
@@ -232,9 +234,13 @@ class Parser  {
 		'year' => 'integer'
 	);
 
-	public function __construct($jsonsql) {
+	public function __construct(JsonSQL $jsonsql) {
 		$this->jsonsql = $jsonsql;
-		$this->engine = $jsonsql->getEngine();
+		$this->engine = $this->jsonsql->getEngine();
+	}
+
+	public function getJsonSQL() {
+		return $this->jsonsql;
 	}
 
 	/**
