@@ -1000,7 +1000,7 @@ THE SOFTWARE.
 			{% if sourceLabel is empty %}
 			{% set sourceLabel = data.source %}
 			{% endif %}
-			{{ page.showAttribute('data-'~data.id, 'number', 'source', 'Source'|trans, data.source, sourceLabel, false, 'Unit'|trans) }}
+			{{ page.showAttribute('data-'~data.id, 'number', 'source', 'Source'|trans, data.source, sourceLabel, false, 'Source'|trans) }}
 			{% endif %}
 			{{ page.showAttribute('data-'~data.id, 'text', 'index', 'Index'|trans, data.unparsedIndex, data.unparsedIndex, false, 'Index'|trans) }}
 			{{ page.showAttribute('data-'~data.id, 'checkbox', 'memorize', 'Memorize'|trans, data.memorize, data.memorize, false, 'Memorize'|trans) }}
