@@ -505,7 +505,7 @@ class Engine  {
 	 * @return void
 	 * @throws JsonSQLException
 	 */
-	public function replace($table, $index, $row) {
+	public function replace($table, $index, \stdClass $row) {
 		$this->beginTransaction();
 		$vrow = array();
 		$primarykeys = array();
@@ -556,7 +556,7 @@ class Engine  {
 	 * @return void
 	 * @throws JsonSQLException
 	 */
-	public function createTable($table, $columns, $required, $foreignkeys, $ifnotexists = false) {
+	public function createTable($table, \stdClass $columns, $required, $foreignkeys, $ifnotexists = false) {
 		if (isset($this->db->schema->properties->{$table})) {
 			if (!$ifnotexists) {
 				throw new JsonSQLException("table '$table' already exists");
@@ -672,7 +672,7 @@ class Engine  {
 	 * @return void
 	 * @throws JsonSQLException
 	 */
-	public function addColumn($table, $column, $columnDef, $required = array()) {
+	public function addColumn($table, $column, \stdClass $columnDef, $required = array()) {
 		if (!isset($this->db->schema->properties->{$table})) {
 			throw new JsonSQLException("table '$table' doesn't exists");
 		}

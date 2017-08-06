@@ -41,19 +41,19 @@ class DateFunction {
 		return (int)$lastDate->format('j');
 	}
 
-	public static function firstDayOfMonth($dateObj) {
+	public static function firstDayOfMonth(\DateTime $dateObj) {
 		$date = clone $dateObj;
 		$date->modify('first day of this month');
 		return $date;
 	}
 
-	public static function lastDayOfMonth($dateObj) {
+	public static function lastDayOfMonth(\DateTime $dateObj) {
 		$date = clone $dateObj;
 		$date->modify('last day of this month');
 		return $date;
 	}
 
-	public static function addMonths($months, $dateObject) {
+	public static function addMonths($months, \DateTime $dateObject) {
 		$next = new \DateTime($dateObject->format('Y-m-d'));
 		$next->modify('last day of +'.$months.' month');
 		if($dateObject->format('d') > $next->format('d')) {

@@ -78,7 +78,7 @@ class JSONToSQLConverter {
 		$this->parameters = array_merge($this->parameters, $fparameters);
 	}
 
-	private function getType($coldef) {
+	private function getType(\stdClass $coldef) {
 		$driver = $this->parameters['database_driver'];
 		if ($coldef->type == 'string') {
 			if(isset($coldef->format)) {

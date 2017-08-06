@@ -787,7 +787,7 @@ class Statement  {
 			return $result;
 		}
 		$keys = $this->request->groupby;
-		usort($result, function ($a, $b) use ($keys) {
+		usort($result, function (\stdClass $a, \stdClass $b) use ($keys) {
 			foreach ($keys as $key) {
 				if ($this->isExpression($key)) {
 					$v1 = $this->evaluate($key, $a);
@@ -873,7 +873,7 @@ class Statement  {
 			return $result;
 		}
 		$keys = $this->request->orderby;
-		usort($result, function ($a, $b) use ($keys) {
+		usort($result, function (\stdClass $a, \stdClass $b) use ($keys) {
 			foreach ($keys as $key => $order) {
 				if ($this->isExpression($key)) {
 					$v1 = $this->evaluate($key, $a);

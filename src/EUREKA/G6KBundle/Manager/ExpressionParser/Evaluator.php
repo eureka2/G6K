@@ -239,7 +239,7 @@ class Evaluator {
 			"abs" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return abs($a); }),
 			"acos" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return acos($a); }),
 			"acosh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return acosh($a); }),
-			"addMonths" => array(2, array(Token::T_NUMBER, Token::T_DATE), Token::T_DATE, function($a, $b) { return DateFunction::addMonths($a, $b); }),
+			"addMonths" => array(2, array(Token::T_NUMBER, Token::T_DATE), Token::T_DATE, function($a, \DateTime $b) { return DateFunction::addMonths($a, $b); }),
 			"asin" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return asin($a); }),
 			"asinh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return asinh($a); }),
 			"atan" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return atan($a); }),
@@ -264,11 +264,11 @@ class Evaluator {
 				};
 				return $c;
 			}),
-			"day" => array(1, array(Token::T_DATE), Token::T_NUMBER, function($a) { return (float)$a->format('d'); }),
+			"day" => array(1, array(Token::T_DATE), Token::T_NUMBER, function(\DateTime $a) { return (float)$a->format('d'); }),
 			"exp" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return exp($a); }),
-			"firstDayOfMonth" => array(1, array(Token::T_DATE), Token::T_DATE, function($a) { return DateFunction::firstDayOfMonth($a); }),
+			"firstDayOfMonth" => array(1, array(Token::T_DATE), Token::T_DATE, function(\DateTime $a) { return DateFunction::firstDayOfMonth($a); }),
 			"floor" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return floor($a); }),
-			"fullmonth" => array(1, array(Token::T_DATE), Token::T_TEXT, function($a) {
+			"fullmonth" => array(1, array(Token::T_DATE), Token::T_TEXT, function(\DateTime $a) {
 				$months = array("janvier", "février", "mars", "avril", "mai", "juin",  "juillet", "août", "septembre", "octobre", "novembre", "décembre");
 				return $months[(int)$a->format('m') - 1].' '.$a->format('Y');
 			}),
@@ -284,8 +284,8 @@ class Evaluator {
 			"max" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return max($a, $b); }),
 			"min" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return min($a, $b); }),
 			"money" => array(1, array(Token::T_NUMBER), Token::T_TEXT, function($a) { return (string)number_format($a , 2 , "," , " "); }),
-			"month" => array(1, array(Token::T_DATE), Token::T_NUMBER, function($a) { return (float)$a->format('m'); }),
-			"nextWorkDay" => array(1, array(Token::T_DATE), Token::T_DATE, function($a) { return Holidays::nextWorkingDay($a); }),
+			"month" => array(1, array(Token::T_DATE), Token::T_NUMBER, function(\DateTime $a) { return (float)$a->format('m'); }),
+			"nextWorkDay" => array(1, array(Token::T_DATE), Token::T_DATE, function(\DateTime $a) { return Holidays::nextWorkingDay($a); }),
 			"pow" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return pow($a, $b); }),
 			"rand" => array(0, array(), Token::T_NUMBER, function() { return rand(); }),
 			"replace" => array(3, array(Token::T_TEXT, Token::T_TEXT, Token::T_TEXT), Token::T_TEXT, function($a, $b, $c) { return str_replace($a, $b, $c); }),
@@ -312,8 +312,8 @@ class Evaluator {
 			"trim" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return trim($a); }),
 			"ucfirst" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return ucfirst($a); }),
 			"upper" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return strtoupper($a); }),
-			"workdays" => array(2, array(Token::T_DATE, Token::T_DATE), Token::T_NUMBER, function($a, $b) { return Holidays::workdays($a, $b); }),
-			"year" => array(1, array(Token::T_DATE), Token::T_NUMBER, function($a) { return (float)$a->format('Y'); })
+			"workdays" => array(2, array(Token::T_DATE, Token::T_DATE), Token::T_NUMBER, function(\DateTime $a, \DateTime $b) { return Holidays::workdays($a, $b); }),
+			"year" => array(1, array(Token::T_DATE), Token::T_NUMBER, function(\DateTime $a) { return (float)$a->format('Y'); })
 		);
 		if ($func->value == "defined") {
 			if (count($args) < 1) { 

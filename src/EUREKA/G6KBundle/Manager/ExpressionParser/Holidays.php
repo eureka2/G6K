@@ -28,7 +28,7 @@ namespace EUREKA\G6KBundle\Manager\ExpressionParser;
 
 class Holidays {
 
-	public static function workdays($startDate, $endDate) {
+	public static function workdays(\DateTime $startDate, \DateTime $endDate) {
 		// Validate input
 		if ($endDate < $startDate)
 			return 0;
@@ -71,7 +71,7 @@ class Holidays {
 		return $days;
 	}
 
-	public static function nextWorkingDay($date) {
+	public static function nextWorkingDay(\DateTime $date) {
 		$d = $date;
 		while (! self::isWorkingDay($d)) {
 			$d->add(new \DateInterval('P1D'));
@@ -136,7 +136,7 @@ class Holidays {
 		return $easter;
 	}
 
-	private static function isWorkingDay($date) {
+	private static function isWorkingDay(\DateTime $date) {
 		$day = ((int)$date->format('N')) % 7;
 		if ($day == 0 || $day == 6) {
 			return false; 

@@ -289,7 +289,7 @@ class SQLSelectTokenizer  {
 		$condition->infunction = false;
 	}
 
-	protected function insertCondition(&$conditions, $condition) {
+	protected function insertCondition(&$conditions, \stdClass $condition) {
 		foreach ($conditions as $c => $cond) {
 			if ($cond->operand == $condition->operand &&
 				$cond->operator == $condition->operator && 
