@@ -514,7 +514,7 @@ class BaseController extends Controller {
 					$this->addWidget('abListbox');
 				}
 			}
-			$this->populateChoiceWithSource($data);
+			$this->helper->populateChoiceWithSource($data);
 			$this->replaceFieldNotes($field);
 		} elseif ($step->getId() == 0 || $step->isDynamic()) {
 			if ($field->getUsage() == 'input') {
@@ -527,80 +527,8 @@ class BaseController extends Controller {
 					$this->addWidget('abListbox');
 				}
 			}
-			$this->populateChoiceWithSource($data);
+			$this->helper->populateChoiceWithSource($data);
 			$this->replaceFieldNotes($field);
-		}
-	}
-
-	protected function populateChoiceWithSource($data) 
-	{
-		$choiceSource = $data->getChoiceSource();
-		if ($choiceSource !== null) {
-			$source = $choiceSource->getId();
-			if ($source != "") {
-				$source = $this->evaluate($source);
-				if ($source !== false) {
-					$source = $this->simu->getSourceById($source);
-					$result = $this->helper->processSource($source);
-					if ($result !== null) {
-						$n = 0;
-						foreach ($result as $row) {
-							$id = '';
-							$value = '';
-							$label = '';
-							foreach ($row as $col => $cell) {
-								if (strcasecmp($col, $choiceSource->getIdColumn()) == 0) {
-									$id = $cell;
-								} else if (strcasecmp($col, $choiceSource->getValueColumn()) == 0) {
-									$value = $cell;
-								} else if (strcasecmp($col, $choiceSource->getLabelColumn()) == 0) {
-									$label = $cell;
-								}
-							}
-							$id = $id != '' ? $id : ++$n;
-							$choice = new Choice($data, $id, $value, $label);
-							$data->addChoice($choice);
-						}
-					}
-				}
-			}
-		}
-		foreach ($data->getChoices() as $choice) {
-			if ($choice instanceof ChoiceGroup) {
-				if ($choice->getChoiceSource() !== null) {
-					$choiceSource = $choice->getChoiceSource();
-					if ($choiceSource !== null) {
-						$source = $choiceSource->getId();
-						if ($source != "") {
-							$source = $this->evaluate($source);
-							if ($source !== false) {
-								$source = $this->simu->getSourceById($source);
-								$result = $this->helper->processSource($source);
-								if ($result !== null) {
-									$n = 0;
-									foreach ($result as $row) {
-										$id = '';
-										$value = '';
-										$label = '';
-										foreach ($row as $col => $cell) {
-											if (strcasecmp($col, $choiceSource->getIdColumn()) == 0) {
-												$id = $cell;
-											} else if (strcasecmp($col, $choiceSource->getValueColumn()) == 0) {
-												$value = $cell;
-											} else if (strcasecmp($col, $choiceSource->getLabelColumn()) == 0) {
-												$label = $cell;
-											}
-										}
-										$id = $id != '' ? $id : ++$n;
-										$choice = new Choice($data, $id, $value, $label);
-										$data->addChoice($choice);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
 		}
 	}
 

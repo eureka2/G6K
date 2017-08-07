@@ -26,8 +26,12 @@ THE SOFTWARE.
  
 namespace EUREKA\G6KBundle\Manager;
 
+use EUREKA\G6KBundle\Entity\Data;
 use EUREKA\G6KBundle\Entity\Source;
 use EUREKA\G6KBundle\Entity\Parameter;
+use EUREKA\G6KBundle\Entity\ChoiceGroup;
+use EUREKA\G6KBundle\Entity\Choice;
+use EUREKA\G6KBundle\Entity\ChoiceSource;
 
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
@@ -231,6 +235,51 @@ class ControllersHelper {
 				return $result;
 		}
 		return null;
+	}
+
+	public function populateChoiceWithSource(Data &$data) {
+		$choiceSource = $data->getChoiceSource();
+		if ($choiceSource != null) {
+			$this->populateChoice($data, $choiceSource);
+		}
+		foreach ($data->getChoices() as $choice) {
+			if ($choice instanceof ChoiceGroup) {
+				$choiceSource = $choice->getChoiceSource();
+				if ($choiceSource !== null) {
+					$this->populateChoice($data, $choiceSource);
+				}
+			}
+		}
+	}
+
+	protected function populateChoice(Data &$data, ChoiceSource $choiceSource) {
+		$source = $choiceSource->getId();
+		if ($source != "") {
+			$source = $this->controller->simu->getSourceById($source);
+			if ($source !== null) {
+				$result = $this->processSource($source);
+				if ($result !== null) {
+					$n = 0;
+					foreach ($result as $row) {
+						$id = '';
+						$value = '';
+						$label = '';
+						foreach ($row as $col => $cell) {
+							if (strcasecmp($col, $choiceSource->getIdColumn()) == 0) {
+								$id = $cell;
+							} else if (strcasecmp($col, $choiceSource->getValueColumn()) == 0) {
+								$value = $cell;
+							} else if (strcasecmp($col, $choiceSource->getLabelColumn()) == 0) {
+								$label = $cell;
+							}
+						}
+						$id = $id != '' ? $id : ++$n;
+						$choice = new Choice($data, $id, $value, $label);
+						$data->addChoice($choice);
+					}
+				}
+			}
+		}
 	}
 
 	protected function replaceVariable($matches) {

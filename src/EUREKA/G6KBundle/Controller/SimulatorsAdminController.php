@@ -1223,7 +1223,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'type' => $gdata->getType()
 					);
 					if ($gdata->getType() == 'choice' || $gdata->getType() == 'multichoice') {
-						$this->populateChoiceWithSource($gdata);
+						$this->helper->populateChoiceWithSource($gdata);
 						$options = array();
 						foreach ($gdata->getChoices() as $choice) {
 							if ($choice instanceof Choice) {
@@ -1283,7 +1283,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'type' => $data->getType()
 				);
 				if ($data->getType() == 'choice' || $data->getType() == 'multichoice') {
-					$this->populateChoiceWithSource($data);
+					$this->helper->populateChoiceWithSource($data);
 					$options = array();
 					foreach ($data->getChoices() as $choice) {
 						if ($choice instanceof Choice) {
@@ -3031,76 +3031,6 @@ class SimulatorsAdminController extends BaseAdminController {
 			$datas[] = $clause;
 		}
 		return $datas;
-	}
-
-	protected function populateChoiceWithSource($data) 
-	{
-		$choiceSource = $data->getChoiceSource();
-		if ($choiceSource !== null) {
-			$source = $choiceSource->getId();
-			if ($source != "") {
-				$source = $this->simu->getSourceById($source);
-				if ($source !== null) {
-					$result = $this->helper->processSource($source);
-					if ($result !== null) {
-						$n = 0;
-						foreach ($result as $row) {
-							$id = '';
-							$value = '';
-							$label = '';
-							foreach ($row as $col => $cell) {
-								if (strcasecmp($col, $choiceSource->getIdColumn()) == 0) {
-									$id = $cell;
-								} else if (strcasecmp($col, $choiceSource->getValueColumn()) == 0) {
-									$value = $cell;
-								} else if (strcasecmp($col, $choiceSource->getLabelColumn()) == 0) {
-									$label = $cell;
-								}
-							}
-							$id = $id != '' ? $id : ++$n;
-							$choice = new Choice($data, $id, $value, $label);
-							$data->addChoice($choice);
-						}
-					}
-				}
-			}
-		}
-		foreach ($data->getChoices() as $choice) {
-			if ($choice instanceof ChoiceGroup) {
-				if ($choice->getChoiceSource() !== null) {
-					$choiceSource = $choice->getChoiceSource();
-					if ($choiceSource !== null) {
-						$source = $choiceSource->getId();
-						if ($source != "") {
-							$source = $this->simu->getSourceById($source);
-							if ($source !== null) {
-								$result = $this->helper->processSource($source);
-								if ($result !== null) {
-									$n = 0;
-									foreach ($result as $row) {
-										$id = '';
-										$value = '';
-										$label = '';
-										foreach ($row as $col => $cell) {
-											if (strcasecmp($col, $choiceSource->getIdColumn()) == 0) {
-												$id = $cell;
-											} else if (strcasecmp($col, $choiceSource->getValueColumn()) == 0) {
-												$value = $cell;
-											} else if (strcasecmp($col, $choiceSource->getLabelColumn()) == 0) {
-												$label = $cell;
-											}
-										}
-										$id = $id != '' ? $id : ++$n;
-										$choice = new Choice($data, $id, $value, $label);
-										$choice->addChoice($gchoice);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 
 	private function paragraphs ($text) {
