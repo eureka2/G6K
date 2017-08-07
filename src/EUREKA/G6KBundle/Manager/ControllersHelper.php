@@ -239,7 +239,7 @@ class ControllersHelper {
 
 	public function populateChoiceWithSource(Data &$data) {
 		$choiceSource = $data->getChoiceSource();
-		if ($choiceSource != null) {
+		if ($choiceSource !== null) {
 			$this->populateChoice($data, $choiceSource);
 		}
 		foreach ($data->getChoices() as $choice) {

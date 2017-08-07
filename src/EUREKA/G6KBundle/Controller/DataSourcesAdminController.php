@@ -1585,55 +1585,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$descr = $dom->createElement("Description");
 		$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['table-description'])));
 		$newTable->appendChild($descr);
-		foreach ($form['field'] as $i => $field) {
-			if ($field != '') {
-				$column = $dom->createElement("Column");
-				$column->setAttribute('id', $i + 1);
-				$column->setAttribute('name', $field);
-				$column->setAttribute('type', $form['type'][$i]);
-				$column->setAttribute('label', $form['label'][$i]);
-				$descr = $dom->createElement("Description");
-				$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['description'][$i])));
-				$column->appendChild($descr);
-				if ($form['type'][$i] == 'choice' || $form['type'][$i] == 'multichoice') {
-					$choices = $dom->createElement("Choices");
-					if (isset($form['field-'.$i.'-choicesource-datasource'])) {
-						$source = $dom->createElement("Source");
-						$source->setAttribute('id', 1);
-						$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
-						$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
-						$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
-						$source->setAttribute('labelColumn', $form['field-'.$i.'-choicesource-labelColumn']);
-						if (($form['field-'.$i.'-choicesource-datasource'] == 'internal' || $form['field-'.$i.'-choicesource-datasource'] == 'database')) {
-							$source->setAttribute('request', $form['field-'.$i.'-choicesource-request']);
-						} else {
-							if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
-								$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
-							}
-							if ($form['field-'.$i.'-choicesource-returnType'] == 'csv') {
-								if (isset($form['field-'.$i.'-choicesource-separator'])) {
-									$source->setAttribute('separator', $form['field-'.$i.'-choicesource-separator']);
-								}
-								if (isset($form['field-'.$i.'-choicesource-delimiter'])) {
-									$source->setAttribute('delimiter', $form['field-'.$i.'-choicesource-delimiter']);
-								}
-							}
-						}
-						$choices->appendChild($source);
-					} else{
-						foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
-							$choice = $dom->createElement("Choice");
-							$choice->setAttribute('id', $c + 1);
-							$choice->setAttribute('value', $value);
-							$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
-							$choices->appendChild($choice);
-						}
-					}
-					$column->appendChild($choices);
-				}
-				$newTable->appendChild($column);
-			}
-		}
+		$this->addColumnsToTable($dom, $form, $newTable);
 		$datasource->appendChild($newTable);
 		$this->saveDatasources($dom);
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource_table', array('dsid' => $datasource->getAttribute('id'), 'table' => $form['table-name'])));
@@ -1728,60 +1680,64 @@ class DataSourcesAdminController extends BaseAdminController {
 				foreach ($columns as $column) {
 					$theTable->removeChild($column);
 				}
-				foreach ($form['field'] as $i => $field) {
-					if ($field != '') {
-						$column = $dom->createElement("Column");
-						$column->setAttribute('id', $i + 1);
-						$column->setAttribute('name', $field);
-						$column->setAttribute('type', $form['type'][$i]);
-						$column->setAttribute('label', $form['label'][$i]);
-						$descr = $dom->createElement("Description");
-						$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['description'][$i])));
-						$column->appendChild($descr);
-						if ($form['type'][$i] == 'choice' || $form['type'][$i] == 'multichoice') {
-							$choices = $dom->createElement("Choices");
-							if (isset($form['field-'.$i.'-choicesource-datasource'])) {
-								$source = $dom->createElement("Source");
-								$source->setAttribute('id', 1);
-								$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
-								$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
-								$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
-								$source->setAttribute('labelColumn', $form['field-'.$i.'-choicesource-labelColumn']);
-								if (($form['field-'.$i.'-choicesource-datasource'] == 'internal' || $form['field-'.$i.'-choicesource-datasource'] == 'database')) {
-									$source->setAttribute('request', $form['field-'.$i.'-choicesource-request']);
-								} else {
-									if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
-										$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
-									}
-									if ($form['field-'.$i.'-choicesource-returnType'] == 'csv') {
-										if (isset($form['field-'.$i.'-choicesource-separator'])) {
-											$source->setAttribute('separator', $form['field-'.$i.'-choicesource-separator']);
-										}
-										if (isset($form['field-'.$i.'-choicesource-delimiter'])) {
-											$source->setAttribute('delimiter', $form['field-'.$i.'-choicesource-delimiter']);
-										}
-									}
-								}
-								$choices->appendChild($source);
-							} else{
-								foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
-									$choice = $dom->createElement("Choice");
-									$choice->setAttribute('id', $c + 1);
-									$choice->setAttribute('value', $value);
-									$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
-									$choices->appendChild($choice);
-								}
-							}
-							$column->appendChild($choices);
-						}
-						$theTable->appendChild($column);
-					}
-				}
+				$this->addColumnsToTable($dom, $form, $theTable);
 				break;
 			}
 		}
 		$this->saveDatasources($dom);
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource_table', array('dsid' => $datasource->getAttribute('id'), 'table' => $table)));
+	}
+
+	protected function addColumnsToTable($dom, $form, &$table) {
+		foreach ($form['field'] as $i => $field) {
+			if ($field != '') {
+				$column = $dom->createElement("Column");
+				$column->setAttribute('id', $i + 1);
+				$column->setAttribute('name', $field);
+				$column->setAttribute('type', $form['type'][$i]);
+				$column->setAttribute('label', $form['label'][$i]);
+				$descr = $dom->createElement("Description");
+				$descr->appendChild($dom->createCDATASection(preg_replace("/(\<br\>)+$/", "", $form['description'][$i])));
+				$column->appendChild($descr);
+				if ($form['type'][$i] == 'choice' || $form['type'][$i] == 'multichoice') {
+					$choices = $dom->createElement("Choices");
+					if (isset($form['field-'.$i.'-choicesource-datasource'])) {
+						$source = $dom->createElement("Source");
+						$source->setAttribute('id', 1);
+						$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
+						$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
+						$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
+						$source->setAttribute('labelColumn', $form['field-'.$i.'-choicesource-labelColumn']);
+						if (($form['field-'.$i.'-choicesource-datasource'] == 'internal' || $form['field-'.$i.'-choicesource-datasource'] == 'database')) {
+							$source->setAttribute('request', $form['field-'.$i.'-choicesource-request']);
+						} else {
+							if (isset($form['field-'.$i.'-choicesource-returnPath'])) {
+								$source->setAttribute('returnPath', $form['field-'.$i.'-choicesource-returnPath']);
+							}
+							if ($form['field-'.$i.'-choicesource-returnType'] == 'csv') {
+								if (isset($form['field-'.$i.'-choicesource-separator'])) {
+									$source->setAttribute('separator', $form['field-'.$i.'-choicesource-separator']);
+								}
+								if (isset($form['field-'.$i.'-choicesource-delimiter'])) {
+									$source->setAttribute('delimiter', $form['field-'.$i.'-choicesource-delimiter']);
+								}
+							}
+						}
+						$choices->appendChild($source);
+					} else{
+						foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
+							$choice = $dom->createElement("Choice");
+							$choice->setAttribute('id', $c + 1);
+							$choice->setAttribute('value', $value);
+							$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
+							$choices->appendChild($choice);
+						}
+					}
+					$column->appendChild($choices);
+				}
+				$table->appendChild($column);
+			}
+		}
 	}
 
 	protected function dropTable($table, $database) {

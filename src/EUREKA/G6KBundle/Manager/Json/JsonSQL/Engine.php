@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
+use EUREKA\G6KBundle\Manager\Json\JsonSQL;
+
 /**
  * This class allows you  to store and retrieve data from files in JSON format using SQL standard.
  * - The data are described by a json schema in compliance with the spécifications of http://json-schema.org
@@ -40,6 +42,14 @@ namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
  * @author Jacques Archimède
  */
 class Engine  {
+
+	/**
+	 * A pointer on the JsonSQL owner.
+	 *
+	 * @var object
+	 * @access private
+	 */
+	private $jsonsql = null;
 
 	/**
 	 * Name of the JSON database managed by that engine 
@@ -119,7 +129,8 @@ class Engine  {
 	 */
 	private $db = null;
 
-	public function __construct() {
+	public function __construct(JsonSQL $jsonsql) {
+		$this->jsonsql = $jsonsql;
 	}
 
 	/**
@@ -1345,71 +1356,6 @@ class Engine  {
 	}
 
 	/**
-	 * Tokenizes a list of comma separated terms excluding function arguments
-	 *
-	 * @access private
-	 * @param string $list the list of comma separated terms
-	 * @return array the array of terms.
-	 */
-	private function splitList($list) {
-		if (!preg_match('/[\(\)]/', $list)) { // no parenthesis
-			return array_map(function ($i) { return trim($i); }, str_getcsv($list, ",", "'"));
-		}
-		$chunks = preg_split("/([,'\(\)])/i", $list, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-		$items = array();
-		$i = 0;
-		$l = count($chunks);
-		$token = "";
-		while ($i < $l) {
-			$chunk = $chunks[$i];
-			switch ($chunk) {
-				case "'":
-					$token .= $chunk;
-					$i++;
-					while ($i < $l && $chunks[$i] != "'") {
-						$token .= $chunks[$i];
-						$i++;
-					}
-					$token .= "'";
-					break;
-				case "(":
-					$token .= $chunk;
-					$i++;
-					$depth = 0;
-					while ($i < $l) {
-						if ($chunks[$i] == ")") {
-							if ($depth == 0) {
-								break;
-							} else {
-								$depth--;
-							}
-						}
-						if ($chunks[$i] == "(") {
-							$depth++;
-						}
-						$token .= $chunks[$i];
-						$i++;
-					}
-					$token .= ")";
-					break;
-				case ",":
-					if ($token != '') {
-						$items[] = trim($token);
-						$token = "";
-					}
-					break;
-				default:
-					$token .= $chunk;
-			}
-			$i++;
-		}
-		if ($token != '') {
-			$items[] = trim($token);
-		}
-		return $items;
-	}
-
-	/**
 	 * Tokenizes a list of comma separated internal properties and returns an object with these properties.
 	 * Internal properties are stored into the title property of the column definition in the database schema.
 	 * Actually, only 'primarykey' and 'autoincrement' are used.
@@ -1420,7 +1366,7 @@ class Engine  {
 	 */
 	private function properties($arg) {
 		$props = array();
-		foreach($this->splitList($arg) as $prop) {
+		foreach($this->jsonsql->splitList($arg) as $prop) {
 			list($property, $value) = explode(':', $prop);
 			$props[$property] = $value;
 		}

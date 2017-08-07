@@ -320,7 +320,7 @@ class Parser  {
 		if (isset($clauses['asselect'])) {
 			if (preg_match('/^\s*`?(\w+)`?\s+\((.+)\)\s*$/i', $clauses['table'], $m)) {
 				$table = preg_replace(array('/^`/', '/`$/'), array('', ''), $m[1]);
-				$columnsDef = $this->splitList($m[2]);
+				$columnsDef = $this->jsonsql->splitList($m[2]);
 			} elseif (preg_match('/^\s*`?(\w+)`?\s*$/i', $clauses['table'], $m)) {
 				$table = preg_replace(array('/^`/', '/`$/'), array('', ''), $m[1]);
 				$columnsDef =array();
@@ -339,7 +339,7 @@ class Parser  {
 			}
 		} elseif (preg_match('/^\s*`?(\w+)`?\s+\((.+)\)\s*$/i', $clauses['table'], $m)) {
 			$table = preg_replace(array('/^`/', '/`$/'), array('', ''), $m[1]);
-			$columnsDef = $this->splitList($m[2]);
+			$columnsDef = $this->jsonsql->splitList($m[2]);
 		} else {
 			throw new JsonSQLException("syntax error near : " . $clauses['table']);
 		}
@@ -361,15 +361,15 @@ class Parser  {
 					throw new JsonSQLException("syntax error near : " . $columnDef);
 				}
 			} elseif (preg_match('/^primary(\s+key)?\s*\(([^\)]*)\)\s*$/i', $columnDef, $m)) {
-				$primarykeys = array_flip($this->splitList($m[2]));
+				$primarykeys = array_flip($this->jsonsql->splitList($m[2]));
 			} elseif (preg_match('/^unique(\s+key)?\s*\(([^\)]*)\)\s*$/i', $columnDef, $m)) {
-				$uniques[] = array_flip($this->splitList($m[2]));
+				$uniques[] = array_flip($this->jsonsql->splitList($m[2]));
 			} elseif (preg_match('/^foreign(\s+key)?\s*\(([^\)]*)\)\s+references\s+(\w+)\s*\(([^\)]*)\)(\s+on\s+.*)?$/i', $columnDef, $m)) {
 				$foreignkeys[] = (object)array(
-					'columns' => $this->splitList($m[2]),
+					'columns' => $this->jsonsql->splitList($m[2]),
 					'references' => (object)array(
 						'table' => $m[3],
-						'columns' => $this->splitList($m[4])
+						'columns' => $this->jsonsql->splitList($m[4])
 					),
 					'on' => trim($m[5])
 				);
@@ -480,60 +480,18 @@ class Parser  {
 				if ($field == '*') {
 					foreach ($request->select->columns as $column) {
 						if (preg_match("/^([^_]+)__([^_]+)$/", $column, $m)) {
-							$dbcol = $this->engine->getDb()->schema->properties->{$m[1]}->items->properties->{$m[2]};
-							$scolumns[$m[2]] = (object)array(
-								'type' => $dbcol->type,
-								'title' => $m[2],
-								'description' => $m[2]
-							);
-							if (isset($dbcol->default)) {
-								$scolumns[$m[2]]->default = $dbcol->default;
-							}
-							if (isset($dbcol->format)) {
-								$scolumns[$m[2]]->format = $dbcol->format;
-							}
-							if (isset($dbcol->maxLength)) {
-								$scolumns[$m[2]]->maxLength = $dbcol->maxLength;
-							}
+							$this->fillTableField($m[1], $m[2], $scolumns);
 						}
 					}
 				} elseif (preg_match("/^([^_]+)__([^_]+)$/", $field, $m)) {
 					if (!isset($this->engine->getDb()->schema->properties->{$m[1]}->items->properties->{$m[2]})) {
 						throw new JsonSQLException("syntax error near : " . $field);
 					}
-					$dbcol = $this->engine->getDb()->schema->properties->{$m[1]}->items->properties->{$m[2]};
-					$scolumns[$m[2]] = (object)array(
-						'type' => $dbcol->type,
-						'title' => $m[2],
-						'description' => $m[2]
-					);
-					if (isset($dbcol->default)) {
-						$scolumns[$m[2]]->default = $dbcol->default;
-					}
-					if (isset($dbcol->format)) {
-						$scolumns[$m[2]]->format = $dbcol->format;
-					}
-					if (isset($dbcol->maxLength)) {
-						$scolumns[$m[2]]->maxLength = $dbcol->maxLength;
-					}
+					$this->fillTableField($m[1], $m[2], $scolumns);
 				} else {
 					foreach ($request->select->from as $table => $aliast) {
 						if (isset($this->engine->getDb()->schema->properties->{$table}->items->properties->{$field})) {
-							$dbcol = $this->engine->getDb()->schema->properties->{$table}->items->properties->{$field};
-							$scolumns[$field] = (object)array(
-								'type' => $dbcol->type,
-								'title' => $field,
-								'description' => $field
-							);
-							if (isset($dbcol->default)) {
-								$scolumns[$field]->default = $dbcol->default;
-							}
-							if (isset($dbcol->format)) {
-								$scolumns[$field]->format = $dbcol->format;
-							}
-							if (isset($dbcol->maxLength)) {
-								$scolumns[$field]->maxLength = $dbcol->maxLength;
-							}
+							$this->fillTableField($table, $field, $scolumns);
 							break;
 						}
 					}
@@ -549,6 +507,24 @@ class Parser  {
 			}
 		}
 		return $request;
+	}
+
+	private function fillTableField($table, $field, &$scolumns) {
+		$dbcol = $this->engine->getDb()->schema->properties->{$table}->items->properties->{$field};
+		$scolumns[$field] = (object)array(
+			'type' => $dbcol->type,
+			'title' => $field,
+			'description' => $field
+		);
+		if (isset($dbcol->default)) {
+			$scolumns[$field]->default = $dbcol->default;
+		}
+		if (isset($dbcol->format)) {
+			$scolumns[$field]->format = $dbcol->format;
+		}
+		if (isset($dbcol->maxLength)) {
+			$scolumns[$field]->maxLength = $dbcol->maxLength;
+		}
 	}
 
 	/**
@@ -908,13 +884,13 @@ class Parser  {
 		}
 		$ops = array (
 			'statement' => 'select',
-			'select' => $this->splitList($clauses['select']),
+			'select' => $this->jsonsql->splitList($clauses['select']),
 			'distinct' => $distinct,
-			'from' => $this->splitList($fromclauses['from']),
+			'from' => $this->jsonsql->splitList($fromclauses['from']),
 			'where' => !isset($clauses['where']) ? "true" : $clauses['where'],
-			'groupby' => !isset($clauses['groupby']) ? array() : $this->splitList($clauses['groupby']),
+			'groupby' => !isset($clauses['groupby']) ? array() : $this->jsonsql->splitList($clauses['groupby']),
 			'having' => !isset($clauses['having']) ? "true" : $clauses['having'],
-			'orderby' => !isset($clauses['orderby']) ? array() : $this->splitList($clauses['orderby']),
+			'orderby' => !isset($clauses['orderby']) ? array() : $this->jsonsql->splitList($clauses['orderby']),
 			'limit' => !isset($clauses['limit']) ? array() : explode(',', preg_replace('/\s+/', '', $clauses['limit'])),
 			'offset' => !isset($clauses['offset']) ? 0 : (int)trim($clauses['offset']) - 1
 		);
@@ -1163,7 +1139,7 @@ class Parser  {
 			if (!isset($this->engine->getDb()->schema->properties->{$table})) {
 				throw new JsonSQLException("Table '$table' doesn't exists");
 			}
-			$fields = $this->splitList($m[2]);
+			$fields = $this->jsonsql->splitList($m[2]);
 			foreach($fields as $field) {
 				if (!isset($this->engine->getDb()->schema->properties->{$table}->items->properties->{$field})) {
 					throw new JsonSQLException("Column '$field' doesn't exists");
@@ -1184,7 +1160,7 @@ class Parser  {
 			}
 			$request->rows = array();
 			foreach ($m[0] as $list) {
-				$values = $this->splitList(substr($list, 1, -1));
+				$values = $this->jsonsql->splitList(substr($list, 1, -1));
 				if (count($fields) != count($values)) {
 					throw new JsonSQLException("syntax error : number of columns and number of values must be equals");
 				}
@@ -1241,7 +1217,7 @@ class Parser  {
 		$ops = array (
 			'statement' => 'update',
 			'update' => preg_replace(array('/^`/', '/`$/'), array('', ''), $clauses['update']),
-			'set' => $this->splitList($clauses['set']),
+			'set' => $this->jsonsql->splitList($clauses['set']),
 			'where' => !isset($clauses['where']) ? "true" : $clauses['where'],
 		);
 		$request = (object)array_merge(array( 'where' => "true" ), $ops);
@@ -1322,7 +1298,7 @@ class Parser  {
 		if (preg_match('/^\s*truncate\s+table\s+(.*)$/', $sql, $m)) {
 			$tables = array_map(function($i) {
 				return preg_replace(array('/^`/', '/`$/'), array('', ''), $i);
-			}, $this->splitList($m[1]));
+			}, $this->jsonsql->splitList($m[1]));
 		} else {
 			throw new JsonSQLException("syntax error");
 		}
@@ -1351,7 +1327,7 @@ class Parser  {
 			$ifexists = $m[1] != '';
 			$tables = array_map(function($i) {
 				return preg_replace(array('/^`/', '/`$/'), array('', ''), $i);
-			}, $this->splitList($m[2]));
+			}, $this->jsonsql->splitList($m[2]));
 		} else {
 			throw new JsonSQLException("syntax error");
 		}
@@ -1577,71 +1553,6 @@ class Parser  {
 			}
 		}
 		return $clauses;
-	}
-
-	/**
-	 * Tokenizes a list of comma separated terms excluding function arguments
-	 *
-	 * @access private
-	 * @param string $list the list of comma separated terms
-	 * @return array the array of terms.
-	 */
-	private function splitList($list) {
-		if (!preg_match('/[\(\)]/', $list)) { // no parenthesis
-			return array_map(function ($i) { return trim($i); }, str_getcsv($list, ",", "'"));
-		}
-		$chunks = preg_split("/([,'\(\)])/i", $list, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-		$items = array();
-		$i = 0;
-		$l = count($chunks);
-		$token = "";
-		while ($i < $l) {
-			$chunk = $chunks[$i];
-			switch ($chunk) {
-				case "'":
-					$token .= $chunk;
-					$i++;
-					while ($i < $l && $chunks[$i] != "'") {
-						$token .= $chunks[$i];
-						$i++;
-					}
-					$token .= "'";
-					break;
-				case "(":
-					$token .= $chunk;
-					$i++;
-					$depth = 0;
-					while ($i < $l) {
-						if ($chunks[$i] == ")") {
-							if ($depth == 0) {
-								break;
-							} else {
-								$depth--;
-							}
-						}
-						if ($chunks[$i] == "(") {
-							$depth++;
-						}
-						$token .= $chunks[$i];
-						$i++;
-					}
-					$token .= ")";
-					break;
-				case ",":
-					if ($token != '') {
-						$items[] = trim($token);
-						$token = "";
-					}
-					break;
-				default:
-					$token .= $chunk;
-			}
-			$i++;
-		}
-		if ($token != '') {
-			$items[] = trim($token);
-		}
-		return $items;
 	}
 
 	/**

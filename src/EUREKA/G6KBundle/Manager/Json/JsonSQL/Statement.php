@@ -595,6 +595,7 @@ class Statement  {
 	protected function evaluate($conditions, &$row) {
 		$variables = $this->makeExpressionVariables($row);
 		$conditions = preg_replace("/\\$(\w+)/", "$1", $conditions); 
+		$conditions = preg_replace("/==/", "=", $conditions); 
 		$expr = $this->parser->parse($conditions);
 		$expr->postfix();
 		$expr->setVariables($variables);

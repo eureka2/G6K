@@ -80,7 +80,7 @@ class JsonSQL  {
 	 * @throws JsonSQLException
 	 */
 	private function __construct($name) {
-		$this->engine = new Engine($name);
+		$this->engine = new Engine($this);
 		$this->parser = new Parser($this);
 	}
 
@@ -524,6 +524,71 @@ class JsonSQL  {
 	 */
 	public function save() {
 		$this->engine->save();
+	}
+
+	/**
+	 * Tokenizes a list of comma separated terms excluding function arguments
+	 *
+	 * @access public
+	 * @param string $list the list of comma separated terms
+	 * @return array the array of terms.
+	 */
+	public function splitList($list) {
+		if (!preg_match('/[\(\)]/', $list)) { // no parenthesis
+			return array_map(function ($i) { return trim($i); }, str_getcsv($list, ",", "'"));
+		}
+		$chunks = preg_split("/([,'\(\)])/i", $list, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+		$items = array();
+		$i = 0;
+		$l = count($chunks);
+		$token = "";
+		while ($i < $l) {
+			$chunk = $chunks[$i];
+			switch ($chunk) {
+				case "'":
+					$token .= $chunk;
+					$i++;
+					while ($i < $l && $chunks[$i] != "'") {
+						$token .= $chunks[$i];
+						$i++;
+					}
+					$token .= "'";
+					break;
+				case "(":
+					$token .= $chunk;
+					$i++;
+					$depth = 0;
+					while ($i < $l) {
+						if ($chunks[$i] == ")") {
+							if ($depth == 0) {
+								break;
+							} else {
+								$depth--;
+							}
+						}
+						if ($chunks[$i] == "(") {
+							$depth++;
+						}
+						$token .= $chunks[$i];
+						$i++;
+					}
+					$token .= ")";
+					break;
+				case ",":
+					if ($token != '') {
+						$items[] = trim($token);
+						$token = "";
+					}
+					break;
+				default:
+					$token .= $chunk;
+			}
+			$i++;
+		}
+		if ($token != '') {
+			$items[] = trim($token);
+		}
+		return $items;
 	}
 
 }
