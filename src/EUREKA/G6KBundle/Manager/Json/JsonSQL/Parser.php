@@ -43,14 +43,14 @@ use EUREKA\G6KBundle\Manager\Json\JsonSQL;
  */
 class Parser  {
 
-	const SQL_SELECT_KEYWORD = 'SEL' . 'ECT ';
-	const SQL_FROM_KEYWORD = 'FR' . 'OM ';
-	const SQL_WHERE_KEYWORD = 'WH' . 'ERE ';
-	const SQL_ORDER_BY_KEYWORD = 'ORD' . 'ER BY ';
-	const SQL_LIMIT_KEYWORD = 'LI' . 'MIT ';
-	const SQL_UPDATE_KEYWORD = 'UP' . 'DATE ';
-	const SQL_CREATE_KEYWORD = 'CR' . 'EATE TABLE ';
-	const SQL_DELETE_KEYWORD = 'DEL' . 'ETE FR' . 'OM ';
+	const SQL_SELECT_KEYWORD = 'SELECT ';
+	const SQL_FROM_KEYWORD = 'FROM ';
+	const SQL_WHERE_KEYWORD = 'WHERE ';
+	const SQL_ORDER_BY_KEYWORD = 'ORDER BY ';
+	const SQL_LIMIT_KEYWORD = 'LIMIT ';
+	const SQL_UPDATE_KEYWORD = 'UPDATE ';
+	const SQL_CREATE_KEYWORD = 'CREATE TABLE ';
+	const SQL_DELETE_KEYWORD = 'DELETE FROM ';
 
 	/**
 	 * Types of JOINS :

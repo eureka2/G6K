@@ -79,7 +79,7 @@ class JsonSQL  {
 	 * @param string $name the name of json database (without the file extension)
 	 * @throws JsonSQLException
 	 */
-	private function __construct($name) {
+	private function __construct() {
 		$this->engine = new Engine($this);
 		$this->parser = new Parser($this);
 	}
@@ -96,7 +96,7 @@ class JsonSQL  {
 	 */
 	public static function open($name, $create = false) {
 		if(!isset(self::$_instance[$name])) {
-			self::$_instance[$name] = new JsonSQL($name);  
+			self::$_instance[$name] = new JsonSQL();
 		}
 		$instance = self::$_instance[$name];
 		$instance->engine->open($name, $create);

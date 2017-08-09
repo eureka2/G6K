@@ -385,7 +385,7 @@ class Engine  {
 		if (apc_exists($sqlkey)) {
 			$request = apc_fetch($sqlkey);
 		} else {
-			$request = $this->parse($sql);
+			$request = $this->jsonsql->getParser()->parse($sql);
 			if ($request->statement == 'compound select' || $request->statement == 'select') {
 				apc_add($sqlkey, $request);
 			}
@@ -716,12 +716,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function renameColumn($table, $column, $newname) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
+		$this->checkColumn($table, $column);
 		if (isset($this->db->schema->properties->{$table}->items->properties->$newname)) {
 			throw new JsonSQLException("column '$newname' already exists in $table");
 		}
@@ -787,12 +782,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setColumnType($table, $column, $type, $format = '', $datatype = '') {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
+		$this->checkColumn($table, $column);
 		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
 		if (preg_match('/^(.*)\[([^\]]+)\]$/', $columnSchema->title, $m)) {
 			$title = $m[1];
@@ -1018,12 +1008,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setNotNull($table, $column, $allownull = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
+		$this->checkColumn($table, $column);
 		$required = &$this->db->schema->properties->{$table}->items->required;
 		$requiredpos = array_search($column, $required);
 		if ($allownull && $requiredpos === false) {
@@ -1054,12 +1039,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setDefault($table, $column, $default = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
+		$this->checkColumn($table, $column);
 		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
 		if (!isset($columnSchema->default) && $default === false) {
 			return; // nothing to do
@@ -1086,12 +1066,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setPrimaryKey($table, $column, $remove = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
+		$this->checkColumn($table, $column);
 		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
 		if (preg_match('/^(.*)\[([^\]]+)\]$/', $columnSchema->title, $m)) {
 			$title = $m[1];
@@ -1147,12 +1122,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setAutoincrement($table, $column, $remove = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
+		$this->checkColumn($table, $column);
 		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
 		if ($columnSchema->type != 'integer') {
 			throw new JsonSQLException("column '$column' in '$table' as type '{$columnSchema->type}', only integer can have the autoincrement property");
@@ -1268,12 +1238,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setColumnTitle($table, $column, $title = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
+		$this->checkColumn($table, $column);
 		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
 		if ((!isset($columnSchema->title) || $columnSchema->title == '') && $title === false) {
 			return; // nothing to do
@@ -1303,12 +1268,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setColumnDescription($table, $column, $description = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
+		$this->checkColumn($table, $column);
 		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
 		if ((!isset($columnSchema->description) || $columnSchema->description == '') && $description === false) {
 			return; // nothing to do
@@ -1325,6 +1285,15 @@ class Engine  {
 		$this->schemaModified = true;
 		$this->modified = true;
 		$this->commit();
+	}
+
+	private function checkColumn($table, $column) {
+		if (!isset($this->db->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
+			throw new JsonSQLException("column '$column' doesn't exists in $table");
+		}
 	}
 
 	/**
