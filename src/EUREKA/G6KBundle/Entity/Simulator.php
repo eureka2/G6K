@@ -511,25 +511,7 @@ class Simulator {
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {
-			foreach ($datasources->Databases->Database as $database) {
-				$databaseObj = new Database($this, $this->controller->databasesDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
-				$databaseObj->setLabel((string)$database['label']);
-				$databaseObj->setHost((string)$database['host']);
-				$databaseObj->setPort((int)$database['port']);
-				$databaseObj->setUser((string)$database['user']);
-				if ((string)$database['password'] != '') {
-					$databaseObj->setPassword((string)$database['password']);
-				} elseif ((string)$database['user'] != '') {
-					try {
-						$user = $this->controller->get('kernel')->getContainer()->getParameter('database_user');
-						if ((string)$database['user'] == $user) {
-							$databaseObj->setPassword($this->controller->get('kernel')->getContainer()->getParameter('database_password'));
-						}
-					} catch (\Exception $e) {
-					}
-				}
-				$this->databases[] = $databaseObj;
-			}
+			$this->loadDatabases($datasources->Databases->Database);
 		}
 		$this->setName((string)$simulator["name"]);
 		$this->setLabel((string)$simulator["label"]);
@@ -615,58 +597,11 @@ class Simulator {
 									$fieldRowObj->setEmphasize((string)$fieldrow['emphasize'] == '1');
 									$fieldRowObj->setDataGroup((string)$fieldrow['datagroup']);
 									foreach ($fieldrow->Field as $field) {
-										$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
-										$fieldObj->setUsage((string)$field['usage']);
-										$fieldObj->setPrompt((string)$field['prompt']);
-										$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');
-										$fieldObj->setRequired((string)$field['required'] == '1');
-										$fieldObj->setVisibleRequired((string)$field['visibleRequired'] == '1');
-										$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');
-										$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');
-										$fieldObj->setHelp((string)$field['help'] == '1');
-										$fieldObj->setEmphasize((string)$field['emphasize'] == '1');
-										$fieldObj->setExplanation((string)$field['explanation']);
-										$fieldObj->setExpanded((string)$field['expanded'] == '1');
-										$fieldObj->setWidget((string)$field['widget']);
-										if ($field->PreNote) {
-											$noteObj = new FieldNote($this);
-											$noteObj->setText((string)$field->PreNote);
-											$fieldObj->setPreNote($noteObj);
-										}
-										if ($field->PostNote) {
-											$noteObj = new FieldNote($this);
-											$noteObj->setText((string)$field->PostNote);
-											$fieldObj->setPostNote($noteObj);
-										}
-										$fieldRowObj->addField($fieldObj);
+										$fieldRowObj->addField($this->loadField($field, $fieldsetObj));
 									}
 									$fieldsetObj->addField($fieldRowObj);
 								} elseif ($child->getName() == "Field") {
-									$field = $child;
-									$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
-									$fieldObj->setUsage((string)$field['usage']);
-									$fieldObj->setPrompt((string)$field['prompt']);
-									$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');
-									$fieldObj->setRequired((string)$field['required'] == '1');
-									$fieldObj->setVisibleRequired((string)$field['visibleRequired'] == '1');
-									$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');
-									$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');
-									$fieldObj->setHelp((string)$field['help'] == '1');
-									$fieldObj->setEmphasize((string)$field['emphasize'] == '1');
-									$fieldObj->setExplanation((string)$field['explanation']);
-									$fieldObj->setExpanded((string)$field['expanded'] == '1');
-									$fieldObj->setWidget((string)$field['widget']);
-									if ($field->PreNote) {
-										$noteObj = new FieldNote($this);
-										$noteObj->setText((string)$field->PreNote);
-										$fieldObj->setPreNote($noteObj);
-									}
-									if ($field->PostNote) {
-										$noteObj = new FieldNote($this);
-										$noteObj->setText((string)$field->PostNote);
-										$fieldObj->setPostNote($noteObj);
-									}
-									$fieldsetObj->addField($fieldObj);
+									$fieldsetObj->addField($this->loadField($child, $fieldsetObj));
 								}
 							}
 							$panelObj->addFieldSet($fieldsetObj);
@@ -773,6 +708,33 @@ class Simulator {
 		}
 	}
 
+	protected function loadField(\SimpleXMLElement $field, FieldSet $fieldsetObj) {
+		$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
+		$fieldObj->setUsage((string)$field['usage']);
+		$fieldObj->setPrompt((string)$field['prompt']);
+		$fieldObj->setNewline((string)$field['newline'] == '' || (string)$field['newline'] == '1');
+		$fieldObj->setRequired((string)$field['required'] == '1');
+		$fieldObj->setVisibleRequired((string)$field['visibleRequired'] == '1');
+		$fieldObj->setColon((string)$field['colon'] == '' || (string)$field['colon'] == '1');
+		$fieldObj->setUnderlabel((string)$field['underlabel'] == '1');
+		$fieldObj->setHelp((string)$field['help'] == '1');
+		$fieldObj->setEmphasize((string)$field['emphasize'] == '1');
+		$fieldObj->setExplanation((string)$field['explanation']);
+		$fieldObj->setExpanded((string)$field['expanded'] == '1');
+		$fieldObj->setWidget((string)$field['widget']);
+		if ($field->PreNote) {
+			$noteObj = new FieldNote($this);
+			$noteObj->setText((string)$field->PreNote);
+			$fieldObj->setPreNote($noteObj);
+		}
+		if ($field->PostNote) {
+			$noteObj = new FieldNote($this);
+			$noteObj->setText((string)$field->PostNote);
+			$fieldObj->setPostNote($noteObj);
+		}
+		return $fieldObj;
+	}
+
 	protected function loadRuleAction(\SimpleXMLElement $action) {
 		$ruleActionObj = new RuleAction((int)$action['id'], (string)$action['name']);
 		$ruleActionObj->setTarget((string)$action['target']);
@@ -821,6 +783,28 @@ class Simulator {
 		}
 	}
 
+	protected function loadDatabases(\SimpleXMLElement $databases) {
+		foreach ($databases as $database) {
+			$databaseObj = new Database($this, $this->controller->databasesDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
+			$databaseObj->setLabel((string)$database['label']);
+			$databaseObj->setHost((string)$database['host']);
+			$databaseObj->setPort((int)$database['port']);
+			$databaseObj->setUser((string)$database['user']);
+			if ((string)$database['password'] != '') {
+				$databaseObj->setPassword((string)$database['password']);
+			} elseif ((string)$database['user'] != '') {
+				try {
+					$user = $this->controller->get('kernel')->getContainer()->getParameter('database_user');
+					if ((string)$database['user'] == $user) {
+						$databaseObj->setPassword($this->controller->get('kernel')->getContainer()->getParameter('database_password'));
+					}
+				} catch (\Exception $e) {
+				}
+			}
+			$this->databases[] = $databaseObj;
+		}
+	}
+
 	protected function loadConnector(\SimpleXMLElement $connector, $parentConnector = null) {
 		if ($connector->getName() == 'Condition') {
 			return new Condition($this, $parentConnector, (string)$connector['operand'], (string)$connector['operator'], (string)$connector['expression']);
@@ -852,25 +836,7 @@ class Simulator {
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {
-			foreach ($datasources->Databases->Database as $database) {
-				$databaseObj = new Database($this, $this->controller->databasesDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
-				$databaseObj->setLabel((string)$database['label']);
-				$databaseObj->setHost((string)$database['host']);
-				$databaseObj->setPort((int)$database['port']);
-				$databaseObj->setUser((string)$database['user']);
-				if ((string)$database['password'] != '') {
-					$databaseObj->setPassword((string)$database['password']);
-				} elseif ((string)$database['user'] != '') {
-					try {
-						$user = $this->controller->get('kernel')->getContainer()->getParameter('database_user');
-						if ((string)$database['user'] == $user) {
-							$databaseObj->setPassword($this->controller->get('kernel')->getContainer()->getParameter('database_password'));
-						}
-					} catch (\Exception $e) {
-					}
-				}
-				$this->databases[] = $databaseObj;
-			}
+			$this->loadDatabases($datasources->Databases->Database);
 		}
 		if ($simulator->DataSet) {
 			foreach ($simulator->DataSet->children() as $child) {
