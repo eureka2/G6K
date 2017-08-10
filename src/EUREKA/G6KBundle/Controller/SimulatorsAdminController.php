@@ -642,7 +642,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$fieldObj->setExplanation($field['explanation']);
 		$fieldObj->setExpanded($field['expanded'] == '1');
 		$fieldObj->setWidget($field['widget']);
-		if (isset($field['Note'])) {
+		if ($fieldsetObj->getDisposition() != 'grid' && isset($field['Note'])) {
 			$note = $field['Note'];
 			if ($note['position'] == 'beforeField') {
 				$noteObj = new FieldNote($this);
@@ -1426,8 +1426,6 @@ class SimulatorsAdminController extends BaseAdminController {
 							$ocolumns = array ();
 							$ofieldrows = array ();
 							$ofieldrowfields = array ();
-							$ofieldrowprenotes = array ();
-							$ofieldrowpostnotes = array ();
 							if ($fieldset->getDisposition() != 'grid') {
 								$tblock = array(
 									'type' => 'fieldset',
@@ -1570,8 +1568,6 @@ class SimulatorsAdminController extends BaseAdminController {
 										"name" => $fieldrow->getId()
 									);
 									$ofields = array();
-									$oprenotes = array();
-									$opostnotes = array();
 									foreach ($fieldrow->getFields() as $field) {
 										$tfield = array(
 											'position' => $field->getPosition(),
@@ -1595,24 +1591,6 @@ class SimulatorsAdminController extends BaseAdminController {
 											"label" => $fieldLabel,
 											"name" => $field->getPosition()
 										);
-										if ($field->getPreNote()) {
-											$tfield['preNote'] = array(
-												'text' => $field->getPreNote()->getText()
-											);
-											$oprenotes[] = array(
-												'label' => $fieldLabel,
-												'name' => $field->getPosition()
-											);
-										}
-										if ($field->getPostNote()) {
-											$tfield['postNote'] = array(
-												'text' => $field->getPostNote()->getText()
-											);
-											$opostnotes[] = array(
-												'label' => $fieldLabel,
-												'name' => $field->getPosition()
-											);
-										}
 										$tfieldrow['fields'][] = $tfield;
 									}
 									if (count($ofields) > 0) {
@@ -1625,34 +1603,6 @@ class SimulatorsAdminController extends BaseAdminController {
 													"name" => "fieldId",
 													"fieldType" => "select",
 													"options" => $ofields
-												)
-											)
-										);
-									}
-									if (count($oprenotes) > 0) {
-										$ofieldrowprenotes[] = array(
-											"label" => $fieldrowLabel,
-											"name" => $fieldrow->getId(),
-											"fields" => array(
-												array(
-													"label" => $this->get('translator')->trans("of field"),
-													"name" => "fieldId",
-													"fieldType" => "select",
-													"options" => $oprenotes
-												)
-											)
-										);
-									}
-									if (count($opostnotes) > 0) {
-										$ofieldrowpostnotes[] = array(
-											"label" => $fieldrowLabel,
-											"name" => $fieldrow->getId(),
-											"fields" => array(
-												array(
-													"label" => $this->get('translator')->trans("of field"),
-													"name" => "fieldId",
-													"fieldType" => "select",
-													"options" => $opostnotes
 												)
 											)
 										);

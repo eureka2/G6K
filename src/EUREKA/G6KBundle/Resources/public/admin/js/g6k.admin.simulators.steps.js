@@ -3440,7 +3440,7 @@ THE SOFTWARE.
 		fieldContainerBody.append(attributesContainer);
 		fieldContainer.append(fieldContainerBody);
 		fieldPanelBody.append(fieldContainer);
-		if (field.Note) {
+		if (field.fieldrowId === '' && field.Note) {
 			var position = field.Note == 'beforeField' ? Translator.trans('placed before the field') : Translator.trans('placed after the field');
 			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right">' + Translator.trans('Note position') + ' : ' + position + '</span>' + Translator.trans('Note') + '</div><div class="panel-body field-note rich-text">' + field.Note.text + '</div></div>');
 		}
@@ -3558,18 +3558,20 @@ THE SOFTWARE.
 		fieldContainerBody.append(attributesContainer);
 		fieldContainer.append(fieldContainerBody);
 		fieldPanelBody.append(fieldContainer);
-		var note = '';
-		var noteBefore = '';
-		var noteAfter = '';
-		if (field.Note) {
-			note = field.Note.text;
-			if (field.Note.position == 'beforeField') {
-				noteBefore = ' selected="selected"';
-			} else {
-				noteAfter = ' selected="selected"';
+		if (field.fieldrowId === '') {
+			var note = '';
+			var noteBefore = '';
+			var noteAfter = '';
+			if (field.Note) {
+				note = field.Note.text;
+				if (field.Note.position == 'beforeField') {
+					noteBefore = ' selected="selected"';
+				} else {
+					noteAfter = ' selected="selected"';
+				}
 			}
+			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right"><label for="' + fieldElementId + '-note-position">' + Translator.trans('Note position') + '</label><select id="' + fieldElementId + '-note-position"><option value="beforeField"' + noteBefore + '>' + Translator.trans('placed before the field') + '</option><option value="afterField"' + noteAfter + '>' + Translator.trans('placed after the field') + '</option></select></span>' + Translator.trans('Note') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldElementId + '-note" id="' + fieldElementId + '-note" wrap="hard" class="form-control field-note">' + note + '</textarea></div></div>');
 		}
-		fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right"><label for="' + fieldElementId + '-note-position">' + Translator.trans('Note position') + '</label><select id="' + fieldElementId + '-note-position"><option value="beforeField"' + noteBefore + '>' + Translator.trans('placed before the field') + '</option><option value="afterField"' + noteAfter + '>' + Translator.trans('placed after the field') + '</option></select></span>' + Translator.trans('Note') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldElementId + '-note" id="' + fieldElementId + '-note" wrap="hard" class="form-control field-note">' + note + '</textarea></div></div>');
 		var fieldButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + fieldElementId + '-buttons-panel"></div>');
 		var fieldButtonsBody = $('<div class="panel-body field-buttons"></div>');
 		fieldButtonsBody.append('<button class="btn btn-success pull-right validate-edit-field">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -3675,7 +3677,7 @@ THE SOFTWARE.
 				field.label = '';
 			}
 			var note = fieldPanelContainer.find('.field-note').val();
-			if (note != '') {
+			if (fieldrowId == '' && note != '') {
 				var posNote = fieldPanelContainer.find('.note-position select').val();
 				field['Note'] = {
 					position: posNote,
