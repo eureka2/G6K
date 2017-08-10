@@ -731,28 +731,7 @@ class Simulator {
 			}
 		}
 		if ($simulator->Sources) {
-			foreach ($simulator->Sources->Source as $source) {
-				$sourceObj = new Source($this, (int)$source['id'], (string)$source['datasource'], (string)$source['returnType']);
-				$sourceObj->setLabel((string)$source['label']);
-				$sourceObj->setRequest((string)$source['request']);
-				if ((string)$source['requestType'] != '') {
-					$sourceObj->setRequestType((string)$source['requestType']);
-				}
-				$sourceObj->setSeparator((string)$source['separator']);
-				$sourceObj->setDelimiter((string)$source['delimiter']);
-				$sourceObj->setReturnPath((string)$source['returnPath']);
-				foreach ($source->Parameter as $parameter) {
-					$parameterObj = new Parameter($sourceObj, (string)$parameter['type']);
-					$parameterObj->setOrigin((string)$parameter['origin']);
-					$parameterObj->setName((string)$parameter['name']);
-					$parameterObj->setFormat((string)$parameter['format']);
-					$parameterObj->setData((int)$parameter['data']);
-					$parameterObj->setConstant((string)$parameter['constant']);
-					$parameterObj->setOptional((string)$parameter['optional'] == '1');
-					$sourceObj->addParameter($parameterObj);
-				}
-				$this->sources[] = $sourceObj;
-			}
+			$this->loadSources($simulator->Sources->Source);
 		}
 
 		if ($simulator->BusinessRules) {
@@ -772,26 +751,7 @@ class Simulator {
 					$businessRuleObj->setConnector($this->loadConnector($brule->Conditions->Connector));
 				}
 				foreach ($brule->IfActions->Action as $action) {
-					$ruleActionObj = new RuleAction((int)$action['id'], (string)$action['name']);
-					$ruleActionObj->setTarget((string)$action['target']);
-					$ruleActionObj->setData((string)$action['data']);
-					$ruleActionObj->setDatagroup((string)$action['datagroup']);
-					$ruleActionObj->setStep((string)$action['step']);
-					$ruleActionObj->setPanel((string)$action['panel']);
-					$ruleActionObj->setFieldset((string)$action['fieldset']);
-					$ruleActionObj->setColumn((string)$action['column']);
-					$ruleActionObj->setFieldrow((string)$action['fieldrow']);
-					$ruleActionObj->setField((string)$action['field']);
-					$ruleActionObj->setBlockinfo((string)$action['blockinfo']);
-					$ruleActionObj->setChapter((string)$action['chapter']);
-					$ruleActionObj->setSection((string)$action['section']);
-					$ruleActionObj->setPrenote((string)$action['prenote']);
-					$ruleActionObj->setPostnote((string)$action['postnote']);
-					$ruleActionObj->setFootnote((string)$action['footnote']);
-					$ruleActionObj->setAction((string)$action['action']);
-					$ruleActionObj->setChoice((string)$action['choice']);
-					$ruleActionObj->setValue((string)$action['value']);
-					$businessRuleObj->addIfAction($ruleActionObj);
+					$businessRuleObj->addIfAction($this->loadRuleAction($action));
 					if ((string)$action['name'] == "setAttribute" && preg_match_all("/#(\d+)/", (string)$action['value'], $matches)) {
 						foreach($matches[1] as $id) {
 							$data = $this->getDataById($id);
@@ -800,26 +760,7 @@ class Simulator {
 					}
 				}
 				foreach ($brule->ElseActions->Action as $action) {
-					$ruleActionObj = new RuleAction((int)$action['id'], (string)$action['name']);
-					$ruleActionObj->setTarget((string)$action['target']);
-					$ruleActionObj->setData((string)$action['data']);
-					$ruleActionObj->setDatagroup((string)$action['datagroup']);
-					$ruleActionObj->setStep((string)$action['step']);
-					$ruleActionObj->setPanel((string)$action['panel']);
-					$ruleActionObj->setFieldset((string)$action['fieldset']);
-					$ruleActionObj->setColumn((string)$action['column']);
-					$ruleActionObj->setFieldrow((string)$action['fieldrow']);
-					$ruleActionObj->setField((string)$action['field']);
-					$ruleActionObj->setBlockinfo((string)$action['blockinfo']);
-					$ruleActionObj->setChapter((string)$action['chapter']);
-					$ruleActionObj->setSection((string)$action['section']);
-					$ruleActionObj->setPrenote((string)$action['prenote']);
-					$ruleActionObj->setPostnote((string)$action['postnote']);
-					$ruleActionObj->setFootnote((string)$action['footnote']);
-					$ruleActionObj->setAction((string)$action['action']);
-					$ruleActionObj->setChoice((string)$action['choice']);
-					$ruleActionObj->setValue((string)$action['value']);
-					$businessRuleObj->addElseAction($ruleActionObj);
+					$businessRuleObj->addElseAction($this->loadRuleAction($action));
 					if ((string)$action['name'] == "setAttribute" && preg_match_all("/#(\d+)/", (string)$action['value'], $matches)) {
 						foreach($matches[1] as $id) {
 							$data = $this->getDataById($id);
@@ -829,6 +770,54 @@ class Simulator {
 				}
 				$this->businessrules[] = $businessRuleObj;
 			}
+		}
+	}
+
+	protected function loadRuleAction(\SimpleXMLElement $action) {
+		$ruleActionObj = new RuleAction((int)$action['id'], (string)$action['name']);
+		$ruleActionObj->setTarget((string)$action['target']);
+		$ruleActionObj->setData((string)$action['data']);
+		$ruleActionObj->setDatagroup((string)$action['datagroup']);
+		$ruleActionObj->setStep((string)$action['step']);
+		$ruleActionObj->setPanel((string)$action['panel']);
+		$ruleActionObj->setFieldset((string)$action['fieldset']);
+		$ruleActionObj->setColumn((string)$action['column']);
+		$ruleActionObj->setFieldrow((string)$action['fieldrow']);
+		$ruleActionObj->setField((string)$action['field']);
+		$ruleActionObj->setBlockinfo((string)$action['blockinfo']);
+		$ruleActionObj->setChapter((string)$action['chapter']);
+		$ruleActionObj->setSection((string)$action['section']);
+		$ruleActionObj->setPrenote((string)$action['prenote']);
+		$ruleActionObj->setPostnote((string)$action['postnote']);
+		$ruleActionObj->setFootnote((string)$action['footnote']);
+		$ruleActionObj->setAction((string)$action['action']);
+		$ruleActionObj->setChoice((string)$action['choice']);
+		$ruleActionObj->setValue((string)$action['value']);
+		return $ruleActionObj;
+	}
+
+	protected function loadSources(\SimpleXMLElement $sources) {
+		foreach ($sources as $source) {
+			$sourceObj = new Source($this, (int)$source['id'], (string)$source['datasource'], (string)$source['returnType']);
+			$sourceObj->setLabel((string)$source['label']);
+			$sourceObj->setRequest((string)$source['request']);
+			if ((string)$source['requestType'] != '') {
+				$sourceObj->setRequestType((string)$source['requestType']);
+			}
+			$sourceObj->setSeparator((string)$source['separator']);
+			$sourceObj->setDelimiter((string)$source['delimiter']);
+			$sourceObj->setReturnPath((string)$source['returnPath']);
+			foreach ($source->Parameter as $parameter) {
+				$parameterObj = new Parameter($sourceObj, (string)$parameter['type']);
+				$parameterObj->setOrigin((string)$parameter['origin']);
+				$parameterObj->setName((string)$parameter['name']);
+				$parameterObj->setFormat((string)$parameter['format']);
+				$parameterObj->setData((int)$parameter['data']);
+				$parameterObj->setConstant((string)$parameter['constant']);
+				$parameterObj->setOptional((string)$parameter['optional'] == '1');
+				$sourceObj->addParameter($parameterObj);
+			}
+			$this->sources[] = $sourceObj;
 		}
 	}
 
@@ -901,28 +890,7 @@ class Simulator {
 			}
 		}
 		if ($simulator->Sources) {
-			foreach ($simulator->Sources->Source as $source) {
-				$sourceObj = new Source($this, (int)$source['id'], (string)$source['datasource'], (string)$source['returnType']);
-				$sourceObj->setLabel((string)$source['label']);
-				$sourceObj->setRequest((string)$source['request']);
-				if ((string)$source['requestType'] != '') {
-					$sourceObj->setRequestType((string)$source['requestType']);
-				}
-				$sourceObj->setSeparator((string)$source['separator']);
-				$sourceObj->setDelimiter((string)$source['delimiter']);
-				$sourceObj->setReturnPath((string)$source['returnPath']);
-				foreach ($source->Parameter as $parameter) {
-					$parameterObj = new Parameter($sourceObj, (string)$parameter['type']);
-					$parameterObj->setOrigin((string)$parameter['origin']);
-					$parameterObj->setName((string)$parameter['name']);
-					$parameterObj->setFormat((string)$parameter['format']);
-					$parameterObj->setData((int)$parameter['data']);
-					$parameterObj->setConstant((string)$parameter['constant']);
-					$parameterObj->setOptional((string)$parameter['optional'] == '1');
-					$sourceObj->addParameter($parameterObj);
-				}
-				$this->sources[] = $sourceObj;
-			}
+			$this->loadSources($simulator->Sources->Source);
 		}
 	}
 
@@ -2233,115 +2201,13 @@ class Simulator {
 				$xml[] = '			</Conditions>';
 				$xml[] = '			<IfActions>';
 				foreach ($rule->getIfActions() as $action) {
-					$attrs = 'id="' . $action->getId() . '" name="' . $action->getName() . '" target="' . $action->getTarget() . '"';
-					if ($action->getData() != '') {
-						$attrs .= ' data="' . $action->getData() . '"';
-					}
-					if ($action->getDatagroup() != '') {
-						$attrs .= ' datagroup="' . $action->getDatagroup() . '"';
-					}
-					if ($action->getStep() != '') {
-						$attrs .= ' step="' . $action->getStep() . '"';
-					}
-					if ($action->getPanel() != '') {
-						$attrs .= ' panel="' . $action->getPanel() . '"';
-					}
-					if ($action->getFieldset() != '') {
-						$attrs .= ' fieldset="' . $action->getFieldset() . '"';
-					}
-					if ($action->getColumn() != '') {
-						$attrs .= ' column="' . $action->getColumn() . '"';
-					}
-					if ($action->getFieldrow() != '') {
-						$attrs .= ' fieldrow="' . $action->getFieldrow() . '"';
-					}
-					if ($action->getField() != '') {
-						$attrs .= ' field="' . $action->getField() . '"';
-					}
-					if ($action->getBlockinfo() != '') {
-						$attrs .= ' blockinfo="' . $action->getBlockinfo() . '"';
-					}
-					if ($action->getChapter() != '') {
-						$attrs .= ' chapter="' . $action->getChapter() . '"';
-					}
-					if ($action->getSection() != '') {
-						$attrs .= ' section="' . $action->getSection() . '"';
-					}
-					if ($action->getPrenote() != '') {
-						$attrs .= ' prenote="' . $action->getPrenote() . '"';
-					}
-					if ($action->getPostnote() != '') {
-						$attrs .= ' postnote="' . $action->getPostnote() . '"';
-					}
-					if ($action->getAction() != '') {
-						$attrs .= ' action="' . $action->getAction() . '"';
-					}
-					if ($action->getFootnote() != '') {
-						$attrs .= ' footnote="' . $action->getFootnote() . '"';
-					}
-					if ($action->getChoice() != '') {
-						$attrs .= ' choice="' . $action->getChoice() . '"';
-					}
-					if ($action->getValue() != '') {
-						$attrs .= ' value="' . $action->getValue() . '"';
-					}
+					$attrs = $this->makeRuleActionAttributes($action);
 					$xml[] = '				<Action ' . $attrs . ' />';
 				}
 				$xml[] = '			</IfActions>';
 				$xml[] = '			<ElseActions>';
 				foreach ($rule->getElseActions() as $action) {
-					$attrs = 'id="' . $action->getId() . '" name="' . $action->getName() . '" target="' . $action->getTarget() . '"';
-					if ($action->getData() != '') {
-						$attrs .= ' data="' . $action->getData() . '"';
-					}
-					if ($action->getDatagroup() != '') {
-						$attrs .= ' datagroup="' . $action->getDatagroup() . '"';
-					}
-					if ($action->getStep() != '') {
-						$attrs .= ' step="' . $action->getStep() . '"';
-					}
-					if ($action->getPanel() != '') {
-						$attrs .= ' panel="' . $action->getPanel() . '"';
-					}
-					if ($action->getFieldset() != '') {
-						$attrs .= ' fieldset="' . $action->getFieldset() . '"';
-					}
-					if ($action->getColumn() != '') {
-						$attrs .= ' column="' . $action->getColumn() . '"';
-					}
-					if ($action->getFieldrow() != '') {
-						$attrs .= ' fieldrow="' . $action->getFieldrow() . '"';
-					}
-					if ($action->getField() != '') {
-						$attrs .= ' field="' . $action->getField() . '"';
-					}
-					if ($action->getBlockinfo() != '') {
-						$attrs .= ' blockinfo="' . $action->getBlockinfo() . '"';
-					}
-					if ($action->getChapter() != '') {
-						$attrs .= ' chapter="' . $action->getChapter() . '"';
-					}
-					if ($action->getSection() != '') {
-						$attrs .= ' section="' . $action->getSection() . '"';
-					}
-					if ($action->getPrenote() != '') {
-						$attrs .= ' prenote="' . $action->getPrenote() . '"';
-					}
-					if ($action->getPostnote() != '') {
-						$attrs .= ' postnote="' . $action->getPostnote() . '"';
-					}
-					if ($action->getAction() != '') {
-						$attrs .= ' action="' . $action->getAction() . '"';
-					}
-					if ($action->getFootnote() != '') {
-						$attrs .= ' footnote="' . $action->getFootnote() . '"';
-					}
-					if ($action->getChoice() != '') {
-						$attrs .= ' choice="' . $action->getChoice() . '"'; 
-					}
-					if ($action->getValue() != '') {
-						$attrs .= ' value="' . $action->getValue() . '"'; 
-					}
+					$attrs = $this->makeRuleActionAttributes($action);
 					$xml[] = '				<Action ' . $attrs . ' />';
 				}
 				$xml[] = '			</ElseActions>';
@@ -2359,6 +2225,62 @@ class Simulator {
 		$xmlstring = implode("\r\n", $xml);
 		$xmlstring = str_replace('&gt;', '>', $xmlstring);
 		file_put_contents($file, $xmlstring);
+	}
+
+	private function makeRuleActionAttributes(RuleAction $action) {
+		$attrs = 'id="' . $action->getId() . '" name="' . $action->getName() . '" target="' . $action->getTarget() . '"';
+		if ($action->getData() != '') {
+			$attrs .= ' data="' . $action->getData() . '"';
+		}
+		if ($action->getDatagroup() != '') {
+			$attrs .= ' datagroup="' . $action->getDatagroup() . '"';
+		}
+		if ($action->getStep() != '') {
+			$attrs .= ' step="' . $action->getStep() . '"';
+		}
+		if ($action->getPanel() != '') {
+			$attrs .= ' panel="' . $action->getPanel() . '"';
+		}
+		if ($action->getFieldset() != '') {
+			$attrs .= ' fieldset="' . $action->getFieldset() . '"';
+		}
+		if ($action->getColumn() != '') {
+			$attrs .= ' column="' . $action->getColumn() . '"';
+		}
+		if ($action->getFieldrow() != '') {
+			$attrs .= ' fieldrow="' . $action->getFieldrow() . '"';
+		}
+		if ($action->getField() != '') {
+			$attrs .= ' field="' . $action->getField() . '"';
+		}
+		if ($action->getBlockinfo() != '') {
+			$attrs .= ' blockinfo="' . $action->getBlockinfo() . '"';
+		}
+		if ($action->getChapter() != '') {
+			$attrs .= ' chapter="' . $action->getChapter() . '"';
+		}
+		if ($action->getSection() != '') {
+			$attrs .= ' section="' . $action->getSection() . '"';
+		}
+		if ($action->getPrenote() != '') {
+			$attrs .= ' prenote="' . $action->getPrenote() . '"';
+		}
+		if ($action->getPostnote() != '') {
+			$attrs .= ' postnote="' . $action->getPostnote() . '"';
+		}
+		if ($action->getAction() != '') {
+			$attrs .= ' action="' . $action->getAction() . '"';
+		}
+		if ($action->getFootnote() != '') {
+			$attrs .= ' footnote="' . $action->getFootnote() . '"';
+		}
+		if ($action->getChoice() != '') {
+			$attrs .= ' choice="' . $action->getChoice() . '"';
+		}
+		if ($action->getValue() != '') {
+			$attrs .= ' value="' . $action->getValue() . '"';
+		}
+		return $attrs;
 	}
 
 	private function saveConnector($connector, $indent, &$xml) {
