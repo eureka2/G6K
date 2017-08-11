@@ -507,7 +507,22 @@ class Simulator {
 			foreach ($datasource->Namespace as $namespace) {
 				$datasourceObj->addNamespace((string)$namespace['prefix'], (string)$namespace['uri']);
 			}
-			// TODO: if datasource type = internal or database => load tables an columns
+			if ($datasourceObj->getType() == 'internal' || $datasourceObj->getType() == 'database') {
+				foreach ($datasource->Table as $table) {
+					foreach ($datasource->Table as $table) {
+						$tableObj = new Table(null, (int)$table['id']);
+						$tableObj->setName((string)$table['name']);
+						$tableObj->setLabel((string)$table['label']);
+						$tableObj->setDescription((string)$table->Description);
+						foreach ($table->Column as $column) {
+							$columnObj = new Column($tableObj, (int)$column['id'], (string)$column['name'], (string)$column['type']);
+							$columnObj->setLabel((string)$column['label']);
+							$tableObj->addColumn($columnObj);
+						}
+						$datasourceObj->addTable($tableObj);
+					}
+				}
+			}
 			$this->datasources[] = $datasourceObj;
 		}
 		if ($datasources->Databases) {

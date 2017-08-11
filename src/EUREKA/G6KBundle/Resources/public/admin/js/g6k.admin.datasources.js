@@ -125,9 +125,9 @@ THE SOFTWARE.
 			});
 			Datasources.doeditable(tablename, locale);
 			$('#page-datasources #' + tablename).bdt({
-			    pageRowCount: 25,
-			    arrowDown: 'fa-angle-down',
-			    arrowUp: 'fa-angle-up',
+				pageRowCount: 25,
+				arrowDown: 'fa-angle-down',
+				arrowUp: 'fa-angle-up',
 				pageFieldText : Translator.trans('Lines per page'),
 				previousText: Translator.trans('Next'),
 				nextText: Translator.trans('Previous'),
@@ -142,7 +142,7 @@ THE SOFTWARE.
 
 	Datasources.simpleAttributeForInput = function(id, type, name, label, value, required, placeholder, options) {
 		var attribute = '<div class="form-group col-sm-12" data-attribute="' + name + '">';
-		attribute    += '    <label for="' + id + '" class="col-sm-2 control-label">';
+		attribute    += '	<label for="' + id + '" class="col-sm-2 control-label">';
 		if (! required) {
 			attribute    += '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
 		}
@@ -593,20 +593,20 @@ THE SOFTWARE.
 	Datasources.doeditable = function(tablename, locale) {
 		$('#page-datasources #' + tablename).Tabledit({
 			url: tablename,
-		    editButton: true,
-		    deleteButton: true,
-		    saveButton: true,
-		    restoreButton: true,
+			editButton: true,
+			deleteButton: true,
+			saveButton: true,
+			restoreButton: true,
 			autoFocus: false,
 			hideIdentifier: true,
-		    buttons: {
-		        save: {
-		             html: Translator.trans('Save')
-		        },
-		        confirm: {
-		            html: Translator.trans('Confirm')
-		        }
-		    },
+			buttons: {
+				save: {
+					 html: Translator.trans('Save')
+				},
+				confirm: {
+					html: Translator.trans('Confirm')
+				}
+			},
 			columns: {
 				identifier: [0, 'id'],
 				editable: Datasources.editFields
@@ -621,7 +621,7 @@ THE SOFTWARE.
 			onReset: function() {
 				$('.alert').hide();
 			},
-            onRowEdited: function(row) {
+			onRowEdited: function(row) {
 				var errors = Datasources.checkTableRowValues (row);
 				// check fields and put error messages in errors array
 				if (errors.length > 0) {
@@ -632,7 +632,6 @@ THE SOFTWARE.
 				return true; 
 			},
 			onRowDeleted: function(row) {
-				// TODO: row validation here, if error returns false
 				return true; 
 			},
 			onSuccess: function(data, row, textStatus, jqXHR) {
@@ -715,7 +714,7 @@ THE SOFTWARE.
 						ok = true;
 						return false; // break
 					}
-	            });
+				});
 				if (! ok) {
 					return Translator.trans("The field '%field%' is invalid", { 'field' : info.label});
 				}
@@ -753,7 +752,7 @@ THE SOFTWARE.
 			if ((result = Datasources.checkTableFieldValue (name, input.val())) !== true) {
 				errors.push(result);
 			}
-	    });
+		});
 		return errors;
 	}
 

@@ -179,7 +179,9 @@ class ViewsAdminController extends BaseAdminController {
 		} else {
 			try {
 				$fs->mkdir($this->viewsDir . '/' . $view);
-				// TODO: copy default view to this view
+				if ($fs->exists($this->viewsDir . '/Default')) {
+					$fs->mirror($this->viewsDir . '/Default', $this->viewsDir . '/' . $view);
+				}
 			} catch (IOExceptionInterface $e) {
 			}
 		}
@@ -191,7 +193,9 @@ class ViewsAdminController extends BaseAdminController {
 		} else {
 			try {
 				$fs->mkdir($this->publicDir . '/' . $view);
-				// TODO: copy default view to this view
+				if ($fs->exists($this->publicDir . '/Default')) {
+					$fs->mirror($this->publicDir . '/Default', $this->publicDir . '/' . $view);
+				}
 			} catch (IOExceptionInterface $e) {
 			}
 		}

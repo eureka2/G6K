@@ -140,7 +140,7 @@ class SQLToJSONConverter {
 				if ($columninfos['pk'] != "0") {
 					$extra[] = 'primarykey:' . $columninfos['pk'];
 					if ($columnname == 'id') {
-						$extra[] = 'autoincrement:'."1"; // TODO : calculer maxId en recherchant les données
+						$extra[] = 'autoincrement:'."1"; // Value 1 will be replaced by maxId later
 					}
 				}
 				$extra['type'] = 'type:' . (string)$column['type'];

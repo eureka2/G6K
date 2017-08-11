@@ -703,7 +703,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			case 'uri':
 				$uri = (string)$datasources[0]['uri'];
 				$client = Client::createClient();
-				$data = array(); // TODO : add parameters elements in DataSources.xsd
+				$data = array();
 				if ((string)$datasources[0]['method'] == "" || (string)$datasources[0]['method'] == "GET" || (string)$datasources[0]['method'] == "get") {
 					$result = $client->get($uri);
 				} else {

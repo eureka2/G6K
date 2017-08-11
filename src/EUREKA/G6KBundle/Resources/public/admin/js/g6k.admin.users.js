@@ -88,7 +88,6 @@ THE SOFTWARE.
 				return true; 
 			},
 			onRowDeleted: function(row) {
-				// TODO: row validation here, if error returns false
 				return true; 
 			},
 			onSuccess: function(data, row, textStatus, jqXHR) {

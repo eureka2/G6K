@@ -1299,7 +1299,6 @@ THE SOFTWARE.
 		var selectList = [];
 		sourcePanelContainer.find('.request-column-container').each(function (c) {
 			var column = $(this).find('span[data-attribute=column]').attr('data-value');
-			// TODO : find alias if any
 			selectList.push(column);
 		});
 		request += ' ' + selectList.join(', ');

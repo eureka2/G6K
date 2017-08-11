@@ -2375,12 +2375,12 @@ THE SOFTWARE.
 
 	Simulators.checkFieldSet = function(fieldsetContainer) {
 		var fieldsetElementId = fieldsetContainer.attr('id');
+		var display = $.trim($('#' + fieldsetElementId + '-display').val());
 		var popinLink = $.trim($('#' + fieldsetElementId + '-popinLink').val());
-		if (popinLink !== '') {
-			// TODO : validate pop-in link 
-			// fieldsetContainer.find('.error-message').text(Translator.trans('Incorrect pop-in link'));
-			// fieldsetContainer.find('.alert').show();
-			// return false;
+		if (display == 'pop-in' && popinLink == '') {
+			fieldsetContainer.find('.error-message').text(Translator.trans('Incorrect pop-in link'));
+			fieldsetContainer.find('.alert').show();
+			return false;
 		}
 		return true;
 	}
