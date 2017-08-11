@@ -1440,24 +1440,7 @@ class SimulatorsAdminController extends BaseAdminController {
 								$oprenotes = array();
 								$opostnotes = array();
 								foreach ($fieldset->getFields() as $field) {
-									$tfield = array(
-										'type' => 'field',
-										'position' => $field->getPosition(),
-										'data' => $field->getData(),
-										'usage' => $field->getUsage(),
-										'label' => $field->getLabel(),
-										'newline' => $field->isNewline() ? '1' : '0',
-										'prompt' => $field->getPrompt(),
-										'required' => $field->isRequired() ? '1' : '0',
-										'visibleRequired' => $field->isVisibleRequired() ? '1' : '0',
-										'colon' => $field->hasColon() ? '1' : '0',
-										'underlabel' => $field->isUnderlabel() ? '1' : '0',
-										'help' => $field->hasHelp() ? '1' : '0',
-										'emphasize' => $field->isEmphasized() ? '1' : '0',
-										'explanation' => $field->getExplanation(),
-										'expanded' => $field->isExpanded() ? '1' : '0',
-										'widget' => $field->getWidget()
-									);
+									$tfield = $this->loadBusinessRuleField($field);
 									$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
 									$ofields[] = array (
 										"label" => $fieldLabel,
@@ -1569,29 +1552,12 @@ class SimulatorsAdminController extends BaseAdminController {
 									);
 									$ofields = array();
 									foreach ($fieldrow->getFields() as $field) {
-										$tfield = array(
-											'position' => $field->getPosition(),
-											'data' => $field->getData(),
-											'usage' => $field->getUsage(),
-											'label' => $field->getLabel(),
-											'newline' => $field->isNewline() ? '1' : '0',
-											'prompt' => $field->getPrompt(),
-											'required' => $field->isRequired() ? '1' : '0',
-											'visibleRequired' => $field->isVisibleRequired() ? '1' : '0',
-											'colon' => $field->hasColon() ? '1' : '0',
-											'underlabel' => $field->isUnderlabel() ? '1' : '0',
-											'help' => $field->hasHelp() ? '1' : '0',
-											'emphasize' => $field->isEmphasized() ? '1' : '0',
-											'explanation' => $field->getExplanation(),
-											'expanded' => $field->isExpanded() ? '1' : '0',
-											'widget' => $field->getWidget()
-										);
 										$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
 										$ofields[] = array (
 											"label" => $fieldLabel,
 											"name" => $field->getPosition()
 										);
-										$tfieldrow['fields'][] = $tfield;
+										$tfieldrow['fields'][] = $this->loadBusinessRuleField($field);
 									}
 									if (count($ofields) > 0) {
 										$ofieldrowfields[] = array(
@@ -2683,6 +2649,28 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 		 
 		}
+	}
+
+	protected function loadBusinessRuleField(Field $field) {
+		$tfield = array(
+			'type' => 'field',
+			'position' => $field->getPosition(),
+			'data' => $field->getData(),
+			'usage' => $field->getUsage(),
+			'label' => $field->getLabel(),
+			'newline' => $field->isNewline() ? '1' : '0',
+			'prompt' => $field->getPrompt(),
+			'required' => $field->isRequired() ? '1' : '0',
+			'visibleRequired' => $field->isVisibleRequired() ? '1' : '0',
+			'colon' => $field->hasColon() ? '1' : '0',
+			'underlabel' => $field->isUnderlabel() ? '1' : '0',
+			'help' => $field->hasHelp() ? '1' : '0',
+			'emphasize' => $field->isEmphasized() ? '1' : '0',
+			'explanation' => $field->getExplanation(),
+			'expanded' => $field->isExpanded() ? '1' : '0',
+			'widget' => $field->getWidget()
+		);
+		return $tfield;
 	}
 
 	private function ruleConnector($pconnector) {
