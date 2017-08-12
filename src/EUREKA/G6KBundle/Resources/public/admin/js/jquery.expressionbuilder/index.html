@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <title>jQuery ExpressionBuilder Plugin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<title>jQuery ExpressionBuilder Plugin</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel='stylesheet' type='text/css' href="../bootstrap/css/bootstrap.min.css" />
 	<link rel='stylesheet' type='text/css' href="../bootstrap/css/bootstrap-theme.min.css" />
+	<style>
+	#expression * {
+		display: inline;
+	}
+	</style>
 </head>
 <body>
 <h1>jQuery ExpressionBuilder Plugin Demo</h1>
 <div id="error" class="text-danger"></div>
 <form class="form-inline" onsubmit="return false;">
-<div id="expresssion"></div>
+<div id="expression"></div>
 <br />
 <button class="form-control" id="getResult">Get Expression</button>
 <div id="result"></div>
@@ -79,7 +84,7 @@ $(document).ready(function(){
 		'false': {type: 'boolean'}
 	};
  
-	$("#expresssion").expressionbuilder({
+	$("#expression").expressionbuilder({
 		fields: fields,
 		constants: constants,
 		functions: functions,
@@ -94,7 +99,7 @@ $(document).ready(function(){
 		nestedExpression: { classes: ['button', 'button-default'] }
 	});
 	$("#getResult").on('click', function() {
-		$("#result").html($("#expresssion").expressionbuilder('result'));
+		$("#result").html($("#expression").expressionbuilder('val'));
 	});
 });
 // ]]></script>

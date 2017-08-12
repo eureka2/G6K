@@ -26,6 +26,8 @@ THE SOFTWARE.
  
 namespace EUREKA\G6KBundle\Manager;
 
+use EUREKA\G6KBundle\Entity\Database;
+use EUREKA\G6KBundle\Manager\DatasourcesHelper;
 use EUREKA\G6KBundle\Manager\Json\JSONToSQLConverter;
 
 class DatasourcesHelper {
@@ -157,6 +159,40 @@ class DatasourcesHelper {
 		}
 		$dss->item(0)->insertBefore($datasource, $dbs->item(0));
 		return $datasource;
+	}
+
+	public function getDatabase($parameters, $dbid, $databasesDir, $withDbName = true) {
+		$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".$dbid."']");
+		$dbtype = (string)$databases[0]['type'];
+		$dbname = (string)$databases[0]['name'];
+		$database = new Database(null, $databasesDir, $dbid, $dbtype, $dbname);
+		if ((string)$databases[0]['label'] != "") {
+			$database->setLabel((string)$databases[0]['label']);
+		} else {
+			$database->setLabel($dbname);
+		}
+		if ((string)$databases[0]['host'] != "") {
+			$database->setHost((string)$databases[0]['host']);
+		}
+		if ((string)$databases[0]['port'] != "") {
+			$database->setPort((int)$databases[0]['port']);
+		}
+		if ((string)$databases[0]['user'] != "") {
+			$database->setUser((string)$databases[0]['user']);
+		}
+		if ((string)$databases[0]['password'] != "") {
+			$database->setPassword((string)$databases[0]['password']);
+		} elseif ((string)$databases[0]['user'] != "") {
+			try {
+				$user = $parameters['database_user'];
+				if ((string)$databases[0]['user'] == $user) {
+					$database->setPassword($parameters['database_password']);
+				}
+			} catch (\Exception $e) {
+			}
+		}
+		$database->connect($withDbName);
+		return $database;
 	}
 
 }

@@ -788,39 +788,14 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	protected function getDatabase($dsid, $withDbName = true) {
+		$helper = new DatasourcesHelper($this->datasources);
 		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
 		$dbid = (int)$datasources[0]['database'];
-		$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".$dbid."']");
-		$dbtype = (string)$databases[0]['type'];
-		$dbname = (string)$databases[0]['name'];
-		$database = new Database(null, $this->databasesDir, $dbid, $dbtype, $dbname);
-		if ((string)$databases[0]['label'] != "") {
-			$database->setLabel((string)$databases[0]['label']);
-		} else {
-			$database->setLabel($dbname);
-		}
-		if ((string)$databases[0]['host'] != "") {
-			$database->setHost((string)$databases[0]['host']);
-		}
-		if ((string)$databases[0]['port'] != "") {
-			$database->setPort((int)$databases[0]['port']);
-		}
-		if ((string)$databases[0]['user'] != "") {
-			$database->setUser((string)$databases[0]['user']);
-		}
-		if ((string)$databases[0]['password'] != "") {
-			$database->setPassword((string)$databases[0]['password']);
-		} elseif ((string)$databases[0]['user'] != "") {
-			try {
-				$user = $this->get('kernel')->getContainer()->getParameter('database_user');
-				if ((string)$databases[0]['user'] == $user) {
-					$database->setPassword($this->get('kernel')->getContainer()->getParameter('database_password'));
-				}
-			} catch (\Exception $e) {
-			}
-		}
-		$database->connect($withDbName);
-		return $database;
+		$parameters = array(
+			'database_user' => $this->get('kernel')->getContainer()->getParameter('database_user'),
+			'database_password' => $this->get('kernel')->getContainer()->getParameter('database_password')
+		);
+		return $helper->getDatabase($parameters, $dbid, $this->databasesDir, $withDbName);
 	}
 
 	protected function checkValue($name, $info, $value) {

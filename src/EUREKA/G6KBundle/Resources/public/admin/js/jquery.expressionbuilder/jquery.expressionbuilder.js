@@ -657,7 +657,6 @@ var ExpressionBuilder_I18N = {
 							initial: initargs
 						})
 					);
-					// TODO : if arity = -1 function has illimited arguments add option 'add arguments' to contextmenu'
 					for (var i = 1; i < func.arity; i++) {
 						var comma = jQuery('<button class="comma-holder">,</button>');
 						comma.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
@@ -709,7 +708,7 @@ var ExpressionBuilder_I18N = {
 							rightOperator.hide();
 						}
 					} else {
-						holder.data('right-operator', addOperator()); // TODO ; verify opportunity to do that
+						holder.data('right-operator', addOperator());
 					}
 					var leftOperator = wrapper.prev();
 					if (leftOperator && leftOperator.hasClass('operator-wrapper')) {
@@ -1032,7 +1031,6 @@ var ExpressionBuilder_I18N = {
 					var func = settings.functions[funcName];
 					var functionWrapper = wrapper.children('span.function-wrapper');
 					var args = functionWrapper.children('span.nested-expression');
-					// TODO : deal with func.arity = -1
 					for (var i = 0; i < func.arity; i++) {
 						if (! args.eq(i).expressionbuilder('completed')) {
 							isCompleted = false;
@@ -1108,7 +1106,6 @@ var ExpressionBuilder_I18N = {
 							var functionWrapper = self.children('span.function-wrapper');
 							var args = functionWrapper.children('span.nested-expression');
 							expression += funcName + '(' + args.eq(0).expressionbuilder('val');
-							// TODO : deal with func.arity = -1
 							if (func.arity == -1) {
 								console.log("function : " + funcName + " args.length = " + args.length);
 							}

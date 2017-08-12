@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
 The MIT License (MIT)
 
 Copyright (c) 2016 Jacques Archimède
@@ -25,6 +26,7 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\Json;
 
+use EUREKA\G6KBundle\Manager\DatasourcesHelper;
 use EUREKA\G6KBundle\Entity\Database;
 
 class SQLToJSONConverter {
@@ -192,38 +194,9 @@ class SQLToJSONConverter {
 	}
 
 	protected function getDatabase($datasource, $withDbName = true) {
+		$helper = new DatasourcesHelper($this->datasources);
 		$dbid = (int)$datasource['database'];
-		$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".$dbid."']");
-		$dbtype = (string)$databases[0]['type'];
-		$dbname = (string)$databases[0]['name'];
-		$database = new Database(null, $this->databasesDir, $dbid, $dbtype, $dbname);
-		if ((string)$databases[0]['label'] != "") {
-			$database->setLabel((string)$databases[0]['label']);
-		} else {
-			$database->setLabel($dbname);
-		}
-		if ((string)$databases[0]['host'] != "") {
-			$database->setHost((string)$databases[0]['host']);
-		}
-		if ((string)$databases[0]['port'] != "") {
-			$database->setPort((int)$databases[0]['port']);
-		}
-		if ((string)$databases[0]['user'] != "") {
-			$database->setUser((string)$databases[0]['user']);
-		}
-		if ((string)$databases[0]['password'] != "") {
-			$database->setPassword((string)$databases[0]['password']);
-		} elseif ((string)$databases[0]['user'] != "") {
-			try {
-				$user = $this->parameters['database_user'];
-				if ((string)$databases[0]['user'] == $user) {
-					$database->setPassword($this->parameters['database_password']);
-				}
-			} catch (\Exception $e) {
-			}
-		}
-		$database->connect($withDbName);
-		return $database;
+		return $helper->getDatabase($this->parameters, $dbid, $this->databasesDir, $withDbName);
 	}
 
 	protected function tableInfos(Database $database, $table) {
