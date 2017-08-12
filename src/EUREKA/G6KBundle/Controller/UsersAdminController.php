@@ -90,7 +90,18 @@ class UsersAdminController extends BaseAdminController {
 	}
 
 	protected function addUser ($form) {
-		$userManager = $this->get('fos_user.user_manager');
+		return $this->doUpdateUser($form, true);
+	}
+
+	protected function updateUser ($form) {
+		$id = $form['id'];
+		if ($id == 0) {
+			return $this->addUser ($form);
+		}
+		return $this->doUpdateUser($form);
+	}
+
+	protected function doUpdateUser($form, $newUser = false) {
 		$userName = $form['userName'];
 		$email = $form['email'];
 		$password = $form['password'];
@@ -113,82 +124,34 @@ class UsersAdminController extends BaseAdminController {
 		if ($password == "" || strlen($password)  < 6) {
 			return $this->errorResponse($form, "The password field is required (6 car. min)!");
 		}
-		$user = $userManager->findUserByUsername($userName);
-		if ($user !== null) {
-			return $this->errorResponse($form, "This username already exists !");
-		}
-		$user = $userManager->findUserByEmail($email);
-		if ($user !== null) {
-			return $this->errorResponse($form, "This email already exists !");
-		}
-		$user = $userManager->createUser();
-		$user->setUsername($userName);
-		$user->setEmail($email);
-		$user->setPlainPassword($password);
-		$user->setEnabled($enabled);
-		$user->setLocked($locked);
-		$user->setExpired($expired);
-		$user->setExpiresAt($expiresAt);
-		$user->setCredentialsExpired($credentialsExpired);
-		$user->setCredentialsExpireAt($credentialExpireAt);
-		foreach ($roles as $role) {
-			$user->addRole($role);
-		}
-		$userManager->updateUser($user);
-		$response = new Response();
-		$response->setContent(json_encode($form));
-		$response->headers->set('Content-Type', 'application/json');
-		$form['id'] = $user->getId();
-		return $response;
-	}
-
-	protected function updateUser ($form) {
-		$id = $form['id'];
-		if ($id == 0) {
-			return $this->addUser ($form);
-		}
 		$userManager = $this->get('fos_user.user_manager');
-		$user = $userManager->findUserBy(array('id' => $id));
-		if ($user === null) {
-			return $this->errorResponse($form, "This user doesn't  exists !");
+		if (! $newUser) {
+			$user = $userManager->findUserBy(array('id' => $form['id']));
+			if ($user === null) {
+				return $this->errorResponse($form, "This user doesn't  exists !");
+			}
+			$oldRoles = $user->getRoles();
+		} else {
+			$oldRoles = array();
 		}
-		$userName = $form['userName'];
-		$email = $form['email'];
-		$password = $form['password'];
-		$enabled = isset($form['enabled']) ? $form['enabled'] == 1 : false;
-		$locked = isset($form['locked']) ? $form['locked'] == 1 : false;
-		$expired = isset($form['expired']) ? $form['expired'] == 1 : false;
-		$expiresAt = isset($form['expiresAt']) && $form['expiresAt'] != "" ? $this->helper->parseDate('d/m/Y', $form['expiresAt']) : null;
-		$credentialsExpired = isset($form['credentialsExpired']) ? $form['credentialsExpired'] == 1 : false;
-		$credentialExpireAt = isset($form['credentialExpireAt']) && $form['credentialExpireAt'] != "" ? $this->helper->parseDate('d/m/Y', $form['credentialExpireAt']) : null;
-		$roles = isset($form['roles']) ? $form['roles'] : array() ;
-		if ($userName != $user->getUserName() && ($userName== "" || strlen($userName)  < 3)) {
-			return $this->errorResponse($form, "The username field is required  (3 car .min)!");
-		}
-		if ($email == "") {
-			return $this->errorResponse($form, "The email field is required!");
-		}
-		if (!preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/", $email)) {
-			return $this->errorResponse($form, "Please enter a valid email address.");
-		}
-		if ($password == "" || strlen($password)  < 6) {
-			return $this->errorResponse($form, "The password field is required (6 car. min)!");
-		}
-		if ($userName != $user->getUserName()) {
+		if ($newUser || $userName != $user->getUserName()) {
 			$otherUser = $userManager->findUserByUsername($userName);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This username already exists !");
 			}
 		}
-		if ($email != $user->getEmail()) {
+		if ($newUser || $email != $user->getEmail()) {
 			$otherUser = $userManager->findUserByEmail($email);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This email already exists !");
 			}
 		}
+		if ($newUser) {
+			$user = $userManager->createUser();
+		}
 		$user->setUsername($userName);
 		$user->setEmail($email);
-		if ($password != $user->getPassword()) {
+		if ($newUser || $password != $user->getPassword()) {
 			$user->setPlainPassword($password);
 		}
 		$user->setEnabled($enabled);
@@ -197,7 +160,6 @@ class UsersAdminController extends BaseAdminController {
 		$user->setExpiresAt($expiresAt);
 		$user->setCredentialsExpired($credentialsExpired);
 		$user->setCredentialsExpireAt($credentialExpireAt);
-		$oldRoles = $user->getRoles();
 		foreach ($roles as $role) {
 			if (!in_array($role, $oldRoles)) {
 				$user->addRole($role);
@@ -212,6 +174,7 @@ class UsersAdminController extends BaseAdminController {
 		$response = new Response();
 		$response->setContent(json_encode($form));
 		$response->headers->set('Content-Type', 'application/json');
+		$form['id'] = $user->getId();
 		$form['password'] = $user->getPassword();
 		return $response;
 	}
