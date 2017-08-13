@@ -4304,7 +4304,7 @@ THE SOFTWARE.
 							break;
 						case 'index':
 							self.getData(fieldName).unparsedIndex = newValue;
-							self.reevaluateFields(fieldName); // ADDED 10/02/2017
+							self.reevaluateFields(fieldName);
 							break;
 						case 'min':
 							self.getData(fieldName).unparsedMin = newValue;
@@ -4719,6 +4719,19 @@ THE SOFTWARE.
 			}
 		},
 
+		choiceLabel: function(data) {
+			var label = '';
+			if (data.choices) {
+				$.each(data.choices, function(c, choice) {
+					if (choice[data.value]) {
+						label = choice[data.value];
+						return false;
+					}
+				});
+			}
+			return label;
+		},
+
 		formatValue: function(data) {
 			var value = data.value;
 			if (value && $.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
@@ -4743,8 +4756,17 @@ THE SOFTWARE.
 				/#\(([^\)]+)\)(L?)/g,
 				function (match, m1, m2, offs, str) {
 					var data = self.getData(m1);
-					// TODO : return (data  && data.value) ? (m2 === 'L') ? data.choiceLabel : self.formatValue(data) : match;
-					return (data && data.value) ? self.formatValue(data) : match;
+					if (data && data.value) {
+						if (m2 === 'L') {
+							var label = self.choiceLabel(data);
+							if (label !== '') {
+								return label;
+							}
+						}
+						return self.formatValue(data);
+					} else {
+						return match;
+					}
 				}
 			);
 			return result;
@@ -4808,35 +4830,35 @@ THE SOFTWARE.
 }(this));
 
 $.fn.clearForm = function() {
-    this.each(function() {
-        var type = this.type, tag = this.tagName.toLowerCase();
-        if (tag == 'form')
-            return $(':input',this).clearForm();
-        if (type == 'text' || type == 'password'  || type == 'number'|| tag == 'textarea') {
-            this.setAttribute('value', '');
+	this.each(function() {
+		var type = this.type, tag = this.tagName.toLowerCase();
+		if (tag == 'form')
+			return $(':input',this).clearForm();
+		if (type == 'text' || type == 'password'  || type == 'number'|| tag == 'textarea') {
+			this.setAttribute('value', '');
 			if ($(this).hasClass('listbox-input')) {
 				$(this).listbox('update');
 			}
 		} else if (type == 'checkbox' || type == 'radio')
-            this.removeAttribute('checked');
-        else if (type == 'select-one' || tag == 'select') {
-            $('option', this).each(function(){
-                this.removeAttribute('selected');
-            });
+			this.removeAttribute('checked');
+		else if (type == 'select-one' || tag == 'select') {
+			$('option', this).each(function(){
+				this.removeAttribute('selected');
+			});
 			$(this).val("");
 		}
-    });
+	});
 
 };
 
 $.fn.focusNextInputField = function() {
-    return this.each(function() {
-        var fields = $(this).parents('form:eq(0)').find('input:visible,textarea:visible,select:visible');
-        var index = fields.index( this );
-        if ( index > -1 && ( index + 1 ) < fields.length ) {
-            fields.eq( index + 1 ).focus();
-        }
-        return false;
-    });
+	return this.each(function() {
+		var fields = $(this).parents('form:eq(0)').find('input:visible,textarea:visible,select:visible');
+		var index = fields.index( this );
+		if ( index > -1 && ( index + 1 ) < fields.length ) {
+			fields.eq( index + 1 ).focus();
+		}
+		return false;
+	});
 };
 

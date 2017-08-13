@@ -26,6 +26,7 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
 use EUREKA\G6KBundle\Manager\Json\JsonSQL;
+use EUREKA\G6KBundle\Manager\Splitter;
 
 /**
  * This class allows you  to store and retrieve data from files in JSON format using SQL standard.
@@ -309,7 +310,7 @@ class Parser  {
 	 * @throws JsonSQLException
 	 */
 	protected function parseCreate($sql) {
-		$clauses = $this->splitKeywords($sql, array("create", "local", "global", "table", "if\s+not\s+exists", "with", "as\s+select", "with"));
+		$clauses = Splitter::splitKeywords($sql, array("create", "local", "global", "table", "if\s+not\s+exists", "with", "as\s+select", "with"));
 		$ifnotexists = false;
 		$withdata = false;
 		if (isset($clauses['ifnotexists'])) {
@@ -320,7 +321,7 @@ class Parser  {
 		if (isset($clauses['asselect'])) {
 			if (preg_match('/^\s*`?(\w+)`?\s+\((.+)\)\s*$/i', $clauses['table'], $m)) {
 				$table = preg_replace(array('/^`/', '/`$/'), array('', ''), $m[1]);
-				$columnsDef = $this->jsonsql->splitList($m[2]);
+				$columnsDef = Splitter::splitList($m[2]);
 			} elseif (preg_match('/^\s*`?(\w+)`?\s*$/i', $clauses['table'], $m)) {
 				$table = preg_replace(array('/^`/', '/`$/'), array('', ''), $m[1]);
 				$columnsDef =array();
@@ -339,7 +340,7 @@ class Parser  {
 			}
 		} elseif (preg_match('/^\s*`?(\w+)`?\s+\((.+)\)\s*$/i', $clauses['table'], $m)) {
 			$table = preg_replace(array('/^`/', '/`$/'), array('', ''), $m[1]);
-			$columnsDef = $this->jsonsql->splitList($m[2]);
+			$columnsDef = Splitter::splitList($m[2]);
 		} else {
 			throw new JsonSQLException("syntax error near : " . $clauses['table']);
 		}
@@ -361,15 +362,15 @@ class Parser  {
 					throw new JsonSQLException("syntax error near : " . $columnDef);
 				}
 			} elseif (preg_match('/^primary(\s+key)?\s*\(([^\)]*)\)\s*$/i', $columnDef, $m)) {
-				$primarykeys = array_flip($this->jsonsql->splitList($m[2]));
+				$primarykeys = array_flip(Splitter::splitList($m[2]));
 			} elseif (preg_match('/^unique(\s+key)?\s*\(([^\)]*)\)\s*$/i', $columnDef, $m)) {
-				$uniques[] = array_flip($this->jsonsql->splitList($m[2]));
+				$uniques[] = array_flip(Splitter::splitList($m[2]));
 			} elseif (preg_match('/^foreign(\s+key)?\s*\(([^\)]*)\)\s+references\s+(\w+)\s*\(([^\)]*)\)(\s+on\s+.*)?$/i', $columnDef, $m)) {
 				$foreignkeys[] = (object)array(
-					'columns' => $this->jsonsql->splitList($m[2]),
+					'columns' => Splitter::splitList($m[2]),
 					'references' => (object)array(
 						'table' => $m[3],
-						'columns' => $this->jsonsql->splitList($m[4])
+						'columns' => Splitter::splitList($m[4])
 					),
 					'on' => trim($m[5])
 				);
@@ -560,7 +561,7 @@ class Parser  {
 	 * @throws JsonSQLException
 	 */
 	protected function parseAlter($sql) {
-		$clauses = $this->splitKeywords($sql, array("alter\s+table", "rename\s+to", "rename\s+column", "modify", "add", "drop"));
+		$clauses = Splitter::splitKeywords($sql, array("alter\s+table", "rename\s+to", "rename\s+column", "modify", "add", "drop"));
 		if (!isset($clauses['altertable'])) {
 			throw new JsonSQLException("syntax error near : " . substr($sql, 0, 11));
 		}
@@ -638,7 +639,7 @@ class Parser  {
 			}
 			if ($alter == 'modify column') {
 				$subclauses = $this->encodeLiteral($subclauses);
-				$subclauses = $this->splitKeywords($subclauses, array("set", "remove"));
+				$subclauses = Splitter::splitKeywords($subclauses, array("set", "remove"));
 				if (isset($subclauses['set'])) {
 					if (preg_match("/^type\s+(\w+)$/i", $subclauses['set'], $m)) {
 						$datatype = strtolower($m[1]);
@@ -848,7 +849,7 @@ class Parser  {
 	 * @throws JsonSQLException
 	 */
 	protected function parseSelect($sql) {
-		$clauses = $this->splitKeywords($sql, array("select", "distinct", "all", "from", "where", "group\s+by", "having", "order\s+by", "limit", "offset"));
+		$clauses = Splitter::splitKeywords($sql, array("select", "distinct", "all", "from", "where", "group\s+by", "having", "order\s+by", "limit", "offset"));
 		if (isset($clauses['distinct']) && isset($clauses['all'])) {
 			throw new JsonSQLException("syntax error : distinct and all keywords are mutually exclusive");
 		}
@@ -869,7 +870,7 @@ class Parser  {
 			}
 			$clauses['select'] = $clauses['all'];
 		}
-		$fromclauses = $this->splitKeywords(self::SQL_FROM_KEYWORD . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
+		$fromclauses = Splitter::splitKeywords(self::SQL_FROM_KEYWORD . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
 		if (isset($fromclauses['join'])) {
 			$fromclauses['innerjoin'] = $fromclauses['join'];
 		}
@@ -884,13 +885,13 @@ class Parser  {
 		}
 		$ops = array (
 			'statement' => 'select',
-			'select' => $this->jsonsql->splitList($clauses['select']),
+			'select' => Splitter::splitList($clauses['select']),
 			'distinct' => $distinct,
-			'from' => $this->jsonsql->splitList($fromclauses['from']),
+			'from' => Splitter::splitList($fromclauses['from']),
 			'where' => !isset($clauses['where']) ? "true" : $clauses['where'],
-			'groupby' => !isset($clauses['groupby']) ? array() : $this->jsonsql->splitList($clauses['groupby']),
+			'groupby' => !isset($clauses['groupby']) ? array() : Splitter::splitList($clauses['groupby']),
 			'having' => !isset($clauses['having']) ? "true" : $clauses['having'],
-			'orderby' => !isset($clauses['orderby']) ? array() : $this->jsonsql->splitList($clauses['orderby']),
+			'orderby' => !isset($clauses['orderby']) ? array() : Splitter::splitList($clauses['orderby']),
 			'limit' => !isset($clauses['limit']) ? array() : explode(',', preg_replace('/\s+/', '', $clauses['limit'])),
 			'offset' => !isset($clauses['offset']) ? 0 : (int)trim($clauses['offset']) - 1
 		);
@@ -919,7 +920,7 @@ class Parser  {
 		foreach ($fromclauses as $join => $jclause) {
 			$jclauses = is_array($jclause) ? $jclause : array($jclause);
 			foreach($jclauses as $clause) {
-				$joinclauses = $this->splitKeywords(self::SQL_FROM_KEYWORD . $clause, array("from", "as", "on"));
+				$joinclauses = Splitter::splitKeywords(self::SQL_FROM_KEYWORD . $clause, array("from", "as", "on"));
 				if ($join == 'crossjoin') {
 					if (isset($joinclauses['on'])) {
 						throw new JsonSQLException("syntax error near : on " . $joinclauses['on']);
@@ -1115,7 +1116,7 @@ class Parser  {
 	 * @throws JsonSQLException
 	 */
 	protected function parseInsert($sql) {
-		$clauses = $this->splitKeywords($sql, array("insert\s+into", "values", "select"));
+		$clauses = Splitter::splitKeywords($sql, array("insert\s+into", "values", "select"));
 		if (!isset($clauses['insertinto'])) {
 			throw new JsonSQLException("syntax error : missing insert into clause");
 		}
@@ -1139,7 +1140,7 @@ class Parser  {
 			if (!isset($this->engine->getDb()->schema->properties->{$table})) {
 				throw new JsonSQLException("Table '$table' doesn't exists");
 			}
-			$fields = $this->jsonsql->splitList($m[2]);
+			$fields = Splitter::splitList($m[2]);
 			foreach($fields as $field) {
 				if (!isset($this->engine->getDb()->schema->properties->{$table}->items->properties->{$field})) {
 					throw new JsonSQLException("Column '$field' doesn't exists");
@@ -1160,7 +1161,7 @@ class Parser  {
 			}
 			$request->rows = array();
 			foreach ($m[0] as $list) {
-				$values = $this->jsonsql->splitList(substr($list, 1, -1));
+				$values = Splitter::splitList(substr($list, 1, -1));
 				if (count($fields) != count($values)) {
 					throw new JsonSQLException("syntax error : number of columns and number of values must be equals");
 				}
@@ -1210,14 +1211,14 @@ class Parser  {
 	 * @throws JsonSQLException
 	 */
 	protected function parseUpdate($sql) {
-		$clauses = $this->splitKeywords($sql, array("update", "set", "where"));
+		$clauses = Splitter::splitKeywords($sql, array("update", "set", "where"));
 		if (!isset($clauses['set'])) {
 			throw new JsonSQLException("syntax error : missing set clause");
 		}
 		$ops = array (
 			'statement' => 'update',
 			'update' => preg_replace(array('/^`/', '/`$/'), array('', ''), $clauses['update']),
-			'set' => $this->jsonsql->splitList($clauses['set']),
+			'set' => Splitter::splitList($clauses['set']),
 			'where' => !isset($clauses['where']) ? "true" : $clauses['where'],
 		);
 		$request = (object)array_merge(array( 'where' => "true" ), $ops);
@@ -1261,7 +1262,7 @@ class Parser  {
 	 * @throws JsonSQLException
 	 */
 	protected function parseDelete($sql) {
-		$clauses = $this->splitKeywords($sql, array("delete\s+from", "where"));
+		$clauses = Splitter::splitKeywords($sql, array("delete\s+from", "where"));
 		if (!isset($clauses['deletefrom'])) {
 			throw new JsonSQLException("syntax error : missing delete from clause");
 		}
@@ -1298,7 +1299,7 @@ class Parser  {
 		if (preg_match('/^\s*truncate\s+table\s+(.*)$/', $sql, $m)) {
 			$tables = array_map(function($i) {
 				return preg_replace(array('/^`/', '/`$/'), array('', ''), $i);
-			}, $this->jsonsql->splitList($m[1]));
+			}, Splitter::splitList($m[1]));
 		} else {
 			throw new JsonSQLException("syntax error");
 		}
@@ -1327,7 +1328,7 @@ class Parser  {
 			$ifexists = $m[1] != '';
 			$tables = array_map(function($i) {
 				return preg_replace(array('/^`/', '/`$/'), array('', ''), $i);
-			}, $this->jsonsql->splitList($m[2]));
+			}, Splitter::splitList($m[2]));
 		} else {
 			throw new JsonSQLException("syntax error");
 		}
@@ -1514,45 +1515,6 @@ class Parser  {
 			return false;
 		}
 		return preg_match('/[\(\+\-\/\*\%]/', $string);
-	}
-
-	/**
-	 * Splits a SQL statement into keywords/clauses
-	 *
-	 * @access private
-	 * @param string $stmt SQL statement
-	 * @param array $keywords the list of keywords
-	 * @return array the list of keywords associated with their clauses.
-	 * @throws JsonSQLException
-	 */
-	private function splitKeywords($stmt, $keywords) {
-		$clauses = array();
-		$positions = array();
-		$chunks = preg_split("/\b(" . implode("|", $keywords) . ")\b/i", $stmt, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE);
-		$chunksCount = count($chunks);
-		if ($chunksCount % 2 > 0) {
-			throw new JsonSQLException("syntax error near : " . $stmt);
-		}
-		for ($i = 0; $i < $chunksCount; $i += 2) {
-			$keyword = strtolower(preg_replace('/\s+/', '', $chunks[$i][0]));
-			$value = trim($chunks[$i+1][0]);
-			if (isset($clauses[$keyword])) {
-				if (is_array($clauses[$keyword])) {
-					array_push($clauses[$keyword], $value);
-				} else {
-					$clauses[$keyword] = array($clauses[$keyword], $value);
-				}
-			} else {
-				$clauses[$keyword] = $value;
-			}
-			$positions[$keyword] = $chunks[$i][1];
-		}
-		foreach ($keywords as $i => $keyword) {
-			if ($i > 0 && isset($positions[$keyword]) && isset($positions[$keywords[$i -1]]) && $positions[$keyword] < $positions[$keywords[$i -1]]) {
-				throw new JsonSQLException("syntax error near : " . $keyword . ' ' . $clauses[$keyword]);
-			}
-		}
-		return $clauses;
 	}
 
 	/**

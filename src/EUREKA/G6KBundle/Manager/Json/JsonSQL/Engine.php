@@ -26,6 +26,7 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
 use EUREKA\G6KBundle\Manager\Json\JsonSQL;
+use EUREKA\G6KBundle\Manager\Splitter;
 
 /**
  * This class allows you  to store and retrieve data from files in JSON format using SQL standard.
@@ -1335,7 +1336,7 @@ class Engine  {
 	 */
 	private function properties($arg) {
 		$props = array();
-		foreach($this->jsonsql->splitList($arg) as $prop) {
+		foreach(Splitter::splitList($arg) as $prop) {
 			list($property, $value) = explode(':', $prop);
 			$props[$property] = $value;
 		}

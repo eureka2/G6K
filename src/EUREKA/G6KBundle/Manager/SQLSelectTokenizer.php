@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
 The MIT License (MIT)
 
 Copyright (c) 2016 Jacques Archimède
@@ -27,6 +28,7 @@ namespace EUREKA\G6KBundle\Manager;
 
 use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
 use EUREKA\G6KBundle\Manager\ExpressionParser\Token;
+use EUREKA\G6KBundle\Manager\Splitter;
 
 /**
  * @package EUREKA\G6KBundle\Manager
@@ -377,110 +379,6 @@ class SQLSelectTokenizer  {
 	}
 
 	/**
-	 * Splits a SQL statement into keywords/clauses
-	 *
-	 * @access private
-	 * @param string $stmt SQL statement
-	 * @param array $keywords the list of keywords
-	 * @return array the list of keywords associated with their clauses.
-	 * @throws SQLSelectTokenizerException
-	 */
-	private function splitKeywords($stmt, $keywords) {
-		$clauses = array();
-		$positions = array();
-		$chunks = preg_split("/\b(" . implode("|", $keywords) . ")\b/i", $stmt, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE);
-		$chunksCount = count($chunks);
-		if ($chunksCount % 2 > 0) {
-			throw new SQLSelectTokenizerException("syntax error near : " . $stmt);
-		}
-		for ($i = 0; $i < $chunksCount; $i += 2) {
-			$keyword = strtolower(preg_replace('/\s+/', '', $chunks[$i][0]));
-			$value = trim($chunks[$i+1][0]);
-			if (isset($clauses[$keyword])) {
-				if (is_array($clauses[$keyword])) {
-					array_push($clauses[$keyword], $value);
-				} else {
-					$clauses[$keyword] = array($clauses[$keyword], $value);
-				}
-			} else {
-				$clauses[$keyword] = $value;
-			}
-			$positions[$keyword] = $chunks[$i][1];
-		}
-		foreach ($keywords as $i => $keyword) {
-			if ($i > 0 && isset($positions[$keyword]) && isset($positions[$keywords[$i -1]]) && $positions[$keyword] < $positions[$keywords[$i -1]]) {
-				throw new SQLSelectTokenizerException("syntax error near : " . $keyword . ' ' . $clauses[$keyword]);
-			}
-		}
-		return $clauses;
-	}
-
-	/**
-	 * Tokenizes a list of comma separated terms excluding function arguments
-	 *
-	 * @access private
-	 * @param string $list the list of comma separated terms
-	 * @return array the array of terms.
-	 */
-	private function splitList($list) {
-		if (!preg_match('/[\(\)]/', $list)) { // no parenthesis
-			return array_map(function ($i) { return trim($i); }, str_getcsv($list, ",", "'"));
-		}
-		$chunks = preg_split("/([,'\(\)])/i", $list, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-		$items = array();
-		$i = 0;
-		$l = count($chunks);
-		$token = "";
-		while ($i < $l) {
-			$chunk = $chunks[$i];
-			switch ($chunk) {
-				case "'":
-					$token .= $chunk;
-					$i++;
-					while ($i < $l && $chunks[$i] != "'") {
-						$token .= $chunks[$i];
-						$i++;
-					}
-					$token .= "'";
-					break;
-				case "(":
-					$token .= $chunk;
-					$i++;
-					$depth = 0;
-					while ($i < $l) {
-						if ($chunks[$i] == ")") {
-							if ($depth == 0) {
-								break;
-							} else {
-								$depth--;
-							}
-						}
-						if ($chunks[$i] == "(") {
-							$depth++;
-						}
-						$token .= $chunks[$i];
-						$i++;
-					}
-					$token .= ")";
-					break;
-				case ",":
-					if ($token != '') {
-						$items[] = trim($token);
-						$token = "";
-					}
-					break;
-				default:
-					$token .= $chunk;
-			}
-			$i++;
-		}
-		if ($token != '') {
-			$items[] = trim($token);
-		}
-		return $items;
-	}
-
-	/**
 	 * Parses a sql select request according to this BNF syntax :
 	 *
 	 *	SELECT [ ALL | DISTINCT ] ( expression [ AS alias ] | * | table_name.* ) {',' ( expression [ AS alias ]  | * | table_name.* ) }
@@ -506,7 +404,7 @@ class SQLSelectTokenizer  {
 	 * @throws SQLSelectTokenizerException
 	 */
 	public function parseSelect($sql) {
-		$clauses = $this->splitKeywords($sql, array("select", "distinct", "all", "from", "where", "group\s+by", "having", "order\s+by", "limit", "offset"));
+		$clauses = Splitter::splitKeywords($sql, array("select", "distinct", "all", "from", "where", "group\s+by", "having", "order\s+by", "limit", "offset"));
 		if (isset($clauses['distinct']) && isset($clauses['all'])) {
 			throw new SQLSelectTokenizerException("syntax error : distinct and all keywords are mutually exclusive");
 		}
@@ -527,7 +425,7 @@ class SQLSelectTokenizer  {
 			}
 			$clauses['select'] = $clauses['all'];
 		}
-		$fromclauses = $this->splitKeywords("fr" . "om " . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
+		$fromclauses = Splitter::splitKeywords("fr" . "om " . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
 		if (isset($fromclauses['join'])) {
 			$fromclauses['innerjoin'] = $fromclauses['join'];
 		}
@@ -542,13 +440,13 @@ class SQLSelectTokenizer  {
 		}
 		$ops = array (
 			'statement' => 'select',
-			'select' => $this->splitList($clauses['select']),
+			'select' => Splitter::splitList($clauses['select']),
 			'distinct' => $distinct,
-			'from' => $this->splitList($fromclauses['from']),
+			'from' => Splitter::splitList($fromclauses['from']),
 			'where' => !isset($clauses['where']) ? "true" : $clauses['where'],
-			'groupby' => !isset($clauses['groupby']) ? array() : $this->splitList($clauses['groupby']),
+			'groupby' => !isset($clauses['groupby']) ? array() : Splitter::splitList($clauses['groupby']),
 			'having' => !isset($clauses['having']) ? "true" : $clauses['having'],
-			'orderby' => !isset($clauses['orderby']) ? array() : $this->splitList($clauses['orderby']),
+			'orderby' => !isset($clauses['orderby']) ? array() : Splitter::splitList($clauses['orderby']),
 			'limit' => !isset($clauses['limit']) ? array() : explode(',', preg_replace('/\s+/', '', $clauses['limit'])),
 			'offset' => !isset($clauses['offset']) ? 0 : (int)trim($clauses['offset']) - 1
 		);
@@ -577,7 +475,7 @@ class SQLSelectTokenizer  {
 		foreach ($fromclauses as $join => $jclause) {
 			$jclauses = is_array($jclause) ? $jclause : array($jclause);
 			foreach($jclauses as $clause) {
-				$joinclauses = $this->splitKeywords("fr" . "om " . $clause, array("from", "as", "on"));
+				$joinclauses = Splitter::splitKeywords("fr" . "om " . $clause, array("from", "as", "on"));
 				if ($join == 'crossjoin') {
 					if (isset($joinclauses['on'])) {
 						throw new SQLSelectTokenizerException("syntax error near : on " . $joinclauses['on']);
