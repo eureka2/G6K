@@ -149,7 +149,8 @@ class SimulatorsAdminController extends BaseAdminController {
 				$this->update($simulator, $form);
 				return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $this->simu->getName())));
 			} elseif (isset($form['delete'])) {
-				// TODO: doDelete
+				$this->doDelete($simulator);
+				return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulators'));
 			}
 		} elseif ($crud == 'import') {
 			$hiddens['action'] = 'import';
@@ -435,6 +436,16 @@ class SimulatorsAdminController extends BaseAdminController {
 			if ($fs->exists($this->publicDir.'/'.$view.'/css/common.css')) {
 				$fs->dumpFile($this->publicDir.'/'.$view.'/css/'.$simulator.'.css', '@import "common.css";'."\n");
 			}
+		}
+	}
+
+	protected function doDelete($simulator) {
+		$fs = new Filesystem();
+		try {
+			if ($fs->exists($this->simulatorsDir."/work/".$simulator.".xml")) {
+				$fs-remove($this->simulatorsDir."/work/".$simulator.".xml");
+			}
+		} catch (\Exception $e) {
 		}
 	}
 
