@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
 The MIT License (MIT)
 
 Copyright (c) 2016 Jacques Archimède
@@ -883,7 +884,7 @@ class Parser  {
 		if (isset($fromclauses['fullouterjoin']) || isset($fromclauses['fulljoin'])) {
 				throw new JsonSQLException("full outer join isn't currently supported");
 		}
-		$ops = array (
+		$opts = array (
 			'statement' => 'select',
 			'select' => Splitter::splitList($clauses['select']),
 			'distinct' => $distinct,
@@ -896,7 +897,7 @@ class Parser  {
 			'offset' => !isset($clauses['offset']) ? 0 : (int)trim($clauses['offset']) - 1
 		);
 		unset($fromclauses['from']);
-		$request = (object)array_merge(array( 'select' => array('*'), 'distinct' => false, 'from' => array('json'), 'where' => "true", 'groupby' => array(), 'having' => "true", 'orderby' => array(), 'limit' => array() ), $ops);
+		$request = (object)array_merge(array( 'select' => array('*'), 'distinct' => false, 'from' => array('json'), 'where' => "true", 'groupby' => array(), 'having' => "true", 'orderby' => array(), 'limit' => array() ), $opts);
 		$tables = array();
 		foreach ($request->from as $from) {
 			if (preg_match('/^([^\s]+)\s+as\s+([^\s]+)$/i', $from, $matches)) {
