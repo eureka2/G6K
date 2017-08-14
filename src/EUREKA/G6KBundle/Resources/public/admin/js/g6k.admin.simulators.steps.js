@@ -2864,9 +2864,9 @@ THE SOFTWARE.
 						Simulators.deleteInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'columns' }, { key: 'id', val: id }]);
 						var cparent = columnContainerGroup.parent();
 						columnContainerGroup.remove();
+						Simulators.deleteFieldRowsColumn(stepId, panelId, fieldsetId, id)
 						Simulators.deleteFieldSetColumnInActions(stepId, panelId, fieldsetId, id);
 						Simulators.renumberFieldSetColumns(fieldset.columns, stepId, panelId, fieldsetId, cparent.find('> div'));
-						// TODO : delete all corresponding fields in fieldrows
 						$('.save-simulator').show();
 						Admin.updated = true;
 					}
@@ -2875,6 +2875,20 @@ THE SOFTWARE.
 		} catch (e) {
 			console.log(e.message);
 		}
+	}
+
+	Simulators.deleteFieldRowsColumn = function(stepId, panelId, fieldsetId, columnId) {
+		var fieldrows = $('#step-' + stepId + '-panel-' + panelId + '-fieldset-' + fieldsetId + '-fieldrows-panel').find('> .sortable').find('> div');
+		fieldrows.each(function(r) {
+			var fieldContainerGroups = $(this).find('.panel-group');
+			fieldContainerGroups.each(function(c) {
+				var fieldContainerGroup = $(this);
+				var column = fieldContainerGroup.find('.field-container');
+				if (column.attr('data-id') == columnId) {
+					Simulators.deleteField(fieldContainerGroup, false);
+				}
+			});
+		});
 	}
 
 	Simulators.renumberFieldRows = function(fieldrows, stepId, panelId, fieldsetId, panelGroups) {
@@ -3854,7 +3868,10 @@ THE SOFTWARE.
 		}
 	}
 
-	Simulators.deleteField = function(fieldContainerGroup) {
+	Simulators.deleteField = function(fieldContainerGroup, confirm) {
+		if (typeof confirm === 'undefined') {
+			confirm = true; 
+		}
 		try {
 			var fieldContainer = fieldContainerGroup.find('.field-container');
 			var stepId = fieldContainer.attr('data-step');
@@ -3875,33 +3892,42 @@ THE SOFTWARE.
 				});
 				return;
 			}
-			bootbox.confirm({
-				title: Translator.trans('Deleting field'),
-				message: Translator.trans("Are you sure you want to delete the field : %label%", { 'label': label }), 
-				callback: function(confirmed) {
-					if (confirmed) {
-						if (fieldset.disposition === 'grid') {
-							Simulators.deleteInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fieldrows' }, { key: 'id', val: fieldrowId, list: 'fields' }, { key: 'position', val: position }]);
-						} else {
-							Simulators.deleteInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fields' }, { key: 'position', val: position }]);
+			if (confirm) {
+				bootbox.confirm({
+					title: Translator.trans('Deleting field'),
+					message: Translator.trans("Are you sure you want to delete the field : %label%", { 'label': label }), 
+					callback: function(confirmed) {
+						if (confirmed) {
+							Simulators.doDeleteField(fieldContainerGroup, fieldset.disposition, stepId, panelId, fieldsetId, fieldrowId, position);
 						}
-						var fparent = fieldContainerGroup.parent();
-						fieldContainerGroup.remove();
-						Simulators.deleteFieldInActions(stepId, panelId, fieldsetId, fieldrowId, position);
-						if (fieldset.disposition === 'grid') {
-							var fieldrow = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId }, { key: 'id', val: fieldrowId }]);
-							Simulators.renumberFields(fieldrow.fields, stepId, panelId, fieldsetId, fieldrowId, fparent.find('> div'));
-						} else {
-							Simulators.renumberFields(fieldset.fields, stepId, panelId, fieldsetId, '', fparent.find('> div'));
-						}
-						$('.save-simulator').show();
-						Admin.updated = true;
 					}
-				}
-			}); 
+				});
+			} else {
+				Simulators.doDeleteField(fieldContainerGroup, fieldset.disposition, stepId, panelId, fieldsetId, fieldrowId, position);
+			}
 		} catch (e) {
 			console.log(e.message);
 		}
+	}
+
+	Simulators.doDeleteField = function(fieldContainerGroup, disposition, stepId, panelId, fieldsetId, fieldrowId, position) {
+		if (disposition === 'grid') {
+			Simulators.deleteInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fieldrows' }, { key: 'id', val: fieldrowId, list: 'fields' }, { key: 'position', val: position }]);
+		} else {
+			Simulators.deleteInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fields' }, { key: 'position', val: position }]);
+		}
+		var fparent = fieldContainerGroup.parent();
+		fieldContainerGroup.remove();
+		Simulators.deleteFieldInActions(stepId, panelId, fieldsetId, fieldrowId, position);
+		if (disposition === 'grid') {
+			var fieldrow = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fieldrows' }, { key: 'id', val: fieldrowId }]);
+			Simulators.renumberFields(fieldrow.fields, stepId, panelId, fieldsetId, fieldrowId, fparent.find('> div'));
+		} else {
+			var fieldset = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId }]);
+			Simulators.renumberFields(fieldset.fields, stepId, panelId, fieldsetId, '', fparent.find('> div'));
+		}
+		$('.save-simulator').show();
+		Admin.updated = true;
 	}
 
 	Simulators.drawBlockInfoForDisplay = function(blockinfo, inClass) {
