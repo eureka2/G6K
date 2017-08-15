@@ -66,7 +66,7 @@ class Statement  {
 	 * @param JsonSQL $jsonsql the JsonSQL instance
 	 * @param object $request the prepared statement
 	 */
-	public function create(JsonSQL $jsonsql, &$request) {
+	public function create(JsonSQL $jsonsql, \stdClass &$request) {
 		switch($request->statement) {
 			case 'select':
 			case 'compound select':
