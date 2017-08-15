@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
 The MIT License (MIT)
 
 Copyright (c) 2016 Jacques Archimède

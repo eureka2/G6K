@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
 The MIT License (MIT)
 
 Copyright (c) 2016 Jacques Archimède
@@ -386,7 +387,8 @@ class Engine  {
 		if (apc_exists($sqlkey)) {
 			$request = apc_fetch($sqlkey);
 		} else {
-			$request = $this->jsonsql->getParser()->parse($sql);
+			$parser = Parser::create($this->jsonsql, $sql);
+			$request = $parser->parse();
 			if ($request->statement == 'compound select' || $request->statement == 'select') {
 				apc_add($sqlkey, $request);
 			}
@@ -1323,6 +1325,31 @@ class Engine  {
 		}
 		$this->modified = false;
 		$this->schemaModified = false;
+	}
+
+	/**
+	 *	Converts a string value according to its json data type
+	 *
+	 * @access protected
+	 * @param string $type json data type (string, integer, number or boolean)
+	 * @param string $value the value to convert
+	 * @return mixed the converted value
+	 */
+	public function normalizeValue($type, $value) {
+		if ($value == 'null') {
+			$value = null;
+		} elseif ($type == 'integer') {
+			$value = (int)$value;
+		} elseif ($type == 'number') {
+			$value = (float)$value;
+		} elseif ($type == 'boolean') {
+			$value = (bool)$value;
+		} else {
+			$value = preg_replace("/''/", "'", $value);
+			$value = preg_replace("/^'/", '', $value);
+			$value = preg_replace("/'$/", '', $value);
+		}
+		return $value;
 	}
 
 	/**

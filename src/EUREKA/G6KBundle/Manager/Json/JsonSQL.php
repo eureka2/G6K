@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
 The MIT License (MIT)
 
 Copyright (c) 2016 Jacques Archimède
@@ -57,14 +58,6 @@ class JsonSQL  {
  	private static $_instance = array();
 
 	/**
-	 * The JsonSQL parser attached to this instance 
-	 *
-	 * @var EUREKA\G6KBundle\Manager\Json\JsonSQL\Parser
-	 * @access private
-	 */
-	private $parser = null;
-
-	/**
 	 * The JsonSQL engine attached to this instance 
 	 *
 	 * @var EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine
@@ -81,7 +74,6 @@ class JsonSQL  {
 	 */
 	private function __construct() {
 		$this->engine = new Engine($this);
-		$this->parser = new Parser($this);
 	}
 
 	/**
@@ -117,10 +109,6 @@ class JsonSQL  {
 			throw new JsonSQLException("database '$name' already exists");
 		}
 		return self::open($name, true);
-	}
-
-	public function getParser() {
-		return $this->parser;
 	}
 
 	public function getEngine() {
@@ -159,9 +147,10 @@ class JsonSQL  {
 		if (extension_loaded('apc') && ini_get('apc.enabled')) {
 			$request = $this->engine->loadRequestFromCache($sql);
 		} else {
-			$request = $this->parser->parse($sql);
+			$parser = Parser::create($this, $sql);
+			$request = $parser->parse();
 		}
-		return new Statement($this, $request);
+		return Statement::create($this, $request);
 	}
 
 	/**
