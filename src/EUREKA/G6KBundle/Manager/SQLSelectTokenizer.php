@@ -425,24 +425,24 @@ class SQLSelectTokenizer  {
 			}
 			$clauses['select'] = $clauses['all'];
 		}
-		$fromclauses = Splitter::splitKeywords("fr" . "om " . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
-		if (isset($fromclauses['join'])) {
-			$fromclauses['innerjoin'] = $fromclauses['join'];
+		$fromclause = Splitter::splitKeywords("fr" . "om " . $clauses['from'], array("from", "cross\s+join", "inner\s+join", "left\s+(outer\s+)?join", "right\s+(outer\s+)?join", "full\s+(outer\s+)?join", "join"));
+		if (isset($fromclause['join'])) {
+			$fromclause['innerjoin'] = $fromclause['join'];
 		}
-		if (isset($fromclauses['leftouterjoin'])) {
-			$fromclauses['leftjoin'] = $fromclauses['leftouterjoin'];
+		if (isset($fromclause['leftouterjoin'])) {
+			$fromclause['leftjoin'] = $fromclause['leftouterjoin'];
 		}
-		if (isset($fromclauses['rightouterjoin'])) {
-			$fromclauses['rightjoin'] = $fromclauses['rightouterjoin'];
+		if (isset($fromclause['rightouterjoin'])) {
+			$fromclause['rightjoin'] = $fromclause['rightouterjoin'];
 		}
-		if (isset($fromclauses['fullouterjoin']) || isset($fromclauses['fulljoin'])) {
+		if (isset($fromclause['fullouterjoin']) || isset($fromclause['fulljoin'])) {
 				throw new SQLSelectTokenizerException("full outer join isn't currently supported");
 		}
 		$ops = array (
 			'statement' => 'select',
 			'select' => Splitter::splitList($clauses['select']),
 			'distinct' => $distinct,
-			'from' => Splitter::splitList($fromclauses['from']),
+			'from' => Splitter::splitList($fromclause['from']),
 			'where' => !isset($clauses['where']) ? "true" : $clauses['where'],
 			'groupby' => !isset($clauses['groupby']) ? array() : Splitter::splitList($clauses['groupby']),
 			'having' => !isset($clauses['having']) ? "true" : $clauses['having'],
@@ -450,7 +450,7 @@ class SQLSelectTokenizer  {
 			'limit' => !isset($clauses['limit']) ? array() : explode(',', preg_replace('/\s+/', '', $clauses['limit'])),
 			'offset' => !isset($clauses['offset']) ? 0 : (int)trim($clauses['offset']) - 1
 		);
-		unset($fromclauses['from']);
+		unset($fromclause['from']);
 		$request = (object)array_merge(array( 'select' => array('*'), 'distinct' => false, 'from' => array('json'), 'where' => "true", 'groupby' => array(), 'having' => "true", 'orderby' => array(), 'limit' => array() ), $ops);
 		$tables = array();
 		foreach ($request->from as $from) {
@@ -472,7 +472,7 @@ class SQLSelectTokenizer  {
 				'on'    => 'true'
 			);
 		}
-		foreach ($fromclauses as $join => $jclause) {
+		foreach ($fromclause as $join => $jclause) {
 			$jclauses = is_array($jclause) ? $jclause : array($jclause);
 			foreach($jclauses as $clause) {
 				$joinclauses = Splitter::splitKeywords("fr" . "om " . $clause, array("from", "as", "on"));

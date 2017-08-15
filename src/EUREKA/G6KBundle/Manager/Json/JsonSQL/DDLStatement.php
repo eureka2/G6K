@@ -41,7 +41,7 @@ class DDLStatement extends Statement {
 	 * @param JsonSQL $jsonsql the JsonSQL instance
 	 * @param object $request the prepared statement
 	 */
-	public function __construct(JsonSQL $jsonsql, &$request) {
+	public function __construct(JsonSQL $jsonsql, \stdClass &$request) {
 		parent::__construct($jsonsql, $request);
 	}
 

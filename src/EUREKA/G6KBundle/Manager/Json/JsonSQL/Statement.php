@@ -49,7 +49,7 @@ class Statement  {
 	 * @param JsonSQL $jsonsql the JsonSQL instance
 	 * @param object $request the prepared statement
 	 */
-	protected function __construct(JsonSQL $jsonsql, &$request) {
+	protected function __construct(JsonSQL $jsonsql, \stdClass &$request) {
 		$this->jsonsql = $jsonsql;
 		$this->engine = $jsonsql->getEngine();
 		$this->request = $request;

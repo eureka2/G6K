@@ -45,7 +45,7 @@ class DMLStatement extends Statement {
 	 * @param JsonSQL $jsonsql the JsonSQL instance
 	 * @param object $request the prepared statement
 	 */
-	public function __construct(JsonSQL $jsonsql, &$request) {
+	public function __construct(JsonSQL $jsonsql, \stdClass &$request) {
 		$this->parser = new Parser();
 		$currentDate = date('Y-m-d');
 		$currentTime = date('H:i:s');
