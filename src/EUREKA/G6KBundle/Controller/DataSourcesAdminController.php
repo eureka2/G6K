@@ -546,6 +546,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$name = '';
 		$schemafile = '';
 		$datafile = '';
+		$dsid = 0;
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
 				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
@@ -580,7 +581,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 			}
 			$helper = new DatasourcesHelper($this->datasources);
-			$dom = $helper->makeDatasourceDom($name, $schemafile, $datafile, $parameters, $this->databasesDir);
+			$dom = $helper->makeDatasourceDom($name, $schemafile, $datafile, $parameters, $this->databasesDir, $dsid);
 			$this->saveDatasources($dom);
 		}
 		if ($schemafile != '') {
@@ -589,7 +590,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		if ($datafile != '') {
 			unlink($datafile);
 		}
-		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
+		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $dsid)));
 	}
 
 	protected function doImportTable($form, $dsid, $table, $database, $files) {

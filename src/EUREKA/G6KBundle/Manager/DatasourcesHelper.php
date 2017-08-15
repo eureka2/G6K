@@ -38,10 +38,11 @@ class DatasourcesHelper {
 		$this->datasources = $datasources;
 	}
 
-	public function makeDatasourceDom($name, $schemafile, $datafile, $parameters, $databasesDir) {
+	public function makeDatasourceDom($name, $schemafile, $datafile, $parameters, $databasesDir, &$id) {
 		$converter = new JSONToSQLConverter($parameters, $databasesDir);
 		$form = $converter->convert($name, $schemafile, $datafile);
 		$datasource = $this->doCreateDatasource($form);
+		$id = $datasource->getAttribute('id');
 		$dom = $datasource->ownerDocument;
 		$tableid = 1;
 		foreach ($form['datasource-tables'] as $tbl) {
