@@ -154,14 +154,38 @@ class SQLToJSONConverter {
 					'title' => $title,
 					'description' => (string)$column->Description
 				);
-				if ($columninfos['dflt_value'] !== null) {
-					$columns[$columnname]['default'] = $columninfos['dflt_value'];
+				if ((string)$column['type'] == 'date') {
+					$columns[$columnname]['type'] = 'string';
+					$columns[$columnname]['format'] = 'date';
+				}
+				if ((string)$column['type'] != 'choice' && $columninfos['dflt_value'] !== null) {
+					$columns[$columnname]['default'] = $this->castValue($columninfos['dflt_value'], $type);
 				}
 				if ($length > 0) {
 					$columns[$columnname]['maxLength'] = $length;
 				}
 				if ($columninfos['notnull'] == "1") {
 					$required[] = $columnname;
+				}
+				if ((string)$column['type'] == 'choice') {
+					if ($column->Choices) {
+						$oneOf = array();
+						$valueType = '';
+						foreach ($column->Choices->Choice as $choice) {
+							$valueType = $this->guessType((string)$choice['value'], $valueType);
+						}
+						foreach ($column->Choices->Choice as $choice) {
+							$value = $this->castValue((string)$choice['value'], $valueType);
+							$oneOf[] = array(
+								'title' => (string)$choice['label'],
+								'enum' => array($value)
+							);
+						}
+						$columns[$columnname]['oneOf'] = $oneOf;
+						if ($columninfos['dflt_value'] !== null) {
+							$columns[$columnname]['default'] = $this->castValue( $columninfos['dflt_value'], $valueType);
+						}
+					}
 				}
 			}
 			$data[$tablename] = $this->getData($database, $tablename, $columns);
@@ -268,6 +292,47 @@ class SQLToJSONConverter {
 			$rows[] = $row;
 		}
 		return $rows;
+	}
+
+	protected function guessType($value, $priorType = '') {
+		if ($priorType == 'string') {
+			return 'string';
+		}
+		if (strcasecmp($value, 'true') == 0 || strcasecmp($value, 'false') == 0) {
+			if ($priorType != '' && $priorType != 'boolean') {
+				return 'string';
+			}
+			return 'boolean';
+		}
+		if (!is_numeric($value)) {
+			return 'string';
+		}
+		if (ctype_digit($text )) {
+			if ($priorType != '' && $priorType != 'integer') {
+				if ($priorType == 'number') {
+					return 'number';
+				}
+				return 'string';
+			}
+			return 'integer';
+		}
+		if ($priorType != '' && $priorType != 'number' && $priorType != 'integer') {
+			return 'string';
+		}
+		return 'number';
+	}
+
+	protected function castValue($value, $type) {
+		if ($type == 'string' || $type == 'date' || $type == 'datetime' || $type == 'time') {
+			return $value;
+		}
+		if ($type == 'boolean') {
+			return $value == 'true' ? true : false;
+		}
+		if ($type == 'integer') {
+			return (int)$value;
+		}
+		return (float)$value;
 	}
 
 }
