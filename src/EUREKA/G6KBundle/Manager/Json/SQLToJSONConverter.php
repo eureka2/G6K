@@ -137,6 +137,11 @@ class SQLToJSONConverter {
 					$type = $this->types[$database->getType()][strtolower($columninfos['type'])];
 					$length = 0;
 				}
+				$columns[$columnname] = array(
+					'type' => $type,
+					'title' => '',
+					'description' => (string)$column->Description
+				);
 				$title = (string)$column['label'];
 				$extra = array();
 				if ($columninfos['pk'] != "0") {
@@ -145,15 +150,44 @@ class SQLToJSONConverter {
 						$extra[] = 'autoincrement:'."1"; // Value 1 will be replaced by maxId later
 					}
 				}
-				$extra['type'] = 'type:' . (string)$column['type'];
+				$extra[] = 'type:' . (string)$column['type'];
+				if ((string)$column['type'] == 'choice') {
+					if ($column->Choices) {
+						if ($column->Choices->Choice) {
+							$oneOf = array();
+							$valueType = '';
+							foreach ($column->Choices->Choice as $choice) {
+								$valueType = $this->guessType((string)$choice['value'], $valueType);
+							}
+							foreach ($column->Choices->Choice as $choice) {
+								$value = $this->castValue((string)$choice['value'], $valueType);
+								$oneOf[] = array(
+									'title' => (string)$choice['label'],
+									'enum' => array($value)
+								);
+							}
+							$columns[$columnname]['oneOf'] = $oneOf;
+							if ($columninfos['dflt_value'] !== null) {
+								$columns[$columnname]['default'] = $this->castValue( $columninfos['dflt_value'], $valueType);
+							}
+						} elseif ($column->Choices->Source) {
+							$extra[] = 'datasource:' . (string)$column->Choices->Source['datasource'];
+							$extra[] = 'returnType:' . (string)$column->Choices->Source['returnType'];
+							$extra[] = 'valueColumn:' . (string)$column->Choices->Source['valueColumn'];
+							$extra[] = 'labelColumn:' . (string)$column->Choices->Source['labelColumn'];
+							if ((string)$column->Choices->Source['request'] != '') {
+								$extra[] = 'request:' . (string)$column->Choices->Source['request'];
+							}
+							if ((string)$column->Choices->Source['returnPath'] != '') {
+								$extra[] = 'returnPath:' . (string)$column->Choices->Source['returnPath'];
+							}
+						}
+					}
+				}
 				if (count($extra) > 0) {
 					$title .= ' [' . implode(', ', $extra) . ']';
 				}
-				$columns[$columnname] = array(
-					'type' => $type,
-					'title' => $title,
-					'description' => (string)$column->Description
-				);
+				$columns[$columnname]['title'] = $title;
 				if ((string)$column['type'] == 'date') {
 					$columns[$columnname]['type'] = 'string';
 					$columns[$columnname]['format'] = 'date';
@@ -167,28 +201,8 @@ class SQLToJSONConverter {
 				if ($columninfos['notnull'] == "1") {
 					$required[] = $columnname;
 				}
-				if ((string)$column['type'] == 'choice') {
-					if ($column->Choices) {
-						$oneOf = array();
-						$valueType = '';
-						foreach ($column->Choices->Choice as $choice) {
-							$valueType = $this->guessType((string)$choice['value'], $valueType);
-						}
-						foreach ($column->Choices->Choice as $choice) {
-							$value = $this->castValue((string)$choice['value'], $valueType);
-							$oneOf[] = array(
-								'title' => (string)$choice['label'],
-								'enum' => array($value)
-							);
-						}
-						$columns[$columnname]['oneOf'] = $oneOf;
-						if ($columninfos['dflt_value'] !== null) {
-							$columns[$columnname]['default'] = $this->castValue( $columninfos['dflt_value'], $valueType);
-						}
-					}
-				}
 			}
-			$data[$tablename] = $this->getData($database, $tablename, $columns);
+			$data[$tablename] = $this->getData($database, $tablename, $columns, $required);
 			if ($this->maxId > 0) {
 				$columns['id']['title'] = preg_replace("/autoincrement:\d+/", "autoincrement:" . $this->maxId, $columns['id']['title']);
 			}
@@ -249,7 +263,7 @@ class SQLToJSONConverter {
 		return $tableinfos;
 	}
 
-	protected function getData(Database $database, $table, &$schema) {
+	protected function getData(Database $database, $table, &$schema, &$required) {
 		$query = "SELECT * FROM $table";
 		$result = $database->query($query);
 		$rows = array();
@@ -287,7 +301,9 @@ class SQLToJSONConverter {
 						 $this->maxId = $value;
 					}
 				}
-				$row[$column] = $value;
+				if ($value !== null || in_array($column, $required)) {
+					$row[$column] = $value;
+				}
 			}
 			$rows[] = $row;
 		}
