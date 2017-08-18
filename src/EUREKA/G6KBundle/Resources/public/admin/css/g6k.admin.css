@@ -14,7 +14,9 @@
 #page .thumbnails a{
 	text-decoration: none;
 }
-
+.datepicker {
+	margin-top: 3em !important;
+}
 .delete-attribute {
 	cursor: pointer;
 }
