@@ -1,0 +1,194 @@
+<?php
+
+/*
+The MIT License (MIT)
+
+Copyright (c) 2017 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
+
+class JsonTable  {
+
+	/**
+	 * Creates a table in the database
+	 *
+	 * @access public
+	 * @static
+	 * @param Engine $engine the engine using this function
+	 * @param string $table table name
+	 * @param object $columns columns definition 
+	 * @param array $required list of required columns
+	 * @param array $foreignkeys list of foreign keys definition
+	 * @param bool $ifnotexists if TRUE, don't throw an error if the table already exists
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public static function create(Engine $engine, $table, \stdClass $columns, $required, $foreignkeys, $ifnotexists = false) {
+		if (isset($engine->getDb()->schema->properties->{$table})) {
+			if (!$ifnotexists) {
+				throw new JsonSQLException("table '$table' already exists");
+			}
+			return;
+		}
+		foreach($foreignkeys as $foreignkey) {
+			foreach($foreignkey->columns as $column) {
+				if (!isset($columns->$column)) {
+					throw new JsonSQLException("foreign key column '" . $column ."' doesn't exists");
+				}
+			}
+			if (!isset($engine->getDb()->schema->properties->{$foreignkey->references->table})) {
+				throw new JsonSQLException("foreign key reference table '{$foreignkey->references->table}' doesn't exists");
+			}
+			foreach($foreignkey->references->columns as $column) {
+				if (!isset($engine->getDb()->schema->properties->{$foreignkey->references->table}->items->properties->$column)) {
+					throw new JsonSQLException("foreign key reference column '$column' doesn't exists");
+				}
+			}
+		}
+		$engine->beginTransaction();
+		$engine->getDb()->schema->properties->{$table} = (object)array(
+			'type' => 'array',
+			'items' => (object)array(
+				'type' => 'object',
+				'properties' => $columns,
+				'required' => $required
+			)
+		);
+		$engine->getDb()->data->{$table} = array();
+		$engine->notifySchemaModification();
+	}
+
+	/**
+	 * Drops a table
+	 *
+	 * @access public
+	 * @static
+	 * @param Engine $engine the engine using this function
+	 * @param string $table table name
+	 * @param bool $ifexists if TRUE, don't throw an error if the table doesn't exists
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public static function drop(Engine $engine, $table, $ifexists = false) {
+		if (!isset($engine->getDb()->schema->properties->{$table})) {
+			if ($ifexists) {
+				return;
+			}
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		$engine->beginTransaction();
+		unset($engine->getDb()->data->{$table});
+		unset($engine->getDb()->schema->properties->{$table});
+		$engine->notifySchemaModification();
+	}
+
+	/**
+	 * Renames a table
+	 *
+	 * @access public
+	 * @static
+	 * @param Engine $engine the engine using this function
+	 * @param string $table table name
+	 * @param string $newname new name of the table
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public static function rename(Engine $engine, $table, $newname) {
+		if (!isset($engine->getDb()->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		if (isset($engine->getDb()->schema->properties->{$newname})) {
+			throw new JsonSQLException("table '$newname' already exists");
+		}
+		$engine->beginTransaction();
+		$engine->getDb()->data->{$newname} = $engine->getDb()->data->{$table};
+		$engine->getDb()->schema->properties->{$newname} = $engine->getDb()->schema->properties->{$table};
+		unset($engine->getDb()->data->{$table});
+		unset($engine->getDb()->schema->properties->{$table});
+		$engine->notifySchemaModification();
+	}
+
+	/**
+	 * Set or remove the title of a table.
+	 *
+	 * @access public
+	 * @static
+	 * @param Engine $engine the engine using this function
+	 * @param string $table table name
+	 * @param mixed $title the title content. If FALSE, remove the title
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public static function setTitle(Engine $engine, $table, $title = false) {
+		if (!isset($engine->getDb()->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		$tableSchema = &$engine->getDb()->schema->properties->{$table};
+		if ((!isset($tableSchema->title) || $tableSchema->title == '') && $title === false) {
+			return; // nothing to do
+		}
+		if (isset($tableSchema->title) && $tableSchema->title == $title) {
+			return; // nothing to do
+		}
+		$engine->beginTransaction();
+		if ($title === false) {
+			$tableSchema->title == '';
+		} else {
+			$tableSchema->title = $title; 
+		}
+		$engine->notifySchemaModification();
+	}
+
+	/**
+	 * Set or remove the description of a table.
+	 *
+	 * @access public
+	 * @static
+	 * @param Engine $engine the engine using this function
+	 * @param string $table table name
+	 * @param mixed $description the description content. If FALSE, remove the description
+	 * @return void
+	 * @throws JsonSQLException
+	 */
+	public static function setDescription(Engine $engine, $table, $description = false) {
+		if (!isset($engine->getDb()->schema->properties->{$table})) {
+			throw new JsonSQLException("table '$table' doesn't exists");
+		}
+		$tableSchema = &$engine->getDb()->schema->properties->{$table};
+		if ((!isset($tableSchema->description) || $tableSchema->description == '') && $description === false) {
+			return; // nothing to do
+		}
+		if (isset($tableSchema->description) && $tableSchema->description == $description) {
+			return; // nothing to do
+		}
+		$engine->beginTransaction();
+		if ($description === false) {
+			$tableSchema->description == '';
+		} else {
+			$tableSchema->description = $description; 
+		}
+		$engine->notifySchemaModification();
+	}
+
+}
+
+?>

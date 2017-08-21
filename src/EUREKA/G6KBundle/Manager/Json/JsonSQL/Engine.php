@@ -308,6 +308,28 @@ class Engine  {
 	}
 
 	/**
+	 * Commit any modification
+	 *
+	 * @access public
+	 * @return bool  always true
+	 */
+	public function notifyModification() {
+		$this->modified = true;
+		return $this->commit();
+	}
+
+	/**
+	 * Commit any modification of the schema
+	 *
+	 * @access public
+	 * @return bool  always true
+	 */
+	public function notifySchemaModification() {
+		$this->schemaModified = true;
+		return $this->notifyModification();
+	}
+
+	/**
 	 * Rolls back the current transaction, as initiated by beginTransaction().
 	 *
 	 * @access public
@@ -571,40 +593,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function createTable($table, \stdClass $columns, $required, $foreignkeys, $ifnotexists = false) {
-		if (isset($this->db->schema->properties->{$table})) {
-			if (!$ifnotexists) {
-				throw new JsonSQLException("table '$table' already exists");
-			}
-			return;
-		}
-		foreach($foreignkeys as $foreignkey) {
-			foreach($foreignkey->columns as $column) {
-				if (!isset($columns->$column)) {
-					throw new JsonSQLException("foreign key column '" . $column ."' doesn't exists");
-				}
-			}
-			if (!isset($this->db->schema->properties->{$foreignkey->references->table})) {
-				throw new JsonSQLException("foreign key reference table '{$foreignkey->references->table}' doesn't exists");
-			}
-			foreach($foreignkey->references->columns as $column) {
-				if (!isset($this->db->schema->properties->{$foreignkey->references->table}->items->properties->$column)) {
-					throw new JsonSQLException("foreign key reference column '$column' doesn't exists");
-				}
-			}
-		}
-		$this->beginTransaction();
-		$this->db->schema->properties->{$table} = (object)array(
-			'type' => 'array',
-			'items' => (object)array(
-				'type' => 'object',
-				'properties' => $columns,
-				'required' => $required
-			)
-		);
-		$this->db->data->{$table} = array();
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonTable::create($this, $table, $columns, $required, $foreignkeys, $ifnotexists);
 	}
 
 	/**
@@ -635,18 +624,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function dropTable($table, $ifexists = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			if ($ifexists) {
-				return;
-			}
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		$this->beginTransaction();
-		unset($this->db->data->{$table});
-		unset($this->db->schema->properties->{$table});
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonTable::drop($this, $table, $ifexists);
 	}
 
 	/**
@@ -659,20 +637,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function renameTable($table, $newname) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (isset($this->db->schema->properties->{$newname})) {
-			throw new JsonSQLException("table '$newname' already exists");
-		}
-		$this->beginTransaction();
-		$this->db->data->{$newname} = $this->db->data->{$table};
-		$this->db->schema->properties->{$newname} = $this->db->schema->properties->{$table};
-		unset($this->db->data->{$table});
-		unset($this->db->schema->properties->{$table});
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonTable::rename($this, $table, $newname);
 	}
 
 	/**
@@ -687,25 +652,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function addColumn($table, $column, \stdClass $columnDef, $required = array()) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' already exists in $table");
-		}
-		if (in_array($column, $required) && !isset($columnDef->default)) {
-			throw new JsonSQLException("column '$column' in $table can't be required if there is no default value");
-		}
-		$this->beginTransaction();
-		$this->db->schema->properties->{$table}->items->properties->$column = $columnDef;
-		$this->db->schema->properties->{$table}->items->required = array_merge($this->db->schema->properties->{$table}->items->required, $required);
-		$newval = isset($columnDef->default) ? $columnDef->default : null;
-		foreach ($this->db->data->{$table} as &$row) {
-			$row->$column = $newval;
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonColumn::add($this, $table, $column, $columnDef, $required);
 	}
 
 	/**
@@ -719,23 +666,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function renameColumn($table, $column, $newname) {
-		$this->checkColumn($table, $column);
-		if (isset($this->db->schema->properties->{$table}->items->properties->$newname)) {
-			throw new JsonSQLException("column '$newname' already exists in $table");
-		}
-		$this->beginTransaction();
-		$this->db->schema->properties->{$table}->items->properties->$newname = $this->db->schema->properties->{$table}->items->properties->$column;
-		unset($this->db->schema->properties->{$table}->items->properties->$column);
-		if (($requiredpos = array_search($column, $this->db->schema->properties->{$table}->items->required)) !== false) {
-			array_splice($this->db->schema->properties->{$table}->items->required, $requiredpos, 1, $newname);
-		}
-		foreach ($this->db->data->{$table} as &$row) {
-			$row->$newname = $row->$column;
-			unset($row->$column);
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonColumn::rename($this, $table, $column, $newname);
 	}
 
 	/**
@@ -749,29 +680,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function dropColumn($table, $column, $ifexists = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			if ($ifexists) {
-				return;
-			}
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			if ($ifexists) {
-				return;
-			}
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
-		$this->beginTransaction();
-		unset($this->db->schema->properties->{$table}->items->properties->$column);
-		if (($requiredpos = array_search($column, $this->db->schema->properties->{$table}->items->required)) !== false) {
-			array_splice($this->db->schema->properties->{$table}->items->required, $requiredpos, 1);
-		}
-		foreach ($this->db->data->{$table} as &$row) {
-			unset($row->$column);
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonColumn::drop($this, $table, $column, $ifexists);
 	}
 
 	/**
@@ -785,219 +694,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setColumnType($table, $column, $type, $format = '', $datatype = '') {
-		$this->checkColumn($table, $column);
-		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
-		if (preg_match('/^(.*)\[([^\]]+)\]$/', $columnSchema->title, $m)) {
-			$title = $m[1];
-			$props = $this->properties($m[2]);
-		} else {
-			$title = $columnSchema->title;
-			$props = (object)array();
-		}
-		if ($datatype == '') {
-			$datatype = $type;
-		}
-		if ($type == $columnSchema->type && $datatype == $props->type && ((! isset($columnSchema->format) && $format == '' ) || (isset($columnSchema->format) && $format == $columnSchema->format))) {
-			return; // nothing to do
-		}
-		$this->beginTransaction();
-		if (count($this->db->data->{$table}) == 0) {
-			$columnSchema->type = $type;
-			if ($format != '') {
-				$columnSchema->format = $format;
-			} elseif (isset($columnSchema->format)) {
-				unset($columnSchema->format);
-			}
-			if (isset($columnSchema->default)) {
-				$columnSchema->default = $this->normalizeValue($type, $columnSchema->default); 
-			}
-		} elseif ($type == 'string' && $format == '') {
-			$columnSchema->type = $type;
-			if (isset($columnSchema->format)) {
-				unset($columnSchema->format);
-			}
-			foreach ($this->db->data->{$table} as &$row) {
-				$row->$column = $this->normalizeValue($type, $row->$column); 
-			}
-			if (isset($columnSchema->default)) {
-				$columnSchema->default = $this->normalizeValue($type, $columnSchema->default); 
-			}
-		} else {
-			switch ($columnSchema->type) {
-				case 'string':
-					if (isset($columnSchema->format)) {
-						switch ($columnSchema->format) {
-							case 'date':
-								if ($type != 'string') {
-									throw new JsonSQLException("can't convert date to $type");
-								} elseif ($format == 'time') {
-									throw new JsonSQLException("can't convert date to time");
-								} elseif ($format != 'date') {
-									$columnSchema->format = $format;
-									if ($format == 'datetime') {
-										foreach ($this->db->data->{$table} as &$row) {
-											$row->$column = $row->$column . 'T00:00:00.0Z'; 
-										}
-									} else {
-										unset($columnSchema->format);
-									}
-								}
-								break;
-							case 'datetime':
-								if ($type != 'string') {
-									throw new JsonSQLException("can't convert datetime to $type");
-								} elseif ($format == 'date') {
-									$columnSchema->format = $format;
-									foreach ($this->db->data->{$table} as &$row) {
-										$row->$column = substr($row->$column, 0, 10); 
-									}
-								} elseif ($format == 'time') {
-									$columnSchema->format = $format;
-									foreach ($this->db->data->{$table} as &$row) {
-										$row->$column = substr($row->$column, 11); 
-									}
-								} elseif ($format != 'datetime') {
-									unset($columnSchema->format);
-								}
-								break;
-							case 'time':
-								if ($type != 'string' || $format != 'time') {
-									if ($format == '') {
-										throw new JsonSQLException("can't convert time to $type");
-									} else {
-										throw new JsonSQLException("can't convert time to $format");
-									}
-								}
-								break;
-						}
-					} elseif ($type == 'number') {
-						foreach ($this->db->data->{$table} as $row) {
-							if (! is_numeric($row->$column)) {
-								throw new JsonSQLException("can't convert string to $type");
-							}
-						}
-						$columnSchema->type = $type;
-						foreach ($this->db->data->{$table} as &$row) {
-							$row->$column = (float)$row->$column; 
-						}
-						if (isset($columnSchema->default)) {
-							$columnSchema->default = (float)$columnSchema->default; 
-						}
-					} elseif ($type == 'integer') {
-						foreach ($this->db->data->{$table} as $row) {
-							if (! is_int($row->$column)) {
-								throw new JsonSQLException("can't convert string to $type");
-							}
-						}
-						$columnSchema->type = $type;
-						foreach ($this->db->data->{$table} as &$row) {
-							$row->$column = (int)$row->$column; 
-						}
-						if (isset($columnSchema->default)) {
-							$columnSchema->default = (int)$columnSchema->default; 
-						}
-					} elseif ($type == 'boolean') {
-						foreach ($this->db->data->{$table} as $row) {
-							if (! is_bool($row->$column)) {
-								throw new JsonSQLException("can't convert string to $type");
-							}
-						}
-						$columnSchema->type = $type;
-						foreach ($this->db->data->{$table} as &$row) {
-							$row->$column == boolval($row->$column); 
-						}
-						if (isset($columnSchema->default)) {
-							$columnSchema->default = boolval($columnSchema->default); 
-						}
-					} elseif ($type != 'string' || $format != '') { 
-						if ($format == '') {
-							throw new JsonSQLException("can't convert string to $type");
-						} else {
-							throw new JsonSQLException("can't convert string to $format");
-						}
-					}
-					break;
-				case 'number':
-					if ($type == 'integer') {
-						$columnSchema->type = $type;
-						foreach ($this->db->data->{$table} as &$row) {
-							$row->$column = (int)$row->$column; 
-						}
-						if (isset($columnSchema->default)) {
-							$columnSchema->default = (int)$columnSchema->default; 
-						}
-					} elseif ($type == 'boolean') {
-						$columnSchema->type = $type;
-						foreach ($this->db->data->{$table} as &$row) {
-							$row->$column == boolval($row->$column); 
-						}
-						if (isset($columnSchema->default)) {
-							$columnSchema->default = boolval($columnSchema->default); 
-						}
-					} elseif ($type != 'number') {
-						if ($format == '') {
-							throw new JsonSQLException("can't convert number to $type");
-						} else {
-							throw new JsonSQLException("can't convert number to $format");
-						}
-					}
-					break;
-				case 'integer':
-					if ($type == 'number') {
-						$columnSchema->type = $type;
-						foreach ($this->db->data->{$table} as &$row) {
-							$row->$column = (float)$row->$column; 
-						}
-						if (isset($columnSchema->default)) {
-							$columnSchema->default = (float)$columnSchema->default; 
-						}
-					} elseif ($type == 'boolean') {
-						$columnSchema->type = $type;
-						foreach ($this->db->data->{$table} as &$row) {
-							$row->$column == boolval($row->$column); 
-						}
-						if (isset($columnSchema->default)) {
-							$columnSchema->default = boolval($columnSchema->default); 
-						}
-					} elseif ($type != 'integer') {
-						if ($format == '') {
-							throw new JsonSQLException("can't convert integer to $type");
-						} else {
-							throw new JsonSQLException("can't convert integer to $format");
-						}
-					}
-					break;
-				case 'boolean':
-					if ($type == 'number' || $type == 'integer') {
-						$columnSchema->type = $type;
-						foreach ($this->db->data->{$table} as &$row) {
-							$row->$column = $row->$column ? 1 : 0; 
-						}
-						if (isset($columnSchema->default)) {
-							$columnSchema->default = $columnSchema->default ? 1 : 0; 
-						}
-					} elseif ($type != 'boolean') {
-						if ($format == '') {
-							throw new JsonSQLException("can't convert boolean to $type");
-						} else {
-							throw new JsonSQLException("can't convert boolean to $format");
-						}
-					}
-					break;
-			}
-		}
-		$props->type = $datatype;
-		$extra = array();
-		foreach ($props as $prop => $value) {
-			$extra[] = $prop . ":" . $value;
-		}
-		$columnSchema->title = $title;
-		if (count($extra) > 0) {
-			$columnSchema->title .= ' [' . implode(', ', $extra) . ']';
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonColumn::setType($this, $table, $column, $type, $format, $datatype);
 	}
 
 	/**
@@ -1011,24 +708,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setNotNull($table, $column, $allownull = false) {
-		$this->checkColumn($table, $column);
-		$required = &$this->db->schema->properties->{$table}->items->required;
-		$requiredpos = array_search($column, $required);
-		if ($allownull && $requiredpos === false) {
-			return; // nothing to do
-		}
-		if (!$allownull && $requiredpos !== false) {
-			return; // nothing to do
-		}
-		$this->beginTransaction();
-		if ($allownull && $requiredpos !== false) {
-			array_splice($required, $requiredpos, 1);
-		} elseif (! $allownull && $requiredpos === false) {
-			array_push($required, $column);
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonColumn::setNotNull($this, $table, $column, $allownull);
 	}
 
 	/**
@@ -1042,20 +722,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setDefault($table, $column, $default = false) {
-		$this->checkColumn($table, $column);
-		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
-		if (!isset($columnSchema->default) && $default === false) {
-			return; // nothing to do
-		}
-		$this->beginTransaction();
-		if ($default === false) {
-			unset($columnSchema->default);
-		} else {
-			$columnSchema->default = $this->normalizeValue($columnSchema->type, $default); 
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonColumn::setDefault($this, $table, $column, $default);
 	}
 
 	/**
@@ -1069,49 +736,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setPrimaryKey($table, $column, $remove = false) {
-		$this->checkColumn($table, $column);
-		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
-		if (preg_match('/^(.*)\[([^\]]+)\]$/', $columnSchema->title, $m)) {
-			$title = $m[1];
-			$props = $this->properties($m[2]);
-		} else {
-			$title = $columnSchema->title;
-			$props = (object)array();
-		}
-		if (isset($props->primarykey) && ! $remove) {
-			return; // nothing to do
-		}
-		if (!isset($props->primarykey) && $remove) {
-			return; // nothing to do
-		}
-		$this->beginTransaction();
-		if ($remove) {
-			unset($props->primarykey);
-		} else {
-			$maxkey = 0;
-			foreach($this->db->schema->properties->{$table}->items->properties as $col) {
-				if (preg_match('/^.*\[([^\]]+)\]$/', $col->title, $m)) {
-					$colprops = $this->properties($m[1]);
-					if (isset($colprops->primarykey)) {
-						if ($colprops->primarykey > $maxkey) {
-							$maxkey = $colprops->primarykey;
-						}
-					}
-				}
-			}
-			$props->primarykey = $maxkey + 1;
-		}
-		$extra = array();
-		foreach ($props as $prop => $value) {
-			$extra[] = $prop . ":" . $value;
-		}
-		$columnSchema->title = $title;
-		if (count($extra) > 0) {
-			$columnSchema->title .= ' [' . implode(', ', $extra) . ']';
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonColumn::setPrimaryKey($this, $table, $column, $remove);
 	}
 
 	/**
@@ -1125,47 +750,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setAutoincrement($table, $column, $remove = false) {
-		$this->checkColumn($table, $column);
-		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
-		if ($columnSchema->type != 'integer') {
-			throw new JsonSQLException("column '$column' in '$table' as type '{$columnSchema->type}', only integer can have the autoincrement property");
-		}
-		if (preg_match('/^(.*)\[([^\]]+)\]$/', $columnSchema->title, $m)) {
-			$title = $m[1];
-			$props = $this->properties($m[2]);
-		} else {
-			$title = $columnSchema->title;
-			$props = (object)array();
-		}
-		if (isset($props->autoincrement) && ! $remove) {
-			return; // nothing to do
-		}
-		if (!isset($props->autoincrement) && $remove) {
-			return; // nothing to do
-		}
-		$this->beginTransaction();
-		if ($remove) {
-			unset($props->autoincrement);
-		} else {
-			$maxid = 0;
-			foreach ($this->db->data->{$table} as $row) {
-				if ($row->$column > $maxid) {
-					$maxid = $row->$column;
-				}
-			}
-			$props->autoincrement = $maxid;
-		}
-		$extra = array();
-		foreach ($props as $prop => $value) {
-			$extra[] = $prop . ":" . $value;
-		}
-		$columnSchema->title = $title;
-		if (count($extra) > 0) {
-			$columnSchema->title .= ' [' . implode(', ', $extra) . ']';
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonColumn::setAutoincrement($this, $table, $column, $remove);
 	}
 
 	/**
@@ -1178,25 +763,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setTableTitle($table, $title = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		$tableSchema = &$this->db->schema->properties->{$table};
-		if ((!isset($tableSchema->title) || $tableSchema->title == '') && $title === false) {
-			return; // nothing to do
-		}
-		if (isset($tableSchema->title) && $tableSchema->title == $title) {
-			return; // nothing to do
-		}
-		$this->beginTransaction();
-		if ($title === false) {
-			$tableSchema->title == '';
-		} else {
-			$tableSchema->title = $title; 
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonTable::setTitle($this, $table, $title);
 	}
 
 	/**
@@ -1209,25 +776,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setTableDescription($table, $description = false) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		$tableSchema = &$this->db->schema->properties->{$table};
-		if ((!isset($tableSchema->description) || $tableSchema->description == '') && $description === false) {
-			return; // nothing to do
-		}
-		if (isset($tableSchema->description) && $tableSchema->description == $description) {
-			return; // nothing to do
-		}
-		$this->beginTransaction();
-		if ($description === false) {
-			$tableSchema->description == '';
-		} else {
-			$tableSchema->description = $description; 
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonTable::setDescription($this, $table, $description);
 	}
 
 	/**
@@ -1241,23 +790,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setColumnTitle($table, $column, $title = false) {
-		$this->checkColumn($table, $column);
-		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
-		if ((!isset($columnSchema->title) || $columnSchema->title == '') && $title === false) {
-			return; // nothing to do
-		}
-		if (isset($columnSchema->title) && $columnSchema->title == $title) {
-			return; // nothing to do
-		}
-		$this->beginTransaction();
-		if ($title === false) {
-			$columnSchema->title == '';
-		} else {
-			$columnSchema->title = $title; 
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
+		JsonColumn::setTitle($this, $table, $column, $title);
 	}
 
 	/**
@@ -1271,32 +804,7 @@ class Engine  {
 	 * @throws JsonSQLException
 	 */
 	public function setColumnDescription($table, $column, $description = false) {
-		$this->checkColumn($table, $column);
-		$columnSchema = &$this->db->schema->properties->{$table}->items->properties->$column;
-		if ((!isset($columnSchema->description) || $columnSchema->description == '') && $description === false) {
-			return; // nothing to do
-		}
-		if (isset($columnSchema->description) && $columnSchema->description == $description) {
-			return; // nothing to do
-		}
-		$this->beginTransaction();
-		if ($description === false) {
-			$columnSchema->description == '';
-		} else {
-			$columnSchema->description = $description; 
-		}
-		$this->schemaModified = true;
-		$this->modified = true;
-		$this->commit();
-	}
-
-	private function checkColumn($table, $column) {
-		if (!isset($this->db->schema->properties->{$table})) {
-			throw new JsonSQLException("table '$table' doesn't exists");
-		}
-		if (!isset($this->db->schema->properties->{$table}->items->properties->$column)) {
-			throw new JsonSQLException("column '$column' doesn't exists in $table");
-		}
+		JsonColumn::setDescription($this, $table, $column, $description);
 	}
 
 	/**
@@ -1330,7 +838,7 @@ class Engine  {
 	/**
 	 *	Converts a string value according to its json data type
 	 *
-	 * @access protected
+	 * @access public
 	 * @param string $type json data type (string, integer, number or boolean)
 	 * @param string $value the value to convert
 	 * @return mixed the converted value
@@ -1357,11 +865,11 @@ class Engine  {
 	 * Internal properties are stored into the title property of the column definition in the database schema.
 	 * Actually, only 'primarykey' and 'autoincrement' are used.
 	 *
-	 * @access private
+	 * @access public
 	 * @param string $list the list of comma separated properties
 	 * @return object the properties object.
 	 */
-	private function properties($arg) {
+	public function properties($arg) {
 		$props = array();
 		foreach(Splitter::splitList($arg) as $prop) {
 			list($property, $value) = explode(':', $prop);
