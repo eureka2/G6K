@@ -24,24 +24,30 @@ class G6KExceptionListener
 		$route = $request->get("_route");
 		if ($route == 'eureka_g6k_api') {
 			$response = $this->jsonResponse($request, $exception);
+		} elseif (preg_match("/^eureka_g6k_admin/", $route)) {
+			$response = $this->htmlResponse($request, $exception, true);
 		} else {
 			$response = $this->htmlResponse($request, $exception);
 		}
 		$event->setResponse($response);
 	}
 
-	protected function htmlResponse(Request $request, \Exception $exception) {
-		$domain = $request->getHost();
-		$view = $request->get("view", "");
-		if ($view == "") {
-			foreach ($this->domainview as $d => $v) {
-				if (preg_match("/".$d."$/", $domain)) {
-					$view = $v;
-					break;
-				}
-			}
+	protected function htmlResponse(Request $request, \Exception $exception, $admin = false) {
+		if ($admin) {
+			$view = 'admin';
+		} else {
+			$domain = $request->getHost();
+			$view = $request->get("view", "");
 			if ($view == "") {
-				$view = "Default";
+				foreach ($this->domainview as $d => $v) {
+					if (preg_match("/".$d."$/", $domain)) {
+						$view = $v;
+						break;
+					}
+				}
+				if ($view == "") {
+					$view = "Default";
+				}
 			}
 		}
 		$fsloader = new FileSystemLoader(
@@ -60,6 +66,14 @@ class G6KExceptionListener
 		}));
 		$twig->registerUndefinedFunctionCallback(function ($name) {
 			return new \Twig_SimpleFunction($name, function() {
+				return null;
+			});
+		});
+		$twig->registerUndefinedFilterCallback(function ($name) {
+			if (function_exists($name)) {
+				return new \Twig_Filter_Function($name);
+			}
+			return new \Twig_Filter_Function(function () {
 				return null;
 			});
 		});
