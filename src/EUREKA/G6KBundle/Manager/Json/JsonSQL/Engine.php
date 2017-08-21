@@ -505,7 +505,9 @@ class Engine  {
 			} else {
 				$val = $row[$name];
 			}
-			$vrow[$name] = $val;
+			if ($val !== null) {
+				$vrow[$name] = $val;
+			}
 			if (isset($props->primarykey)) {
 				$primarykeys[$name] = $val;
 			}
@@ -568,7 +570,9 @@ class Engine  {
 			} else {
 				$val = $row->$name;
 			}
-			$vrow[$name] = $val;
+			if ($val !== null) {
+				$vrow[$name] = $val;
+			}
 			if (isset($props->primarykey)) {
 				$primarykeys[$name] = $val;
 			}
