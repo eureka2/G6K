@@ -16,3 +16,9 @@ services:
         class: EUREKA\G6KBundle\Twig\Extension\Filters
         tags:
             - { name: twig.extension }
+
+    # Twig string template loader
+    g6k.twig_loader.string:
+        class: EUREKA\G6KBundle\Twig\Loader\StringTemplateLoader
+        tags:
+            - { name: twig.loader }

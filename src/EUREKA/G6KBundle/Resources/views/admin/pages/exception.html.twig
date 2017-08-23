@@ -34,6 +34,15 @@ THE SOFTWARE.
 	{% endif %}
 </div>
 
+{% if app.user and is_granted('ROLE_ADMIN') %}
+<div class="alert alert-danger has-error">
+<span class="help-block">
+{{ stacktrace|jscode }}
+</span>
+</div>
+
+{% endif %}
+
 {% endblock %}
 
 {% block scripts %}

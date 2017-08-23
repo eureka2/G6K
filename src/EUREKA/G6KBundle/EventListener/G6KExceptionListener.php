@@ -46,67 +46,44 @@ class G6KExceptionListener
 				$view = "Default";
 			}
 		}
-		$fsloader = new FileSystemLoader(
-			array(
-				$viewsDir . '/' . $view . '/layout',
-				$viewsDir
-			)
-		);
-		$aloader = new \Twig_Loader_Array(array(
-			'error.html.twig' => '{% extends "pagelayout.html.twig" %}{% block content %}<div class="alert alert-danger has-error"><span class="help-block">Error : {{ message }} with code : {{ code }}</span></div>{% endblock %}',
-		));
-		// use https://github.com/shapecode/twig-string-loader-bundle instead
-		$loader = new \Twig_Loader_Chain(array($fsloader, $aloader));
-		$twig = new \Twig_Environment($loader);
-		$twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset) use ($request) {
-			return sprintf($request->getBaseUrl().'/%s', ltrim($asset, '/'));
-		}));
-		$twig->registerUndefinedFunctionCallback(function ($name) {
-			if (function_exists($name)) {
-				return new \Twig_Function_Function($name);
-			}
-			switch ($name) {
-				case 'is_granted':
-					return new \Twig_SimpleFunction($name, function($arg) {
-						return true;
-					});
-				case 'path':
-					return new \Twig_SimpleFunction($name, function($arg) {
-						error_log("path fonction args: " . $arg);
-						return null;
-					});
-				default:
-					return new \Twig_SimpleFunction($name, function($arg) {
-						error_log(" fonction args: " . $arg);
-						return null;
-					});
-			}
-		});
-		$twig->registerUndefinedFilterCallback(function ($name) use ($request) {
-			if (function_exists($name)) {
-				return new \Twig_Filter_Function($name);
-			}
-			switch ($name) {
-				case 'trans':
-					return new \Twig_Filter_Function(function ($arg) use ($request) {
-						return $arg;
-					});
-				case 'jscode':
-					return new \Twig_Filter_Function(function ($arg) {
-						return $arg;
-					});
-				default:
-					return new \Twig_Filter_Function(function ($arg) {
-						return null;
-					});
-			}
-		});
+		$template = <<<EOT
+{% extends "EUREKAG6KBundle:{$view}/layout:pagelayout.html.twig" %}
+{% block content %}
+{% if app.user and is_granted('ROLE_ADMIN') %}
+<div class="exception alert alert-danger has-error">
+<span class="help-block">
+{{ 'Error'|trans }} : {{ message }}
+</span>
+<span class="help-block">
+Code : {{ code }}
+</span>
+</div>
+<div class="alert alert-danger has-error">
+<span class="help-block">
+{{ stacktrace|jscode }}
+</span>
+</div>
+{% else %}
+<div class="exception alert alert-danger has-error">
+<span class="help-block">
+{{ 'The simulation engine is currently under maintenance'|trans }}
+</span>
+<span class="help-block">
+{{ 'Please retry later'|trans }}
+</span>
+</div>
+{% endif %}
+{% endblock %}
+EOT;
+		$twig = $this->kernel->getContainer()->get('templating');
+
 		$response = new Response();
 		$response->setContent(
 			$twig->render(
-				'error.html.twig', 
+				$template, 
 				array(
-					'message' => $exception->getMessage(),
+					'message' => $this->trace($exception),
+					'stacktrace' => str_replace("\n", "<br>", $exception->getTraceAsString()),
 					'code' => $exception->getCode()
 				)
 			)
@@ -129,6 +106,7 @@ class G6KExceptionListener
 				'EUREKAG6KBundle:admin/pages:exception.html.twig',
 				array(
 					'message' => $this->trace($exception),
+					'stacktrace' => str_replace("\n", "<br>", $exception->getTraceAsString()),
 					'code' => $exception->getCode()
 				)
 			)
