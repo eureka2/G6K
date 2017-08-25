@@ -612,24 +612,27 @@ class DataSourcesAdminController extends BaseAdminController {
 		$delimiter = $form["table-data-delimiter"]; 
 		$hasheader = isset($form["table-data-has-header"]) && $form["table-data-has-header"] == "1";
 		if ($csvfile != '') {
+			ini_set('auto_detect_line_endings', TRUE);
 			if (($handle = fopen($csvfile, 'r')) !== FALSE) {
 				$infosColumns = $this->infosColumns($database, $table);
 				$header = $hasheader ? NULL : array_filter(array_keys($infosColumns), function($k) {
 					return $k != 'id';
 				});
 				while (($row = fgetcsv($handle, 0, $separator, $delimiter)) !== FALSE) {
-					if(!$header) {
-						$header = $row;
-						foreach ($header as $name) {
-							if (!isset($infosColumns[$name])) {
-								throw new \Exception("Unkown column name : {$name}");
+					if (!empty($row) && $row[0] !== null) { // hack for csv mac
+						if(!$header) {
+							$header = $row;
+							foreach ($header as $name) {
+								if (!isset($infosColumns[$name])) {
+									throw new \Exception("Unkown column name : {$name}");
+								}
 							}
-						}
-					} else {
-						$data = array_combine($header, $row);
-						$data['id'] = '0';
-						if (($result = $this->addDBTableRow($data, $table, $database)) !== true) {
-							return $this->errorResponse($data, $result);
+						} else {
+							$data = array_combine($header, $row);
+							$data['id'] = '0';
+							if (($result = $this->addDBTableRow($data, $table, $database)) !== true) {
+								return $this->errorResponse($data, $result);
+							}
 						}
 					}
 				}
