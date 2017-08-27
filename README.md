@@ -40,15 +40,13 @@ G6K is a tool that allows to create calculation simulators without computer codi
   * database_path => used in the case of SQLite and ignored in other cases, so make &lt;Enter&gt;
   * locale => en 
 
-Normally the installer displays the message 'Installing the users of the administration interface'
-
+Normally the installer displays the message 'Installing the users of the administration interface'  
 However, on some platforms, this message does not appear. If so, run the following commands:
 
-``cd simulator``
-
+``cd simulator``  
 ``php ../composer.phar run-script post-install-cmd``
 
 ## Copyright and license
 
-&copy; 2015 Eureka2 - Jacques Archimède. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
+&copy; 2015-2017 Eureka2 - Jacques Archimède. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
 
