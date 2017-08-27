@@ -461,3 +461,18 @@ var.data {
 	border: 0;
 	-ms-interpolation-mode: bicubic;
 }
+.bs-docs-sidenav > li[data-level="2"] > a {
+	padding-left: 30px;
+}
+.bs-docs-sidenav > li[data-level="3"] > a {
+	padding-left: 45px;
+}
+.bs-docs-sidenav > li[data-level="4"] > a {
+	padding-left: 60px;
+}
+.bs-docs-sidenav > li[data-level="5"] > a {
+	padding-left: 75px;
+}
+.bs-docs-sidenav > li[data-level="6"] > a {
+	padding-left: 90px;
+}
