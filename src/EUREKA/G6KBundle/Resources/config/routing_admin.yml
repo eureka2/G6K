@@ -3,6 +3,11 @@ eureka_g6k_admin:
     methods: [ get, post ]
     defaults: { _controller: EUREKAG6KBundle:HomeAdmin:index }
 
+eureka_g6k_admin_documentation:
+    path:     /admin/doc/{document}
+    methods: [ get, post ]
+    defaults: { _controller: EUREKAG6KBundle:Documentation:index }
+
 eureka_g6k_admin_clear_cache:
     path:     /admin/cache/clear
     methods: [ get, post ]

@@ -447,3 +447,17 @@ var.data {
 	background: #FFFFE0;
 	border-radius: 8px; 
 }
+#page div.span9 {
+	margin-left: 22em;
+}
+#page ul.bs-docs-sidenav {
+	margin-top: 20em;
+}
+#page div.span9 img {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	vertical-align: middle;
+	border: 0;
+	-ms-interpolation-mode: bicubic;
+}

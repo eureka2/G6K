@@ -74,7 +74,7 @@ if (/no-js=/.test(window.location.search)) {
 <![endif]-->    
 {% endblock %}
 </head>
-<body class="{% block bodyclass %}{% endblock %}">
+<body class="{% block bodyclass %}{% endblock %}"{% block bodyattr %}{% endblock %}>
 
 {% block body %}
 {% block content %}{% endblock %}
