@@ -1,5 +1,9 @@
 # G6K
 
+G6K is a tool that allows to create calculation simulators without computer coding and to put them on line. It has a simulation engine and an administration module.
+
+[Learn more](https://github.com/eureka2/G6K/wiki/G6K:-Calculation-simulation-engine)
+
 ## Prerequisites for Symfony 2
 * PHP Version 5.3.3 + (recommended 5.5.9+)
 * JSON enabled
@@ -36,6 +40,13 @@
   * database_path => used in the case of SQLite and ignored in other cases, so make &lt;Enter&gt;
   * locale => en 
 
+Normally the installer displays the message 'Installing the users of the administration interface'
+
+However, on some platforms, this message does not appear. If so, run the following commands:
+
+``cd simulator``
+
+``php ../composer.phar run-script post-install-cmd``
 
 ## Copyright and license
 
