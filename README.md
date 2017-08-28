@@ -9,6 +9,7 @@ G6K is a tool that allows to create calculation simulators without computer codi
 * JSON enabled
 * ctype
 * date.timezone in php.ini
+* auto_detect_line_endings = On in php.ini
 * PHP-XML module 
 * 2.6.21+ version of libxml
 * PHP tokenizer 
