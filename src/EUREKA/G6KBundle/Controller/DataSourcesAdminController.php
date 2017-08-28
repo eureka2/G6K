@@ -612,7 +612,6 @@ class DataSourcesAdminController extends BaseAdminController {
 		$delimiter = $form["table-data-delimiter"]; 
 		$hasheader = isset($form["table-data-has-header"]) && $form["table-data-has-header"] == "1";
 		if ($csvfile != '') {
-			ini_set('auto_detect_line_endings', TRUE);
 			if (($handle = fopen($csvfile, 'r')) !== FALSE) {
 				$infosColumns = $this->infosColumns($database, $table);
 				$header = $hasheader ? NULL : array_filter(array_keys($infosColumns), function($k) {
