@@ -23,7 +23,7 @@ class G6KExceptionListener
 		if ($route == 'eureka_g6k_api') {
 			$response = $this->jsonResponse($request, $exception);
 		} elseif (preg_match("/^eureka_g6k_admin/", $route)) {
-			$response = $this->htmlAdminResponse($request, $exception);
+			$response = $this->htmlAdminResponse($exception);
 		} else {
 			$response = $this->htmlResponse($request, $exception);
 		}
@@ -32,7 +32,6 @@ class G6KExceptionListener
 
 	protected function htmlResponse(Request $request, \Exception $exception) {
 		$domainview = $this->kernel->getContainer()->getParameter('domainview');
-		$viewsDir = $this->kernel->locateResource('@EUREKAG6KBundle/Resources/views');
 		$domain = $request->getHost();
 		$view = $request->get("view", "");
 		if ($view == "") {
@@ -98,7 +97,7 @@ EOT;
 		return $response;
 	}
 
-	protected function htmlAdminResponse(Request $request, \Exception $exception) {
+	protected function htmlAdminResponse(\Exception $exception) {
 		$twig = $this->kernel->getContainer()->get('templating');
 		$response = new Response();
 		$response->setContent(
