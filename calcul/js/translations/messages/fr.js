@@ -73,6 +73,7 @@
     Translator.add("Are you sure you want to delete the rule : %label% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la r\u00e8gle : %label% ?", "messages", "fr");
     Translator.add("Are you sure you want to delete the section : %label%", "Voulez-vous vraiment supprimer la section : %label%", "messages", "fr");
     Translator.add("Are you sure you want to delete the step : %label%", "Voulez-vous vraiment supprimer l'\u00e9tape : %label%", "messages", "fr");
+    Translator.add("Are you sure you want to delete this source", "\u00cates-vous certain de vouloir supprimer cette source", "messages", "fr");
     Translator.add("Are you sure you want to drop the datasource %datasource% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la source de donn\u00e9es %datasource% ?", "messages", "fr");
     Translator.add("Are you sure you want to drop the table %table% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la table %table% ?", "messages", "fr");
     Translator.add("Are you sure you want to drop the view %view% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la vue %view% ?", "messages", "fr");
@@ -261,6 +262,7 @@
     Translator.add("Deleting profile data", "Suppression donn\u00e9e profil", "messages", "fr");
     Translator.add("Deleting rule", "Suppression de la r\u00e8gle", "messages", "fr");
     Translator.add("Deleting section", "Suppression section", "messages", "fr");
+    Translator.add("Deleting source", "Suppression source", "messages", "fr");
     Translator.add("Deleting step", "Suppression \u00e9tape", "messages", "fr");
     Translator.add("Delimiter", "D\u00e9limiteur", "messages", "fr");
     Translator.add("Department", "D\u00e9partement", "messages", "fr");
@@ -838,7 +840,7 @@
     Translator.add("This section is used in rule #%id%. You must modify this rule before you can delete this section", "Cette section est utilis\u00e9e dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir la supprimer.", "messages", "fr");
     Translator.add("This section name already exists", "Ce nom de section existe d\u00e9j\u00e0", "messages", "fr");
     Translator.add("This simulator does not exist", "Ce simulateur n'existe pas", "messages", "fr");
-    Translator.add("This source is used in data #%id% : %label%. You must modify this data before you can delete this source", "Cette source est utilis\u00e9e dans la d\u00e9finiion de la donn\u00e9e #%id% : %label%. Vous devez modifier cette donn\u00e9e avant de pouvoir la supprimer.", "messages", "fr");
+    Translator.add("This source is used in data #%id% : %label%. You must modify this data before you can delete this source", "Cette source est utilis\u00e9e dans la d\u00e9finition de la donn\u00e9e #%id% : %label%. Vous devez modifier cette donn\u00e9e avant de pouvoir la supprimer.", "messages", "fr");
     Translator.add("This step is used in rule #%id%. You must modify this rule before you can delete this step", "Cette \u00e9tape est utilis\u00e9e dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir la supprimer.", "messages", "fr");
     Translator.add("This step name already exists", "Ce nom d'\u00e9tape existe d\u00e9j\u00e0", "messages", "fr");
     Translator.add("This template does not exist", "Ce template n'existe pas", "messages", "fr");
