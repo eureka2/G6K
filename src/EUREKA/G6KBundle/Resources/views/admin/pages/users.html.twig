@@ -49,11 +49,6 @@ THE SOFTWARE.
 										<th data-resizable-column-id="users_email">{{ 'Email'|trans }}</th>
 										<th data-resizable-column-id="users_password">{{ 'Password'|trans }}</th>
 										<th data-resizable-column-id="users_enabled">{{ 'Enabled'|trans }}</th>
-										<th data-resizable-column-id="users_locked">{{ 'Locked'|trans }}</th>
-										<th data-resizable-column-id="users_expired">{{ 'Expired'|trans }}</th>
-										<th data-resizable-column-id="users_expiresAt">{{ 'Expires at'|trans }}</th>
-										<th data-resizable-column-id="users_credentialsExpired">{{ 'Credentials expired'|trans }}</th>
-										<th data-resizable-column-id="users_credentialExpireAt">{{ 'Credentials expire at'|trans }}</th>
 										<th data-resizable-column-id="users_roles">{{ 'Roles'|trans }}</th>
 										<th data-resizable-column-id="users_lastLogin">{{ 'Last Login'|trans }}</th>
 									</tr>
@@ -66,11 +61,6 @@ THE SOFTWARE.
 										<td class="text">{{ user.email }}</td>
 										<td class="password">{{ user.password }}</td>
 										<td class="boolean">{{ user.enabled == 0 ? 'No'|trans : 'Yes'|trans }}</td>
-										<td class="boolean">{{ user.locked == 0 ? 'No'|trans : 'Yes'|trans }}</td>
-										<td class="boolean">{{ user.expired == 0 ? 'No'|trans : 'Yes'|trans }}</td>
-										<td class="date">{{ user.expiresAt }}</td>
-										<td class="boolean">{{ user.credentialsExpired == 0 ? 'No'|trans : 'Yes'|trans }}</td>
-										<td class="date">{{ user.credentialExpireAt }}</td>
 										<td class="choice">{{ user.roles|join(', ')|replace({"ROLE_USER": "user"|trans, "ROLE_MANAGER": "manager"|trans, "ROLE_CONTRIBUTOR": "contributor"|trans, "ROLE_ADMIN": "admin"|trans, "ROLE_SUPER_ADMIN": "superadmin"|trans}) }}</td>
 										<td class="date">{{ user.lastLogin|date("d/m/Y H:i:s") }}</td>
 								</tr>

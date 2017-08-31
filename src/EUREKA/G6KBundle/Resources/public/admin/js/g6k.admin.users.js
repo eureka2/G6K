@@ -48,7 +48,7 @@ THE SOFTWARE.
 			columns: {
 				identifier: [0, 'id'],
 				editable: [
-					[1, 'userName'], [2, 'email', 'email'], [3, 'password', 'password'], [4, 'enabled', 'checkbox', '{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1'], [5, 'locked', 'checkbox', '{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1'], [6, 'expired', 'checkbox', '{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1'], [7, 'expiresAt'], [8, 'credentialsExpired', 'checkbox', '{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1'], [9, 'credentialExpireAt'], [10, 'roles', 'multiple', '{ "ROLE_USER": "' + Translator.trans("user") + '", "ROLE_MANAGER": "' + Translator.trans("manager") + '", "ROLE_CONTRIBUTOR": "' + Translator.trans("contributor") + '", "ROLE_ADMIN": "' + Translator.trans("admin") + '", "ROLE_SUPER_ADMIN": "' + Translator.trans("superadmin") + '" }']
+					[1, 'userName'], [2, 'email', 'email'], [3, 'password', 'password'], [4, 'enabled', 'checkbox', '{"1": "' + Translator.trans('Yes') + '", "0": "' + Translator.trans('No') + '"}', '1'], [5, 'roles', 'multiple', '{ "ROLE_USER": "' + Translator.trans("user") + '", "ROLE_MANAGER": "' + Translator.trans("manager") + '", "ROLE_CONTRIBUTOR": "' + Translator.trans("contributor") + '", "ROLE_ADMIN": "' + Translator.trans("admin") + '", "ROLE_SUPER_ADMIN": "' + Translator.trans("superadmin") + '" }']
 				]
 			},
 			onDraw: function() {
@@ -66,8 +66,6 @@ THE SOFTWARE.
 				var userName = row.find('input[name=userName]');
 				var email = row.find('input[name=email]');
 				var password = row.find('input[name=password]');
-				var expiresAt = row.find('input[name=expiresAt]');
-				var credentialExpireAt = row.find('input[name=credentialExpireAt]').val();
 				if (userName.val() == '' || userName.val().length < 3) {
 					errors.push(Translator.trans('Please enter a valid user name (3 car. min).'));
 				}
@@ -122,7 +120,7 @@ $(document).ready(function() {
 				$(this).empty();
 				$(this).text(text);
 			});
-			$('#users tbody').prepend('<tr><td class="integer">0</td><td class="text"></td><td class="text"></td><td class="password"></td><td class="boolean">' + Translator.trans('Yes') + '</td><td class="boolean">' + Translator.trans('No') + '</td><td class="boolean">' + Translator.trans('No') + '</td><td class="date"></td><td class="boolean">' + Translator.trans('No') + '</td><td class="date"></td><td class="choice"></td><td class="date"></td></tr>');
+			$('#users tbody').prepend('<tr><td class="integer">0</td><td class="text"></td><td class="text"></td><td class="password"></td><td class="boolean">' + Translator.trans('Yes') + '</td><td class="choice"></td><td class="date"></td></tr>');
 			Users.doeditable();
 			$('#users tbody tr:first-child').find('.tabledit-edit-button').trigger( "click" );
 		});

@@ -106,11 +106,6 @@ class UsersAdminController extends BaseAdminController {
 		$email = $form['email'];
 		$password = $form['password'];
 		$enabled = isset($form['enabled']) ? $form['enabled'] == 1 : false;
-		$locked = isset($form['locked']) ? $form['locked'] == 1 : false;
-		$expired = isset($form['expired']) ? $form['expired'] == 1 : false;
-		$expiresAt = isset($form['expiresAt']) && $form['expiresAt'] != "" ? $this->helper->parseDate('d/m/Y', $form['expiresAt']) : null;
-		$credentialsExpired = isset($form['credentialsExpired']) ? $form['credentialsExpired'] == 1 : false;
-		$credentialExpireAt = isset($form['credentialExpireAt']) && $form['credentialExpireAt'] != "" ? $this->helper->parseDate('d/m/Y', $form['credentialExpireAt']) : null;
 		$roles = isset($form['roles']) ? $form['roles'] : array() ;
 		if ($userName == "" || strlen($userName)  < 3) {
 			return $this->errorResponse($form, "The username field is required  (3 car .min)!");
@@ -155,11 +150,6 @@ class UsersAdminController extends BaseAdminController {
 			$user->setPlainPassword($password);
 		}
 		$user->setEnabled($enabled);
-		$user->setLocked($locked);
-		$user->setExpired($expired);
-		$user->setExpiresAt($expiresAt);
-		$user->setCredentialsExpired($credentialsExpired);
-		$user->setCredentialsExpireAt($credentialExpireAt);
 		foreach ($roles as $role) {
 			if (!in_array($role, $oldRoles)) {
 				$user->addRole($role);
