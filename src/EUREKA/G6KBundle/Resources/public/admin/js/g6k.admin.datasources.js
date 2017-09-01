@@ -605,6 +605,9 @@ THE SOFTWARE.
 				},
 				confirm: {
 					html: Translator.trans('Confirm')
+				},
+				restore: {
+					html: Translator.trans('Restore')
 				}
 			},
 			columns: {

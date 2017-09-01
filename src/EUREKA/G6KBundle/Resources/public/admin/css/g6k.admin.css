@@ -447,6 +447,10 @@ var.data {
 	background: #FFFFE0;
 	border-radius: 8px; 
 }
+/*==============================================
+    DOCUMENTATION     
+    =============================================*/
+ 
 #page div.span9 {
 	margin-left: 22em;
 }
@@ -460,6 +464,9 @@ var.data {
 	vertical-align: middle;
 	border: 0;
 	-ms-interpolation-mode: bicubic;
+}
+.panel-primary > .panel-heading a{
+    color: #fff;
 }
 .bs-docs-sidenav > li[data-level="2"] > a {
 	padding-left: 30px;
