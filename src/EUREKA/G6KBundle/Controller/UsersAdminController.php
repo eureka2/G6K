@@ -60,6 +60,8 @@ class UsersAdminController extends BaseAdminController {
 					return $this->updateUser ($form);
 				case 'delete':
 					return $this->deleteUser ($form);
+				case 'restore':
+					return $this->restoreUser ($form);
 			}
 		} else if (! $this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
 			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
@@ -93,6 +95,10 @@ class UsersAdminController extends BaseAdminController {
 		return $this->doUpdateUser($form, true);
 	}
 
+	protected function restoreUser ($form) {
+		return $this->doUpdateUser($form, false, true);
+	}
+
 	protected function updateUser ($form) {
 		$id = $form['id'];
 		if ($id == 0) {
@@ -101,7 +107,7 @@ class UsersAdminController extends BaseAdminController {
 		return $this->doUpdateUser($form);
 	}
 
-	protected function doUpdateUser($form, $newUser = false) {
+	protected function doUpdateUser($form, $newUser = false, $restore = false) {
 		$userName = $form['userName'];
 		$email = $form['email'];
 		$password = $form['password'];
@@ -120,7 +126,7 @@ class UsersAdminController extends BaseAdminController {
 			return $this->errorResponse($form, "The password field is required (6 car. min)!");
 		}
 		$userManager = $this->get('fos_user.user_manager');
-		if (! $newUser) {
+		if (! $restore && ! $newUser) {
 			$user = $userManager->findUserBy(array('id' => $form['id']));
 			if ($user === null) {
 				return $this->errorResponse($form, "This user doesn't  exists !");
@@ -129,24 +135,27 @@ class UsersAdminController extends BaseAdminController {
 		} else {
 			$oldRoles = array();
 		}
-		if ($newUser || $userName != $user->getUserName()) {
+		if ($newUser || $restore || $userName != $user->getUserName()) {
 			$otherUser = $userManager->findUserByUsername($userName);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This username already exists !");
 			}
 		}
-		if ($newUser || $email != $user->getEmail()) {
+		if ($newUser || $restore || $email != $user->getEmail()) {
 			$otherUser = $userManager->findUserByEmail($email);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This email already exists !");
 			}
 		}
-		if ($newUser) {
+		if ($newUser || $restore) {
 			$user = $userManager->createUser();
 		}
 		$user->setUsername($userName);
 		$user->setEmail($email);
-		if ($newUser || $password != $user->getPassword()) {
+		if ($restore) {
+			$user->setPlainPassword('');
+			$user->setPassword($password);
+		} else if ($newUser || $password != $user->getPassword()) {
 			$user->setPlainPassword($password);
 		}
 		$user->setEnabled($enabled);

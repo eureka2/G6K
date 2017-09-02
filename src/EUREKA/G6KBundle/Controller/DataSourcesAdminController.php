@@ -223,6 +223,8 @@ class DataSourcesAdminController extends BaseAdminController {
 					return $this->doImportTable($form, $dsid, $table, $database, $request->files->all());
 				case 'drop':
 					return $this->dropTable ($table, $database);
+				case 'restore':
+					return $this->restoreTableRow ($form, $table, $database);
 				default:
 					throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 			}
@@ -1457,7 +1459,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 	}
 
-	protected function addDBTableRow($form, $table, $database) {
+	protected function addDBTableRow($form, $table, $database, $restore = false) {
 		$infosColumns = $this->infosColumns($database, $table);
 		$insertNames = array();
 		$insertValues = array();
@@ -1466,7 +1468,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			if (($check = $this->checkValue($name, $info, $value)) !== true) {
 				return $check;
 			}
-			if ($name != 'id') {
+			if ($restore || $name != 'id') {
 				$insertNames[] = $name;
 				if ($value === null || $value == '') {
 					$insertValues[] = "NULL";
@@ -1589,6 +1591,16 @@ class DataSourcesAdminController extends BaseAdminController {
 			return $this->errorResponse($form, $result);
 		}
 		$form['id'] = $database->lastInsertId();
+		$response = new Response();
+		$response->setContent(json_encode($form));
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
+	}
+
+	protected function restoreTableRow($form, $table, $database) {
+		if (($result = $this->addDBTableRow($form, $table, $database, true)) !== true) {
+			return $this->errorResponse($form, $result);
+		}
 		$response = new Response();
 		$response->setContent(json_encode($form));
 		$response->headers->set('Content-Type', 'application/json');

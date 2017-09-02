@@ -406,12 +406,12 @@ if (typeof jQuery === 'undefined') {
                 $(td).find('.tabledit-confirm-button').show();
             },
             restore: function(td) {
-                // Enable identifier hidden input.
-                $(td).parent('tr').find('input.tabledit-identifier').attr('disabled', false);
+                // Enable all hidden input.
+                $(td).parent('tr').find('input, select').attr('disabled', false); // JA : updated 02/09/2017
                 // Send AJAX request to server.
                 var ajaxResult = ajax(settings.buttons.restore.action);
-                // Disable identifier hidden input.
-                $(td).parents('tr').find('input.tabledit-identifier').attr('disabled', true);
+                // Disable all hidden input.
+                $(td).parents('tr').find('input, select').attr('disabled', true); // JA : updated 02/09/2017
 				
 				if (ajaxResult === false) {
 					return;
