@@ -82,6 +82,7 @@ THE SOFTWARE.
 				{% elseif view is not empty %}
 				<div id="table" class="panel panel-primary">
 					<div class="panel-heading">
+						<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span></a> 
 						<a class="btn btn-primary pull-right drop-view-button" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': 'dummy', 'crud': 'drop-view'}) }}" data-confirm="{{ 'Are you sure you want to drop the view %view% ?'|trans({ '%view%': view.name }) }}'">{{ 'Drop view'|trans }} <span class="glyphicon glyphicon-minus-sign"></span></a>
 						<h4 class="panel-title">{{ 'View «%view%»'|trans({ '%view%': view.name }) }}</h4>
 					</div>
@@ -125,6 +126,7 @@ THE SOFTWARE.
 				{% elseif hiddens.action == 'create' %}
 				<div id="view" class="panel panel-primary">
 					<div class="panel-heading">
+					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span></a> 
 					<h4 class="panel-title">{{ 'New view'|trans }}</h4>
 					</div>
 					<div class="panel-body">

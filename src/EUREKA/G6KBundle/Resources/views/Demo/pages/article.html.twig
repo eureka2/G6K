@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-	    <h1>{% block page_title %}{{ step.simulator.label }}{% endblock %}</h1>
+		<h1>{% block page_title %}{{ step.simulator.label }}{% endblock %}</h1>
 		{{ form.paragraphs(step.simulator.description|jscode) }}
 		{{ form.breadcrumb(_context) }}
 
@@ -17,7 +17,7 @@
 			{{ form.heading(step.description, 2, "step-description legend") }}
 			<div class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|jscode }}</div>
 			<form method="post" action="#main" enctype="multipart/form-data" id="g6k_form">
-			{{ form.row(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control', 'panel panel-default', 'panel-heading', 'panel-body') }}
+			{{ form.draw(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control', 'panel panel-default', 'panel-heading', 'panel-body') }}
 			</form>
 		</div>
 

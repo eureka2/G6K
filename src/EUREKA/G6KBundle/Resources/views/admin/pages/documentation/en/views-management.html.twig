@@ -1,0 +1,362 @@
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>
+			G6K: Administration Guide
+		</h1>
+		<p class="lead">Views management</p>
+	</div>
+</header>
+<div class="container">
+	<div class="row">
+		<div class="span3 bs-docs-sidebar">
+			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
+				<li data-level="1"><a href="#1">What is a view?</a></li>
+				<li data-level="1"><a href="#2">Creating a View</a></li>
+				<li data-level="1"><a href="#3">Export a view</a></li>
+				<li data-level="1"><a href="#4">Managing a view</a></li>
+				<li data-level="2"><a href="#5">Adding a subfolder or a file into an existing folder</a></li>
+				<li data-level="2"><a href="#6">Rename an element</a></li>
+				<li data-level="2"><a href="#7">Update a file</a></li>
+				<li data-level="2"><a href="#8">Remove an element</a></li>
+				<li data-level="2"><a href="#9">Remove a view</a></li>
+				<li data-level="1"><a href="#10">Composition of templates</a></li>
+			</ul>
+		</div>
+		<div class="span9">
+			<p>
+				
+				
+			</p>
+			<h1 id="1">
+				What is a view?
+			</h1>
+			<p>
+				Views are design elements of pages and styles in which the simulators are integrated. They are composed of « Templates » and « Assets ». 
+				<br>
+				« Templates » are files (.twig) that structure the page which is displayed. 
+				<br>
+				« Assets » contains all the elements of style (CSS files, JavaScript, images, fonts ...).
+			</p>
+			<p>Managing (creating, modifying, deleting) views is reserved for users with the « Manager », « Administrator » or « Super Administrator » role.</p>
+			<h1 id="2">
+				Creating a View
+			</h1>
+			<p>Click on the « Views » button on the menu bar</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-views-buttonbar.png') }}" alt="" title="" />
+			</p>
+			<p>then on the « Create view » button in the left side menu</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-view-create-button.png') }}" alt="" title="" />
+			</p>
+			<p>A form will then be displayed. Give a name to the view (without space or special characters or accented) and possibly import two files in .zip format corresponding to « Templates » and « Assets ».</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-view-create.png') }}" alt="" title="" />
+			</p>
+			<p>If you do not have a « Templates » file and a « Assets » file, the view you create will inherit the elements of the default view provided with G6K.</p>
+			<p>Click « Create » to save the view. The .zip files, if provided, will be decompressed and then the view will be displayed as directories, with two tabs:</p>
+			<ul>
+				<li>« Templates » where the .twig files that structure the page are stored</li>
+				<li>and « Assets » where the style files and images are located.</li>
+			</ul>
+			<p class="figure-legend">Figure 1 - Displaying of the « Templates » in the « Demo » view</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-view-templates.png') }}" alt="" title="" />
+			</p>
+			<p class="figure-legend">Figure 2 - Displaying of the « Assets » in the « Demo » view</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-view-assets.png') }}" alt="" title="" />
+			</p>
+			<h1 id="3">
+				Export a view
+			</h1>
+			<p>
+				If you want to export the « Templates » or the « Assets », select the corresponding tab and click on the button 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-view-export-button.png') }}" alt="" title="" />
+				. 
+				<br>
+				G6K then composes a compressed file that it offers you for download.
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-export-templates.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-export-assets.png') }}" alt="" title="" />
+			</p>
+			<p>Export (recommended) allows you to archive your views and possibly re-import them into a new system if you change it.</p>
+			<h1 id="4">
+				Managing a view
+			</h1>
+			<p>There are several buttons that allow you to manage « Templates » and « Assets », their functions are defined below.</p>
+			<h2 id="5">
+				Adding a subfolder or a file into an existing folder
+			</h2>
+			<p>
+				If you want to add a subfolder or a file into a folder, click the « Add subfolder or file in folder name » button: 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-file-add-button.png') }}" alt="" title="" />
+				<br>
+				A form will then be displayed where you can choose between:
+			</p>
+			<ul>
+				<li>Add a « subfolder », it will be necessary to give a name (which must not contain spaces, special characters or accented) to this subfolder,</li>
+				<li>Add a « file », it will then give it a name and import it from your computer.</li>
+			</ul>
+			<p>
+				In the « Templates » tab, only files with the extension .twig can be added, otherwise an error will be displayed. 
+				<br>
+				For « Assets » there is no special extension or type.
+			</p>
+			<p>Then press the « Submit » button.</p>
+			<p class="figure-legend">Figure 3 – Form for adding a subfolder and displaying of the added subfolder</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-folder-add.png') }}" alt="" title="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-folder-added.png') }}" alt="" title="" />
+			</p>
+			<p class="figure-legend">Figure 4 - Form for adding a file and displaying of the added file</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-file-add.png') }}" alt="" title="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-file-added.png') }}" alt="" title="" />
+			</p>
+			<h2 id="6">
+				Rename an element
+			</h2>
+			<p>
+				To rename an element, simply press the 'Rename ‘*element’' button : 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-file-rename-button.png') }}" alt="" title="" />
+				<br>
+				A form will prompt you to indicate the new name of this element, click the « Submit » button to apply the renaming.
+			</p>
+			<p class="figure-legend">Figure 5 - Form to rename the element and display the renamed element</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-folder-rename.png') }}" alt="" title="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-folder-renamed.png') }}" alt="" title="" />
+			</p>
+			<div class="alert alert-warning" role="alert">
+CAUTION: Some templates are mentioned in the definition of steps (see attribute « Step display template ») in the [Create a simulator](simulator-create.html) documentation, if you rename it, think of modifying the step of the concerned simulator.
+</div>
+			<h2 id="7">
+				Update a file
+			</h2>
+			<p>
+				To update a file, click the « Update this file » button : 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-file-update-button.png') }}" alt="" title="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-file-update-buttonbar.png') }}" alt="" title="" />
+			</p>
+			<p>An edit box will appear where you can edit the file. </p>
+			<p class="figure-legend">Figure 6 - Edit interface (white background)</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-file-update.png') }}" alt="" title="" />
+			</p>
+			<p>
+				Once you have made your changes, click the « Save » button to save the file. 
+				<br>
+				Once registered, the « Save » button will change to the « Edit » button and you will not be able to edit the file until you press the « Edit » button.
+			</p>
+			<p class="figure-legend">Figure 7 - Uneditable interface, saved changes (greyish background)</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-file-updated.png') }}" alt="" title="" />
+			</p>
+			<h2 id="8">
+				Remove an element
+			</h2>
+			<p>
+				To remove a folder, a subfolder or a file, click the « Remove this Element » button : 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-file-delete-button.png') }}" alt="" title="" />
+				<br>
+				A confirmation message will appear, if you are sure to delete this element, press « OK ».
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-file-delete-confirm.png') }}" alt="" title="" />
+			</p>
+			<p>
+				The page will then be reloaded and the item you have deleted will no longer be displayed. 
+				<br>
+				If you delete a folder that contains other elements, all content will be deleted.
+			</p>
+			<div class="alert alert-warning" role="alert">
+CAUTION: Some templates are mentioned in the definition of steps (see attribute « Step display template ») in the [Create a simulator](simulator-create.html) documentation, if you remove it, think of modifying the step of the concerned simulator.
+</div>
+			<h2 id="9">
+				Remove a view
+			</h2>
+			<p>
+				If you want to delete a view, click the « Drop view » button. 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-view-delete-button.png') }}" alt="" title="" />
+			</p>
+			<p>
+				A confirmation message will appear, if you are sure you want to delete the view, click « OK ». 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-view-delete-confirm.png') }}" alt="" title="" />
+			</p>
+			<p>
+				The view will be deleted and will no longer be displayed in the « View Management » menu: 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-view-deleted.png') }}" alt="" title="" />
+			</p>
+			<div class="alert alert-warning" role="alert">
+CAUTION: All simulators that use this view as « Default view » should be changed.
+</div>
+			<h1 id="10">
+				Composition of templates
+			</h1>
+			<p>This section describes how you must compose the templates of a view and the rules and constraints they must follow.</p>
+			<p>
+				All templates you compose must inherit the base layout « EUREKAG6KBundle:base/layout:pagelayout.html.twig » supplied with G6K. 
+				<br>
+				You must place the following line at the top of the template:
+			</p>
+			<p><code>
+&lbrace;% extends 'EUREKAG6KBundle:base/layout:pagelayout.html.twig' %&rbrace;
+</code></p>
+			<p>The base layout performs the following functions:</p>
+			<ul>
+				<li>Calls of the scripts and styles necessary to the operation of the simulation engine;</li>
+				<li>Define the blocks you can fill in or complete in your templates.</li>
+			</ul>
+			<p>These blocks are:</p>
+			<ul>
+				<li>« doctype »: Document type of the page: contains &lt;!DOCTYPE html&gt; for HTML5</li>
+				<li>« title »: Title of the web page: empty</li>
+				<li>« metas »: Metadata of the web page</li>
+				<li>« styles »: CSS style sheet links</li>
+				<li>« hscripts »: Script calls in the &lt;head&gt;</li>
+				<li>« body »: Body of the HTML page</li>
+				<li>« bodyclass »: Allows you to add CSS classes to the &lt;body&gt; : empty</li>
+				<li>« bodyattr »: Allows you to add attributes to the &lt;body&gt; : empty</li>
+				<li>« content »: Visible content of the web page. Included in the body block: empty;</li>
+				<li>« scripts »: Scripts and script calls at the end of the page. Included in body block.</li>
+				<li>« jquery »: Call the correct version of jquery according to the browser.</li>
+			</ul>
+			<div class = "alert alert-warning" role = "alert">
+CAUTION: If you add content to these blocks, put &lbrace;&lbrace; parent() &rbrace;&rbrace; at the beginning of the block to avoid overwriting the content set by the basic layout. This is not useful for the « title », « bodyclass », « bodyattr » and « content » blocks that are empty.
+</div>
+			<p>Note that the base layout does not add any visible content to the web page. It's in the « content » block that you have to put your elements such as page header, footer, menus, sidebar(s) and other contents.
+You must also add the simulation form, which you will do using a macro twig and variables provided by G6K.</p>
+			<p>
+				Like the "Demo" view, it is advisable to define a layout specific to your view that will be responsible for displaying the different elements of the page except the simulation form and the elements specific to a simulator. 
+				<br>
+				You will then define a template that will inherit the layout specific to the view and which will contain the simulation form and the elements specific to a simulator. 
+				<br>
+				It's this last template that should be referenced in the definition of the simulation steps in the simulators. See <a href="simulator-create.html">Creating a simulator</a>
+			</p>
+			<p>Concretely, suppose your page has the following architecture:</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/views-management-template-layout.png') }}" alt="" title="" />
+			</p>
+			<p>It's the layout that displays the part with gray background and positions the « content » block (part with white background) on the page.</p>
+			<p>It's the child template that feeds the « content » block where:</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-1.png') }}" alt="" title="" />
+				Label/Title of the simulator 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-2.png') }}" alt="" title="" />
+				Description of the simulator 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-3.png') }}" alt="" title="" />
+				Breadcrumb trail 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-4.png') }}" alt="" title="" />
+				Description of the current step 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-5.png') }}" alt="" title="" />
+				Location of the simulation form in the current step 
+				<br>
+				 
+			</p>
+			<p>Variables and macros that feed these elements are:</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-1.png') }}" alt="" title="" />
+				<code>&lbrace;&lbrace; step.simulator.label &rbrace;&rbrace;</code> 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-2.png') }}" alt="" title="" />
+				<code>&lbrace;&lbrace; form.paragraphs(step.simulator.description|jscode) &rbrace;&rbrace;</code> 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-3.png') }}" alt="" title="" />
+				<code>&lbrace;&lbrace; form.breadcrumb(_context) &rbrace;&rbrace;</code> 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-4.png') }}" alt="" title="" />
+				<code>&lbrace;&lbrace; step.description &rbrace;&rbrace;</code> 
+				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-area-5.png') }}" alt="" title="" />
+				<code>&lbrace;&lbrace; form.draw(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control', 'panel panel-default', 'panel-heading', 'panel-body') &rbrace;&rbrace;</code>
+			</p>
+			<p>
+				To use these macros, they must be imported into the template: 
+				<br>
+				<code>
+&lbrace;% import "EUREKAG6KBundle:base/macros:form.html.twig" as form %&rbrace;
+</code>
+			</p>
+			<p>The available and useful macros are:</p>
+			<ul>
+				<li>
+					« form.breadcrumb »: Draws the breadcrumb thread of the steps. 
+					<br>
+					Parameter: _context
+				</li>
+				<li>
+					« form.draw »: Displays the simulation form for the current step. 
+					<br>
+					Parameters :
+
+					<ol>
+						<li>_context</li>
+						<li>CSS class of the field group container</li>
+						<li>CSS class of field container</li>
+						<li>CSS class of field labels</li>
+						<li>CSS class of the container that includes a field and its unit or the currency symbol</li>
+						<li>field CSS class</li>
+						<li>CSS Class of the Chapter Container</li>
+						<li>CSS class of the chapter header</li>
+						<li>CSS Class of Section Container</li>
+					</ol>
+				</li>
+				<li>
+					« form.heading »: Displays text with a heading level (tags h1, h2, ...) after removing line breaks. 
+					<br>
+					Parameters :
+
+					<ol>
+						<li>text to display </li>
+						<li>heading level (1 to 6)</li>
+						<li>CSS class of generated tag</li>
+					</ol>
+				</li>
+				<li>
+					« form.paragraphs »: Displays text with line breaks by including each line of text in HTML paragraphs (&lt;p&gt;). 
+					<br>
+					Parameter: the text to display
+				</li>
+				<li>
+					« form.profiles »: Displays the profiles. 
+					<br>
+					Parameter: _context
+				</li>
+			</ul>
+			<p>Available and useful variables are:</p>
+			<ul>
+				<li>« step.simulator.name »: Name of the simulator</li>
+				<li>« step.simulator.label »: Label/Title of the simulator</li>
+				<li>« step.simulator.description »: Description of the simulator</li>
+				<li>« step.simulator.referer »: URL of the page of the site where the simulator is referenced</li>
+				<li>« step.simulator.memo: True if the simulator allows the use of a memo (record of values ​​of fields in cookies), false if not</li>
+				<li>« step.name »: Name of the current step</li>
+				<li>« step.label »: Label/Title of the current step</li>
+				<li>« step.description »: Description of the current step</li>
+				<li>« step.dynamic »: True if Javascript is used to « animate » the simulation, false otherwise</li>
+				<li>« Script »: True if Javascript is enabled in the browser, false otherwise</li>
+			</ul>
+			<p class="figure-legend">Figure 8 - « Demo » template illustrating the use of macros and variables</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-template-page.png') }}" alt="" title="" />
+			</p>
+		</div>
+	</div>
+</div>

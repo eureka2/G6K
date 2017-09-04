@@ -247,7 +247,7 @@ ul.rule-conditions > li {
 .expand-all, .collapse-all, 
 .edit-table-button, .drop-table-button, .import-table-button,
 .export-datasource-button, .edit-datasource-button, .drop-datasource-button,
-.view-button, .drop-view-button ,
+.view-button, .drop-view-button , .help-view-button ,
 .edit-profiles-label, .add-profile, .edit-profile, .delete-profile, .add-profile-data, .edit-profile-data, .delete-profile-data,
 .edit-source, .delete-source, .add-source-parameter, .delete-source-parameter,
 .btn-group.update-button {

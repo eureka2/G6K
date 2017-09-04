@@ -23,7 +23,7 @@
 	<div class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|jscode }}</div>
 	
 	<form method="post" action="#main" enctype="multipart/form-data" id="g6k_form">
-	{{ form.row(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control') }}
+	{{ form.draw(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control') }}
 	</form>
 	
 	{%- for data in simu.datas -%}

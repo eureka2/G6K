@@ -24,6 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 #}
 
+{% macro draw(context, fieldsetContainerClass, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass, chapterContainerClass, chapterHeadingClass, chapterContentClass) %}
+{{ _self.row(context, fieldsetContainerClass, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass, chapterContainerClass, chapterHeadingClass, chapterContentClass) }}
+{% endmacro %}
+
 {% macro row(context, fieldsetContainerClass, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass, chapterContainerClass, chapterHeadingClass, chapterContentClass) %}
 
 {% import _self as form %}
