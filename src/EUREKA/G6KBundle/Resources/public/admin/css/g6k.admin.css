@@ -483,3 +483,6 @@ var.data {
 .bs-docs-sidenav > li[data-level="6"] > a {
 	padding-left: 90px;
 }
+body.documentation div.alert-warning {
+	display: block;
+}

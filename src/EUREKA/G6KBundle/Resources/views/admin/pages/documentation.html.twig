@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 {% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
 
+{% block bodyclass %}{{ parent() }} documentation{% endblock %}
+
 {% block bodyattr %}{{ parent() }} data-spy="scroll" data-target=".bs-docs-sidebar"{% endblock %}
 
 {% block styles %}
