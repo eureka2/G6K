@@ -83,6 +83,7 @@ THE SOFTWARE.
 				{% if table is not empty %}
 				<div id="table" class="panel panel-primary">
 					<div class="panel-heading">
+					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'datasources-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span></a> 
 					{% if table.action != 'create-table' and table.action != 'import-table' %}
 					<a class="btn btn-primary pull-right drop-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'drop'}) }}" title="{{ 'Drop table'|trans }}" data-confirm="{{ 'Are you sure you want to drop the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Drop table'|trans }}</span> <span class="glyphicon glyphicon-minus-sign"></span></a>
 					{% endif %}
@@ -227,6 +228,7 @@ THE SOFTWARE.
 				{% elseif datasource is not empty %}
 				<div id="datasource" class="panel panel-primary">
 					<div class="panel-heading">
+					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'datasources-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span></a> 
 					{% if datasource.action == 'show' %}
 					<a class="btn btn-primary pull-right drop-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'drop-datasource'}) }}" title="{{ 'Drop datasource'|trans }}" data-confirm="{{ 'Are you sure you want to drop the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'"><span class="button-label">{{ 'Drop datasource'|trans }}</span> <span class="glyphicon glyphicon-minus-sign"></span></a>
 					<a class="btn btn-primary pull-right edit-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'edit-datasource'}) }}" title="{{ 'Edit datasource'|trans }}" data-confirm="{{ 'Are you sure you want to edit the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'"><span class="button-label">{{ 'Edit datasource'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></a>
