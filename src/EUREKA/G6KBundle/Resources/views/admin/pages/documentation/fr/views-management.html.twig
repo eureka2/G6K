@@ -135,7 +135,7 @@ G6K compose alors un fichier compressé qu'il vous propose en téléchargement.
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/views-management-folder-renamed.png') }}" alt="" title="" />
 			</p>
 			<div class="alert alert-warning" role="alert">
-ATTENTION: Certains gabarits sont cités dans la définition des étapes (Cf. attribut « Gabarit d'affichage de l'étape ») dans la documentation <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulator-create' }) }}">Création d’un simulateur</a>, si vous le renommez, pensez à modifier l'étape du simulateur concerné.
+ATTENTION: Certains gabarits sont cités dans la définition des étapes (Cf. attribut « Gabarit d'affichage de l'étape ») dans la documentation <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulators-management' }) }}">Création d’un simulateur</a>, si vous le renommez, pensez à modifier l'étape du simulateur concerné.
 </div>
 			<h2 id="7">
 				Mettre à jour un fichier
@@ -175,7 +175,7 @@ ATTENTION: Certains gabarits sont cités dans la définition des étapes (Cf. at
 			</p>
 			<p>La page va alors être rechargée et l’élément que vous avez supprimé ne sera plus affiché. Si vous supprimez un dossier qui contient d’autres éléments tout le contenu sera effacé.</p>
 			<div class="alert alert-warning" role="alert">
-ATTENTION: Certains gabarits sont cités dans la définition des étapes (Cf. attribut « Gabarit d'affichage de l'étape ») dans la documentation <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulator-create' }) }}">Création d’un simulateur</a>, si vous le supprimez, pensez à modifier l'étape du simulateur concerné.
+ATTENTION: Certains gabarits sont cités dans la définition des étapes (Cf. attribut « Gabarit d'affichage de l'étape ») dans la documentation <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulators-management' }) }}">Création d’un simulateur</a>, si vous le supprimez, pensez à modifier l'étape du simulateur concerné.
 </div>
 			<h2 id="9">
 				Supprimer une vue
@@ -239,7 +239,7 @@ ATTENTION: Si vous ajoutez du contenu à ces blocs, mettre &lbrace;&lbrace; pare
 				A l'instar de la vue « Demo », il est conseillé de définir une layout propre à votre vue qui sera chargée d'afficher les différents éléments de la page hormis le formulaire de simulation et les éléments propres à un simulateur.
 Vous définirez ensuite un gabarit qui héritera de la la layout propre à la vue et qui contiendra le formulaire de simulation et les éléments propre à un simulateur. 
 				<br>
-				C'est ce dernier gabarit qui devra être référencé dans la définition des étapes de simulation dans les simulateurs. Cf. <a href="simulator-create.html">Création d’un simulateur</a>
+				C'est ce dernier gabarit qui devra être référencé dans la définition des étapes de simulation dans les simulateurs. Cf. <a href="simulators-management.html">Création d’un simulateur</a>
 			</p>
 			<p>Concrètement, supposons que votre page à l'architecture suivante :</p>
 			<p>
