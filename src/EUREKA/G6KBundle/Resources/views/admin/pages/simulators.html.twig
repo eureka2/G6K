@@ -65,6 +65,7 @@ THE SOFTWARE.
 				<div class="panel-group" id="simulator" role="tablist" aria-multiselectable="true">
 					<div class="panel panel-primary">
 						<div id="simulator-options-panel" class="panel-heading" role="tab">
+							<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'simulators-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span></a> 
 							{% if hiddens.action != 'create' and valid %}
 							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name, 'view': simulator.defaultView }) }}" class="btn btn-primary pull-right view-button" title="{{ 'Try it'|trans }}" target="_blank"><span class="button-label">{{ 'Try it'|trans }}</span> <span class="glyphicon glyphicon-eye-open"></span></a>
 							{% endif %}
@@ -135,6 +136,7 @@ THE SOFTWARE.
 				{% elseif hiddens.action == 'import' %}
 				<div id="simulator" class="panel panel-primary">
 					<div class="panel-heading">
+					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'simulators-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span></a> 
 					<h4 class="panel-title">{{ 'Simulator : import'|trans }}</h4>
 					</div>
 					<div class="panel-body">
@@ -491,7 +493,7 @@ THE SOFTWARE.
 
 {% macro showSources(simulator) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('sources' , 'Used dasources'|trans, 'primary', '', 'sortable', [{ 'class': 'add-source', 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
+{{ page.openCollapsiblePanel('sources' , 'Used datasources'|trans, 'primary', '', 'sortable', [{ 'class': 'add-source', 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign' }] ) }}
 {% for source in simulator.sources %}
 	{{ page.showSource(simulator, source, 'source', loop.index == 1 ? 'in' : '') }}
 {% endfor %}

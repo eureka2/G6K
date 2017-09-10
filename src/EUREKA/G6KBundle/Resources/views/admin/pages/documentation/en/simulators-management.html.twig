@@ -1,0 +1,472 @@
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>
+			G6K: Administration guide 
+		</h1>
+		<p class="lead">Simulators management</p>
+	</div>
+</header>
+<div class="container">
+	<div class="row">
+		<div class="span3 bs-docs-sidebar">
+			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
+				<li data-level="1"><a href="#1">Simulators</a></li>
+				<li data-level="1"><a href="#2">Before you begin</a></li>
+				<li data-level="1"><a href="#3">Creating a data source</a></li>
+				<li data-level="1"><a href="#4">Creating a simulator</a></li>
+				<li data-level="2"><a href="#5">Used data sources</a></li>
+				<li data-level="2"><a href="#6">Data</a></li>
+				<li data-level="2"><a href="#7">Steps</a></li>
+				<li data-level="3"><a href="#8">Panels</a></li>
+				<li data-level="4"><a href="#9">Fields set</a></li>
+				<li data-level="5"><a href="#10">Fields</a></li>
+				<li data-level="4"><a href="#11">Info block</a></li>
+				<li data-level="5"><a href="#12">Chapter</a></li>
+				<li data-level="6"><a href="#13">Section</a></li>
+				<li data-level="3"><a href="#14">Footnotes</a></li>
+				<li data-level="3"><a href="#15">Action Buttons</a></li>
+				<li data-level="2"><a href="#16">Business rules</a></li>
+				<li data-level="2"><a href="#17">Profiles</a></li>
+				<li data-level="2"><a href="#18">Simulator registration</a></li>
+			</ul>
+		</div>
+		<div class="span9">
+			<p>
+				
+				
+			</p>
+			<div class="alert alert-danger" role="alert">
+CAUTION: This document, which is under development, is very incomplete.
+</div>
+			<h1 id="1">
+				Simulators
+			</h1>
+			<p>A calculation simulator is an online service made available to a user to enable them to calculate the results (taxes, social benefits, etc.) corresponding to their particular situation.</p>
+			<p>The results are calculated on the basis of data supplied by the user, reference data (e.g. amount of a tax) and business rules reflecting the current legislation in the field of simulation.</p>
+			<p>Creating simulators is reserved for users with the « Manager", « Administrator » or « Super Administrator » role.</p>
+			<h1 id="2">
+				Before you begin
+			</h1>
+			<p>Before starting to enter the simulator, think carefully about the simulation scenario, that is, its step-by-step division and their sequence. A simulation step corresponds to a page and vice versa.</p>
+			<p>In each page, it is necessary to define the information that will be requested from the user (via a form) and those that are restored to him. A page may also contain blocks of information.</p>
+			<p>The information returned is either reference data or data from the result of a calculation according to calculation rules (legislation).</p>
+			<p>It is therefore necessary to make an inventory of all these data:</p>
+			<ul>
+				<li>Data entered by the user</li>
+				<li>Reference data (e.g. amount of SMIC, RSA, ceiling safety, various scales, ...)</li>
+				<li>Data from a calculation</li>
+				<li>Data resulting from an intermediate calculation.</li>
+			</ul>
+			<p>For the reference data, the question of the data source must be asked. Is there an internal or external web service API or a database to retrieve these data?</p>
+			<p>If so, it will be possible to set this API or this database in G6K to be able to access it.</p>
+			<p>Otherwise, it will be necessary to create an internal data source (database) in G6K. Note that simple values ​​(such as the amount of the RSA) can be set constantly in the simulator, thus avoiding the creation of a data source. On the other hand, complex data structures (such as a scale) require the creation of an internal data source.</p>
+			<p>Then, it is advisable to identify all the elements of a page, name them, label them:</p>
+			<ol>
+				<li>Give a name to the simulator, the one that will appear in the url</li>
+				<li>Give a title to the simulator. This title will appear on each page underneath the breadcrumb navigation.</li>
+				<li>Define a hat description that will appear on each page of the simulation below the title</li>
+				<li>
+					For each step:
+
+					<ul>
+						<li>Give a short name to the step and a label (not too long). The short name will appear in the breadcrumb sequence.</li>
+						<li>Define the information (fields) that will be requested or restored to the user</li>
+						<li>
+							For each field:
+
+							<ul>
+								<li>Give it a name and label (label)</li>
+								<li>Assign a type (date, integer, amount, percentage, choice list, ...)</li>
+								<li>Describe the field (this description can be used as a tooltip)</li>
+								<li>Describe the conditions ^1^ to display the field</li>
+								<li>Define its use (user input or restitution)</li>
+								<li>
+									If this is an input field:
+
+									<ul>
+										<li>Define input controls and associated error messages.</li>
+										<li>Possibly define a statement that may appear above or below the input field.</li>
+									</ul>
+								</li>
+								<li>
+									If it is a field of restitution:
+
+									<ul>
+										<li>Define the rules for establishing the value of the field (calculation, data source, ...)</li>
+									</ul>
+								</li>
+								<li>Possibly define footnotes and conditions ^1^ of their display.</li>
+								<li>Define navigation buttons between the steps (next step, previous, new simulation, jump to step N) and their display condition.</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ol>
+			<h1 id="3">
+				Creating a data source
+			</h1>
+			<p>If you need a reference data source and it does not yet exist, you must create it before creating the simulator.</p>
+			<p>Refer to <a href="datasources-management.html">« Data Sources management »</a> in the documentation.</p>
+			<h1 id="4">
+				Creating a simulator
+			</h1>
+			<p>Click on « Simulators » from the menu bar:</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-simulators-buttonbar.png') }}" alt="" title="" />
+			</p>
+			<p>
+				then click the 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-create-button.png') }}" alt="" title="" />
+				button on the left side menu.
+			</p>
+			<p>A form for entering the general parameters of the simulator is proposed to you:</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-options.png') }}" alt="" title="" />
+			</p>
+			<p><strong>Attributes:</strong></p>
+			<ol>
+				<li>
+					« Name »: This is the name that will be displayed in the URL (* .../calcul/simulator-name *) and the .XML file created when the simulator was registered.
+The simulator will be saved as 
+					<simulator-name>
+						.xml in the G6K simulator directory.
+					</li>
+					<li>« Label »: Title that will be displayed on the page of your simulator.</li>
+					<li>« Default view »: View with which your simulator will be displayed.
+The view is a set of templates and styles used to display the simulator.
+For more information on views, see the <a href="views-management.html">Views management</a> page of the documentation.</li>
+					<li>« Date format »: To be selected according to the format of display and the most commonly used dates in the country.</li>
+					<li>« Decimal point »: To be selected according to the display format of the numerical values ​​(amount, percentages, ...) desired.</li>
+					<li>« Currency symbol »: To be chosen according to the country.</li>
+					<li>« Symbol position »: To be chosen according to the country.</li>
+				</ol>
+				<p><strong>Optional attributes:</strong></p>
+				<ol>
+					<li>« Main Referer »: URL of the site page that calls the simulator.
+G6K constructs a navigation line where the penultimate element is constructed with this URL and the label of the simulator.</li>
+					<li>« Interactive UI »: If this option is checked, the simulation engine will use Javascript to give interactivity to the simulation (recommended)</li>
+					<li>« Data Memo »: If this option is checked, the simulation engine will be allowed to save the value of certain fields in the browser cookies for later use. Useful for a value like date of birth.</li>
+				</ol>
+				<p>Describe what your simulator does in the « Description » field.
+This description will be displayed below the simulator label/title of all pages/simulation steps.</p>
+				<p>Optionally, you can enter additional information in the « Related Information » field that the view template will display or not.</p>
+				<p>
+					When you have finished entering the parameters and clicking on the button, the 
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-save.png') }}" alt="Save" title="" />
+					button appears at the top right of the page.
+This button allows you to send the entered or modified information to the server at any time, the « Validate » button only keeps the information in the memory of your computer.
+				</p>
+				<h2 id="5">
+					Used data sources
+				</h2>
+				<p>In the « Used data sources » fold-out panel you will be able to define the specific requests for access to the datasources reference data.
+Some of these queries may require parameters that must be defined in the « Data » panel beforehand.</p>
+				<p>In the title bar of the « Used data sources » panel, click the "Add" button to display the screen for selecting the source and defining a query:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Datasource »: Corresponds to the data source to which the request relates.</li>
+				</ol>
+				<p><strong>Optional attribute:</strong></p>
+				<ol>
+					<li>« Source label »: Title to be given to the source for this request.</li>
+				</ol>
+				<p>Once the source is selected, the form completes the definition fields of the query.</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-add-selected.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Query type »: The queries are either « Simple", that is, you are guided by the menu, or of type « Complex » in this case you will be free to type your queries with the SQL language. If the query is for a single table and does not have a nested query, choose the « Simple » type, otherwise choose the « Complex » type.</li>
+					<li>« Table »: Name of the table to which the request relates.</li>
+					<li>« Selected Columns »: Fields/columns of the table that contain the data you want to retrieve.
+To enter a column, click the '+' to the right of the field and select the column from the drop-down list.
+You can also compose an expression in which case you will need to define an alias as the column name.
+To delete a column, click the 'x' to the left of the column name.</li>
+					<li>« Filter »: Requirements for fields/columns to keep only the rows of the result of the query complying with these conditions.</li>
+					<li>« Sorted by »: Sort in ascending or descending order on the selected fields/columns.
+To enter a column, do as in &amp; nbsp; 3., And then select the sort order (ascending or descending).</li>
+					<li>« Number of Results »: Include the number of rows that should be retained among all « rows » of results returned by the query. Set 0 if all lines are to be retained.</li>
+					<li>« From »: From all « rows » of results returned by the query, indicate the number of the first line that must be taken into account for processing the query. The number of the first line is 0, 1 the second and so on.</li>
+					<li>
+						« Format of returned data"
+
+						<ul>
+							<li>« JSON »: format for the exchange of data in readable text.</li>
+							<li>« XML »: format of description of the data.</li>
+							<li>« Single value »: N/A.</li>
+							<li>« Key / value pairs »: Table of key / value pairs.</li>
+							<li>« HTML »: data format designed to represent web pages.</li>
+							<li>« CSV »: open computer format representing data in comma-separated values.</li>
+						</ul>
+					</li>
+					<li>
+						« Path to Searched Data »: The path depends on the format of the data being returned:
+
+						<ul>
+							<li>« JSON »: Path to <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> or <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a></li>
+							<li>« XML »: Path in the format <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a></li>
+							<li>« Single Value »: N/A</li>
+							<li>« Key/value pair (table) »: path in the form « Line number/column name » (example: 0/rate: rate column of line 1)</li>
+						</ul>
+					</li>
+				</ol>
+				<p>To construct the query, refer to the <a href="source-query-builder.html">Visual Component Manufacturing Simple Queries</a> documentation</p>
+				<p class="figure-legend">Data source with a simple query and parameter</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-add-simple.png') }}" alt="" title="" />
+				</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-display-simple.png') }}" alt="" title="" />
+				</p>
+				<p class="figure-legend">Data source with complex query and parameter</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-add-complex.png') }}" alt="" title="" />
+				</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-display-complex.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Parameter attributes:</strong></p>
+				<ol>
+					<li>« Name »: Parameter name without spaces or special or accented characters.</li>
+					<li>« Provenance »: Origin of the parameter either « Data » or « Constant".</li>
+					<li>« Data »: The name of the data you are going to work with.</li>
+				</ol>
+				<p><strong>Optional attribute of parameters:</strong></p>
+				<ol>
+					<li>« Optional »: Optional parameter or not. A parameter can only be optional if it is used by a request to a « Web service » data source</li>
+				</ol>
+				<h2 id="6">
+					Data
+				</h2>
+				<p>The data allow to store values whatever their origin (user input, data source, element or result of calculations).
+They can be grouped into groups of data, allowing them to be arranged in the rows of a table (see « Grid layout » for a group of fields later in this document).</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-add-menu.png') }}" alt="" title="" />
+				</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datagroup-add.png') }}" alt="" title="" />
+				</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Name »: Name of the data without spaces or special or accented characters.</li>
+					<li>« Label »: Label of the data that can be selected in the step fields, in the profiles.</li>
+					<li>« Type »: To be selected according to the desired data format.</li>
+				</ol>
+				<p><strong>Optional attributes:</strong></p>
+				<ol>
+					<li>« Source »: Corresponds to the source or query defined in the « Used data sources » submenu.</li>
+					<li>« Index »: Field corresponding to the request.</li>
+					<li>« Unit »: means:</li>
+					<li>« Default »: Default value of the data.</li>
+					<li>« Min »:</li>
+					<li>« Max »:</li>
+					<li>« Content »:</li>
+					<li>« Round »: Can be used with « Decimal Number » data. Allows you to set the decimal place after the decimal point. The last decimal place is rounded.</li>
+					<li>« Memorize »: Keep in memory (user's cookie) the value so that the user does not have to re-enter it (see attribute « Memo » of the simulator)</li>
+				</ol>
+				<h2 id="7">
+					Steps
+				</h2>
+				<p>Once you have defined your data sources and data you will be able to start setting up the step(s) of your simulator.</p>
+				<p>A step consists of one or more panels in which are arranged information blocks and groups of fields in the order in which they are declared.</p>
+				<p>The information blocks are composed of chapters themselves, which are composed of sections.</p>
+				<p>Field groups are composed of fields that can be arranged in three different ways:</p>
+				<ul>
+					<li>« Classic »: The fields and their labels are displayed in a classical way, that is to say one below the other.</li>
+					<li>« Grid »: The fields are arranged in rows in the form of tables. The data associated with the fields in a row must be grouped into « data groups » (see below). Field labels are ignored.</li>
+					<li>« Online »: The fields and their labels are arranged one after the other in order to form a sentence.</li>
+				</ul>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-step-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Name »: Name of the step without spaces or special or accented characters.</li>
+					<li>« Step Label »: Title of the step to be displayed.</li>
+					<li>« Step display template »:</li>
+				</ol>
+				<p><strong>Optional attributes:</strong></p>
+				<ol>
+					<li>« Output »: </li>
+					<li>« Interactive UI »:</li>
+				</ol>
+				<h3 id="8">
+					Panels
+				</h3>
+				<p>The panels compose the steps and are themselves made up of groups of fields.
+If there are several panels, they will be presented in the form of tabs:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-panel-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Name »: Name of the panel without spaces or special or accented characters. </li>
+				</ol>
+				<p>
+					<em>
+						<strong>
+							Optional attribute:
+						</em>
+					</strong>
+				</p>
+				<ol>
+					<li>« Label »: Panel label</li>
+				</ol>
+				<h4 id="9">
+					Fields set
+				</h4>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-fieldset-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Disposition »: Classic, grid or online.</li>
+					<li>« Display »: Online or pop-in.</li>
+				</ol>
+				<p><strong>Optional attribute:</strong></p>
+				<ol>
+					<li>« Pop-in activation link »:</li>
+				</ol>
+				<h5 id="10">
+					Fields
+				</h5>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-field-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Data »: Data associated with the field. If it is an input field, it is in this data that the value entered by the user will be stored. If it is a field of restitution, it is the content of this data that will be displayed in the field.</li>
+					<li>« Usage »: User input or restitution to the user.</li>
+				</ol>
+				<p><strong>Optional attributes:</strong></p>
+				<ol>
+					<li>« Label »: Label of the field.</li>
+					<li>« Required »: Required field (An error message will be displayed if the field is not filled in).</li>
+					<li>« Show after the field label? »: To choose according to your needs.</li>
+					<li>« Use data description as help? »: To choose according to your needs.</li>
+					<li>Prompt »:</li>
+					<li>« Line jump before field? » »: To choose according to your needs.</li>
+					<li>« Required if visible »: When the field is visible it can be decided that it is required.</li>
+					<li>« Place the field under the field label? »: To choose according to your needs.</li>
+					<li>« Highlight the field label? »: To choose according to your needs.</li>
+					<li>« Show choices with radio buttons? » Do not use for long lists of choices.</li>
+					<li>« Explanation »: To be chosen according to your needs.</li>
+					<li>
+						« Widget »: To be chosen according to your needs:
+
+						<ul>
+							<li>« List box conforming to RGAA »: List box according to the General Repository of Accessibility for the Administration.</li>
+							<li>« List box with auto-completion »: When entering the auto-completion is done automatically, this allows the user to find the item he is looking for.</li>
+							<li>« Postal code obtained by self-completion on the name of the municipality or its postal code »: Allows the user to take advantage of the self-completion concerning the name of the commune or its postal code.</li>
+							<li>« INSEE code obtained by self-completion on the name of the commune or its postal code »: Allows the user to benefit from the self-completion concerning the name of the commune or its postal code.</li>
+							<li>«Insee code derived from a card of France»: A map appears and leaves the choice to the user to geolocate or not.</li>
+							<li>« RGAA-compliant date selector »: Allows the user to select a date.</li>
+							<li>« Form Field Editor »:</li>
+						</ul>
+					</li>
+				</ol>
+				<h4 id="11">
+					Info block
+				</h4>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-blockinfo-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Optional attributes:</strong></p>
+				<h5 id="12">
+					Chapter
+				</h5>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-chapter-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Optional attributes:</strong></p>
+				<h6 id="13">
+					Section
+				</h6>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-section-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Optional attributes:</strong></p>
+				<h3 id="14">
+					Footnotes
+				</h3>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-footnotes-add.png') }}" alt="" title="" />
+				</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-footnotes-display.png') }}" alt="" title="" />
+				</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-footnote-add.png') }}" alt="" title="" />
+				</p>
+				<h3 id="15">
+					Action Buttons
+				</h3>
+				<p>The action buttons allow you to go from one step to another or to reset a form.</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-action-add.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Name »: The data that will be displayed to users.</li>
+					<li>« Label »: Entered by the user or returned to the user.</li>
+					<li>« What »: Submit the form and go to the step defined by the attribute « To » or reset.</li>
+					<li>« For »: To choose according to your needs.</li>
+				</ol>
+				<p><strong>Optional attributes:</strong></p>
+				<ol>
+					<li>« URI / Step »: Title of the field.</li>
+					<li>« Class »: Level of importance of the « Main » button the button will be put forward visually and « Secondary » the button will not be put forward visually.</li>
+				</ol>
+				<h2 id="16">
+					Business rules
+				</h2>
+				<p>Business rules are defined in the following way: « When ... » conditions, « Then ... » actions and « Else ... » actions.</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-add.png') }}" alt="" title="" />
+				</p>
+				<p>It is the « business rules » that determine the behavior of the simulator. They are triggered when the context changes.</p>
+				<p>A change of context always results in the acquisition or modification of data.</p>
+				<p>G6k inquiries about the context change by reverting the conditions associated with the rules when the value of a data changes.</p>
+				<p>Thus, when the user enters a value, g6K accesses a reference datum or a value is calculated, the impacted rules are triggered and the associated actions are performed:</p>
+				<p>The actions that can be carried out are:</p>
+				<ul>
+					<li>Show or hide part of the page (a field, a fields set, a panel, a button, ...)</li>
+					<li>Display an error or warning message</li>
+					<li>Perform a calculation and assign it to a datum</li>
+				</ul>
+				<p>Refer to the <a href="business-rules.html">Business Rules Composition</a> page for how to compose a rule.</p>
+				<h2 id="17">
+					Profiles
+				</h2>
+				<p>When you define profiles, you will pre-define data related to the different profiles.</p>
+				<p>Profiles can correspond to types of people e.g. predefined data for a professional differ from pre-filled data of an individual.</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-profiles.png') }}" alt="" title="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Title »: Title of your profiles.</li>
+					<li>« Name »: Name of the profile.</li>
+					<li>« Label »: The label of the profile.</li>
+					<li>« Data"/"Add »: Add data to be filled in.</li>
+					<li>« Data »: Choice of the data to be filled.</li>
+					<li>« Value »: Pre-filled value.</li>
+				</ol>
+				<h2 id="18">
+					Simulator registration
+				</h2>
+				<p>
+					At the end of your entry, click the 
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-save.png') }}" alt="" title="" />
+					button at the top right of the page to save your work.
+				</p>
+				<p>Note that G6K saves a version of « work » that it will be necessary to « Publish".</p>
+			</div>
+		</div>
+	</div>
