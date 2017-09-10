@@ -869,7 +869,7 @@
     Translator.add("URI", "URI", "messages", "fr");
     Translator.add("URI \/ Step", "URI \/ Etape", "messages", "fr");
     Translator.add("Usage", "Utilisation", "messages", "fr");
-    Translator.add("Used dasources", "Sources de donn\u00e9es utilis\u00e9es", "messages", "fr");
+    Translator.add("Used datasources", "Sources de donn\u00e9es utilis\u00e9es", "messages", "fr");
     Translator.add("user", "utilisateur", "messages", "fr");
     Translator.add("User Interface", "Interface utilisateur", "messages", "fr");
     Translator.add("User Interface for step %id%", "Interface utilisateur pour l'\u00e9tape %id%", "messages", "fr");

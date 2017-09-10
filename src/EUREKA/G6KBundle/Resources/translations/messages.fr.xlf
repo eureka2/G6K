@@ -3479,7 +3479,7 @@
                 <target>Utilisation</target>
             </trans-unit>
             <trans-unit id="870">
-                <source>Used dasources</source>
+                <source>Used datasources</source>
                 <target>Sources de données utilisées</target>
             </trans-unit>
             <trans-unit id="871">
