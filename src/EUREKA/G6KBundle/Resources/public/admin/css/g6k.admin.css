@@ -486,3 +486,17 @@ var.data {
 body.documentation div.alert-warning {
 	display: block;
 }
+
+.documentation-index .row {
+	margin-bottom: 5em;
+}
+
+.documentation-index .row > div {
+	width: 48%
+}
+.documentation-illustration.pull-right img {
+	float: right;
+}
+.documentation-illustration {
+	vertical-align: top;
+}

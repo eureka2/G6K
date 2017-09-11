@@ -20,7 +20,7 @@
 				<li data-level="3"><a href="#8">Panels</a></li>
 				<li data-level="4"><a href="#9">Fields set</a></li>
 				<li data-level="5"><a href="#10">Fields</a></li>
-				<li data-level="4"><a href="#11">Info block</a></li>
+				<li data-level="4"><a href="#11">Blocks of information</a></li>
 				<li data-level="5"><a href="#12">Chapter</a></li>
 				<li data-level="6"><a href="#13">Section</a></li>
 				<li data-level="3"><a href="#14">Footnotes</a></li>
@@ -48,7 +48,7 @@ CAUTION: This document, which is under development, is very incomplete.
 				Before you begin
 			</h1>
 			<p>Before starting to enter the simulator, think carefully about the simulation scenario, that is, its step-by-step division and their sequence. A simulation step corresponds to a page and vice versa.</p>
-			<p>In each page, it is necessary to define the information that will be requested from the user (via a form) and those that are restored to him. A page may also contain blocks of information.</p>
+			<p>In each page, it is necessary to define the information that will be requested from the user (via a form) and those that are restituted to him. A page may also contain blocks of information.</p>
 			<p>The information returned is either reference data or data from the result of a calculation according to calculation rules (legislation).</p>
 			<p>It is therefore necessary to make an inventory of all these data:</p>
 			<ul>
@@ -149,12 +149,14 @@ G6K constructs a navigation line where the penultimate element is constructed wi
 				</ol>
 				<p>Describe what your simulator does in the « Description » field.
 This description will be displayed below the simulator label/title of all pages/simulation steps.</p>
-				<p>Optionally, you can enter additional information in the « Related Information » field that the view template will display or not.</p>
+				<p>Optionally, you can enter additional information in the « Related Informations » field that the view template will display or not.</p>
 				<p>
-					When you have finished entering the parameters and clicking on the button, the 
+					When you have finished entering the parameters and clicking on the button 
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-validate-button.png') }}" alt="Validate" title="" />
+					, the 
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-save.png') }}" alt="Save" title="" />
 					button appears at the top right of the page.
-This button allows you to send the entered or modified information to the server at any time, the « Validate » button only keeps the information in the memory of your computer.
+This button allows you to send the entered or modified information to the server at any time, because the « Validate » button only keeps the information in the memory of your computer.
 				</p>
 				<h2 id="5">
 					Used data sources
@@ -162,6 +164,9 @@ This button allows you to send the entered or modified information to the server
 				<p>In the « Used data sources » fold-out panel you will be able to define the specific requests for access to the datasources reference data.
 Some of these queries may require parameters that must be defined in the « Data » panel beforehand.</p>
 				<p>In the title bar of the « Used data sources » panel, click the "Add" button to display the screen for selecting the source and defining a query:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-add-button.png') }}" alt="" title="" />
+				</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-add.png') }}" alt="" title="" />
 				</p>
@@ -179,19 +184,19 @@ Some of these queries may require parameters that must be defined in the « Dat
 				</p>
 				<p><strong>Attributes:</strong></p>
 				<ol>
-					<li>« Query type »: The queries are either « Simple", that is, you are guided by the menu, or of type « Complex » in this case you will be free to type your queries with the SQL language. If the query is for a single table and does not have a nested query, choose the « Simple » type, otherwise choose the « Complex » type.</li>
+					<li>« Request type »: The queries are either « Simple", that is, you are guided by the menu, or of type « Complex » in this case you will be free to type your queries with the SQL language. If the query is for a single table and does not have a nested query, choose the « Simple » type, otherwise choose the « Complex » type.</li>
 					<li>« Table »: Name of the table to which the request relates.</li>
 					<li>« Selected Columns »: Fields/columns of the table that contain the data you want to retrieve.
 To enter a column, click the '+' to the right of the field and select the column from the drop-down list.
 You can also compose an expression in which case you will need to define an alias as the column name.
 To delete a column, click the 'x' to the left of the column name.</li>
 					<li>« Filter »: Requirements for fields/columns to keep only the rows of the result of the query complying with these conditions.</li>
-					<li>« Sorted by »: Sort in ascending or descending order on the selected fields/columns.
+					<li>« Order by »: Sort in ascending or descending order on the selected fields/columns.
 To enter a column, do as in &amp; nbsp; 3., And then select the sort order (ascending or descending).</li>
 					<li>« Number of Results »: Include the number of rows that should be retained among all « rows » of results returned by the query. Set 0 if all lines are to be retained.</li>
 					<li>« From »: From all « rows » of results returned by the query, indicate the number of the first line that must be taken into account for processing the query. The number of the first line is 0, 1 the second and so on.</li>
 					<li>
-						« Format of returned data"
+						« Return type »:
 
 						<ul>
 							<li>« JSON »: format for the exchange of data in readable text.</li>
@@ -203,7 +208,7 @@ To enter a column, do as in &amp; nbsp; 3., And then select the sort order (asce
 						</ul>
 					</li>
 					<li>
-						« Path to Searched Data »: The path depends on the format of the data being returned:
+						« Return path »: The path depends on the format of the data being returned:
 
 						<ul>
 							<li>« JSON »: Path to <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> or <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a></li>
@@ -214,14 +219,24 @@ To enter a column, do as in &amp; nbsp; 3., And then select the sort order (asce
 					</li>
 				</ol>
 				<p>To construct the query, refer to the <a href="source-query-builder.html">Visual Component Manufacturing Simple Queries</a> documentation</p>
-				<p class="figure-legend">Data source with a simple query and parameter</p>
+				<p>If the query contains a variable parameter, you must first declare a data (see « Data » section below) which will contain the value of the parameter.</p>
+				<p>
+					Then, validate the entry without entering the filter at first. Click on the "Edit" button. The 
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-parameter-add-button.png') }}" alt="" title="" />
+					button appears at the bottom right of the form to allow you to declare the parameter. 
+					<br>
+					After you declare the parameter, you can enter the filter and select the parameter of the expression.
+				</p>
+				<p class="figure-legend">Figure 1: Data source with a simple query and parameter</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-add-simple.png') }}" alt="" title="" />
 				</p>
+				<p>Once the input is validated, the following screen is displayed:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-display-simple.png') }}" alt="" title="" />
 				</p>
-				<p class="figure-legend">Data source with complex query and parameter</p>
+				<p>This query will return an array of « 'rate'/rate value » pairs. The specified return path (0/rate) will select the first row of the array and the value corresponding to 'rate'. We will see later how to declare a data to store the value of the rate.</p>
+				<p class="figure-legend">Figure 2: Data source with complex query</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-add-complex.png') }}" alt="" title="" />
 				</p>
@@ -243,6 +258,9 @@ To enter a column, do as in &amp; nbsp; 3., And then select the sort order (asce
 				</h2>
 				<p>The data allow to store values whatever their origin (user input, data source, element or result of calculations).
 They can be grouped into groups of data, allowing them to be arranged in the rows of a table (see « Grid layout » for a group of fields later in this document).</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-add-button.png') }}" alt="" title="" />
+				</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-add-menu.png') }}" alt="" title="" />
 				</p>
@@ -283,6 +301,9 @@ They can be grouped into groups of data, allowing them to be arranged in the row
 					<li>« Online »: The fields and their labels are arranged one after the other in order to form a sentence.</li>
 				</ul>
 				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-step-add-button.png') }}" alt="" title="" />
+				</p>
+				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-step-add.png') }}" alt="" title="" />
 				</p>
 				<p><strong>Attributes:</strong></p>
@@ -301,6 +322,9 @@ They can be grouped into groups of data, allowing them to be arranged in the row
 				</h3>
 				<p>The panels compose the steps and are themselves made up of groups of fields.
 If there are several panels, they will be presented in the form of tabs:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-panel-add-button.png') }}" alt="" title="" />
+				</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-panel-add.png') }}" alt="" title="" />
 				</p>
@@ -372,7 +396,7 @@ If there are several panels, they will be presented in the form of tabs:</p>
 					</li>
 				</ol>
 				<h4 id="11">
-					Info block
+					Blocks of information
 				</h4>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-blockinfo-add.png') }}" alt="" title="" />
@@ -428,6 +452,9 @@ If there are several panels, they will be presented in the form of tabs:</p>
 				</h2>
 				<p>Business rules are defined in the following way: « When ... » conditions, « Then ... » actions and « Else ... » actions.</p>
 				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-add-button.png') }}" alt="" title="" />
+				</p>
+				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-add.png') }}" alt="" title="" />
 				</p>
 				<p>It is the « business rules » that determine the behavior of the simulator. They are triggered when the context changes.</p>
@@ -446,6 +473,9 @@ If there are several panels, they will be presented in the form of tabs:</p>
 				</h2>
 				<p>When you define profiles, you will pre-define data related to the different profiles.</p>
 				<p>Profiles can correspond to types of people e.g. predefined data for a professional differ from pre-filled data of an individual.</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-profile-add-button.png') }}" alt="" title="" />
+				</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-profiles.png') }}" alt="" title="" />
 				</p>

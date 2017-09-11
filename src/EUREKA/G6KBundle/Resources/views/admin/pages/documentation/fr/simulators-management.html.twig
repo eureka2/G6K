@@ -42,7 +42,7 @@ ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 				Simulateurs
 			</h1>
 			<p>Un simulateur de calcul est un service en ligne mis à la disposition d’un utilisateur pour lui permettre de calculer des résultats (taxes, prestations sociales, …) correspondant à sa situation particulière.</p>
-			<p>Les résultats sont calculés en fonction des données fournis par l’internaute, de données de références (ex : montant d’une taxe) et de règles qui correspondent à la législation en vigueur dans le domaine de la simulation.</p>
+			<p>Les résultats sont calculés en fonction des données fournies par l’internaute, de données de références (ex : montant d’une taxe) et de règles qui correspondent à la législation en vigueur dans le domaine de la simulation.</p>
 			<p>La création des simulateurs est réservée aux utilisateurs disposant du rôle « Manager », « Administrateur » ou « Super administrateur ».</p>
 			<h1 id="2">
 				Avant de commencer
@@ -150,7 +150,7 @@ G6K constitue un fil d'Ariane de navigation où l'avant dernier élément est co
 				, le bouton 
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-save.png') }}" alt="Enregistrer" title="" />
 				apparait en haut à droite de la page.
-Ce bouton permet d'envoyer les informations saisies ou modifiées au serveur à tout moment, le bouton « Valider » ne fait que garder les informations dans la mémoire de votre ordinateur.
+Ce bouton permet d'envoyer les informations saisies ou modifiées au serveur à tout moment, parceque le bouton « Valider » ne fait que garder les informations dans la mémoire de votre ordinateur.
 			</p>
 			<h2 id="5">
 				Sources de données utilisées
@@ -158,6 +158,9 @@ Ce bouton permet d'envoyer les informations saisies ou modifiées au serveur à 
 			<p>Dans le panneau dépliable « Sources de données utilisées » vous allez pouvoir définir les requêtes spécifiques d'accès aux données de référence des sources de données.
 Certaines de ces requêtes peuvent nécessiter des paramètres qui doivent être définis, au préalable, dans le panneau « Données ».</p>
 			<p>Dans la barre de titre du panneau « Sources de données utilisées », cliquez sur le bouton « Ajouter » pour afficher l'écran de sélection de la source et de définition d'une requête : </p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-button.png') }}" alt="" title="" />
+			</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add.png') }}" alt="" title="" />
 			</p>
@@ -207,14 +210,24 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne. <
 				</li>
 			</ol>
 			<p>Pour construire la requête, se reporter à la documentation du <a href="source-query-builder.html">Composant visuel de fabrication de requêtes simples</a></p>
-			<p class="figure-legend">Source de données avec une requête simple et un paramètre</p>
+			<p>Si le filtre de la requête contient un paramètre variable, vous devez d'abord déclarer une donnée (Cf. la section « Données » infra) qui contiendra la valeur du paramètre.</p>
+			<p>
+				Ensuite, validez la saisie sans saisir le filtre dans un premier temps. Cliquez sur le bouton « Modifier », le bouton 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-parameter-add-button.png') }}" alt="" title="" />
+				apparait en bas à droite du formulaire pour vous permettre de déclarer le paramètre. 
+				<br>
+				Après avoir déclaré le paramètre, vous pouvez saisir le filtre et sélectionner le paramètre de l'expression.
+			</p>
+			<p class="figure-legend">Figure 1 : Source de données avec une requête simple et un paramètre</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-simple.png') }}" alt="" title="" />
 			</p>
+			<p>Une fois la saisie validée, l'écran suivant s'affiche :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-display-simple.png') }}" alt="" title="" />
 			</p>
-			<p class="figure-legend">Source de données avec une requête complexe et un paramètre</p>
+			<p>Cette requête retournera un tableau de paires « 'taux'/valeur du taux ». Le chemin d'accés spécifié (0/taux) sélectionnera la première ligne du tableau et la valeur coorespondant à 'taux'. Nous verrons plus loin comment déclarer une donnée pour stocker la valeur du taux.</p>
+			<p class="figure-legend">Figure 2 : Source de données avec une requête complexe</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-complex.png') }}" alt="" title="" />
 			</p>
@@ -235,6 +248,9 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne. <
 				Données
 			</h2>
 			<p>Les données permettent stocker des valeurs quel que soit leurs provenances (saisies par l'utilisateur, source de données, élément ou résultat de calculs). Elles peuvent être regrouper en groupes de données, ce qui permet de les disposer dans les rangées d’un tableau (Cf. disposition « grille » d’un groupe de champs, plus loin dans ce document).</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add-button.png') }}" alt="" title="" />
+			</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add-menu.png') }}" alt="" title="" />
 			</p>
@@ -274,6 +290,9 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne. <
 				<li>« Grille » : Les champs sont disposés par rangées sous forme de tableaux. Les données associées au champs d'une rangée doivent être regroupés dans des « groupes de données » (Cf. infra). Les étiquettes de champ sont ignorées. </li>
 				<li>« En ligne » : Les champs et leurs étiquettes sont disposés les uns à la suite des autres de façon à former une phrase. </li>
 			</ul>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add-button.png') }}" alt="" title="" />
+			</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add.png') }}" alt="" title="" />
 			</p>
@@ -419,6 +438,9 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne. <
 			</h2>
 			<p>Les règles métier se définissent de la façon suivante : « Lorsque … » conditions, « Alors … » actions et « sinon … » actions.</p>
 			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add-button.png') }}" alt="" title="" />
+			</p>
+			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add.png') }}" alt="" title="" />
 			</p>
 			<p>Ce sont les règles « métier » qui déterminent le comportement du simulateur. Elles se déclenchent lorsque le contexte change. </p>
@@ -437,6 +459,9 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne. <
 			</h2>
 			<p>Lorsque vous allez définir des profils vous prédéfinirez des données liées aux différent profils. </p>
 			<p>Les profils peuvent correspondre à des types de personnes par exemple les données prédéfinies pour un professionnel diffèrent des données pré remplies d’un particulier.</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-profile-add-button.png') }}" alt="" title="" />
+			</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-profiles.png') }}" alt="" title="" />
 			</p>
