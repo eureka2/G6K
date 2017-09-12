@@ -1,7 +1,7 @@
 <header class="jumbotron subhead" id="overview">
 	<div class="container">
 		<h1>
-			G6K: Guide d'administration 
+			G6K: Guide d'administration
 		</h1>
 		<p class="lead">Gestion des simulateurs</p>
 	</div>
@@ -15,26 +15,24 @@
 				<li data-level="1"><a href="#3">Création d’une source de données</a></li>
 				<li data-level="1"><a href="#4">Création d’un simulateur</a></li>
 				<li data-level="2"><a href="#5">Sources de données utilisées</a></li>
-				<li data-level="2"><a href="#6">Données</a></li>
-				<li data-level="2"><a href="#7">Étapes</a></li>
-				<li data-level="3"><a href="#8">Panneaux</a></li>
-				<li data-level="4"><a href="#9">Groupe de champs</a></li>
-				<li data-level="5"><a href="#10">Champs</a></li>
-				<li data-level="4"><a href="#11">Bloc d'info</a></li>
-				<li data-level="5"><a href="#12">Chapitre</a></li>
-				<li data-level="6"><a href="#13">Section</a></li>
-				<li data-level="3"><a href="#14">Notes de bas de page</a></li>
-				<li data-level="3"><a href="#15">Boutons d’actions</a></li>
-				<li data-level="2"><a href="#16">Règles métier</a></li>
-				<li data-level="2"><a href="#17">Profils</a></li>
-				<li data-level="2"><a href="#18">Enregistrement du simulateur</a></li>
+				<li data-level="3"><a href="#6">Requête simple</a></li>
+				<li data-level="3"><a href="#7">Requête complexe</a></li>
+				<li data-level="2"><a href="#8">Données</a></li>
+				<li data-level="2"><a href="#9">Étapes</a></li>
+				<li data-level="3"><a href="#10">Panneaux</a></li>
+				<li data-level="4"><a href="#11">Groupe de champs</a></li>
+				<li data-level="5"><a href="#12">Champs</a></li>
+				<li data-level="4"><a href="#13">Bloc d'info</a></li>
+				<li data-level="5"><a href="#14">Chapitre</a></li>
+				<li data-level="6"><a href="#15">Section</a></li>
+				<li data-level="3"><a href="#16">Notes de bas de page</a></li>
+				<li data-level="3"><a href="#17">Boutons d’actions</a></li>
+				<li data-level="2"><a href="#18">Règles métier</a></li>
+				<li data-level="2"><a href="#19">Profils</a></li>
+				<li data-level="2"><a href="#20">Enregistrement du simulateur</a></li>
 			</ul>
 		</div>
 		<div class="span9">
-			<p>
-				
-				
-			</p>
 			<div class="alert alert-danger" role="alert">
 ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 </div>
@@ -66,8 +64,7 @@ ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 				<li>Donner un titre au simulateur. Ce titre apparaitra sur chaque page en dessous du fil d’Ariane de navigation sur le site</li>
 				<li>Définir une description chapeau qui apparaitra sur chaque page de la simulation en dessous du titre</li>
 				<li>
-					Pour chaque étape :
-
+					Pour chaque étape : 
 					<ul>
 						<li>Donner un nom court à l’étape et un libellé (pas trop long). Le nom court figurera dans le fil d’Ariane de succession des étapes.</li>
 						<li>Définir les informations (champs) qui seront demandées ou restituées à l’utilisateur</li>
@@ -78,16 +75,14 @@ ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 						<li>Décrire les conditions^1^ d’affichage du champ</li>
 						<li>Définir son usage (saisie utilisateur ou restitution)</li>
 						<li>
-							S’il s’agit d’un champ de saisie :
-
+							S’il s’agit d’un champ de saisie : 
 							<ul>
 								<li>Définir les contrôles de saisie ainsi que les messages d’erreurs associés.</li>
 								<li>Eventuellement définir une mention qui pourra apparaître au-dessus ou au-dessous du champ de saisie.</li>
 							</ul>
 						</li>
 						<li>
-							S’il s’agit d’un champ de restitution :
-
+							S’il s’agit d’un champ de restitution : 
 							<ul>
 								<li>Définir les règles de constitution de la valeur du champ (calcul, source de données, …)</li>
 							</ul>
@@ -100,55 +95,55 @@ ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 			<h1 id="3">
 				Création d’une source de données
 			</h1>
-			<p>Si vous avez besoin d’une source de données de référence et si celle-ci n'existe pas encore, il faut la créer avant de créer le simulateur. </p>
+			<p>Si vous avez besoin d’une source de données de référence et si celle-ci n'existe pas encore, il faut la créer avant de créer le simulateur.</p>
 			<p>Reportez-vous à la section <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'datasources-management' }) }}">« Création d'une source de données de référence »</a> de la documentation.</p>
 			<h1 id="4">
 				Création d’un simulateur
 			</h1>
 			<p>Cliquez sur « Simulateurs » de la barre de menu :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-simulators-buttonbar.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-simulators-buttonbar.png') }}" alt="" />
 			</p>
 			<p>
 				puis sur le bouton 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-create-button.png') }}" alt="" title="" />
-				du menu latéral gauche. 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-create-button.png') }}" alt="" />
+				du menu latéral gauche.
 			</p>
 			<p>Il vous est proposé un formulaire de saisie des paramètres généraux du simulateur :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-options.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-options.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
 				<li>« Nom » : Correspond au nom qui sera affiché dans l’URL (<em>…/calcul/nom-du-simulateur</em>) et au fichier .XML créé lors de l’enregistrement du simulateur.
-Le simulateur sera enregistré sous le nom &lt;nom-du-simulateur>.xml dans le répertoire des simulateurs de G6K. </li>
-				<li>« Libellé » : Titre qui sera affiché sur la page de votre simulateur. </li>
+Le simulateur sera enregistré sous le nom &lt;nom-du-simulateur>.xml dans le répertoire des simulateurs de G6K.</li>
+				<li>« Libellé » : Titre qui sera affiché sur la page de votre simulateur.</li>
 				<li>« Vue par défaut » : Vue avec laquelle sera affiché votre simulateur.
 La vue est un ensemble de gabarits et de styles utilisés pour afficher le simulateur.
-Pour plus d'informations sur les vues, consulter la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">« Gestion des vues »</a> de la documentation. </li>
-				<li>« Format de date » : A choisir en fonction du format d’affichage et de saisie des dates le plus couramment utilisé dans le pays. </li>
-				<li>« Point décimal » : A choisir en fonction du format d’affichage des valeurs numériques (montant, pourcentages, ...) souhaité. </li>
-				<li>« Symbole monétaire » : A choisir en fonction du pays. </li>
+Pour plus d'informations sur les vues, consulter la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">« Gestion des vues »</a> de la documentation.</li>
+				<li>« Format de date » : A choisir en fonction du format d’affichage et de saisie des dates le plus couramment utilisé dans le pays.</li>
+				<li>« Point décimal » : A choisir en fonction du format d’affichage des valeurs numériques (montant, pourcentages, ...) souhaité.</li>
+				<li>« Symbole monétaire » : A choisir en fonction du pays.</li>
 				<li>« Position du symbole » : A choisir en fonction du pays.</li>
 			</ol>
 			<p><strong>Attributs optionnels :</strong></p>
 			<ol>
 				<li>« Referer principal » : URL de la page du site qui appelle le simulateur.
-G6K constitue un fil d'Ariane de navigation où l'avant dernier élément est construit avec cette URL et le libellé du simulateur. </li>
-				<li>« UI interactif » : Si cette option est cochée, le moteur de simulation utilisera le Javascript pour donner de l’interactivité à la simulation (recommandé) </li>
-				<li>« Mémo de données » : Si cette option est cochée le moteur de simulation sera autorisé à enregistrer la valeur de certains champs dans les cookies du navigateur pour une utilisation ultérieure. Utile pour une valeur comme la date de naissance. </li>
+G6K constitue un fil d'Ariane de navigation où l'avant dernier élément est construit avec cette URL et le libellé du simulateur.</li>
+				<li>« UI interactif » : Si cette option est cochée, le moteur de simulation utilisera le Javascript pour donner de l’interactivité à la simulation (recommandé)</li>
+				<li>« Mémo de données » : Si cette option est cochée le moteur de simulation sera autorisé à enregistrer la valeur de certains champs dans les cookies du navigateur pour une utilisation ultérieure. Utile pour une valeur comme la date de naissance.</li>
 			</ol>
 			<p>
-				Décrire ce que fait votre simulateur dans le champ « Description ». 
-				<br>
-				Cette description sera affichée en dessous du libellé/titre du simulateur de toutes les pages/étapes de simulation. 
+				Décrire ce que fait votre simulateur dans le champ « Description ».
+				<br />
+				Cette description sera affichée en dessous du libellé/titre du simulateur de toutes les pages/étapes de simulation.
 			</p>
 			<p>Optionnellement, vous pouvez saisir des informations complémentaires dans le champ « Informations connexes » que le gabarit de la vue pourra afficher ou pas.</p>
 			<p>
 				Une fois la saisie des paramètres terminée et que vous avez cliqué sur le bouton 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-validate-button.png') }}" alt="Valider" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-validate-button.png') }}" alt="Valider" />
 				, le bouton 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-save.png') }}" alt="Enregistrer" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-save.png') }}" alt="Enregistrer" />
 				apparait en haut à droite de la page.
 Ce bouton permet d'envoyer les informations saisies ou modifiées au serveur à tout moment, parceque le bouton « Valider » ne fait que garder les informations dans la mémoire de votre ordinateur.
 			</p>
@@ -157,16 +152,16 @@ Ce bouton permet d'envoyer les informations saisies ou modifiées au serveur à 
 			</h2>
 			<p>Dans le panneau dépliable « Sources de données utilisées » vous allez pouvoir définir les requêtes spécifiques d'accès aux données de référence des sources de données.
 Certaines de ces requêtes peuvent nécessiter des paramètres qui doivent être définis, au préalable, dans le panneau « Données ».</p>
-			<p>Dans la barre de titre du panneau « Sources de données utilisées », cliquez sur le bouton « Ajouter » pour afficher l'écran de sélection de la source et de définition d'une requête : </p>
+			<p>Dans la barre de titre du panneau « Sources de données utilisées », cliquez sur le bouton « Ajouter » pour afficher l'écran de sélection de la source et de définition d'une requête :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-button.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attribut :</strong></p>
 			<ol>
-				<li>« Source de données » : Correspond à la source de données sur laquelle porte la requête. </li>
+				<li>« Source de données » : Correspond à la source de données sur laquelle porte la requête.</li>
 			</ol>
 			<p><strong>Attribut optionnel :</strong></p>
 			<ol>
@@ -174,38 +169,46 @@ Certaines de ces requêtes peuvent nécessiter des paramètres qui doivent être
 			</ol>
 			<p>Une fois la source sélectionnée, le formulaire se complète des champs de définition de la requête.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-selected.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-selected.png') }}" alt="" />
+			</p>
+			<h3 id="6">
+				Requête simple
+			</h3>
+			<p>
+				Une requête est dite simple si elle ne porte que sur une seule table et qu'elle ne comporte pas de sous-requête imbriquée.
+				<br />
+				Le formulaire permet de construire les requêtes simples sans que vous ayez à connaitre le langage SQL.
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Type de requête » : Les requêtes sont soit de type « Simple », c’est-à-dire que vous êtes guidé à l’aide du menu, ou de type « Complexe » dans ce cas vous serez libre de taper vos requêtes avec le langage SQL. Si la requête ne porte que sur une seule table et ne comporte pas de requête imbriquée, choisir le type « Simple », sinon choisir le type « Complexe ». </li>
-				<li>« Table » : Nom de la table sur laquelle porte la requête. </li>
+				<li>« Type de requête » : Choisir le type « Simple ».</li>
+				<li>« Table » : Nom de la table sur laquelle porte la requête.</li>
 				<li>« Colonnes sélectionnées » : Champs/colonnes de la table qui contiennent les données que vous souhaitez récupérer.
 Pour entrer une colonne, cliquez sur le '+' à droite du champ puis sélectionnez la colonne dans la liste déroulante.
 Vous pouvez également composer une expression auquel cas vous devrez définir un alias comme nom de colonne.
-Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne. </li>
-				<li>« Filtre » : Conditions portant sur les champs/colonnes permettant de ne garder que les lignes du résultat de la requête respectant ces conditions. </li>
+Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</li>
+				<li>« Filtre » : Conditions portant sur les champs/colonnes permettant de ne garder que les lignes du résultat de la requête respectant ces conditions.</li>
 				<li>« Trié par » : Tri par ordre croissant ou décroissant sur les champs/colonnes sélectionnées. Pour entrer une colonne, faire comme en&nbsp;3., puis sélectionnez l'ordre de tri (croissant ou décroissant).</li>
-				<li>« Nombre de résultats » : Parmi toutes les « lignes » de résultats retournées par la requête, indiquer le nombre de lignes qui doit être conservées. Mettre 0 si toutes les lignes doivent être conservées. </li>
-				<li>« à partir de » : Parmi toutes les « lignes » de résultats retournées par la requête, indiquer le numéro de la première ligne qui doit être prise en considération pour le traitement de la requête. Le numéro de la première ligne est 0, 1 la deuxième et ainsi de suite. </li>
+				<li>« Nombre de résultats » : Parmi toutes les « lignes » de résultats retournées par la requête, indiquer le nombre de lignes qui doit être conservées. Mettre 0 si toutes les lignes doivent être conservées.</li>
+				<li>« à partir de » : Parmi toutes les « lignes » de résultats retournées par la requête, indiquer le numéro de la première ligne qui doit être prise en considération pour le traitement de la requête. Le numéro de la première ligne est 0, 1 la deuxième et ainsi de suite.</li>
 				<li>
 					« Format des données retournées » : 
 					<ul>
-						<li>« JSON » : format d'échange de données en texte lisible. </li>
-						<li>« XML » : format de description des données. </li>
-						<li>« valeur simple » : N/A. </li>
-						<li>« paires clé/valeur » : Tableau de paires clé/valeur. </li>
-						<li>« HTML » : format de données conçu pour représenter les pages web. </li>
-						<li>« CSV » : format informatique ouvert représentant des données tabulaires sous forme de valeurs séparées par des virgules. </li>
+						<li>« JSON » : format d'échange de données en texte lisible.</li>
+						<li>« XML » : format de description des données.</li>
+						<li>« valeur simple » : N/A.</li>
+						<li>« paires clé/valeur » : Tableau de paires clé/valeur.</li>
+						<li>« HTML » : format de données conçu pour représenter les pages web.</li>
+						<li>« CSV » : format informatique ouvert représentant des données tabulaires sous forme de valeurs séparées par des virgules.</li>
 					</ul>
 				</li>
 				<li>
 					« Chemin d’accès aux données recherchées » : Le chemin d’accès dépend du format des données retournées : 
 					<ul>
-						<li>« JSON » : Chemin au format <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> ou <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a> </li>
-						<li>« XML » : Chemin au format <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a> </li>
-						<li>« Valeur simple » : N/A </li>
-						<li>« Paires clé/valeur (tableau) » : chemin sous la forme « N° de ligne / nom de colonnes » (exemple : 0/taxe : colonne taxe de la ligne 1) </li>
+						<li>« JSON » : Chemin au format <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> ou <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a></li>
+						<li>« XML » : Chemin au format <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a></li>
+						<li>« Valeur simple » : N/A</li>
+						<li>« Paires clé/valeur (tableau) » : chemin sous la forme « N° de ligne / nom de colonnes » (exemple : 0/taxe : colonne taxe de la ligne 1)</li>
 					</ul>
 				</li>
 			</ol>
@@ -213,237 +216,266 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne. <
 			<p>Si le filtre de la requête contient un paramètre variable, vous devez d'abord déclarer une donnée (Cf. la section « Données » infra) qui contiendra la valeur du paramètre.</p>
 			<p>
 				Ensuite, validez la saisie sans saisir le filtre dans un premier temps. Cliquez sur le bouton « Modifier », le bouton 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-parameter-add-button.png') }}" alt="" title="" />
-				apparait en bas à droite du formulaire pour vous permettre de déclarer le paramètre. 
-				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-parameter-add-button.png') }}" alt="" />
+				apparait en bas à droite du formulaire pour vous permettre de déclarer le paramètre.
+				<br />
 				Après avoir déclaré le paramètre, vous pouvez saisir le filtre et sélectionner le paramètre de l'expression.
-			</p>
-			<p class="figure-legend">Figure 1 : Source de données avec une requête simple et un paramètre</p>
-			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-simple.png') }}" alt="" title="" />
-			</p>
-			<p>Une fois la saisie validée, l'écran suivant s'affiche :</p>
-			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-display-simple.png') }}" alt="" title="" />
-			</p>
-			<p>Cette requête retournera un tableau de paires « 'taux'/valeur du taux ». Le chemin d'accés spécifié (0/taux) sélectionnera la première ligne du tableau et la valeur coorespondant à 'taux'. Nous verrons plus loin comment déclarer une donnée pour stocker la valeur du taux.</p>
-			<p class="figure-legend">Figure 2 : Source de données avec une requête complexe</p>
-			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-complex.png') }}" alt="" title="" />
-			</p>
-			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-display-complex.png') }}" alt="" title="" />
 			</p>
 			<p><strong>Attributs des Paramètres :</strong></p>
 			<ol>
-				<li>« Nom » : Nom du paramètre sans espaces ni caractères spéciaux ou accentués. </li>
-				<li>« Provenance » : Provenance du paramètre soit « Donnée » soit « Constante ». </li>
-				<li>« Donnée » : Nom de la donnée avec laquelle vous allez travailler. </li>
+				<li>« Nom » : Nom du paramètre sans espaces ni caractères spéciaux ou accentués.</li>
+				<li>« Provenance » : Provenance du paramètre soit « Donnée » soit « Constante ».</li>
+				<li>« Donnée » : Nom de la donnée avec laquelle vous allez travailler.</li>
 			</ol>
 			<p><strong>Attribut optionnel des Paramètres :</strong></p>
 			<ol>
 				<li>« Optionnel » : Paramètre optionnel ou non. Un paramètre ne peut être optionnel que s’il est utilisé par une requête d’une source de données de type « Web service »</li>
 			</ol>
-			<h2 id="6">
+			<p class="figure-legend">Figure 1 : Source de données avec une requête simple et un paramètre</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-simple.png') }}" alt="" />
+			</p>
+			<p>Une fois la saisie validée, l'écran suivant s'affiche :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-display-simple.png') }}" alt="" />
+			</p>
+			<p>Cette requête retournera un tableau de paires « 'taux'/valeur du taux ». Le chemin d'accés spécifié (0/taux) sélectionnera la première ligne du tableau et la valeur coorespondant à 'taux'. Nous verrons plus loin comment déclarer une donnée pour stocker la valeur du taux.</p>
+			<h3 id="7">
+				Requête complexe
+			</h3>
+			<p>Dans ce cas, les champs « Table », « Colonnes sélectionnées », « Filtre », « Trié par », « Nombre de résultats » et « à partir de » sont remplacés par le champ « Requête SQL » car ces éléments figurent dans la requête.</p>
+			<p>
+				Comme pour les requêtes simples, des paramètres peuvent être utilisés.
+				<br />
+				Les formes $X$d où X est le numéro du paramètre, font référence à des valeurs entières, $X$f à des valeurs décimales et $X$s à des valeurs alphanumériques.
+			</p>
+			<p><strong>Attributs :</strong></p>
+			<ol>
+				<li>« Type de requête » : Choisir le type « Complexe ».</li>
+				<li>« Requête SQL » : La requête SQL.</li>
+				<li>
+					« Format des données retournées » : 
+					<ul>
+						<li>« JSON » : format d'échange de données en texte lisible.</li>
+						<li>« XML » : format de description des données.</li>
+						<li>« valeur simple » : N/A.</li>
+						<li>« paires clé/valeur » : Tableau de paires clé/valeur.</li>
+						<li>« HTML » : format de données conçu pour représenter les pages web.</li>
+						<li>« CSV » : format informatique ouvert représentant des données tabulaires sous forme de valeurs séparées par des virgules.</li>
+					</ul>
+				</li>
+				<li>
+					« Chemin d’accès aux données recherchées » : Le chemin d’accès dépend du format des données retournées : 
+					<ul>
+						<li>« JSON » : Chemin au format <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> ou <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a></li>
+						<li>« XML » : Chemin au format <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a></li>
+						<li>« Valeur simple » : N/A</li>
+						<li>« Paires clé/valeur (tableau) » : chemin sous la forme « N° de ligne / nom de colonnes » (exemple : 0/taxe : colonne taxe de la ligne 1)</li>
+					</ul>
+				</li>
+			</ol>
+			<p class="figure-legend">Figure 2 : Source de données avec une requête complexe</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-complex.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-display-complex.png') }}" alt="" />
+			</p>
+			<h2 id="8">
 				Données
 			</h2>
 			<p>Les données permettent stocker des valeurs quel que soit leurs provenances (saisies par l'utilisateur, source de données, élément ou résultat de calculs). Elles peuvent être regrouper en groupes de données, ce qui permet de les disposer dans les rangées d’un tableau (Cf. disposition « grille » d’un groupe de champs, plus loin dans ce document).</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add-button.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add-menu.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add-menu.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datagroup-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datagroup-add.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Nom » : Nom de la donnée sans espaces ni caractères spéciaux ou accentués. </li>
-				<li>« Libellé » : Titre de la donnée que l’on pourra sélectionner dans les champs des étapes, dans les profils. </li>
-				<li>« Type » : A choisir en fonction du format de donnée souhaité. </li>
+				<li>« Nom » : Nom de la donnée sans espaces ni caractères spéciaux ou accentués.</li>
+				<li>« Libellé » : Titre de la donnée que l’on pourra sélectionner dans les champs des étapes, dans les profils.</li>
+				<li>« Type » : A choisir en fonction du format de donnée souhaité.</li>
 			</ol>
 			<p><strong>Attributs optionnels :</strong></p>
 			<ol>
-				<li>« Source » : Correspond à la source ou requête définie dans le sous-menu « Sources de données utilisées ». </li>
-				<li>« Indice » : Champ correspondant à la requête. </li>
-				<li>« Unité » : </li>
-				<li>« Valeur par défaut » : Valeur par défaut de la donnée. </li>
+				<li>« Source » : Correspond à la source ou requête définie dans le sous-menu « Sources de données utilisées ».</li>
+				<li>« Indice » : Champ correspondant à la requête.</li>
+				<li>« Unité » :</li>
+				<li>« Valeur par défaut » : Valeur par défaut de la donnée.</li>
 				<li>« Min » :</li>
 				<li>« Max » :</li>
-				<li>« Contenu » : </li>
-				<li>« Arrondi » : Utilisable avec les données de type « Nombre décimal ». Permet de fixer le nombre de décimale après la virgule. La dernière décimale est arrondie. </li>
+				<li>« Contenu » :</li>
+				<li>« Arrondi » : Utilisable avec les données de type « Nombre décimal ». Permet de fixer le nombre de décimale après la virgule. La dernière décimale est arrondie.</li>
 				<li>« Mémoriser » : Garder en mémoire (cookie de l’utilisateur) la valeur afin que l’utilisateur n’ai pas à la ressaisir (Cf. attribut « Mémo » du simulateur)</li>
 			</ol>
-			<h2 id="7">
+			<h2 id="9">
 				Étapes
 			</h2>
-			<p>Une fois que vous avez défini vos sources de données et vos données vous allez pouvoir commencer à paramétrer la ou les étapes de votre simulateur. </p>
+			<p>Une fois que vous avez défini vos sources de données et vos données vous allez pouvoir commencer à paramétrer la ou les étapes de votre simulateur.</p>
 			<p>Une étape est constituée d’un ou plusieurs panneaux dans lesquels sont disposés des blocs d'infos et des groupes de champs dans l'ordre où ils sont déclarés.</p>
 			<p>Les blocs d'infos sont composés de chapitres eux-mêmes composés de sections.</p>
-			<p>Les groupes de champs sont composés de champs qui peuvent être disposés de trois manières différentes : </p>
+			<p>Les groupes de champs sont composés de champs qui peuvent être disposés de trois manières différentes :</p>
 			<ul>
-				<li>« Classique » : Les champs et leurs étiquettes sont affichés de façon classique, c'est-à-dire les uns en dessous des autres. </li>
-				<li>« Grille » : Les champs sont disposés par rangées sous forme de tableaux. Les données associées au champs d'une rangée doivent être regroupés dans des « groupes de données » (Cf. infra). Les étiquettes de champ sont ignorées. </li>
+				<li>« Classique » : Les champs et leurs étiquettes sont affichés de façon classique, c'est-à-dire les uns en dessous des autres.</li>
+				<li>« Grille » : Les champs sont disposés par rangées sous forme de tableaux. Les données associées au champs d'une rangée doivent être regroupés dans des « groupes de données » (Cf. infra). Les étiquettes de champ sont ignorées.</li>
 				<li>« En ligne » : Les champs et leurs étiquettes sont disposés les uns à la suite des autres de façon à former une phrase. </li>
 			</ul>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add-button.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Nom » : Nom de l’étape sans espaces ni caractères spéciaux ou accentués. </li>
-				<li>« Libellé de l’étape » : Titre de l’étape qui sera affiché. </li>
-				<li>« Gabarit d’affichage de l’étape » : </li>
+				<li>« Nom » : Nom de l’étape sans espaces ni caractères spéciaux ou accentués.</li>
+				<li>« Libellé de l’étape » : Titre de l’étape qui sera affiché.</li>
+				<li>« Gabarit d’affichage de l’étape » :</li>
 			</ol>
 			<p><strong>Attributs optionnels :</strong></p>
 			<ol>
-				<li>« Sortie » : </li>
+				<li>« Sortie » :</li>
 				<li>« UI interactif » :</li>
 			</ol>
-			<h3 id="8">
+			<h3 id="10">
 				Panneaux
 			</h3>
 			<p>Les panneaux composent les étapes et sont eux-mêmes constitués de groupes de champs. S'il y plusieurs panneaux, ils seront présentés sous forme d’onglets :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-panel-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-panel-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Nom » : Nom du panneau sans espaces ni caractères spéciaux ou accentués. </li>
+				<li>« Nom » : Nom du panneau sans espaces ni caractères spéciaux ou accentués.</li>
 			</ol>
 			<p>
-				<em>
-					<strong>
-						Attribut optionnel :
-					</em>
-				</strong>
+				<strong><em>Attribut optionnel :</em></strong>
 			</p>
 			<ol>
 				<li>« Libellé » : Titre du panneau</li>
 			</ol>
-			<h4 id="9">
+			<h4 id="11">
 				Groupe de champs
 			</h4>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-fieldset-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-fieldset-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Disposition » : Classique, grille ou en ligne. </li>
-				<li>« Affichage » : En ligne ou pop-in. </li>
+				<li>« Disposition » : Classique, grille ou en ligne.</li>
+				<li>« Affichage » : En ligne ou pop-in.</li>
 			</ol>
 			<p><strong>Attribut optionnel :</strong></p>
 			<ol>
 				<li>« Lien d’activation du Pop-in » :</li>
 			</ol>
-			<h5 id="10">
+			<h5 id="12">
 				Champs
 			</h5>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-field-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-field-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Donnée » : Donnée associée au champ. S’il s’agit d’un champ de saisie, c’est dans cette donnée que sera stockée la valeur saisie par l’utilisateur. S’il s’agit d’un champ de restitution, c’est le contenu de cette donnée qui sera affichée dans le champ. </li>
+				<li>« Donnée » : Donnée associée au champ. S’il s’agit d’un champ de saisie, c’est dans cette donnée que sera stockée la valeur saisie par l’utilisateur. S’il s’agit d’un champ de restitution, c’est le contenu de cette donnée qui sera affichée dans le champ.</li>
 				<li>« Usage » : Saisie par l’utilisateur ou restitution à l’utilisateur.</li>
 			</ol>
 			<p><strong>Attributs optionnels :</strong></p>
 			<ol>
-				<li>« Libellé » : Titre du champ. </li>
-				<li>« Requis » : Champ requis (Un message d’erreur sera affiché si le champ n’est pas renseigné). </li>
-				<li>« Afficher ‘ :’ après l’étiquette de champ ? » : A choisir en fonction de vos besoins. </li>
-				<li>« Utiliser la description de données comme aide ? » : A choisir en fonction de vos besoins. </li>
-				<li>« Invite » : </li>
-				<li>« Saut de ligne avant le champ ? » : A choisir en fonction de vos besoins. </li>
-				<li>« Requis si visible » : Lorsque le champ sera visible on peut décider du fait qu’il soit requis. </li>
-				<li>« Placez le champ sous l’étiquette de champ ? » : A choisir en fonction de vos besoins. </li>
-				<li>« Mettre en évidence l’étiquette de champ ? » : A choisir en fonction de vos besoins. </li>
+				<li>« Libellé » : Titre du champ.</li>
+				<li>« Requis » : Champ requis (Un message d’erreur sera affiché si le champ n’est pas renseigné).</li>
+				<li>« Afficher ‘ :’ après l’étiquette de champ ? » : A choisir en fonction de vos besoins.</li>
+				<li>« Utiliser la description de données comme aide ? » : A choisir en fonction de vos besoins.</li>
+				<li>« Invite » :</li>
+				<li>« Saut de ligne avant le champ ? » : A choisir en fonction de vos besoins.</li>
+				<li>« Requis si visible » : Lorsque le champ sera visible on peut décider du fait qu’il soit requis.</li>
+				<li>« Placez le champ sous l’étiquette de champ ? » : A choisir en fonction de vos besoins.</li>
+				<li>« Mettre en évidence l’étiquette de champ ? » : A choisir en fonction de vos besoins.</li>
 				<li>« Afficher les choix avec les boutons radio ? » : Ne pas utiliser pour les longues listes de choix.</li>
-				<li>« Explication » : A choisir en fonction de vos besoins. </li>
+				<li>« Explication » : A choisir en fonction de vos besoins.</li>
 				<li>
-					« Widget » : A choisir en fonction de vos besoins :
-
+					« Widget » : A choisir en fonction de vos besoins : 
 					<ul>
-						<li>« Boite à liste conforme RGAA » : Boîte à liste conforme au Référentiel Général d’Accessibilité pour les Administration. </li>
+						<li>« Boite à liste conforme RGAA » : Boîte à liste conforme au Référentiel Général d’Accessibilité pour les Administration.</li>
 						<li>« Boîte à liste avec auto-complétion » : Lors de la saisie l’auto-complétion se fait automatiquement, cela permet à l’utilisateur de trouver l’élément qu’il recherche.</li>
-						<li>« Code postal obtenu par auto-complétion sur le nom de la commune ou son code postal » : Permet à l’utilisateur de profiter de l’auto-complétion concernant le nom de la commune ou son code postal. </li>
+						<li>« Code postal obtenu par auto-complétion sur le nom de la commune ou son code postal » : Permet à l’utilisateur de profiter de l’auto-complétion concernant le nom de la commune ou son code postal.</li>
 						<li>«  Code Insee obtenu par auto-complétion sur le nom de la commune ou son code postal » : Permet à l’utilisateur de profiter de l’auto-complétion concernant le nom de la commune ou son code postal.</li>
-						<li>« Code Insee obtenu à partir d'une carte de France » : Une carte apparaît et laisse le choix à l’utilisateur de se géolocaliser ou non. </li>
-						<li>« Sélecteur de date conforme RGAA » : Permet à l’utilisateur de sélectionner une date. </li>
-						<li>« Éditeur en place de champ de formulaire » : </li>
+						<li>« Code Insee obtenu à partir d'une carte de France » : Une carte apparaît et laisse le choix à l’utilisateur de se géolocaliser ou non.</li>
+						<li>« Sélecteur de date conforme RGAA » : Permet à l’utilisateur de sélectionner une date.</li>
+						<li>« Éditeur en place de champ de formulaire » :</li>
 					</ul>
 				</li>
 			</ol>
-			<h4 id="11">
+			<h4 id="13">
 				Bloc d'info
 			</h4>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-blockinfo-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-blockinfo-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs optionnels :</strong></p>
-			<h5 id="12">
+			<h5 id="14">
 				Chapitre
 			</h5>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-chapter-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-chapter-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs optionnels :</strong></p>
-			<h6 id="13">
+			<h6 id="15">
 				Section
 			</h6>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-section-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-section-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs optionnels :</strong></p>
-			<h3 id="14">
+			<h3 id="16">
 				Notes de bas de page
 			</h3>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnotes-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnotes-add.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnotes-display.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnotes-display.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnote-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnote-add.png') }}" alt="" />
 			</p>
-			<h3 id="15">
+			<h3 id="17">
 				Boutons d’actions
 			</h3>
 			<p>Les boutons d’actions permettent par exemple de passer d’une étape à l’autre ou de réinitialiser un formulaire.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-action-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-action-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Nom » : Donnée qui sera affiché pour les utilisateurs. </li>
-				<li>« Libellé » : Saisie par l’utilisateur ou restitution à l’utilisateur. </li>
-				<li>« Action » : Soumettre le formulaire et passage à l’étape définie par l’attribut « Vers » ou réinitialiser. </li>
+				<li>« Nom » : Donnée qui sera affiché pour les utilisateurs.</li>
+				<li>« Libellé » : Saisie par l’utilisateur ou restitution à l’utilisateur.</li>
+				<li>« Action » : Soumettre le formulaire et passage à l’étape définie par l’attribut « Vers » ou réinitialiser.</li>
 				<li>« Vers » : A choisir en fonction de vos besoins.</li>
 			</ol>
 			<p><strong>Attributs optionnels :</strong></p>
 			<ol>
-				<li>« URI / étape » : Titre du champ. </li>
+				<li>« URI / étape » : Titre du champ.</li>
 				<li>« Classe » : Niveau d’importance du bouton « Principale » le bouton sera mis en avant visuellement et « Secondaire » le bouton ne sera pas mis en avant visuellement.</li>
 			</ol>
-			<h2 id="16">
+			<h2 id="18">
 				Règles métier
 			</h2>
 			<p>Les règles métier se définissent de la façon suivante : « Lorsque … » conditions, « Alors … » actions et « sinon … » actions.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add-button.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add.png') }}" alt="" />
 			</p>
-			<p>Ce sont les règles « métier » qui déterminent le comportement du simulateur. Elles se déclenchent lorsque le contexte change. </p>
+			<p>Ce sont les règles « métier » qui déterminent le comportement du simulateur. Elles se déclenchent lorsque le contexte change.</p>
 			<p>Un changement de contexte se traduit toujours par l'acquisition ou la modification d'une donnée.</p>
 			<p>G6k s'informe du changement de contexte en revérifiant les conditions associées aux règles lorsque la valeur d'une donnée change.</p>
 			<p>Ainsi lorsque l'utilisateur saisit une valeur, que g6K accède à une donnée de référence ou qu'une valeur est calculée, les règles impactées sont déclenchées et les actions associées sont réalisées :</p>
@@ -454,35 +486,34 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne. <
 				<li>Effectuer un calcul et l'affecter à une donnée</li>
 			</ul>
 			<p>Se reporter à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'business-rules' }) }}">Composition des règles métier</a> pour savoir comment on compose une règle.</p>
-			<h2 id="17">
+			<h2 id="19">
 				Profils
 			</h2>
-			<p>Lorsque vous allez définir des profils vous prédéfinirez des données liées aux différent profils. </p>
+			<p>Lorsque vous allez définir des profils vous prédéfinirez des données liées aux différent profils.</p>
 			<p>Les profils peuvent correspondre à des types de personnes par exemple les données prédéfinies pour un professionnel diffèrent des données pré remplies d’un particulier.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-profile-add-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-profile-add-button.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-profiles.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-profiles.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Titre » : Titre de vos profils. </li>
-				<li>« Nom » : Nom du profil. </li>
-				<li>« Libellé » : Libellé du profil. </li>
-				<li>« Données » / « Ajouter » : Ajout des données à pré remplir. </li>
-				<li>« Donnée » : Choix de la donnée que l’on souhaite pré remplir. </li>
+				<li>« Titre » : Titre de vos profils.</li>
+				<li>« Nom » : Nom du profil.</li>
+				<li>« Libellé » : Libellé du profil.</li>
+				<li>« Données » / « Ajouter » : Ajout des données à pré remplir.</li>
+				<li>« Donnée » : Choix de la donnée que l’on souhaite pré remplir.</li>
 				<li>« Valeur » : Valeur pré rempli.</li>
 			</ol>
-			<h2 id="18">
+			<h2 id="20">
 				Enregistrement du simulateur
 			</h2>
 			<p>
 				A la fin de votre saisie, cliquer le bouton 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-save.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-save.png') }}" alt="" />
 				en haut à droite de la page pour enregistrer votre travail.
 			</p>
 			<p>A noter que G6K, enregistre une version de « travail » qu'il sera nécessaire de « Publier » pour la mise en ligne.</p>
 		</div>
 	</div>
-</div>
