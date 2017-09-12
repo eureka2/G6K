@@ -304,7 +304,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.maxSourceId = function() {
-		var maxId = 1;
+		var maxId = 0;
 		var sources = $('#sources').find('.source-container');
 		sources.each(function() {
 			var id = parseInt($(this).attr('data-id'));
