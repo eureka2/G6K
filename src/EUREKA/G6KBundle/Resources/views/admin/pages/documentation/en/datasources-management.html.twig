@@ -1,7 +1,7 @@
 <header class="jumbotron subhead" id="overview">
 	<div class="container">
 		<h1>
-			G6K: Administration Guide 
+			G6K: Administration Guide
 		</h1>
 		<p class="lead">Data sources management</p>
 	</div>
@@ -31,24 +31,20 @@
 			</ul>
 		</div>
 		<div class="span9">
-			<p>
-				
-				
-			</p>
 			<h1 id="1">
 				Data source
 			</h1>
 			<p>A data source allows a simulator to query the simulation field reference values ​​to perform the simulation.</p>
 			<p>
-				The data source can be internal, i.e. the values ​​are stored in a database managed by G6K, 
-				<br>
+				The data source can be internal, i.e. the values ​​are stored in a database managed by G6K,
+				<br />
 				or external, i.e. the values ​​are supplied either via queries on a remote database or via a web service (API).
 			</p>
 			<p>In all cases, you must declare the source so that it can be used by the simulation engine.</p>
 			<p>If it is a database (internal or remote), you must also describe the tables and their columns so that the simulation engine can build the queries to find the desired values.</p>
 			<p>
-				If it is a web service, you must specify the API url and the HTTP method to be implemented (GET or POST). 
-				<br>
+				If it is a web service, you must specify the API url and the HTTP method to be implemented (GET or POST).
+				<br />
 				The parameters of the API will be defined by the simulator which uses it at the time of creation of the latter.
 			</p>
 			<h1 id="2">
@@ -59,15 +55,15 @@
 			</h2>
 			<p>Click on « Data sources » of the menu bar</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" />
 			</p>
 			<p>
 				then on 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-button.png') }}" alt="" />
 				of the left side menu.
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-internal.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-internal.png') }}" alt="" />
 			</p>
 			<p><strong>Attributes:</strong></p>
 			<ol>
@@ -85,8 +81,8 @@
 				<li>The « Database password ».</li>
 			</ul>
 			<p>
-				The login and password must be provided to you by your database administrator. 
-				<br>
+				The login and password must be provided to you by your database administrator.
+				<br />
 				The identifier must have the privilege of creating databases.
 			</p>
 			<p>You can describe the data source in the « Description » space provided for this purpose.</p>
@@ -97,18 +93,18 @@ NOTE: The form does not contain a « Cancel » button. If you want to leave you
 			<h3 id="4">
 				Creating tables
 			</h3>
-			<p>After the data source is saved, the database is present but does not contain any table. To create one, click the <a href="en/datasources-management-table-create-button.png"></a> button in the left side menu.</p>
+			<p>After the data source is saved, the database is present but does not contain any table. To create one, click the <a href="../images/en/datasources-management-table-create-button.png"></a> button in the left side menu.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-create.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-create.png') }}" alt="" />
 			</p>
-			<p><strong>Attributes:</strong> </p>
+			<p><strong>Attributes:</strong></p>
 			<ol>
 				<li>« Name »: Name of the table without spaces or special or accented characters.</li>
 				<li>« Label »: Title of the table.</li>
 			</ol>
 			<p>You can describe the table in the « Description » space provided for this purpose.</p>
 			<p>The « Add Field » button allows you to add fields (columns) to the database:</p>
-			<p><strong>Attributes:</strong> </p>
+			<p><strong>Attributes:</strong></p>
 			<ol>
 				<li>« Field »: Name of the field without spaces or special characters or accented.</li>
 				<li>« Type »: Type of field.</li>
@@ -122,65 +118,65 @@ NOTE: The form does not contain a « Cancel » button. If you want to leave you
 				Table feeding
 			</h3>
 			<p>
-				To save data to the table, click the « Add Record » button. 
-				<br>
+				To save data to the table, click the « Add Record » button.
+				<br />
 				A blank line is displayed at the beginning of the table to allow you to enter the values of the record.
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-row-add.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-row-add.png') }}" alt="" />
 			</p>
 			<p>
-				Once you have entered the values, click on the « Save » button to save them. 
-				<br>
+				Once you have entered the values, click on the « Save » button to save them.
+				<br />
 				If you want to change the values, click on the icon: 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/datasources-management-table-row-edit-button.png') }}" alt="" title="" />
-				, make the changes and click the « Save » button to save them. 
-				<br>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/datasources-management-table-row-edit-button.png') }}" alt="" />
+				, make the changes and click the « Save » button to save them.
+				<br />
 				Finally, if you want to delete a record click on the icon: 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/datasources-management-table-row-delete-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/datasources-management-table-row-delete-button.png') }}" alt="" />
 				, a « Confirm » button will appear, click to delete the record permanently.
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-row-delete.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-row-delete.png') }}" alt="" />
 			</p>
 			<p>Once confirmed, the record will be deleted from the database, but the line will remain displayed with a « Restore » button if you have made a mistake or changed your mind.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-row-restore.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-row-restore.png') }}" alt="" />
 			</p>
 			<p>If you click « Restore », the line will be re-registered in the database.</p>
 			<p>If you do not click « Restore », the next time the page is redisplayed, the record will no longer appear in the list.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-row-deleted.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-row-deleted.png') }}" alt="" />
 			</p>
 			<h3 id="6">
 				Importing data into tables
 			</h3>
 			<p>
-				Another way to fill your table is to import data in .csv or .txt format from an Excel file. 
-				<br>
-				If you choose to import data, click the « Import Data » button in the title bar. 
+				Another way to fill your table is to import data in .csv or .txt format from an Excel file.
+				<br />
+				If you choose to import data, click the « Import Data » button in the title bar.
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-import-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-import-button.png') }}" alt="" />
 			</p>
 			<p>
-				The message « Are you sure you want to import data into the table 'Label of the selected table'? appears, press « OK » to confirm. 
-				<br>
+				The message « Are you sure you want to import data into the table 'Label of the selected table'? appears, press « OK » to confirm.
+				<br />
 				The following screen appears:
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-import.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-import.png') }}" alt="" />
 			</p>
 			<p>In this form, once you have selected the « Text file » from the hard drive of your computer, the « Separator » and the « Delimiter » most appropriate to the format of the file (according to its extension: .csv or .txt) will be proposed to you.</p>
 			<p>If in your file you have a title line with the column names, make sure that you have named each column with the name of the corresponding field, not the label. You should also verify that the values assigned to the fields match their types (for example, the field « data_1 » contains a date value).</p>
 			<p>If you chose not to put a title line in your file, uncheck the box next to « Column names in first line? ». In this case, the columns must be presented in the order in which the fields in the table are declared.</p>
 			<p>Example .csv (DOS or semicolon when recording):</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-import-csv.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-import-csv.png') }}" alt="" />
 			</p>
 			<p>Example .txt (Text Tab separator when recording):</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-import-txt.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-import-txt.png') }}" alt="" />
 			</p>
 			<h3 id="7">
 				Modify the structure of a table
@@ -190,15 +186,15 @@ Fields can be added or deleted.</p>
 			<p>In the left sidebar, select the source to which the table belongs and click the table label in the top block.</p>
 			<p>The table information appears, click « Edit table structure » in the title bar:</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-update-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-update-button.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-update-confirm.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-update-confirm.png') }}" alt="" />
 			</p>
 			<p>Confirm the action to display the change form.</p>
 			<p>
-				The pre-filled change form is the same as the one presented in the « Creating Tables » section at the beginning of this document. 
-				<br>
+				The pre-filled change form is the same as the one presented in the « Creating Tables » section at the beginning of this document.
+				<br />
 				Refer to this section to follow the procedure.
 			</p>
 			<h3 id="8">
@@ -207,10 +203,10 @@ Fields can be added or deleted.</p>
 			<p>In the left sidebar, select the source to which the table belongs and click the table label in the top block.</p>
 			<p>The information in the table appears, click « Delete » in the title bar:</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-delete-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-delete-button.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-delete-confirm.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-delete-confirm.png') }}" alt="" />
 			</p>
 			<p>Confirm the action to permanently delete the table. This operation is irreversible.</p>
 			<h2 id="9">
@@ -219,63 +215,63 @@ Fields can be added or deleted.</p>
 			<p>You can export a data source for archiving, broadcasting, or simply importing it into another instance of G6K (see above).</p>
 			<p>Click « Data sources » from the menu bar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" />
 			</p>
 			<p>Then click the data source you want to export in the left sidebar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-export-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-export-button.png') }}" alt="" />
 			</p>
 			<p>Then click the « Export datasource » button in the title bar.</p>
 			<p>G6K generates two JSON files with the following characteristics:</p>
 			<p>
-				The first file, whose name is formed with the name of the source followed by the .schema.json extension, describes data contained in the source. 
-				<br>
+				The first file, whose name is formed with the name of the source followed by the .schema.json extension, describes data contained in the source.
+				<br />
 				The description of the data is consistent with the <a href="http://json-schema.org/">JSON schema</a> specification which is both a description standard and a JSON data validation standard.
 			</p>
 			<p>The second file, whose name is formed with the name of the source followed by the .json extension, contains the data of the source.</p>
 			<p>
-				These two files are compressed into a file that also has the name of the source with the .zip extension. 
-				<br>
+				These two files are compressed into a file that also has the name of the source with the .zip extension.
+				<br />
 				It is available for download and archiving.
 			</p>
 			<h2 id="10">
 				Edit a data source
 			</h2>
-			<p>Click « Data sources » from the menu bar. </p>
+			<p>Click « Data sources » from the menu bar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" />
 			</p>
 			<p>Then click the data source you want to edit in the left sidebar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-update-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-update-button.png') }}" alt="" />
 			</p>
 			<p>Then click the « Edit datasource » button in the title bar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-update-confirm.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-update-confirm.png') }}" alt="" />
 			</p>
 			<p>Confirm the action to display the change form.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-update.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-update.png') }}" alt="" />
 			</p>
 			<p>
-				The pre-filled form is the same as the one presented in the « Creating the data Source » section at the beginning of this document. 
-				<br>
+				The pre-filled form is the same as the one presented in the « Creating the data Source » section at the beginning of this document.
+				<br />
 				Refer to this section to follow the procedure.
 			</p>
 			<h2 id="11">
 				Delete a data source
 			</h2>
-			<p>Click « Data sources » from the menu bar. </p>
+			<p>Click « Data sources » from the menu bar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" />
 			</p>
 			<p>Then click the data source you want to delete in the left sidebar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-delete-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-delete-button.png') }}" alt="" />
 			</p>
 			<p>Then click the « Drop datasource » button on the title bar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-delete-confirm.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-delete-confirm.png') }}" alt="" />
 			</p>
 			<p>Confirm the action to permanently delete the source.</p>
 			<p>This operation is irreversible. If you have exported the data source (see « Export a data Source » earlier in this document), you can re-import the source by following the procedure below.</p>
@@ -286,10 +282,10 @@ Fields can be added or deleted.</p>
 			<p>Extract the 2 files from the archive on your computer.</p>
 			<p>Click the « Import Datasource » button in the left sidebar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-import-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-import-button.png') }}" alt="" />
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-import.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-import.png') }}" alt="" />
 			</p>
 			<p><strong>Attributes:</strong></p>
 			<ol>
@@ -305,17 +301,17 @@ Fields can be added or deleted.</p>
 			<h3 id="15">
 				Declaration of the data source
 			</h3>
-			<p>Click « Data sources » from the menu bar. </p>
+			<p>Click « Data sources » from the menu bar.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" />
 			</p>
 			<p>
 				then on 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-button.png') }}" alt="" />
 				from the left side menu.
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-external.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-external.png') }}" alt="" />
 			</p>
 			<p><strong>Attributes:</strong></p>
 			<ol>
@@ -342,15 +338,15 @@ Fields can be added or deleted.</p>
 			</h3>
 			<p>Click on « Data sources » in the menu bar</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="" />
 			</p>
 			<p>
 				then on 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-button.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-button.png') }}" alt="" />
 				from the left side menu.
 			</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-webservice.png') }}" alt="" title="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-create-webservice.png') }}" alt="" />
 			</p>
 			<p><strong>Attributes:</strong></p>
 			<ol>
