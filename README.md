@@ -48,6 +48,11 @@ However, on some platforms, this message does not appear. If so, run the followi
 ``cd simulator``  
 ``php ../composer.phar run-script post-install-cmd``
 
+## Documentation
+
+[ [en](http://eureka2.github.io/g6k/documentation/en/index.html) ] 
+[ [fr](http://eureka2.github.io/g6k/documentation/fr/index.html) ] 
+
 ## Copyright and license
 
 &copy; 2015-2017 Eureka2 - Jacques Archimède. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
