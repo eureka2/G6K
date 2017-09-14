@@ -22,24 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 #}
 
-{% extends "EUREKAG6KBundle:admin/layout:pagelayout.html.twig" %}
-
-{% block bodyclass %}{{ parent() }} documentation{% endblock %}
-
-{% block bodyattr %}{{ parent() }} data-spy="scroll" data-target=".bs-docs-sidebar"{% endblock %}
-
-{% block styles %}
-{{ parent() }}
-<link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/admin/js/bootstrap/css/bootstrap-responsive.min.css') }}" />
-<link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/admin/js/bootstrap/css/docs.css') }}" />
-<link rel='stylesheet' type='text/css' href="{{ asset('bundles/eurekag6k/admin/js/bootstrap/js/google-code-prettify/prettify.css') }}" />
-{% endblock %}
-
-{% block scripts %}
-{{ parent() }}
-<script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/bootstrap/js/google-code-prettify/prettify.js') }}"></script>
-<script type="text/javascript">prettyPrint();</script>
-{% endblock %}
+{% extends "EUREKAG6KBundle:admin/layout:documentationlayout.html.twig" %}
 
 {% block content %}
 {{ include( "EUREKAG6KBundle:admin/pages/documentation/"  ~ app.request.locale ~ ":" ~ document ~ ".html.twig") }}

@@ -10,8 +10,8 @@
     Translator.add("acos", "arcCosinus", "messages", "fr");
     Translator.add("acosh", "arcCosinusHyperbolique", "messages", "fr");
     Translator.add("action", "action", "messages", "fr");
-    Translator.add("actionbutton", "bouton d'action", "messages", "fr");
     Translator.add("Action Button", "Bouton d'action", "messages", "fr");
+    Translator.add("actionbutton", "bouton d'action", "messages", "fr");
     Translator.add("Action button label", "Libell\u00e9 du bouton", "messages", "fr");
     Translator.add("Action button name without spaces or special characters", "Nom du bouton sans espaces ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Actions Buttons", "Boutons d'action", "messages", "fr");
@@ -131,8 +131,8 @@
     Translator.add("Chapter icon", "Ic\u00f4ne du chap\u00eetre", "messages", "fr");
     Translator.add("Chapter label", "Etiquette du chap\u00eetre", "messages", "fr");
     Translator.add("Chapter name", "Nom du chap\u00eetre", "messages", "fr");
-    Translator.add("choice", "choix", "messages", "fr");
     Translator.add("Choice", "Choix", "messages", "fr");
+    Translator.add("choice", "choix", "messages", "fr");
     Translator.add("Choice %id%", "Choix %id%", "messages", "fr");
     Translator.add("Choice label", "Libell\u00e9 du choix", "messages", "fr");
     Translator.add("Choices", "Liste de choix", "messages", "fr");
@@ -286,8 +286,8 @@
     Translator.add("else do ...", "sinon ...", "messages", "fr");
     Translator.add("Email", "Email", "messages", "fr");
     Translator.add("Emphasize the text label ?", "Mettre en \u00e9vidence l'\u00e9tiquette de champ ?", "messages", "fr");
-    Translator.add("Enabled", "Activ\u00e9", "messages", "fr");
     Translator.add("enabled", "activ\u00e9", "messages", "fr");
+    Translator.add("Enabled", "Activ\u00e9", "messages", "fr");
     Translator.add("Enter a delimiter", "Entrez un d\u00e9limiteur de champ", "messages", "fr");
     Translator.add("Enter a locality or a zipcode", "Saisir un nom de commune ou son code postal", "messages", "fr");
     Translator.add("Enter a return path", "Entrez le chemin d'acc\u00e8s aux donn\u00e9es recherch\u00e9es dans le jeu de donn\u00e9es retourn\u00e9es", "messages", "fr");
@@ -308,8 +308,8 @@
     Translator.add("Expand all", "Tout d\u00e9plier", "messages", "fr");
     Translator.add("Expired", "Expir\u00e9", "messages", "fr");
     Translator.add("Expires at", "Expire le", "messages", "fr");
-    Translator.add("Explanation", "Explication", "messages", "fr");
     Translator.add("explanation", "explication", "messages", "fr");
+    Translator.add("Explanation", "Explication", "messages", "fr");
     Translator.add("Export", "Exporter", "messages", "fr");
     Translator.add("Export datasource", "Exporter", "messages", "fr");
     Translator.add("Export simulator", "Exporter", "messages", "fr");
@@ -353,6 +353,7 @@
     Translator.add("From", "\u00e0 partir de", "messages", "fr");
     Translator.add("from start", "du d\u00e9but", "messages", "fr");
     Translator.add("fullmonth", "moisComplet", "messages", "fr");
+    Translator.add("G6K: Administration guide", "G6K: Guide d'administration", "messages", "fr");
     Translator.add("G6K Admin", "Administration G6K", "messages", "fr");
     Translator.add("G6K is a calculation simulator engine", "G6K est un moteur de simulation de calcul", "messages", "fr");
     Translator.add("Geolocation", "G\u00e9olocalisation", "messages", "fr");
@@ -462,8 +463,8 @@
     Translator.add("matches", "correspondances", "messages", "fr");
     Translator.add("max", "max", "messages", "fr");
     Translator.add("max can not refer to the data itself", "max ne peut pas se r\u00e9f\u00e9rer \u00e0 la donn\u00e9e elle-m\u00eame", "messages", "fr");
-    Translator.add("Maximum", "Maximum", "messages", "fr");
     Translator.add("maximum", "valeur maximale", "messages", "fr");
+    Translator.add("Maximum", "Maximum", "messages", "fr");
     Translator.add("Maximum value", "Valeur maximum", "messages", "fr");
     Translator.add("max value", "valeur max", "messages", "fr");
     Translator.add("May", "Mai", "messages", "fr");
@@ -476,8 +477,8 @@
     Translator.add("Minimum value", "valeur minimale", "messages", "fr");
     Translator.add("min value", "valeur min", "messages", "fr");
     Translator.add("money", "montant", "messages", "fr");
-    Translator.add("Month", "Mois", "messages", "fr");
     Translator.add("month", "mois", "messages", "fr");
+    Translator.add("Month", "Mois", "messages", "fr");
     Translator.add("multichoice", "choix multiple", "messages", "fr");
     Translator.add("Name", "Nom", "messages", "fr");
     Translator.add("Need help ?", "Besoin d'aide ?", "messages", "fr");
@@ -594,8 +595,8 @@
     Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("postnote", "post note", "messages", "fr");
     Translator.add("pow", "puissance", "messages", "fr");
-    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("PreNote", "Pre Note", "messages", "fr");
+    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("Previous", "Pr\u00e9c\u00e9dent", "messages", "fr");
     Translator.add("Primary", "Principal", "messages", "fr");
     Translator.add("Prior step", "Etape pr\u00e9c\u00e9dente", "messages", "fr");
@@ -638,8 +639,8 @@
     Translator.add("Save", "Enregistrer", "messages", "fr");
     Translator.add("Search", "Rechercher", "messages", "fr");
     Translator.add("Secondary", "Secondaire", "messages", "fr");
-    Translator.add("Section", "Section", "messages", "fr");
     Translator.add("section", "section", "messages", "fr");
+    Translator.add("Section", "Section", "messages", "fr");
     Translator.add("Section #%id%", "Section #%id%", "messages", "fr");
     Translator.add("Section #%id% : %label%", "Section #%id% : %label%", "messages", "fr");
     Translator.add("Section %id% (nolabel)", "Section %id% (pas de libell\u00e9)", "messages", "fr");
@@ -693,8 +694,8 @@
     Translator.add("Single value", "Valeur simple", "messages", "fr");
     Translator.add("sinh", "sinusHyperbolique", "messages", "fr");
     Translator.add("size", "taille", "messages", "fr");
-    Translator.add("Source", "Source", "messages", "fr");
     Translator.add("source", "source", "messages", "fr");
+    Translator.add("Source", "Source", "messages", "fr");
     Translator.add("Source column id", "Champ de la source \u00e0 utiliser comme ID", "messages", "fr");
     Translator.add("Source column label", "Champ de la source \u00e0 utiliser comme libell\u00e9 dans la liste de choix", "messages", "fr");
     Translator.add("Source column value", "Champ de la source \u00e0 utiliser comme valeur de la donn\u00e9e", "messages", "fr");
@@ -864,8 +865,8 @@
     Translator.add("Unit", "Unit\u00e9", "messages", "fr");
     Translator.add("unit text", "texte d'unit\u00e9", "messages", "fr");
     Translator.add("Unknown error", "Erreur inconnue", "messages", "fr");
-    Translator.add("unset", "effacer", "messages", "fr");
     Translator.add("Unset", "Effacer", "messages", "fr");
+    Translator.add("unset", "effacer", "messages", "fr");
     Translator.add("URI", "URI", "messages", "fr");
     Translator.add("URI \/ Step", "URI \/ Etape", "messages", "fr");
     Translator.add("Usage", "Utilisation", "messages", "fr");
@@ -901,8 +902,8 @@
     Translator.add("Y", "AAAA", "messages", "fr");
     Translator.add("Y-m", "AAAA-MM", "messages", "fr");
     Translator.add("y-m", "AA-MM", "messages", "fr");
-    Translator.add("Y-m-d", "AAAA-MM-JJ", "messages", "fr");
     Translator.add("y-m-d", "AA-MM-JJ", "messages", "fr");
+    Translator.add("Y-m-d", "AAAA-MM-JJ", "messages", "fr");
     Translator.add("Year", "Ann\u00e9e", "messages", "fr");
     Translator.add("year", "ann\u00e9e", "messages", "fr");
     Translator.add("Yes", "Oui", "messages", "fr");

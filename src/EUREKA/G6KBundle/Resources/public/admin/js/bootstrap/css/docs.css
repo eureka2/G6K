@@ -81,7 +81,10 @@ hr.soften {
   border: 0;
 }
 
-
+p.figure-legend {
+  text-align: center;
+  color: #0088CC;
+}
 
 /* Jumbotrons
 -------------------------------------------------- */
@@ -786,6 +789,22 @@ form.bs-docs-example {
           box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
 }
 
+.bs-docs-sidenav > li[data-level="2"] > a {
+	padding-left: 30px;
+}
+.bs-docs-sidenav > li[data-level="3"] > a {
+	padding-left: 45px;
+}
+.bs-docs-sidenav > li[data-level="4"] > a {
+	padding-left: 60px;
+}
+.bs-docs-sidenav > li[data-level="5"] > a {
+	padding-left: 75px;
+}
+.bs-docs-sidenav > li[data-level="6"] > a {
+	padding-left: 90px;
+}
+
 /* Chevrons */
 .bs-docs-sidenav .icon-chevron-right {
   float: right;
@@ -815,8 +834,19 @@ form.bs-docs-example {
   bottom: 270px;
 }
 
+.documentation-index .row {
+	margin-bottom: 5em;
+}
 
-
+.documentation-index .row > div {
+	width: 48%
+}
+.documentation-illustration.pull-right img {
+	float: right;
+}
+.documentation-illustration {
+	vertical-align: top;
+}
 
 /* Responsive
 -------------------------------------------------- */
