@@ -166,8 +166,8 @@ $(document).ready(function() {
 	$(window).on("resize", function () {
 		$('.modal:visible').each(centerModal);
 	});
-    $('body').append('<div id="toTop" class="btn btn-default"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
-    $(window).scroll(function () {
+	$('body').append('<div id="toTop" class="btn btn-default"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
+	$(window).scroll(function () {
 		if ($(this).scrollTop() != 0) {
 			$('#toTop').fadeIn();
 		} else {
@@ -188,8 +188,8 @@ $(document).ready(function() {
 			e.message = Translator.trans('Your update are not saved. Sure to leave?');
 		}
 	});
-    $('#toTop').click(function(){
-        $("html, body").animate({ scrollTop: 0 }, 600);
-        return false;
-    });
+	$('#toTop').click(function(){
+		$("html, body").animate({ scrollTop: 0 }, 600);
+		return false;
+	});
 });
