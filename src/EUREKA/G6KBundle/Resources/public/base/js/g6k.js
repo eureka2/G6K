@@ -4327,7 +4327,6 @@ THE SOFTWARE.
 							if (data.value !== '') {
 								self.setValue(fieldName, '');
 							}
-							self.reevaluateFields(fieldName);
 							break;
 						case 'default':
 							self.getData(fieldName).unparsedDefault = '';
