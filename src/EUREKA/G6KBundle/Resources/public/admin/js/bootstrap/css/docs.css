@@ -1038,3 +1038,14 @@ form.bs-docs-example {
     float: none;
   }
 }
+
+#toTop{
+	position: fixed;
+	bottom: 5px;
+	right: 0px;
+	cursor: pointer;
+	display: none;
+}
+#toTop .fa {
+	margin-right: 5px;
+}
