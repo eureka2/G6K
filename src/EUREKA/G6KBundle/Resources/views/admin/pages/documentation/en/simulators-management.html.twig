@@ -41,7 +41,7 @@ CAUTION: This document, which is under development, is very incomplete.
 			</h1>
 			<p>A calculation simulator is an online service made available to a user to enable them to calculate the results (taxes, social benefits, etc.) corresponding to their particular situation.</p>
 			<p>The results are calculated on the basis of data supplied by the user, reference data (e.g. amount of a tax) and business rules reflecting the current legislation in the field of simulation.</p>
-			<p>Creating simulators is reserved for users with the « Manager", « Administrator » or « Super Administrator » role.</p>
+			<p>Creating simulators is reserved for users with the « Manager », « Administrator » or « Super Administrator » role.</p>
 			<h1 id="2">
 				Before you begin
 			</h1>
@@ -157,7 +157,7 @@ This button allows you to send the entered or modified information to the server
 				</h2>
 				<p>In the « Used data sources » fold-out panel you will be able to define the specific requests for access to the datasources reference data.
 Some of these queries may require parameters that must be defined in the « Data » panel beforehand.</p>
-				<p>In the title bar of the « Used data sources » panel, click the "Add" button to display the screen for selecting the source and defining a query:</p>
+				<p>In the title bar of the « Used data sources » panel, click the « Add » button to display the screen for selecting the source and defining a query:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-add-button.png') }}" alt="" />
 				</p>
@@ -186,7 +186,7 @@ Some of these queries may require parameters that must be defined in the « Dat
 				</p>
 				<p><strong>Attributes:</strong></p>
 				<ol>
-					<li>« Request type »: The queries are either « Simple", that is, you are guided by the menu, or of type « Complex » in this case you will be free to type your queries with the SQL language. If the query is for a single table and does not have a nested query, choose the « Simple » type, otherwise choose the « Complex » type.</li>
+					<li>« Request type »: The queries are either « Simple », that is, you are guided by the menu, or of type « Complex » in this case you will be free to type your queries with the SQL language. If the query is for a single table and does not have a nested query, choose the « Simple » type, otherwise choose the « Complex » type.</li>
 					<li>« Table »: Name of the table to which the request relates.</li>
 					<li>« Selected Columns »: Fields/columns of the table that contain the data you want to retrieve.
 To enter a column, click the '+' to the right of the field and select the column from the drop-down list.
@@ -221,7 +221,7 @@ To enter a column, do as in &amp; nbsp; 3., And then select the sort order (asce
 				<p>To construct the query, refer to the <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'source-query-builder' }) }}">Visual Component Manufacturing Simple Queries</a> documentation</p>
 				<p>If the query contains a variable parameter, you must first declare a data (see « Data » section below) which will contain the value of the parameter.</p>
 				<p>
-					Then, validate the entry without entering the filter at first. Click on the "Edit" button. The 
+					Then, validate the entry without entering the filter at first. Click on the « Edit » button. The 
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datasource-parameter-add-button.png') }}" alt="" />
 					button appears at the bottom right of the form to allow you to declare the parameter.
 					<br />
@@ -230,7 +230,7 @@ To enter a column, do as in &amp; nbsp; 3., And then select the sort order (asce
 				<p><strong>Parameter attributes:</strong></p>
 				<ol>
 					<li>« Name »: Parameter name without spaces or special or accented characters.</li>
-					<li>« Provenance »: Origin of the parameter either « Data » or « Constant".</li>
+					<li>« Provenance »: Origin of the parameter either « Data » or « Constant ».</li>
 					<li>« Data »: The name of the data you are going to work with.</li>
 				</ol>
 				<p><strong>Optional attribute of parameters:</strong></p>
@@ -292,15 +292,24 @@ To enter a column, do as in &amp; nbsp; 3., And then select the sort order (asce
 				</h2>
 				<p>The data allow to store values whatever their origin (user input, data source, element or result of calculations).
 They can be grouped into groups of data, allowing them to be arranged in the rows of a table (see « Grid layout » for a group of fields later in this document).</p>
+				<p>To add a data or a data group, click « Add » in the title bar « Datas » and then click « Add data » or « Add datagroup » depending on the case.</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-add-button.png') }}" alt="" />
 				</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-add-menu.png') }}" alt="" />
 				</p>
+				<p class="figure-legend">Figure 3 : Form for adding a data group</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-datagroup-add.png') }}" alt="" />
 				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Group Name »: Name of the data group without spaces or special or accented characters.</li>
+					<li>« Group Label »: Title of the data group that can be selected when defining fields groups of the step, business rules, or profiles.</li>
+				</ol>
+				<p>Give a description of the data group in the "Description" field.</p>
+				<p class="figure-legend">Figure 4 : Form for adding a data</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-add.png') }}" alt="" />
 				</p>
@@ -310,18 +319,108 @@ They can be grouped into groups of data, allowing them to be arranged in the row
 					<li>« Label »: Label of the data that can be selected in the step fields, in the profiles.</li>
 					<li>« Type »: To be selected according to the desired data format.</li>
 				</ol>
+				<p><strong>Data type</strong></p>
+				<table class="table table-condensed table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Type</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>date</td>
+							<td>Date in the format defined in the simulator options. See supra. If the data is associated with an input field, a date picker will be proposed to the user.</td>
+						</tr>
+						<tr>
+							<td>day</td>
+							<td>Day number from 1 to 31.</td>
+						</tr>
+						<tr>
+							<td>month</td>
+							<td>Number of months from 1 to 12.</td>
+						</tr>
+						<tr>
+							<td>year</td>
+							<td>Year in 4 digits.</td>
+						</tr>
+						<tr>
+							<td>boolean</td>
+							<td>Boolean value (0/1). If the data is associated with an input field, a check cache will be offered to the user.</td>
+						</tr>
+						<tr>
+							<td>integer</td>
+							<td>Integer value.</td>
+						</tr>
+						<tr>
+							<td>number</td>
+							<td>Decimal value with decimal point.</td>
+						</tr>
+						<tr>
+							<td>text</td>
+							<td>Alphanumeric value.</td>
+						</tr>
+						<tr>
+							<td>textarea</td>
+							<td>Alphanumeric value with enrichment (bold, italic, underline, ...).</td>
+						</tr>
+						<tr>
+							<td>money</td>
+							<td>Monetary value to 2 decimals.</td>
+						</tr>
+						<tr>
+							<td>choice</td>
+							<td>Value that can be selected from a drop-down list or with radio buttons.</td>
+						</tr>
+						<tr>
+							<td>multichoice</td>
+							<td>Values ​​selected using check boxes.</td>
+						</tr>
+						<tr>
+							<td>percent</td>
+							<td>Percentage from 0 to 100, possibly with decimal values.​​</td>
+						</tr>
+						<tr>
+							<td>array</td>
+							<td>List of values. Can not be used for input.</td>
+						</tr>
+						<tr>
+							<td>table</td>
+							<td>Table of values. Can not be used for input.</td>
+						</tr>
+						<tr>
+							<td>department</td>
+							<td>Department code. If the data is associated with an input field, the user chooses from a drop-down list.</td>
+						</tr>
+						<tr>
+							<td>region</td>
+							<td>Region code. If the data is associated with an input field, the user chooses from a drop-down list.</td>
+						</tr>
+						<tr>
+							<td>country</td>
+							<td>Country name.</td>
+						</tr>
+					</tbody>
+				</table>
 				<p><strong>Optional attributes:</strong></p>
 				<ol>
-					<li>« Source »: Corresponds to the source or query defined in the « Used data sources » submenu.</li>
-					<li>« Index »: Field corresponding to the request.</li>
-					<li>« Unit »: means:</li>
 					<li>« Default »: Default value of the data.</li>
-					<li>« Min »:</li>
-					<li>« Max »:</li>
-					<li>« Content »:</li>
+					<li>« Min »: The minimum value of the data for numeric data.</li>
+					<li>« Max »: The maximum value of the data for numeric data.</li>
+					<li>« Content »: Unconditional expression to be assigned to the data. For the composition of the expression, refer to <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition of expressions</a>.</li>
 					<li>« Round »: Can be used with « Decimal Number » data. Allows you to set the decimal place after the decimal point. The last decimal place is rounded.</li>
+					<li>« Unit »: Characterizes a numerical value such as "miles", "liters", "ampere", etc. The unit is displayed after the field.</li>
+					<li>« Source »: If the data is to be supplied by a data source defined in the "Used datasources" panel.</li>
+					<li>« Index »: Corresponds to the field returned by the request to supply the data.</li>
 					<li>« Memorize »: Keep in memory (user's cookie) the value so that the user does not have to re-enter it (see attribute « Memo » of the simulator)</li>
 				</ol>
+				<p>Give a description of the data in the "Description" field. This description can be displayed in a tooltip at the request of the user.</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-source-add.png') }}" alt="" />
+				</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-choice-add.png') }}" alt="" />
+				</p>
 				<h2 id="9">
 					Steps
 				</h2>
@@ -513,7 +612,7 @@ If there are several panels, they will be presented in the form of tabs:</p>
 					<li>« Title »: Title of your profiles.</li>
 					<li>« Name »: Name of the profile.</li>
 					<li>« Label »: The label of the profile.</li>
-					<li>« Data"/"Add »: Add data to be filled in.</li>
+					<li>« Data »/« Add »: Add data to be filled in.</li>
 					<li>« Data »: Choice of the data to be filled.</li>
 					<li>« Value »: Pre-filled value.</li>
 				</ol>
@@ -525,7 +624,7 @@ If there are several panels, they will be presented in the form of tabs:</p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-save.png') }}" alt="" />
 					button at the top right of the page to save your work.
 				</p>
-				<p>Note that G6K saves a version of « work » that it will be necessary to « Publish".</p>
+				<p>Note that G6K saves a version of « work » that it will be necessary to « Publish ».</p>
 			</div>
 		</div>
 	</div>
