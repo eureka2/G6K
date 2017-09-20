@@ -29,7 +29,7 @@ ExpressionBuilder_I18N['fr'] = {
 	'menu-action-nested': 'Changer en une sous-expression entre-parenthèses&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
 	'menu-action-delete': 'Supprimer cette opérande',
 	'literal-label': 'Constante',
-	'literal-placeholder': 'Entre une valeur',
+	'literal-placeholder': 'Entrez une valeur',
 	'fields-label': 'Champs',
 	'constants-label': 'Constantes',
 	'functions-label': 'Fonctions',
