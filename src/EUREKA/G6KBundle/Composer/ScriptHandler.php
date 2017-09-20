@@ -34,8 +34,28 @@ use EUREKA\G6KBundle\Entity\Database;
 use EUREKA\G6KBundle\Manager\Json\JSONToSQLConverter;
 use EUREKA\G6KBundle\Manager\DatasourcesHelper;
 
+/**
+ *
+ * The ScriptHandler class installs users who can log in to the G6K administration interface and a demonstration simulator (if desired).
+ * It is executed by Composer at the end of the G6K installation. See file composer.json (post-install-cmd)
+ *
+ * @author Jacques Archimède
+ */
 class ScriptHandler
 {
+
+	/**
+	 * Users installation:
+	 *
+	 * - Creation of the database according to parameters provided in parameters.yml
+	 * - Running the 'fos_user.sql' script in the 'src/EUREKA/G6KBundle/Resources/data/databases' directory. This script contains an 'insert' of two users: admin and guest.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \Composer\Script\Event $event The script event class
+	 * @return  void
+	 *
+	 */
 	public static function installUsers(Event $event) {
 		$event->getIO()->write("Installing the users of the administration interface");
 		$extras = $event->getComposer()->getPackage()->getExtra();
@@ -147,6 +167,15 @@ class ScriptHandler
 		}
 	}
 
+	/**
+	 * Installation of the demonstration simulator from the files "demo.schema.json" and "demo.json" located in the directory 'src/EUREKA/G6KBundle/Resources/data/databases'.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \Composer\Script\Event $event The script event class
+	 * @return  void
+	 *
+	 */
 	public static function installDemo(Event $event) {
 		if (!$event->getIO()->askConfirmation('Would you like to install the demo simulator? [y/N] ', true)) {
 			return;
@@ -189,6 +218,16 @@ class ScriptHandler
 		}
 	}
 
+	/**
+	 * This function parses the 'parameters.yml' file and returns an array of parameters
+	 *
+	 * @access  protected
+	 * @static 
+	 * @param   \Composer\Script\Event $event The script event class
+	 * @param   mixed $configDir the absolute path of the 'app/config' directory
+	 * @return  array|false parameters array or false in case of error
+	 *
+	 */
 	protected static function getParameters(Event $event, $configDir) {
 		try {
 			$config = Yaml::parse(file_get_contents($configDir . DIRECTORY_SEPARATOR . 'parameters.yml'));
