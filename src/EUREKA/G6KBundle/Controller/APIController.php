@@ -42,22 +42,88 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
+/**
+ *
+ * This class deals with the API function of the simulation engine.
+ *
+ * For a simulator to accept an API request, the following parameters must be defined in the "parameters.yml" file:
+ * <pre>
+ *    api:
+ *         &lt;simulator name&gt;:
+ *          step: &lt;step number&gt;
+ *          action: &lt;action button name&gt;
+ * </pre>
+ *
+ * the API conforms to the JSON API
+ *
+ * @see    http://jsonapi.org/
+ * @author Jacques Archimède
+ *
+ */
 class APIController extends BaseController {
 
+	/**
+	 * @var array      $datas API response datas
+	 *
+	 * @access  private
+	 *
+	 */
 	private $datas = array();
+
+	/**
+	 * @var array      $metas API response metas
+	 *
+	 * @access  private
+	 *
+	 */
 	private $metas = array();
+
+	/**
+	 * @var array      $errors API response errors, if any
+	 *
+	 * @access  private
+	 *
+	 */
 	private $errors = array();
 
+	/**
+	 * The entry point of the API request
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
+	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simu The simulator object
+	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Entity\Step The simulation step object or the API response object in JSON format
+	 *
+	 */
 	public function calculAction(Request $request, $simu)
 	{
 		return $this->runCalcul($request, $simu);
 	}
 
+	/**
+	 * The entry point of the API request in test mode
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
+	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simu The simulator object
+	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Entity\Step The simulation step object or the API response object in JSON format
+	 *
+	 */
 	public function tryItAction(Request $request, $simu)
 	{
 		return $this->runCalcul($request, $simu, true);
 	}
 
+	/**
+	 * Run the simulation engine
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
+	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simu The simulator object
+	 * @param   bool $test (default: false) if true, we are in test mode
+	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Entity\Step The simulation step object or the API response object in JSON format
+	 *
+	 */
 	protected function runCalcul(Request $request, $simu, $test = false)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
@@ -82,6 +148,16 @@ class APIController extends BaseController {
 		return $this->apiOutput($request, $form, $step);
 	}
 
+	/**
+	 * Composes the API response
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
+	 * @param   array $form array of request parameters
+	 * @param   \EUREKA\G6KBundle\Entity\Step $step The simulation step object
+	 * @return  \Symfony\Component\HttpFoundation\Response The API response object in JSON format
+	 *
+	 */
 	protected function apiOutput(Request $request, $form, Step $step)
 	{
 		$fields = array_fill_keys(preg_split('/\s*,\s*/', $request->query->get('fields', '')), 1);
@@ -202,6 +278,15 @@ class APIController extends BaseController {
 		return $response;
 	}
 
+	/**
+	 * Processes the API field
+	 *
+	 * @access  private
+	 * @param   array $form array of request parameters
+	 * @param   \EUREKA\G6KBundle\Entity\Field $field The field object
+	 * @return  void
+	 *
+	 */
 	private function processApiField($form, Field $field) {
 		if ($field->isDisplayable()) {
 			$id = $field->getData();
@@ -219,6 +304,15 @@ class APIController extends BaseController {
 		}
 	}
 
+	/**
+	 * Processes the API field data
+	 *
+	 * @access  private
+	 * @param   array $form array of request parameters
+	 * @param   \EUREKA\G6KBundle\Entity\Data $data The data object
+	 * @return  void
+	 *
+	 */
 	private function processApiFieldData($form, Data $data) {
 		$this->datas[$data->getName()] = $data->getValue();
 		$this->metas[$data->getName()] = $data->getLabel();
@@ -227,6 +321,15 @@ class APIController extends BaseController {
 		}
 	}
 
+	/**
+	 * Add response error
+	 *
+	 * @access  private
+	 * @param   array $form array of request parameters
+	 * @param   \EUREKA\G6KBundle\Entity\Data $data The data object
+	 * @return  void
+	 *
+	 */
 	private function addResponseError($form, Data $data) {
 		$name = $data->getName();
 		if (isset($form[$name])) {
@@ -244,6 +347,16 @@ class APIController extends BaseController {
 		}
 	}
 
+	/**
+	 * Composes a parameter error
+	 *
+	 * @access  private
+	 * @param   string $parameter the parameter name
+	 * @param   string $title Title of the error
+	 * @param   string $detail Detail of the error
+	 * @return  void
+	 *
+	 */
 	private function addParameterError($parameter, $title, $detail) {
 		$this->errors[] = array(
 			'status' => "" . Response::HTTP_BAD_REQUEST,
@@ -256,13 +369,23 @@ class APIController extends BaseController {
 		$this->error = true;
 	}
 
+	/**
+	 * Composes an entity error
+	 *
+	 * @access  private
+	 * @param   string $entity the entity name
+	 * @param   string $title Title of the error
+	 * @param   string $detail Detail of the error
+	 * @return  void
+	 *
+	 */
 	private function addEntityError($entity, $title, $detail) {
 		$this->errors[] = array(
 			'status' => "" . Response::HTTP_UNPROCESSABLE_ENTITY,
 			'title' => $title,
 			'detail' => $detail,
 			'source' => array(
-				'pointer' => $parameter
+				'pointer' => $entity
 			)
 		);
 		$this->error = true;
