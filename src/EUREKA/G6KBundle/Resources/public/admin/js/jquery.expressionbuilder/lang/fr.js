@@ -23,11 +23,11 @@ THE SOFTWARE.
 */
 
 ExpressionBuilder_I18N['fr'] = {
-	'menu-action-change': 'Changer cette opérande',
-	'menu-action-add': 'Ajouter une opérande après celle-ci',
-	'menu-action-insert': 'Insérer une opérande avant celle-ci',
+	'menu-action-change': 'Changer cet opérande',
+	'menu-action-add': 'Ajouter un opérande après celui-ci',
+	'menu-action-insert': 'Insérer un opérande avant celui-ci',
 	'menu-action-nested': 'Changer en une sous-expression entre-parenthèses&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
-	'menu-action-delete': 'Supprimer cette opérande',
+	'menu-action-delete': 'Supprimer cet opérande',
 	'literal-label': 'Constante',
 	'literal-placeholder': 'Entrez une valeur',
 	'fields-label': 'Champs',
@@ -36,7 +36,7 @@ ExpressionBuilder_I18N['fr'] = {
 	'parameters-label': 'Paramètres',
 	'miscellaneous-label': 'Divers',
 	'nested-expression-label': 'Sous-expression',
-	'operand-holder-tip': 'Cliquer pour changer cette opérande ou clic-droit pour plus d\'actions',
+	'operand-holder-tip': 'Cliquer pour changer cet opérande ou clic-droit pour plus d\'actions',
 	'operator-holder-tip': 'Cliquer pour changer cet opérateur',
 	'nested-expression-delete-tip': 'Cliquer pour changer cette sous-expression',
 	'missing-left-parenthesis': 'Il manque une parenthèse ouvrante',
