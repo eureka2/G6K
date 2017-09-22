@@ -10,39 +10,39 @@
 	<div class="row">
 		<div class="span3 bs-docs-sidebar">
 			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
-				<li data-level="1"><a href="#1">Simulateurs</a></li>
-				<li data-level="1"><a href="#2">Avant de commencer</a></li>
-				<li data-level="1"><a href="#3">Création d’une source de données</a></li>
-				<li data-level="1"><a href="#4">Création d’un simulateur</a></li>
-				<li data-level="2"><a href="#5">Sources de données utilisées</a></li>
-				<li data-level="3"><a href="#6">Requête simple</a></li>
-				<li data-level="3"><a href="#7">Requête complexe</a></li>
-				<li data-level="2"><a href="#8">Données</a></li>
-				<li data-level="2"><a href="#9">Étapes</a></li>
-				<li data-level="3"><a href="#10">Panneaux</a></li>
-				<li data-level="4"><a href="#11">Groupe de champs</a></li>
-				<li data-level="5"><a href="#12">Champs</a></li>
-				<li data-level="4"><a href="#13">Bloc d'info</a></li>
-				<li data-level="5"><a href="#14">Chapitre</a></li>
-				<li data-level="6"><a href="#15">Section</a></li>
-				<li data-level="3"><a href="#16">Notes de bas de page</a></li>
-				<li data-level="3"><a href="#17">Boutons d’actions</a></li>
-				<li data-level="2"><a href="#18">Règles métier</a></li>
-				<li data-level="2"><a href="#19">Profils</a></li>
-				<li data-level="2"><a href="#20">Enregistrement du simulateur</a></li>
+				<li data-level="1"><a href="#simulateurs">Simulateurs</a></li>
+				<li data-level="1"><a href="#avant-de-commencer">Avant de commencer</a></li>
+				<li data-level="1"><a href="#creation-d’une-source-de-donnees">Création d’une source de données</a></li>
+				<li data-level="1"><a href="#creation-d’un-simulateur">Création d’un simulateur</a></li>
+				<li data-level="2"><a href="#sources-de-donnees-utilisees">Sources de données utilisées</a></li>
+				<li data-level="3"><a href="#requete-simple">Requête simple</a></li>
+				<li data-level="3"><a href="#requete-complexe">Requête complexe</a></li>
+				<li data-level="2"><a href="#donnees">Données</a></li>
+				<li data-level="2"><a href="#etapes">Étapes</a></li>
+				<li data-level="3"><a href="#panneaux">Panneaux</a></li>
+				<li data-level="4"><a href="#groupe-de-champs">Groupe de champs</a></li>
+				<li data-level="5"><a href="#champs">Champs</a></li>
+				<li data-level="4"><a href="#bloc-d'info">Bloc d'info</a></li>
+				<li data-level="5"><a href="#chapitre">Chapitre</a></li>
+				<li data-level="6"><a href="#section">Section</a></li>
+				<li data-level="3"><a href="#notes-de-bas-de-page">Notes de bas de page</a></li>
+				<li data-level="3"><a href="#boutons-d’actions">Boutons d’actions</a></li>
+				<li data-level="2"><a href="#regles-metier">Règles métier</a></li>
+				<li data-level="2"><a href="#profils">Profils</a></li>
+				<li data-level="2"><a href="#enregistrement-du-simulateur">Enregistrement du simulateur</a></li>
 			</ul>
 		</div>
 		<div class="span9">
 			<div class="alert alert-danger" role="alert">
 ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 </div>
-			<h1 id="1">
+			<h1 id="simulateurs">
 				Simulateurs
 			</h1>
 			<p>Un simulateur de calcul est un service en ligne mis à la disposition d’un utilisateur pour lui permettre de calculer des résultats (taxes, prestations sociales, …) correspondant à sa situation particulière.</p>
 			<p>Les résultats sont calculés en fonction des données fournies par l’internaute, de données de références (ex : montant d’une taxe) et de règles qui correspondent à la législation en vigueur dans le domaine de la simulation.</p>
 			<p>La création des simulateurs est réservée aux utilisateurs disposant du rôle « Manager », « Administrateur » ou « Super administrateur ».</p>
-			<h1 id="2">
+			<h1 id="avant-de-commencer">
 				Avant de commencer
 			</h1>
 			<p>Avant de commencer la saisie du simulateur, bien réfléchir au scénario de simulation, à savoir son découpage en étapes et leurs enchainements. Une étape de simulation correspond à une page et réciproquement. </p>
@@ -92,12 +92,12 @@ ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 					</ul>
 				</li>
 			</ol>
-			<h1 id="3">
+			<h1 id="creation-d’une-source-de-donnees">
 				Création d’une source de données
 			</h1>
 			<p>Si vous avez besoin d’une source de données de référence et si celle-ci n'existe pas encore, il faut la créer avant de créer le simulateur.</p>
 			<p>Reportez-vous à la section <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'datasources-management' }) }}">« Création d'une source de données de référence »</a> de la documentation.</p>
-			<h1 id="4">
+			<h1 id="creation-d’un-simulateur">
 				Création d’un simulateur
 			</h1>
 			<p>Cliquez sur « Simulateurs » de la barre de menu :</p>
@@ -147,7 +147,7 @@ G6K constitue un fil d'Ariane de navigation où l'avant dernier élément est co
 				apparait en haut à droite de la page.
 Ce bouton permet d'envoyer les informations saisies ou modifiées au serveur à tout moment, parceque le bouton « Valider » ne fait que garder les informations dans la mémoire de votre ordinateur.
 			</p>
-			<h2 id="5">
+			<h2 id="sources-de-donnees-utilisees">
 				Sources de données utilisées
 			</h2>
 			<p>Dans le panneau dépliable « Sources de données utilisées » vous allez pouvoir définir les requêtes spécifiques d'accès aux données de référence des sources de données.
@@ -171,7 +171,7 @@ Certaines de ces requêtes peuvent nécessiter des paramètres qui doivent être
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-add-selected.png') }}" alt="" />
 			</p>
-			<h3 id="6">
+			<h3 id="requete-simple">
 				Requête simple
 			</h3>
 			<p>
@@ -240,7 +240,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-display-simple.png') }}" alt="" />
 			</p>
 			<p>Cette requête retournera un tableau de paires « 'taux'/valeur du taux ». Le chemin d'accés spécifié (0/taux) sélectionnera la première ligne du tableau et la valeur coorespondant à 'taux'. Nous verrons plus loin comment déclarer une donnée pour stocker la valeur du taux.</p>
-			<h3 id="7">
+			<h3 id="requete-complexe">
 				Requête complexe
 			</h3>
 			<p>Dans ce cas, les champs « Table », « Colonnes sélectionnées », « Filtre », « Trié par », « Nombre de résultats » et « à partir de » sont remplacés par le champ « Requête SQL » car ces éléments figurent dans la requête.</p>
@@ -281,11 +281,11 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-datasource-display-complex.png') }}" alt="" />
 			</p>
-			<h2 id="8">
+			<h2 id="donnees">
 				Données
 			</h2>
 			<p>Les données permettent stocker des valeurs quel que soit leurs provenances (saisies par l'utilisateur, source de données, élément ou résultat de calculs). Elles peuvent être regrouper en groupes de données, ce qui permet de les disposer dans les rangées d’un tableau (Cf. disposition « grille » d’un groupe de champs, plus loin dans ce document).</p>
-			<p>Pour ajouter une donnée ou un groupe de données, cliquez sur « Ajouter » de la barre de titre « Données » puis sur « Ajouter une donnée » ou « Ajouter un groupe de données » selon lz cas.</p>
+			<p>Pour ajouter une donnée ou un groupe de données, cliquez sur « Ajouter » de la barre de titre « Données » puis sur « Ajouter une donnée » ou « Ajouter un groupe de données » selon le cas.</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add-button.png') }}" alt="" />
 			</p>
@@ -414,7 +414,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-choice-add.png') }}" alt="" />
 			</p>
-			<h2 id="9">
+			<h2 id="etapes">
 				Étapes
 			</h2>
 			<p>Une fois que vous avez défini vos sources de données et vos données vous allez pouvoir commencer à paramétrer la ou les étapes de votre simulateur.</p>
@@ -443,7 +443,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 				<li>« Sortie » :</li>
 				<li>« UI interactif » :</li>
 			</ol>
-			<h3 id="10">
+			<h3 id="panneaux">
 				Panneaux
 			</h3>
 			<p>Les panneaux composent les étapes et sont eux-mêmes constitués de groupes de champs. S'il y plusieurs panneaux, ils seront présentés sous forme d’onglets :</p>
@@ -460,7 +460,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<ol>
 				<li>« Libellé » : Titre du panneau</li>
 			</ol>
-			<h4 id="11">
+			<h4 id="groupe-de-champs">
 				Groupe de champs
 			</h4>
 			<p>
@@ -475,7 +475,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<ol>
 				<li>« Lien d’activation du Pop-in » :</li>
 			</ol>
-			<h5 id="12">
+			<h5 id="champs">
 				Champs
 			</h5>
 			<p>
@@ -512,28 +512,28 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 					</ul>
 				</li>
 			</ol>
-			<h4 id="13">
+			<h4 id="bloc-d'info">
 				Bloc d'info
 			</h4>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-blockinfo-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs optionnels :</strong></p>
-			<h5 id="14">
+			<h5 id="chapitre">
 				Chapitre
 			</h5>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-chapter-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs optionnels :</strong></p>
-			<h6 id="15">
+			<h6 id="section">
 				Section
 			</h6>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-section-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs optionnels :</strong></p>
-			<h3 id="16">
+			<h3 id="notes-de-bas-de-page">
 				Notes de bas de page
 			</h3>
 			<p>
@@ -545,7 +545,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnote-add.png') }}" alt="" />
 			</p>
-			<h3 id="17">
+			<h3 id="boutons-d’actions">
 				Boutons d’actions
 			</h3>
 			<p>Les boutons d’actions permettent par exemple de passer d’une étape à l’autre ou de réinitialiser un formulaire.</p>
@@ -564,7 +564,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 				<li>« URI / étape » : Titre du champ.</li>
 				<li>« Classe » : Niveau d’importance du bouton « Principale » le bouton sera mis en avant visuellement et « Secondaire » le bouton ne sera pas mis en avant visuellement.</li>
 			</ol>
-			<h2 id="18">
+			<h2 id="regles-metier">
 				Règles métier
 			</h2>
 			<p>Les règles métier se définissent de la façon suivante : « Lorsque … » conditions, « Alors … » actions et « sinon … » actions.</p>
@@ -585,7 +585,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 				<li>Effectuer un calcul et l'affecter à une donnée</li>
 			</ul>
 			<p>Se reporter à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'business-rules' }) }}">Composition des règles métier</a> pour savoir comment on compose une règle.</p>
-			<h2 id="19">
+			<h2 id="profils">
 				Profils
 			</h2>
 			<p>Lorsque vous allez définir des profils vous prédéfinirez des données liées aux différent profils.</p>
@@ -605,7 +605,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 				<li>« Donnée » : Choix de la donnée que l’on souhaite pré remplir.</li>
 				<li>« Valeur » : Valeur pré rempli.</li>
 			</ol>
-			<h2 id="20">
+			<h2 id="enregistrement-du-simulateur">
 				Enregistrement du simulateur
 			</h2>
 			<p>

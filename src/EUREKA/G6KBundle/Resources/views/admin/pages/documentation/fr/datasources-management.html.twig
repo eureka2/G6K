@@ -10,28 +10,28 @@
 	<div class="row">
 		<div class="span3 bs-docs-sidebar">
 			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
-				<li data-level="1"><a href="#1">Source de données</a></li>
-				<li data-level="1"><a href="#2">Source de données interne.</a></li>
-				<li data-level="2"><a href="#3">Création de la source de données</a></li>
-				<li data-level="3"><a href="#4">Création des tables</a></li>
-				<li data-level="3"><a href="#5">Alimentation des tables</a></li>
-				<li data-level="3"><a href="#6">Import de données dans les tables</a></li>
-				<li data-level="3"><a href="#7">Modifier la structure d'une table</a></li>
-				<li data-level="3"><a href="#8">Supprimer une table</a></li>
-				<li data-level="2"><a href="#9">Exporter une source de données</a></li>
-				<li data-level="2"><a href="#10">Modifier une source de données</a></li>
-				<li data-level="2"><a href="#11">Supprimer une source de données</a></li>
-				<li data-level="2"><a href="#12">Import de la source de données</a></li>
-				<li data-level="1"><a href="#13">Source de données externe.</a></li>
-				<li data-level="2"><a href="#14">Base de données distante</a></li>
-				<li data-level="3"><a href="#15">Déclaration de la source de données</a></li>
-				<li data-level="4"><a href="#16">Déclaration des tables</a></li>
-				<li data-level="2"><a href="#17">Web service</a></li>
-				<li data-level="3"><a href="#18">Déclaration de la source de données</a></li>
+				<li data-level="1"><a href="#source-de-donnees">Source de données</a></li>
+				<li data-level="1"><a href="#source-de-donnees-interne.">Source de données interne.</a></li>
+				<li data-level="2"><a href="#creation-de-la-source-de-donnees">Création de la source de données</a></li>
+				<li data-level="3"><a href="#creation-des-tables">Création des tables</a></li>
+				<li data-level="3"><a href="#alimentation-des-tables">Alimentation des tables</a></li>
+				<li data-level="3"><a href="#import-de-donnees-dans-les-tables">Import de données dans les tables</a></li>
+				<li data-level="3"><a href="#modifier-la-structure-d'une-table">Modifier la structure d'une table</a></li>
+				<li data-level="3"><a href="#supprimer-une-table">Supprimer une table</a></li>
+				<li data-level="2"><a href="#exporter-une-source-de-donnees">Exporter une source de données</a></li>
+				<li data-level="2"><a href="#modifier-une-source-de-donnees">Modifier une source de données</a></li>
+				<li data-level="2"><a href="#supprimer-une-source-de-donnees">Supprimer une source de données</a></li>
+				<li data-level="2"><a href="#import-de-la-source-de-donnees">Import de la source de données</a></li>
+				<li data-level="1"><a href="#source-de-donnees-externe.">Source de données externe.</a></li>
+				<li data-level="2"><a href="#base-de-donnees-distante">Base de données distante</a></li>
+				<li data-level="3"><a href="#declaration-de-la-source-de-donnees">Déclaration de la source de données</a></li>
+				<li data-level="4"><a href="#declaration-des-tables">Déclaration des tables</a></li>
+				<li data-level="2"><a href="#web-service">Web service</a></li>
+				<li data-level="3"><a href="#declaration-de-la-source-de-donnees-0">Déclaration de la source de données</a></li>
 			</ul>
 		</div>
 		<div class="span9">
-			<h1 id="1">
+			<h1 id="source-de-donnees">
 				Source de données
 			</h1>
 			<p>Une source de données permet à un simulateur d'interroger les valeurs de référence du domaine de la simulation pour réaliser la simulation.</p>
@@ -39,10 +39,10 @@
 			<p>Dans tous les cas, vous devez déclarer la source afin qu'elle puisse être utilisée par le moteur de simulation.</p>
 			<p>S'il s'agit d'une base de données (interne ou distante), vous devez également décrire les tables et leurs colonnes afin que le moteur de simulation puisse construire les requêtes permettant de retrouver les valeurs recherchées.</p>
 			<p>S'il s'agit d'un web service, vous devez indiquer l'url de l'API ainsi que la méthode HTTP à mettre en oeuvre (GET ou POST). Les paramètres de l'API seront définis par le simulateur qui l'utilise au moment de la création de ce dernier.</p>
-			<h1 id="2">
+			<h1 id="source-de-donnees-interne.">
 				Source de données interne.
 			</h1>
-			<h2 id="3">
+			<h2 id="creation-de-la-source-de-donnees">
 				Création de la source de données
 			</h2>
 			<p>Cliquez sur « Sources de données » de la barre de menu</p>
@@ -78,7 +78,7 @@
 			<div class="alert alert-info" role="alert">
 A NOTER : Le formulaire ne contient pas de bouton « Annuler ». Si vous souhaitez abandonner vos modifications, il suffit de passer à une autre page. Le cas échéant, le navigateur vous demandera de confirmer la sortie de la page du formulaire. C'est le cas pour tous les formulaires de saisie présentés dans ce document.
 </div>
-			<h3 id="4">
+			<h3 id="creation-des-tables">
 				Création des tables
 			</h3>
 			<p>
@@ -106,7 +106,7 @@ A NOTER : Le formulaire ne contient pas de bouton « Annuler ». Si vous souha
 			<p>Assurez-vous d’ajouter tous les champs nécessaires avant d’enregistrer.</p>
 			<p>Si vous ajoutez un champ après avoir enregistré, vous ne pourrez plus sélectionner « Oui » pour l'attribut « Non nul ». C'est une contrainte liée au SGBDR.</p>
 			<p>La procédure est la même pour créer une autre table.</p>
-			<h3 id="5">
+			<h3 id="alimentation-des-tables">
 				Alimentation des tables
 			</h3>
 			<p>
@@ -140,7 +140,7 @@ A NOTER : Le formulaire ne contient pas de bouton « Annuler ». Si vous souha
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/datasources-management-table-row-deleted.png') }}" alt="" />
 			</p>
-			<h3 id="6">
+			<h3 id="import-de-donnees-dans-les-tables">
 				Import de données dans les tables
 			</h3>
 			<p>Un autre moyen d’alimenter votre table est d'importer des données au format .csv ou .txt provenant d'un fichier Excel. Si vous choisissez d'importer des données, cliquez sur le bouton « Importer données » de la barre de titre.</p>
@@ -166,7 +166,7 @@ A NOTER : Le formulaire ne contient pas de bouton « Annuler ». Si vous souha
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/datasources-management-table-import-txt.png') }}" alt="" />
 			</p>
-			<h3 id="7">
+			<h3 id="modifier-la-structure-d'une-table">
 				Modifier la structure d'une table
 			</h3>
 			<p>La structure de la table (son nom, son libellé, les caractéristiques de ses champs) peut être modifiée dans la limite des contraintes imposées par le SGBDR sous-jacent.
@@ -185,7 +185,7 @@ Des champs peuvent être rajoutés ou supprimés.</p>
 				<br />
 				Reportez-vous à cette section pour suivre la procédure.
 			</p>
-			<h3 id="8">
+			<h3 id="supprimer-une-table">
 				Supprimer une table
 			</h3>
 			<p>Dans la barre latérale gauche, sélectionnez la source à laquelle appartient la table puis cliquez sur le libellé de la table dans le bloc du haut.</p>
@@ -197,7 +197,7 @@ Des champs peuvent être rajoutés ou supprimés.</p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/datasources-management-table-delete-confirm.png') }}" alt="" />
 			</p>
 			<p>Confirmez l'action pour supprimer définitivement la table. Cette opération est irréversible.</p>
-			<h2 id="9">
+			<h2 id="exporter-une-source-de-donnees">
 				Exporter une source de données
 			</h2>
 			<p>Vous pouvez exporter une source de données en vue de l'archiver, de la diffuser ou tout simplement l'importer dans une autre instance de G6K (Cf. supra).</p>
@@ -222,7 +222,7 @@ Des champs peuvent être rajoutés ou supprimés.</p>
 				<br />
 				Il vous est proposé en téléchargement pour archivage.
 			</p>
-			<h2 id="10">
+			<h2 id="modifier-une-source-de-donnees">
 				Modifier une source de données
 			</h2>
 			<p>Cliquez sur « Sources de données » de la barre de menu.</p>
@@ -246,7 +246,7 @@ Des champs peuvent être rajoutés ou supprimés.</p>
 				<br />
 				Reportez-vous à cette section pour suivre la procédure.
 			</p>
-			<h2 id="11">
+			<h2 id="supprimer-une-source-de-donnees">
 				Supprimer une source de données
 			</h2>
 			<p>Cliquez sur « Sources de données » de la barre de menu</p>
@@ -263,7 +263,7 @@ Des champs peuvent être rajoutés ou supprimés.</p>
 			</p>
 			<p>Confirmez l'action pour supprimer définitivement la source.</p>
 			<p>Cette opération est irréversible. Si toutefois vous avez exporté la source de données (Cf. « Exporter une source de données » plus haut dans ce document), vous pouvez réimporter la source en suivant la procédure ci-dessous.</p>
-			<h2 id="12">
+			<h2 id="import-de-la-source-de-donnees">
 				Import de la source de données
 			</h2>
 			<p>Vous avez la possibilité d’importer une source de données qui aurait été exportée d'une autre instance de G6K.</p>
@@ -280,13 +280,13 @@ Des champs peuvent être rajoutés ou supprimés.</p>
 				<li>« Fichier du schéma JSON » : Cliquez sur « Choisissez un fichier » et sélectionnez le fichier .schema.json.</li>
 				<li>« Fichier des données JSON » : Cliquez sur « Choisissez un fichier » et sélectionnez le fichier .json.</li>
 			</ol>
-			<h1 id="13">
+			<h1 id="source-de-donnees-externe.">
 				Source de données externe.
 			</h1>
-			<h2 id="14">
+			<h2 id="base-de-donnees-distante">
 				Base de données distante
 			</h2>
-			<h3 id="15">
+			<h3 id="declaration-de-la-source-de-donnees">
 				Déclaration de la source de données
 			</h3>
 			<p>Cliquez sur « Sources de données » de la barre de menu</p>
@@ -314,14 +314,14 @@ Des champs peuvent être rajoutés ou supprimés.</p>
 				<li>« Mot de passe de la base de données » : Mot de passe associé à l'identifiant.</li>
 			</ol>
 			<p>Vous pouvez décrire la source de données dans l’espace « Description » prévu à cet effet.</p>
-			<h4 id="16">
+			<h4 id="declaration-des-tables">
 				Déclaration des tables
 			</h4>
 			<p>La déclaration des tables est identique à la création des tables d'une source de données interne.</p>
-			<h2 id="17">
+			<h2 id="web-service">
 				Web service
 			</h2>
-			<h3 id="18">
+			<h3 id="declaration-de-la-source-de-donnees-0">
 				Déclaration de la source de données
 			</h3>
 			<p>Cliquez sur « Sources de données » de la barre de menu</p>

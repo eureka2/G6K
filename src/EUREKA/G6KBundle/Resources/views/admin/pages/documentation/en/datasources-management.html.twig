@@ -10,28 +10,28 @@
 	<div class="row">
 		<div class="span3 bs-docs-sidebar">
 			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
-				<li data-level="1"><a href="#1">Data source</a></li>
-				<li data-level="1"><a href="#2">Internal data source.</a></li>
-				<li data-level="2"><a href="#3">Creating the data source</a></li>
-				<li data-level="3"><a href="#4">Creating tables</a></li>
-				<li data-level="3"><a href="#5">Table feeding</a></li>
-				<li data-level="3"><a href="#6">Importing data into tables</a></li>
-				<li data-level="3"><a href="#7">Modify the structure of a table</a></li>
-				<li data-level="3"><a href="#8">Delete a table</a></li>
-				<li data-level="2"><a href="#9">Export a data source</a></li>
-				<li data-level="2"><a href="#10">Edit a data source</a></li>
-				<li data-level="2"><a href="#11">Delete a data source</a></li>
-				<li data-level="2"><a href="#12">Importing the data source</a></li>
-				<li data-level="1"><a href="#13">External data source.</a></li>
-				<li data-level="2"><a href="#14">Remote database</a></li>
-				<li data-level="3"><a href="#15">Declaration of the data source</a></li>
-				<li data-level="4"><a href="#16">Declaration of tables</a></li>
-				<li data-level="2"><a href="#17">Web service</a></li>
-				<li data-level="3"><a href="#18">Declaration of the data source</a></li>
+				<li data-level="1"><a href="#data-source">Data source</a></li>
+				<li data-level="1"><a href="#internal-data-source.">Internal data source.</a></li>
+				<li data-level="2"><a href="#creating-the-data-source">Creating the data source</a></li>
+				<li data-level="3"><a href="#creating-tables">Creating tables</a></li>
+				<li data-level="3"><a href="#table-feeding">Table feeding</a></li>
+				<li data-level="3"><a href="#importing-data-into-tables">Importing data into tables</a></li>
+				<li data-level="3"><a href="#modify-the-structure-of-a-table">Modify the structure of a table</a></li>
+				<li data-level="3"><a href="#delete-a-table">Delete a table</a></li>
+				<li data-level="2"><a href="#export-a-data-source">Export a data source</a></li>
+				<li data-level="2"><a href="#edit-a-data-source">Edit a data source</a></li>
+				<li data-level="2"><a href="#delete-a-data-source">Delete a data source</a></li>
+				<li data-level="2"><a href="#importing-the-data-source">Importing the data source</a></li>
+				<li data-level="1"><a href="#external-data-source.">External data source.</a></li>
+				<li data-level="2"><a href="#remote-database">Remote database</a></li>
+				<li data-level="3"><a href="#declaration-of-the-data-source">Declaration of the data source</a></li>
+				<li data-level="4"><a href="#declaration-of-tables">Declaration of tables</a></li>
+				<li data-level="2"><a href="#web-service">Web service</a></li>
+				<li data-level="3"><a href="#declaration-of-the-data-source-0">Declaration of the data source</a></li>
 			</ul>
 		</div>
 		<div class="span9">
-			<h1 id="1">
+			<h1 id="data-source">
 				Data source
 			</h1>
 			<p>A data source allows a simulator to query the simulation field reference values ​​to perform the simulation.</p>
@@ -47,10 +47,10 @@
 				<br />
 				The parameters of the API will be defined by the simulator which uses it at the time of creation of the latter.
 			</p>
-			<h1 id="2">
+			<h1 id="internal-data-source.">
 				Internal data source.
 			</h1>
-			<h2 id="3">
+			<h2 id="creating-the-data-source">
 				Creating the data source
 			</h2>
 			<p>Click on « Data sources » of the menu bar</p>
@@ -90,7 +90,7 @@
 			<div class="alert alert-info" role="alert">
 NOTE: The form does not contain a « Cancel » button. If you want to leave your changes, just go to another page. If necessary, the browser will ask you to confirm the exit of the form page. This is the case for all the input forms presented in this document.
 </div>
-			<h3 id="4">
+			<h3 id="creating-tables">
 				Creating tables
 			</h3>
 			<p>After the data source is saved, the database is present but does not contain any table. To create one, click the <a href="../images/en/datasources-management-table-create-button.png"></a> button in the left side menu.</p>
@@ -114,7 +114,7 @@ NOTE: The form does not contain a « Cancel » button. If you want to leave you
 			<p>Be sure to add all the required fields before saving.</p>
 			<p>If you add a field after saving, you will no longer be able to select « Yes » for the « Not Null » attribute. It is a constraint linked to the RDBMS.</p>
 			<p>The procedure is the same to create another table.</p>
-			<h3 id="5">
+			<h3 id="table-feeding">
 				Table feeding
 			</h3>
 			<p>
@@ -148,7 +148,7 @@ NOTE: The form does not contain a « Cancel » button. If you want to leave you
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-row-deleted.png') }}" alt="" />
 			</p>
-			<h3 id="6">
+			<h3 id="importing-data-into-tables">
 				Importing data into tables
 			</h3>
 			<p>
@@ -178,7 +178,7 @@ NOTE: The form does not contain a « Cancel » button. If you want to leave you
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-import-txt.png') }}" alt="" />
 			</p>
-			<h3 id="7">
+			<h3 id="modify-the-structure-of-a-table">
 				Modify the structure of a table
 			</h3>
 			<p>The structure of the table (its name, its label, the characteristics of its fields) can be modified within the constraints imposed by the underlying RDBMS.
@@ -197,7 +197,7 @@ Fields can be added or deleted.</p>
 				<br />
 				Refer to this section to follow the procedure.
 			</p>
-			<h3 id="8">
+			<h3 id="delete-a-table">
 				Delete a table
 			</h3>
 			<p>In the left sidebar, select the source to which the table belongs and click the table label in the top block.</p>
@@ -209,7 +209,7 @@ Fields can be added or deleted.</p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/datasources-management-table-delete-confirm.png') }}" alt="" />
 			</p>
 			<p>Confirm the action to permanently delete the table. This operation is irreversible.</p>
-			<h2 id="9">
+			<h2 id="export-a-data-source">
 				Export a data source
 			</h2>
 			<p>You can export a data source for archiving, broadcasting, or simply importing it into another instance of G6K (see above).</p>
@@ -234,7 +234,7 @@ Fields can be added or deleted.</p>
 				<br />
 				It is available for download and archiving.
 			</p>
-			<h2 id="10">
+			<h2 id="edit-a-data-source">
 				Edit a data source
 			</h2>
 			<p>Click « Data sources » from the menu bar.</p>
@@ -258,7 +258,7 @@ Fields can be added or deleted.</p>
 				<br />
 				Refer to this section to follow the procedure.
 			</p>
-			<h2 id="11">
+			<h2 id="delete-a-data-source">
 				Delete a data source
 			</h2>
 			<p>Click « Data sources » from the menu bar.</p>
@@ -275,7 +275,7 @@ Fields can be added or deleted.</p>
 			</p>
 			<p>Confirm the action to permanently delete the source.</p>
 			<p>This operation is irreversible. If you have exported the data source (see « Export a data Source » earlier in this document), you can re-import the source by following the procedure below.</p>
-			<h2 id="12">
+			<h2 id="importing-the-data-source">
 				Importing the data source
 			</h2>
 			<p>You can import a data source that would have been exported from another instance of G6K.</p>
@@ -292,13 +292,13 @@ Fields can be added or deleted.</p>
 				<li>« JSON Schema »: Click « Browse... » (or « Choose File ») and select the .schema.json file.</li>
 				<li>« JSON Data »: Click « Browse... » (or « Choose File ») and select the .json file.</li>
 			</ol>
-			<h1 id="13">
+			<h1 id="external-data-source.">
 				External data source.
 			</h1>
-			<h2 id="14">
+			<h2 id="remote-database">
 				Remote database
 			</h2>
-			<h3 id="15">
+			<h3 id="declaration-of-the-data-source">
 				Declaration of the data source
 			</h3>
 			<p>Click « Data sources » from the menu bar.</p>
@@ -326,14 +326,14 @@ Fields can be added or deleted.</p>
 				<li>« Database password »: The password associated with the identifier.</li>
 			</ol>
 			<p>You can describe the data source in the « Description » space provided for this purpose.</p>
-			<h4 id="16">
+			<h4 id="declaration-of-tables">
 				Declaration of tables
 			</h4>
 			<p>The declaration of the tables is identical to the creation of the tables of an internal data source.</p>
-			<h2 id="17">
+			<h2 id="web-service">
 				Web service
 			</h2>
-			<h3 id="18">
+			<h3 id="declaration-of-the-data-source-0">
 				Declaration of the data source
 			</h3>
 			<p>Click on « Data sources » in the menu bar</p>

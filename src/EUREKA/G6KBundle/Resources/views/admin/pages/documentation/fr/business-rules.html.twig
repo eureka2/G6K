@@ -10,16 +10,439 @@
 	<div class="row">
 		<div class="span3 bs-docs-sidebar">
 			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
-				<li data-level="1"><a href="#1">Aperçu</a></li>
+				<li data-level="1"><a href="#regles-metier">Règles métier</a></li>
+				<li data-level="2"><a href="#connecteurs-de-conditions">Connecteurs de conditions</a></li>
+				<li data-level="2"><a href="#operateurs">Opérateurs</a></li>
+				<li data-level="3"><a href="#operateurs-de-chaines">Opérateurs de chaînes</a></li>
+				<li data-level="3"><a href="#operateurs-numeriques">Opérateurs numériques</a></li>
+				<li data-level="3"><a href="#operateurs-de-date">Opérateurs de date</a></li>
+				<li data-level="3"><a href="#operateurs-de-choix">Opérateurs de choix</a></li>
+				<li data-level="3"><a href="#operateurs-booleens">Opérateurs booléens</a></li>
 			</ul>
 		</div>
 		<div class="span9">
 			<div class="alert alert-danger" role="alert">
 Document en cours d'élaboration.
 </div>
-			<h1 id="1">
-				Aperçu
+			<h1 id="regles-metier">
+				Règles métier
 			</h1>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-delete-button.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-connectors-list.png') }}" alt="" />
+			</p>
+			<h2 id="connecteurs-de-conditions">
+				Connecteurs de conditions
+			</h2>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>toutes</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>au moins une</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>aucune</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-operands.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-operators.png') }}" alt="" />
+			</p>
+			<h2 id="operateurs">
+				Opérateurs
+			</h2>
+			<h3 id="operateurs-de-chaines">
+				Opérateurs de chaînes
+			</h3>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>est renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est égal à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas égal à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>contient</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>ne contient pas</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>correspondances</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<h3 id="operateurs-numeriques">
+				Opérateurs numériques
+			</h3>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>est renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est égal à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas égal à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est supérieur à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est supérieur ou égal à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est inférieur à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est inférieur ou égal à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>contient</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>ne contient pas</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<h3 id="operateurs-de-date">
+				Opérateurs de date
+			</h3>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>est renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>correspond à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>ne correspond pas à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est postérieure à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas antérieure à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est antérieure à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas postérieure à</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<h3 id="operateurs-de-choix">
+				Opérateurs de choix
+			</h3>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>est renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est égal à</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas égal à</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<h3 id="operateurs-booleens">
+				Opérateurs booléens
+			</h3>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>est renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>n'est pas renseigné</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est vrai</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>est faux</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-expression.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-subcondition.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-add-button.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-add.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-actions-list.png') }}" alt="" />
+			</p>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>afficher l'erreur</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>afficher l'avertissement</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Cacher</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Montrer</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Mettre</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Effacer</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-notifyerror.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-notifyerror-message.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-notifyerror-target.png') }}" alt="" />
+			</p>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>la donnée</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>l'ensemble des données</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>le groupe de données</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-notifyerror-target-datas-list.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-showobject-targets-list.png') }}" alt="" />
+			</p>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>l'étape</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>le panneau</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>le groupe de champs</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>le champ</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>le bouton d'action</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>la note de bas de page</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>le choix</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-showobject-examples.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-setattribute-targets-list.png') }}" alt="" />
+			</p>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>la valeur</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>la valeur par défaut</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>la valeur minimale</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>le valeur maximal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>l'index de résulta</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>l'explication</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-setattribute-example.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-action-delete-button.png') }}" alt="" />
+			</p>
 		</div>
 	</div>
 </div>
