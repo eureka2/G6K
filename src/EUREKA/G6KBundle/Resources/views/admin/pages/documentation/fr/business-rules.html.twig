@@ -11,13 +11,17 @@
 		<div class="span3 bs-docs-sidebar">
 			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
 				<li data-level="1"><a href="#regles-metier">Règles métier</a></li>
-				<li data-level="2"><a href="#connecteurs-de-conditions">Connecteurs de conditions</a></li>
+				<li data-level="1"><a href="#saisie-d-une-regle">Saisie d'une règle</a></li>
+				<li data-level="2"><a href="#connecteurs">Connecteurs</a></li>
 				<li data-level="2"><a href="#operateurs">Opérateurs</a></li>
 				<li data-level="3"><a href="#operateurs-de-chaines">Opérateurs de chaînes</a></li>
 				<li data-level="3"><a href="#operateurs-numeriques">Opérateurs numériques</a></li>
 				<li data-level="3"><a href="#operateurs-de-date">Opérateurs de date</a></li>
 				<li data-level="3"><a href="#operateurs-de-choix">Opérateurs de choix</a></li>
 				<li data-level="3"><a href="#operateurs-booleens">Opérateurs booléens</a></li>
+				<li data-level="1"><a href="#modification-d-une-regle">Modification d'une règle</a></li>
+				<li data-level="1"><a href="#suppression-d-une-regle">Suppression d'une règle</a></li>
+				<li data-level="1"><a href="#tri-des-regles">Tri des règles</a></li>
 			</ul>
 		</div>
 		<div class="span9">
@@ -27,24 +31,90 @@ Document en cours d'élaboration.
 			<h1 id="regles-metier">
 				Règles métier
 			</h1>
+			<p>Ce sont les règles « métier » qui déterminent le comportement du simulateur. Elles se déclenchent lorsque le contexte change.</p>
+			<p>Un changement de contexte se traduit toujours par l'acquisition ou la modification d'une donnée.</p>
+			<p>G6k s'informe du changement de contexte en revérifiant les conditions associées aux règles lorsque la valeur d'une donnée change.</p>
+			<p>Ainsi lorsque l'utilisateur saisit une valeur, que g6K accède à une donnée de référence ou qu'une valeur est calculée, les règles impactées sont déclenchées et les actions associées sont réalisées :</p>
+			<p>Les actions qui peuvent être réalisées sont :</p>
+			<ul>
+				<li>Montrer ou cacher une partie de la page (un champ, un groupe de champs, un panneau, un bouton, ...)</li>
+				<li>Afficher un message d'erreur ou d'avertissement</li>
+				<li>Effectuer un calcul et l'affecter à une donnée</li>
+			</ul>
+			<p>Une règle métier a la syntaxe suivante :</p>
+			<pre class="prettyprint">
+&lt;règle métier&gt; : <span class="label label-default">Lorsque ...</span>&lt;condition&gt;[<span class="label label-default">alors ...</span>&lt;action&gt;...&lt;action&gt;][<span class="label label-default">sinon ...</span>&lt;action&gt; ... &lt;action&gt;]
+</pre>
+			<p><strong>&lt;condition&gt;</strong></p>
+			<pre class="prettyprint">
+&lt;condition&gt; : &lt;condition simple&gt; | &lt;condition composée&gt; &lt;condition simple&gt; : &lt;champ&gt;&lt;opérateur&gt;[(&lt;valeur&gt; | &lt;expression&gt;)] &lt;condition composée&gt; : &lt;connecteur&gt; &lt;condition&gt; ... &lt;condition&gt;
+</pre>
+			<p><strong>&lt;opérateur&gt;</strong></p>
+			<pre class="prettyprint">
+&lt;opérateur&gt; : <span class="label label-default">contient</span> | <span class="label label-default">correspond à</span> | <span class="label label-default">est antérieure à</span> | <span class="label label-default">est égal à</span> | <span class="label label-default">est faux</span> | <span class="label label-default">est inférieur à</span> | <span class="label label-default">est inférieur ou égal à</span> | <span class="label label-default">est postérieure à</span> | <span class="label label-default">est renseigné</span> | <span class="label label-default">est supérieur à</span> | <span class="label label-default">est supérieur ou égal à</span> | <span class="label label-default">est vrai</span> | <span class="label label-default">ne contient pas</span> | <span class="label label-default">ne correspond pas à</span> | <span class="label label-default">n'est pas antérieure à</span> | <span class="label label-default">n'est pas égal à</span> | <span class="label label-default">n'est pas postérieure à</span> | <span class="label label-default">n'est pas renseigné</span>
+</pre>
+			<p><strong>&lt;connecteur&gt;</strong></p>
+			<pre class="prettyprint">
+&lt;connecteur&gt; : <span class="label label-default">toutes</span> | <span class="label label-default">au moins une</span> | <span class="label label-default">aucune</span>
+</pre>
+			<p><strong>&lt;action&gt;</strong></p>
+			<pre class="prettyprint">
+&lt;action&gt; : (<span class="label label-default">afficher l'erreur</span> | <span class="label label-default">afficher l'avertissement</span>)&lt;message&gt;<span class="label label-default">portant sur</span><span class="label label-default">la donnée</span>&lt;donnée&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">afficher l'erreur</span> | <span class="label label-default">afficher l'avertissement</span>)&lt;message&gt;<span class="label label-default">portant sur</span><span class="label label-default">l'ensemble des données</span>
+ou
+&lt;action&gt; : (<span class="label label-default">afficher l'erreur</span> | <span class="label label-default">afficher l'avertissement</span>)&lt;message&gt;<span class="label label-default">portant sur</span><span class="label label-default">le groupe de données</span>&lt;groupe de données&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">l'étape</span>&lt;étape&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le panneau</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">dont le libellé est</span>&lt;panneau&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le groupe de champs</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">dont le libellé est</span>&lt;groupe de champs&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le champ</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">du groupe de champs</span>&lt;groupe de champs&gt;<span class="label label-default">dont le libellé est</span>&lt;champ&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la colonne</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">du groupe de champs</span>&lt;groupe de champs&gt;<span class="label label-default">dont le libellé est</span>&lt;colonne&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la rangée</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">du groupe de champs</span>&lt;groupe de champs&gt;<span class="label label-default">dont le libellé est</span>&lt;rangée&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le bloc d'infos</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">dont le libellé est</span>&lt;bloc d'infos&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le chapître</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">du bloc d'infos</span>&lt;bloc d'infos&gt;<span class="label label-default">dont le libellé est</span>&lt;chapître&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la section</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">du bloc d'infos</span>&lt;bloc d'infos&gt;<span class="label label-default">du chapître</span>&lt;chapître&gt;<span class="label label-default">dont le libellé est</span>&lt;section&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le bouton d'action</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">dont le libellé est</span>&lt;bouton d'action&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la note de bas de page</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">dont le libellé est</span>&lt;note de bas de page&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le choix</span> <span class="label label-default">de la donnée</span>&lt;donnée&gt;<span class="label label-default">dont le libellé est</span>&lt;choix&gt;
+</pre>
+			<p>L'interface de G6K permettant de saisir ou modifier une régle est la suivante :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add.png') }}" alt="" />
 			</p>
+			<p>Pour y accéder, cliquez sur le bouton « Simulateurs » de la barre de menu :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-simulators-buttonbar.png') }}" alt="" />
 			</p>
+			<p>Puis sélectionnez le simulateur dans le menu latéral gauche.</p>
+			<p>Pour saisir une nouvelle règle, cliquez sur le bouton « Ajouter » du panneau « Règles métier » :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add-button.png') }}" alt="" />
 			</p>
+			<p>Pour modifier une régle, dépliez le panneau « Règles métier » puis cliquez sur le bouton « Modifier » de la barre de titre de la règle que vous souhaitez modifier :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-delete-button.png') }}" alt="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-edit-button.png') }}" alt="" />
 			</p>
+			<h1 id="saisie-d-une-regle">
+				Saisie d'une règle
+			</h1>
+			<h2 id="connecteurs">
+				Connecteurs
+			</h2>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-connectors-list.png') }}" alt="" />
 			</p>
-			<h2 id="connecteurs-de-conditions">
-				Connecteurs de conditions
-			</h2>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -55,15 +125,15 @@ Document en cours d'élaboration.
 				<tbody>
 					<tr>
 						<td>toutes</td>
-						<td></td>
+						<td>Toutes les conditions des lignes du niveau immédiatement inférieur doivent être vraies (c'est l'équivalent du ET)</td>
 					</tr>
 					<tr>
 						<td>au moins une</td>
-						<td></td>
+						<td>Au moins une des conditions des lignes du niveau immédiatement inférieur doit être vraie (c'est l'équivalent du OU)</td>
 					</tr>
 					<tr>
 						<td>aucune</td>
-						<td></td>
+						<td>Aucune des conditions des lignes du niveau immédiatement inférieur doit être vraie</td>
 					</tr>
 				</tbody>
 			</table>
@@ -274,6 +344,15 @@ Document en cours d'élaboration.
 				</tbody>
 			</table>
 			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-delete-button.png') }}" alt="" />
+			</p>
+			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-expression.png') }}" alt="" />
 			</p>
 			<p>
@@ -376,7 +455,27 @@ Document en cours d'élaboration.
 						<td></td>
 					</tr>
 					<tr>
+						<td>le bloc d'infos</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>le chapître</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>la section</td>
+						<td></td>
+					</tr>
+					<tr>
 						<td>le groupe de champs</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>la colonne</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>la rangée</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -428,7 +527,7 @@ Document en cours d'élaboration.
 						<td></td>
 					</tr>
 					<tr>
-						<td>l'index de résulta</td>
+						<td>l'index de résultat</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -443,6 +542,23 @@ Document en cours d'élaboration.
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-action-delete-button.png') }}" alt="" />
 			</p>
+			<h1 id="modification-d-une-regle">
+				Modification d'une règle
+			</h1>
+			<h1 id="suppression-d-une-regle">
+				Suppression d'une règle
+			</h1>
+			<p>Pour supprimer une régle, dépliez le panneau « Règles métier » puis cliquez sur le bouton « Supprimer » de la barre de titre de la règle que vous souhaitez supprimer :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-delete-button.png') }}" alt="" />
+			</p>
+			<p>Puis confirmez la suppression :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-delete-confirm.png') }}" alt="" />
+			</p>
+			<h1 id="tri-des-regles">
+				Tri des règles
+			</h1>
 		</div>
 	</div>
 </div>

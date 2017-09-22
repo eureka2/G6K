@@ -11,13 +11,17 @@
 		<div class="span3 bs-docs-sidebar">
 			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
 				<li data-level="1"><a href="#business-rules">Business rules</a></li>
-				<li data-level="2"><a href="#conditions-connectors">Conditions connectors</a></li>
-				<li data-level="2"><a href="#oerators">Oerators</a></li>
+				<li data-level="1"><a href="#entering-a-rule">Entering a rule</a></li>
+				<li data-level="2"><a href="#connectors">Connectors</a></li>
+				<li data-level="2"><a href="#operators">Operators</a></li>
 				<li data-level="3"><a href="#string-operators">String operators</a></li>
 				<li data-level="3"><a href="#numeric-operators">Numeric operators</a></li>
 				<li data-level="3"><a href="#date-operators">Date operators</a></li>
 				<li data-level="3"><a href="#choice-operators">Choice operators</a></li>
 				<li data-level="3"><a href="#boolean-operators">Boolean operators</a></li>
+				<li data-level="1"><a href="#editing-a-rule">Editing a rule</a></li>
+				<li data-level="1"><a href="#deleting-a-rule">Deleting a rule</a></li>
+				<li data-level="1"><a href="#sorting-rules">Sorting rules</a></li>
 			</ul>
 		</div>
 		<div class="span9">
@@ -27,24 +31,90 @@ Document under development.
 			<h1 id="business-rules">
 				Business rules
 			</h1>
+			<p>It is the « business rules » that determine the behavior of the simulator. They are triggered when the context changes.</p>
+			<p>A change of context always results in the acquisition or modification of data.</p>
+			<p>G6k inquiries about the context change by reverting the conditions associated with the rules when the value of a data changes.</p>
+			<p>Thus, when the user enters a value, g6K accesses a reference data or a value is calculated, the impacted rules are triggered and the associated actions are performed:</p>
+			<p>The actions that can be carried out are:</p>
+			<ul>
+				<li>Show or hide part of the page (a field, a fields set, a panel, a button, ...)</li>
+				<li>Display an error or warning message</li>
+				<li>Perform a calculation and assign it to a data</li>
+			</ul>
+			<p>A business rule has the following syntax:</p>
+			<pre class="prettyprint">
+&lt;business rule&gt;: <span class="label label-default">When ...</span>&lt;condition&gt;[<span class="label label-default">then do ...</span>&lt;action&gt;...&lt;action&gt;][<span class="label label-default">else do ...</span>&lt;action&gt; ... &lt;action&gt;]
+</pre>
+			<p><strong>&lt;condition&gt;</strong></p>
+			<pre class="prettyprint">
+&lt;condition&gt;: &lt;simple condition&gt; | &lt;composite condition&gt; &lt;simple condition&gt;: &lt;field&gt;&lt;operator&gt;[(&lt;value&gt; | &lt;expression&gt;)] &lt;composite condition&gt;: &lt;connector&gt; &lt;condition&gt; ... &lt;condition&gt;
+</pre>
+			<p><strong>&lt;operator&gt;</strong></p>
+			<pre class="prettyprint">
+&lt;operator&gt;:<span class="label label-default">contains</span> | <span class="label label-default">corresponds to</span> | <span class="label label-default">does not corresponds to</span> | <span class="label label-default">is after</span> | <span class="label label-default">is before</span> | <span class="label label-default">is equal to</span> | <span class="label label-default">is greater than</span> | <span class="label label-default">is greater than or equal to</span> | <span class="label label-default">is less than</span> | <span class="label label-default">is less than or equal to</span> | <span class="label label-default">is not after</span> | <span class="label label-default">is not before</span> | <span class="label label-default">is not equal to</span> | <span class="label label-default">is not present</span> | <span class="label label-default">is present</span> | <span class="label label-default">is true</span> | <span class="label label-default">matches</span> | <span class="label label-default">not contains</span>
+</pre>
+			<p><strong>&lt;connector&gt;</strong></p>
+			<pre class="prettyprint">
+&lt;connector&gt; : <span class="label label-default">All</span> | <span class="label label-default">Any</span> | <span class="label label-default">None</span>
+</pre>
+			<p><strong>&lt;action&gt;</strong></p>
+			<pre class="prettyprint">
+&lt;action&gt; : (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)&lt;message&gt;<span class="label label-default">on</span><span class="label label-default">the data</span>&lt;data&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)&lt;message&gt;<span class="label label-default">on</span><span class="label label-default">the dataset</span>
+ou
+&lt;action&gt; : (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)&lt;message&gt;<span class="label label-default">on</span><span class="label label-default">the datagroup</span>&lt;datagroup&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the step</span>&lt;step&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the panel</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">whose label is</span>&lt;panel&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the fieldset</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">whose label is</span>&lt;fieldset&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the field</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of fieldset</span>&lt;fieldset&gt;<span class="label label-default">whose label is</span>&lt;field&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the column</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of fieldset</span>&lt;fieldset&gt;<span class="label label-default">whose label is</span>&lt;column&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the fieldrow</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of fieldset</span>&lt;fieldset&gt;<span class="label label-default">whose label is</span>&lt;fieldrow&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the blockinfo</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">whose label is</span>&lt;blockinfo&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the chapter</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of blockinfo</span>&lt;blockinfo&gt;<span class="label label-default">whose label is</span>&lt;chapter&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the section</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of blockinfo</span>&lt;blockinfo&gt;<span class="label label-default">of chapter</span>&lt;chapter&gt;<span class="label label-default">whose label is</span>&lt;section&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the actionbutton</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">whose label is</span>&lt;actionbutton&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the footnote</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">whose label is</span>&lt;footnote&gt;
+ou
+&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the choice</span> <span class="label label-default">of data</span>&lt;data&gt;<span class="label label-default">whose label is</span>&lt;choice&gt;
+</pre>
+			<p>The G6K interface for entering or modifying a rule is as follows:</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-add.png') }}" alt="" />
 			</p>
+			<p>To access it, click on the « Simulators » button on the menu bar:</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-simulators-buttonbar.png') }}" alt="" />
 			</p>
+			<p>Then select the simulator from the left side menu.</p>
+			<p>To enter a new rule, click the « Add » button in the « Business rules » panel:</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-add-button.png') }}" alt="" />
 			</p>
+			<p>To edit a rule, unfold the « Business rules » panel and click the « Edit » button in the title bar of the rule you want to modify:</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-delete-button.png') }}" alt="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-edit-button.png') }}" alt="" />
 			</p>
+			<h1 id="entering-a-rule">
+				Entering a rule
+			</h1>
+			<h2 id="connectors">
+				Connectors
+			</h2>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-connectors-list.png') }}" alt="" />
 			</p>
-			<h2 id="conditions-connectors">
-				Conditions connectors
-			</h2>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -54,16 +124,16 @@ Document under development.
 				</thead>
 				<tbody>
 					<tr>
-						<td>all</td>
-						<td></td>
+						<td>All</td>
+						<td>All line conditions of the next lower level must be true (this is the equivalent of AND)</td>
 					</tr>
 					<tr>
-						<td>any</td>
-						<td></td>
+						<td>Any</td>
+						<td>At least one of the conditions of the lines of the next lower level must be true (this is the equivalent of OR)</td>
 					</tr>
 					<tr>
-						<td>none</td>
-						<td></td>
+						<td>None</td>
+						<td>None of the conditions of the lines of the next lower level must be true</td>
 					</tr>
 				</tbody>
 			</table>
@@ -73,8 +143,8 @@ Document under development.
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-conditions-operators.png') }}" alt="" />
 			</p>
-			<h2 id="oerators">
-				Oerators
+			<h2 id="operators">
+				Operators
 			</h2>
 			<h3 id="string-operators">
 				String operators
@@ -82,7 +152,7 @@ Document under development.
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Nom</th>
+						<th>Name</th>
 						<th>Description</th>
 					</tr>
 				</thead>
@@ -123,7 +193,7 @@ Document under development.
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Nom</th>
+						<th>Name</th>
 						<th>Description</th>
 					</tr>
 				</thead>
@@ -176,7 +246,7 @@ Document under development.
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Nom</th>
+						<th>Name</th>
 						<th>Description</th>
 					</tr>
 				</thead>
@@ -221,7 +291,7 @@ Document under development.
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Nom</th>
+						<th>Name</th>
 						<th>Description</th>
 					</tr>
 				</thead>
@@ -250,7 +320,7 @@ Document under development.
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Nom</th>
+						<th>Name</th>
 						<th>Description</th>
 					</tr>
 				</thead>
@@ -273,6 +343,15 @@ Document under development.
 					</tr>
 				</tbody>
 			</table>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="" />
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-delete-button.png') }}" alt="" />
+			</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-conditions-expression.png') }}" alt="" />
 			</p>
@@ -376,7 +455,27 @@ Document under development.
 						<td></td>
 					</tr>
 					<tr>
+						<td>the blockinfo</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>the chapter</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>the section</td>
+						<td></td>
+					</tr>
+					<tr>
 						<td>the fieldset</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>the column</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>the fieldrow</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -443,6 +542,23 @@ Document under development.
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-action-delete-button.png') }}" alt="" />
 			</p>
+			<h1 id="editing-a-rule">
+				Editing a rule
+			</h1>
+			<h1 id="deleting-a-rule">
+				Deleting a rule
+			</h1>
+			<p>To delete a rule, expand the « Business rules » panel and click the « Delete » button on the title bar of the rule you want to delete:</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-delete-button.png') }}" alt="" />
+			</p>
+			<p>Then confirm the deletion:</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-delete-confirm.png') }}" alt="" />
+			</p>
+			<h1 id="sorting-rules">
+				Sorting rules
+			</h1>
 		</div>
 	</div>
 </div>
