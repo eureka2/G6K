@@ -11,14 +11,25 @@
 		<div class="span3 bs-docs-sidebar">
 			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
 				<li data-level="1"><a href="#regles-metier">Règles métier</a></li>
+				<li data-level="1"><a href="#interface-de-composition-des-regles">Interface de composition des règles</a></li>
 				<li data-level="1"><a href="#saisie-d-une-regle">Saisie d'une règle</a></li>
-				<li data-level="2"><a href="#connecteurs">Connecteurs</a></li>
-				<li data-level="2"><a href="#operateurs">Opérateurs</a></li>
-				<li data-level="3"><a href="#operateurs-de-chaines">Opérateurs de chaînes</a></li>
-				<li data-level="3"><a href="#operateurs-numeriques">Opérateurs numériques</a></li>
-				<li data-level="3"><a href="#operateurs-de-date">Opérateurs de date</a></li>
-				<li data-level="3"><a href="#operateurs-de-choix">Opérateurs de choix</a></li>
-				<li data-level="3"><a href="#operateurs-booleens">Opérateurs booléens</a></li>
+				<li data-level="2"><a href="#saisie-d-une-condition">Saisie d'une condition</a></li>
+				<li data-level="3"><a href="#condition-simple">Condition simple</a></li>
+				<li data-level="4"><a href="#selection-de-l-operande">Sélection de l'opérande</a></li>
+				<li data-level="4"><a href="#selection-de-l-operateur">Sélection de l'opérateur</a></li>
+				<li data-level="5"><a href="#operateurs">Opérateurs</a></li>
+				<li data-level="6"><a href="#operateurs-de-chaines">Opérateurs de chaînes</a></li>
+				<li data-level="6"><a href="#operateurs-numeriques">Opérateurs numériques</a></li>
+				<li data-level="6"><a href="#operateurs-de-date">Opérateurs de date</a></li>
+				<li data-level="6"><a href="#operateurs-de-choix">Opérateurs de choix</a></li>
+				<li data-level="6"><a href="#operateurs-booleens">Opérateurs booléens</a></li>
+				<li data-level="4"><a href="#saisie-la-valeur-/-de-l-expression">Saisie la valeur / de l'expression</a></li>
+				<li data-level="3"><a href="#suppression-d-une-condition">Suppression d'une condition</a></li>
+				<li data-level="2"><a href="#saisie-d-une-action">Saisie d'une action</a></li>
+				<li data-level="3"><a href="#afficher-une-erreur-ou-un-avertissement">Afficher une erreur ou un avertissement</a></li>
+				<li data-level="3"><a href="#cacher-ou-montrer-un-element-du-formulaire-de-simulation">Cacher ou montrer un élément du formulaire de simulation</a></li>
+				<li data-level="3"><a href="#affecter-une-valeur-a-un-attribut-d-une-donnee">Affecter une valeur à un attribut d'une donnée</a></li>
+				<li data-level="2"><a href="#suppression-d-une-action">Suppression d'une action</a></li>
 				<li data-level="1"><a href="#modification-d-une-regle">Modification d'une règle</a></li>
 				<li data-level="1"><a href="#suppression-d-une-regle">Suppression d'une règle</a></li>
 				<li data-level="1"><a href="#tri-des-regles">Tri des règles</a></li>
@@ -34,7 +45,7 @@ Document en cours d'élaboration.
 			<p>Ce sont les règles « métier » qui déterminent le comportement du simulateur. Elles se déclenchent lorsque le contexte change.</p>
 			<p>Un changement de contexte se traduit toujours par l'acquisition ou la modification d'une donnée.</p>
 			<p>G6k s'informe du changement de contexte en revérifiant les conditions associées aux règles lorsque la valeur d'une donnée change.</p>
-			<p>Ainsi lorsque l'utilisateur saisit une valeur, que g6K accède à une donnée de référence ou qu'une valeur est calculée, les règles impactées sont déclenchées et les actions associées sont réalisées :</p>
+			<p>Ainsi lorsque l'utilisateur saisit une valeur, que g6K accède à une donnée de référence ou qu'une valeur est calculée, les règles impactées sont évaluées et les actions associées sont exécutées le cas échéant.</p>
 			<p>Les actions qui peuvent être réalisées sont :</p>
 			<ul>
 				<li>Montrer ou cacher une partie de la page (un champ, un groupe de champs, un panneau, un bouton, ...)</li>
@@ -47,7 +58,7 @@ Document en cours d'élaboration.
 </pre>
 			<p><strong>&lt;condition&gt;</strong></p>
 			<pre class="prettyprint">
-&lt;condition&gt; : &lt;condition simple&gt; | &lt;condition composée&gt; &lt;condition simple&gt; : &lt;champ&gt;&lt;opérateur&gt;[(&lt;valeur&gt; | &lt;expression&gt;)] &lt;condition composée&gt; : &lt;connecteur&gt; &lt;condition&gt; ... &lt;condition&gt;
+&lt;condition&gt; : &lt;condition simple&gt; | &lt;condition composée&gt; &lt;condition simple&gt; : &lt;opérande&gt;&lt;opérateur&gt;[(&lt;valeur&gt; | &lt;expression&gt;)] &lt;condition composée&gt; : &lt;connecteur&gt; &lt;condition&gt; ... &lt;condition&gt;
 </pre>
 			<p><strong>&lt;opérateur&gt;</strong></p>
 			<pre class="prettyprint">
@@ -79,9 +90,9 @@ ou
 ou
 &lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le bloc d'infos</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">dont le libellé est</span>&lt;bloc d'infos&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le chapître</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">du bloc d'infos</span>&lt;bloc d'infos&gt;<span class="label label-default">dont le libellé est</span>&lt;chapître&gt;
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le chapitre</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">du bloc d'infos</span>&lt;bloc d'infos&gt;<span class="label label-default">dont le libellé est</span>&lt;chapitre&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la section</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">du bloc d'infos</span>&lt;bloc d'infos&gt;<span class="label label-default">du chapître</span>&lt;chapître&gt;<span class="label label-default">dont le libellé est</span>&lt;section&gt;
+&lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la section</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">du panneau</span>&lt;panneau&gt;<span class="label label-default">du bloc d'infos</span>&lt;bloc d'infos&gt;<span class="label label-default">du chapitre</span>&lt;chapitre&gt;<span class="label label-default">dont le libellé est</span>&lt;section&gt;
 ou
 &lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le bouton d'action</span> <span class="label label-default">de l'étape</span>&lt;étape&gt;<span class="label label-default">dont le libellé est</span>&lt;bouton d'action&gt;
 ou
@@ -89,7 +100,19 @@ ou
 ou
 &lt;action&gt; : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le choix</span> <span class="label label-default">de la donnée</span>&lt;donnée&gt;<span class="label label-default">dont le libellé est</span>&lt;choix&gt;
 </pre>
-			<p>L'interface de G6K permettant de saisir ou modifier une régle est la suivante :</p>
+			<p>Evaluer une règle consiste à évaluer la condition qui la compose. Le résultat de l'évaluation a trois états : « vrai », « faux » ou « indéterminé ».</p>
+			<p>
+				Si l'état est « vrai » alors les actions <span class="label label-default">alors ...</span> sont exécutées.
+				<br />
+				Si l'état est « faux » alors les actions <span class="label label-default">sinon ...</span> sont exécutées.
+				<br />
+				Si l'état est « indéterminé » alors aucune action n'est exécutée.
+			</p>
+			<p>L'évaluation renvoie « indéterminé », si au moins une des opérandes ne contient aucune valeur.</p>
+			<h1 id="interface-de-composition-des-regles">
+				Interface de composition des règles
+			</h1>
+			<p>L'interface de G6K permettant de saisir ou modifier une règle est la suivante :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add.png') }}" alt="" />
 			</p>
@@ -102,23 +125,45 @@ ou
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-add-button.png') }}" alt="" />
 			</p>
-			<p>Pour modifier une régle, dépliez le panneau « Règles métier » puis cliquez sur le bouton « Modifier » de la barre de titre de la règle que vous souhaitez modifier :</p>
+			<p>Pour modifier une règle, dépliez le panneau « Règles métier » puis cliquez sur le bouton « Modifier » de la barre de titre de la règle que vous souhaitez modifier :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-edit-button.png') }}" alt="" />
 			</p>
 			<h1 id="saisie-d-une-regle">
 				Saisie d'une règle
 			</h1>
-			<h2 id="connecteurs">
-				Connecteurs
+			<p>Le formulaire de saisie d'une règle comporte 4 blocs :</p>
+			<ol>
+				<li>le bloc de saisie des attributs de la règle.</li>
+				<li>le bloc de saisie de la condition de déclenchement des actions de la règle.</li>
+				<li>le bloc de saisie des actions à exécuter lorsque la condition est vraie.</li>
+				<li>le bloc de saisie des actions à exécuter lorsque la condition est fausse.</li>
+			</ol>
+			<p><strong>Attributs :</strong></p>
+			<ol>
+				<li>« Nom » : Nom de la règle.</li>
+				<li>« Libellé » : Libellé de la règle.</li>
+			</ol>
+			<p>Le nom et le libellé apparaissent dans la barre de titre du panneau de la règle pour vous permettre de la repérer lorsque le panneau est replié. Donnez donc un libellé explicite à la règle.</p>
+			<h2 id="saisie-d-une-condition">
+				Saisie d'une condition
 			</h2>
 			<p>
+				Dans le bloc de saisie de la condition figure la ligne : 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-connector.png') }}" alt="" />
+				<br />
+				Cliquez sur le mot souligné pour sélectionner le connecteur : 
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-connectors-list.png') }}" alt="" />
+			</p>
+			<p>
+				Le connecteur permet de saisir une « condition composée » en combinant les « conditions simples » que vous saisirez directement sous le connecteur.
+				<br />
+				Les conditions sont présentées par niveaux. Le connecteur introduit un niveau de conditions. Un niveau est matérialisé par un retrait par rapport au connecteur.
 			</p>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Nom</th>
+						<th>Connecteur</th>
 						<th>Description</th>
 					</tr>
 				</thead>
@@ -137,18 +182,64 @@ ou
 					</tr>
 				</tbody>
 			</table>
+			<p>Par exemple :</p>
+			<pre class="prettyprint">
+<span class="label label-default">toutes</span> les conditions suivantes sont satisfaites : <span class="label label-default">condition simple A</span> <span class="label label-default">au moins une</span> des conditions suivantes est satisfaite : <span class="label label-default">condition simple B</span> <span class="label label-default">condition simple C</span>
+</pre>
+			<p>traduit l'expression booléenne : <code>condition simple A ET (condition simple B OU condition simple C)</code></p>
+			<pre class="prettyprint">
+<span class="label label-default">condition simple A</span> est de niveau 1, <span class="label label-default">condition simple B</span> et <span class="label label-default">condition simple C</span> sont de niveau 2.
+</pre>
+			<p>
+				Cliquez sur 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="" />
+				pour ajouter une condition composée en introduisant un niveau de sous-conditions sous ce connecteur.
+				<br />
+				La ligne ci-dessous s'affiche sous le connecteur avec un retrait matérialisé par la flèche :
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-subcondition.png') }}" alt="" />
+			</p>
+			<p>ou</p>
+			<p>
+				Cliquez sur 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="" />
+				à droite du connecteur pour ajouter une condition simple du niveau de ce connecteur.
+				<br />
+				La ligne ci-dessous s'affiche sous le connecteur avec un retrait :
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-condition.png') }}" alt="" />
+			</p>
+			<h3 id="condition-simple">
+				Condition simple
+			</h3>
+			<p>Comme vu en début de ce document, une condition simple à pour syntaxe :</p>
+			<pre class="prettyprint">
+&lt;condition simple&gt; : &lt;opérande&gt;&lt;opérateur&gt;[(&lt;valeur&gt; | &lt;expression&gt;)]
+</pre>
+			<h4 id="selection-de-l-operande">
+				Sélection de l'opérande
+			</h4>
+			<p>Cliquez sur le premier élément souligné de la condition, une liste déroulante s'affiche :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-operands.png') }}" alt="" />
 			</p>
+			<p>Les éléments de cette liste sont composés à partir des données que vous avez définies dans le panneau « Données ».</p>
+			<h4 id="selection-de-l-operateur">
+				Sélection de l'opérateur
+			</h4>
+			<p>Cliquez sur le deuxième élément souligné de la condition, une liste déroulante s'affiche :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-operators.png') }}" alt="" />
 			</p>
-			<h2 id="operateurs">
+			<p>La composition de cette liste d'opérateurs dépend du type de donnée de l'opérande. Ces opérateurs sont décrits ci-après :</p>
+			<h5 id="operateurs">
 				Opérateurs
-			</h2>
-			<h3 id="operateurs-de-chaines">
+			</h5>
+			<h6 id="operateurs-de-chaines">
 				Opérateurs de chaînes
-			</h3>
+			</h6>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -159,37 +250,37 @@ ou
 				<tbody>
 					<tr>
 						<td>est renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande contient une valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>n'est pas renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande ne contient aucune valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>est égal à</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la valeur de la donnée associée à l'opérande est égale à la valeur du résultat de l'évaluation de l'expression, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>n'est pas égal à</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la valeur de la donnée associée à l'opérande est différente de la valeur du résultat de l'évaluation de l'expression, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>contient</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la valeur de la donnée associée à l'opérande contient la chaîne retournée par l'évaluation de l'expression, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>ne contient pas</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la valeur de la donnée associée à l'opérande ne contient pas la chaîne retournée par l'évaluation de l'expression, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>correspondances</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la valeur de la donnée associée à l'opérande correspond à l'expression régulière retourné par l'évaluation de l'expression, « faux » sinon.</td>
 					</tr>
 				</tbody>
 			</table>
-			<h3 id="operateurs-numeriques">
+			<h6 id="operateurs-numeriques">
 				Opérateurs numériques
-			</h3>
+			</h6>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -200,19 +291,19 @@ ou
 				<tbody>
 					<tr>
 						<td>est renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande contient une valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>n'est pas renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande ne contient aucune valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>est égal à</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la valeur de la donnée associée à l'opérande est égale à la valeur du résultat de l'évaluation de l'expression, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>n'est pas égal à</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la valeur de la donnée associée à l'opérande est différente de la valeur du résultat de l'évaluation de l'expression, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>est supérieur à</td>
@@ -240,9 +331,9 @@ ou
 					</tr>
 				</tbody>
 			</table>
-			<h3 id="operateurs-de-date">
+			<h6 id="operateurs-de-date">
 				Opérateurs de date
-			</h3>
+			</h6>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -253,11 +344,11 @@ ou
 				<tbody>
 					<tr>
 						<td>est renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande contient une valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>n'est pas renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande ne contient aucune valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>correspond à</td>
@@ -285,9 +376,9 @@ ou
 					</tr>
 				</tbody>
 			</table>
-			<h3 id="operateurs-de-choix">
+			<h6 id="operateurs-de-choix">
 				Opérateurs de choix
-			</h3>
+			</h6>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -298,25 +389,25 @@ ou
 				<tbody>
 					<tr>
 						<td>est renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande contient une valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>n'est pas renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande ne contient aucune valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>est égal à</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la valeur de la donnée associée à l'opérande est égale à la valeur du résultat de l'évaluation de l'expression, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>n'est pas égal à</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la valeur de la donnée associée à l'opérande est différente de la valeur du résultat de l'évaluation de l'expression, « faux » sinon.</td>
 					</tr>
 				</tbody>
 			</table>
-			<h3 id="operateurs-booleens">
+			<h6 id="operateurs-booleens">
 				Opérateurs booléens
-			</h3>
+			</h6>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -327,11 +418,11 @@ ou
 				<tbody>
 					<tr>
 						<td>est renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande contient une valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>n'est pas renseigné</td>
-						<td></td>
+						<td>L'évaluation retourne « vrai » si la donnée associée à l'opérande ne contient aucune valeur, « faux » sinon.</td>
 					</tr>
 					<tr>
 						<td>est vrai</td>
@@ -344,20 +435,35 @@ ou
 				</tbody>
 			</table>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="" />
+				Les opérateurs « est renseigné », « n'est pas renseigné », « est vrai » et « est faux » sont des opérateurs unaires c'est-à-dire qu'ils n'opèrent que sur l'opérande. Il n'y pas d'expression à leur droite.
+				<br />
+				Les autres opérateurs sont des opérateurs binaires.
 			</p>
+			<h4 id="saisie-la-valeur-/-de-l-expression">
+				Saisie la valeur / de l'expression
+			</h4>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="" />
-			</p>
-			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-delete-button.png') }}" alt="" />
+				Si l'opérateur sélectionné est un opérateur binaire, une boite à liste s'affiche après l'opérateur.
+				<br />
+				Si l'opérande est de type « choix », la boite à liste affichée est la liste des valeurs possibles de l'opérande.
+				<br />
+				Sinon la boite à liste vous permet de composer une expression :
 			</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-expression.png') }}" alt="" />
 			</p>
+			<p>Se reporter à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition des expressions</a> pour savoir comment saisir une expression.</p>
+			<h3 id="suppression-d-une-condition">
+				Suppression d'une condition
+			</h3>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-conditions-subcondition.png') }}" alt="" />
+				Pour supprimer une condition simple ou composée, cliquez sur le bouton 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-delete-button.png') }}" alt="" />
+				à droite de la condition.
 			</p>
+			<h2 id="saisie-d-une-action">
+				Saisie d'une action
+			</h2>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-add-button.png') }}" alt="" />
 			</p>
@@ -370,7 +476,7 @@ ou
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Nom</th>
+						<th>Action</th>
 						<th>Description</th>
 					</tr>
 				</thead>
@@ -401,6 +507,9 @@ ou
 					</tr>
 				</tbody>
 			</table>
+			<h3 id="afficher-une-erreur-ou-un-avertissement">
+				Afficher une erreur ou un avertissement
+			</h3>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-notifyerror.png') }}" alt="" />
 			</p>
@@ -435,6 +544,9 @@ ou
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-notifyerror-target-datas-list.png') }}" alt="" />
 			</p>
+			<h3 id="cacher-ou-montrer-un-element-du-formulaire-de-simulation">
+				Cacher ou montrer un élément du formulaire de simulation
+			</h3>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-showobject-targets-list.png') }}" alt="" />
 			</p>
@@ -459,7 +571,7 @@ ou
 						<td></td>
 					</tr>
 					<tr>
-						<td>le chapître</td>
+						<td>le chapitre</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -496,9 +608,13 @@ ou
 					</tr>
 				</tbody>
 			</table>
+			<p><strong>Exemples d'actions permettant de montrer des éléments de formulaire</strong></p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-showobject-examples.png') }}" alt="" />
 			</p>
+			<h3 id="affecter-une-valeur-a-un-attribut-d-une-donnee">
+				Affecter une valeur à un attribut d'une donnée
+			</h3>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-setattribute-targets-list.png') }}" alt="" />
 			</p>
@@ -536,29 +652,48 @@ ou
 					</tr>
 				</tbody>
 			</table>
+			<p><strong>Exemple d'action permettant d'affecter le résultat d'un calcul à une donnée</strong></p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-action-setattribute-example.png') }}" alt="" />
 			</p>
+			<h2 id="suppression-d-une-action">
+				Suppression d'une action
+			</h2>
 			<p>
+				Pour supprimer une action, cliquez sur le bouton 
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-action-delete-button.png') }}" alt="" />
+				à gauche de l'action.
 			</p>
 			<h1 id="modification-d-une-regle">
 				Modification d'une règle
 			</h1>
+			<p>Pour modifier une règle, cliquez sur le bouton « Modifier » de la barre de titre de la règle à modifier :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-edit-button.png') }}" alt="" />
+			</p>
+			<p>Le formulaire d'édition d'une règle est le même que celui de saisie d'une règle, reportez-vous donc à la section <a href="#saisie-d-une-regle">Saisie d'une règle</a> du présent document.</p>
 			<h1 id="suppression-d-une-regle">
 				Suppression d'une règle
 			</h1>
-			<p>Pour supprimer une régle, dépliez le panneau « Règles métier » puis cliquez sur le bouton « Supprimer » de la barre de titre de la règle que vous souhaitez supprimer :</p>
+			<p>Pour supprimer une règle, dépliez le panneau « Règles métier » puis cliquez sur le bouton « Supprimer » de la barre de titre de la règle que vous souhaitez supprimer :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-delete-button.png') }}" alt="" />
 			</p>
 			<p>Puis confirmez la suppression :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-rule-delete-confirm.png') }}" alt="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-rule-delete-confirm.png') }}" alt="" />
 			</p>
 			<h1 id="tri-des-regles">
 				Tri des règles
 			</h1>
+			<p>
+				Pour réordonner les règles, déplier le panneau « Règles métier », cliquez la barre de titre de la règle que vous souhaitez déplacer et tout en maintenant le bouton gauche de la souris enfoncée (le curseur 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/drag-cursor.png') }}" alt="" />
+				apparait), glissez la règle jusqu'à l'emplacement désiré.
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/business-rules-rule-drag.png') }}" alt="" />
+			</p>
 		</div>
 	</div>
 </div>

@@ -20,7 +20,7 @@
     Translator.add("Add action button", "Ajouter un bouton d'action", "messages", "fr");
     Translator.add("Add a sub-folder or a file into \u00ab%folder%\u00bb", "Ajouter un sous-dossier ou un fichier dans \u00ab%folder%\u00bb", "messages", "fr");
     Translator.add("Add blockinfo", "Ajouter un bloc d'info", "messages", "fr");
-    Translator.add("Add chapter", "Ajouter un chap\u00eetre", "messages", "fr");
+    Translator.add("Add chapter", "Ajouter un chapitre", "messages", "fr");
     Translator.add("Add choice", "Ajouter un choix", "messages", "fr");
     Translator.add("Add column", "Ajouter une colonne", "messages", "fr");
     Translator.add("Add Condition", "Ajouter une condition", "messages", "fr");
@@ -58,7 +58,7 @@
     Translator.add("April", "Avril", "messages", "fr");
     Translator.add("Are you sure you want to delete the action button : %label%", "Voulez-vous vraiment supprimer le bouton d'action : %label%", "messages", "fr");
     Translator.add("Are you sure you want to delete the blockinfo : %label%", "Voulez-vous vraiment supprimer le bloc d'infos : %label%", "messages", "fr");
-    Translator.add("Are you sure you want to delete the chapter : %label%", "Voulez-vous vraiment supprimer le chap\u00eetre : %label%", "messages", "fr");
+    Translator.add("Are you sure you want to delete the chapter : %label%", "Voulez-vous vraiment supprimer le chapitre : %label%", "messages", "fr");
     Translator.add("Are you sure you want to delete the column : %label%", "Voulez-vous vraiment supprimer la colonne : %label%", "messages", "fr");
     Translator.add("Are you sure you want to delete the data : %label% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la donn\u00e9e : %label% ?", "messages", "fr");
     Translator.add("Are you sure you want to delete the data group : %label% ?", "\u00cates-vous s\u00fbr de vouloir supprimer le groupe de donn\u00e9es : %label% ?", "messages", "fr");
@@ -124,13 +124,13 @@
     Translator.add("Can't update %table% : %error%", "Impossible de mettre \u00e0 jour %table% : %error%", "messages", "fr");
     Translator.add("Cancel", "Annuler", "messages", "fr");
     Translator.add("ceil", "arrondiParExces", "messages", "fr");
-    Translator.add("chapter", "chap\u00eetre", "messages", "fr");
-    Translator.add("Chapter", "Chap\u00eetre", "messages", "fr");
-    Translator.add("Chapter #%id% : %label%", "Chap\u00eetre #%id% : %label%", "messages", "fr");
-    Translator.add("Chapter %id% (nolabel)", "Chap\u00eetre %id% (pas de libell\u00e9)", "messages", "fr");
-    Translator.add("Chapter icon", "Ic\u00f4ne du chap\u00eetre", "messages", "fr");
-    Translator.add("Chapter label", "Etiquette du chap\u00eetre", "messages", "fr");
-    Translator.add("Chapter name", "Nom du chap\u00eetre", "messages", "fr");
+    Translator.add("chapter", "chapitre", "messages", "fr");
+    Translator.add("Chapter", "Chapitre", "messages", "fr");
+    Translator.add("Chapter #%id% : %label%", "Chapitre #%id% : %label%", "messages", "fr");
+    Translator.add("Chapter %id% (nolabel)", "Chapitre %id% (pas de libell\u00e9)", "messages", "fr");
+    Translator.add("Chapter icon", "Ic\u00f4ne du chapitre", "messages", "fr");
+    Translator.add("Chapter label", "Etiquette du chapitre", "messages", "fr");
+    Translator.add("Chapter name", "Nom du chapitre", "messages", "fr");
     Translator.add("Choice", "Choix", "messages", "fr");
     Translator.add("choice", "choix", "messages", "fr");
     Translator.add("Choice %id%", "Choix %id%", "messages", "fr");
@@ -249,7 +249,7 @@
     Translator.add("Delete source", "Supprimer la source de donn\u00e9es", "messages", "fr");
     Translator.add("Deleting action button", "Suppression bouton d'action", "messages", "fr");
     Translator.add("Deleting blockinfo", "Suppression bloc d'infos", "messages", "fr");
-    Translator.add("Deleting chapter", "Suppression chap\u00eetre", "messages", "fr");
+    Translator.add("Deleting chapter", "Suppression chapitre", "messages", "fr");
     Translator.add("Deleting column", "Suppression colonne", "messages", "fr");
     Translator.add("Deleting data", "Suppression donn\u00e9e", "messages", "fr");
     Translator.add("Deleting datagroup", "Suppression du groupe de donn\u00e9es", "messages", "fr");
@@ -382,7 +382,7 @@
     Translator.add("in blockinfo \u00ab%blockinfo%\u00bb", "dans le bloc d'info \u00ab%blockinfo%\u00bb", "messages", "fr");
     Translator.add("Incorrect action button name", "Le nom du bouton d'action ne doit comporter ni espaces, ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Incorrect blockinfo name", "Le nom du bloc d'infos ne doit comporter ni espaces, ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
-    Translator.add("Incorrect chapter name", "Le nom du chap\u00eetre ne doit comporter ni espaces, ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
+    Translator.add("Incorrect chapter name", "Le nom du chapitre ne doit comporter ni espaces, ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Incorrect column name", "Le nom de la colonne ne doit comporter ni espaces, ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Incorrect database name", "Le nom de la base de donn\u00e9es ne doit comporter ni espaces, ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Incorrect data name", "Le nom de la donn\u00e9e ne doit comporter ni espaces, ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
@@ -511,7 +511,7 @@
     Translator.add("of actionbutton", ", du bouton d'action", "messages", "fr");
     Translator.add("of blockinfo", ", du bloc d'info", "messages", "fr");
     Translator.add("of blockinfo \u00ab%blockinfo%\u00bb", "du bloc d'info \u00ab%blockinfo%\u00bb", "messages", "fr");
-    Translator.add("of chapter", ", du chap\u00eetre", "messages", "fr");
+    Translator.add("of chapter", ", du chapitre", "messages", "fr");
     Translator.add("of data", ", de la donn\u00e9e", "messages", "fr");
     Translator.add("of data \u00ab%label%\u00bb", "de la donn\u00e9e \u00ab%label%\u00bb", "messages", "fr");
     Translator.add("of field", ", du champ", "messages", "fr");
@@ -736,8 +736,8 @@
     Translator.add("The action button uri is required in this context", "L'uri du bouton d'action est n\u00e9cessaire dans ce contexte", "messages", "fr");
     Translator.add("the blockinfo", "le bloc d'infos", "messages", "fr");
     Translator.add("The blockinfo name is required", "Le nom du bloc d'infos est requis", "messages", "fr");
-    Translator.add("the chapter", "le chap\u00eetre", "messages", "fr");
-    Translator.add("The chapter name is required", "Le nom du chap\u00eetre est obligatoire", "messages", "fr");
+    Translator.add("the chapter", "le chapitre", "messages", "fr");
+    Translator.add("The chapter name is required", "Le nom du chapitre est obligatoire", "messages", "fr");
     Translator.add("the choice", "le choix", "messages", "fr");
     Translator.add("the column", "la colonne", "messages", "fr");
     Translator.add("The column label is required", "Le libell\u00e9 de la colonne est requis", "messages", "fr");
@@ -819,8 +819,8 @@
     Translator.add("This action button is used in rule #%id%. You must modify this rule before you can delete this action button", "Ce bouton d'action est utilis\u00e9 dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir le supprimer.", "messages", "fr");
     Translator.add("This blockinfo is used in rule #%id%. You must modify this rule before you can delete this blockinfo", "Ce bloc d'informations est utilis\u00e9 dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir le supprimer.", "messages", "fr");
     Translator.add("This blockinfo name already exists", "Ce nom de bloc d'infos existe d\u00e9j\u00e0", "messages", "fr");
-    Translator.add("This chapter is used in rule #%id%. You must modify this rule before you can delete this chapter", "Ce chap\u00eetre est utilis\u00e9 dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir le supprimer.", "messages", "fr");
-    Translator.add("This chapter name already exists", "Ce nom de chap\u00eetre existe d\u00e9j\u00e0", "messages", "fr");
+    Translator.add("This chapter is used in rule #%id%. You must modify this rule before you can delete this chapter", "Ce chapitre est utilis\u00e9 dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir le supprimer.", "messages", "fr");
+    Translator.add("This chapter name already exists", "Ce nom de chapitre existe d\u00e9j\u00e0", "messages", "fr");
     Translator.add("This column is used in rule #%id%. You must modify this rule before you can delete this column", "Cette colonne est utilis\u00e9e dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir la supprimer.", "messages", "fr");
     Translator.add("This datagroup is used in rule #%id%. You must modify this rule before you can delete this datagroup", "Ce groupe de donn\u00e9es est utilis\u00e9 dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir le supprimer.", "messages", "fr");
     Translator.add("This datagroup is used in step #%id%. You must modify this step before you can delete this datagroup", "Ce groupe de donn\u00e9es est utilis\u00e9 \u00e0 l'\u00e9tape %id%. Vous devez modifier cette \u00e9tape avant de pouvoir le supprimer.", "messages", "fr");
