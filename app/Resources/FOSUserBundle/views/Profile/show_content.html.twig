@@ -1,0 +1,30 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<div class="container">	
+	<div id="profilebox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+		<div class="panel panel-primary" >
+			<div class="panel-heading">
+				<div class="pull-right">
+					<div>
+						{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+						{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
+						<a href="{{ path('fos_user_security_logout') }}">
+							{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+						</a>
+						{% else %}
+							{#    <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a> #}
+						{% endif %}
+					</div>
+				</div>
+				<div class="panel-title">{{ 'Profile'|trans }}</div>
+			</div>	 
+			<div style="padding-top:30px" class="panel-body" >
+				{% include "FOSUserBundle::fos.messages.html.twig" %}
+				<div class="fos_user_user_show">
+					<p>{{ 'profile.show.username'|trans }}: {{ user.username }}</p>
+					<p>{{ 'profile.show.email'|trans }}: {{ user.email }}</p>
+				</div>
+			</div>
+		</div>  
+	</div>
+</div>

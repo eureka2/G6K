@@ -24,7 +24,7 @@ security:
                 use_referer: true
             logout:
                 path: /logout
-                target: /login
+                target: /admin
             anonymous:    true
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/

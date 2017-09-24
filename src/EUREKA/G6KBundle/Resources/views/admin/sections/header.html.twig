@@ -1,54 +1,61 @@
 <div id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="banner">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">{{ 'Toggle navigation'|trans }}</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="{{ path('eureka_g6k_admin') }}">{{ 'G6K Admin'|trans }}</a>
-    </div>
-	
+	<!-- Brand and toggle get grouped for better mobile display -->
+	<div class="navbar-header">
+	  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">{{ 'Toggle navigation'|trans }}</span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+	  </button>
+	  <a class="navbar-brand" href="{{ path('eureka_g6k_admin') }}">{{ 'G6K Admin'|trans }}</a>
+	</div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" role="navigation">
-      <ul class="nav navbar-nav">
-		<li{%- if nav == 'home' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin') }}">{{ 'Dashboard'|trans }}</a></li>
-		{% if is_granted('ROLE_CONTRIBUTOR') %}
-        <li{%- if nav == 'datasources' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_datasources') }}">{{ 'Data sources'|trans }}<span class="sr-only">(current)</span></a></li>
-		{% endif %}
-		{% if is_granted('ROLE_MANAGER') %}
-        <li{%- if nav == 'views' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_views') }}">{{ 'Views'|trans }}</a></li>
-		{% endif %}
-		{% if is_granted('ROLE_MANAGER') %}
-        <li{%- if nav == 'simulators' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_simulators') }}">{{ 'Simulators'|trans }}</a></li>
-		{% endif %}
-		{% if is_granted('ROLE_SUPER_ADMIN') %}
-        <li{%- if nav == 'users' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_users') }}">{{ 'Users'|trans }}</a></li>
-		{% endif %}
-		{% if is_granted('ROLE_ADMIN') %}
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle{%- if nav == 'caches' %} active{%- endif -%}" data-toggle="dropdown" role="button" aria-expanded="false">{{ 'Caches'|trans }}<span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="{{ path('eureka_g6k_admin_clear_cache') }}">{{ 'Clear production cache'|trans }}</a></li>
-            <li><a href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'test'}) }}">{{ 'Clear test cache'|trans }}</a></li>
-            <li><a href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'dev'}) }}">{{ 'Clear dev cache'|trans }}</a></li>
-            <li class="divider"></li>
-            <li><a href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'admin'}) }}">{{ 'Clear admin cache'|trans }}</a></li>
-          </ul>
-        </li>
-		{% endif %}
-       </ul>
+	<!-- Collect the nav links, forms, and other content for toggling -->
+	<div class="collapse navbar-collapse" role="navigation">
+		<ul class="nav navbar-nav">
+			<li{%- if nav == 'home' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin') }}">{{ 'Dashboard'|trans }}</a></li>
+			{% if is_granted('ROLE_CONTRIBUTOR') %}
+			<li{%- if nav == 'datasources' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_datasources') }}">{{ 'Data sources'|trans }}<span class="sr-only">(current)</span></a></li>
+			{% endif %}
+			{% if is_granted('ROLE_MANAGER') %}
+			<li{%- if nav == 'views' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_views') }}">{{ 'Views'|trans }}</a></li>
+			{% endif %}
+			{% if is_granted('ROLE_MANAGER') %}
+			<li{%- if nav == 'simulators' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_simulators') }}">{{ 'Simulators'|trans }}</a></li>
+			{% endif %}
+			{% if is_granted('ROLE_SUPER_ADMIN') %}
+			<li{%- if nav == 'users' %} class="active"{%- endif -%}><a href="{{ path('eureka_g6k_admin_users') }}">{{ 'Users'|trans }}</a></li>
+			{% endif %}
+			{% if is_granted('ROLE_ADMIN') %}
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle{%- if nav == 'caches' %} active{%- endif -%}" data-toggle="dropdown" role="button" aria-expanded="false">{{ 'Caches'|trans }}<span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="{{ path('eureka_g6k_admin_clear_cache') }}">{{ 'Clear production cache'|trans }}</a></li>
+					<li><a href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'test'}) }}">{{ 'Clear test cache'|trans }}</a></li>
+					<li><a href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'dev'}) }}">{{ 'Clear dev cache'|trans }}</a></li>
+					<li class="divider"></li>
+					<li><a href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'admin'}) }}">{{ 'Clear admin cache'|trans }}</a></li>
+				</ul>
+			</li>
+			{% endif %}
+		</ul>
 		<ul class="nav navbar-nav navbar-right">
-		<li id="authentification">
-		{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-			{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
-			<a href="{{ path('fos_user_security_logout') }}"><i class="glyphicon glyphicon-lock"></i> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a>
-		{% else %}
-			<a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
-		{% endif %}
-		</li>
-       </ul>
-   </div><!-- /.navbar-collapse -->
+			{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+			<li id="authentification" class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+				{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} <span class="caret"></span>&nbsp;
+				 </a>
+				<ul class="dropdown-menu">
+					<li><a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-sign-out" aria-hidden="true"></i> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
+					<li class="divider"></li>
+					<li><a href="{{ path('fos_user_change_password') }}"><i class="fa fa-lock" aria-hidden="true"></i> {{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}</a></li>
+				</ul>
+			</li>
+			{% else %}
+			<li id="authentification">
+				<a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+			</li>
+			{% endif %}
+		</ul>
+	</div><!-- /.navbar-collapse -->
 </div>

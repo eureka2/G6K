@@ -84,7 +84,7 @@
             </trans-unit>
             <trans-unit id="21">
                 <source>Add chapter</source>
-                <target>Ajouter un chapître</target>
+                <target>Ajouter un chapitre</target>
             </trans-unit>
             <trans-unit id="22">
                 <source>Add choice</source>
@@ -236,7 +236,7 @@
             </trans-unit>
             <trans-unit id="59">
                 <source>Are you sure you want to delete the chapter : %label%</source>
-                <target>Voulez-vous vraiment supprimer le chapître : %label%</target>
+                <target>Voulez-vous vraiment supprimer le chapitre : %label%</target>
             </trans-unit>
             <trans-unit id="60">
                 <source>Are you sure you want to delete the column : %label%</source>
@@ -500,31 +500,31 @@
             </trans-unit>
             <trans-unit id="125">
                 <source>chapter</source>
-                <target>chapître</target>
+                <target>chapitre</target>
             </trans-unit>
             <trans-unit id="126">
                 <source>Chapter</source>
-                <target>Chapître</target>
+                <target>Chapitre</target>
             </trans-unit>
             <trans-unit id="127">
                 <source>Chapter #%id% : %label%</source>
-                <target>Chapître #%id% : %label%</target>
+                <target>Chapitre #%id% : %label%</target>
             </trans-unit>
             <trans-unit id="128">
                 <source>Chapter %id% (nolabel)</source>
-                <target>Chapître %id% (pas de libellé)</target>
+                <target>Chapitre %id% (pas de libellé)</target>
             </trans-unit>
             <trans-unit id="129">
                 <source>Chapter icon</source>
-                <target>Icône du chapître</target>
+                <target>Icône du chapitre</target>
             </trans-unit>
             <trans-unit id="130">
                 <source>Chapter label</source>
-                <target>Etiquette du chapître</target>
+                <target>Etiquette du chapitre</target>
             </trans-unit>
             <trans-unit id="131">
                 <source>Chapter name</source>
-                <target>Nom du chapître</target>
+                <target>Nom du chapitre</target>
             </trans-unit>
             <trans-unit id="132">
                 <source>Choice</source>
@@ -1000,7 +1000,7 @@
             </trans-unit>
             <trans-unit id="250">
                 <source>Deleting chapter</source>
-                <target>Suppression chapître</target>
+                <target>Suppression chapitre</target>
             </trans-unit>
             <trans-unit id="251">
                 <source>Deleting column</source>
@@ -1532,7 +1532,7 @@
             </trans-unit>
             <trans-unit id="383">
                 <source>Incorrect chapter name</source>
-                <target>Le nom du chapître ne doit comporter ni espaces, ni caractères spéciaux ou accentués</target>
+                <target>Le nom du chapitre ne doit comporter ni espaces, ni caractères spéciaux ou accentués</target>
             </trans-unit>
             <trans-unit id="384">
                 <source>Incorrect column name</source>
@@ -2048,7 +2048,7 @@
             </trans-unit>
             <trans-unit id="512">
                 <source>of chapter</source>
-                <target>, du chapître</target>
+                <target>, du chapitre</target>
             </trans-unit>
             <trans-unit id="513">
                 <source>of data</source>
@@ -2948,11 +2948,11 @@
             </trans-unit>
             <trans-unit id="737">
                 <source>the chapter</source>
-                <target>le chapître</target>
+                <target>le chapitre</target>
             </trans-unit>
             <trans-unit id="738">
                 <source>The chapter name is required</source>
-                <target>Le nom du chapître est obligatoire</target>
+                <target>Le nom du chapitre est obligatoire</target>
             </trans-unit>
             <trans-unit id="739">
                 <source>the choice</source>
@@ -3280,11 +3280,11 @@
             </trans-unit>
             <trans-unit id="820">
                 <source>This chapter is used in rule #%id%. You must modify this rule before you can delete this chapter</source>
-                <target>Ce chapître est utilisé dans la règle %id%. Vous devez modifier cette règle avant de pouvoir le supprimer.</target>
+                <target>Ce chapitre est utilisé dans la règle %id%. Vous devez modifier cette règle avant de pouvoir le supprimer.</target>
             </trans-unit>
             <trans-unit id="821">
                 <source>This chapter name already exists</source>
-                <target>Ce nom de chapître existe déjà</target>
+                <target>Ce nom de chapitre existe déjà</target>
             </trans-unit>
             <trans-unit id="822">
                 <source>This column is used in rule #%id%. You must modify this rule before you can delete this column</source>
