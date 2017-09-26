@@ -14,14 +14,16 @@
 				<li data-level="1"><a href="#rules-composition-interface">Rules composition interface</a></li>
 				<li data-level="1"><a href="#entering-a-rule">Entering a rule</a></li>
 				<li data-level="2"><a href="#entering-a-condition">Entering a condition</a></li>
-				<li data-level="3"><a href="#connectors">Connectors</a></li>
-				<li data-level="3"><a href="#operators">Operators</a></li>
-				<li data-level="4"><a href="#string-operators">String operators</a></li>
-				<li data-level="4"><a href="#numeric-operators">Numeric operators</a></li>
+				<li data-level="3"><a href="#simple-condition">Simple condition</a></li>
+				<li data-level="4"><a href="#selection-of-the-operand">Selection of the operand</a></li>
+				<li data-level="4"><a href="#selecting-the-operator">Selecting the operator</a></li>
+				<li data-level="5"><a href="#operators">Operators</a></li>
+				<li data-level="5"><a href="#string-operators">String Operators</a></li>
+				<li data-level="6"><a href="#numeric-operators">Numeric Operators</a></li>
 				<li data-level="4"><a href="#date-operators">Date operators</a></li>
 				<li data-level="4"><a href="#choice-operators">Choice operators</a></li>
 				<li data-level="4"><a href="#boolean-operators">Boolean operators</a></li>
-				<li data-level="4"><a href="#enter-the-value-/-expression">Enter the value / expression</a></li>
+				<li data-level="4"><a href="#entering-the-value-/-expression">Entering the value / expression</a></li>
 				<li data-level="3"><a href="#deleting-a-condition">Deleting a condition</a></li>
 				<li data-level="2"><a href="#entering-an-action">Entering an action</a></li>
 				<li data-level="3"><a href="#display-an-error-or-a-warning">Display an error or a warning</a></li>
@@ -34,9 +36,6 @@
 			</ul>
 		</div>
 		<div class="span9">
-			<div class="alert alert-danger" role="alert">
-Document under development.
-</div>
 			<h1 id="business-rules">
 				Business rules
 			</h1>
@@ -68,45 +67,45 @@ Document under development.
 </pre>
 			<p><strong>&lt;action&gt;</strong></p>
 			<pre class="prettyprint">
-&lt;action&gt; : (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)&lt;message&gt;<span class="label label-default">on</span><span class="label label-default">the data</span>&lt;data&gt;
+&lt;action&gt;: (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)&lt;message&gt;<span class="label label-default">on</span><span class="label label-default">the data</span>&lt;data&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)&lt;message&gt;<span class="label label-default">on</span><span class="label label-default">the dataset</span>
+&lt;action&gt;: (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)&lt;message&gt;<span class="label label-default">on</span><span class="label label-default">the dataset</span>
 ou
-&lt;action&gt; : (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)&lt;message&gt;<span class="label label-default">on</span><span class="label label-default">the datagroup</span>&lt;datagroup&gt;
+&lt;action&gt;: (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)&lt;message&gt;<span class="label label-default">on</span><span class="label label-default">the datagroup</span>&lt;datagroup&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the step</span>&lt;step&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the step</span>&lt;step&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the panel</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">whose label is</span>&lt;panel&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the panel</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">whose label is</span>&lt;panel&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the fieldset</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">whose label is</span>&lt;fieldset&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the fieldset</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">whose label is</span>&lt;fieldset&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the field</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of fieldset</span>&lt;fieldset&gt;<span class="label label-default">whose label is</span>&lt;field&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the field</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of fieldset</span>&lt;fieldset&gt;<span class="label label-default">whose label is</span>&lt;field&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the column</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of fieldset</span>&lt;fieldset&gt;<span class="label label-default">whose label is</span>&lt;column&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the column</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of fieldset</span>&lt;fieldset&gt;<span class="label label-default">whose label is</span>&lt;column&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the fieldrow</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of fieldset</span>&lt;fieldset&gt;<span class="label label-default">whose label is</span>&lt;fieldrow&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the fieldrow</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of fieldset</span>&lt;fieldset&gt;<span class="label label-default">whose label is</span>&lt;fieldrow&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the blockinfo</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">whose label is</span>&lt;blockinfo&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the blockinfo</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">whose label is</span>&lt;blockinfo&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the chapter</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of blockinfo</span>&lt;blockinfo&gt;<span class="label label-default">whose label is</span>&lt;chapter&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the chapter</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of blockinfo</span>&lt;blockinfo&gt;<span class="label label-default">whose label is</span>&lt;chapter&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the section</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of blockinfo</span>&lt;blockinfo&gt;<span class="label label-default">of chapter</span>&lt;chapter&gt;<span class="label label-default">whose label is</span>&lt;section&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the section</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">of panel</span>&lt;panel&gt;<span class="label label-default">of blockinfo</span>&lt;blockinfo&gt;<span class="label label-default">of chapter</span>&lt;chapter&gt;<span class="label label-default">whose label is</span>&lt;section&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the actionbutton</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">whose label is</span>&lt;actionbutton&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the actionbutton</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">whose label is</span>&lt;actionbutton&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the footnote</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">whose label is</span>&lt;footnote&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the footnote</span> <span class="label label-default">of step</span>&lt;step&gt;<span class="label label-default">whose label is</span>&lt;footnote&gt;
 ou
-&lt;action&gt; : (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the choice</span> <span class="label label-default">of data</span>&lt;data&gt;<span class="label label-default">whose label is</span>&lt;choice&gt;
+&lt;action&gt;: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the choice</span> <span class="label label-default">of data</span>&lt;data&gt;<span class="label label-default">whose label is</span>&lt;choice&gt;
 </pre>
-			<p>Evaluating a rule consists to evaluate the condition of the rule. The result of the evaluation has three states: « true », « false » or « indeterminate ».</p>
+			<p>Evaluating a rule consists to evaluate the condition of the rule. The result of the evaluation has three states: « true », « false » or « undefined ».</p>
 			<p>
 				If the state is « true » then the <span class="label label-default">then do ...</span> actions are executed.
 				<br />
 				If the state is « false » then the <span class="label label-default">else do ... </span> actions are executed.
 				<br />
-				If the state is « indeterminate » then no action is executed.
+				If the state is « undefined » then no action is executed.
 			</p>
-			<p>The evaluation returns « undetermined » if at least one of the operands contains no value.</p>
+			<p>The evaluation returns « undefined » if at least one of the operands contains no value.</p>
 			<h1 id="rules-composition-interface">
 				Rules composition interface
 			</h1>
@@ -133,7 +132,7 @@ ou
 			<p>The form for entering a rule consists of 4 blocks:</p>
 			<ol>
 				<li>the block for inputting the attributes of the rule.</li>
-				<li>the input block of the trigger condition of the actions of the rule.</li>
+				<li>the input block of the triggering condition of the actions of the rule.</li>
 				<li>the action input block when the condition is true.</li>
 				<li>the action input block when the condition is false.</li>
 			</ol>
@@ -147,23 +146,14 @@ ou
 				Entering a condition
 			</h2>
 			<p>
+				In the condition entry block, there is the line: 
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-conditions-connector.png') }}" alt="" />
-			</p>
-			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="" />
-			</p>
-			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="" />
-			</p>
-			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-conditions-subcondition.png') }}" alt="" />
-			</p>
-			<h3 id="connectors">
-				Connectors
-			</h3>
-			<p>
+				<br />
+				Click on the underlined word to select the connector: 
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-connectors-list.png') }}" alt="" />
 			</p>
+			<p>The connector allows you to enter a "compound condition" by combining the "simple conditions" that you enter directly below the connector.
+The conditions are presented by levels. The connector introduces a level of conditions. One level is materialized by a shrinkage from the connector.</p>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -186,106 +176,148 @@ ou
 					</tr>
 				</tbody>
 			</table>
+			<p>For example:</p>
+			<pre class="prettyprint">
+<span class="label-default">All</span> the following conditions are met: <span class="label label-default">simple condition A </span> <span class="label label-default">Any</span> of the following conditions is satisfied: <span class="label label-default">simple condition B </span> <span class="label label-default">simple condition C </span>
+</pre>
+			<p>translates the boolean expression: <code>simple condition A AND (simple condition B OR simple condition C)</code></p>
+			<pre class="prettyprint">
+<span class="label label-default">simple condition A</span> is level 1, <span class="label label-default">simple condition B</span> and <span class="label label-default">simple condition C</span> are level 2.
+</pre>
+			<p>
+				Click 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="" />
+				to add a compound condition by entering a subcondition level under that connector.
+				<br />
+				The line below is displayed below the connector with an indent indicated by the arrow:
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-conditions-subcondition.png') }}" alt="" />
+			</p>
+			<p>or</p>
+			<p>
+				Click 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="" />
+				to the right of the connector to add a simple condition of that connector's level.
+				<br />
+				The following line is displayed below the connector with an indent:
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-conditions-condition.png') }}" alt="" />
+			</p>
+			<h3 id="simple-condition">
+				Simple condition
+			</h3>
+			<p>As seen at the beginning of this document, a simple condition has the following syntax:</p>
+			<pre class="prettyprint">
+&lt;simple condition&gt;: &lt;operand&gt;&lt;operator&gt;[(&lt;value&gt; | &lt;expression&gt;)]
+</pre>
+			<h4 id="selection-of-the-operand">
+				Selection of the operand
+			</h4>
+			<p>Click on the first underlined item in the condition, a drop-down list appears:</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-conditions-operands.png') }}" alt="" />
 			</p>
+			<p>The items in this list are composed from the data you defined in the « Datas » panel.</p>
+			<h4 id="selecting-the-operator">
+				Selecting the operator
+			</h4>
+			<p>Click on the second underlined item in the condition, a drop-down list appears:</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-conditions-operators.png') }}" alt="" />
 			</p>
-			<h3 id="operators">
+			<p>The items of this list of operators depend on the data type of the operand. These operators are described below:</p>
+			<h5 id="operators">
 				Operators
-			</h3>
-			<h4 id="string-operators">
-				String operators
-			</h4>
+			</h5>
+			<h5 id="string-operators">
+				String Operators
+			</h5>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Name</th>
+						<th>Operator</th>
 						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>is present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains a value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains no value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is equal to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is equal to the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not equal to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is different from the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>contains</td>
-						<td></td>
+						<td>Applies only to list operands: The evaluation returns "true" if the value of the 'list' type data associated with the operand contains the value of the result of the evaluation of the expression , "false" otherwise.</td>
 					</tr>
 					<tr>
-						<td>not contains</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>matches</td>
-						<td></td>
+						<td>does not contain</td>
+						<td>Applies only to list operands: The evaluation returns "true" if the value of the list data associated with the operand does not contain the value of the result of the evaluation of the list expression, "false" otherwise.</td>
 					</tr>
 				</tbody>
 			</table>
-			<h4 id="numeric-operators">
-				Numeric operators
-			</h4>
+			<h6 id="numeric-operators">
+				Numeric Operators
+			</h6>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Name</th>
+						<th>Operator</th>
 						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>is present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains a value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains no value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is equal to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is equal to the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not equal to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is different from the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is greater than</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is greater than the value of the result of the evaluation of the expression, "false" otherwise. |</td>
 					</tr>
 					<tr>
 						<td>is greater than or equal to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is greater than or equal to the value of the evaluation result of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is less than</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is less than the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is less than or equal to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is less than or equal to the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>contains</td>
-						<td></td>
+						<td>Applies only to list operands: The evaluation returns "true" if the value of the 'list' type data associated with the operand contains the value of the result of the evaluation of the expression , "False" otherwise.</td>
 					</tr>
 					<tr>
-						<td>not contains</td>
-						<td></td>
+						<td>does not contain</td>
+						<td>Applies only to list operands: The evaluation returns "true" if the value of the list data associated with the operand does not contain the value of the result of the evaluation of the list expression, "false" otherwise.</td>
 					</tr>
 				</tbody>
 			</table>
@@ -295,42 +327,42 @@ ou
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Name</th>
+						<th>Operator</th>
 						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>is present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains a value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains no value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>corresponds to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the date associated with the operand is equal to the value of the evaluation result of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>does not corresponds to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the date associated with the operand is different from the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is after</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the date associated with the operand is later than the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not before</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the date associated with the operand is not prior to the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is before</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the date associated with the operand is prior to the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not after</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the date associated with the operand is not later than the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 				</tbody>
 			</table>
@@ -340,26 +372,26 @@ ou
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Name</th>
+						<th>Operator</th>
 						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>is present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains a value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains no value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is equal to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is equal to the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not equal to</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is different from the value of the result of the evaluation of the expression, "false" otherwise.</td>
 					</tr>
 				</tbody>
 			</table>
@@ -369,26 +401,26 @@ ou
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Name</th>
+						<th>Operator</th>
 						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>is present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains a value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is not present</td>
-						<td></td>
+						<td>The evaluation returns "true" if the data associated with the operand contains no value, "false" otherwise.</td>
 					</tr>
 					<tr>
 						<td>is true</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is equal to 'true', 'false' otherwise.</td>
 					</tr>
 					<tr>
 						<td>is false</td>
-						<td></td>
+						<td>The evaluation returns "true" if the value of the data associated with the operand is equal to 'false', 'false' otherwise.</td>
 					</tr>
 				</tbody>
 			</table>
@@ -397,8 +429,8 @@ ou
 				<br />
 				The other operators are binary operators.
 			</p>
-			<h4 id="enter-the-value-/-expression">
-				Enter the value / expression
+			<h4 id="entering-the-value-/-expression">
+				Entering the value / expression
 			</h4>
 			<p>
 				If the selected operator is a binary operator, a list box appears after the operator.
@@ -422,12 +454,17 @@ ou
 			<h2 id="entering-an-action">
 				Entering an action
 			</h2>
+			<p>You can enter an action either in the "then do ..." block if you want it to be executed when the result of the condition evaluation returns 'true' or in the 'else do ...' block in the case 'false'.</p>
+			<p>You can add more than one action in each block of the same rule.</p>
 			<p>
+				Click on the button 
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-add-button.png') }}" alt="" />
+				of one of these two blocks, the following line is displayed:
 			</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-add.png') }}" alt="" />
 			</p>
+			<p>Click on « Choose an action ... » to open the list of possible actions:</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-actions-list.png') }}" alt="" />
 			</p>
@@ -441,131 +478,160 @@ ou
 				<tbody>
 					<tr>
 						<td>notify Error</td>
-						<td></td>
+						<td>Allows you to define an error message associated with a data, a data group or all the data</td>
 					</tr>
 					<tr>
 						<td>notify Warning</td>
-						<td></td>
+						<td>Defines a warning message associated with a data item, data group, or all data. Unlike the error message, the warning message does not block the progress of the simulation</td>
 					</tr>
 					<tr>
 						<td>Hide</td>
-						<td></td>
+						<td>Allows to hide an element of the simulation form</td>
 					</tr>
 					<tr>
 						<td>Show</td>
-						<td></td>
+						<td>Allows you to show (display) an element of the simulation form</td>
 					</tr>
 					<tr>
 						<td>Set</td>
-						<td></td>
+						<td>Allows to assign a value or the result of the evaluation of an expression to the content of a data item or to its default value, its minimum or maximum value, or to define the field of a data source feeding the data.</td>
 					</tr>
 					<tr>
 						<td>Unset</td>
-						<td></td>
+						<td>Deletes the contents of a data item. The data becomes "not filled".</td>
 					</tr>
 				</tbody>
 			</table>
+			<p>These actions are detailed below:</p>
 			<h3 id="display-an-error-or-a-warning">
 				Display an error or a warning
 			</h3>
 			<p>
+				Choose « notify Error » or « notify Warning » in the action list.
+				<br />
+				The line completes to allow you to enter the message as well as its target:
+			</p>
+			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-notifyerror.png') }}" alt="" />
 			</p>
+			<p>Click "click to enter the message", the input field appears.</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-notifyerror-message.png') }}" alt="" />
 			</p>
+			<p>Enter the message and validate by clicking on « Ok ».</p>
+			<p>Click « click to select ... », to choose the target.</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-notifyerror-target.png') }}" alt="" />
 			</p>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Name</th>
+						<th>Target</th>
 						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>the data</td>
-						<td></td>
+						<td>The message concerns a particular data, the message is displayed below the input field</td>
 					</tr>
 					<tr>
 						<td>the dataset</td>
-						<td></td>
+						<td>The message concerns all the simulation form (eg inconsistency of entered data), the message appears below the form.</td>
 					</tr>
 					<tr>
 						<td>the datagroup</td>
-						<td></td>
+						<td>The message concerns a group of data, the message is displayed below the group.</td>
 					</tr>
 				</tbody>
 			</table>
+			<p>If the target is a data or a data group, the data (or group) must be selected from the list that appears:</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-notifyerror-target-datas-list.png') }}" alt="" />
 			</p>
+			<p>Note: For data values resulting from user input, it is not necessary to define an error message in the following cases:</p>
+			<ul>
+				<li>The input field is not set while the data is required.</li>
+				<li>The value entered does not correspond to the format expected given the type of the data.</li>
+			</ul>
+			<p>These cases are processed automatically by G6K or the browser.</p>
 			<h3 id="hide-or-show-an-element-of-the-simulation-form">
 				Hide or show an element of the simulation form
 			</h3>
+			<p>These two actions are used to manage the display of the form elements of a simulation step.</p>
+			<p>Choose « Hide » or « Show » in the list of actions, the list of items is displayed:</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-showobject-targets-list.png') }}" alt="" />
 			</p>
+			<p>
+				Once the form element is selected, the row completes to select the 'container' elements of the item to be hidden or shown.
+				<br />
+				For example, if you choose to hide a field, you must successively select the step, the panel, the group of fields that contains this field.
+			</p>
+			<p>The table below shows the hierarchy of the containers according to the chosen element:</p>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Name</th>
-						<th>Description</th>
+						<th>Form element</th>
+						<th>containers</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>the step</td>
-						<td></td>
+						<td>none</td>
 					</tr>
 					<tr>
 						<td>the panel</td>
-						<td></td>
+						<td>step</td>
 					</tr>
 					<tr>
 						<td>the blockinfo</td>
-						<td></td>
+						<td>step / panel</td>
 					</tr>
 					<tr>
 						<td>the chapter</td>
-						<td></td>
+						<td>step / panel / blockinfo</td>
 					</tr>
 					<tr>
 						<td>the section</td>
-						<td></td>
+						<td>step / panel / blockinfo / chapter</td>
 					</tr>
 					<tr>
 						<td>the fieldset</td>
-						<td></td>
+						<td>step / panel</td>
 					</tr>
 					<tr>
 						<td>the column</td>
-						<td></td>
+						<td>step / panel / fieldset</td>
 					</tr>
 					<tr>
 						<td>the fieldrow</td>
-						<td></td>
+						<td>step / panel / fieldset</td>
 					</tr>
 					<tr>
-						<td>the field</td>
-						<td></td>
+						<td>the field (1)</td>
+						<td>step / panel / fieldset [ / fieldrow ]</td>
 					</tr>
 					<tr>
 						<td>the actionbutton</td>
-						<td></td>
+						<td>step</td>
 					</tr>
 					<tr>
 						<td>the footnote</td>
-						<td></td>
+						<td>step</td>
 					</tr>
 					<tr>
-						<td>the choice</td>
-						<td></td>
+						<td>the choice (2)</td>
+						<td>list of choices of data of type 'choice'</td>
 					</tr>
 				</tbody>
 			</table>
+			<p>
+				(1) the row is to be specified only if the field is contained in an array.
+				<br />
+				(2) makes it possible to show/hide a list element when the data item is of the 'choice' type
+			</p>
 			<p><strong>Examples of actions to show form elements</strong></p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-showobject-examples.png') }}" alt="" />
@@ -573,43 +639,63 @@ ou
 			<h3 id="assigning-a-value-to-a-data-attribute">
 				Assigning a value to a data attribute
 			</h3>
+			<p>Choose « Set » or « Unset » in the list of actions, the list of attributes is displayed:</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-setattribute-targets-list.png') }}" alt="" />
 			</p>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Name</th>
+						<th>Attribute</th>
 						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>the content</td>
-						<td></td>
+						<td>Contains the value assigned to the data</td>
 					</tr>
 					<tr>
 						<td>the default</td>
-						<td></td>
+						<td>Contains the value to be taken into account when the "value" attribute is not filled.</td>
 					</tr>
 					<tr>
 						<td>the minimum</td>
-						<td></td>
+						<td>Contains the minimum value that can be assigned to the data.</td>
 					</tr>
 					<tr>
 						<td>the maximum</td>
-						<td></td>
+						<td>Contains the maximum value that can be assigned to the data.</td>
 					</tr>
 					<tr>
 						<td>the result index</td>
-						<td></td>
+						<td>Contains the name of a data source query field when the data is powered by this source.</td>
 					</tr>
 					<tr>
 						<td>the explanation</td>
-						<td></td>
+						<td>Contains an explanation of how the data is calculated</td>
 					</tr>
 				</tbody>
 			</table>
+			<p>The « Set » action can be used to assign a value to one of these attributes, the « Unset » action can be used to erase (clear) the contents.</p>
+			<p>Once the attribute is chosen, the line completes as follows:</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-setattribute-value.png') }}" alt="" />
+			</p>
+			<p>Click "click to select ..." to display the list of data:</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-setattribute-value-datas-list.png') }}" alt="" />
+			</p>
+			<p>Choose the data for which you want to change the attribute value.</p>
+			<p>
+				If the action is « Unset », the entry of the action is completed.
+				<br />
+				If this is the « Set » action, you can now choose the value or compose the expression to assign to the attribute:
+			</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-setattribute-value-data-expression.png') }}" alt="" />
+			</p>
+			<p>Refer to the <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition of expressions</a> page for how to enter the expression.</p>
 			<p><strong>Example of action assigning the result of a calculation to a data</strong></p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/business-rules-action-setattribute-example.png') }}" alt="" />
