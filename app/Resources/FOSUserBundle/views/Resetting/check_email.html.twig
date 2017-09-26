@@ -1,0 +1,22 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+<div class="container">	
+	<div id="resetbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+		<div class="panel panel-primary" >
+			<div class="panel-heading">
+				<div class="panel-title">{{ 'resetting.email.subject'|trans }}</div>
+			</div>	 
+			<div style="padding-top:30px" class="panel-body" >
+				{% include "FOSUserBundle::fos.messages.html.twig" %}
+				<p>
+				{{ 'resetting.check_email'|trans({'%email%': email}) }}
+				</p>
+			</div>
+		</div>  
+	</div>
+</div>
+
+{% endblock %}
