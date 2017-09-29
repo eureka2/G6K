@@ -406,13 +406,23 @@ THE SOFTWARE.
 			cursor: "move",
 			containment: "parent",
 			axis: "y",
+			sort: function(event, ui) {
+				if (Simulators.updating) {
+					Simulators.toast(Translator.trans('An update is in progress,'), Translator.trans('first click «Cancel» or «Validate»'));
+					setTimeout(function() {
+						container.find("> .sortable, .datas-panel > .sortable").sortable('cancel');
+					}, 0);
+				}
+			},
 			update: function( e, ui ) {
-				Simulators.renumberDatas(container.find('> .sortable > div'));
-				Simulators.renumberDatagroups(container.find('> .sortable > div'));
-				$('.update-button').show();
-				$('.toggle-collapse-all').show();
-				Admin.updated = true;
-			}
+				if (!Simulators.updating) {
+					Simulators.renumberDatas(container.find('> .sortable > div'));
+					Simulators.renumberDatagroups(container.find('> .sortable > div'));
+					$('.update-button').show();
+					$('.toggle-collapse-all').show();
+					Admin.updated = true;
+				}
+				}
 		});
 	}
 

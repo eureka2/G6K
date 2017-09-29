@@ -461,19 +461,29 @@ THE SOFTWARE.
 			cursor: "move",
 			containment: "parent",
 			axis: "y",
+			sort: function(event, ui) {
+				if (Simulators.updating) {
+					Simulators.toast(Translator.trans('An update is in progress,'), Translator.trans('first click «Cancel» or «Validate»'));
+					setTimeout(function() {
+						container.find("> .sortable").sortable('cancel');
+					}, 0);
+				}
+			},
 			update: function( e, ui ) {
-				var self = $(this);
-				var container = $(ui.item).find('.step-container');
-				var id = container.attr('data-id');
-				if (id == 0 || steps[ui.item.index()].id == 0) { // step 0 cannot be moved
-					self.sortable('cancel');
-					Simulators.toast(Translator.trans('step 0 cannot be moved'));
-				} else {
-					if (Simulators.moveInArray(steps, [{key: 'id', val: id}], ui.item.index())) {
-						Simulators.renumberSteps($(ui.item).parent().find('> div'));
-						$('.update-button').show();
-						$('.toggle-collapse-all').show();
-						Admin.updated = true;
+				if (!Simulators.updating) {
+					var self = $(this);
+					var container = $(ui.item).find('.step-container');
+					var id = container.attr('data-id');
+					if (id == 0 || steps[ui.item.index()].id == 0) { // step 0 cannot be moved
+						self.sortable('cancel');
+						Simulators.toast(Translator.trans('step 0 cannot be moved'));
+					} else {
+						if (Simulators.moveInArray(steps, [{key: 'id', val: id}], ui.item.index())) {
+							Simulators.renumberSteps($(ui.item).parent().find('> div'));
+							$('.update-button').show();
+							$('.toggle-collapse-all').show();
+							Admin.updated = true;
+						}
 					}
 				}
 			}

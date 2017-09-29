@@ -375,14 +375,24 @@ THE SOFTWARE.
 			cursor: "move",
 			containment: "parent",
 			axis: "y",
+			sort: function(event, ui) {
+				if (Simulators.updating) {
+					Simulators.toast(Translator.trans('An update is in progress,'), Translator.trans('first click «Cancel» or «Validate»'));
+					setTimeout(function() {
+						container.find("> .sortable").sortable('cancel');
+					}, 0);
+				}
+			},
 			update: function( e, ui ) {
-				var self = $(this);
-				var container = $(ui.item).find('.source-container');
-				var id = container.attr('data-id');
-				Simulators.renumberSources($(ui.item).parent().find('> div'));
-				$('.update-button').show();
-				$('.toggle-collapse-all').show();
-				Admin.updated = true;
+				if (!Simulators.updating) {
+					var self = $(this);
+					var container = $(ui.item).find('.source-container');
+					var id = container.attr('data-id');
+					Simulators.renumberSources($(ui.item).parent().find('> div'));
+					$('.update-button').show();
+					$('.toggle-collapse-all').show();
+					Admin.updated = true;
+				}
 			}
 		});
 	}
