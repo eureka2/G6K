@@ -1,6 +1,6 @@
 body {
-	background-image:url(../images/login.jpeg);
-	background-size: 100% 100%;
+	background:url(../images/login.jpeg) center center fixed no-repeat;
+	background-size: cover;
 }
 body > h1 {
 	margin-top: 70px;
