@@ -453,7 +453,7 @@ class BaseController extends Controller {
 				$this->variables[$data->getName()] = $data->getValue();
 			} elseif (! $skipValidation) {
 				$value = $data->getValue();
-				if ($field->isRequired() && empty($value)) {
+				if ($field->isRequired() && $value ==  '') {
 					$data->setError(true);
 					if ($field->getLabel() != "") {
 						$data->addErrorMessage($this->get('translator')->trans("The '%field%' field is required", array('%field%' => $field->getLabel())));
