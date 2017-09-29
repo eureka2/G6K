@@ -1687,16 +1687,16 @@ class Simulator {
 	public function save($file) {
 		$xml = array();
 		$xml[] = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . str_replace("<", "&lt;", $this->getLabel()) . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '">';
+		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $this->getLabel()) . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '">';
 		$xml[] = '	<Description><![CDATA[';
 		$xml[] = $this->cleanRichText($this->getDescription());
 		$xml[] = '	]]></Description>';
 		$xml[] = '	<DataSet dateFormat="' . $this->getDateFormat() . '" decimalPoint="' . $this->getDecimalPoint() . '" moneySymbol="' . $this->getMoneySymbol() . '" symbolPosition="' . $this->getSymbolPosition() . '">';
 		foreach ($this->getDatas() as $data) {
 			if ($data instanceof DataGroup) {
-				$xml[] = '		<DataGroup id="' . $data->getId() . '" name="' . $data->getName() . '" label="' . str_replace("<", "&lt;", $data->getLabel()) . '">';
+				$xml[] = '		<DataGroup id="' . $data->getId() . '" name="' . $data->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $data->getLabel()) . '">';
 				foreach ($data->getDatas() as $gdata) {
-					$attrs = 'id="' . $gdata->getId() . '" name="' . $gdata->getName() . '" label="' . str_replace("<", "&lt;", $gdata->getLabel()) . '" type="' . $gdata->getType() . '"';
+					$attrs = 'id="' . $gdata->getId() . '" name="' . $gdata->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $gdata->getLabel()) . '" type="' . $gdata->getType() . '"';
 					if ($gdata->getUnparsedDefault() != '') {
 						$attrs .= ' default="' . htmlspecialchars($gdata->getUnparsedDefault(), ENT_COMPAT) . '"'; 
 					}
@@ -1736,11 +1736,11 @@ class Simulator {
 							$xml[] = '				<Choices>';
 							foreach ($gdata->getChoices() as $choice) {
 								if ($choice instanceof Choice) {
-									$xml[] = '					<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . str_replace("<", "&lt;", $choice->getLabel()) . '" />';
+									$xml[] = '					<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $choice->getLabel()) . '" />';
 								} elseif ($choice instanceof ChoiceGroup) {
-									$xml[] = '					<ChoiceGroup label="' . str_replace("<", "&lt;", $choice->getLabel()) . '">';
+									$xml[] = '					<ChoiceGroup label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $choice->getLabel()) . '">';
 									foreach ($choice->getChoices() as $gchoice) {
-										$xml[] = '						<Choice id="' . $gchoice->getId() . '" value="' . $gchoice->getValue() . '" label="' . str_replace("<", "&lt;", $gchoice->getLabel()) . '" />';
+										$xml[] = '						<Choice id="' . $gchoice->getId() . '" value="' . $gchoice->getValue() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $gchoice->getLabel()) . '" />';
 									}
 									if ($choice->getChoiceSource() !== null) {
 										$source = $choice->getChoiceSource();
@@ -1772,7 +1772,7 @@ class Simulator {
 				}
 				$xml[] = '		</DataGroup>';
 			} elseif ($data instanceof Data) {
-				$attrs = 'id="' . $data->getId() . '" name="' . $data->getName() . '" label="' . str_replace("<", "&lt;", $data->getLabel()) . '" type="' . $data->getType() . '"';
+				$attrs = 'id="' . $data->getId() . '" name="' . $data->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $data->getLabel()) . '" type="' . $data->getType() . '"';
 				if ($data->getUnparsedDefault() != '') {
 					$attrs .= ' default="' . $data->getUnparsedDefault() . '"'; 
 				}
@@ -1812,11 +1812,11 @@ class Simulator {
 						$xml[] = '			<Choices>';
 						foreach ($data->getChoices() as $choice) {
 							if ($choice instanceof Choice) {
-								$xml[] = '				<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . str_replace("<", "&lt;", $choice->getLabel()) . '" />';
+								$xml[] = '				<Choice id="' . $choice->getId() . '" value="' . $choice->getValue() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $choice->getLabel()) . '" />';
 							} elseif ($choice instanceof ChoiceGroup) {
-								$xml[] = '				<ChoiceGroup label="' . str_replace("<", "&lt;", $choice->getLabel()) . '">';
+								$xml[] = '				<ChoiceGroup label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $choice->getLabel()) . '">';
 								foreach ($choice->getChoices() as $gchoice) {
-									$xml[] = '					<Choice id="' . $gchoice->getId() . '" value="' . $gchoice->getValue() . '" label="' . str_replace("<", "&lt;", $gchoice->getLabel()) . '" />';
+									$xml[] = '					<Choice id="' . $gchoice->getId() . '" value="' . $gchoice->getValue() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $gchoice->getLabel()) . '" />';
 								}
 								if ($choice->getChoiceSource() !== null) {
 									$source = $choice->getChoiceSource();
@@ -1851,9 +1851,9 @@ class Simulator {
 		}
 		$xml[] = '	</DataSet>';
 		if ($this->profiles !== null && (count($this->profiles->getProfiles()) > 0)) {
-			$xml[] = '	<Profiles label="' . str_replace("<", "&lt;", $this->profiles->getLabel()) . '">';
+			$xml[] = '	<Profiles label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $this->profiles->getLabel()) . '">';
 			foreach ($this->profiles->getProfiles() as $profile) {
-				$xml[] = '		<Profile id="' . $profile->getId() . '" name="' . $profile->getName() . '" label="' . str_replace("<", "&lt;", $profile->getLabel()) . '">';
+				$xml[] = '		<Profile id="' . $profile->getId() . '" name="' . $profile->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $profile->getLabel()) . '">';
 				$description = $this->cleanRichText($profile->getDescription());
 				if ($description != '') {
 					$xml[] = '			<Description><![CDATA[';
@@ -1870,7 +1870,7 @@ class Simulator {
 		if (count($this->getSteps()) > 0) {
 			$xml[] = '	<Steps>';
 			foreach ($this->getSteps() as $step) {
-				$attrs = 'id="' . $step->getId() . '" name="' . $step->getName() . '" label="' . str_replace("<", "&lt;", $step->getLabel()) . '" template="' . $step->getTemplate() . '"';
+				$attrs = 'id="' . $step->getId() . '" name="' . $step->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $step->getLabel()) . '" template="' . $step->getTemplate() . '"';
 				if ($step->getOutput() != '') {
 					$attrs .= ' output="' . $step->getOutput() . '"'; 
 				}
@@ -1888,7 +1888,7 @@ class Simulator {
 				foreach ($step->getPanels() as $panel) {
 					$attrs = 'id="' . $panel->getId() . '"';
 					$attrs .= ' name="' . $panel->getName() . '"';
-					$attrs .= ' label="' . str_replace("<", "&lt;", $panel->getLabel()) . '"';
+					$attrs .= ' label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $panel->getLabel()) . '"';
 					$xml[] = '				<Panel ' . $attrs . '>';
 					foreach ($panel->getFieldSets() as $block) {
 						if ($block instanceof FieldSet) {
@@ -1923,7 +1923,7 @@ class Simulator {
 									$fieldrow = $child;
 									$attrs = 'id="' . $fieldrow->getId() . '" datagroup="' . $fieldrow->getDataGroup() . '"';
 									if ($fieldrow->getLabel() != '') {
-										$attrs .= ' label="' . str_replace("<", "&lt;", $fieldrow->getLabel()) . '"'; 
+										$attrs .= ' label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $fieldrow->getLabel()) . '"'; 
 									}
 									if ($fieldrow->hasHelp()) {
 										$attrs .= ' help="1"'; 
@@ -1941,10 +1941,10 @@ class Simulator {
 											$attrs .= ' newline="0"'; 
 										}
 										if ($field->getLabel() != '') {
-											$attrs .= ' label="' . str_replace("<", "&lt;", $field->getLabel()) . '"'; 
+											$attrs .= ' label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $field->getLabel()) . '"'; 
 										}
 										if ($field->getPrompt() != '') {
-											$attrs .= ' prompt="' . str_replace("<", "&lt;", $field->getPrompt()) . '"'; 
+											$attrs .= ' prompt="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $field->getPrompt()) . '"'; 
 										}
 										if (! $field->isRequired()) {
 											$attrs .= ' required="0"'; 
@@ -1965,7 +1965,7 @@ class Simulator {
 											$attrs .= ' emphasize="1"'; 
 										}
 										if ($field->getExplanation() != '') {
-											$attrs .= ' explanation="' . str_replace("<", "&lt;", $field->getExplanation()) . '"'; 
+											$attrs .= ' explanation="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $field->getExplanation()) . '"'; 
 										}
 										if ($field->isExpanded()) {
 											$attrs .= ' expanded="1"'; 
@@ -1998,10 +1998,10 @@ class Simulator {
 										$attrs .= ' newline="0"'; 
 									}
 									if ($field->getLabel() != '') {
-										$attrs .= ' label="' . str_replace("<", "&lt;", $field->getLabel()) . '"'; 
+										$attrs .= ' label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $field->getLabel()) . '"'; 
 									}
 									if ($field->getPrompt() != '') {
-										$attrs .= ' prompt="' . str_replace("<", "&lt;", $field->getPrompt()) . '"'; 
+										$attrs .= ' prompt="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $field->getPrompt()) . '"'; 
 									}
 									$attrs .= $field->isRequired() ? ' required="1"' : ' required="0"'; 
 									$attrs .= $field->isVisibleRequired() ? ' visibleRequired="1"' : ' visibleRequired="0"'; 
@@ -2016,7 +2016,7 @@ class Simulator {
 										$attrs .= ' emphasize="1"'; 
 									}
 									if ($field->getExplanation() != '') {
-										$attrs .= ' explanation="' . str_replace("<", "&lt;", $field->getExplanation()) . '"'; 
+										$attrs .= ' explanation="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $field->getExplanation()) . '"'; 
 									}
 									if ($field->isExpanded()) {
 										$attrs .= ' expanded="1"'; 
@@ -2047,12 +2047,12 @@ class Simulator {
 							$blocinfo = $block;
 							$attrs = 'id="' . $blocinfo->getId() . '"';
 							$attrs .= ' name="' . $blocinfo->getName() . '"';
-							$attrs .= ' label="' . str_replace("<", "&lt;", $blocinfo->getLabel()) . '"';
+							$attrs .= ' label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $blocinfo->getLabel()) . '"';
 							$xml[] = '					<BlockInfo ' . $attrs . '>';
 							foreach ($blocinfo->getChapters() as $chapter) {
 								$attrs = 'id="' . $chapter->getId() . '"';
 								$attrs .= ' name="' . $chapter->getName() . '"';
-								$attrs .= ' label="' . str_replace("<", "&lt;", $chapter->getLabel()) . '"';
+								$attrs .= ' label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $chapter->getLabel()) . '"';
 								if ($chapter->getIcon() != '') {
 									$attrs .= ' icon="' . $chapter->getIcon() . '"'; 
 								}
@@ -2063,7 +2063,7 @@ class Simulator {
 								foreach ($chapter->getSections() as $section) {
 									$attrs = 'id="' . $section->getId() . '"';
 									$attrs .= ' name="' . $section->getName() . '"';
-									$attrs .= ' label="' . str_replace("<", "&lt;", $section->getLabel()) . '"';
+									$attrs .= ' label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $section->getLabel()) . '"';
 									$xml[] = '							<Section ' . $attrs . '>';
 									$xml[] = '								<Content><![CDATA[';
 									$xml[] = $this->cleanRichText($section->getContent());
@@ -2087,7 +2087,7 @@ class Simulator {
 				if (count($step->getActions()) > 0) {
 					$xml[] = '			<ActionList>';
 					foreach ($step->getActions() as $action) {
-						$attrs = 'name="' . $action->getName() . '" label="' . str_replace("<", "&lt;", $action->getLabel()) . '" what="' . $action->getWhat() . '" for="' . $action->getFor() . '"';
+						$attrs = 'name="' . $action->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $action->getLabel()) . '" what="' . $action->getWhat() . '" for="' . $action->getFor() . '"';
 						if ($action->getUri() != '') {
 							$attrs .= ' uri="' . $action->getUri() . '"'; 
 						}
@@ -2177,7 +2177,7 @@ class Simulator {
 		if (count($this->getBusinessRules()) > 0) {
 			$xml[] = '	<BusinessRules>';
 			foreach ($this->getBusinessRules() as $rule) {
-				$attrs = 'id="' . $rule->getId() . '" name="' . $rule->getName() . '" label="' . str_replace("<", "&lt;", $rule->getLabel()) . '"';
+				$attrs = 'id="' . $rule->getId() . '" name="' . $rule->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $rule->getLabel()) . '"';
 				$xml[] = '		<BusinessRule ' . $attrs . '>';
 				$xml[] = '			<Conditions value="' . htmlspecialchars($rule->getConditions(), ENT_COMPAT) . '">';
 				if ($rule->getConnector() !== null) {
@@ -2270,10 +2270,10 @@ class Simulator {
 
 	private function saveConnector($connector, $indent, &$xml) {
 		if ($connector instanceof Condition) {
-			$htmlcondition = '<Condition operand="' . $connector->getOperand() . '" operator="' . str_replace('<', '&lt;', $connector->getOperator()) . '"';
+			$htmlcondition = '<Condition operand="' . $connector->getOperand() . '" operator="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $connector->getOperator()) . '"';
 			$expression = $connector->getExpression();
 			if ($expression !== null && $expression != '') {
-				$htmlcondition .= ' expression="' . str_replace('<', '&lt;', $expression) . '"';
+				$htmlcondition .= ' expression="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $expression) . '"';
 			}
 			$htmlcondition .= ' />';
 			$xml[] = $indent . "\t" . $htmlcondition;
