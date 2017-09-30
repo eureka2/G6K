@@ -12,21 +12,23 @@
 			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
 				<li data-level="1"><a href="#vue-d-ensemble">Vue d'ensemble</a></li>
 				<li data-level="1"><a href="#usage">Usage</a></li>
+				<li data-level="2"><a href="#selection-de-la-table">Sélection de la table</a></li>
+				<li data-level="2"><a href="#selection-des-colonnes">Sélection des colonnes</a></li>
+				<li data-level="2"><a href="#composition-du-filtre">Composition du filtre</a></li>
+				<li data-level="2"><a href="#tri-des-lignes-de-resultat">Tri des lignes de résultat</a></li>
+				<li data-level="2"><a href="#limiter-le-nombre-de-lignes-de-resultat">Limiter le nombre de lignes de résultat</a></li>
 				<li data-level="2"><a href="#definition-des-parametres">Définition des paramètres</a></li>
-				<li data-level="3"><a href="#fonctions">Fonctions</a></li>
-				<li data-level="4"><a href="#sqlite">SQLite</a></li>
-				<li data-level="4"><a href="#mysql">MySQL</a></li>
-				<li data-level="4"><a href="#postgresql">PostgreSQL</a></li>
+				<li data-level="1"><a href="#fonctions">Fonctions</a></li>
+				<li data-level="2"><a href="#sqlite">SQLite</a></li>
+				<li data-level="2"><a href="#mysql">MySQL</a></li>
+				<li data-level="2"><a href="#postgresql">PostgreSQL</a></li>
 			</ul>
 		</div>
 		<div class="span9">
-			<div class="alert alert-danger" role="alert">
-ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
-</div>
 			<h1 id="vue-d-ensemble">
 				Vue d'ensemble
 			</h1>
-			<p>Ce composant UI permet de composer visuellement des requêtes simples d'accès aux bases de données des sources de données de référence.</p>
+			<p>Ce composant UI est un assistant visuel permettant de composer des requêtes simples d'accès aux bases de données des sources de données de référence.</p>
 			<p>Une requête simple est une requête qui ne porte que sur une seule table et qui ne comporte pas de requêtes imbriquées.</p>
 			<p>Le résultat de l'exécution de la requête est un ensemble de lignes de résultats que l'on peut filtrer de deux manières :</p>
 			<ul>
@@ -38,29 +40,209 @@ ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 			<h1 id="usage">
 				Usage
 			</h1>
+			<p>Ce composant est utilisé dans le volet « Simulateurs » du module d'administration. Cf. la section <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulators-management' }) }}#sources-de-donnees-utilisees">Sources de données utilisées</a> du guide de gestion des simulateurs.</p>
+			<p>Dans le formulaire de définition de la source de données que vous aurez ouvert, seule la partie concernant les requêtes simples ci-dessous est traitée dans ce document :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-form-empty.png') }}" alt="" />
 			</p>
+			<h2 id="selection-de-la-table">
+				Sélection de la table
+			</h2>
+			<p>Dans la boite à liste du champ « Table », seules les tables de la source de données choisies dans le volet « Simulateurs » vous sont proposées. Sélectionnez la table sur laquelle porte la requête.</p>
+			<h2 id="selection-des-colonnes">
+				Sélection des colonnes
+			</h2>
+			<p>Les colonnes sont les valeurs des champs de la table que vous souhaitez récupérer après l'exécution de la requête.</p>
+			<p>
+				G6K permet de définir des pseudo-colonnes à l'aide d'expressions.
+				<br />
+				Ces expressions contiennent le plus souvent des noms réels de colonnes de la table mais ce n'est pas obligatoire.
+				<br />
+				Les pseudo-colonnes doivent posséder un nom d'alias permettant de les référencer en tant qu'indice de résultat dans le simulateur.
+			</p>
+			<p>Pour définir une colonne ou une pseudo-colonne, cliquez dans le champ « Colonnes sélectionnées » ou sur le signe « + » à droite du champ :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-column-add.png') }}" alt="" />
+			</p>
+			<p>Devant la boite à liste qui s'est affichée, le « X » permet de supprimer la colonne.</p>
+			<p>Cliquez sur la boite à liste :</p>
+			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-expression-listbox.png') }}" alt="" />
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-expression-contextmenu.png') }}" alt="" />
+			</p>
+			<p>puis sélectionner le champ de la table ou reportez-vous à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition des expressions</a> pour composer une pseudo-colonne.</p>
+			<p>Les fonctions sont spécifiques à la base de données de la source, elles sont définies <a href="#fonctions">ci-après</a>.</p>
+			<p>Si vous avez simplement sélectionné un champ sans composer d'expression, la saisie de la colonne est terminée sinon vous devez entrer un alias :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-column-alias-ask.png') }}" alt="" />
+			</p>
+			<p>Cliquez sur « Cliquez pour entrer l'alias de la colonne », saisissez l'alias (sans espaces ni caractères spéciaux ou accentués) dans la boite de saisie puis appuyez sur la touche « Entrée ».</p>
+			<p>Pour définir une nouvelle colonne ou une pseudo-colonne, cliquez dans l'espace vide du champ ou sur le signe « + ».</p>
+			<p>Le nombre de colonnes n'est pas limité.</p>
+			<h2 id="composition-du-filtre">
+				Composition du filtre
+			</h2>
+			<p>
+				Sans filtre, la requête retournerait toutes les lignes de la table, ce qui n'est pas souhaitable sauf si on souhaite constituer une liste de choix à partir de l'intégralité de la table.
+				<br />
+				Le filtre permet de ne retenir que les lignes qui répondent à une certaine condition. Ce peut être une condition simple ou une condition combinée.
+			</p>
+			<p>Une condition à la syntaxe suivante :</p>
+			<pre class="prettyprint">
+&lt;condition&gt; : &lt;condition simple&gt; | &lt;condition combinée&gt;
+&lt;condition simple&gt; : &lt;expression&gt;&lt;operateur de comparaison&gt;&lt;expression&gt;
+&lt;condition combinée&gt; : &lt;conjonction&gt; | &lt;disjonction&gt;
+&lt;conjonction&gt; : &lt;condition&gt; <span class="label label-default">et</span> &lt;condition&gt; | <span class="label label-default">(</span> &lt;condition&gt; <span class="label label-default">et</span> &lt;condition&gt; <span class="label label-default">)</span>
+&lt;disjonction&gt; : &lt;condition&gt; <span class="label label-default">ou</span> &lt;condition&gt; | <span class="label label-default">(</span> &lt;condition&gt; <span class="label label-default">ou</span> &lt;condition&gt; <span class="label label-default">)</span>
+&lt;expression&gt; : &lt;opérande&gt;[&lt;opérateur arithmétique&gt;&lt;opérande&gt;]
+&lt;opérande&gt; : &lt;expression&gt;|&lt;opérande&gt;
+</pre>
+			<p>Se reporter <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'business-rules' }) }}#operateurs">ici</a> pour la liste des opérateurs de comparaison et <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}#operateurs">ici</a> pour la liste des opérateurs numériques.</p>
+			<p>Pour composer le filtre, cliquez dans le champ « Filtre » ou sur le signe « + » à droite du champ :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-add.png') }}" alt="" />
+			</p>
+			<p>Cliquez sur la boite à liste :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-expression-listbox.png') }}" alt="" />
+			</p>
+			<p>
+				Dans cet exemple, il y a deux paramètres : « droitVH » et « nbEnfants ». Les paramètres contiennent des constantes, des valeurs des données saisies par l'utilisateurs, des données calculées ou des données provenant d'autres sources.
+				<br />
+				Si vous avez besoin de paramètres pour constituer votre requête, validez le formulaire sans saisir de filtre puis cliquez sur « Modifier ».
+				<br />
+				Un panneau « Paramètres » s'affiche en dessous du formulaire pour vous permettre d'en définir. Se reporter à la section <a href="#definition-des-parametres">Définition des paramètres</a> de cette page.
+			</p>
+			<p>Pour composer une expression depuis cette liste, reportez-vous à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition des expressions</a>.</p>
+			<p>Après saisie de l'expression, « Cliquez pour sélectionner l'opérateur » s'affiche :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-operator-ask.png') }}" alt="" />
+			</p>
+			<p>Cliquez pour choisir l'opérateur de comparaison :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-operators-list.png') }}" alt="" />
+			</p>
+			<p>Une fois choisi l'opérateur, vous pouvez composer la deuxième expression :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-right-expression.png') }}" alt="" />
+			</p>
+			<p>Vous avez terminé la saisie d'une première condition, vous pouvez en saisir d'autres en cliquant dans l'espace vide du champ ou sur le signe « + »</p>
+			<p>A partir de la deuxième condition, les conditions sont numérotées et un bouton s'affiche au-dessus du champ pour vous permettre de combiner les conditions :</p>
+			<p>En cliquant sur ce bouton, vous obtenez trois possibilités de combinaison :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-all.png') }}" alt="" />
+			</p>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Combinaison</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Toutes les conditions suivantes :</td>
+						<td>Combine toutes les conditions avec le connecteur 'et'</td>
+					</tr>
+					<tr>
+						<td>L'une des conditions suivantes :</td>
+						<td>Combine toutes les conditions avec le connecteur 'ou'</td>
+					</tr>
+					<tr>
+						<td>Avancée</td>
+						<td>Permet de combiner les conditions avec des 'et', des 'ou' et des parenthèses</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>Le mode « Avancée » affiche une barre en dessous des conditions permettant de combiner les conditions par leurs numéros :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-advanced.png') }}" alt="" />
+			</p>
+			<p>
+				Cliquer sur un connecteur 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-and.png') }}" alt="" />
+				le change en 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-or.png') }}" alt="" />
+				, cliquer sur un connecteur 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-or.png') }}" alt="" />
+				le change en 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-and.png') }}" alt="" />
+				.
+			</p>
+			<p>
+				Cliquez sur le bouton 
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/query-builder-filter-combined-brackets-button.png') }}" alt="" />
+				pour ajouter une paire de parenthèses ouvrante et fermante.
+			</p>
+			<p>La parenthèse ouvrante se place en début de condition, la fermante en fin de condition.</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-brackets.png') }}" alt="" />
+			</p>
+			<p>Vous pouvez supprimer une paire de parenthèse en cliquant sur la croix rouge au-dessus d'une des deux parenthèses.</p>
+			<p>Vous pouvez déplacer chacun des éléments (chiffre, connecteur ou parenthèse) de la condition en les faisant glisser d'une position à l'autre.</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-condition.png') }}" alt="" />
+			</p>
+			<h2 id="tri-des-lignes-de-resultat">
+				Tri des lignes de résultat
+			</h2>
+			<p>Vous pouvez trier les lignes de résultats selon plusieurs critères (clés de tri), en ordre croissant ou décroissant.</p>
+			<p>Les critères peuvent être de noms de colonnes ou des expressions.</p>
+			<p>Pour ajouter un critère, cliquez dans le champ « Trié par » ou sur le signe « + » à droite du champ :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-orderby-add.png') }}" alt="" />
+			</p>
+			<p>Cliquez sur la boite à liste pour choisir un champ ou composer une expression.</p>
+			<p>Pour changer l'ordre de tri sur ce critère, cliquez sur « en ordre croissant ».</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-orderby-asc-desc.png') }}" alt="" />
+			</p>
+			<p>Vous avez terminé la saisie d'un critère, vous pouvez en saisir d'autres en cliquant dans l'espace vide du champ ou sur le signe « + »</p>
+			<p>Pour supprimer un critère, cliquez sur le « X » à gauche du critère.</p>
+			<h2 id="limiter-le-nombre-de-lignes-de-resultat">
+				Limiter le nombre de lignes de résultat
+			</h2>
+			<p>
+				Une autre façon de filtrer les résultats de la requête est de limiter le nombre de lignes retournées de façon inconditionnelle.
+				<br />
+				Les champs « Nombre de résultats » et « à partir de » du formulaire permettent de définir une "fenêtre" de lignes sur l'ensemble des lignes de résultats.
+			</p>
+			<p>
+				« Nombre de résultats » : Nombre lignes de résultats que vous souhaitez récupérer. « 0 » signifie : toutes les lignes.
+				<br />
+				« à partir de » : Numéro de la première ligne que vous souhaitez récupérer. Les lignes sont numérotées de 0 à n.
 			</p>
 			<h2 id="definition-des-parametres">
 				Définition des paramètres
 			</h2>
+			<p>Les paramètres permettent d'introduire des données variables dans des requêtes. Ces requêtes sont dites "paramétrées".</p>
+			<p>Les contenus des paramètres sont soit des constantes, soit des données saisies par l'utilisateur, des données calculées ou des données provenant d'autres sources</p>
+			<p>Pour accéder au panneau des paramètres d'une source, cliquez sur le bouton « Modifier » de la barre de titre du panneau de la source.</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-parameter-empty.png') }}" alt="" />
 			</p>
+			<p>Pour ajouter un paramètre, cliquez sur le bouton « Ajouter un paramètre » :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-expression-listbox.png') }}" alt="" />
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-parameter-data.png') }}" alt="" />
 			</p>
-			<h3 id="fonctions">
+			<p>Le champ « Provenance » est positionné par défaut sur « Donnée » et le champ « Donnée » est affiché en dessous pour vous permettre de choisir la donnée.</p>
+			<p>Si vous sélectionnez « Constante » dans le champ « Provenance », le champ du dessous est remplacé par « Constante » avec un champ de saisie de texte :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-parameter-contant.png') }}" alt="" />
+			</p>
+			<p><strong>Attributs :</strong></p>
+			<ul>
+				<li>« Nom » : Nom du paramètre sans espace ni caractères spéciaux ou accentués</li>
+				<li>« Provenance » : Provenance de la donnée : « Constante » ou « Donnée »</li>
+				<li>« Donnée » : Donnée variable alimentant le paramètre</li>
+				<li>« Constante » : Valeur fixe affectée au paramètre</li>
+				<li>« Optionnel » : Si la case est cochée, le paramètre ne sera pas transmis à la requête s'il ne contient aucune valeur.</li>
+			</ul>
+			<h1 id="fonctions">
 				Fonctions
-			</h3>
-			<h4 id="sqlite">
+			</h1>
+			<h2 id="sqlite">
 				SQLite
-			</h4>
+			</h2>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -187,9 +369,9 @@ ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 					</tr>
 				</tbody>
 			</table>
-			<h4 id="mysql">
+			<h2 id="mysql">
 				MySQL
-			</h4>
+			</h2>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
@@ -789,9 +971,9 @@ ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 					</tr>
 				</tbody>
 			</table>
-			<h4 id="postgresql">
+			<h2 id="postgresql">
 				PostgreSQL
-			</h4>
+			</h2>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
 					<tr>
