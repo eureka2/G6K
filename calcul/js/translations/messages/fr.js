@@ -45,7 +45,7 @@
     Translator.add("after currency", "apr\u00e8s le montant", "messages", "fr");
     Translator.add("alias", "alias", "messages", "fr");
     Translator.add("All", "toutes", "messages", "fr");
-    Translator.add("All of the following", "Toutes les condition suivantes : ", "messages", "fr");
+    Translator.add("All of the following", "Toutes les conditions suivantes : ", "messages", "fr");
     Translator.add("All of the following conditions are met", "toutes les conditions suivantes sont satisfaites", "messages", "fr");
     Translator.add("Allow collapse\/expand ?", "Permettre Plier \/ D\u00e9plier ?", "messages", "fr");
     Translator.add("All results", "tous", "messages", "fr");
@@ -53,7 +53,7 @@
     Translator.add("and", "et", "messages", "fr");
     Translator.add("An update is in progress,", "Vous avez commenc\u00e9 une mise \u00e0 jour,", "messages", "fr");
     Translator.add("Any", "au moins une", "messages", "fr");
-    Translator.add("Any of the following", "L'une des condition suivantes : ", "messages", "fr");
+    Translator.add("Any of the following", "L'une des conditions suivantes : ", "messages", "fr");
     Translator.add("Any of the following conditions is met", "au moins une des conditions suivantes est satisfaite", "messages", "fr");
     Translator.add("April", "Avril", "messages", "fr");
     Translator.add("Are you sure you want to delete the action button : %label%", "Voulez-vous vraiment supprimer le bouton d'action : %label%", "messages", "fr");

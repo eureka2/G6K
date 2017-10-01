@@ -184,7 +184,7 @@
             </trans-unit>
             <trans-unit id="46">
                 <source>All of the following</source>
-                <target>Toutes les condition suivantes : </target>
+                <target>Toutes les conditions suivantes : </target>
             </trans-unit>
             <trans-unit id="47">
                 <source>All of the following conditions are met</source>
@@ -216,7 +216,7 @@
             </trans-unit>
             <trans-unit id="54">
                 <source>Any of the following</source>
-                <target>L'une des condition suivantes : </target>
+                <target>L'une des conditions suivantes : </target>
             </trans-unit>
             <trans-unit id="55">
                 <source>Any of the following conditions is met</source>
