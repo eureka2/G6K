@@ -1011,7 +1011,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				libxml_clear_errors();
 				return $response;
 			} else {
-				$fs->copy($this->simulatorsDir . "/work/" . $this->simulatorsDir . ".xml", $this->simulatorsDir . "/" . $simu . ".xml");
+				$fs->copy($this->simulatorsDir . "/work/" . $simu . ".xml", $this->simulatorsDir . "/" . $simu . ".xml");
 				return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
 			}
 		}
