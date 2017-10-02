@@ -674,6 +674,20 @@ form.bs-docs-example {
   margin: 20px;
 }
 
+.bs-docs-number-circle {
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  padding: 2px 2px 2px;
+  display: inline-block;
+  background: #fff;
+  border: 4px solid #FF7F27;
+  color: #FF7F27;
+  text-align: center;
+  font-weight: 900;
+  font: 10pt Arial, sans-serif;
+}
+
 
 
 /* Responsive docs

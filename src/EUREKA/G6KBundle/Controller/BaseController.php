@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -51,29 +51,171 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Cookie;
 
+/**
+ *
+ * The class BaseController is the simulation engine
+ *
+ * @author    Jacques Archimède
+ *
+ */
 class BaseController extends Controller {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Manager\ControllersHelper $helper helper instance used by this controller
+	 *
+	 * @access  public
+	 *
+	 */
 	public $helper;
 
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Simulator $simu Simulator instance used by this controller
+	 *
+	 * @access  public
+	 *
+	 */
 	public $simu;
+
+	/**
+	 * @var \EUREKA\G6KBundle\Manager\ExpressionParser\Parser $parser Parser instance used by this controller
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $parser;
+
+	/**
+	 * @var bool      $error true if an error has been detected, false otherwise
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $error;
+
+	/**
+	 * @var int        $recursion
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $recursion = 0;
+
+	/**
+	 * @var array      $simuWidgets array of widgets name
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $simuWidgets = array('abListbox', 'abDatepicker');
+
+	/**
+	 * @var array      $variables value of variables for the expression parser
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $variables = array();
+
+	/**
+	 * @var array      $memo 
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $memo = array();
+
+	/**
+	 * @var mixed|null $sources 
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $sources = null;
+
+	/**
+	 * @var array      $log 
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $log = array();
+
+	/**
+	 * @var int        $script 1: javascript is enabled, 0: javascript is disabled
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $script = 0;
+
+	/**
+	 * @var array      $sequence array of previous steps number
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $sequence = array();
+
+	/**
+	 * @var string     $path URL of the server
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $path = "";
+
+	/**
+	 * @var array      $uricache
+	 *
+	 * @access  public
+	 *
+	 */
 	public $uricache = array();
+
+	/**
+	 * @var string      $databasesDir Databases directory
+	 *
+	 * @access  public
+	 *
+	 */
 	public $databasesDir;
+
+	/**
+	 * @var string      $simulatorsDir Simulators directory
+	 *
+	 * @access  public
+	 *
+	 */
 	public $simulatorsDir;
+
+	/**
+	 * @var string      $publicDir public directory
+	 *
+	 * @access  public
+	 *
+	 */
 	public $publicDir;
+
+	/**
+	 * @var string      $viewsDir Templates directory
+	 *
+	 * @access  public
+	 *
+	 */
 	public $viewsDir;
 
-
+	/**
+	 * Run the simulation engine for a step
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request the active request
+	 * @param   array $form The form fields
+	 * @param   string $simu The simulator name
+	 * @param   string &$view The view name
+	 * @param   bool $test true if it is a test from the administration module, false otherwise 
+	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Entity\Step|null
+	 *
+	 */
 	protected function runStep(Request $request, $form, $simu, &$view, $test)
 	{
 		$no_js = $request->query->get('no-js') || 0;
@@ -357,12 +499,30 @@ class BaseController extends Controller {
 		return $step;
 	}
 
+	/**
+	 * Adds a widget to the list of widgets
+	 *
+	 * @access  protected
+	 * @param   string $widget The widget name
+	 * @return  void
+	 *
+	 */
 	protected function addWidget($widget) {
 		if (! in_array($widget, $this->simuWidgets)) {
 			$this->simuWidgets[] = $widget;
 		}
 	}
 
+	/**
+	 * Adds widgets that depend on a widget in the list of widgets
+	 *
+	 * @access  protected
+	 * @param   string $widget The widget name
+	 * @param   array &$widgets the list of widgets
+	 * @param   array &$availWidgets the list of available widgets
+	 * @return  void
+	 *
+	 */
 	protected function widgetDeps($widget, &$widgets, &$availWidgets) {
 		if (isset($availWidgets[$widget]['deps'])) {
 			foreach ($availWidgets[$widget]['deps'] as $dep) {
@@ -374,6 +534,16 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Returns the simulators attributes in JSON response format
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request the active request
+	 * @param   string $simu The simulator name
+	 * @param   bool $test (default: false) true if it is a test from the administration module, false otherwise 
+	 * @return  \Symfony\Component\HttpFoundation\Response 
+	 *
+	 */
 	protected function runFields(Request $request, $simu, $test = false)
 	{
 		$form = $request->request->all();
@@ -385,6 +555,16 @@ class BaseController extends Controller {
 		return $response;
 	}
 
+	/**
+	 * Returns the requested source attributes in JSON response format
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request the active request
+	 * @param   string $simu The simulator name
+	 * @param   bool $test (default: false) true if it is a test from the administration module, false otherwise 
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	protected function runSource(Request $request, $simu, $test = false)
 	{
 		$form = $request->request->all();
@@ -422,6 +602,15 @@ class BaseController extends Controller {
 		return $response;
 	}
 
+	/**
+	 * Get the simulators directory
+	 *
+	 * @access  protected
+	 * @param   string $simu The simulator name
+	 * @param   bool $test (default: false) true if it is a test from the administration module, false otherwise 
+	 * @return  string the simulators directory
+	 *
+	 */
 	protected function getSimuPath($simu, $test = false) {
 		$path = null;
 		if ($test) {
@@ -440,6 +629,16 @@ class BaseController extends Controller {
 		return $path;
 	}
 
+	/**
+	 * Checks the given field
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Field $field
+	 * @param   array $form The form fields
+	 * @param   bool $skipValidation
+	 * @return  void
+	 *
+	 */
 	protected function checkField($field, $form, $skipValidation) 
 	{
 		$id = $field->getData();
@@ -490,6 +689,16 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Processes the given field for the step
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Field $field
+	 * @param   \EUREKA\G6KBundle\Entity\Step $step
+	 * @param   bool &$displayable
+	 * @return  void
+	 *
+	 */
 	protected function processField($field, $step, &$displayable) 
 	{
 		$id = $field->getData();
@@ -532,6 +741,14 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Replaces data values in the notes of a field
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Field $field
+	 * @return  void
+	 *
+	 */
 	protected function replaceFieldNotes($field) 
 	{
 		if ($field->getPreNote() !== null) {
@@ -544,6 +761,14 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Evaluates a condition with the expression parser
+	 *
+	 * @access  protected
+	 * @param   string $condition The condition to evaluate
+	 * @return  string|false Result of the evaluation
+	 *
+	 */
 	protected function evaluate($condition) 
 	{
 		$expr = $this->parser->parse($condition);
@@ -552,6 +777,14 @@ class BaseController extends Controller {
 		return $expr->evaluate();
 	}
 
+	/**
+	 * Evaluates the default value of the given data
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Data $data
+	 * @return  void
+	 *
+	 */
 	protected function evaluateDefault($data) 
 	{
 		$default = $data->getUnparsedDefault();
@@ -564,6 +797,13 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Evaluates the default value of all data
+	 *
+	 * @access  protected
+	 * @return  void
+	 *
+	 */
 	protected function evaluateDefaults() 
 	{
 		foreach ($this->simu->getDatas() as $data) {
@@ -578,6 +818,14 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Evaluates the minimum value of the given data
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Data $data
+	 * @return  void
+	 *
+	 */
 	protected function evaluateMin($data) 
 	{
 		$min = $data->getUnparsedMin();
@@ -592,6 +840,14 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Evaluates the maximum value of the given data
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Data $data
+	 * @return  void
+	 *
+	 */
 	protected function evaluateMax($data) 
 	{
 		$max = $data->getUnparsedMax();
@@ -606,6 +862,13 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Evaluates the minimum and the maximum value of all data
+	 *
+	 * @access  protected
+	 * @return  void
+	 *
+	 */
 	protected function evaluateMinMax() 
 	{
 		foreach ($this->simu->getDatas() as $data) {
@@ -621,6 +884,15 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Processes the given data for the step
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Data $data
+	 * @param   int $istep The step number
+	 * @return  void
+	 *
+	 */
 	protected function processData($data, $istep) 
 	{
 		if (! $data->isError()) {
@@ -711,6 +983,15 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Executes all the actions of a business rule of the step
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Action $actions Actions of the business rule
+	 * @param   int $istep The step number
+	 * @return  void
+	 *
+	 */
 	protected function processActions($actions, $istep) 
 	{
 		foreach ($actions as $action) {
@@ -902,6 +1183,15 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Evaluates the conditions of a business rule an executes the suitable actions
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\BusinessRule $businessrule The rule to be processed
+	 * @param   int $istep The step number
+	 * @return  void
+	 *
+	 */
 	protected function processRule($businessrule, $istep) 
 	{
 		$conditions = $businessrule->getConditions();
@@ -913,6 +1203,14 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Evaluates the conditions of all business rules an executes the suitable actions
+	 *
+	 * @access  protected
+	 * @param   int $istep The step number
+	 * @return  void
+	 *
+	 */
 	protected function processRules($istep) 
 	{
 		$businessrules = $this->simu->getBusinessRules();
@@ -921,6 +1219,14 @@ class BaseController extends Controller {
 		}
 	}
 
+	/**
+	 * Processes all data for the step
+	 *
+	 * @access  protected
+	 * @param   int $istep The step number
+	 * @return  void
+	 *
+	 */
 	protected function processDatas($istep) 
 	{
 		$this->sources = array();

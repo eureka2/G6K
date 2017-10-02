@@ -416,6 +416,9 @@ They can be grouped into groups of data, allowing them to be arranged in the row
 				</ol>
 				<p>Give a description of the data in the "Description" field. This description can be displayed in a tooltip at the request of the user.</p>
 				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-choices.png') }}" alt="" />
+				</p>
+				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-source-add.png') }}" alt="" />
 				</p>
 				<p>
@@ -433,30 +436,64 @@ They can be grouped into groups of data, allowing them to be arranged in the row
 					<li>« Grid »: The fields are arranged in rows in the form of tables. The data associated with the fields in a row must be grouped into « data groups » (see below). Field labels are ignored.</li>
 					<li>« Online »: The fields and their labels are arranged one after the other in order to form a sentence.</li>
 				</ul>
+				<p>These elements are arranged as follows in the page of a step:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-step-page.png') }}" alt="" />
+				</p>
+				<p>To add a step, click the « Add » button in the title bar of the « Steps » panel:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-step-add-button.png') }}" alt="" />
 				</p>
+				<p>The entry form for a step is displayed:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-step-add.png') }}" alt="" />
 				</p>
 				<p><strong>Attributes:</strong></p>
 				<ol>
-					<li>« Name »: Name of the step without spaces or special or accented characters.</li>
-					<li>« Step Label »: Title of the step to be displayed.</li>
-					<li>« Step display template »:</li>
+					<li>« Step Name »: Name of the step without spaces or special or accented characters.</li>
+					<li>« Step Label »: Title of the step that will be displayed in the breadcrumb trail.</li>
+					<li>« Step Template »: Name of the template used by G6K to display the page of the step. For more information, see: <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">View Management</a></li>
 				</ol>
 				<p><strong>Optional attributes:</strong></p>
 				<ol>
-					<li>« Output »:</li>
-					<li>« Interactive UI »:</li>
+					<li>« Output »: « Normal », « Inline PDF », « Downloadable PDF » or « html ». See the description of these values below.</li>
+					<li>« Interactive UI »: If this option is checked, the simulation engine will use Javascript to give interactivity to the simulation for this step (recommended).</li>
 				</ol>
+				<table class="table table-condensed table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Output</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>« Normal »</td>
+							<td>The step is displayed normally.</td>
+						</tr>
+						<tr>
+							<td>« Inline PDF »</td>
+							<td>G6K displays a PDF rendering of the generated page.</td>
+						</tr>
+						<tr>
+							<td>« Downloadable PDF »</td>
+							<td>G6K generates a PDF file of the rendering of the page to be downloaded.</td>
+						</tr>
+						<tr>
+							<td>« html »</td>
+							<td>Reserve. Not implemented</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>Describe the step in the « Description » field. This description is displayed in the area <span class="bs-docs-number-circle">1</span> of the page.</p>
 				<h3 id="panels">
 					Panels
 				</h3>
 				<p>The panels compose the steps and are themselves made up of groups of fields.
 If there are several panels, they will be presented in the form of tabs:</p>
+				<p>To add a panel, click the « Add » button in the title bar of the « Steps » panel, then click « Add Panel » in the menu:</p>
 				<p>
-					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-panel-add-button.png') }}" alt="" />
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add-menu.png') }}" alt="" />
 				</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-panel-add.png') }}" alt="" />
@@ -469,7 +506,7 @@ If there are several panels, they will be presented in the form of tabs:</p>
 					<strong><em>Optional attribute:</em></strong>
 				</p>
 				<ol>
-					<li>« Label »: Panel label</li>
+					<li>« Label »: Panel label. It appears in the area <span class="bs-docs-number-circle">2</span> of the page.</li>
 				</ol>
 				<h4 id="fields-set">
 					Fields set
@@ -486,6 +523,7 @@ If there are several panels, they will be presented in the form of tabs:</p>
 				<ol>
 					<li>« Pop-in activation link »:</li>
 				</ol>
+				<p>Describe the fieldset in the « Legend » field. This legend appears in the area <span class="bs-docs-number-circle">3</span> of the page.</p>
 				<h5 id="fields">
 					Fields
 				</h5>
