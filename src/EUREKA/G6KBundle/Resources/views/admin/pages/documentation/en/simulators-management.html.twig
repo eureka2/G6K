@@ -20,9 +20,9 @@
 				<li data-level="2"><a href="#data">Data</a></li>
 				<li data-level="2"><a href="#steps">Steps</a></li>
 				<li data-level="3"><a href="#panels">Panels</a></li>
-				<li data-level="4"><a href="#fields-set">Fields set</a></li>
+				<li data-level="4"><a href="#fieldset">Fieldset</a></li>
 				<li data-level="5"><a href="#fields">Fields</a></li>
-				<li data-level="4"><a href="#blocks-of-information">Blocks of information</a></li>
+				<li data-level="4"><a href="#block-of-information">Block of information</a></li>
 				<li data-level="5"><a href="#chapter">Chapter</a></li>
 				<li data-level="6"><a href="#section">Section</a></li>
 				<li data-level="3"><a href="#footnotes">Footnotes</a></li>
@@ -33,9 +33,6 @@
 			</ul>
 		</div>
 		<div class="span9">
-			<div class="alert alert-danger" role="alert">
-CAUTION: This document, which is under development, is very incomplete.
-</div>
 			<h1 id="simulators">
 				Simulators
 			</h1>
@@ -292,10 +289,11 @@ To enter a column, do as in &amp; nbsp; 3., And then select the sort order (asce
 				</h2>
 				<p>The data allow to store values whatever their origin (user input, data source, element or result of calculations).
 They can be grouped into groups of data, allowing them to be arranged in the rows of a table (see « Grid layout » for a group of fields later in this document).</p>
-				<p>To add a data or a data group, click « Add » in the title bar « Datas » and then click « Add data » or « Add datagroup » depending on the case.</p>
+				<p>To add a data or a data group, click « Add » in the title bar « Datas »:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-add-button.png') }}" alt="" />
 				</p>
+				<p>then click « Add data » or « Add datagroup » depending on the case:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-add-menu.png') }}" alt="" />
 				</p>
@@ -317,7 +315,7 @@ They can be grouped into groups of data, allowing them to be arranged in the row
 				<ol>
 					<li>« Name »: Name of the data without spaces or special or accented characters.</li>
 					<li>« Label »: Label of the data that can be selected in the step fields, in the profiles.</li>
-					<li>« Type »: To be selected according to the desired data format.</li>
+					<li>« Type »: Type of data. See Data type below.</li>
 				</ol>
 				<p><strong>Data type</strong></p>
 				<table class="table table-condensed table-striped table-bordered">
@@ -415,21 +413,41 @@ They can be grouped into groups of data, allowing them to be arranged in the row
 					<li>« Memorize »: Keep in memory (user's cookie) the value so that the user does not have to re-enter it (see attribute « Memo » of the simulator)</li>
 				</ol>
 				<p>Give a description of the data in the "Description" field. This description can be displayed in a tooltip at the request of the user.</p>
+				<p>In the case of "choice" data, you have to indicate how to feed the list of choices, for this a « Choices » panel is displayed at the bottom of the entry form:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-choices.png') }}" alt="" />
 				</p>
-				<p>
-					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-source-add.png') }}" alt="" />
-				</p>
+				<p>The list is either static, ie its elements appear in extenso in the definition file of the simulator, or dynamic, ie it is filled by a data source</p>
+				<p>To create a static list, click on the "Add choice" button in the "Choices" panel:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-choice-add.png') }}" alt="" />
 				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Value »: The value assigned to the data if this list item is selected.</li>
+					<li>« Label »: The text of the item that appears in the list.</li>
+				</ol>
+				<p>Add choices as many times as necessary to constitute the list.</p>
+				<p>To create a dynamic list, click the "Add source" button:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-data-source-add.png') }}" alt="" />
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Source »: Source of the data to feed the list.</li>
+					<li>« Source column value »: The field containing the value assigned to the data item if this list item is selected.</li>
+					<li>« Source column label »: Field containing the text of the element appearing in the list.</li>
+				</ol>
+				<p><strong>Optional attribute:</strong></p>
+				<ol>
+					<li>"Source column ID": The field containing the element ID.</li>
+				</ol>
 				<h2 id="steps">
 					Steps
 				</h2>
 				<p>Once you have defined your data sources and data you will be able to start setting up the step(s) of your simulator.</p>
 				<p>A step consists of one or more panels in which are arranged information blocks and groups of fields in the order in which they are declared.</p>
-				<p>The information blocks are composed of chapters themselves, which are composed of sections.</p>
+				<p>The information blocks are composed of chapters, themselves composed of sections.</p>
 				<p>Field groups are composed of fields that can be arranged in three different ways:</p>
 				<ul>
 					<li>« Classic »: The fields and their labels are displayed in a classical way, that is to say one below the other.</li>
@@ -491,10 +509,11 @@ They can be grouped into groups of data, allowing them to be arranged in the row
 				</h3>
 				<p>The panels compose the steps and are themselves made up of groups of fields.
 If there are several panels, they will be presented in the form of tabs:</p>
-				<p>To add a panel, click the « Add » button in the title bar of the « Steps » panel, then click « Add Panel » in the menu:</p>
+				<p>To add a panel, click the « Add » button in the title bar of the « Steps » panel:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add-menu.png') }}" alt="" />
 				</p>
+				<p>then click « Add Panel » in the menu:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-panel-add.png') }}" alt="" />
 				</p>
@@ -508,25 +527,83 @@ If there are several panels, they will be presented in the form of tabs:</p>
 				<ol>
 					<li>« Label »: Panel label. It appears in the area <span class="bs-docs-number-circle">2</span> of the page.</li>
 				</ol>
-				<h4 id="fields-set">
-					Fields set
+				<h4 id="fieldset">
+					Fieldset
 				</h4>
+				<p>Fieldset makes it possible to group together fields of the same nature (logical or thematic) thus highlighting the structuring of the information requested.</p>
+				<p>To add a fieldset, click the « Add » button in the title bar of the "Panel" panel:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-panel-add-menu.png') }}" alt="" />
+				</p>
+				<p>then click « Add fieldset » in the menu:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-fieldset-add.png') }}" alt="" />
 				</p>
 				<p><strong>Attributes:</strong></p>
 				<ol>
-					<li>« Disposition »: Classic, grid or online.</li>
-					<li>« Display »: Online or pop-in.</li>
+					<li>« Disposition »: « Classic », « Grid » or « Inline ».</li>
+					<li>« Display »: « Inline » or « Pop-in ».</li>
 				</ol>
+				<table class="table table-condensed table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Disposition</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Classic</td>
+							<td>The elements of the form belonging to the group of fields are arranged in a conventional way, that is, a field preceded by its field label is placed on the line following that of the preceding field</td>
+						</tr>
+						<tr>
+							<td>Grid</td>
+							<td>Form elements belonging to the field group are placed in a table</td>
+						</tr>
+						<tr>
+							<td>Inline</td>
+							<td>The elements of the form belonging to the group of fields are arranged on line to form a sentence</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table table-condensed table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Display</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Inline</td>
+							<td>The fields of the field group are displayed "online" in the page</td>
+						</tr>
+						<tr>
+							<td>Pop-in</td>
+							<td>Fields in the field group are displayed in a pop-in-modal window. A link whose label is in the "Pop-in activation link" attribute displays the</td>
+						</tr>
+					</tbody>
+				</table>
 				<p><strong>Optional attribute:</strong></p>
 				<ol>
-					<li>« Pop-in activation link »:</li>
+					<li>« Pop-in activation link »: This attribute is to be filled in only if the « Display » attribute of the field group is « Pop-in ». It's the text of the link that displays the pop-in.</li>
 				</ol>
 				<p>Describe the fieldset in the « Legend » field. This legend appears in the area <span class="bs-docs-number-circle">3</span> of the page.</p>
 				<h5 id="fields">
 					Fields
 				</h5>
+				<p>
+					The field is the element of the form that allows the input or the restitution of a data. It takes the form of an entry box, a list box, a checkbox or radio buttons.
+					<br />
+					It is preceded by a field label unless it is placed in the cell of an array.
+					<br />
+					It may be mandatory or optional.
+				</p>
+				<p>To add a field, click the « Add field » button in the title bar of the fieldset panel to which you want to add it:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-fieldset-add-field-button.png') }}" alt="" />
+				</p>
+				<p>The form for entering a field is displayed:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-field-add.png') }}" alt="" />
 				</p>
@@ -537,17 +614,17 @@ If there are several panels, they will be presented in the form of tabs:</p>
 				</ol>
 				<p><strong>Optional attributes:</strong></p>
 				<ol>
-					<li>« Label »: Label of the field.</li>
+					<li>« Label »: Label of the field. See <span class="bs-docs-number-circle">4</span>.</li>
 					<li>« Required »: Required field (An error message will be displayed if the field is not filled in).</li>
-					<li>« Show after the field label? »: To choose according to your needs.</li>
-					<li>« Use data description as help? »: To choose according to your needs.</li>
-					<li>Prompt »:</li>
-					<li>« Line jump before field? » »: To choose according to your needs.</li>
-					<li>« Required if visible »: When the field is visible it can be decided that it is required.</li>
-					<li>« Place the field under the field label? »: To choose according to your needs.</li>
-					<li>« Highlight the field label? »: To choose according to your needs.</li>
+					<li>« Show after the field label? »: If this box is checked, the ':' will be displayed after the label.</li>
+					<li>« Use data description as help? »: If this box is checked, a question mark will be displayed after the field (see <span class="bs-docs-number-circle">6</span>). If the user clicks on this question mark, the description of the data is displayed below the field as help text (see <span class="bs-docs-number-circle">8</span>).</li>
+					<li>« Prompt »: Text to be displayed in the input field to indicate the input format or what to enter or select.</li>
+					<li>« Line jump before field? »: If this box is checked, the field will be displayed on a new line.</li>
+					<li>« Required if visible »:If this box is checked, the field will be made mandatory if and only if it is not hidden.</li>
+					<li>« Place the field under the field label? »: If this box is checked, the field will be displayed below its label and not to its right.</li>
+					<li>« Highlight the field label? »: If this box is checked, the field label will be displayed in bold.</li>
 					<li>« Show choices with radio buttons? » Do not use for long lists of choices.</li>
-					<li>« Explanation »: To be chosen according to your needs.</li>
+					<li>« Explanation »: Text explaining how the field is calculated.</li>
 					<li>
 						« Widget »: To be chosen according to your needs: 
 						<ul>
@@ -555,45 +632,106 @@ If there are several panels, they will be presented in the form of tabs:</p>
 							<li>« List box with auto-completion »: When entering the auto-completion is done automatically, this allows the user to find the item he is looking for.</li>
 							<li>« Postal code obtained by self-completion on the name of the municipality or its postal code »: Allows the user to take advantage of the self-completion concerning the name of the commune or its postal code.</li>
 							<li>« INSEE code obtained by self-completion on the name of the commune or its postal code »: Allows the user to benefit from the self-completion concerning the name of the commune or its postal code.</li>
-							<li>«Insee code derived from a card of France»: A map appears and leaves the choice to the user to geolocate or not.</li>
+							<li>« Insee code derived from a card of France»: A map appears and leaves the choice to the user to geolocate or not.</li>
 							<li>« RGAA-compliant date selector »: Allows the user to select a date.</li>
-							<li>« Form Field Editor »:</li>
+							<li>« Form Field Editor »: Allows you to place an input field in the middle of a text.</li>
 						</ul>
 					</li>
 				</ol>
-				<h4 id="blocks-of-information">
-					Blocks of information
+				<h4 id="block-of-information">
+					Block of information
 				</h4>
+				<p>
+					The blockinfo is an element of the simulation page of the same level as the field group but does not contain any input or output fields.
+					<br />
+					It contains textual information that can be useful to the user in the simulation process. It can be contextualized by showing / hiding it totally or partially using the actions of business rules depending on certain conditions.
+				</p>
+				<p>The blockinfos are composed of one or many chapters themselves composed of one or many sections.</p>
+				<p>To add a blockinfo, click the "Add" button in the title bar of the "Panel" panel:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-panel-add-menu.png') }}" alt="" />
+				</p>
+				<p>then "Add blockinfo" from the menu:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-blockinfo-add.png') }}" alt="" />
 				</p>
 				<p><strong>Optional attributes:</strong></p>
+				<ol>
+					<li>« Name »: Blockinfo name without spaces or special or accented characters.</li>
+					<li>« Label »: Blockinfo label. It appears in the area <span class="bs-docs-number-circle">9</span> of the page.</li>
+				</ol>
 				<h5 id="chapter">
 					Chapter
 				</h5>
 				<p>
+					The chapter is a subdivision of the Blockinfo. It is composed of sections.
+					<br />
+					It can be made foldable / unfoldable in the case of a block of information containing many chapters to facilitate the reading of the page.
+					<br />
+					It can also be associated with an icon to make it visually distinguishable from the other chapters.
+				</p>
+				<p>To add a chapter, click the "Add chapter" button in the title bar of the « Blockinfo » panel:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-blockinfo-add-chapter-button.png') }}" alt="" />
+				</p>
+				<p>The form for entering a chapter is displayed:</p>
+				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-chapter-add.png') }}" alt="" />
 				</p>
 				<p><strong>Optional attributes:</strong></p>
+				<ol>
+					<li>« Name »: Name of the chapter without spaces or special characters or accented.</li>
+					<li>« Label »: Title of the chapter. It appears in the <span class="bs-docs-number-circle">10</span> area of the page.</li>
+					<li>« Icon »: Absolute or relative URL of an image.</li>
+					<li>« Allow collape/expand »: If this box is checked, only the title bar of the chapter panel is displayed. By clicking on the title bar, the panel unfolds to show the contents.</li>
+				</ol>
 				<h6 id="section">
 					Section
 				</h6>
 				<p>
+					The section is a subdivision of a chapter. It is in the sections that the different texts of a block of information are inscribed.
+					<br />
+					The text of a section can be annotated.
+ 
+To add a section, click the "Add Section" button on the title bar of the « Chapter » panel:
+				</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-chapter-add-section-button.png') }}" alt="" />
+				</p>
+				<p>The form for entering a section is displayed:</p>
+				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-section-add.png') }}" alt="" />
 				</p>
 				<p><strong>Optional attributes:</strong></p>
+				<ol>
+					<li>« Name »: Name of the section without spaces or special or accented characters.</li>
+					<li>« Label »: The label of the section. It appears in the <span class="bs-docs-number-circle">11</span> area of the page.</li>
+				</ol>
+				<p>Enter the rich text of the section in the « Content » field of the form.</p>
+				<p>Optionally, annotations of the text can be added in the « Annotations » field.</p>
 				<h3 id="footnotes">
 					Footnotes
 				</h3>
+				<p>A footnote is a contextualized note (that can be shown or hidden by business rules) located in the lower part of the form of a simulation step.</p>
+				<p>The footnotes can be placed, at your convenience, before or after the action buttons.</p>
+				<p>To add footnotes, click the « Add » button in the title bar of the « Steps » panel:</p>
+				<p>
+					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add-menu.png') }}" alt="" />
+				</p>
+				<p>then click « Add footnotes » on the menu:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-footnotes-add.png') }}" alt="" />
 				</p>
+				<p>Choose their locations (before or after the action buttons) and validate.</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-footnotes-display.png') }}" alt="" />
 				</p>
+				<p>Then click the « Add footnote » button in the title bar:</p>
 				<p>
 					<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/en/simulators-management-footnote-add.png') }}" alt="" />
 				</p>
+				<p>Enter the note then validate.</p>
+				<p>The number of notes you can add is not limited.</p>
 				<h3 id="action-buttons">
 					Action Buttons
 				</h3>

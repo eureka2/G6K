@@ -22,7 +22,7 @@
 				<li data-level="3"><a href="#panneaux">Panneaux</a></li>
 				<li data-level="4"><a href="#groupe-de-champs">Groupe de champs</a></li>
 				<li data-level="5"><a href="#champs">Champs</a></li>
-				<li data-level="4"><a href="#bloc-d-info">Bloc d'info</a></li>
+				<li data-level="4"><a href="#bloc-d-infos">Bloc d'infos</a></li>
 				<li data-level="5"><a href="#chapitre">Chapitre</a></li>
 				<li data-level="6"><a href="#section">Section</a></li>
 				<li data-level="3"><a href="#notes-de-bas-de-page">Notes de bas de page</a></li>
@@ -33,9 +33,6 @@
 			</ul>
 		</div>
 		<div class="span9">
-			<div class="alert alert-danger" role="alert">
-ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
-</div>
 			<h1 id="simulateurs">
 				Simulateurs
 			</h1>
@@ -58,7 +55,7 @@ ATTENTION: Ce document, en cours d'élaboration, est très incomplet.
 			<p>Pour les données de référence, il faut se poser la question de la source de données. Dispose-t-on d’une API (web service) interne ou externe ou d’une base de données pour retrouver ces données ?</p>
 			<p>Si oui, il sera possible de paramétrer cette API ou cette base de données dans G6K pour pouvoir y accéder.</p>
 			<p>Dans le cas contraire il faudra créer une source de données (base de données) interne dans G6K. A noter que les valeurs simples (tel que le montant du RSA) peuvent être définies en constante dans le simulateur, évitant ainsi la création d’une source de données. En revanche, les structures de données complexes (tel qu’un barème) nécessitent la création d’une source de données interne.</p>
-			<p>Ensuite, il est conseillé d’identifier tous les éléments d’une page, les nommer, les labeliser :</p>
+			<p>Ensuite, il est conseillé d’identifier tous les éléments d’une page, les nommer, les labelliser :</p>
 			<ol>
 				<li>Donner un nom au simulateur, celui qui figurera dans l’url</li>
 				<li>Donner un titre au simulateur. Ce titre apparaitra sur chaque page en dessous du fil d’Ariane de navigation sur le site</li>
@@ -189,7 +186,7 @@ Vous pouvez également composer une expression auquel cas vous devrez définir u
 Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</li>
 				<li>« Filtre » : Conditions portant sur les champs/colonnes permettant de ne garder que les lignes du résultat de la requête respectant ces conditions.</li>
 				<li>« Trié par » : Tri par ordre croissant ou décroissant sur les champs/colonnes sélectionnées. Pour entrer une colonne, faire comme en&nbsp;3., puis sélectionnez l'ordre de tri (croissant ou décroissant).</li>
-				<li>« Nombre de résultats » : Parmi toutes les « lignes » de résultats retournées par la requête, indiquer le nombre de lignes qui doit être conservées. Mettre 0 si toutes les lignes doivent être conservées.</li>
+				<li>« Nombre de résultats » : Parmi toutes les « lignes » de résultats retournées par la requête, indiquer le nombre de lignes qui doivent être conservées. Mettre 0 si toutes les lignes doivent être conservées.</li>
 				<li>« à partir de » : Parmi toutes les « lignes » de résultats retournées par la requête, indiquer le numéro de la première ligne qui doit être prise en considération pour le traitement de la requête. Le numéro de la première ligne est 0, 1 la deuxième et ainsi de suite.</li>
 				<li>
 					« Format des données retournées » : 
@@ -284,11 +281,12 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<h2 id="donnees">
 				Données
 			</h2>
-			<p>Les données permettent de stocker des valeurs quel que soit leurs provenances (saisies par l'utilisateur, source de données, élément ou résultat de calculs). Elles peuvent être regrouper en groupes de données, ce qui permet de les disposer dans les rangées d’un tableau (Cf. disposition « grille » d’un groupe de champs, plus loin dans ce document).</p>
-			<p>Pour ajouter une donnée ou un groupe de données, cliquez sur « Ajouter » de la barre de titre « Données » puis sur « Ajouter une donnée » ou « Ajouter un groupe de données » selon le cas.</p>
+			<p>Les données permettent de stocker des valeurs quel que soit leurs provenances (saisies par l'utilisateur, source de données, élément ou résultat de calculs). Elles peuvent être regroupées en groupes de données, ce qui permet de les disposer dans les rangées d’un tableau (Cf. disposition « grille » d’un groupe de champs, plus loin dans ce document).</p>
+			<p>Pour ajouter une donnée ou un groupe de données, cliquez sur « Ajouter » de la barre de titre « Données » :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add-button.png') }}" alt="" />
 			</p>
+			<p>puis sur « Ajouter une donnée » ou « Ajouter un groupe de données » selon le cas :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-data-add-menu.png') }}" alt="" />
 			</p>
@@ -310,7 +308,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<ol>
 				<li>« Nom » : Nom de la donnée sans espaces ni caractères spéciaux ou accentués.</li>
 				<li>« Libellé » : Titre de la donnée que l’on pourra sélectionner lors de la définition des champs des étapes, des règles métier ou des profils.</li>
-				<li>« Type » : A choisir en fonction du format de donnée souhaité.</li>
+				<li>« Type » : Type de la donnée. Cf. Type de données ci-dessous.</li>
 			</ol>
 			<p><strong>Type de données</strong></p>
 			<table class="table table-condensed table-striped table-bordered">
@@ -503,10 +501,11 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 				Panneaux
 			</h3>
 			<p>Les panneaux composent les étapes et sont eux-mêmes constitués de groupes de champs. S'il y plusieurs panneaux, ils seront présentés sous forme d’onglets :</p>
-			<p>Pour ajouter un panneau, cliquez sur le bouton « Ajouter » de la barre de titre du panneau « Etapes », puis sur « Ajouter un panneau » du menu :</p>
+			<p>Pour ajouter un panneau, cliquez sur le bouton « Ajouter » de la barre de titre du panneau « Etapes » :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add-menu.png') }}" alt="" />
 			</p>
+			<p>puis sur « Ajouter un panneau » du menu :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-panel-add.png') }}" alt="" />
 			</p>
@@ -523,22 +522,82 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<h4 id="groupe-de-champs">
 				Groupe de champs
 			</h4>
+			<p>Le groupe de champs permet de regrouper des champs de même nature (logique ou thématique) faisant ressortir ainsi la structuration des informations demandées.</p>
+			<p>Pour ajouter un groupe de champs, cliquez sur le bouton « Ajouter » de la barre de titre du panneau « Panneau » :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-panel-add-menu.png') }}" alt="" />
+			</p>
+			<p>puis sur « Ajouter un groupe de champs » du menu :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-fieldset-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Disposition » : Classique, grille ou en ligne.</li>
-				<li>« Affichage » : En ligne ou pop-in.</li>
+				<li>« Disposition » : « Classique », « Grille » ou « En ligne ».</li>
+				<li>« Affichage » : « En ligne » ou « Pop-in ».</li>
 			</ol>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Disposition</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Classique</td>
+						<td>Les éléments du formulaire appartenant au groupe de champs sont disposés de façon classique, c'est-à-dire qu'un champ précédé de son étiquette de champ est placé sur la ligne suivant celle du champ précédent</td>
+					</tr>
+					<tr>
+						<td>Grille</td>
+						<td>Les éléments du formulaire appartenant au groupe de champs sont placés dans un tableau</td>
+					</tr>
+					<tr>
+						<td>En ligne</td>
+						<td>Les éléments du formulaire appartenant au groupe de champs sont disposés en ligne de façon à former une phrase</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table table-condensed table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Affichage</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>En ligne</td>
+						<td>Les champs du groupe de champs sont affichés "en ligne" dans la page</td>
+					</tr>
+					<tr>
+						<td>Pop-in</td>
+						<td>Les champs du groupe de champs sont affichés dans une fenêtre pop-in modale. Un lien dont le libellé se trouve dans l'attribut « Lien d’activation du Pop-in » permet d'afficher la fenêtre</td>
+					</tr>
+				</tbody>
+			</table>
 			<p><strong>Attribut optionnel :</strong></p>
 			<ol>
-				<li>« Lien d’activation du Pop-in » :</li>
+				<li>« Lien d’activation du Pop-in » : Cet attribut n'est à renseigner que si l'attribut « Affichage » du groupe de champ est « Pop-in ». C'est le texte du lien qui permet d'afficher le pop-in.</li>
 			</ol>
 			<p>Décrivez le groupe de champs dans le champ « Légende ». Cette légende s'affiche dans la zone <span class="bs-docs-number-circle">3</span> de la page.</p>
 			<h5 id="champs">
 				Champs
 			</h5>
+			<p>
+				Le champ est l'élément du formulaire qui permet la saisie ou la restitution d'une donnée. Il prend la forme d'une boite de saisie, d'une boite à liste, d'une case à cocher ou de boutons radio.
+				<br />
+				C'est en principe un élément natif d'un formulaire html mais on peut lui associer un "widget" (sélecteur de date, auto-complétion, ...) pour faciliter la saisie par l'utilisateur.
+				<br />
+				Il est précédé par une étiquette de champ sauf s'il est placé dans la cellule d'un tableau.
+				<br />
+				Il peut être obligatoire ou facultatif.
+			</p>
+			<p>Pour ajouter un champ, cliquez sur le bouton « Ajouter un champ » de la barre de titre du panneau du groupe de champ dans lequel vous souhaitez l'ajouter :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-fieldset-add-field-button.png') }}" alt="" />
+			</p>
+			<p>Le formulaire de saisie d'un champ s'affiche :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-field-add.png') }}" alt="" />
 			</p>
@@ -549,17 +608,17 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			</ol>
 			<p><strong>Attributs optionnels :</strong></p>
 			<ol>
-				<li>« Libellé » : Titre du champ.</li>
+				<li>« Libellé » : Etiquette du champ. Cf. <span class="bs-docs-number-circle">4</span>.</li>
 				<li>« Requis » : Champ requis (Un message d’erreur sera affiché si le champ n’est pas renseigné).</li>
-				<li>« Afficher ‘ :’ après l’étiquette de champ ? » : A choisir en fonction de vos besoins.</li>
-				<li>« Utiliser la description de données comme aide ? » : A choisir en fonction de vos besoins.</li>
-				<li>« Invite » :</li>
-				<li>« Saut de ligne avant le champ ? » : A choisir en fonction de vos besoins.</li>
-				<li>« Requis si visible » : Lorsque le champ sera visible on peut décider du fait qu’il soit requis.</li>
-				<li>« Placez le champ sous l’étiquette de champ ? » : A choisir en fonction de vos besoins.</li>
-				<li>« Mettre en évidence l’étiquette de champ ? » : A choisir en fonction de vos besoins.</li>
+				<li>« Afficher ‘:’ après l’étiquette de champ ? » : Si cette case est cochée, les ':' seront affichés après l'étiquette.</li>
+				<li>« Utiliser la description de données comme aide ? » : Si cette case est cochée, un point d'interrogation sera affiché après le champ (Cf. <span class="bs-docs-number-circle">6</span>). Si l'utilise clique sur ce point d'interrogation, la description de la donnée est affichée sous le champ en tant que texte d'aide (Cf. <span class="bs-docs-number-circle">8</span>).</li>
+				<li>« Invite » : Texte à afficher dans e champ de saisie pour lui indiquer le format de saisie ou ce qu'il faut saisir ou sélectionner.</li>
+				<li>« Saut de ligne avant le champ ? » : Si cette case est cochée, le champ s'affichera sur une nouvelle ligne.</li>
+				<li>« Requis si visible » : Si cette case est cochée, le champ sera rendu obligatoire si et seulement si il n'est pas caché.</li>
+				<li>« Placez le champ sous l’étiquette de champ ? » : Si cette case est cochée, le champ s'affichera en dessous de son étiquette et non à sa droite.</li>
+				<li>« Mettre en évidence l’étiquette de champ ? » : Si cette case est cochée, l'étiquette de champ sera affichée en caractères gras.</li>
 				<li>« Afficher les choix avec les boutons radio ? » : Ne pas utiliser pour les longues listes de choix.</li>
-				<li>« Explication » : A choisir en fonction de vos besoins.</li>
+				<li>« Explication » : Texte expliquant le mode de calcul du champ.</li>
 				<li>
 					« Widget » : A choisir en fonction de vos besoins : 
 					<ul>
@@ -569,47 +628,105 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 						<li>« Code Insee obtenu par auto-complétion sur le nom de la commune ou son code postal » : Permet à l’utilisateur de profiter de l’auto-complétion concernant le nom de la commune ou son code postal.</li>
 						<li>« Code Insee obtenu à partir d'une carte de France » : Une carte apparaît et laisse le choix à l’utilisateur de se géolocaliser ou non.</li>
 						<li>« Sélecteur de date conforme RGAA » : Permet à l’utilisateur de sélectionner une date.</li>
-						<li>« Éditeur en place de champ de formulaire » :</li>
+						<li>« Éditeur en place de champ de formulaire » : Permet de placer un champ de saisie au milieu d'un texte.</li>
 					</ul>
 				</li>
 			</ol>
-			<h4 id="bloc-d-info">
-				Bloc d'info
+			<h4 id="bloc-d-infos">
+				Bloc d'infos
 			</h4>
+			<p>
+				Le bloc d'infos est un élément de la page de simulation de même niveau que le groupe de champs mais ne contient aucun champ de saisie ou de restitution.
+				<br />
+				Il contient des informations textuelles qui peuvent être utiles à l'utilisateur dans le déroulement de la simulation.
+				<br />
+				Il peut être contextualisé en le montrant/cachant totalement ou partiellement à l'aide des actions des règles métier en fonction de certaines conditions.
+			</p>
+			<p>Les blocs d'infos sont composés d'un ou plusieurs chapitres eux-mêmes composés d'une ou plusieurs sections.</p>
+			<p>Pour ajouter un bloc d'infos, cliquez sur le bouton « Ajouter » de la barre de titre du panneau « Panneau » :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-panel-add-menu.png') }}" alt="" />
+			</p>
+			<p>puis sur « Ajouter un bloc d'info » du menu :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-blockinfo-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs optionnels :</strong></p>
+			<ol>
+				<li>« Nom » : Nom du bloc d'infos sans espaces ni caractères spéciaux ou accentués.</li>
+				<li>« Libellé » : Libellé du bloc d'infos. Il s'affiche dans la zone <span class="bs-docs-number-circle">9</span> de la page.</li>
+			</ol>
 			<h5 id="chapitre">
 				Chapitre
 			</h5>
 			<p>
+				Le chapitre est une sous-partie du bloc d'infos. Il est composé de sections.
+				<br />
+				On peut le rendre pliable / dépliable dans le cas d'un bloc d'infos contenant de nombreux chapitres pour faciliter la lecture de la page.
+				<br />
+				On peut également lui associer une icône pour permettre de le distinguer visuellement des autres chapitres.
+			</p>
+			<p>Pour ajouter un chapitre, cliquez sur le bouton « Ajouter un chapitre » de la barre de titre du panneau « Bloc d'infos » :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-blockinfo-add-chapter-button.png') }}" alt="" />
+			</p>
+			<p>Le formulaire de saisie d'un chapitre s'affiche :</p>
+			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-chapter-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs optionnels :</strong></p>
+			<ol>
+				<li>« Nom » : Nom du chapitre sans espaces ni caractères spéciaux ou accentués.</li>
+				<li>« Libellé » : Titre du chapitre. Il s'affiche dans la zone <span class="bs-docs-number-circle">10</span> de la page.</li>
+				<li>« Icône » : URL absolue ou relative d'une image.</li>
+				<li>« Permettre Plier / Déplier » : Si cette case est cochée, seule la barre de titre du panneau du chapitre est affichée. En cliquant sur la barre de titre, le panneau se déplie pour en montrer le contenu.</li>
+			</ol>
 			<h6 id="section">
 				Section
 			</h6>
 			<p>
+				La section est une sous-division d'un chapitre. C'est dans les sections que s'inscrivent les différents textes d'un bloc d'infos.
+				<br />
+				Le texte d'une section peut être annoté.
+			</p>
+			<p>Pour ajouter une section, cliquez sur le bouton « Ajouter une section » de la barre de titre du panneau « Chapitre » :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-chapter-add-section-button.png') }}" alt="" />
+			</p>
+			<p>Le formulaire de saisie d'une section s'affiche :</p>
+			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-section-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs optionnels :</strong></p>
+			<ol>
+				<li>« Nom » : Nom de la section sans espaces ni caractères spéciaux ou accentués.</li>
+				<li>« Libellé » : Libellé de la section. Il s'affiche dans la zone <span class="bs-docs-number-circle">11</span> de la page.</li>
+			</ol>
+			<p>Entrez le texte enrichi de la section dans le champ « Contenu » du formulaire.</p>
+			<p>Optionnellement, des annotations du texte peuvent être ajoutées dans le champ « Annotations ».</p>
 			<h3 id="notes-de-bas-de-page">
 				Notes de bas de page
 			</h3>
-			<p>Pour ajouter des notes e bas de page, cliquez sur le bouton « Ajouter » de la barre de titre du panneau « Etapes », puis sur « Ajouter des notes de bas de page » du menu :</p>
+			<p>Une note de bas de page est une note contextualisée (pouvant être montrée ou cachée par les règles métier) se situant dans la partie basse du formulaire d'une étape de simulation.</p>
+			<p>Les notes de bas de page peuvent être placées, à votre convenance, avant ou après les boutons d'action.</p>
+			<p>Pour ajouter des notes de bas de page, cliquez sur le bouton « Ajouter » de la barre de titre du panneau « Etapes » :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-step-add-menu.png') }}" alt="" />
 			</p>
+			<p>puis sur « Ajouter des notes de bas de page » du menu :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnotes-add.png') }}" alt="" />
 			</p>
+			<p>Choisissez leurs emplacements (avant ou après les boutons d'action) puis validez.</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnotes-display.png') }}" alt="" />
 			</p>
+			<p>Ensuite, cliquez sur le bouton « Ajouter une note de bas de page » de la barre de titre:</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-footnote-add.png') }}" alt="" />
 			</p>
+			<p>Saisissez la note puis validez.</p>
+			<p>Le nombre de notes que vous pouvez ajouter n'est pas limité.</p>
 			<h3 id="boutons-d’actions">
 				Boutons d’actions
 			</h3>
