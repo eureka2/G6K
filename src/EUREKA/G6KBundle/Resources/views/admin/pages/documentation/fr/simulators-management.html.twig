@@ -462,7 +462,7 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<p><strong>Attributs :</strong></p>
 			<ol>
 				<li>« Nom de l'étape » : Nom de l’étape sans espaces ni caractères spéciaux ou accentués.</li>
-				<li>« Libellé de l’étape » : Titre de l’étape qui sera affiché dans le fil d'Ariane d'enchainement des étapes.</li>
+				<li>« Libellé de l’étape » : Titre de l’étape qui sera affiché dans le fil d'Ariane d'enchaînement des étapes.</li>
 				<li>« Gabarit d’affichage de l’étape » : Nom du gabarit utilisé par G6K pour afficher la page de l'étape. Pour plus d'information, consulter la page : <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">Gestion des vues</a></li>
 			</ol>
 			<p><strong>Attributs optionnels :</strong></p>
@@ -702,12 +702,20 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 				<li>« Nom » : Nom de la section sans espaces ni caractères spéciaux ou accentués.</li>
 				<li>« Libellé » : Libellé de la section. Il s'affiche dans la zone <span class="bs-docs-number-circle">11</span> de la page.</li>
 			</ol>
-			<p>Entrez le texte enrichi de la section dans le champ « Contenu » du formulaire.</p>
-			<p>Optionnellement, des annotations du texte peuvent être ajoutées dans le champ « Annotations ».</p>
+			<p>
+				Entrez le texte enrichi de la section dans le champ « Contenu » du formulaire.
+				<br />
+				Ce contenu s'affichera dans la zone <span class="bs-docs-number-circle">12</span> de la page.
+			</p>
+			<p>
+				Optionnellement, des annotations du texte peuvent être ajoutées dans le champ « Annotations ».
+				<br />
+				Ces annotations s'afficheront dans la zone <span class="bs-docs-number-circle">13</span> de la page.
+			</p>
 			<h3 id="notes-de-bas-de-page">
 				Notes de bas de page
 			</h3>
-			<p>Une note de bas de page est une note contextualisée (pouvant être montrée ou cachée par les règles métier) se situant dans la partie basse du formulaire d'une étape de simulation.</p>
+			<p>Une note de bas de page est une note contextualisée (pouvant être montrée ou cachée par les règles métier) se situant dans la partie basse du formulaire (zone <span class="bs-docs-number-circle">14</span> de la page) d'une étape de simulation.</p>
 			<p>Les notes de bas de page peuvent être placées, à votre convenance, avant ou après les boutons d'action.</p>
 			<p>Pour ajouter des notes de bas de page, cliquez sur le bouton « Ajouter » de la barre de titre du panneau « Etapes » :</p>
 			<p>
@@ -730,21 +738,30 @@ Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</
 			<h3 id="boutons-d’actions">
 				Boutons d’actions
 			</h3>
-			<p>Les boutons d’actions permettent par exemple de passer d’une étape à l’autre ou de réinitialiser un formulaire.</p>
+			<p>
+				Les boutons d’actions permettent d'enchainer les étapes, de réinitialiser un formulaire, de lancer une nouvelle simulation ou d'ouvrir une page externe au simulateur.
+				<br />
+				Ils s'afficheront dans la zone <span class="bs-docs-number-circle">15</span> de la page.
+			</p>
+			<p>Pour ajouter un bouton d'action, cliquez sur le bouton « Ajouter un bouton d'action » de la barre de titre du panneau « Boutons d'action » :</p>
+			<p>
+				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-action-add-button.png') }}" alt="" />
+			</p>
+			<p>Le formulaire de saisie des attributs du bouton s'affiche :</p>
 			<p>
 				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/simulators-management-action-add.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ol>
-				<li>« Nom » : Donnée qui sera affiché pour les utilisateurs.</li>
-				<li>« Libellé » : Saisie par l’utilisateur ou restitution à l’utilisateur.</li>
-				<li>« Action » : Soumettre le formulaire et passage à l’étape définie par l’attribut « Vers » ou réinitialiser.</li>
-				<li>« Vers » : A choisir en fonction de vos besoins.</li>
+				<li>« Nom » : Nom du bouton sans espaces ni caractères spéciaux ou accentués.</li>
+				<li>« Libellé » : Libellé du bouton.</li>
+				<li>« Action » : « Soumettre » si on souhaite passer à l’étape définie par l’attribut « Vers », « Réinitialiser » pour réinitialiser (effacer les données) du formulaire.</li>
+				<li>« Vers » : Si l'action choisie est « Soumettre », cet attribut définit l'enchaînement (étape suivante, précédente, courante ou étape spécifique), une nouvelle simulation ou l'ouverture du page externe.</li>
 			</ol>
 			<p><strong>Attributs optionnels :</strong></p>
 			<ol>
-				<li>« URI / étape » : Titre du champ.</li>
-				<li>« Classe » : Niveau d’importance du bouton « Principale » le bouton sera mis en avant visuellement et « Secondaire » le bouton ne sera pas mis en avant visuellement.</li>
+				<li>« URI / étape » : Si l'attribut « Vers » contient « Page externe », alors cet attribut contient l'URI de la page. Si l'attribut « Vers » contient « Aller à l'étape », alors cet attribut contient le numéro de l'étape cible.</li>
+				<li>« Classe » : Niveau d’importance du bouton : « Principale » le bouton sera mis en avant visuellement, « Secondaire » le bouton ne sera pas mis en avant visuellement.</li>
 			</ol>
 			<h2 id="regles-metier">
 				Règles métier
