@@ -36,16 +36,45 @@ use EUREKA\G6KBundle\Manager\ControllersHelper;
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
+/**
+ *
+ * The HomeAdminController class is the controller that display the administration interface homepage.
+ *
+ * @author Jacques Archimède
+ *
+ */
 class HomeAdminController extends BaseAdminController {
-	
-	private $datasources = array();
 
+	/**
+	 * @var \SimpleXMLElement $datasources content of Datasources.xml
+	 *
+	 * @access  private
+	 *
+	 */
+	private $datasources = null;
+
+	/**
+	 * Entry point of the root path /admin
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @return  \Symfony\Component\HttpFoundation\Response The administration interface homepage in a Response object
+	 *
+	 */
 	public function indexAction(Request $request)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runIndex($request);
 	}
-	
+
+	/**
+	 * Prepare the administration interface homepage and renders it.
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @return  \Symfony\Component\HttpFoundation\Response The administration interface homepage in a Response object
+	 *
+	 */
 	protected function runIndex(Request $request)
 	{
 		$no_js = $request->query->get('no-js') || 0;

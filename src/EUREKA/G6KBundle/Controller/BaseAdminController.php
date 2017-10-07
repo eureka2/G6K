@@ -32,14 +32,64 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+/**
+ *
+ * Base class for all the admin module controllers
+ *
+ * @author Jacques Archimède
+ *
+ */
 class BaseAdminController extends Controller {
 
+	/**
+	 * @var            \EUREKA\G6KBundle\Manager\ControllersHelper $helper helper instance used by this controller
+	 *
+	 * @access  public
+	 *
+	 */
 	public $helper;
+
+	/**
+	 * @var string      $databasesDir Databases directory
+	 *
+	 * @access  public
+	 *
+	 */
 	public $databasesDir;
+
+	/**
+	 * @var string      $simulatorsDir Simulators directory
+	 *
+	 * @access  public
+	 *
+	 */
 	public $simulatorsDir;
+
+	/**
+	 * @var string      $publicDir public directory
+	 *
+	 * @access  public
+	 *
+	 */
 	public $publicDir;
+
+	/**
+	 * @var string      $viewsDir Templates directory
+	 *
+	 * @access  public
+	 *
+	 */
 	public $viewsDir;
 
+	/**
+	 * Returns a JSON response formed with the data of a form and an error message.
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $error The error message
+	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
+	 *
+	 */
 	protected function errorResponse($form, $error)	{
 		$form['error'] = $error;
 		$response = new Response();
@@ -48,13 +98,18 @@ class BaseAdminController extends Controller {
 		return $response;
 	}
 
-/**
- * Zip file creation function.
- * Makes zip files. Derivated from PhpMyAdmin package
- *
- * @access  protected
- * @see     Official ZIP file format: https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
- */
+	/**
+	 * Zip file creation function.
+	 * Makes zip files. Derivated from PhpMyAdmin package
+	 * The $contents parameter is an array of associative array where keys are :
+	 * - name: name of the zip
+	 * - modtime: modification time
+	 * - data: data to compress
+	 *
+	 * @access  protected
+	 * @param   array $contents The array of contents to be compressed
+	 * @see     Official ZIP file format: https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
+	 */
 	protected function zip($contents) {
 		$datasec = array();
 		$ctrl_dir = array();
@@ -122,6 +177,14 @@ class BaseAdminController extends Controller {
 		return implode('', $datasec) . $header;
 	}
 
+	/**
+	 * Converts unix time to MS DOS time
+	 *
+	 * @access  protected
+	 * @param   int $unixtime (default: 0) The unix time
+	 * @return  int The MS DOS time
+	 *
+	 */
 	protected function unix2DosTime($unixtime = 0) {
 		$timearray = ($unixtime == 0) ? getdate() : getdate($unixtime);
 		if ($timearray['year'] < 1980) {

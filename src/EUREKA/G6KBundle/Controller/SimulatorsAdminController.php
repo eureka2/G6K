@@ -71,21 +71,112 @@ use EUREKA\G6KBundle\Entity\Database;
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
+/**
+ *
+ * The SimulatorsAdminController class is the controller that handles all actions of the simulator management interface.
+ *
+ * These actions are:
+ *
+ * - Creation of a simulator
+ * - Modification of a simulator
+ * - Import / Export of a simulator
+ * - Publication of a simulator
+ * - Deletion of a simulator
+ *
+ * @author Jacques Archimède
+ *
+ */
 class SimulatorsAdminController extends BaseAdminController {
 
+	/**
+	 * @const string
+	 */
 	const SQL_SELECT_KEYWORD = 'SELECT ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_FROM_KEYWORD = 'FROM ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_WHERE_KEYWORD = 'WHERE ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_ORDER_BY_KEYWORD = 'ORDER BY ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_LIMIT_KEYWORD = 'LIMIT ';
 
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Simulator $simu Instance of the Simulator class
+	 *
+	 * @access  public
+	 *
+	 */
 	public $simu = null;
+
+	/**
+	 * @var array      $dataset array of data defined in the simulator for use in Javascript functions
+	 *
+	 * @access  private
+	 *
+	 */
 	private $dataset = array();
+
+	/**
+	 * @var array      $actions array of business rules actions for use in Javascript functions
+	 *
+	 * @access  private
+	 *
+	 */
 	private $actions = array();
+
+	/**
+	 * @var array      $rules array of business rules for use in Javascript functions
+	 *
+	 * @access  private
+	 *
+	 */
 	private $rules = array();
+
+	/**
+	 * @var array      $steps array of steps  for use in Javascript functions
+	 *
+	 * @access  private
+	 *
+	 */
 	private $steps = array();
+
+	/**
+	 * @var array      $uricache cache of uris
+	 *
+	 * @access  public
+	 *
+	 */
 	public $uricache = array();
 
+	/**
+	 * Entry point for the route paths begining by /admin/simulators
+	 *
+	 * These route paths are :
+	 *
+	 * - /admin/simulators
+	 * - /admin/simulators/{simulator}
+	 * - /admin/simulators/{simulator}/{crud}
+	 * 
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string|null $simulator (default: null) simulator name
+	 * @param   string|null $crud (default: null) operation to execute on the simulator (create, save, import, doimport, export, publish)
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response <description of the return value>
+	 *
+	 */
 	public function indexAction(Request $request, $simulator = null, $crud = null)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
@@ -93,6 +184,18 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $this->runIndex($request, $simulator, $crud);
 	}
 
+	/**
+	 * Dispatches the index action to the appropriate processing based on the value of the crud parameter.
+	 *
+	 * If the crud parameter contains no value, shows the simulator management interface.
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string $simulator simulator name
+	 * @param   string $crud (default: null) operation to execute on the simulator (create, save, import, doimport, export, publish)
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response <description of the return value>
+	 *
+	 */
 	protected function runIndex(Request $request, $simulator, $crud)
 	{
 		if ($crud == 'export') {
@@ -322,11 +425,29 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Entry point for the route path : /admin/validate
+	 *
+	 * Validates the xml file of the simulator against the XML schema.
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	public function validateAction(Request $request) {
 		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runValidation($request);
 	}
 
+	/**
+	 * Validates the xml file of the simulator, whose name appears in the 'xml' field of the form passed by the query, against the XML schema
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	protected function runValidation(Request $request) {
 		$form = $request->request->all();
 		$bundle = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true);
@@ -361,6 +482,18 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $response;
 	}
 
+	/**
+	 * Creates a simulator with the data in the form fields.
+	 *
+	 * Route path : /admin/simulators/{simulator}/save
+	 * $form['create'] isset
+	 *
+	 * @access  protected
+	 * @param   string $simulator simulator name
+	 * @param   array $form The form fields
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function doCreate($simulator, $form) {
 		$this->simu = new Simulator($this);
 		$this->simu->loadEmptySimulator();
@@ -368,6 +501,18 @@ class SimulatorsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $this->simu->getName())));
 	}
 
+	/**
+	 * Updates the simulator whose name is in the $simulator parameter with the data in the form fields.
+	 *
+	 * Route path : /admin/simulators/{simulator}/save
+	 * $form['update'] isset
+	 *
+	 * @access  protected
+	 * @param   mixed $simulator simulator name
+	 * @param   mixed $form The form fields
+	 * @return  void
+	 *
+	 */
 	protected function update($simulator, $form) {
 		$fs = new Filesystem();
 		$simulatorData = json_decode($form['simulator'], true);
@@ -439,6 +584,17 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Deletes a simulator whose name is in the $simulator parameter
+	 *
+	 * Route path : /admin/simulators/{simulator}/save
+	 * $form['delete'] isset
+	 *
+	 * @access  protected
+	 * @param   string $simulator simulator name
+	 * @return  void
+	 *
+	 */
 	protected function doDelete($simulator) {
 		$fs = new Filesystem();
 		try {
@@ -449,6 +605,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Creates a Source object from an associative array of source attributes
+	 *
+	 * @access  protected
+	 * @param   array $source array of attributes
+	 * @return  \EUREKA\G6KBundle\Entity\Source the Source object
+	 *
+	 */
 	protected function makeSource($source) {
 		$sourceObj = new Source($this, (int)$source['id'], $source['datasource'], $source['returnType']);
 		if (isset($source['label'])) {
@@ -479,6 +643,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $sourceObj;
 	}
 
+	/**
+	 * Creates a Parameter object for a Source from an associative array of parameter attributes
+	 *
+	 * @access  protected
+	 * @param   array $parameter array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\Source $sourceObj the Source object
+	 * @return  \EUREKA\G6KBundle\Entity\Parameter the Parameter object
+	 *
+	 */
 	protected function makeParameter($parameter, $sourceObj) {
 		$parameterObj = new Parameter($sourceObj, $parameter['type']);
 		$parameterObj->setOrigin($parameter['origin']);
@@ -493,6 +666,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $parameterObj;
 	}
 
+	/**
+	 * Creates a DataGroup object from an associative array of datagroup attributes
+	 *
+	 * @access  protected
+	 * @param   array $datagroup array of attributes
+	 * @return  \EUREKA\G6KBundle\Entity\DataGroup the DataGroup object
+	 *
+	 */
 	protected function makeDataGroup($datagroup) {
 		$dataGroupObj = new DataGroup($this->simu, (int)$datagroup['id'], $datagroup['name']);
 		$dataGroupObj->setLabel($datagroup['label']);
@@ -503,6 +684,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $dataGroupObj;
 	}
 
+	/**
+	 * Creates a Data object from an associative array of data attributes
+	 *
+	 * @access  protected
+	 * @param   array $data array of attributes
+	 * @return  \EUREKA\G6KBundle\Entity\Data the Data object
+	 *
+	 */
 	protected function makeData($data) {
 		$dataObj = new Data($this, (int)$data['id'], $data['name']);
 		$dataObj->setLabel($data['label']);
@@ -553,6 +742,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $dataObj;
 	}
 
+	/**
+	 * Creates a Step object from an associative array of step attributes
+	 *
+	 * @access  protected
+	 * @param   array $step array of attributes
+	 * @return  \EUREKA\G6KBundle\Entity\Step the Step object
+	 *
+	 */
 	protected function makeStep($step) {
 		$stepObj = new Step($this, (int)$step['id'], $step['name'], $step['label'], $step['template']);
 		$stepObj->setOutput($step['output']);
@@ -582,6 +779,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $stepObj;
 	}
 
+	/**
+	 * Creates a Panel object for a Step from an associative array of panel attributes
+	 *
+	 * @access  protected
+	 * @param   array $panel array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\Step $stepObj the Step object
+	 * @return  \EUREKA\G6KBundle\Entity\Panel the Panel object
+	 *
+	 */
 	protected function makePanel($panel, $stepObj) {
 		$panelObj = new Panel($stepObj, (int)$panel['id']);
 		$panelObj->setName($panel['name']);
@@ -596,6 +802,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $panelObj;
 	}
 
+	/**
+	 * Creates a FieldSet object for a Panel from an associative array of fieldset attributes
+	 *
+	 * @access  protected
+	 * @param   array $fieldset array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\Panel $panelObj the Panel object
+	 * @return  \EUREKA\G6KBundle\Entity\FieldSet the FieldSet object
+	 *
+	 */
 	protected function makeFieldSet($fieldset, $panelObj) {
 		$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
 		$fieldsetObj->setLegend(trim($this->helper->replaceVarTagByVariable($fieldset['legend'])));
@@ -627,6 +842,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $fieldsetObj;
 	}
 
+	/**
+	 * Creates a FieldRow object for a FieldSet from an associative array of fieldrow attributes
+	 *
+	 * @access  protected
+	 * @param   array $fieldrow array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\FieldSet $fieldsetObj the FieldSet object
+	 * @return  \EUREKA\G6KBundle\Entity\FieldRow the FieldRow object
+	 *
+	 */
 	protected function makeFieldRow($fieldrow, $fieldsetObj) {
 		$fieldRowObj = new FieldRow($fieldsetObj, (int)$fieldrow['id'], $fieldrow['label']);
 		$fieldRowObj->setColon($fieldrow['colon'] == '' || $fieldrow['colon'] == '1');
@@ -639,6 +863,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $fieldRowObj;
 	}
 
+	/**
+	 * Creates a Field object for a FieldSet from an associative array of field attributes
+	 *
+	 * @access  protected
+	 * @param   array $field array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\FieldSet $fieldsetObj the FieldSet object
+	 * @return  \EUREKA\G6KBundle\Entity\Field the Field object
+	 *
+	 */
 	protected function makeField($field, $fieldsetObj) {
 		$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], $field['label']);
 		$fieldObj->setUsage($field['usage']);
@@ -668,6 +901,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $fieldObj;
 	}
 
+	/**
+	 * Creates a BlockInfo object for a Panel from an array associative of blockinfo attributes
+	 *
+	 * @access  protected
+	 * @param   array $blockinfo array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\Panel $panelObj the Panel object
+	 * @return  \EUREKA\G6KBundle\Entity\BlockInfo the BlockInfo object
+	 *
+	 */
 	protected function makeBlockInfo($blockinfo, $panelObj) {
 		$blockinfoObj = new BlockInfo($panelObj, (int)$blockinfo['id']);
 		$blockinfoObj->setName($blockinfo['name']);
@@ -678,6 +920,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $blockinfoObj;
 	}
 
+	/**
+	 * Creates a Chapter object for a BlockInfo from an associative array of chapter attributes
+	 *
+	 * @access  protected
+	 * @param   array $chapter array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\BlockInfo $blockinfoObj the BlockInfo object
+	 * @return  \EUREKA\G6KBundle\Entity\Chapter the Chapter object
+	 *
+	 */
 	protected function makeChapter($chapter, $blockinfoObj) {
 		$chapterObj = new Chapter($blockinfoObj, (int)$chapter['id']);
 		$chapterObj->setName($chapter['name']);
@@ -690,6 +941,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $chapterObj;
 	}
 
+	/**
+	 * Creates a Section object for a Chapter from an associative array of section attributes
+	 *
+	 * @access  protected
+	 * @param   array $section array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\Chapter $chapterObj the Chapter object
+	 * @return  \EUREKA\G6KBundle\Entity\Section the Section object
+	 *
+	 */
 	protected function makeSection($section, $chapterObj) {
 		$sectionObj = new Section($chapterObj, (int)$section['id']);
 		$sectionObj->setName($section['name']);
@@ -701,6 +961,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $sectionObj;
 	}
 
+	/**
+	 * Creates a BusinessRule object from an associative array of business rule attributes
+	 *
+	 * @access  protected
+	 * @param   array $brule array of attributes
+	 * @return  \EUREKA\G6KBundle\Entity\BusinessRule the BusinessRule object
+	 *
+	 */
 	protected function makeBusinessRule($brule) {
 		$businessRuleObj = new BusinessRule($this->simu, 'rule-'.mt_rand(), (int)$brule['id'], (string)$brule['name']);
 		$businessRuleObj->setLabel((string)$brule['label']);
@@ -721,6 +989,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $businessRuleObj;
 	}
 
+	/**
+	 * Creates a RuleAction object from an associative array of action attributes
+	 *
+	 * @access  protected
+	 * @param   int $id id of the latest rule action
+	 * @param   array $action array of attributes
+	 * @return  \EUREKA\G6KBundle\Entity\RuleAction the RuleAction object
+	 *
+	 */
 	protected function makeRuleAction($id, $action) {
 		$ruleActionObj = new RuleAction((int)$id + 1, (string)$action['value']);
 		switch ($action['value']) {
@@ -854,6 +1131,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $ruleActionObj;
 	}
 
+	/**
+	 * Creates a Profiles object from an associative array of profiles attributes
+	 *
+	 * @access  protected
+	 * @param   array $profiles array of attributes
+	 * @return  \EUREKA\G6KBundle\Entity\Profiles the Profiles object
+	 *
+	 */
 	protected function makeProfiles($profiles) {
 		$profilesObj = new Profiles($this->simu);
 		$profilesObj->setLabel($profiles['label']);
@@ -863,6 +1148,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $profilesObj;
 	}
 
+	/**
+	 * Creates a Profile object from an associative array of profile attributes
+	 *
+	 * @access  protected
+	 * @param   array $profile array of attributes
+	 * @return  \EUREKA\G6KBundle\Entity\Profile the Profile object
+	 *
+	 */
 	protected function makeProfile($profile) {
 		$profileObj = new Profile($profile['id'], $profile['name']);
 		$profileObj->setLabel($profile['label']);
@@ -873,6 +1166,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $profileObj;
 	}
 
+	/**
+	 * Creates an Action button object for a Step from an associative array of action attributes
+	 *
+	 * @access  protected
+	 * @param   array $action array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\Step $stepObj the Step object
+	 * @return  \EUREKA\G6KBundle\Entity\Action the Action object
+	 *
+	 */
 	protected function makeAction($action, $stepObj) {
 		$actionObj = new Action($stepObj, $action['name'], $action['label']);
 		$actionObj->setClass($action['class']);
@@ -882,6 +1184,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $actionObj;
 	}
 
+	/**
+	 * Composes a simple SQL request from the supplied elements in the source associative array
+	 *
+	 * @access  private
+	 * @param   array $source
+	 * @return  string the SQL request string
+	 *
+	 */
 	private function composeSimpleSQLRequest($source) {
 		$request = 'SELECT';
 		$selectList = array();
@@ -924,6 +1234,17 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $request;
 	}
 
+	/**
+	 * Creates a Connector or a Condition object from an associative array of attributes
+	 *
+	 * If the array contains the key 'all', 'any' or 'none' then a Connector object is returned else a Condition object is returned.
+	 *
+	 * @access  private
+	 * @param   array $connector array of attributes
+	 * @param   \EUREKA\G6KBundle\Entity\Connector $parentConnector (default: null) Parent connector
+	 * @return  \EUREKA\G6KBundle\Entity\Connector|\EUREKA\G6KBundle\Entity\Condition
+	 *
+	 */
 	private function loadConnector($connector, $parentConnector = null) {
 		$kind = null;
 		if (isset($connector['all'])) {
@@ -942,6 +1263,19 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $connectorObj;
 	}
 
+	/**
+	 * Exports a simulator 
+	 *
+	 * Route path : /admin/simulators/{simulator}/export
+	 *
+	 * Creates a compressed file containing the XML definition and the stylesheet of the simulator for downloading by the user.
+	 * The XML file is  the working version if it exists otherwise it is the published version.
+	 *
+	 * @access  protected
+	 * @param   string $simu simulator name
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	protected function doExportSimulator($simu) {
 		if (file_exists($this->simulatorsDir . "/work/" . $simu . ".xml")) {
 			$simu_file = $this->simulatorsDir . "/work/" . $simu . ".xml";
@@ -976,6 +1310,16 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $response;
 	}
 
+	/**
+	 * Publishes a simulator ie copies the xml file of the simulator from the work directory to the main directory of simulators
+	 *
+	 * Route path : /admin/simulators/{simulator}/publish
+	 *
+	 * @access  protected
+	 * @param   string $simu simulator name
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\StreamedResponse
+	 *
+	 */
 	protected function doPublishSimulator($simu) {
 		$schema_dir = $this->get('kernel')-> getBundle('EUREKAG6KBundle', true)->getPath()."/Resources/doc";
 		$fs = new Filesystem();
@@ -1017,6 +1361,20 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Imports a simulator by copying the uploaded definition xml file into the main simulator directory as well as the css file into the css directory of the default view if this file is uploaded by the user.
+	 *
+	 * Before copying, the file is validated against the xml schema and if there is an error, a Response object is generated with the error message returned by the validator.
+	 *
+	 * If a css file is not provided and it does not already exist in the view directory, a css file is created by importing common.css from the 'Demo' view.
+	 *
+	 * Route path : /admin/simulators/{simulator}/doimport
+	 *
+	 * @access  protected
+	 * @param   array $files Uploaded files
+	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse a Response object if there is an error, a RedirectResponse otherwise.
+	 *
+	 */
 	protected function doImportSimulator($files) {
 		$fs = new Filesystem();
 		$container = $this->get('kernel')->getContainer();
@@ -1104,6 +1462,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
 	}
 
+	/**
+	 * Constructs a condition in a string from an associative array containing the name, operator and value of the condition.
+	 *
+	 * @access  private
+	 * @param   array $val Name, operator and value of the condition
+	 * @return  string The condition
+	 *
+	 */
 	private function makeCond($val) {
 		$name = $val['name'];
 		if ($name == 'script' || $name == 'dynamic' || preg_match("/\.dynamic$/", $name)) {
@@ -1137,7 +1503,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 		return $cond;
 	}
-		  
+
+	/**
+	 * Converts an array of conditions connected with the connector 'all' to a string expression in conjunctive form
+	 *
+	 * @access  private
+	 * @param   array $conds The array of conditions
+	 * @return  string The string expression in conjunctive form
+	 *
+	 */
 	private function conjonct($conds) {
 		$et = "";
 		$parenthesis = count($conds) > 1;
@@ -1162,6 +1536,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return preg_replace("/^ \&\& /", "", $et);
 	}
 
+	/**
+	 * Converts an array of conditions connected with the connector 'any' to a string expression in disjunctive form
+	 *
+	 * @access  private
+	 * @param   array $conds The array of conditions
+	 * @return  string The string expression in disjunctive form
+	 *
+	 */
 	private function disjonct($conds) {
 		$ou = "";
 		$parenthesis = count($conds) > 1;
@@ -1185,7 +1567,51 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 		return preg_replace("/^ \|\| /", "", $ou);
 	}
-	  
+
+	/**
+	 * Converts a boolean expression from an array to an infixed string
+	 *
+	 * Conversion example:
+	 * <pre>
+	 * &#36conds = array(
+	 *     'any' => array(
+	 *         array(
+	 *             'all' => array(
+	 *                 array(
+	 *                     'name' => 'income',
+	 *                     'operator' => '&gt;=',
+	 *                     'value' => 2000
+	 *                  ),
+	 *                  array(
+	 *                     'name' => 'rate',
+	 *                     'operator' => '&gt;',
+	 *                     'value' => 15.5
+	                    )
+	 *             )
+	 *         ),
+	 *         array(
+	 *             'name' => 'nChildren',
+	 *             'operator' => '&lt;',
+	 *             'value' => 5
+	 *         )
+	 *     )
+	 * );
+	 * </pre>
+	 * is converted to:
+	 * <pre>
+	 * "(#1 &gt;= 2000 && #2 &gt; 15.5) || #3 &lt; 5"
+	 * </pre>
+	 * where :
+	 *
+	 * - #1 is the id of the data whose name is 'income' prefixed by #
+	 * - #2 is the id of the data whose name is 'rate' prefixed by #
+	 * - #3 is the id of the data whose name is 'nChildren' prefixed by #
+	 *
+	 * @access  private
+	 * @param   array $conds The array of boolean expression
+	 * @return  string The infixed expression
+	 *
+	 */
 	private function infix($conds) {
 		$infixed = "";
 		foreach($conds as $key => $val) {
@@ -1204,6 +1630,13 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $infixed;
 	}
 
+	/**
+	 * Load business rules
+	 *
+	 * @access  protected
+	 * @return  void
+	 *
+	 */
 	protected function loadBusinessRules() {
 		$datagroups = array();
 		$steps = array();
@@ -2662,6 +3095,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * makes an array of attributes of the field from the field object
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Field $field The field object
+	 * @return  array Array of attributes of the field
+	 *
+	 */
 	protected function loadBusinessRuleField(Field $field) {
 		$tfield = array(
 			'type' => 'field',
@@ -2684,6 +3125,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $tfield;
 	}
 
+	/**
+	 * Builds a connector data array for the Javascript rule engine
+	 *
+	 * @access  private
+	 * @param   EUREKA\G6KBundle\Entity\Connector|EUREKA\G6KBundle\Entity\Condition $pconnector
+	 * @return  array The connector data array
+	 *
+	 */
 	private function ruleConnector($pconnector) {
 		if ($pconnector instanceof Condition) {
 			$data = $this->simu->getDataById($pconnector->getOperand());
@@ -2703,6 +3152,15 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $connector;
 	}
 
+	/**
+	 * Builds an actions data array for the Javascript rule engine
+	 *
+	 * @access  private
+	 * @param   int $ruleID rule ID
+	 * @param   array $actions array of RuleAction objects
+	 * @return  array The actions data array
+	 *
+	 */
 	private function actionsData($ruleID, $actions) {
 		$datas = array();
 		foreach ($actions as $action) {
@@ -2982,6 +3440,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $datas;
 	}
 
+	/**
+	 * Transforms the lines of a text into html paragraphs
+	 *
+	 * @access  private
+	 * @param   string $text
+	 * @return  string
+	 *
+	 */
 	private function paragraphs ($text) {
 		$result = "";
 		$paras = explode("\n", trim($text));
@@ -2994,6 +3460,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		return $result;
 	}
 
+	/**
+	 * Searches for the name of a data in the dataset from its identifier
+	 *
+	 * @access  private
+	 * @param   int $id data id
+	 * @return  string|null data name
+	 *
+	 */
 	private function findDataNameById($id) {
 		foreach ($this->dataset as $name => $data) {
 			if ($data['id'] == $id) {
