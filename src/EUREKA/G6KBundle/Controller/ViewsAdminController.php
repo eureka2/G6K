@@ -40,14 +40,83 @@ use EUREKA\G6KBundle\Manager\ControllersHelper;
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
+/**
+ *
+ * The ViewsAdminController class is the controller that handles all actions of the views management interface.
+ *
+ * These actions are:
+ *
+ * - Creation of a view
+ * - Adding a node (file or folder) in the view tree
+ * - Editing text file content
+ * - Renaming a node
+ * - Deleting a node
+ * - Export of a view
+ * - Deletion of a view
+ *
+ * @author Jacques Archimède
+ *
+ */
 class ViewsAdminController extends BaseAdminController {
-	
+
+	/**
+	 * @var string      $root The root directory of the view that is either the view directory or the public assets directory
+	 *
+	 * @access  private
+	 *
+	 */
 	private $root;
+
+	/**
+	 * @var int        $nodeNum Working node number
+	 *
+	 * @access  private
+	 *
+	 */
 	private $nodeNum = 0;
+
+	/**
+	 * @var array|null $nodeFile File description and content
+	 *
+	 * @access  private
+	 *
+	 */
 	private $nodeFile = null;
+
+	/**
+	 * @var int      $node Current node number
+	 *
+	 * @access  private
+	 *
+	 */
 	private $node;
+
+	/**
+	 * @var int      $script 1 if Javascript is enabled, 0 otherwise
+	 *
+	 * @access  private
+	 *
+	 */
 	private $script;
 
+	/**
+	 * Entry point for the route paths begining by /admin/views
+	 *
+	 * These route paths are :
+	 *
+	 * - /admin/views
+	 * - /admin/views/{view}
+	 * - /admin/views/{view}/{node}
+	 * - /admin/views/{view}/{node}/{crud}
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request  The request
+	 * @param   string|null $view (default: null) The view name
+	 * @param   int $node (default: 0) The node number
+	 * @param   string|null $crud (default: null) operation to execute on the view (docreate-view, drop-view, edit-node, doedit-node, rename-node, add-node, remove-node, export)
+	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse The response object
+	 *
+	 */
 	public function indexAction(Request $request, $view = null, $node = 0, $crud = null)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
@@ -57,6 +126,18 @@ class ViewsAdminController extends BaseAdminController {
 		return $this->runIndex($request, $view, $crud);
 	}
 
+	/**
+	 * Dispatches the index action to the appropriate processing based on the value of the crud parameter.
+	 *
+	 * If the crud parameter contains no value, shows the views management interface.
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string|null $view The view name
+	 * @param   string|null $crud operation to execute on the view (docreate-view, drop-view, edit-node, doedit-node, rename-node, add-node, remove-node, export)
+	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse The response object
+	 *
+	 */
 	protected function runIndex(Request $request, $view, $crud) {
 		$form = $request->request->all();
 		if ($crud == 'docreate-view') {
@@ -78,6 +159,16 @@ class ViewsAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Shows the views management interface.
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string|null $view The view name
+	 * @param   string|null $crud Contains 'edit-node' or null
+	 * @return  \Symfony\Component\HttpFoundation\Response The response object
+	 *
+	 */
 	protected function showViews(Request $request, $view, $crud) {
 		$views = array_filter(scandir($this->viewsDir), function ($simu) { return preg_match("/.xml$/", $simu); } );
 		$hiddens = array();
@@ -147,6 +238,19 @@ class ViewsAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Creates a views and installs its templates and assets
+	 *
+	 * Route path : /admin/views/new/0/docreate-view
+	 *
+	 * The templates are copied into the views directory and the assets into the public directory
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   array $files Compressed files of assets and templates
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse The response object
+	 *
+	 */
 	protected function doCreateView($form, $files) {
 		$view = $form['view-name'];
 		$fs = new Filesystem();
@@ -202,6 +306,16 @@ class ViewsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
 	}
 
+	/**
+	 * Drops a view and all its files
+	 *
+	 * Route path : /admin/views/{view}/0/drop-view
+	 *
+	 * @access  protected
+	 * @param   string $view The view name
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse The response object
+	 *
+	 */
 	protected function dropView($view) {
 		$fs = new Filesystem();
 		try {
@@ -212,6 +326,17 @@ class ViewsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_views'));
 	}
 
+	/**
+	 * Edits a text file content
+	 *
+	 * Route path : /admin/views/{view}/{node}/doedit-node
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $view The view name
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse The response object
+	 *
+	 */
 	protected function doEditNode($form, $view) {
 		$fs = new Filesystem();
 		$nodePath = $this->searchNodePath($view);
@@ -221,6 +346,17 @@ class ViewsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view_node', array('view' => $view, 'node' => $this->node)));
 	}
 
+	/**
+	 * Renames a node 
+	 *
+	 * Route path : /admin/views/{view}/{node}/rename-node
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $view The view name
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse The response object
+	 *
+	 */
 	protected function renameNode($form, $view) {
 		$fs = new Filesystem();
 		$nodePath = $this->searchNodePath($view);
@@ -240,6 +376,16 @@ class ViewsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
 	}
 
+	/**
+	 * Deletes a node from the view tree
+	 *
+	 * Route path : /admin/views/{view}/{node}/remove-node
+	 *
+	 * @access  protected
+	 * @param   string $view The view name
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse The response object
+	 *
+	 */
 	protected function removeViewNode($view) {
 		$fs = new Filesystem();
 		$nodePath = $this->searchNodePath($view);
@@ -252,6 +398,21 @@ class ViewsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
 	}
 
+	/**
+	 * Adds a node into the view tree
+	 *
+	 * Route path : /admin/views/{view}/{node}/add-node
+	 *
+	 * If the node is a folder, a directory is created.
+	 * If the node is a file, the uploaded file is copied into the view tree.
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   array $files The uploaded file of the node
+	 * @param   string $view The view name
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse The response object
+	 *
+	 */
 	protected function addViewNode($form, $files, $view) {
 		$fs = new Filesystem();
 		$container = $this->get('kernel')->getContainer();
@@ -286,6 +447,18 @@ class ViewsAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
 	}
 
+	/**
+	 * Exports a view node 
+	 *
+	 * Route path : /admin/views/{view}/{node}/export
+	 *
+	 * Creates a compressed file containing all the files of the node for downloading by the user.
+	 *
+	 * @access  protected
+	 * @param   string $view The view name
+	 * @return  \Symfony\Component\HttpFoundation\Response The response object
+	 *
+	 */
 	protected function exportViewNode($view) {
 		$nodePath = $this->searchNodePath($view);
 		$content = array();
@@ -312,6 +485,14 @@ class ViewsAdminController extends BaseAdminController {
 		return $response;
 	}
 
+	/**
+	 * Search the directory path of the current node of the view
+	 *
+	 * @access  private
+	 * @param   string $view The view name
+	 * @return  string the directory path of the current node
+	 *
+	 */
 	private function searchNodePath($view) {
 		$this->nodeNum = 1;
 		if ($this->nodeNum == $this->node) {
@@ -330,6 +511,14 @@ class ViewsAdminController extends BaseAdminController {
 		return $nodePath;
 	}
 
+	/**
+	 * Recursively traverses a directory to find the directory path of the current node
+	 *
+	 * @access  private
+	 * @param   string $dir The directory
+	 * @return  string the directory path of the current node
+	 *
+	 */
 	private function findNodePath($dir) {
 		$nodePath = '';
 		$objects = scandir($this->root . '/' . $dir);
@@ -351,6 +540,16 @@ class ViewsAdminController extends BaseAdminController {
 		return $nodePath;
 	}
 
+	/**
+	 * Recursively constructs a tree into an array from the directories of the view tree.
+	 *
+	 * @access  private
+	 * @param   string $dir Current directory
+	 * @param   string $type 'template' or 'asset'
+	 * @param   int $parent (default: 0) Parent node
+	 * @return  array The node tree
+	 *
+	 */
 	private function makeTree($dir, $type, $parent = 0) {
 		$nodes = array();
 		$objects = scandir($this->root . '/' . $dir);
@@ -392,6 +591,14 @@ class ViewsAdminController extends BaseAdminController {
 		return $nodes;
 	}
 
+	/**
+	 * Returns the language mode of a file for the javascript component CodeMirror.
+	 *
+	 * @access  private
+	 * @param   string $file The file name
+	 * @return  string The language mode
+	 *
+	 */
 	private function getMode($file) {
 		$mode = "hmlmixed";
 		if (preg_match("/\.([^\.]+)$/", $file, $m)) {

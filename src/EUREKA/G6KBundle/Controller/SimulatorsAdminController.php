@@ -486,6 +486,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * Creates a simulator with the data in the form fields.
 	 *
 	 * Route path : /admin/simulators/{simulator}/save
+	 *
 	 * $form['create'] isset
 	 *
 	 * @access  protected
@@ -505,6 +506,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * Updates the simulator whose name is in the $simulator parameter with the data in the form fields.
 	 *
 	 * Route path : /admin/simulators/{simulator}/save
+	 *
 	 * $form['update'] isset
 	 *
 	 * @access  protected
@@ -588,6 +590,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * Deletes a simulator whose name is in the $simulator parameter
 	 *
 	 * Route path : /admin/simulators/{simulator}/save
+	 *
 	 * $form['delete'] isset
 	 *
 	 * @access  protected

@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,14 +36,39 @@ use EUREKA\G6KBundle\Manager\ControllersHelper;
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
+/**
+ *
+ *  The DocumentationController class is the controller that manages the display of documentation pages.
+ *
+ * @author Jacques Archimède
+ *
+ */
 class DocumentationController extends BaseAdminController {
 
+	/**
+	 * Entry point for the route path /admin/doc/{document}
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string $document (default: null) The document name
+	 * @return  \Symfony\Component\HttpFoundation\Response; The rendered document
+	 *
+	 */
 	public function indexAction(Request $request, $document = null)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runIndex($request, $document);
 	}
-	
+
+	/**
+	 * Processes the index action
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string $document (default: null) The document name
+	 * @return  \Symfony\Component\HttpFoundation\Response; The rendered document
+	 *
+	 */
 	protected function runIndex(Request $request, $document) {
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;

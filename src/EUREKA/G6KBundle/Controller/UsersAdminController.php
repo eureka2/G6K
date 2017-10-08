@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,14 +35,54 @@ use EUREKA\G6KBundle\Manager\ControllersHelper;
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
+/**
+ *
+ * The UsersAdminController class is the controller that handles all actions of the users management interface.
+ *
+ * These actions are:
+ *
+ * - Creation of a user
+ * - Modification of a user
+ * - Deletion of a user
+ * - Restoring a user after its deletion
+ *
+ * All these actions are requested in Ajax by the Javascript Tabledit component
+ *
+ * @author Jacques Archimède
+ *
+ */
 class UsersAdminController extends BaseAdminController {
 
+	/**
+	 * Entry point for the route paths begining by /admin/users
+	 *
+	 * These route paths are :
+	 *
+	 * - /admin/users
+	 * - /admin/users/{crud}
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string|null $crud (default: null) operation to execute on the user (add, update, delete, restore)
+	 * @return  \Symfony\Component\HttpFoundation\Response The response with JSON content
+	 *
+	 */
 	public function indexAction(Request $request, $crud = null)
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runIndex($request, $crud);
 	}
 
+	/**
+	 * Dispatches the index action to the appropriate processing based on the value of the crud parameter.
+	 *
+	 * If the crud parameter contains no value, shows the users management interface.
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string|null $crud (default: null) operation to execute on the user (add, update, delete, restore)
+	 * @return  \Symfony\Component\HttpFoundation\Response The response with JSON content
+	 */
 	protected function runIndex(Request $request, $crud)
 	{
 		$form = $request->request->all();
@@ -91,14 +131,44 @@ class UsersAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Creates a user with the data in the form fields.
+	 *
+	 * Route path : /admin/users/add
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @return  \Symfony\Component\HttpFoundation\Response The response with JSON content
+	 *
+	 */
 	protected function addUser ($form) {
 		return $this->doUpdateUser($form, true);
 	}
 
+	/**
+	 * Restores a user with the data in the form fields.
+	 *
+	 * Route path : /admin/users/restore
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @return  \Symfony\Component\HttpFoundation\Response The response with JSON content
+	 *
+	 */
 	protected function restoreUser ($form) {
 		return $this->doUpdateUser($form, false, true);
 	}
 
+	/**
+	 * Updates a user with the data in the form fields.
+	 *
+	 * Route path : /admin/users/update
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @return  \Symfony\Component\HttpFoundation\Response The response with JSON content
+	 *
+	 */
 	protected function updateUser ($form) {
 		$id = $form['id'];
 		if ($id == 0) {
@@ -107,6 +177,16 @@ class UsersAdminController extends BaseAdminController {
 		return $this->doUpdateUser($form);
 	}
 
+	/**
+	 * Realizes the update of the user database via FOSUserBundle with the data in the form fields.
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   bool $newUser (default: false) true if the user is to be created, false otherwise
+	 * @param   bool $restore (default: false) true if the user is to be restored, false otherwise
+	 * @return  \Symfony\Component\HttpFoundation\Response The response with JSON content
+	 *
+	 */
 	protected function doUpdateUser($form, $newUser = false, $restore = false) {
 		$userName = $form['userName'];
 		$email = $form['email'];
@@ -178,6 +258,16 @@ class UsersAdminController extends BaseAdminController {
 		return $response;
 	}
 
+	/**
+	 * Deletes a user with the data in the form fields.
+	 *
+	 * Route path : /admin/users/delete
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @return  \Symfony\Component\HttpFoundation\Response The response with JSON content
+	 *
+	 */
 	protected function deleteUser ($form) {
 		$id = $form['id'];
 		$userManager = $this->get('fos_user.user_manager');
