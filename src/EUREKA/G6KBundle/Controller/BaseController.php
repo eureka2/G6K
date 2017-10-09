@@ -53,7 +53,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  *
- * The class BaseController is the simulation engine
+ * The class BaseController is the heart the simulation engine
  *
  * @author    Jacques Archimède
  *

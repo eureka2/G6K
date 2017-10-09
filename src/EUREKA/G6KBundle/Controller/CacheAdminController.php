@@ -37,16 +37,60 @@ use EUREKA\G6KBundle\Manager\ControllersHelper;
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
+/**
+ *
+ * The UsersAdminController class is the controller that handles all actions of the symfony cache management interface.
+ *
+ * These actions are:
+ *
+ * - Display cache management interface
+ * - cleaning the production environment cache
+ * - cleaning the admin environment cache
+ * - cleaning the development environment cache
+ * - cleaning the test environment cache
+ *
+ * @author Jacques Archimède
+ *
+ */
 class CacheAdminController extends BaseAdminController {
-	
+
+	/**
+	 * @var array      $log Cache cleaning log
+	 *
+	 * @access  private
+	 *
+	 */
 	private $log = array();
 
+	/**
+	 * Entry point for the route paths begining by /admin/cache/clear
+	 *
+	 * These route paths are :
+	 *
+	 * - /admin/cache/clear
+	 * - /admin/cache/clear/{env}
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string $env (default: 'prod') The environment to clear (prod, test, dev, admin)
+	 * @return  \Symfony\Component\HttpFoundation\Response The response object
+	 *
+	 */
 	public function clearAction(Request $request, $env = 'prod')
 	{
 		$this->helper = new ControllersHelper($this, $this->container);
 		return $this->runClear($request, $env);
 	}
-	
+
+	/**
+	 * Processes the clear action
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string $env (default: 'prod') The environment to clear (prod, test, dev, admin)
+	 * @return  \Symfony\Component\HttpFoundation\Response The response object
+	 *
+	 */
 	protected function runClear(Request $request, $env)
 	{
 		$no_js = $request->query->get('no-js') || 0;
@@ -90,6 +134,15 @@ class CacheAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Recursively removes a directory and its subdirectories
+	 *
+	 * @access  private
+	 * @param   string $dir Directory to remove
+	 * @param   int $level Level of this directory
+	 * @return  void
+	 *
+	 */
 	private function rrmdir($dir, $level) {
 		if (is_dir($dir)) {
 			$objects = scandir($dir);
@@ -111,7 +164,15 @@ class CacheAdminController extends BaseAdminController {
 		}
 	}
 
-
+	/**
+	 * Realizes the cleaning of the cache
+	 *
+	 * @access  private
+	 * @param   string $cache_dir The Symfony cache directory
+	 * @param   string $name name of the environment (prod, admin, test or dev)
+	 * @return  void
+	 *
+	 */
 	private function cc($cache_dir, $name) {
 		$d = $cache_dir . '/' . $name;
 		if (is_dir($d)) {

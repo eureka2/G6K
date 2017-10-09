@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -46,21 +46,100 @@ use EUREKA\G6KBundle\Manager\ResultFilter;
 use Silex\Application;
 use Binfo\Silex\MobileDetectServiceProvider;
 
+/**
+ *
+ * The DataSourcesAdminController class is the controller that handles all actions of the datasources management interface.
+ *
+ * These actions are:
+ *
+ * - Creation of a data source
+ * - Modification of a data source
+ * - Deletion of a data source
+ * - Creation of a data source table
+ * - Modification of a data source table structure
+ * - Dropping a data source table
+ * - Adding a row in a data source table
+ * - Updating a row in a data source table
+ * - Deletion of a row in a data source table
+ * - Restoring a row in a data source table
+ * - Import / Export of a data source
+ *
+ *
+ * @author Jacques Archimède
+ *
+ */
 class DataSourcesAdminController extends BaseAdminController {
 
+	/**
+	 * @const string
+	 */
 	const SQL_SELECT_KEYWORD = 'SELECT ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_FROM_KEYWORD = 'FROM ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_WHERE_KEYWORD = 'WHERE ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_ORDER_BY_KEYWORD = 'ORDER BY ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_LIMIT_KEYWORD = 'LIMIT ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_UPDATE_KEYWORD = 'UPDATE ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_CREATE_KEYWORD = 'CREATE TABLE ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_DELETE_KEYWORD = 'DELETE FROM ';
 
-	private $datasources = array();
+	/**
+	 * @var \SimpleXMLElement      $datasources DataSources.xml content
+	 *
+	 * @access  private
+	 *
+	 */
+	private $datasources = null;
+
+	/**
+	 * @var \Symfony\Component\HttpFoundation\Request      $request The active Request object
+	 *
+	 * @access  private
+	 *
+	 */
 	private $request;
+
+	/**
+	 * @var int      $script  1 if Javascript is enabled, 0 otherwise
+	 *
+	 * @access  private
+	 *
+	 */
 	private $script;
-	
+
+	/**
+	 * @var array      $datatypes Conversion table from G6K datatypes to SQL datatypes
+	 *
+	 * @access  private
+	 *
+	 */
 	private $datatypes = array(
 		'sqlite' => array(
 			'array' => 'TEXT',
@@ -159,6 +238,24 @@ class DataSourcesAdminController extends BaseAdminController {
 		)
 	);
 
+	/**
+	 * Entry point for the route paths begining by /admin/datasources
+	 *
+	 * These route paths are :
+	 *
+	 * - /admin/datasources
+	 * - /admin/datasources/{dsid}
+	 * - /admin/datasources/{dsid}/{table}
+	 * - /admin/datasources/{dsid}/{table}/{crud}
+	 * 
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request  The request
+	 * @param   int|null $dsid (default: null) The datasource ID
+	 * @param   string|null $table (default: null) The table name
+	 * @param   string|null $crud (default: null) operation to execute on the data source (create-datasource, import-datasource, doimport-datasource, export-datasource, edit-datasource, doedit-datasource, drop-datasource, edit, import, add, update, delete, create, doedit, doimport, drop, restore)
+	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	public function indexAction(Request $request, $dsid = null, $table = null, $crud = null) {
 		$this->helper = new ControllersHelper($this, $this->container);
 		$no_js = $request->query->get('no-js') || 0;
@@ -166,6 +263,17 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $this->runIndex($request, $dsid, $table, $crud);
 	}
 
+	/**
+	 * Processes the index action
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request  The request
+	 * @param   int|null $dsid The datasource ID
+	 * @param   string|null $table The table name
+	 * @param   string|null $crud (default: null) operation to execute on the data source (create-datasource, import-datasource, doimport-datasource, export-datasource, edit-datasource, doedit-datasource, drop-datasource, edit, import, add, update, delete, create, doedit, doimport, drop, restore)
+	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function runIndex(Request $request, $dsid, $table, $crud) {
 		$this->request = $request;
 		$form = $request->request->all();
@@ -187,6 +295,18 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Dispatches the index action to the appropriate processing based on the value of the crud parameter.
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request  The request
+	 * @param   int|null $dsid The datasource ID
+	 * @param   string|null $table The table name
+	 * @param   string|null $crud (default: null) operation to execute on the data source (create-datasource, import-datasource, doimport-datasource, export-datasource, edit-datasource, doedit-datasource, drop-datasource, edit, import, add, update, delete, create, doedit, doimport, drop, restore)
+	 * @param   array $form The form fields
+	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function dispatch(Request $request, $dsid, $table, $crud, $form) {
 		if ($crud == 'create-datasource') {
 			return $this->createDatasource ($form);
@@ -231,6 +351,16 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Shows the data sources management interface.
+	 *
+	 * @access  protected
+	 * @param   int|null $dsid The datasource ID
+	 * @param   string|null $table (default: null) The table name
+	 * @param   string $action (default: 'show') <parameter description>
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	protected function showDatasources($dsid, $table = null, $action = 'show') {
 		$dbname = null;
 		$datasources = array();
@@ -497,6 +627,19 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Exports a data source 
+	 *
+	 * Route path : /admin/datasources/{dsid}/dummy/export-datasource
+	 *
+	 * Creates a JSON data file and a JSON schema file from the source database. 
+	 * Compresses these two files into one for its download.
+	 *
+	 * @access  protected
+	 * @param   int $dsid The datasource ID
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	protected function doExportDatasource($dsid) {
 		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
 		$datasource = $datasources[0];
@@ -542,6 +685,18 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $response;
 	}
 
+	/**
+	 * Imports a data source from a JSON data file and a JSON schema file
+	 *
+	 * These files must have been exported from a G6K instance and must conform to the jsonschema.org specification.
+	 *
+	 * Route path : /admin/datasources/0/dummy/doimport-datasource
+	 *
+	 * @access  protected
+	 * @param   array $files JSON data file and a JSON schema file
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function doImportDatasource($files) {
 		$container = $this->get('kernel')->getContainer();
 		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
@@ -595,6 +750,21 @@ class DataSourcesAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $dsid)));
 	}
 
+	/**
+	 * Imports a delimited text file into a table of a data source
+	 *
+	 * Route path : /admin/datasources/{dsid}/{table}/doimport
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   int $dsid The datasource ID
+	 * @param   string|null $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The database object
+	 * @param   array $files The delimited text file
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse|mixed
+	 * @throws \Exception
+	 *
+	 */
 	protected function doImportTable($form, $dsid, $table, $database, $files) {
 		$container = $this->get('kernel')->getContainer();
 		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
@@ -644,6 +814,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource_table', array('dsid' => $dsid, 'table' => $table)));
 	}
 
+	/**
+	 * Retrieves the choice values of a data in the result list of a query on a data source
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
+	 * @param   array|null $result The result list of a query
+	 * @return  array The choices list
+	 *
+	 */
 	protected function getChoicesFromSource($source, $result) {
 		$choices = array();
 		if ($result !== null) {
@@ -697,6 +876,14 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $choices;
 	}
 
+	/**
+	 * Executes the query from a source
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
+	 * @return  array|null The result set of the query
+	 *
+	 */
 	protected function processSource($source) {
 		$ds = (string)$source['datasource'];
 		if (is_numeric($ds)) {
@@ -749,6 +936,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $this->filterResult($result, $source);
 	}
 
+	/**
+	 * Filters the result set of a query on the source return path
+	 *
+	 * @access  protected
+	 * @param   array $result The result set of a query
+	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
+	 * @return  array|null The filtered result set
+	 *
+	 */
 	protected function filterResult($result, $source) {
 		switch ((string)$source['returnType']) {
 			case 'json':
@@ -765,6 +961,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return null;
 	}
 
+	/**
+	 * Filters the result set of a query on the source return path
+	 *
+	 * @access  protected
+	 * @param   array $result The result set of a query
+	 * @param   string $filter The filter
+	 * @return  array The filtered result set
+	 *
+	 */
 	protected function filterResultByLines($result, $filter) {
 		if ($filter == '') {
 			return $result;
@@ -792,6 +997,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $filtered;
 	}
 
+	/**
+	 * Constructs a Database object 
+	 *
+	 * @access  protected
+	 * @param   int $dsid The datasource ID
+	 * @param   bool $withDbName (default: true) <parameter description>
+	 * @return  \EUREKA\G6KBundle\Entity\Database The Database object
+	 *
+	 */
 	protected function getDatabase($dsid, $withDbName = true) {
 		$helper = new DatasourcesHelper($this->datasources);
 		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
@@ -803,6 +1017,16 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $helper->getDatabase($parameters, $dbid, $this->databasesDir, $withDbName);
 	}
 
+	/**
+	 * Checks the value of a column
+	 *
+	 * @access  protected
+	 * @param   string $name The column name
+	 * @param   array $info Informations about the column
+	 * @param   string|null $value The value to check
+	 * @return  string|bool An error message or true if no error.
+	 *
+	 */
 	protected function checkValue($name, $info, $value) {
 		if ($value === null || $value == '') {
 			if ($info['notnull'] == 1) { 
@@ -874,6 +1098,14 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
+	/**
+	 * Returns the list of tables of a database
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  array|null The list of tables
+	 *
+	 */
 	protected function tablesList($database) {
 		switch ($database->getType()) {
 			case 'jsonsql':
@@ -903,6 +1135,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $tableslist;
 	}
 
+	/**
+	 * Returns informations about a table of a database
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   string $table The table name
+	 * @return  array|null Informations about a table
+	 *
+	 */
 	protected function tableInfos($database, $table) {
 		switch ($database->getType()) {
 			case 'jsonsql':
@@ -943,6 +1184,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $tableinfos;
 	}
 
+	/**
+	 * Returns informations about the columns of a table
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   string $table The table name
+	 * @return  array Informations about the columns
+	 *
+	 */
 	protected function infosColumns($database, $table) {
 		$infosColumns = array();
 		$tableinfos = $this->tableInfos($database, $table);
@@ -991,6 +1241,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $infosColumns;
 	}
 
+	/**
+	 * Constructs a form fields with informations about the columns of a table
+	 *
+	 * @access  protected
+	 * @param   string $table The table name
+	 * @param   array $infosColumns Informations about the columns
+	 * @return  array
+	 *
+	 */
 	protected function infosColumnsToForm($table, $infosColumns) {
 		$fields = array();
 		$types = array();
@@ -1013,6 +1272,14 @@ class DataSourcesAdminController extends BaseAdminController {
 		);
 	}
 
+	/**
+	 * Creates a data source
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function createDatasource($form) {
 		$helper = new DatasourcesHelper($this->datasources);
 		$datasource = $helper->doCreateDatasource($form);
@@ -1027,6 +1294,16 @@ class DataSourcesAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
 	}
 
+	/**
+	 * Migrates data from a database to another.
+	 *
+	 * @access  protected
+	 * @param   int $dsid The datasource ID
+	 * @param   string $dbtype The target database type
+	 * @param   \EUREKA\G6KBundle\Entity\Database $fromDatabase The origin Database object
+	 * @return  string|true
+	 *
+	 */
 	protected function migrateDB($dsid, $dbtype, $fromDatabase) {
 		if (($result = $this->createDB($dsid, $dbtype)) !== true) {
 			return $result;
@@ -1071,6 +1348,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
+	/**
+	 * Creates a database 
+	 *
+	 * @access  protected
+	 * @param   int $dsid The datasource ID
+	 * @param   string $dbtype The target database type
+	 * @return  string|true
+	 *
+	 */
 	protected function createDB($dsid, $dbtype) {
 		try {
 			if ($dbtype == 'jsonsql' || $dbtype == 'sqlite') {
@@ -1107,6 +1393,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
+	/**
+	 * Creates a table 
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  string|true
+	 *
+	 */
 	protected function createDBTable(&$form, $database) {
 		$create = "create table " . $form['table-name'] . " (\n";
 		if (!in_array('id', $form['field'])) {
@@ -1172,6 +1467,16 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
+	/**
+	 * Edits a table structure
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  string|true
+	 *
+	 */
 	protected function editDBTable($form, $table, $database) {
 		$infosColumns = $this->infosColumns($database, $table);
 		if (strcasecmp($form['table-name'], $table) != 0) {
@@ -1340,17 +1645,25 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
-/******************************************************
- *  ALTER TABLE tbl_name alter_specification [, alter_specification] ...
- *
- * alter_specification:
- *   ADD column_definition
- * | DROP column_definition
- * | CHANGE old_col_name column_definition
- *
- * column_definition:
- *   same as for create table statements
- */
+	/**
+	 * Emulates a 'ALTER TABLE' for columns of a SQLite database.
+	 *
+	 * ALTER TABLE tbl_name alter_specification [, alter_specification] ...
+	 *
+	 * alter_specification:
+	 *   ADD column_definition
+	 * | DROP column_definition
+	 * | CHANGE old_col_name column_definition
+	 *
+	 * column_definition:
+	 *   same as for create table statements
+	 *
+	 * @access  protected
+	 * @param   string $table The table name
+	 * @param   string $alterdefs Comma separated alter specifications
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database  The Database object
+	 * @return  bool Always true
+	 */
 	protected function alterSQLiteTable($table, $alterdefs, $database){
 		if ($alterdefs != ''){
 			$stmt = $database->prepare("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = :table ORDER BY type DESC");
@@ -1459,6 +1772,17 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Inserts a row into a table
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   bool $restore (default: false) true if the row is to be restored, false otherwise
+	 * @return  string|bool
+	 *
+	 */
 	protected function addDBTableRow($form, $table, $database, $restore = false) {
 		$infosColumns = $this->infosColumns($database, $table);
 		$insertNames = array();
@@ -1492,6 +1816,16 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
+	/**
+	 * Updates a table row
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  bool
+	 *
+	 */
 	protected function updateDBTableRow($form, $table, $database) {
 		$infosColumns = $this->infosColumns($database, $table);
 		$updateFields = array();
@@ -1524,6 +1858,16 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
+	/**
+	 * Deletes a row from a table
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  string|true
+	 *
+	 */
 	protected function deleteDBTableRow($form, $table, $database) {
 		try {
 			$database->exec(self::SQL_DELETE_KEYWORD.$table." WHERE id=".$form['id']);
@@ -1533,6 +1877,15 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
+	/**
+	 * Drops a table
+	 *
+	 * @access  protected
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  string|true
+	 *
+	 */
 	protected function dropDBTable($table, $database) {
 		try {
 			$database->exec("DROP TABLE ".$table);
@@ -1542,6 +1895,17 @@ class DataSourcesAdminController extends BaseAdminController {
 		return true;
 	}
 
+	/**
+	 * Creates a table
+	 *
+	 * Route path : /admin/datasources/{dsid}/new/create
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function createTable($form, $database) {
 		if (($result = $this->createDBTable($form, $database)) !== true) {
 			return $this->errorResponse($form, $result);
@@ -1571,6 +1935,14 @@ class DataSourcesAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource_table', array('dsid' => $datasource->getAttribute('id'), 'table' => $form['table-name'])));
 	}
 
+	/**
+	 * Saves DataSources.xml from a DOM document
+	 *
+	 * @access  protected
+	 * @param   \DOMDocument $dom The DOM document of DataSources.xml
+	 * @return  void
+	 *
+	 */
 	protected function saveDatasources($dom) {
 		$xml = $dom->saveXML(null, LIBXML_NOEMPTYTAG);
 		$dom = new \DOMDocument();
@@ -1583,6 +1955,18 @@ class DataSourcesAdminController extends BaseAdminController {
 		file_put_contents($this->databasesDir."/DataSources.xml", $formatted);
 	}
 
+	/**
+	 * Adds a table row
+	 *
+	 * Route path : /admin/datasources/{dsid}/{table}/add
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	protected function addTableRow($form, $table, $database) {
 		if ($form['id'] > 0) {
 			return $this->errorResponse($form, $this->get('translator')->trans("This record already exists."));
@@ -1597,6 +1981,18 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $response;
 	}
 
+	/**
+	 * Restores a table row
+	 *
+	 * Route path : /admin/datasources/{dsid}/{table}/restore
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	protected function restoreTableRow($form, $table, $database) {
 		if (($result = $this->addDBTableRow($form, $table, $database, true)) !== true) {
 			return $this->errorResponse($form, $result);
@@ -1607,6 +2003,18 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $response;
 	}
 
+	/**
+	 * Updates a table row
+	 *
+	 * Route path : /admin/datasources/{dsid}/{table}/update
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	protected function updateTableRow($form, $table, $database) {
 		if ($form['id'] == 0) {
 			return $this->addTableRow ($form, $table, $database);
@@ -1620,6 +2028,18 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $response;
 	}
 
+	/**
+	 * Deletes a table row
+	 *
+	 * Route path : /admin/datasources/{dsid}/{table}/delete
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  \Symfony\Component\HttpFoundation\Response
+	 *
+	 */
 	protected function deleteTableRow($form, $table, $database) {
 		if ($form['id'] == 0) {
 			return $this->errorResponse($form, $this->get('translator')->trans("There's no record with id 0."));
@@ -1633,6 +2053,18 @@ class DataSourcesAdminController extends BaseAdminController {
 		return $response;
 	}
 
+	/**
+	 * Edits a table structure
+	 *
+	 * Route path : /admin/datasources/{dsid}/{table}/doedit
+	 *
+	 * @access  protected
+	 * @param   array $form The form fields
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function doEditTable($form, $table, $database) {
 		if (($result = $this->editDBTable($form, $table, $database)) !== true) {
 			return $this->errorResponse($form, $result);
@@ -1678,6 +2110,16 @@ class DataSourcesAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource_table', array('dsid' => $datasource->getAttribute('id'), 'table' => $table)));
 	}
 
+	/**
+	 * Adds columns to a table
+	 *
+	 * @access  protected
+	 * @param   \DOMDocument $dom The DOM document of DataSources.xml
+	 * @param   array $form The form fields
+	 * @param   \DOMElement &$table The table element in DataSources.xml
+	 * @return  void
+	 *
+	 */
 	protected function addColumnsToTable($dom, $form, &$table) {
 		foreach ($form['field'] as $i => $field) {
 			if ($field != '') {
@@ -1730,6 +2172,17 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 	}
 
+	/**
+	 * Drops a table
+	 *
+	 * Route path : /admin/datasources/{dsid}/{table}/drop
+	 *
+	 * @access  protected
+	 * @param   string $table The table name
+	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function dropTable($table, $database) {
 		if (($result = $this->dropDBTable($table, $database)) !== true) {
 			return $this->errorResponse($form, $result);
@@ -1750,6 +2203,17 @@ class DataSourcesAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
 	}
 
+	/**
+	 * Edits a data source
+	 *
+	 * Route path : /admin/datasources/{dsid}/dummy/doedit-datasource
+	 *
+	 * @access  protected
+	 * @param   int $dsid The datasource ID
+	 * @param   array $form The form fields
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function doEditDatasource($dsid, $form) {
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
@@ -1869,6 +2333,16 @@ class DataSourcesAdminController extends BaseAdminController {
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $datasource->getAttribute('id'))));
 	}
 
+	/**
+	 * Drops a data source 
+	 *
+	 * Route path : /admin/datasources/{dsid}/dummy/drop-datasource
+	 *
+	 * @access  protected
+	 * @param   int $dsid The datasource ID
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
 	protected function dropDatasource ($dsid) {
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
