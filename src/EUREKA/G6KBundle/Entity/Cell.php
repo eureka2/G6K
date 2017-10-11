@@ -26,24 +26,75 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+/**
+ * This class allows the storage and retrieval of the attributes of a cell
+ *
+ * @author    Jacques Archimède
+ * @author    Yann Toqué
+ *
+ */
 class Cell {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Column $column Column that defines this cell
+	 *
+	 * @access  private
+	 *
+	 */
 	private $column = null;
+
+	/**
+	 * @var string     $value Cell value
+	 *
+	 * @access  private
+	 *
+	 */
 	private $value = "";
-	
+
+	/**
+	 * Constructor of class Cell
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Cell $column Column that defines this cell
+	 * @param   string $value (default: "") Cell value
+	 * @return  void
+	 *
+	 */
 	public function __construct($column, $value="") {
 		$this->column = $column;
 		$this->value = $value;
 	}
-	
+
+	/**
+	 * Returns the column that contains the cell 
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Entity\Column the value of column
+	 *
+	 */
 	public function getColumn() {
 		return $this->column;
 	}
-	
+
+	/**
+	 * Returns the value of the cell
+	 *
+	 * @access  public
+	 * @return  string the Cell value
+	 *
+	 */
 	public function getValue() {
 		return $this->value;
 	}
-	
+
+	/**
+	 * Sets the value of the cell
+	 *
+	 * @access  public
+	 * @param   string     $value Cell value
+	 * @return  void
+	 *
+	 */
 	public function setValue($value) {
 		$this->value = $value;
 	}

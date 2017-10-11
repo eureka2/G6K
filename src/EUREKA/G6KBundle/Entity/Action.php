@@ -25,83 +25,280 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+/**
+ *
+ * This class allows the stockage and the retrieval of the attributes of an action button for a step
+ *
+ * @author    Jacques Archimède
+ * @author    Yann Toqué
+ *
+ */
 class Action {
-	
+
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Step $step Step that defines this action button 
+	 *
+	 * @access  private
+	 *
+	 */
 	private $step = null;
+
+	/**
+	 * @var string     $name Button name without spaces or special or accented characters
+	 *
+	 * @access  private
+	 *
+	 */
 	private $name = "";
+
+	/**
+	 * @var string     $label Button label 
+	 *
+	 * @access  private
+	 *
+	 */
 	private $label = "";
+
+	/**
+	 * @var string     $clazz Button class style eg "Primary" or "Default"
+	 *
+	 * @access  private
+	 *
+	 */
 	private $clazz = "";
-	private $what = ""; // submit, reset
-	private $for = ""; // currentStep (only for what=reset), priorStep, nextStep, pdfOutput, htmlOutput, externalPage
-	private $uri = ""; //url for externalPage
+
+	/**
+	 * @var string     $what Button action eg "Submit" or "Reset"
+	 *
+	 * @access  private
+	 *
+	 */
+	private $what = ""; 
+
+	/**
+	 * @var string     $for Button action triggered for : currentStep (only for what=reset) priorStep, nextStep, pdfOutput, htmlOutput, externalPage
+	 *
+	 *
+	 * @access  private
+	 *
+	 */
+	private $for = ""; 
+
+	/**
+	 * @var string     $uri url for externalPage 
+	 *
+	 * @access  private
+	 *
+	 */
+	private $uri = "";  
+
+	/**
+	 * @var bool       $displayable Button displayable or not
+	 *
+	 * @access  private
+	 *
+	 */
 	private $displayable = true;
 
+	/**
+	 * Constructor of class Action
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Step $step Step that defines this action button  
+	 * @param   string $name Button name without spaces or special or accented characters
+	 * @param   string $label Button label 
+	 * @return  void
+	 *
+	 */
 	public function __construct($step, $name, $label) {
 		$this->step = $step;
 		$this->name = $name;
 		$this->label = $label;
 	}
 
+	/**
+	 * Returns the step that defines this action button
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Entity\Step step
+	 *
+	 */
 	public function getStep() {
 		return $this->step;
 	}
 
+	/**
+	 * Returns the name of this action button
+	 *
+	 * @access  public
+	 * @return  string the action name
+	 *
+	 */
 	public function getName() {
 		return $this->name;
 	}
 
+	/**
+	 * Sets the name of this action button
+	 *
+	 * @access  public
+	 * @param   string $name  Button name without spaces or special or accented characters
+	 * @return  void
+	 *
+	 */
 	public function setName($name) {
 		$this->name = $name;
 	}
 
+	/**
+	 * Returns the label of this action button
+	 *
+	 * @access  public 
+	 * @return  string the value of label
+	 *
+	 */
 	public function getLabel() {
 		return $this->label;
 	}
 
+	/**
+	 * Sets the label of this action button
+	 *
+	 * @access  public
+	 * @param   string $label Button label 
+	 * @return  void
+	 *
+	 */
 	public function setLabel($label) {
 		$this->label = $label;
 	}
 
+	/**
+	 * Returns the class style of this action button
+	 *
+	 * @access  public
+	 * @return  string the value of class
+	 *
+	 */
 	public function getClass() {
 		return $this->clazz;
 	}
 
+	/**
+	 * Sets the class style of this action button
+	 *
+	 * @access  public
+	 * @param   string     $clazz Button class style eg "Primary" or "Default"
+	 * @return  void
+	 *
+	 */
 	public function setClass($clazz) {
 		$this->clazz = $clazz;
 	}
 
+	/**
+	 * Returns the "what to do" of this action button
+	 *
+	 * @access  public
+	 * @return  string the value of what
+	 *
+	 */
 	public function getWhat() {
 		return $this->what;
 	}
 
+	/**
+	 * Sets the "what to do" of this action button
+	 *
+	 * @access  public
+	 * @param   string     $what Button action eg "Submit" or "Reset"
+	 * @return  void
+	 *
+	 */
 	public function setWhat($what) {
 		$this->what = $what;
 	}
 
+	/**
+	 * Returns the "for what" of this action button
+	 *
+	 * @access  public
+	 * @return  string the value of for
+	 *
+	 */
 	public function getFor() {
 		return $this->for;
 	}
 
+	/**
+	 * Sets the "for what" of this action button
+	 *
+	 * @access  public
+	 * @param   string     $for Button action triggered for : currentStep (only for what=reset) priorStep, nextStep, pdfOutput, htmlOutput, externalPage
+	 * @return  void
+	 *
+	 */
 	public function setFor($for) {
 		$this->for = $for;
 	}
 
+	/**
+	 * Returns the uri attribute of this action button
+	 *
+	 * The uri attribute is a step number or the URL of a page.
+	 *
+	 * @access  public
+	 * @return  string the value of uri
+	 *
+	 */
 	public function getUri() {
 		return $this->uri;
 	}
 
+	/**
+	 * Sets the uri attribute of this action button
+	 *
+	 * The uri attribute is a step number or the URL of a page.
+	 *
+	 * @access  public
+	 * @param   string     $uri url for externalPage
+	 * @return  void
+	 *
+	 */
 	public function setUri($uri) {
 		$this->uri = $uri;
 	}
 
+	/**
+	 * Returns the displayable attribute of this action button
+	 *
+	 * @access  public
+	 * @return  bool the value of displayable
+	 *
+	 */
 	public function isDisplayable() {
 		return $this->displayable;
 	}
 
+	/**
+	 * Returns the displayable attribute of this action button
+	 *
+	 * @access  public
+	 * @return  bool the value of displayable
+	 *
+	 */
 	public function getDisplayable() {
 		return $this->displayable;
 	}
 
+	/**
+	 * Determines whether this action button can be displayed or not
+	 *
+	 * @access  public
+	 * @param   bool $displayable Button displayable or not
+	 * @return  void
+	 *
+	 */
 	public function setDisplayable($displayable) {
 		$this->displayable = $displayable;
 	}

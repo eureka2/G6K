@@ -29,19 +29,101 @@ namespace EUREKA\G6KBundle\Entity;
 use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
 use EUREKA\G6KBundle\Manager\ExpressionParser\Token;
 
+/**
+ * This class allows the storage and retrieval of the attributes of a business rule
+ *
+ * @author    Jacques Archimède
+ * @author    Yann Toqué
+ *
+ */
 class BusinessRule {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Simulator $simulator Simulator object that defines this BusinessRule
+	 *
+	 * @access  private
+	 *
+	 */
 	private $simulator = null;
+
+	/**
+	 * @var string        $elementId Generated id of this business rule for the DOM element in the browser
+	 *
+	 * @access  private
+	 *
+	 */
 	private $elementId = 0;
+
+	/**
+	 * @var string     $id ID of this BusinessRule
+	 *
+	 * @access  private
+	 *
+	 */
 	private $id = "";
+
+	/**
+	 * @var string     $name Name of this BusinessRule without spaces or special or accented characters
+	 *
+	 * @access  private
+	 *
+	 */
 	private $name = "";
+
+	/**
+	 * @var string     $label Label of this BusinessRule
+	 *
+	 * @access  private
+	 *
+	 */
 	private $label = "";
+
+	/**
+	 * @var string     $conditions  Conditions value
+	 *
+	 * @access  private
+	 *
+	 */
 	private $conditions = "";
+
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Connector $connector Connector that defines this BusinessRule
+	 *
+	 * @access  private
+	 *
+	 */
 	private $connector = null;
+
+	/**
+	 * @var array      $ifActions Array of actions matching the IF condition of this business rule
+	 *
+	 * @access  private
+	 *
+	 */
 	private $ifActions = array();
+
+	/**
+	 * @var array      $elseActions Array of actions matching the ELSE condition of this business rule 
+	 *
+	 * @access  private
+	 *
+	 */
 	private $elseActions = array();	
+
+	/**
+	 * @var null $translator Instance of translation service
+	 *
+	 * @access  private
+	 *
+	 */
 	private $translator = null;
 
+	/**
+	 * @var array      $inverseOperators Array of inverse operators 
+	 *
+	 * @access  private
+	 *
+	 */
 	private $inverseOperators = array(
 		"present" => "blank",
 		"blank"   => "present",
@@ -57,6 +139,17 @@ class BusinessRule {
 		"isFalse" => "isTrue"
 	);
 
+	/**
+	 * Constructor of class BusinessRule
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simulator Simulator object that defines this BusinessRule
+	 * @param   int    $elementId Generated id of this business rule for the DOM element in the browser
+	 * @param   string $id ID of this business rule
+	 * @param   string $name Name of this business rule without spaces or special or accented characters
+	 * @return  void
+	 *
+	 */
 	public function __construct(Simulator $simulator, $elementId, $id, $name) {
 		$this->simulator = $simulator;
 		$this->translator = $simulator->getController()->get('translator');
@@ -65,82 +158,235 @@ class BusinessRule {
 		$this->name = $name;
 	}
 
+	/**
+	 * Returns the Simulator object that defines this BusinessRule
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Entity\Simulator the Simulator object
+	 *
+	 */
 	public function getSimulator() {
 		return $this->simulator;
 	}
 
+	/**
+	 * Returns the generated id of this business rule for the DOM element in the browser
+	 *
+	 * @access  public
+	 * @return  string  The generated id of this business rule
+	 *
+	 */
 	public function getElementId() {
 		return $this->elementId;
 	}
 
+	/**
+	 * Sets the generated id of this business rule for the DOM element in the browser
+	 *
+	 *
+	 * @access  public
+	 * @param   string   $elementId The generated id of this business rule
+	 * @return  void
+	 *
+	 */
 	public function setElementId($elementId) {
 		$this->elementId = $elementId;
 	}
 
+	/**
+	 * Returns the business rule ID
+	 *
+	 * @access  public
+	 * @return  string The business rule id
+	 *
+	 */
 	public function getId() {
 		return $this->id;
 	}
 
+	/**
+	 * Sets the business rule ID
+	 *
+	 * @access  public
+	 * @param   string $id The business rule id
+	 * @return  void
+	 *
+	 */
 	public function setId($id) {
 		$this->id = $id;
 	}
 
+	/**
+	 * Returns the business rule name
+	 *
+	 * @access  public
+	 * @return  string the Business rule name
+	 *
+	 */
 	public function getName() {
 		return $this->name;
 	}
 
+	/**
+	 * Sets the business rule name
+	 *
+	 * @access  public
+	 * @param   string $name The business rule name without spaces or special or accented characters 
+	 * @return  void
+	 *
+	 */
 	public function setName($name) {
 		$this->name = $name;
 	}
 
+	/**
+	 * Returns the business rule label
+	 *
+	 * @access  public
+	 * @return  string The business rule label
+	 *
+	 */
 	public function getLabel() {
 		return $this->label;
 	}
 
+	/**
+	 * Sets the business rule label
+	 *
+	 * @access  public
+	 * @param   string $label The business rule label
+	 * @return  void
+	 *
+	 */
 	public function setLabel($label) {
 		$this->label = $label;
 	}
 
+	/**
+	 * Returns the business rule conditions
+	 *
+	 * @access  public
+	 * @return  string The business rule conditions
+	 *
+	 */
 	public function getConditions() {
 		return $this->conditions;
 	}
 
+	/**
+	 * Sets the business rule conditions
+	 *
+	 * @access  public
+	 * @param   string   $conditions  The business rule conditions
+	 * @return  void
+	 *
+	 */
 	public function setConditions($conditions) {
 		$this->conditions = $conditions;
 	}
 
+	/**
+	 * Returns the Connector object of this business rule
+	 *
+	 * @access  public
+	 * @return \EUREKA\G6KBundle\Entity\Connector The Connector object of this business rule
+	 *
+	 */
 	public function getConnector() {
 		return $this->connector;
 	}
 
+	/**
+	 * Sets the Connector object of this business rule
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Connector $connector The Connector object of this business rule
+	 * @return  void
+	 *
+	 */
 	public function setConnector($connector) {
 		$this->connector = $connector;
 	}
 
+	/**
+	 * Returns the list of actions that must be executed if the conditions of this business rule are verified.
+	 *
+	 * @access  public
+	 * @return  array The list of actions
+	 *
+	 */
 	public function getIfActions() {
 		return $this->ifActions;
 	}
 
+	/**
+	 * Sets the list of actions that must be executed if the conditions of this business rule are verified.
+	 *
+	 * @access  public
+	 * @param   array  $ifActions The list of actions
+	 * @return  void
+	 *
+	 */
 	public function setIfActions($ifActions) {
 		$this->ifActions = $ifActions;
 	}
 
+	/**
+	 * Adds an action to the list of actions that must be executed if the conditions of this business rule are verified.
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Action  $ifAction The action to be added
+	 * @return  void
+	 *
+	 */
 	public function addIfAction($ifAction) {
 		$this->ifActions[] = $ifAction;
 	}
 
+	/**
+	 * Returns the list of actions that must be executed if the conditions of this business rule are NOT verified.
+	 *
+	 * @access  public
+	 * @return  array The list of actions
+	 *
+	 */
 	public function getElseActions() {
 		return $this->elseActions;
 	}
 
+	/**
+	 * Sets the list of actions that must be executed if the conditions of this business rule are NOT verified.
+	 *
+	 * @access  public
+	 * @param   array  $elseActions The list of actions
+	 * @return  void
+	 *
+	 */
 	public function setElseActions($elseActions) {
 		$this->elseActions = $elseActions;
 	}
 
+	/**
+	 * Adds an action to the list of actions that must be executed if the conditions of this business rule are NOT verified.
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Action  $else Action The action to be added
+	 * @return  void
+	 *
+	 */
 	public function addElseAction($elseAction) {
 		$this->elseActions[] = $elseAction;
 	}
 
+	/**
+	 * Returns the conditions of this business rule in a readable format.
+	 *
+	 * If the business rule has no connector, the conditions are first parsed then optimized.
+	 *
+	 * @access  public
+	 * @return  string The conditions in a readable format
+	 *
+	 */
 	public function getExtendedConditions() {
 		if ($this->connector !== null) {
 			$extended = $this->ruleConnector($this->connector);
@@ -152,6 +398,16 @@ class BusinessRule {
 		return $extended;
 	}
 
+	/**
+	 * Transforms a connector into an array of conditions
+	 *
+	 * A connector is either a Condition object or a Connector object
+	 *
+	 * @access  private
+	 * @param   \EUREKA\G6KBundle\Entity\Connector|\EUREKA\G6KBundle\Entity\Condition $connector The connector
+	 * @return  array The array of conditions
+	 *
+	 */
 	private function ruleConnector($pconnector) {
 		if ($pconnector instanceof Condition) {
 			$data = $this->simulator->getDataById($pconnector->getOperand());
@@ -171,6 +427,15 @@ class BusinessRule {
 		return $connector;
 	}
 
+	/**
+	 * Returns the readable format of an operator
+	 *
+	 * @access  protected
+	 * @param   string $operator The operator 
+	 * @param   string $type Type of operand to which the operator applies
+	 * @return  string The readable format of the operator
+	 *
+	 */
 	protected function getPlainOperator($operator, $type) {
 		$operators = array(
 			'=' => $this->translator->trans('is equal to'),
@@ -206,6 +471,14 @@ class BusinessRule {
 		}
 	}
 
+	/**
+	 * Transforms the array of parsed conditions of this business rule into an array of conditions in a readable format
+	 *
+	 * @access  protected
+	 * @param   array &$ruleData The array of parsed conditions
+	 * @return  void
+	 *
+	 */
 	protected function plainConditions(&$ruleData) {
 		if ($ruleData !== array_values($ruleData)) {
 			if (isset($ruleData["name"])) {
@@ -269,6 +542,14 @@ class BusinessRule {
 		}
 	}
 
+	/**
+	 * Transforms the array of parsed conditions of this business rule into their negative forms
+	 *
+	 * @access  protected
+	 * @param   array &$ruleData The array of parsed conditions
+	 * @return  void
+	 *
+	 */
 	protected function negate(&$ruleData) {
 		if ($ruleData !== array_values($ruleData)) {
 			if (isset($ruleData["all"])) {
@@ -291,6 +572,14 @@ class BusinessRule {
 		}
 	}
 
+	/**
+	 * function optimize 
+	 *
+	 * @access  protected
+	 * @param   array &$ruleData The array of parsed conditions
+	 * @return  void
+	 *
+	 */
 	protected function optimize (&$ruleData) {
 		if (isset($ruleData["all"]) && count($ruleData["all"]) == 1) {
 			$ruleData = $ruleData['all'][0];
@@ -309,6 +598,15 @@ class BusinessRule {
 		} while ($optimized);
 	}
 
+	/**
+	 * function optimizeCond
+	 *
+	 * @access  protected
+	 * @param   array &$ruleData <parameter description>
+	 * @param   \EUREKA\G6KBundle\Entity\Connector $connector Connector that defines this BusinessRule
+	 * @return  bool the value of optimized
+	 *
+	 */
 	protected function optimizeCond(&$ruleData, $connector) {
 		$optimized = false;
 		$conds = array();
@@ -328,6 +626,14 @@ class BusinessRule {
 		return $optimized;
 	}
 
+	/**
+	 * Parses the conditions of this business rule in an array to be usable by the administration module..
+	 *
+	 * @access  protected
+	 * @return  array The array of the parsed conditions
+	 * @throws \Exception if an error occurs
+	 *
+	 */
 	protected function parseConditions() {
 		
 		$arities = array(
