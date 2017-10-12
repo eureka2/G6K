@@ -202,8 +202,9 @@ class SimulatorsAdminController extends BaseAdminController {
 			return $this->doExportSimulator($simulator);
 		} elseif ($crud == 'publish') {
 			return $this->doPublishSimulator($simulator);
+		} elseif ($crud == 'deploy') {
+			return $this->doDeploySimulator($simulator);
 		}
-		
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
@@ -397,6 +398,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
 		$widgets = $this->helper->getWidgets();
+		$deployment = $this->container->hasParameter('deployment') && $this->get('security.context')->isGranted('ROLE_MANAGER');
 		try {
 			return $this->render(
 				'EUREKAG6KBundle:admin/pages:simulators.html.twig',
@@ -416,7 +418,8 @@ class SimulatorsAdminController extends BaseAdminController {
 					'hiddens' => $hiddens,
 					'script' => $script,
 					'view' => null,
-					'widgets' => $widgets
+					'widgets' => $widgets,
+					'deployment' => $deployment
 				)
 			);
 		} catch (\Exception $e) {
@@ -1362,6 +1365,24 @@ class SimulatorsAdminController extends BaseAdminController {
 				return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
 			}
 		}
+	}
+
+	/**
+	 * Deploys a simulator on front-end severs
+	 *
+	 * Route path : /admin/simulators/{simulator}/deploy
+	 *
+	 * @access  protected
+	 * @param   string $simu The simulator to deploy
+	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 *
+	 */
+	protected function doDeploySimulator($simu){
+		try {
+			$this->get('g6k.deployer')->deploy($simu);
+		} catch (Exception $ex) {
+		}
+		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
 	}
 
 	/**

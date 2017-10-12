@@ -233,7 +233,7 @@ ul.rule-conditions > li {
 .source-container .form-control {
 	z-index: auto !important;
 }
-.edit-simulator, .export-simulator, .publish-simulator, .add-data, .edit-data, .delete-data, 
+.edit-simulator, .export-simulator, .publish-simulator, .deploy-simulator, .add-data, .edit-data, .delete-data, 
 .add-datagroup, .edit-datagroup, .delete-datagroup, 
 .add-rule, .edit-rule, .add-step, .edit-step, .delete-step, 
 .add-footnotes, .edit-footnotes, .delete-footnotes, .add-footnote, .edit-footnote, .delete-footnote, 

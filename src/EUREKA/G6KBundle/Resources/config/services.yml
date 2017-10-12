@@ -10,6 +10,11 @@ services:
     g6k.file_uploader:
         class: EUREKA\G6KBundle\Services\FileUploader
         arguments: ['%g6k_upload_directory%']
+    
+    g6k.deployer:
+        class: EUREKA\G6KBundle\Services\Deployer
+        arguments: [ @kernel ]
+            
 
     # TwigExtensions
     g6k.twig.filters_extension:

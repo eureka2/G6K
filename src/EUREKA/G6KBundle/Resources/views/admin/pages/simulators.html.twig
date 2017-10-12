@@ -74,6 +74,9 @@ THE SOFTWARE.
 							<a class="btn btn-primary pull-right link-button export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'export'}) }}" title="{{ 'Export simulator'|trans }}"><span class="button-label">{{ 'Export simulator'|trans }}</span> <span class="glyphicon glyphicon-export"></span></a>
 							{% if hiddens.updated %}
 							<a class="btn btn-primary pull-right link-button publish-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'publish'}) }}" title="{{ 'Publish simulator'|trans }}"><span class="button-label">{{ 'Publish simulator'|trans }}</span> <span class="glyphicon glyphicon-share"></span></a>
+							{% if deployment %}
+							<a class="btn btn-primary pull-right link-button deploy-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'deploy'}) }}" title="{{ 'Deploy simulator'|trans }}"><span class="button-label">{{ 'Deploy simulator'|trans }}</span> <span class="glyphicon glyphicon-share"></span></a>
+							{% endif %}
 							{% endif %}
 							{% endif %}
 							<form id="save-form" action="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'save'}) }}" method="post">
