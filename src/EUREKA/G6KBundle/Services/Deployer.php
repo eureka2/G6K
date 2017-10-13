@@ -29,6 +29,8 @@ namespace EUREKA\G6KBundle\Services;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * This class implements a service that performs the deployment of files from a new simulator or modified simulator to all front-end servers described in the entry 'deployment of parameters.yml.
@@ -39,12 +41,20 @@ use Symfony\Component\Finder\Finder;
 class Deployer {
 
 	/**
-	 * @var \Symfony\Component\HttpKernel\Kernel	  $kernel The Symfony kernel
+	 * @var \Symfony\Component\HttpKernel\KernelInterface	  $kernel The Symfony kernel interface
 	 *
 	 * @access  private
 	 *
 	 */
 	private $kernel;
+
+	/**
+	 * @var \Symfony\Component\Translation\TranslatorInterface	  $translator The translator interface
+	 *
+	 * @access  private
+	 *
+	 */
+	private $translator;
 
 	/**
 	 * @var array  $output The output of the processes of this service
@@ -58,12 +68,14 @@ class Deployer {
 	 * Constructor of class Deployer
 	 *
 	 * @access  public
-	 * @param   \Symfony\Component\HttpKernel\Kernel $kernel The Symfony kernel
+	 * @param   \Symfony\Component\HttpKernel\KernelInterface $kernel The Symfony kernel interface
+	 * @param   \Symfony\Component\Translation\TranslatorInterface $translator The translator interface
 	 * @return  void
 	 *
 	 */
-	public function __construct($kernel) {
-		$this->kernel = $kernel;  
+	public function __construct(KernelInterface $kernel, TranslatorInterface $translator) {
+		$this->kernel = $kernel;
+		$this->translator = $translator;
 	}
 
 	/**
@@ -81,16 +93,17 @@ class Deployer {
 			$localRootDir = $this->unixify($localRootDir);
 		}
 		$cmd = str_replace(array('{local.rootdir}', '{file}', '{dir}'), array($localRootDir, $file, dirname($file)), $command);
-		$this->output[] = $cmd;
 		$process = new Process($cmd);
 		$process->run();
-		$errorOutput = $process->getErrorOutput();
-		if ($errorOutput != '') {
-			$this->output[] = 'Error : ' . $errorOutput;
-		}
 		if (!$process->isSuccessful()) {
-			throw new ProcessFailedException($process);
-		} 
+			$errorOutput = $process->getErrorOutput();
+			if ($errorOutput != '') {
+				$this->output[] = '<pre>' .$cmd . '</pre><span class="alert-danger">' . $this->translator->trans('Error returned by the command:') . ' ' . $errorOutput . '</span>';
+			}
+		} else {
+			$this->output[] = '<pre>' . $cmd . '</pre><span class="alert-success">' . $this->translator->trans('Command completed successfully') . '</span>';
+		}
+		$this->output[] = '&nbsp;';
 	}
 
 
@@ -152,7 +165,9 @@ class Deployer {
 		$localRootDir = dirname($this->kernel->getRootDir());
 		$finder = new Finder();
 		$finder->name($simu->getName().'.css')->in($resourcesDir . '/public')->exclude('admin')->exclude('base');
+		$this->output = array();
 		foreach ($deployment as $server => $command){
+			$this->output[] = '<h4>' . $this->translator->trans('Deployment on the server « %server% »', array( '%server%' => $server)) . '</h4>';
 			foreach($simu->getSources() as $source){
 				$datasourceName = $source->getDataSource();
 				$datasource = $simu->getDatasourceByName($datasourceName);
@@ -161,14 +176,18 @@ class Deployer {
 					$databaseId = $datasource->getDatabase();
 					$database = $simu->getDatabaseById($databaseId);
 					if($database->getType() == "sqlite"){
+						$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $database->getName())) . '</h5>';
 						$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/databases/'.$database->getName(), $command);
 					}
 				}
 			}
+			$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $simu->getName().'.xml')) . '</h5>';
 			$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/simulators/'.$simu->getName().'.xml', $command);
+			$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => 'DataSources.xml')) . '</h5>';
 			$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/databases/DataSources.xml', $command);
 			foreach ($finder as $file) {
 				$pathname = str_replace('\\', '/', $file->getRelativePathname());
+				$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $pathname)) . '</h5>';
 				$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/public/'.$pathname, $command);  
 			}
 		}

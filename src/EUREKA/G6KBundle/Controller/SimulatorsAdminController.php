@@ -1394,6 +1394,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'ua' => $silex["mobile_detect"],
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'simulators',
+				'simulator' => $this->simu,
 				'log' => $output,
 				'hiddens' => $hiddens
 			)

@@ -13,7 +13,7 @@ services:
     
     g6k.deployer:
         class: EUREKA\G6KBundle\Services\Deployer
-        arguments: [ @kernel ]
+        arguments: [ @kernel, @translator ]
             
 
     # TwigExtensions
