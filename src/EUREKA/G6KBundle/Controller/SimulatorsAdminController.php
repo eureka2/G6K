@@ -203,7 +203,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		} elseif ($crud == 'publish') {
 			return $this->doPublishSimulator($simulator);
 		} elseif ($crud == 'deploy') {
-			return $this->doDeploySimulator($simulator);
+			return $this->doDeploySimulator($request, $simulator);
 		}
 		$form = $request->request->all();
 		$no_js = $request->query->get('no-js') || 0;
@@ -1368,21 +1368,36 @@ class SimulatorsAdminController extends BaseAdminController {
 	}
 
 	/**
-	 * Deploys a simulator on front-end severs
+	 * Deploys a simulator on front-end servers
 	 *
 	 * Route path : /admin/simulators/{simulator}/deploy
 	 *
 	 * @access  protected
-	 * @param   string $simu The simulator to deploy
-	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @param   string $simu The name of the simulator to deploy
+	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
-	protected function doDeploySimulator($simu){
+	protected function doDeploySimulator(Request $request, $simu){
+		$this->simu = new Simulator($this);
+		$this->simu->load($this->simulatorsDir."/".$simu.'.xml');
 		try {
-			$this->get('g6k.deployer')->deploy($simu);
+			$output = $this->get('g6k.deployer')->deploy($this->simu);
 		} catch (Exception $ex) {
 		}
-		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
+		$hiddens = array();
+		$silex = new Application();
+		$silex->register(new MobileDetectServiceProvider());
+		return $this->render(
+			'EUREKAG6KBundle:admin/pages:deploy-output.html.twig',
+			array(
+				'ua' => $silex["mobile_detect"],
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'nav' => 'simulators',
+				'log' => $output,
+				'hiddens' => $hiddens
+			)
+		);
 	}
 
 	/**

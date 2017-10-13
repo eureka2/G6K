@@ -39,12 +39,20 @@ use Symfony\Component\Finder\Finder;
 class Deployer {
 
 	/**
-	 * @var \Symfony\Component\HttpKernel\Kernel      $kernel The Symfony kernel
+	 * @var \Symfony\Component\HttpKernel\Kernel	  $kernel The Symfony kernel
 	 *
 	 * @access  private
 	 *
 	 */
 	private $kernel;
+
+	/**
+	 * @var array  $output The output of the processes of this service
+	 *
+	 * @access  private
+	 *
+	 */
+	private $output = array();
 
 	/**
 	 * Constructor of class Deployer
@@ -55,7 +63,7 @@ class Deployer {
 	 *
 	 */
 	public function __construct($kernel) {
-		 $this->kernel = $kernel;  
+		$this->kernel = $kernel;  
 	}
 
 	/**
@@ -73,13 +81,27 @@ class Deployer {
 			$localRootDir = $this->unixify($localRootDir);
 		}
 		$cmd = str_replace(array('{local.rootdir}', '{file}', '{dir}'), array($localRootDir, $file, dirname($file)), $command);
+		$this->output[] = $cmd;
 		$process = new Process($cmd);
 		$process->run();
+		$errorOutput = $process->getErrorOutput();
+		if ($errorOutput != '') {
+			$this->output[] = 'Error : ' . $errorOutput;
+		}
 		if (!$process->isSuccessful()) {
 			throw new ProcessFailedException($process);
 		} 
 	}
 
+
+	/**
+	 * Transforms a Windows path in a Unix path for a 'rsync' command
+	 *
+	 * @access  public
+	 * @param   string $localRootDir The transformed path
+	 * @return  string
+	 *
+	 */
 	private function unixify($rootDir) {
 		$os = php_uname('s');
 		if (preg_match("/^win/i", $os)) {
@@ -94,9 +116,34 @@ class Deployer {
 	/**
 	 * Entry point of the service
 	 *
+	 * Reads the 'deployment' parameter from the parameters.yml file and starts the deployment on all the servers listed under this parameter?
+	 * 
+	 * The 'deployment' parameter contains one child parameter by server with the following syntax:
+	 *
+	 * <server name or alias>: <deployment command>
+	 * 
+	 * The deployment command must contain the placeholder variables:
+	 *
+	 * - {local.rootdir}
+	 * - {file}
+	 *
+	 * and can contains the placeholder variable : {dir}
+	 *
+	 * {local.rootdir} is the directory where this instance of G6K is installed
+	 *
+	 * {file} is the path relative to {local.rootdir} and the file name of a file to be deployed
+	 *
+	 * {dir} is the path relative to {local.rootdir} (without the file name) of a file to be deployed
+	 *
+	 * Some examples :
+	 * 
+	 * - front1: rsync -utlgo {local.rootdir}/{file} foo@bar:/var/www/html/simulator/{dir}/
+	 * - front2: rcp {local.rootdir}/{file} foo@bar:/var/www/html/simulator/{dir}/
+	 * - localhost: cp -f {local.rootdir}/{file} /var/www/html/simulator/{dir}/
+	 *
 	 * @access  public
-	 * @param   string $simu The name of the simulator to deploy
-	 * @return  void
+	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simu The simulator to deploy
+	 * @return  array The result of the deployment
 	 *
 	 */
 	public function deploy($simu){
@@ -104,16 +151,28 @@ class Deployer {
 		$resourcesDir = $this->kernel->locateResource('@EUREKAG6KBundle/Resources');
 		$localRootDir = dirname($this->kernel->getRootDir());
 		$finder = new Finder();
-		$finder->name($simu.'.css')->in($resourcesDir . '/public')->exclude('admin')->exclude('base');
-		foreach ($deployment as $server => $command) {
-			$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/databases/'.$simu.'.db', $command);
-			$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/simulators/'.$simu.'.xml', $command);
+		$finder->name($simu->getName().'.css')->in($resourcesDir . '/public')->exclude('admin')->exclude('base');
+		foreach ($deployment as $server => $command){
+			foreach($simu->getSources() as $source){
+				$datasourceName = $source->getDataSource();
+				$datasource = $simu->getDatasourceByName($datasourceName);
+				$type = $datasource->getType();
+				if($type == "internal"){
+					$databaseId = $datasource->getDatabase();
+					$database = $simu->getDatabaseById($databaseId);
+					if($database->getType() == "sqlite"){
+						$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/databases/'.$database->getName(), $command);
+					}
+				}
+			}
+			$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/simulators/'.$simu->getName().'.xml', $command);
 			$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/databases/DataSources.xml', $command);
 			foreach ($finder as $file) {
 				$pathname = str_replace('\\', '/', $file->getRelativePathname());
 				$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/public/'.$pathname, $command);  
 			}
 		}
+		return $this->output;
 	}
 }
 
