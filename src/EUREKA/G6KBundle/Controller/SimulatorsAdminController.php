@@ -1379,6 +1379,10 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function doDeploySimulator(Request $request, $simu){
+		if (! $this->get('security.context')->isGranted('ROLE_MANAGER')) {
+			$form = array();
+			return $this->errorResponse($form, $this->get('translator')->trans("Access denied!"));
+		}
 		$this->simu = new Simulator($this);
 		$this->simu->load($this->simulatorsDir."/".$simu.'.xml');
 		try {

@@ -83,16 +83,17 @@ class Deployer {
 	 *
 	 * @access  public
 	 * @param   string $localRootDir 
-	 * @param   string $file 
+	 * @param   string $localFile 
+	 * @param   string $remoteFile 
 	 * @param   string $command
 	 * @return  void
 	 *
 	 */
-	private function doDeploy($localRootDir, $file, $command){
+	private function doDeploy($localRootDir, $localFile, $remoteFile, $command){
 		if (preg_match("/^rsync/", $command)) {
 			$localRootDir = $this->unixify($localRootDir);
 		}
-		$cmd = str_replace(array('{local.rootdir}', '{file}', '{dir}'), array($localRootDir, $file, dirname($file)), $command);
+		$cmd = str_replace(array('{local.rootdir}', '{local.file}', '{remote.file}', '{remote.dir}'), array($localRootDir, $localFile, $remoteFile, dirname($remoteFile)), $command);
 		$process = new Process($cmd);
 		$process->run();
 		if (!$process->isSuccessful()) {
@@ -138,21 +139,22 @@ class Deployer {
 	 * The deployment command must contain the placeholder variables:
 	 *
 	 * - {local.rootdir}
-	 * - {file}
-	 *
-	 * and can contains the placeholder variable : {dir}
+	 * - {local.file}
+	 * - {remote.dir} or {remote.file}
 	 *
 	 * {local.rootdir} is the directory where this instance of G6K is installed
 	 *
-	 * {file} is the path relative to {local.rootdir} and the file name of a file to be deployed
+	 * {local.file} is the path relative to {local.rootdir} and the file name of a file to be deployed
 	 *
-	 * {dir} is the path relative to {local.rootdir} (without the file name) of a file to be deployed
+	 * {remote.dir} is the path (without the file name) relative to the install directory of G6K in remote server of a file to be deployed
+	 *
+	 * {remote.file} is the path relative to the install directory of G6K in remote server of a file to be deployed
 	 *
 	 * Some examples :
 	 * 
-	 * - front1: rsync -utlgo {local.rootdir}/{file} foo@bar:/var/www/html/simulator/{dir}/
-	 * - front2: rcp {local.rootdir}/{file} foo@bar:/var/www/html/simulator/{dir}/
-	 * - localhost: cp -f {local.rootdir}/{file} /var/www/html/simulator/{dir}/
+	 * - front1: rsync -utlgo {local.rootdir}/{local.file} foo@bar:/var/www/html/simulator/{remote.file}
+	 * - front2: rcp {local.rootdir}/{local.file} foo@bar:/var/www/html/simulator/{remote.dir}/
+	 * - localhost: cp -f {local.rootdir}/{local.file} /var/www/html/simulator/{remote.dir}/
 	 *
 	 * @access  public
 	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simu The simulator to deploy
@@ -168,6 +170,8 @@ class Deployer {
 		$this->output = array();
 		foreach ($deployment as $server => $command){
 			$this->output[] = '<h4>' . $this->translator->trans('Deployment on the server « %server% »', array( '%server%' => $server)) . '</h4>';
+			$internalDB = array();
+			$usingDatasource = false;
 			foreach($simu->getSources() as $source){
 				$datasourceName = $source->getDataSource();
 				$datasource = $simu->getDatasourceByName($datasourceName);
@@ -176,19 +180,29 @@ class Deployer {
 					$databaseId = $datasource->getDatabase();
 					$database = $simu->getDatabaseById($databaseId);
 					if($database->getType() == "sqlite"){
-						$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $database->getName())) . '</h5>';
-						$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/databases/'.$database->getName(), $command);
+						$internalDB[] = $database->getName();
 					}
 				}
+				$usingDatasource = true;
+			}
+			foreach(array_unique($internalDB) as $db) {
+				$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $db)) . '</h5>';
+				$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/data/databases/'.$db;
+				$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
 			}
 			$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $simu->getName().'.xml')) . '</h5>';
-			$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/simulators/'.$simu->getName().'.xml', $command);
-			$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => 'DataSources.xml')) . '</h5>';
-			$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/data/databases/DataSources.xml', $command);
+			$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/data/simulators/'.$simu->getName().'.xml';
+			$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
+			if ($usingDatasource) {
+				$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => 'DataSources.xml')) . '</h5>';
+				$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/data/databases/DataSources.xml';
+				$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
+			}
 			foreach ($finder as $file) {
 				$pathname = str_replace('\\', '/', $file->getRelativePathname());
 				$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $pathname)) . '</h5>';
-				$this->doDeploy($localRootDir, 'src/EUREKA/G6KBundle/Resources/public/'.$pathname, $command);  
+				$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/public/'.$pathname;
+				$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);  
 			}
 		}
 		return $this->output;
