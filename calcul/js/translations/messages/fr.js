@@ -74,6 +74,7 @@
     Translator.add("Are you sure you want to delete the section : %label%", "Voulez-vous vraiment supprimer la section : %label%", "messages", "fr");
     Translator.add("Are you sure you want to delete the step : %label%", "Voulez-vous vraiment supprimer l'\u00e9tape : %label%", "messages", "fr");
     Translator.add("Are you sure you want to delete this source", "\u00cates-vous certain de vouloir supprimer cette source", "messages", "fr");
+    Translator.add("Are you sure you want to deploy the simulator %simulator% on the front servers?", "\u00cates-vous s\u00fbr de vouloir d\u00e9ployer le simulateur %simulator% sur les serveurs frontaux ?", "messages", "fr");
     Translator.add("Are you sure you want to drop the datasource %datasource% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la source de donn\u00e9es %datasource% ?", "messages", "fr");
     Translator.add("Are you sure you want to drop the table %table% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la table %table% ?", "messages", "fr");
     Translator.add("Are you sure you want to drop the view %view% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la vue %view% ?", "messages", "fr");
@@ -131,8 +132,8 @@
     Translator.add("Chapter icon", "Ic\u00f4ne du chapitre", "messages", "fr");
     Translator.add("Chapter label", "Etiquette du chapitre", "messages", "fr");
     Translator.add("Chapter name", "Nom du chapitre", "messages", "fr");
-    Translator.add("Choice", "Choix", "messages", "fr");
     Translator.add("choice", "choix", "messages", "fr");
+    Translator.add("Choice", "Choix", "messages", "fr");
     Translator.add("Choice %id%", "Choix %id%", "messages", "fr");
     Translator.add("Choice label", "Libell\u00e9 du choix", "messages", "fr");
     Translator.add("Choices", "Liste de choix", "messages", "fr");
@@ -213,8 +214,8 @@
     Translator.add("d\/m\/y", "JJ\/MM\/AA", "messages", "fr");
     Translator.add("d\/m\/Y", "JJ\/MM\/AAAA", "messages", "fr");
     Translator.add("Dashboard", "Tableau de bord", "messages", "fr");
-    Translator.add("data", "donn\u00e9e", "messages", "fr");
     Translator.add("Data", "Donn\u00e9e", "messages", "fr");
+    Translator.add("data", "donn\u00e9e", "messages", "fr");
     Translator.add("Data %id%", "Donn\u00e9e %id%", "messages", "fr");
     Translator.add("Database", "Base de donn\u00e9es", "messages", "fr");
     Translator.add("Database host", "Serveur de base de donn\u00e9es", "messages", "fr");
@@ -223,8 +224,8 @@
     Translator.add("Database password", "mot de passe de la base de donn\u00e9es", "messages", "fr");
     Translator.add("Database port", "Port de la base de donn\u00e9es", "messages", "fr");
     Translator.add("Database user", "Identifiant de connexion \u00e0 la base de donn\u00e9es", "messages", "fr");
-    Translator.add("Datagroup", "Groupe de donn\u00e9es", "messages", "fr");
     Translator.add("datagroup", "groupe de donn\u00e9es", "messages", "fr");
+    Translator.add("Datagroup", "Groupe de donn\u00e9es", "messages", "fr");
     Translator.add("Data label", "\u00c9tiquette de la donn\u00e9e", "messages", "fr");
     Translator.add("Data memo ?", "M\u00e9mo de donn\u00e9es?", "messages", "fr");
     Translator.add("Data name", "Nom de la donn\u00e9e", "messages", "fr");
@@ -324,8 +325,8 @@
     Translator.add("External webservice (Rest API)", "Web service externe (API Rest)", "messages", "fr");
     Translator.add("false", "faux", "messages", "fr");
     Translator.add("February", "F\u00e9vrier", "messages", "fr");
-    Translator.add("field", "champ", "messages", "fr");
     Translator.add("Field", "Champ", "messages", "fr");
+    Translator.add("field", "champ", "messages", "fr");
     Translator.add("Field %id% (nolabel)", "Champ %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Field data", "Donn\u00e9e du champ", "messages", "fr");
     Translator.add("Field description", "Description du champ", "messages", "fr");
@@ -366,13 +367,13 @@
     Translator.add("Geolocation in progress", "G\u00e9olocalisation en cours", "messages", "fr");
     Translator.add("Grid", "Grille", "messages", "fr");
     Translator.add("Group", "Groupe", "messages", "fr");
-    Translator.add("Group label", "\u00c9tiquette du groupe de donn\u00e9es", "messages", "fr");
     Translator.add("Group Label", "Libell\u00e9 du groupe", "messages", "fr");
+    Translator.add("Group label", "\u00c9tiquette du groupe de donn\u00e9es", "messages", "fr");
     Translator.add("Group Name", "Nom du groupe", "messages", "fr");
     Translator.add("Group name without spaces or special characters", "Nom du groupe de donn\u00e9es sans espaces ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Help", "Aide", "messages", "fr");
-    Translator.add("Hide", "Cacher", "messages", "fr");
     Translator.add("hide", "cacher", "messages", "fr");
+    Translator.add("Hide", "Cacher", "messages", "fr");
     Translator.add("Home", "Accueil", "messages", "fr");
     Translator.add("HTTP header", "En-t\u00eate HTTP", "messages", "fr");
     Translator.add("Icon", "Ic\u00f4ne", "messages", "fr");
@@ -462,8 +463,8 @@
     Translator.add("m-d-Y", "MM-JJ-AAAA", "messages", "fr");
     Translator.add("m\/d", "MM\/JJ", "messages", "fr");
     Translator.add("m\/d\/Y", "MM\/JJ\/AAAA", "messages", "fr");
-    Translator.add("m\/y", "MM\/AA", "messages", "fr");
     Translator.add("m\/Y", "MM\/AAAA", "messages", "fr");
+    Translator.add("m\/y", "MM\/AA", "messages", "fr");
     Translator.add("Main referer", "Referer principal", "messages", "fr");
     Translator.add("March", "Mars", "messages", "fr");
     Translator.add("matches", "correspondances", "messages", "fr");
@@ -483,8 +484,8 @@
     Translator.add("Minimum value", "valeur minimale", "messages", "fr");
     Translator.add("min value", "valeur min", "messages", "fr");
     Translator.add("money", "montant", "messages", "fr");
-    Translator.add("month", "mois", "messages", "fr");
     Translator.add("Month", "Mois", "messages", "fr");
+    Translator.add("month", "mois", "messages", "fr");
     Translator.add("multichoice", "choix multiple", "messages", "fr");
     Translator.add("Name", "Nom", "messages", "fr");
     Translator.add("Need help ?", "Besoin d'aide ?", "messages", "fr");
@@ -542,8 +543,8 @@
     Translator.add("or", "ou", "messages", "fr");
     Translator.add("Order by", "Tri\u00e9 par", "messages", "fr");
     Translator.add("Origin", "Provenance", "messages", "fr");
-    Translator.add("Output", "Sortie", "messages", "fr");
     Translator.add("output", "restitution \u00e0 l'utilisateur", "messages", "fr");
+    Translator.add("Output", "Sortie", "messages", "fr");
     Translator.add("Page %pageno% of %numberofpages%", "Page %pageno%\/%numberofpages%", "messages", "fr");
     Translator.add("panel", "panneau", "messages", "fr");
     Translator.add("Panel", "Panneau", "messages", "fr");
@@ -598,11 +599,11 @@
     Translator.add("Postal code obtained by autocompletion on the name of the commune or its postal code", "Code postal obtenu par auto-compl\u00e9tion sur le nom de la commune ou son code postal", "messages", "fr");
     Translator.add("Postal code obtained by autocompletion on the name of the commune or its postal code (In place mode)", "Code postal obtenu par auto-compl\u00e9tion sur le nom de la commune ou son code postal (\u00e9dition en place)", "messages", "fr");
     Translator.add("POST data", "Donn\u00e9es de la requ\u00eate en mode POST", "messages", "fr");
-    Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("postnote", "post note", "messages", "fr");
+    Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("pow", "puissance", "messages", "fr");
-    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("PreNote", "Pre Note", "messages", "fr");
+    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("Previous", "Pr\u00e9c\u00e9dent", "messages", "fr");
     Translator.add("Primary", "Principal", "messages", "fr");
     Translator.add("Prior step", "Etape pr\u00e9c\u00e9dente", "messages", "fr");

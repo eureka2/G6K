@@ -75,7 +75,7 @@ THE SOFTWARE.
 							{% if hiddens.updated %}
 							<a class="btn btn-primary pull-right link-button publish-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'publish'}) }}" title="{{ 'Publish simulator'|trans }}"><span class="button-label">{{ 'Publish simulator'|trans }}</span> <span class="glyphicon glyphicon-share"></span></a>
 							{% if deployment %}
-							<a class="btn btn-primary pull-right link-button deploy-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'deploy'}) }}" title="{{ 'Deploy simulator'|trans }}"><span class="button-label">{{ 'Deploy simulator'|trans }}</span> <span class="glyphicon glyphicon-share"></span></a>
+							<a class="btn btn-primary pull-right link-button deploy-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'deploy'}) }}" title="{{ 'Deploy simulator'|trans }}" data-confirm="{{ 'Are you sure you want to deploy the simulator %simulator% on the front servers?'|trans({ '%simulator%': simulator.name }) }}'"><span class="button-label">{{ 'Deploy simulator'|trans }}</span> <span class="glyphicon glyphicon-share"></span></a>
 							{% endif %}
 							{% endif %}
 							{% endif %}
