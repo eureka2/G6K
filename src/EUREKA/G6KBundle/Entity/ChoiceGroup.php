@@ -26,36 +26,120 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+/**
+ *
+ * This class allows the storage and retrieval of the attributes of a group of choices
+ *
+ * The list of choices of a choice group can either be defined by extension, or be the result of a query on a data source.
+ *
+ * @author    Jacques Archimède
+ * @author    Yann Toqué
+ *
+ */
 class ChoiceGroup {
 
+	/**
+	 * @var string     $label The label of this group of choices
+	 *
+	 * @access  private
+	 *
+	 */
 	private $label = "";
+
+	/**
+	 * @var array      $choices The list of all the choices (Choice object) of this group that have been defined by extension
+	 *
+	 * @access  private
+	 *
+	 */
 	private $choices = array(); 
+
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\ChoiceSource $choiceSource The ChoiceSource object that contains the columns of the result of the query that populate this group of choices.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $choiceSource = null; 
 
+	/**
+	 * Constructor of class ChoiceGroup
+	 *
+	 * @access  public
+	 * @param   string     $label The label of this group of choices
+	 * @return  void
+	 *
+	 */
 	public function __construct($label) {
 		$this->label = $label;
 	}
 
+	/**
+	 * Retrieves the label of this group of choices
+	 *
+	 * @access  public
+	 * @return  string     The label of this group of choices
+	 *
+	 */
 	public function getLabel() {
 		return $this->label;
 	}
 
+	/**
+	 * Sets the label of this group of choices
+	 *
+	 * @access  public
+	 * @param   string     $label The label of this group of choices
+	 * @return  void
+	 *
+	 */
 	public function setLabel($label) {
 		$this->label = $label;
 	}
 
+	/**
+	 * Returns the list of all the choices that have been defined by extension
+	 *
+	 * @access  public
+	 * @return  array The list of all the choices
+	 *
+	 */
 	public function getChoices() {
 		return $this->choices;
 	}
 
+	/**
+	 * Sets the list of all the choices that have been defined by extension
+	 *
+	 * @access  public
+	 * @param   array      $choices The list of all the choices
+	 * @return  void
+	 *
+	 */
 	public function setChoices($choices) {
 		$this->choices = $choices;
 	}
 
+	/**
+	 * Adds a Choice object to the list of choices
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Choice $choice The Choice object to add
+	 * @return  void
+	 *
+	 */
 	public function addChoice(Choice $choice) {
 		$this->choices[] = $choice;
 	}
 
+	/**
+	 * Retrieves a Choice object by its ID
+	 *
+	 * @access  public
+	 * @param   int $id The ID of the choice 
+	 * @return  \EUREKA\G6KBundle\Entity\Choice|null The Choice object with this ID
+	 *
+	 */
 	public function getChoiceById($id) {
 		foreach ($this->choices as $choice) {
 			if ($choice->getId() == $id) {
@@ -65,14 +149,40 @@ class ChoiceGroup {
 		return null;
 	}
 
+	/**
+	 * Retrieves the ChoiceSource object of this group of choices
+	 *
+	 * The ChoiceSource object contains the columns of the result of the query that populate this group of choices.
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Entity\ChoiceSource The ChoiceSource object
+	 *
+	 */
 	public function getChoiceSource() {
 		return $this->choiceSource;
 	}
 
+	/**
+	 * Sets the ChoiceSource object of this group of choices
+	 *
+	 * The ChoiceSource object contains the columns of the result of the query that populate this group of choices.
+	 *
+	 * @access  public
+	 * @param  \EUREKA\G6KBundle\Entity\ChoiceSource $choiceSource The ChoiceSource object
+	 * @return  void
+	 *
+	 */
 	public function setChoiceSource($choiceSource) {
 		$this->choiceSource = $choiceSource;
 	}
 
+	/**
+	 * Returns the class name of this ChoiceGroup object 
+	 *
+	 * @access  public
+	 * @return  string the class name
+	 *
+	 */
 	public function getClass() {
 		$classPath = explode('\\', get_class());
 		return end($classPath);

@@ -229,7 +229,7 @@ class BlockInfo {
 	 *
 	 * @access  public
 	 * @param   int $id Chapter id
-	 * @return  \EUREKA\G6KBundle\Entity\Chapter|null the value of chapterById
+	 * @return  \EUREKA\G6KBundle\Entity\Chapter|null The chapter with this ID
 	 *
 	 */
 	public function getChapterById($id) {
