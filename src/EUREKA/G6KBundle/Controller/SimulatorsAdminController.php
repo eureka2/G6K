@@ -398,7 +398,10 @@ class SimulatorsAdminController extends BaseAdminController {
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
 		$widgets = $this->helper->getWidgets();
-		$deployment = $this->container->hasParameter('deployment') && $this->get('security.context')->isGranted('ROLE_MANAGER');
+		$deployment = 	$this->container->hasParameter('deployment') && 
+						$this->get('security.context')->isGranted('ROLE_MANAGER') && 
+						$simulator !== null && $simulator != 'new' && $valid &&
+						!file_exists($this->simulatorsDir . '/work/' . $simulator . '.xml');
 		try {
 			return $this->render(
 				'EUREKAG6KBundle:admin/pages:simulators.html.twig',

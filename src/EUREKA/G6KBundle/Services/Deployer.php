@@ -31,6 +31,9 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\LockHandler;
 
 /**
  * This class implements a service that performs the deployment of files from a new simulator or modified simulator to all front-end servers described in the entry 'deployment of parameters.yml.
@@ -57,6 +60,22 @@ class Deployer {
 	private $translator;
 
 	/**
+	 * @var \Symfony\Component\Filesystem\LockHandler	  $lockHandler  A lock handler to prevent multiple deployments at a time.
+	 *
+	 * @access  private
+	 *
+	 */
+	private $lockHandler;
+
+	/**
+	 * @var array  $deployed The already deployed datasources
+	 *
+	 * @access  private
+	 *
+	 */
+	private $deployed = array();
+
+	/**
 	 * @var array  $output The output of the processes of this service
 	 *
 	 * @access  private
@@ -81,7 +100,7 @@ class Deployer {
 	/**
 	 * Realizes the deployment
 	 *
-	 * @access  public
+	 * @access  private
 	 * @param   string $localRootDir 
 	 * @param   string $localFile 
 	 * @param   string $remoteFile 
@@ -111,7 +130,7 @@ class Deployer {
 	/**
 	 * Transforms a Windows path in a Unix path for a 'rsync' command
 	 *
-	 * @access  public
+	 * @access  private
 	 * @param   string $localRootDir The transformed path
 	 * @return  string
 	 *
@@ -125,6 +144,145 @@ class Deployer {
 			$rootDir = preg_replace("/\\\/", "/", $rootDir);
 		}
 		return $rootDir;
+	}
+
+	/**
+	 * Loads the list of already deployed data sources
+	 *
+	 * @access  private
+	 * @param   string $deployedFile The name of the file containing this list.
+	 * @return  void
+	 *
+	 */
+	private function loadDeployed($deployedFile) {
+		$this->deployed = array();
+		$fs = new Filesystem();
+		if ($fs->exists($deployedFile)) {
+			$contents = explode("\n", file_get_contents($deployedFile), 3);
+			foreach($contents as $content) {
+				$deployed = explode("\t", $content, 3);
+				if (array_key_exists($deployed[0] , $this->deployed)) {
+					$this->deployed[$deployed[0]][] = array(
+						$deployed[1] => $deployed[2]
+					);
+				} else {
+					$this->deployed[$deployed[0]] = array(
+						array(
+							$deployed[1] => $deployed[2]
+						)
+					);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Adds a datasource to the list of deployed data sources
+	 *
+	 * @access  private
+	 * @param   string $datasource The name of the deployed datasource
+	 * @param   string $server The virtual name of the server on which the datasource is deployed 
+	 * @return  void
+	 *
+	 */
+	private function addDeployedDatasource($datasource, $server) {
+		if (isset($this->deployed[$datasource])) {
+			$found = false;
+			foreach($this->deployed[$datasource] as $deployed) {
+				if (array_key_exists($server, $deployed)) {
+					$found = true;
+					break;
+				}
+			}
+			if (! $found) {
+				$this->deployed[$datasource][] = array(
+					$server => date("Y-m-d H:i:s")
+				);
+			}
+		} else {
+			$this->deployed[$datasource] = array(
+				array(
+					$server => date("Y-m-d H:i:s")
+				)
+			);
+		}
+	}
+
+	/**
+	 * Saves the list of deployed data sources
+	 *
+	 * @access  private
+	 * @param   string $deployedFile The name of the file containing this list.
+	 * @return  void
+	 *
+	 */
+	private function saveDeployed($deployedFile) {
+		$fs = new Filesystem();
+		$contents = array();
+		foreach($this->deployed as $datasource => $deployment) {
+			foreach($deployment as $deployed) {
+				foreach($deployed as $server => $date) {
+					$contents[] = $datasource . "\t" . $server . "\t" . $date;
+				}
+			}
+		}
+		$fs->dumpFile($deployedFile, implode("\n", $contents));
+	}
+
+	/**
+	 * Saves DataSources.xml for a server
+	 *
+	 * @access  private
+	 * @param   string $server The name of the file containing this list.
+	 * @param   string $databasesDir The databases directory.
+	 * @return  void
+	 *
+	 */
+	private function saveDataSources($server, $databasesDir) {
+		$localDatasources = new \SimpleXMLElement($databasesDir."/DataSources.xml", LIBXML_NOWARNING, true);
+		$localDom = dom_import_simplexml($localDatasources)->ownerDocument;
+		$localxpath = new \DOMXPath($localDom);
+		$deployedDatasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd"></DataSources>', LIBXML_NOWARNING);
+		$deployedDom = dom_import_simplexml($deployedDatasources)->ownerDocument;
+		$deployedDatasources = $deployedDom->getElementsByTagName("DataSources")->item(0);
+		$databases = array();
+		$dsnum = 0;
+		foreach($this->deployed as $datasource => $deployment) {
+			$found = false;
+			foreach($deployment as $deployed) {
+				if (array_key_exists($server, $deployed)) {
+					$found = true;
+					break;
+				}
+			}
+			if ($found) {
+				$localDatasource = $localxpath->query("//DataSource[@name='".$datasource."']")->item(0);
+				$deployedDatasource = $deployedDom->importNode($localDatasource, true);
+				$deployedDatasource->setAttribute('id', ++$dsnum);
+				if ($localDatasource->hasAttribute('database')) {
+					$databases[] = $localDatasource->getAttribute('database');
+					$deployedDatasource->setAttribute('database', count($databases));
+				}
+				$deployedDatasources->appendChild($deployedDatasource);
+			}
+		}
+		$deployedDatabases = $deployedDatasources->appendChild($deployedDom->createElement('Databases'));
+		foreach ($databases as $id => $database) {
+			$localDatabase = $localxpath->query("//Databases/Database[@id='".$database."']")->item(0);
+			$deployedDatabase = $deployedDom->importNode($localDatabase, true);
+			$deployedDatabase->setAttribute('id', $id + 1);
+			$deployedDatabases->appendChild($deployedDatabase);
+		}
+		$deployedDom->preserveWhiteSpace  = false;
+		$deployedDom->formatOutput = true;
+		$formatted = preg_replace_callback('/^( +)</m', function($a) { 
+			return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
+		}, $deployedDom->saveXML(null, LIBXML_NOEMPTYTAG));
+		$fs = new Filesystem();
+		if ($fs->exists($databasesDir."/deployment/".$server)) {
+			$fs->mkdir($databasesDir."/deployment/".$server);
+		}
+		$fs->dumpFile($databasesDir."/deployment/".$server."/DataSources.xml", $formatted);
 	}
 
 	/**
@@ -162,12 +320,20 @@ class Deployer {
 	 *
 	 */
 	public function deploy($simu){
+		$this->output = array();
+		$this->lockHandler = new LockHandler('g6k.deployment.lock');
+		if (!$this->lockHandler->lock()) {
+			$this->output[] = $this->translator->trans('A deployment is in progress');
+			$this->output[] = '&nbsp;';
+			$this->output[] = $this->translator->trans('Please, try later ...');
+			return $this->output;
+		}
 		$deployment = $this->kernel->getContainer()->getParameter('deployment');
 		$resourcesDir = $this->kernel->locateResource('@EUREKAG6KBundle/Resources');
 		$localRootDir = dirname($this->kernel->getRootDir());
+		$this->loadDeployed($resourcesDir . "/data/databases/deployment/deployed-datasources.txt");
 		$finder = new Finder();
 		$finder->name($simu->getName().'.css')->in($resourcesDir . '/public')->exclude('admin')->exclude('base');
-		$this->output = array();
 		foreach ($deployment as $server => $command){
 			$this->output[] = '<h4>' . $this->translator->trans('Deployment on the server « %server% »', array( '%server%' => $server)) . '</h4>';
 			$internalDB = array();
@@ -183,6 +349,7 @@ class Deployer {
 						$internalDB[] = $database->getName();
 					}
 				}
+				$this->addDeployedDatasource($datasourceName, $server);
 				$usingDatasource = true;
 			}
 			foreach(array_unique($internalDB) as $db) {
@@ -194,8 +361,10 @@ class Deployer {
 			$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/data/simulators/'.$simu->getName().'.xml';
 			$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
 			if ($usingDatasource) {
+				$this->saveDataSources($server, $resourcesDir . "/data/databases");
 				$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => 'DataSources.xml')) . '</h5>';
-				$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/data/databases/DataSources.xml';
+				$localFile = 'src/EUREKA/G6KBundle/Resources/data/databases/deployment/'.$server.'/DataSources.xml';
+				$remoteFile = 'src/EUREKA/G6KBundle/Resources/data/databases/DataSources.xml';
 				$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
 			}
 			foreach ($finder as $file) {
@@ -205,6 +374,8 @@ class Deployer {
 				$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);  
 			}
 		}
+		$this->saveDeployed($resourcesDir . "/data/databases/deployment/deployed-datasources.txt");
+		$this->lockHandler->release();
 		return $this->output;
 	}
 }
