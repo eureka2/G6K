@@ -28,21 +28,119 @@ namespace EUREKA\G6KBundle\Entity;
 
 use EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
+/**
+ *
+ * this class provides a unified access interface to SQL databases, whether MySQL, PostgreSQL, SQLite, or JsonSQL
+ *
+ *
+ * @author    Jacques Archimède
+ * @author    Yann Toqué
+ *
+ */
 class Database {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Simulator $simulator The Simulator object that uses this database 
+	 *
+	 * @access  private
+	 *
+	 */
 	private $simulator = null;
+
+	/**
+	 * @var string      $databasesDir The "databases" directory, specially for SQLite.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $databasesDir;
+
+	/**
+	 * @var int      $id The database id in DataSources.xml
+	 *
+	 * @access  private
+	 *
+	 */
 	private $id;
+
+	/**
+	 * @var string      $type The database type : mysql, mysqli, pgsql, sqlite or jsonsql.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $type;
+
+	/**
+	 * @var string      $name The database name
+	 *
+	 * @access  private
+	 *
+	 */
 	private $name;
+
+	/**
+	 * @var string      $label The database label
+	 *
+	 * @access  private
+	 *
+	 */
 	private $label;
-	private $host; // host or relative path if sqlite
+
+	/**
+	 * @var string      $host The database host or relative path in the case of sqlite
+	 *
+	 * @access  private
+	 *
+	 */
+	private $host; 
+
+	/**
+	 * @var int      $port The database port
+	 *
+	 * @access  private
+	 *
+	 */
 	private $port;
+
+	/**
+	 * @var string      $user The identifier of the user who can connect and access the database.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $user;
+
+	/**
+	 * @var string      $password The password of the user who can connect and access the database.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $password;
+
+	/**
+	 * @var bool       $connected Indicates whether we are connected to the database or not
+	 *
+	 * @access  private
+	 *
+	 */
 	private $connected = false;
+
+	/**
+	 * @var \PDO $link link to the connection
+	 *
+	 * @access  private
+	 *
+	 */
 	private $link = null;
 
+	/**
+	 * @var array      $myformat MySQL template patterns for Date/Time formatting
+	 *
+	 * @access  private
+	 *
+	 */
 	private $myformat = array(
 		'd' => '%d',
 		'f' => '%f',
@@ -57,6 +155,12 @@ class Database {
 		'Y' => '%Y'
 	);
 
+	/**
+	 * @var array      $pgformat PostgreSQL template patterns for Date/Time formatting
+	 *
+	 * @access  private
+	 *
+	 */
 	private $pgformat = array(
 		'd' => 'DD',
 		'f' => 'SS.SSS',
@@ -71,6 +175,18 @@ class Database {
 		'Y' => 'YYYY'
 	);
 
+	/**
+	 * Constructor of class Database
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simulator The Simulator object that uses this database 
+	 * @param   string      $databasesDir The "databases" directory, specially for SQLite.
+	 * @param   int         $id The ID of the database
+	 * @param   string      $type The type of the database
+	 * @param   string      $name The name of the database
+	 * @return  void
+	 *
+	 */
 	public function __construct($simulator, $databasesDir, $id, $type, $name) {
 		$this->simulator = $simulator;
 		$this->databasesDir = $databasesDir;
@@ -78,91 +194,255 @@ class Database {
 		$this->type = $type;
 		$this->name = $name;
 	}
-	
+
+	/**
+	 * Returns the Simulator object that uses this database
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Entity\Simulator The Simulator object 
+	 *
+	 */
 	public function getSimulator() {
 		return $this->simulator;
 	}
-	
+
+	/**
+	 * Returns the ID of this database
+	 *
+	 * @access  public
+	 * @return  int The ID of this database
+	 *
+	 */
 	public function getId() {
 		return $this->id;
 	}
-	
+
+	/**
+	 * Sets the ID of this database
+	 *
+	 * @access  public
+	 * @param   int      $id The ID of this database
+	 * @return  void
+	 *
+	 */
 	public function setId($id) {
 		$this->id = $id;
 	}
-	
+
+	/**
+	 * Returns the type of this database
+	 *
+	 * @access  public
+	 * @return  string The type of this database
+	 *
+	 */
 	public function getType() {
 		return $this->type;
 	}
-	
+
+	/**
+	 * Sets the type of this database
+	 *
+	 * @access  public
+	 * @param   string      $type The type of this database
+	 * @return  void
+	 *
+	 */
 	public function setType($type) {
 		$this->type = $type;
 	}
-	
+
+	/**
+	 * Returns the name of this database
+	 *
+	 * @access  public
+	 * @return  string The name of this database
+	 *
+	 */
 	public function getName() {
 		return $this->name;
 	}
-	
+
+	/**
+	 * Sets the name of this database
+	 *
+	 * @access  public
+	 * @param   string      $name The name of this database
+	 * @return  void
+	 *
+	 */
 	public function setName($name) {
 		$this->name = $name;
 	}
-	
+
+	/**
+	 * Returns the label of this database
+	 *
+	 * @access  public
+	 * @return  string The label of this database
+	 *
+	 */
 	public function getLabel() {
 		return $this->label;
 	}
-	
+
+	/**
+	 * Sets the label of this database
+	 *
+	 * @access  public
+	 * @param   string      $label The label of this database
+	 * @return  void
+	 *
+	 */
 	public function setLabel($label) {
 		$this->label = $label;
 	}
-	
+
+	/**
+	 * Returns the host of this database
+	 *
+	 * @access  public
+	 * @return  string The database host or the relative path in the case of sqlite
+	 *
+	 */
 	public function getHost() {
 		return $this->host;
 	}
-	
+
+	/**
+	 * Sets the host of this database
+	 *
+	 * @access  public
+	 * @param   string      $host The host of this database or the relative path if sqlite
+	 * @return  void
+	 *
+	 */
 	public function setHost($host) {
 		$this->host = $host;
 	}
-	
+
+	/**
+	 * Returns the port number of this database
+	 *
+	 * @access  public
+	 * @return  int The port number of this database
+	 *
+	 */
 	public function getPort() {
 		return $this->port;
 	}
-	
+
+	/**
+	 * Sets the port number of this database
+	 *
+	 * @access  public
+	 * @param   int      $port The port number of this database
+	 * @return  void
+	 *
+	 */
 	public function setPort($port) {
 		$this->port = $port;
 	}
-	
+
+	/**
+	 * Returns the identifier of the user with access rights to this database
+	 *
+	 * @access  public
+	 * @return  string The identifier of the user
+	 *
+	 */
 	public function getUser() {
 		return $this->user;
 	}
-	
+
+	/**
+	 * Sets the identifier of the user with access rights to this database
+	 *
+	 * @access  public
+	 * @param   string      $user The identifier of the user
+	 * @return  void
+	 *
+	 */
 	public function setUser($user) {
 		$this->user = $user;
 	}
-	
+
+	/**
+	 * Returns the password of the user with access rights to this database
+	 *
+	 * @access  public
+	 * @return  string The password of the user
+	 *
+	 */
 	public function getPassword() {
 		return $this->password;
 	}
-	
+
+	/**
+	 * Sets the password of the user with access rights to this database
+	 *
+	 * @access  public
+	 * @param   string      $password The password of the user
+	 * @return  void
+	 *
+	 */
 	public function setPassword($password) {
 		$this->password = $password;
 	}
-	
+
+	/**
+	 * Returns the instance representing a connection to this database
+	 *
+	 * @access  public
+	 * @return  \PDO|\EUREKA\G6KBundle\Manager\Json\JsonSQL The instance
+	 *
+	 */
 	public function getConnection() {
 		return $this->link;
 	}
-	
+
+	/**
+	 * Returns the connection status to the database
+	 *
+	 * @access  public
+	 * @return  bool true if connected, false otherwise
+	 *
+	 */
 	public function isConnected() {
 		return $this->connected;
 	}
-	
+
+	/**
+	 * Returns the connection status to the database
+	 *
+	 * @access  public
+	 * @return  bool true if connected, false otherwise
+	 *
+	 */
 	public function getConnected() {
 		return $this->connected;
 	}
-	
+
+	/**
+	 * Sets the connection status to the database
+	 *
+	 * @access  public
+	 * @param   bool       $connected true if connected, false otherwise
+	 * @return  void
+	 *
+	 */
 	public function setConnected($connected) {
 		$this->connected = $connected;
 	}
-	
+
+	/**
+	 * Composes a DSN (Data Source Name) string, connects to the database and stores an instance representing a connection to a database
+	 *
+	 * @access  public
+	 * @param   bool $withDbName (default: true) if false the database name is not inserted into the dsn string.
+	 * @return  bool always true
+	 *
+	 */
 	public function connect($withDbName = true) {
 		if (! $this->isConnected()) {
 			switch ($this->type) {
@@ -220,6 +500,15 @@ class Database {
 		return $this->isConnected();
 	}
 
+	/**
+	 * Executes an SQL statement, returning an array containing all of the result set rows
+	 *
+	 * @access  public
+	 * @param   string $sql The SQL statement to be prepares and executed.
+	 * @return  array The result set rows
+	 *
+	 *
+	 */
 	public function query($sql) {
 		$sql = $this->convertSQLFunctions($sql);
 		$query_result = false;
@@ -236,6 +525,16 @@ class Database {
 		return $query_result;
 	}
 
+	/**
+	 * Prepares a statement for execution and returns a statement object.
+	 *
+	 * The SQL statement can contain zero or more named (:name) or question mark (?) parameter markers for which real values will be substituted when the statement is executed. 
+	 *
+	 * @access  public
+	 * @param   string  $sql The SQL Statement
+	 * @return  \PDOStatement|\EUREKA\G6KBundle\Manager\Json\JsonSQL\Statement The statement object
+	 *
+	 */
 	public function prepare($sql) {
 		$sql = $this->convertSQLFunctions($sql);
 		$stmt = false;
@@ -251,6 +550,17 @@ class Database {
 		return $stmt;
 	}
 
+	/**
+	 * Binds a parameter to the specified variable name.
+	 *
+	 * @access  public
+	 * @param   \PDOStatement $stmt The statement object returned by the prepare method. 
+	 * @param   string|int Parameter identifier. For a prepared statement using named placeholders, this will be a parameter name of the form :name. For a prepared statement using question mark placeholders, this will be the 1-indexed position of the parameter.
+	 * @param   string &$variable  Name of the PHP variable to bind to the SQL statement parameter.
+	 * @param   string $type (default: 'text') The type of the parameter
+	 * @return  bool true on success or false on failure.
+	 *
+	 */
 	public function bindParam(\PDOStatement $stmt, $parameter, &$variable, $type='text') {
 		$result = false;
 		switch ($this->type) {
@@ -278,6 +588,19 @@ class Database {
 		return $result;
 	}
 
+	/**
+	 * Binds a value to a parameter
+	 *
+	 * Binds a value to a corresponding named or question mark placeholder in the SQL statement that was used to prepare the statement.
+	 *
+	 * @access  public
+	 * @param   \PDOStatement $stmt The statement object returned by the prepare method. 
+	 * @param   string|int The parameter identifier. For a prepared statement using named placeholders, this will be a parameter name of the form :name. For a prepared statement using question mark placeholders, this will be the 1-indexed position of the parameter.
+	 * @param   string $value The value to bind to the parameter.
+	 * @param   string $type (default: 'text') The type of the parameter 
+	 * @return  bool true on success or false on failure.
+	 *
+	 */
 	public function bindValue(\PDOStatement $stmt, $parameter, $value, $type='text') {
 		$result = false;
 		switch ($this->type) {
@@ -305,6 +628,14 @@ class Database {
 		return $result;
 	}
 
+	/**
+	 * Executes a prepared statement
+	 *
+	 * @access  public
+	 * @param   \PDOStatement $stmt The statement object returned by the prepare method. 
+	 * @return  bool true on success or false on failure.
+	 *
+	 */
 	public function execute(\PDOStatement $stmt) {
 		$query_result = false;
 		switch ($this->type) {
@@ -321,6 +652,15 @@ class Database {
 		return $query_result;
 	}
 
+	/**
+	 * Execute an SQL statement and return the number of affected rows
+	 *
+	 * @access  public
+	 * @param   string  $sql The SQL Statement
+	 * @return  int|bool the number of rows that were modified or deleted by the SQL statement you issued, 0 if no rows were affected or false on failure
+	 * @throws \Exception 
+	 *
+	 */
 	public function exec($sql) {
 		$affected = false;
 		switch ($this->type) {
@@ -342,6 +682,16 @@ class Database {
 		return $affected;
 	}
 
+	/**
+	 * Quotes a string for use in a query.
+	 *
+	 * Places quotes around the input string (if required) and escapes special characters within the input string, using a quoting style appropriate to the underlying driver.
+	 *
+	 * @access  public
+	 * @param   string $value The string to be quoted.
+	 * @return  string The quoted string or false if the driver does not support quoting in this way.
+	 *
+	 */
 	public function quote($value) {
 		switch ($this->type) {
 			case "mysql":
@@ -354,6 +704,13 @@ class Database {
 		return $value;
 	}
 
+	/**
+	 * Returns the ID of the last inserted row or sequence value
+	 *
+	 * @access  public
+	 * @return  string The ID of the last inserted row
+	 *
+	 */
 	public function lastInsertId() {
 		switch ($this->type) {
 			case "mysql":
@@ -366,6 +723,14 @@ class Database {
 		return 0;
 	}
 
+	/**
+	 * Converts internal functions in a SQL statement into appropriate functions to the database driver
+	 *
+	 * @access  private
+	 * @param   string  $sql The SQL Statement to be converted
+	 * @return  string The converted SQL statement
+	 *
+	 */
 	private function convertSQLFunctions($sql) {
 		switch ($this->type) {
 			case "mysql":
