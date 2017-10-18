@@ -1337,10 +1337,12 @@ THE SOFTWARE.
 		try {
 			$('.toggle-collapse-all').hide();
 			$('.update-button').hide();
-			var datagroupContainer = dataContainerGroup.find('.data-container.datagroup');
 			var datagroup = '';
-			if (datagroupContainer.length > 0) {
-				datagroup = datagroupContainer.attr('data-id');
+			if (dataContainerGroup.attr('id') != 'datas') {
+				var datagroupContainer = dataContainerGroup.find('.data-container.datagroup');
+				if (datagroupContainer.length > 0) {
+					datagroup = datagroupContainer.attr('data-id');
+				}
 			}
 			var data = {
 				id: Simulators.maxDatasetId() + 1,
