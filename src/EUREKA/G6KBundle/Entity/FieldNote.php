@@ -26,36 +26,115 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+/**
+ *
+ * This class allows the storage and retrieval of the attributes of a note attached to a field.
+ *
+ * @author    Jacques Archimède
+ *
+ */
 class FieldNote {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Field $field The Field object to which this note is attached
+	 *
+	 * @access  private
+	 *
+	 */
 	private $field = null;
+
+	/**
+	 * @var bool  $displayable Indicates whether this note should be displayed or not.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $displayable = true;
+
+	/**
+	 * @var string $text The text of this note
+	 *
+	 * @access  private
+	 *
+	 */
 	private $text = "";
 
+	/**
+	 * Constructor of class FieldNote
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Field $field  The Field object to which this note is attached
+	 * @return  void
+	 *
+	 */
 	public function __construct($field) {
 		$this->field = $field;
 	}
 
+	/**
+	 * Returns the Field object to which this note is attached
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Entity\Field The Field object
+	 *
+	 */
 	public function getField() {
 		return $this->field;
 	}
 
+	/**
+	 * Returns the displayable attribute of this note
+	 *
+	 * @access  public
+	 * @return  bool true if this note can be displayed, false otherwise
+	 *
+	 */
 	public function isDisplayable() {
 		return $this->displayable;
 	}
 
+	/**
+	 * Returns the displayable attribute of this note
+	 *
+	 * @access  public
+	 * @return  bool true if this note can be displayed, false otherwise
+	 *
+	 */
 	public function getDisplayable() {
 		return $this->displayable;
 	}
 
+	/**
+	 * Determines whether this note can be displayed or not
+	 *
+	 * @access  public
+	 * @param   bool $displayable true if this note can be displayed, false otherwise
+	 * @return  void
+	 *
+	 */
 	public function setDisplayable($displayable) {
 		$this->displayable = $displayable;
 	}
 
+	/**
+	 * Returns the text of this note
+	 *
+	 * @access  public
+	 * @return  string The text of this note
+	 *
+	 */
 	public function getText() {
 		return $this->text;
 	}
 
+	/**
+	 * Sets the text of this note
+	 *
+	 * @access  public
+	 * @param   string $text  The text of this note
+	 * @return  void
+	 *
+	 */
 	public function setText($text) {
 		$this->text = $text;
 	}

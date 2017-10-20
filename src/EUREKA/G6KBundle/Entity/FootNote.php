@@ -26,46 +26,149 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+/**
+ *
+ * This class allows the storage and retrieval of the attributes of a footnote attached to a step.
+ *
+ *
+ * @author    Jacques Archimède
+ *
+ */
 class FootNote {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Step $step The Step object to which this footnote is attached
+	 *
+	 * @access  private
+	 *
+	 */
 	private $step = null;
+
+	/**
+	 * @var int        $id The id of this footnote
+	 *
+	 * @access  private
+	 *
+	 */
 	private $id = 0;
+
+	/**
+	 * @var bool       $displayable Indicates whether this footnote should be displayed or not.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $displayable = true;
+
+	/**
+	 * @var string     $text The text of this footnote
+	 *
+	 * @access  private
+	 *
+	 */
 	private $text = "";
 
+	/**
+	 * Constructor of class FootNote
+	 *
+	 * @access  public
+	 * @param    \EUREKA\G6KBundle\Entity\Step $step The Step object to which this footnote is attached
+	 * @param   int        $id The id of this footnote
+	 * @return  void
+	 *
+	 */
 	public function __construct($step, $id) {
 		$this->step = $step;
 		$this->id = $id;
 	}
 
+	/**
+	 * Returns the Step object to which this footnote is attached
+	 *
+	 * @access  public
+	 * @return   \EUREKA\G6KBundle\Entity\Step The Step object
+	 *
+	 */
 	public function getStep() {
 		return $this->step;
 	}
 
+	/**
+	 * Returns the id of this footnote
+	 *
+	 * @access  public
+	 * @return  int The id of this footnote
+	 *
+	 */
 	public function getId() {
 		return $this->id;
 	}
 
+	/**
+	 * Sets the id of this footnote
+	 *
+	 * @access  public
+	 * @param   int        $id The id of this footnote
+	 * @return  void
+	 *
+	 */
 	public function setId($id) {
 		$this->id = $id;
 	}
 
+	/**
+	 * Returns the displayable attribute of this footnote
+	 *
+	 * @access  public
+	 * @return  bool true if this footnote can be displayed, false otherwise
+	 *
+	 */
 	public function isDisplayable() {
 		return $this->displayable;
 	}
 
+	/**
+	 * Returns the displayable attribute of this footnote
+	 *
+	 * @access  public
+	 * @return  bool true if this footnote can be displayed, false otherwise
+	 *
+	 */
 	public function getDisplayable() {
 		return $this->displayable;
 	}
 
+	/**
+	 * Determines whether this footnote can be displayed or not
+	 *
+	 * @access  public
+	 * @param   bool $displayable true if this footnote can be displayed, false otherwise
+	 * @return  void
+	 *
+	 */
 	public function setDisplayable($displayable) {
 		$this->displayable = $displayable;
 	}
 
+	/**
+	 * Returns the text of this footnote
+	 *
+	 * @access  public
+	 * @return  string the The text of this footnote
+	 *
+	 */
 	public function getText() {
 		return $this->text;
 	}
 
+	/**
+	 * Sets the text of this footnote
+	 *
+	 * @access  public
+	 * @param   string $text The text of this footnote
+	 * @return  void
+	 *
+	 */
 	public function setText($text) {
 		$this->text = $text;
 	}
