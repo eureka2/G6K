@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -455,7 +455,7 @@ class Field {
 	 * Returns the colon attribute of this field.
 	 *
 	 * @access  public
-	 * @return  bool true if a colon should be displayed after the label 
+	 * @return  bool true if a colon should be displayed after the label, false otherwise 
 	 *
 	 */
 	public function hasColon() {
@@ -466,7 +466,7 @@ class Field {
 	 * Returns the colon attribute of this field.
 	 *
 	 * @access  public
-	 * @return  bool true if a colon should be displayed after the label
+	 * @return  bool true if a colon should be displayed after the label, false otherwise
 	 *
 	 */
 	public function getColon() {
@@ -477,7 +477,7 @@ class Field {
 	 * Determines whether a colon should be displayed after the label of this field.
 	 *
 	 * @access  public
-	 * @param   bool $colon true if a colon should be displayed after the label
+	 * @param   bool $colon true if a colon should be displayed after the label, false otherwise
 	 * @return  void
 	 *
 	 */
@@ -592,7 +592,7 @@ class Field {
 	}
 
 	/**
-	 * Determines whether the value of the field should be emphasized or not.
+	 * Determines whether the label of the field should be emphasized or not.
 	 *
 	 * If true, the class 'emphasized' is added to HTML container of the label. A css rule can therefore be used to emphasize (highlight) the label.
 	 *

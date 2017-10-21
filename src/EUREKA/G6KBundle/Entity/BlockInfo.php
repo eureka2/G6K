@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,11 @@ namespace EUREKA\G6KBundle\Entity;
 /**
  * This class allows the storage and retrieval of the attributes of a block of information (blockinfo)
  *
+ * The blockinfo is an element of the simulation page of the same level as the field group but does not contain any input or output fields.
+ * It contains textual information that can be useful to the user in the simulation process. 
+ * It can be contextualized by showing / hiding it totally or partially using the actions of business rules depending on certain conditions.
+ *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class BlockInfo {
