@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@ namespace EUREKA\G6KBundle\Entity;
  * This class allows the storage and retrieval of the attributes of a row of a Table object
  *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class Row {
@@ -45,7 +44,7 @@ class Row {
 	private $table = null;
 
 	/**
-	 * @var array      $cells List of cells (Cell Object) of this row
+	 * @var array      $cells The list of cells (Cell Object) of this row
 	 *
 	 * @access  private
 	 *

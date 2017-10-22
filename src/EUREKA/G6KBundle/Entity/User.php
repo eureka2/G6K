@@ -29,14 +29,24 @@ namespace EUREKA\G6KBundle\Entity;
 use FOS\UserBundle\Model\User as BaseUser;
 
 /**
- * User
+ * This class allows the storage and retrieval of the attributes of a user who can connect to the G6K administration module.  It is managed by FOSUserBundle.
+ *
+ * @author    Jacques Archimède
+ *
  */
 class User extends BaseUser
 {
+
+    /**
+     * Constructor of class User
+     *
+     * @access  public
+     * @return  void
+     *
+     */
     public function __construct()
     {
         parent::__construct();
-        // your own logic
     }
 }
 
