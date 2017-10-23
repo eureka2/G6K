@@ -26,77 +26,263 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+/**
+ *
+ * This class allows the storage and retrieval of attributes of a table associated with a data item or a data source.
+ *
+ * A Table object contains Column objects and Row objects.
+ *
+ * If a table is associated with a data item, it represents the contents of that data item.
+ *
+ * If a table is associated with a data source, it corresponds to the description of a database table.
+ *
+ * @author    Jacques Archimède
+ *
+ */
 class Table {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Data      $data The Data object of type 'table' associated with this this table
+	 *
+	 * @access  private
+	 *
+	 */
 	private $data;
+
+	/**
+	 * @var int      $id The ID of this table
+	 *
+	 * @access  private
+	 *
+	 */
 	private $id;
+
+	/**
+	 * @var string      $name The name of this table
+	 *
+	 * @access  private
+	 *
+	 */
 	private $name;
+
+	/**
+	 * @var string     $label The label of this table
+	 *
+	 * @access  private
+	 *
+	 */
 	private $label = "";
+
+	/**
+	 * @var string     $description The description of this table
+	 *
+	 * @access  private
+	 *
+	 */
 	private $description = "";
+
+	/**
+	 * @var array      $columns The list of columns of this table
+	 *
+	 * @access  private
+	 *
+	 */
 	private $columns = array();
+
+	/**
+	 * @var array      $rows  The list of rows of this table
+	 *
+	 * @access  private
+	 *
+	 */
 	private $rows = array();
-	
+
+	/**
+	 * Constructor of class Table
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Data      $data The Data object of type 'table' associated with this this table
+	 * @param   int      $id The ID of this table
+	 * @return  void
+	 *
+	 */
 	public function __construct($data, $id) {
 		$this->data = $data;
 		$this->id = $id;
 	}
-	
+
+	/**
+	 * Returns the ID of this table
+	 *
+	 * @access  public
+	 * @return  int The ID of this table
+	 *
+	 */
 	public function getId() {
 		return $this->id;
 	}
-	
+
+	/**
+	 * Sets the ID of this table
+	 *
+	 * @access  public
+	 * @param   int    $id The ID of this table
+	 * @return  void
+	 *
+	 */
 	public function setId($id) {
 		$this->id = $id;
 	}
-	
+
+	/**
+	 * Returns the name of this table
+	 *
+	 * @access  public
+	 * @return  string The name of this table
+	 *
+	 */
 	public function getName() {
 		return $this->name;
 	}
-	
+
+	/**
+	 * Sets the name of this table
+	 *
+	 * @access  public
+	 * @param   string      $name The name of this table
+	 * @return  void
+	 *
+	 */
 	public function setName($name) {
 		$this->name = $name;
 	}
-	
+
+	/**
+	 * Returns the Data object of type 'table' associated with this this table
+	 *
+	 * Returns null if this table is the description of a database table.
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Entity\Data|null The Data object
+	 *
+	 */
 	public function getData() {
 		return $this->data;
 	}
-	
+
+	/**
+	 * Returns the label of this table
+	 *
+	 * @access  public
+	 * @return  string The label of this table
+	 *
+	 */
 	public function getLabel() {
 		return $this->label;
 	}
-	
+
+	/**
+	 * Sets the label of this table
+	 *
+	 * @access  public
+	 * @param   string     $label The label of this table
+	 * @return  void
+	 *
+	 */
 	public function setLabel($label) {
 		$this->label = $label;
 	}
-	
+
+	/**
+	 * Returns the description of this table
+	 *
+	 * @access  public
+	 * @return  string The description of this table
+	 *
+	 */
 	public function getDescription() {
 		return $this->description;
 	}
-	
+
+	/**
+	 * Sets the description of this table
+	 *
+	 * @access  public
+	 * @param   string     $label The description of this table
+	 * @return  void
+	 *
+	 */
 	public function setDescription($description) {
 		$this->description = $description;
 	}
-	
+
+	/**
+	 * Returns the list of columns of this table
+	 *
+	 * @access  public
+	 * @return  array The list of columns
+	 *
+	 */
 	public function getColumns() {
 		return $this->columns;
 	}
-	
+
+	/**
+	 * Sets the list of columns of this table
+	 *
+	 * @access  public
+	 * @param   array      $columns The list of columns
+	 * @return  void
+	 *
+	 */
 	public function setColumns($columns) {
 		$this->columns = $columns;
 	}
-	
+
+	/**
+	 * Adds a Column object to the list of columns of this table
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Column $column The Column object
+	 * @return  void
+	 *
+	 */
 	public function addColumn(Column $column) {
 		$this->columns[] = $column;
 	}
-	
+
+	/**
+	 * Returns the Column object at the given index in the list of columns of this table
+	 *
+	 * @access  public
+	 * @param   int $index The index of the column in the list of columns
+	 * @return  \EUREKA\G6KBundle\Entity\Column The Column object
+	 *
+	 */
 	public function getColumn($index) {
 		return $this->columns[$index];
 	}
-	
+
+	/**
+	 * Removes a Column object from the list of columns of this table
+	 *
+	 * @access  public
+	 * @param   int $index The index of the column in the list of columns
+	 * @return  void
+	 *
+	 */
 	public function removeColumn($index) {
 		$this->columns[$index] = null;
 	}
 
+	/**
+	 * Retrieves a Column object by its ID in the list of columns of this table.
+	 *
+	 * @access  public
+	 * @param   int $id The ID of the column
+	 * @return  \EUREKA\G6KBundle\Entity\Column|null The Column object
+	 *
+	 */
 	public function getColumnById($id) {
 		foreach ($this->columns as $column) {
 			if ($column->getId() === $id) {
@@ -106,22 +292,61 @@ class Table {
 		return null;
 	}
 
+	/**
+	 * Returns the list of rows of this table
+	 *
+	 * @access  public
+	 * @return  array The list of rows
+	 *
+	 */
 	public function getRows() {
 		return $this->rows;
 	}
-	
+
+	/**
+	 * Sets the list of rows of this table
+	 *
+	 * @access  public
+	 * @param   array $rows The list of rows
+	 * @return  void
+	 *
+	 */
 	public function setRows($rows) {
 		$this->rows = $rows;
 	}
-	
+
+	/**
+	 * Adds a Row object to the list of rows of this table
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Row $row The Row object 
+	 * @return  void
+	 *
+	 */
 	public function addRow(Row $row) {
 		$this->rows[] = $row;
 	}
-	
+
+	/**
+	 * Returns the Row object at the given index in the list of rows of this table
+	 *
+	 * @access  public
+	 * @param   int $index The index of the row in the list of rows
+	 * @return  int the value of row
+	 *
+	 */
 	public function getRow($index) {
 		return $this->rows[$index];
 	}
-	
+
+	/**
+	 * Removes a Row object to the list of rows of this table
+	 *
+	 * @access  public
+	 * @param   int $index The index of the row in the list of rows 
+	 * @return  void
+	 *
+	 */
 	public function removeRow($index) {
 		$this->rows[$index] = null;
 	}
