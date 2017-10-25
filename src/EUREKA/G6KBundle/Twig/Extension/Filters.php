@@ -26,18 +26,46 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Twig\Extension;
 
+/**
+ * This class is a Twig extension custom filter that implements 'jscode' to replace the deprecated raw filter
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class Filters extends \Twig_Extension {
 
+	/**
+	 * Returns the extension class name
+	 *
+	 * @access  public
+	 * @return  string The extension class name
+	 *
+	 */
 	public function getName() {
 		return 'filters_extension';
 	}
 
+	/**
+	 * Registers the new filters
+	 *
+	 * @access  public
+	 * @return  array List a new available filters
+	 *
+	 */
 	public function getFilters() {
 		return array(
 			new \Twig_SimpleFilter('jscode', array($this, 'jscodeFilter'), array('is_safe' => array('html'))),
 		);
 	}
 
+	/**
+	 * Returns the string as is without any modification
+	 *
+	 * @access  public
+	 * @param   mixed $string The string to be filtered
+	 * @return  void
+	 *
+	 */
 	public function jscodeFilter($string) {
 		return $string;
 	}

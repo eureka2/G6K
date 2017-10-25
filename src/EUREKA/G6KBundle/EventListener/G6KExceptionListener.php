@@ -8,14 +8,44 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ *
+ * Custom exception listener
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class G6KExceptionListener
 {
+
+	/**
+	 * @var \Symfony\Component\HttpKernel\Kernel      $kernel The Symfony kernel
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $kernel;
 
+	/**
+	 * Constructor of class G6KExceptionListener
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpKernel\Kernel $kernel The Symfony kernel
+	 * @return  void
+	 *
+	 */
 	public function __construct(Kernel $kernel) {
 		$this->kernel = $kernel;
 	}
 
+	/**
+	 * The listener for the exception event
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent $event The exception event
+	 * @return  void
+	 *
+	 */
 	public function onKernelException(GetResponseForExceptionEvent $event) {
 		$request = $event->getRequest();
 		$exception = $event->getException();
@@ -30,6 +60,15 @@ class G6KExceptionListener
 		$event->setResponse($response);
 	}
 
+	/**
+	 * Renders a HTML response with the exception for the simulation engine
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   \Exception $exception <parameter description>
+	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
+	 *
+	 */
 	protected function htmlResponse(Request $request, \Exception $exception) {
 		$domainview = $this->kernel->getContainer()->getParameter('domainview');
 		$domain = $request->getHost();
@@ -97,6 +136,14 @@ EOT;
 		return $response;
 	}
 
+	/**
+	 * Renders a HTML response with the exception for the administration module
+	 *
+	 * @access  protected
+	 * @param   \Exception $exception <parameter description>
+	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
+	 *
+	 */
 	protected function htmlAdminResponse(\Exception $exception) {
 		$twig = $this->kernel->getContainer()->get('templating');
 		$response = new Response();
@@ -120,6 +167,15 @@ EOT;
 		return $response;
 	}
 
+	/**
+	 * Renders a JSON response with the exception
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   \Exception $exception The exception
+	 * @return  \Symfony\Component\HttpFoundation\Response The JSON response
+	 *
+	 */
 	protected function jsonResponse(Request $request, \Exception $exception) {
 		$simu = $request->get("simu", "");
 		$errors = array();
@@ -147,6 +203,15 @@ EOT;
 		return $response;
 	}
 
+	/**
+	 * Makes an HTML trace of the exception
+	 *
+	 * @access  protected
+	 * @param   \Exception $e The exception
+	 * @param   array $seen (default: null)
+	 * @return  string The HTML trace
+	 *
+	 */
 	protected function trace(\Exception $e, $seen = null) {
 		$starter = $seen ? 'Caused by: ' : '';
 		$result = array();
