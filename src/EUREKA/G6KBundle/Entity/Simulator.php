@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,159 +26,590 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+/**
+ *
+ * This class allows the storage and retrieval of the attributes of a simulator.
+ *
+ * @author    Jacques Archimède
+ *
+ */
 class Simulator {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Controller\BaseController|\EUREKA\G6KBundle\Controller\BaseAdminController $controller The controller that uses this Simulator object
+	 *
+	 * @access  private
+	 *
+	 */
 	private $controller = "";
+
+	/**
+	 * @var string     $name The name of this simulator. It will be part of the URL (* .../calcul/simulator-name *) and the name of the XML definition file 
+	 *
+	 * @access  private
+	 *
+	 */
 	private $name = "";
+
+	/**
+	 * @var string     $label The label of this simulator label.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $label = "";
+
+	/**
+	 * @var string     $defaultView  The name of the default view with which this simulator will be displayed
+	 *
+	 * @access  private
+	 *
+	 */
 	private $defaultView = "";
+
+	/**
+	 * @var string     $referer  The URL of the site page that calls the simulator 
+	 *
+	 *
+	 * @access  private
+	 *
+	 */
 	private $referer = "";
+
+	/**
+	 * @var bool       $dynamic If true, the simulation engine will use Javascript to give interactivity to the simulation 
+	 *
+	 * @access  private
+	 *
+	 */
 	private $dynamic = false;
+
+	/**
+	 * @var bool       $memo If true, the simulation engine will be allowed to save the value of certain fields in the browser cookies for later use. (eg Date of birth) 
+	 *
+	 * @access  private
+	 *
+	 */
 	private $memo = false;
+
+	/**
+	 * @var string     $description The description of this simulator
+	 *
+	 * @access  private
+	 *
+	 */
 	private $description = "";
+
+	/**
+	 * @var string     $dateFormat The current date format in the display language of this simulator
+	 *
+	 * @access  private
+	 *
+	 */
 	private $dateFormat = "";
+
+	/**
+	 * @var string     $decimalPoint The current decimal point in the display language of this simulator
+	 *
+	 * @access  private
+	 *
+	 */
 	private $decimalPoint = "";
+
+	/**
+	 * @var string     $moneySymbol The current currency symbol in the country of use of this simulator
+	 *
+	 * @access  private
+	 *
+	 */
 	private $moneySymbol = "";
+
+	/**
+	 * @var string     $symbolPosition The position of the currency symbol relative to the amount in the country of use of this simulator
+	 *
+	 * @access  private
+	 *
+	 */
 	private $symbolPosition = "";
+
+	/**
+	 * @var array      $datas The list of data used by this simulator.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $datas = array();
+
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Profile $profiles The profiles container used in this simulator
+	 *
+	 * @access  private
+	 *
+	 */
 	private $profiles = null;
+
+	/**
+	 * @var array      $steps  The list of simulation steps defined by this simulator.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $steps = array();
+
+	/**
+	 * @var array      $sites The list of web sites using this simulator.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $sites = array();
+
+	/**
+	 * @var array      $databases The list of available databases 
+ 	 *
+	 * @access  private
+	 *
+	 */
 	private $databases = array();
+
+	/**
+	 * @var array      $datasources The list of available data sources.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $datasources = array();
+
+	/**
+	 * @var array      $sources The list of used sources by this simulator.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $sources = array();
+
+	/**
+	 * @var array      $businessrules The list of business rules implemented by this simulator
+	 *
+	 * @access  private
+	 *
+	 */
 	private $businessrules = array();
+
+	/**
+	 * @var string     $relatedInformations The informations related to this simulator.
+	 *
+	 * @access  private
+	 *
+	 */
 	private $relatedInformations = "";
+
+	/**
+	 * @var string     $dependencies The name of a data dependency
+	 *
+	 * @access  private
+	 *
+	 */
 	private $dependencies = "";
+
+	/**
+	 * @var bool       $error Indicates whether an error has been detected or not
+	 *
+	 * @access  private
+	 *
+	 */
 	private $error = false;
+
+	/**
+	 * @var array      $errorMessages The list of error messages
+	 *
+	 * @access  private
+	 *
+	 */
 	private $errorMessages = array();
+
+	/**
+	 * @var bool       $warning Indicates whether an warning has been issued or not
+	 *
+	 * @access  private
+	 *
+	 */
 	private $warning = false;
+
+	/**
+	 * @var array      $warningMessages The list of warning messages
+	 *
+	 * @access  private
+	 *
+	 */
 	private $warningMessages = array();
 
+	/**
+	 * Constructor of class Simulator
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Controller\BaseController|\EUREKA\G6KBundle\Controller\BaseAdminController $controller The controller that uses this Simulator object
+	 * @return  void
+	 *
+	 */
 	public function __construct($controller) {
 		$this->controller = $controller;
 	}
 
+	/**
+	 * Returns the Controller Object that uses this Simulator object.
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Controller\BaseController|\EUREKA\G6KBundle\Controller\BaseAdminController The Controller Object that uses this Simulator object
+	 *
+	 */
 	public function getController() {
 		return $this->controller;
 	}
 
+	/**
+	 * Returns the name of this simulator
+	 *
+	 * @access  public
+	 * @return  string The name of this simulator
+	 *
+	 */
 	public function getName() {
 		return $this->name;
 	}
 
+	/**
+	 * Sets the name of this simulator
+	 *
+	 * @access  public
+	 * @param   string $name The name of this simulator
+	 * @return  void
+	 *
+	 */
 	public function setName($name) {
 		$this->name = $name;
 	}
 
+	/**
+	 * Returns the label of this simulator
+	 *
+	 * @access  public
+	 * @return  string The label of this simulator
+	 *
+	 */
 	public function getLabel() {
 		return $this->label;
 	}
 
+	/**
+	 * Sets the label of this simulator
+	 *
+	 * @access  public
+	 * @param   string $label The label of this simulator
+	 * @return  void
+	 *
+	 */
 	public function setLabel($label) {
 		$this->label = $label;
 	}
 
+	/**
+	 * Returns the URL of the site page (main referer) that calls this simulator 
+	 *
+	 * @access  public
+	 * @return  string The URL of the site page
+	 *
+	 */
 	public function getReferer() {
 		return $this->referer;
 	}
 
+	/**
+	 * Sets the URL of the site page (main referer) that calls this simulator 
+	 *
+	 * @access  public
+	 * @param   string $referer The URL of the site page 
+	 * @return  void
+	 *
+	 */
 	public function setReferer($referer) {
 		$this->referer = $referer;
 	}
 
+	/**
+	 * Returns the name of the default view with which this simulator will be displayed
+	 *
+	 * @access  public
+	 * @return  string The name of the default view
+	 *
+	 */
 	public function getDefaultView() {
 		return $this->defaultView;
 	}
 
+	/**
+	 * Sets the name of the default view with which this simulator will be displayed
+	 *
+	 * @access  public
+	 * @param   string $defaultView The name of the default view
+	 * @return  void
+	 *
+	 */
 	public function setDefaultView($defaultView) {
 		$this->defaultView = $defaultView;
 	}
 
+	/**
+	 * Returns the dynamic attribute of this simulator.
+	 *
+	 * @access  public
+	 * @return  bool true if the simulation engine will use Javascript to give interactivity to the simulation, false otherwise 
+	 *
+	 */
 	public function isDynamic() {
 		return $this->dynamic;
 	}
 
+	/**
+	 * Returns the dynamic attribute of this simulator.
+	 *
+	 * @access  public
+	 * @return  bool true if the simulation engine will use Javascript to give interactivity to the simulation, false otherwise 
+	 *
+	 */
 	public function getDynamic() {
 		return $this->dynamic;
 	}
 
+	/**
+	 * Determines whether this simulator is dynamic (interactive) or not.
+	 *
+	 * @access  public
+	 * @param   bool $dynamic true if the simulation engine will use Javascript to give interactivity to the simulation, false otherwise 
+	 * @return  void
+	 *
+	 */
 	public function setDynamic($dynamic) {
 		$this->dynamic = $dynamic;
 	}
 
+	/**
+	 * Returns the memo attribute of this simulator. Alias of the getMemo method.
+	 *
+	 * @access  public
+	 * @return  bool true if the simulation engine will be allowed to save the value of certain fields in the browser cookies for later use.
+	 *
+	 */
 	public function isMemo() {
 		return $this->memo;
 	}
 
+	/**
+	 * Returns the memo attribute of this simulator. Alias of the getMemo method.
+	 *
+	 * @access  public
+	 * @return  bool true if the simulation engine will be allowed to save the value of certain fields in the browser cookies for later use.
+	 *
+	 */
 	public function hasMemo() {
 		return $this->memo;
 	}
 
+	/**
+	 * Returns the memo attribute of this simulator.
+	 *
+	 * @access  public
+	 * @return  bool true if the simulation engine will be allowed to save the value of certain fields in the browser cookies for later use.
+	 *
+	 */
 	public function getMemo() {
 		return $this->memo;
 	}
 
+	/**
+	 * Determines whether the simulation engine will be allowed to save the value of certain fields in the browser cookies for later use or not.
+	 *
+	 * @access  public
+	 * @param   bool $memo true if the simulation engine will be allowed to save the value of certain fields in the browser cookies for later use.
+	 * @return  void
+	 *
+	 */
 	public function setMemo($memo) {
 		$this->memo = $memo;
 	}
 
+	/**
+	 * Returns the description of this simulator
+	 *
+	 * @access  public
+	 * @return  string The description of this simulator
+	 *
+	 */
 	public function getDescription() {
 		return $this->description;
 	}
 
+	/**
+	 * Sets the description of this simulator
+	 *
+	 * @access  public
+	 * @param   string $description The description of this simulator
+	 * @return  void
+	 *
+	 */
 	public function setDescription($description) {
 		$this->description = $description;
 	}
 
+	/**
+	 * Returns the date format in the display language of this simulator
+	 *
+	 * @see http://php.net/manual/fr/function.date.php for the special characters that are recognized in the format
+	 * @access  public
+	 * @return  string The value of dateFormat
+	 *
+	 */
 	public function getDateFormat() {
 		return $this->dateFormat;
 	}
 
+	/**
+	 * Sets the date format in the display language of this simulator
+	 *
+	 * @see http://php.net/manual/fr/function.date.php for the special characters that are recognized in the format
+	 * @access  public
+	 * @param   string $dateFormat The date format
+	 * @return  void
+	 *
+	 */
 	public function setDateFormat($dateFormat) {
 		$this->dateFormat = $dateFormat;
 	}
 
+	/**
+	 * Returns the decimal point in the display language of this simulator
+	 *
+	 * @access  public
+	 * @return  string The decimal point
+	 *
+	 */
 	public function getDecimalPoint() {
 		return $this->decimalPoint;
 	}
 
+	/**
+	 * Sets the decimal point in the display language of this simulator
+	 *
+	 * @access  public
+	 * @param   string $decimalPoint The decimal point
+	 * @return  void
+	 *
+	 */
 	public function setDecimalPoint($decimalPoint) {
 		$this->decimalPoint = $decimalPoint;
 	}
 
+	/**
+	 * Returns the currency symbol in the country of use of this simulator
+	 *
+	 * @access  public
+	 * @return  string The currency symbol
+	 *
+	 */
 	public function getMoneySymbol() {
 		return $this->moneySymbol;
 	}
 
+	/**
+	 * Sets the currency symbol in the country of use of this simulator
+	 *
+	 * @access  public
+	 * @param   string $moneySymbol The currency symbol
+	 * @return  void
+	 *
+	 */
 	public function setMoneySymbol($moneySymbol) {
 		$this->moneySymbol = $moneySymbol;
 	}
 
+	/**
+	 * Returns the position of the currency symbol relative to the amount in the country of use of this simulator
+	 *
+	 * @access  public
+	 * @return  string the value of symbolPosition
+	 *
+	 */
 	public function getSymbolPosition() {
 		return $this->symbolPosition;
 	}
 
+	/**
+	 * Sets the position of the currency symbol relative to the amount in the country of use of this simulator
+	 *
+	 * @access  public
+	 * @param   string $symbolPosition <parameter description>
+	 * @return  void
+	 *
+	 */
 	public function setSymbolPosition($symbolPosition) {
 		$this->symbolPosition = $symbolPosition;
 	}
 
+	/**
+	 * Returns the list of data used by this simulator.
+	 *
+	 * @access  public
+	 * @return  array The list of data
+	 *
+	 */
 	public function getDatas() {
 		return $this->datas;
 	}
 
+	/**
+	 * Sets the list of data used by this simulator.
+	 *
+	 * @access  public
+	 * @param   array $datas The list of data
+	 * @return  void
+	 *
+	 */
 	public function setDatas($datas) {
 		$this->datas = $datas;
 	}
 
+	/**
+	 * Adds a Data object in the list of data used by this simulator.
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Data $data The Data object
+	 * @return  void
+	 *
+	 */
 	public function addData($data) {
 		$this->datas[] = $data;
 	}
 
+	/**
+	 * Removes a Data object from the list of data used by this simulator.
+	 *
+	 * @access  public
+	 * @param   int $index The index of the data item in the list of data.
+	 * @return  void
+	 *
+	 */
 	public function removeData($index) {
 		$this->datas[$index] = null;
 	}
 
+	/**
+	 * Retrieves a Data object by its ID
+	 *
+	 * @access  public
+	 * @param   int $id The id of the Data object
+	 * @return  \EUREKA\G6KBundle\Entity\Data The Data object
+	 *
+	 */
 	public function getDataById($id) {
 		foreach ($this->datas as $data) {
 			if ($data instanceof DataGroup) {
@@ -192,6 +623,14 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Retrieves a Data object by its name
+	 *
+	 * @access  public
+	 * @param   string $name The name of the Data object
+	 * @return  \EUREKA\G6KBundle\Entity\Data The Data object
+	 *
+	 */
 	public function getDataByName($name) {
 		foreach ($this->datas as $data) {
 			if ($data instanceof DataGroup) {
@@ -205,6 +644,14 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Retrieves a DataGroup object by its ID
+	 *
+	 * @access  public
+	 * @param   int $id The id of the DataGroup object
+	 * @return  \EUREKA\G6KBundle\Entity\DataGroup The DataGroup object
+	 *
+	 */
 	public function getDataGroupById($id) {
 		foreach ($this->datas as $data) {
 			if (($data instanceof DataGroup) && $data->getId() == $id) {
@@ -214,6 +661,14 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Retrieves a DataGroup object by its name
+	 *
+	 * @access  public
+	 * @param   string $name The name of the DataGroup object
+	 * @return  \EUREKA\G6KBundle\Entity\DataGroup The DataGroup object
+	 *
+	 */
 	public function getDataGroupByName($name) {
 		foreach ($this->datas as $data) {
 			if (($data instanceof DataGroup) && $data->getName() == $name) {
@@ -223,30 +678,84 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Returns the profiles container used in this simulator
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Entity\Profiles The profiles container
+	 *
+	 */
 	public function getProfiles() {
 		return $this->profiles;
 	}
 
+	/**
+	 * Sets the profiles container used in this simulator
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Profiles $profiles The profiles container
+	 * @return  void
+	 *
+	 */
 	public function setProfiles($profiles) {
 		$this->profiles = $profiles;
 	}
 
+	/**
+	 * Returns the list of simulation steps defined by this simulator.
+	 *
+	 * @access  public
+	 * @return  array The list of simulation steps.
+	 *
+	 */
 	public function getSteps() {
 		return $this->steps;
 	}
 
+	/**
+	 * Sets the list of simulation steps defined by this simulator.
+	 *
+	 * @access  public
+	 * @param   array $steps The list of simulation steps.
+	 * @return  void
+	 *
+	 */
 	public function setSteps($steps) {
 		$this->steps = $steps;
 	}
 
+	/**
+	 * Adds a Step object in the list of steps defined by this simulator.
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Step $step The Step object
+	 * @return  void
+	 *
+	 */
 	public function addStep(Step $step) {
 		$this->steps[] = $step;
 	}
 
+	/**
+	 * Removes a Step object from the list of steps defined by this simulator.
+	 *
+	 * @access  public
+	 * @param   int $index The index of the step in the list of steps.
+	 * @return  void
+	 *
+	 */
 	public function removeStep($index) {
 		$this->steps[$index] = null;
 	}
 
+	/**
+	 * Retrieves a Step object by its ID
+	 *
+	 * @access  public
+	 * @param   int $id <parameter description>
+	 * @return  \EUREKA\G6KBundle\Entity\Step the value of stepById
+	 *
+	 */
 	public function getStepById($id) {
 		foreach ($this->steps as $step) {
 			if ($step->getId() == $id) {
@@ -256,38 +765,108 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Returns the list of used sources by this simulator.
+	 *
+	 * @access  public
+	 * @return  array The list of used sources.
+	 *
+	 */
 	public function getSources() {
 		return $this->sources;
 	}
 
+	/**
+	 * Sets the list of used sources by this simulator.
+	 *
+	 * @access  public
+	 * @param   array $sources The list of used sources.
+	 * @return  void
+	 *
+	 */
 	public function setSources($sources) {
 		$this->sources = $sources;
 	}
 
+	/**
+	 * Adds a Source object in the list of used sources by this simulator.
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Source $source The Source object
+	 * @return  void
+	 *
+	 */
 	public function addSource(Source $source) {
 		$this->sources[] = $source;
 	}
 
+	/**
+	 * Removes a Source object from the list of used sources by this simulator.
+	 *
+	 * @access  public
+	 * @param   int $index <parameter description>
+	 * @return  void
+	 *
+	 */
 	public function removeSource($index) {
 		$this->sources[$index] = null;
 	}
 
+	/**
+	 * Returns the list of business rules implemented by this simulator
+	 *
+	 * @access  public
+	 * @return  array The list of business rules
+	 *
+	 */
 	public function getBusinessRules() {
 		return $this->businessrules;
 	}
 
+	/**
+	 * Sets the list of business rules implemented by this simulator
+	 *
+	 * @access  public
+	 * @param   array $businessrules The list of business rules
+	 * @return  void
+	 *
+	 */
 	public function setBusinessRules($businessrules) {
 		$this->businessrules = $businessrules;
 	}
 
+	/**
+	 * Adds a BusinessRule object in the list of business rules implemented by this simulator
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\BusinessRule $businessrules The BusinessRule object
+	 * @return  void
+	 *
+	 */
 	public function addBusinessRule(BusinessRule $businessrules) {
 		$this->businessrules[] = $businessrules;
 	}
 
+	/**
+	 * Removes a BusinessRule object from the list of business rules implemented by this simulator
+	 *
+	 * @access  public
+	 * @param   int $index The index of the business rule in the list of business rules.
+	 * @return  void
+	 *
+	 */
 	public function removeBusinessRule($index) {
 		$this->businessrules[$index] = null;
 	}
 
+	/**
+	 * Retrieves a BusinessRule object by its ID
+	 *
+	 * @access  public
+	 * @param   int $id <parameter description>
+	 * @return  \EUREKA\G6KBundle\Entity\BusinessRule the value of businessRuleById
+	 *
+	 */
 	public function getBusinessRuleById($id) {
 		foreach ($this->businessrules as $businessrule) {
 			if ($businessrule->getId() == $id) {
@@ -297,14 +876,37 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Returns the informations related to this simulator.
+	 *
+	 * @access  public
+	 * @return  string The informations related to this simulator
+	 *
+	 */
 	public function getRelatedInformations() {
 		return $this->relatedInformations;
 	}
 
+	/**
+	 * Sets the informations related to this simulator.
+	 *
+	 * @access  public
+	 * @param   string $relatedInformations The informations related to this simulator
+	 * @return  void
+	 *
+	 */
 	public function setRelatedInformations($relatedInformations) {
 		$this->relatedInformations = $relatedInformations;
 	}
 
+	/**
+	 * Retrieves a Site object by its ID
+	 *
+	 * @access  public
+	 * @param   int $id <parameter description>
+	 * @return  \EUREKA\G6KBundle\Entity\Site the value of siteById
+	 *
+	 */
 	public function getSiteById($id) {
 		foreach ($this->sites as $site) {
 			if ($site->getId() == $id) {
@@ -314,6 +916,14 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Retrieves a Database object by its ID
+	 *
+	 * @access  public
+	 * @param   int $id <parameter description>
+	 * @return  \EUREKA\G6KBundle\Entity\Database the value of databaseById
+	 *
+	 */
 	public function getDatabaseById($id) {
 		foreach ($this->databases as $database) {
 			if ($database->getId() == $id) {
@@ -323,6 +933,14 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Retrieves a DataSource object by its ID
+	 *
+	 * @access  public
+	 * @param   int $id <parameter description>
+	 * @return  \EUREKA\G6KBundle\Entity\DataSource the value of datasourceById
+	 *
+	 */
 	public function getDatasourceById($id) {
 		foreach ($this->datasources as $datasource) {
 			if ($datasource->getId() == $id) {
@@ -332,6 +950,14 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Retrieves a DataSource object by its name
+	 *
+	 * @access  public
+	 * @param   string $name <parameter description>
+	 * @return  \EUREKA\G6KBundle\Entity\DataSource the value of datasourceByName
+	 *
+	 */
 	public function getDatasourceByName($name) {
 		foreach ($this->datasources as $datasource) {
 			if ($datasource->getName() == $name) {
@@ -341,6 +967,14 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Retrieves a Source object by its ID
+	 *
+	 * @access  public
+	 * @param   int $id <parameter description>
+	 * @return  \EUREKA\G6KBundle\Entity\Source the value of sourceById
+	 *
+	 */
 	public function getSourceById($id) {
 		foreach ($this->sources as $source) {
 			if ($source->getId() == $id) {
@@ -350,72 +984,194 @@ class Simulator {
 		return null;
 	}
 
+	/**
+	 * Returns the warning attribute of this simulator
+	 *
+	 * @access  public
+	 * @return  bool true if an warning has been issued, false otherwise
+	 *
+	 */
 	public function isWarning() {
 		return $this->warning;
 	}
 
+	/**
+	 * Returns the warning attribute of this simulator
+	 *
+	 * @access  public
+	 * @return  bool true if an warning has been issued, false otherwise
+	 *
+	 */
 	public function getWarning() {
 		return $this->warning;
 	}
 
+	/**
+	 * Determines whether an warning has been issued or not
+	 *
+	 * @access  public
+	 * @param   bool $warning true if an warning has been issued, false otherwise
+	 * @return  void
+	 *
+	 */
 	public function setWarning($warning) {
 		$this->warning = $warning;
 	}
 
+	/**
+	 * Returns the list of warning messages
+	 *
+	 * @access  public
+	 * @return  array The list of warning messages
+	 *
+	 */
 	public function getWarningMessages() {
 		return $this->warningMessages;
 	}
 
+	/**
+	 * Sets the list list of warning messages
+	 *
+	 * @access  public
+	 * @param   array $warningMessages The list of warning messages
+	 * @return  void
+	 *
+	 */
 	public function setWarningMessages($warningMessages) {
 		$this->warningMessages = $warningMessages;
 	}
 
+	/**
+	 * Adds a warning message to the list of warning messages
+	 *
+	 * @access  public
+	 * @param   string $warningMessage The warning message
+	 * @return  void
+	 *
+	 */
 	public function addWarningMessage($warningMessage) {
 		if (! in_array($warningMessage, $this->warningMessages)) {
 			$this->warningMessages[] = $warningMessage;
 		}
 	}
 
+	/**
+	 * Removes a warning message from the list of warning messages
+	 *
+	 * @access  public
+	 * @param   int $index <parameter description>
+	 * @return  void
+	 *
+	 */
 	public function removeWarningMessage($index) {
 		$this->warningMessages[$index] = null;
 	}
 
+	/**
+	 * Returns the error attribute of this simulator
+	 *
+	 * @access  public
+	 * @return  bool true if an error has been detected, false otherwise
+	 *
+	 */
 	public function isError() {
 		return $this->error;
 	}
 
+	/**
+	 * Returns the error attribute of this simulator
+	 *
+	 * @access  public
+	 * @return  bool true if an error has been detected, false otherwise
+	 *
+	 */
 	public function getError() {
 		return $this->error;
 	}
 
+	/**
+	 * Determines whether an error has been detected or not
+	 *
+	 * @access  public
+	 * @param   bool $error true if an error has been detected, false otherwise
+	 * @return  void
+	 *
+	 */
 	public function setError($error) {
 		$this->error = $error;
 	}
 
+	/**
+	 * Returns the list of error messages
+	 *
+	 * @access  public
+	 * @return  array The list of error messages
+	 *
+	 */
 	public function getErrorMessages() {
 		return $this->errorMessages;
 	}
 
+	/**
+	 * Sets the list of error messages
+	 *
+	 * @access  public
+	 * @param   array $errorMessages The list of error messages
+	 * @return  void
+	 *
+	 */
 	public function setErrorMessages($errorMessages) {
 		$this->errorMessages = $errorMessages;
 	}
 
+	/**
+	 * Adds an error message to the list of error messages
+	 *
+	 * @access  public
+	 * @param   string $errorMessage The error message
+	 * @return  void
+	 *
+	 */
 	public function addErrorMessage($errorMessage) {
 		if (! in_array($errorMessage, $this->errorMessages)) {
 			$this->errorMessages[] = $errorMessage;
 		}
 	}
 
+	/**
+	 * Removes an error message from the list of error messages.
+	 *
+	 * @access  public
+	 * @param   int $index The index of the message in the list of error messages
+	 * @return  void
+	 *
+	 */
 	public function removeErrorMessage($index) {
 		$this->errorMessages[$index] = null;
 	}
 
+	/**
+	 * Returns the label (inside a HTML var) of a data item whose ID is the first element of the given array.
+	 *
+	 * @access  private
+	 * @param   array $matches An array where the first element is the ID of the data item.
+	 * @return  string The label inside a HTML var
+	 *
+	 */
 	private function replaceIdByDataLabel($matches) {
 		$id = $matches[1];
 		$data = $this->getDataById($id);
 		return $data !== null ? '<var data-id="' . $data->getId() . '" class="data">«' . $data->getLabel() . '»</var>' : "#" . $id;
 	}
 
+	/**
+	 * Replaces, into the given text, the ID (prefixed with #) of all data by their label inside a HTML var.
+	 *
+	 * @access  public
+	 * @param   string $target The initial text
+	 * @return  string The replaced text with data labels
+	 *
+	 */
 	public function replaceByDataLabel($target) {
 		return preg_replace_callback(
 			"/#(\d+)/", 
@@ -424,6 +1180,14 @@ class Simulator {
 		);
 	}
 
+	/**
+	 * Loads into a Data object, the data item extracted from the XML file of this simulator
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $data The data item in XML format
+	 * @return  \EUREKA\G6KBundle\Entity\Data The Data object
+	 *
+	 */
 	protected function loadData($data) {
 		$dataObj = new Data($this, (int)$data['id'], (string)$data['name']);
 		$dataObj->setLabel((string)$data['label']);
@@ -483,6 +1247,14 @@ class Simulator {
 		return $dataObj;
 	}
 
+	/**
+	 * Loads the XML definition file of the simulator into this Simulator object.
+	 *
+	 * @access  public
+	 * @param   string $url The path of the XML definition file
+	 * @return  void
+	 *
+	 */
 	public function load($url) {
 		$datasrc = $this->controller->databasesDir . '/DataSources.xml';
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
@@ -497,6 +1269,15 @@ class Simulator {
 		$this->loadEntities($simulator, $datasources);
 	}
 
+	/**
+	 * Loads the entities (elements) of the XML definition files of the simulator and data sources into this Simulator object.
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $simulator The XML definition file of the simulator
+	 * @param   \SimpleXMLElement $datasources The XML definition file of the data sources
+	 * @return  void
+	 *
+	 */
 	protected function loadEntities(\SimpleXMLElement $simulator, \SimpleXMLElement $datasources) {
 		foreach ($datasources->DataSource as $datasource) {
 			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
@@ -723,6 +1504,15 @@ class Simulator {
 		}
 	}
 
+	/**
+	 * Loads into a Field object, the field extracted from the XML file of this simulator
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $field The field in XML format
+	 * @param   \EUREKA\G6KBundle\Entity\FieldSet $fieldsetObj The field set that contains this field
+	 * @return  \EUREKA\G6KBundle\Entity\Field The Field object
+	 *
+	 */
 	protected function loadField(\SimpleXMLElement $field, FieldSet $fieldsetObj) {
 		$fieldObj = new Field($fieldsetObj, (int)$field['position'], (int)$field['data'], (string)$field['label']);
 		$fieldObj->setUsage((string)$field['usage']);
@@ -750,6 +1540,14 @@ class Simulator {
 		return $fieldObj;
 	}
 
+	/**
+	 * Loads into a RuleAction object, the business rule action extracted from the XML file of this simulator
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $action The business rule action in XML format
+	 * @return  \EUREKA\G6KBundle\Entity\RuleAction The RuleAction object
+	 *
+	 */
 	protected function loadRuleAction(\SimpleXMLElement $action) {
 		$ruleActionObj = new RuleAction((int)$action['id'], (string)$action['name']);
 		$ruleActionObj->setTarget((string)$action['target']);
@@ -773,6 +1571,14 @@ class Simulator {
 		return $ruleActionObj;
 	}
 
+	/**
+	 *  Loads into Source and Parameter objects, all the used sources extracted from the XML file of this simulator
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $sources The sources in XML format
+	 * @return  void
+	 *
+	 */
 	protected function loadSources(\SimpleXMLElement $sources) {
 		foreach ($sources as $source) {
 			$sourceObj = new Source($this, (int)$source['id'], (string)$source['datasource'], (string)$source['returnType']);
@@ -798,6 +1604,14 @@ class Simulator {
 		}
 	}
 
+	/**
+	 * Loads into Database objects, all the databases declaration extracted from DataSources.xml
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $databases The databases declaration in XML format
+	 * @return  void
+	 *
+	 */
 	protected function loadDatabases(\SimpleXMLElement $databases) {
 		foreach ($databases as $database) {
 			$databaseObj = new Database($this, $this->controller->databasesDir, (int)$database['id'], (string)$database['type'], (string)$database['name']);
@@ -820,6 +1634,15 @@ class Simulator {
 		}
 	}
 
+	/**
+	 *  Loads into a Connector or a Condition object, the business rule connector extracted from the XML file of this simulator
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $connector The business rule connector in XML format
+	 * @param   \EUREKA\G6KBundle\Entity\Connector|null $parentConnector (default: null) The Connector object that contains this connector or this condition
+	 * @return  \EUREKA\G6KBundle\Entity\Condition|\EUREKA\G6KBundle\Entity\Connector The Connector or the Condition object
+	 *
+	 */
 	protected function loadConnector(\SimpleXMLElement $connector, $parentConnector = null) {
 		if ($connector->getName() == 'Condition') {
 			return new Condition($this, $parentConnector, (string)$connector['operand'], (string)$connector['operator'], (string)$connector['expression']);
@@ -831,6 +1654,14 @@ class Simulator {
 		return $connectorObj;
 	}
 
+	/**
+	 * Loads Data, DataSource, Source objects in response of the Ajax request using route path : /{simu}/Default/source
+	 *
+	 * @access  public
+	 * @param   string $url The path of the XML definition file of this sumulator
+	 * @return  void
+	 *
+	 */
 	public function loadForSource($url) {
 		$datasrc = $this->controller->databasesDir . '/DataSources.xml';
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
@@ -875,6 +1706,14 @@ class Simulator {
 		}
 	}
 
+	/**
+	 * Adds a dependency for the data item whose ID is in the first element of the given array
+	 *
+	 * @access  private
+	 * @param   array $matches The given array
+	 * @return  string The name of the data item
+	 *
+	 */
 	private function addDependency ($matches) {
 		$id = $matches[1];
 		$dependency = $this->name;
@@ -890,15 +1729,39 @@ class Simulator {
 		return $this->datas[$id]['name'];
 	}
 
+	/**
+	 * Adds a note (field pre-note, field post-note, footnote) dependency for the data item is in the first element of the given array
+	 *
+	 * @access  private
+	 * @param   array $matches <parameter description>
+	 * @return  string The name of the data surrounded by '#(' and ')'
+	 *
+	 */
 	private function addNoteDependency ($matches) {
 		return "#(".$this->addDependency ($matches).")";
 	}
 
+	/**
+	 * Returns the name surrounded by '#(' and ')' of the data item whose ID is in the first element of the given array
+	 *
+	 * @access  private
+	 * @param   array $matches The given array
+	 * @return  string The name of the data surrounded by '#(' and ')'
+	 *
+	 */
 	private function replaceDataIdByName($matches) {
 		$id = $matches[1];
 		return $this->datas[$id] ? "#(" . $this->datas[$id]['name'] . ")" : "#" . $id;
 	}
 
+	/**
+	 * Replaces, into the given text, the ID (prefixed with # or inside a HTML var) of all data by their name surrounded by '#(' and ')'.
+	 *
+	 * @access  private
+	 * @param   string $target The initial text
+	 * @return  string The replaced text with data names
+	 *
+	 */
 	private function replaceIdByName($target) {
 		$result = preg_replace_callback(
 			'/\<var\s+[^\s]*\s*data-id="(\d+)"[^\>]*\>[^\<]+\<\/var\>/',
@@ -912,11 +1775,27 @@ class Simulator {
 		);
 	}
 
+	/**
+	 * Returns the name of the data item whose ID is in the first element of the given array
+	 *
+	 * @access  private
+	 * @param   array $matches Tha given array
+	 * @return  string the name of the data item
+	 *
+	 */
 	private function replaceIdByDataName($matches) {
 		$id = $matches[1];
 		return $this->datas[$id] ? $this->datas[$id]['name']: "#" . $id;
 	}
 
+	/**
+	 * Replaces, into the given text, the ID (prefixed with # or inside a HTML var) of all data by their name.
+	 *
+	 * @access  private
+	 * @param   string $target The initial text
+	 * @return  string The replaced text with data names
+	 *
+	 */
 	private function replaceByDataName($target) {
 		return preg_replace_callback(
 			"/#(\d+)/", 
@@ -925,6 +1804,14 @@ class Simulator {
 		);
 	}
 
+	/**
+	 * Converts the lines of the given text into HTML paragraphs
+	 *
+	 * @access  public
+	 * @param   string $text <parameter description>
+	 * @return  string <description of the return value>
+	 *
+	 */
 	public function paragraphs ($text) {
 		$result = "";
 		$paras = explode("\n", trim($text));
@@ -937,6 +1824,15 @@ class Simulator {
 		return $result;
 	}
 
+	/**
+	 * Converts a field extracted from the XML file of this simulator into an associative array for encoding in JSON format.
+	 * Also completes the list of data dependencies
+	 *
+	 * @access  private
+	 * @param   \SimpleXMLElement $field <parameter description>
+	 * @return  array <description of the return value>
+	 *
+	 */
 	private function fieldProperties ($field) {
 		$id = (int)$field['data'];
 		$nfield = array(
@@ -982,6 +1878,16 @@ class Simulator {
 		return $nfield;
 	}
 
+	/**
+	 * Converts a data item extracted from the XML file of this simulator into an associative array for encoding in JSON format.
+	 * Also completes the list of sources dependencies
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $data The data item
+	 * @param   array &$sources The list of sources dependencies
+	 * @return  void
+	 *
+	 */
 	protected function toJSONData($data, &$sources) {
 		$id = (int)$data['id'];
 		$this->datas[$id]['id'] = $id;
@@ -1083,6 +1989,17 @@ class Simulator {
 		}
 	}
 
+	/**
+	 * Converts into an associative array, the list of actions (the "then" part or the the "else" part) of a business rule extracted from the XML file.
+	 * Also completes the list of data dependencies
+	 *
+	 * @access  private
+	 * @param   int $ruleID The ID of the rule
+	 * @param   \SimpleXMLElement $actions The list of actions
+	 * @param   array &$dataset The list of data dependencies
+	 * @return  array The associative array
+	 *
+	 */
 	private function actionsData($ruleID, \SimpleXMLElement $actions, &$dataset) {
 		$datas = array();
 		foreach ($actions->Action as $action) {
@@ -1350,6 +2267,15 @@ class Simulator {
 		return $datas;
 	}
 
+	/**
+	 * Converts the XML definition file of this simulator to JSON for use in Javascript for the given step.
+	 *
+	 * @access  public
+	 * @param   string $url The path of the XML definition file
+	 * @param   int $stepId (default: 0) The simulation step
+	 * @return  string The definition of this simulator in JSON format
+	 *
+	 */
 	public function toJSON($url, $stepId = 0) {
 		$json = array();
 		$datas = array();
@@ -1646,6 +2572,14 @@ class Simulator {
 		}
 	}
 
+	/**
+	 * Converts a condition connector for a business rule extracted from the XML file into an associative array.
+	 *
+	 * @access  protected
+	 * @param   \SimpleXMLElement $pconnector The connector to be convertd
+	 * @return  array The associative array
+	 *
+	 */
 	protected function ruleConnector(\SimpleXMLElement $pconnector) {
 		if ($pconnector->getName() == 'Condition') {
 			$operand = (string)$pconnector['operand'];
@@ -1671,6 +2605,14 @@ class Simulator {
 		return $connector;
 	}
 
+	/**
+	 * Cleans the text produced with the Javascript component "bootstrap3-wysihtml5" for its registration in the XML file of definition of this simulator
+	 *
+	 * @access  private
+	 * @param   string $text The text to clean
+	 * @return  string The cleaned text
+	 *
+	 */
 	private function cleanRichText($text) {
 		$text = preg_replace("|<p>&nbsp;</p>".PHP_EOL."|smi", PHP_EOL, $text);
 		$text = preg_replace("|<p>&nbsp;</p>|smi", "", $text);
@@ -1684,6 +2626,14 @@ class Simulator {
 		return trim($cleaned);
 	}
 
+	/**
+	 * Converts this Simulator object into an XML string and saves it to a file with the provided path.
+	 *
+	 * @access  public
+	 * @param   string $file The path to the saved XML document.
+	 * @return  void
+	 *
+	 */
 	public function save($file) {
 		$xml = array();
 		$xml[] = '<?xml version="1.0" encoding="utf-8"?>';
@@ -2212,6 +3162,14 @@ class Simulator {
 		file_put_contents($file, $xmlstring);
 	}
 
+	/**
+	 * Converts the properties of a RuleAction object into an XML attributes string
+	 *
+	 * @access  private
+	 * @param   \EUREKA\G6KBundle\Entity\RuleAction $action The RuleAction object
+	 * @return  string The XML attributes string
+	 *
+	 */
 	private function makeRuleActionAttributes(RuleAction $action) {
 		$attrs = 'id="' . $action->getId() . '" name="' . $action->getName() . '" target="' . $action->getTarget() . '"';
 		if ($action->getData() != '') {
@@ -2268,6 +3226,16 @@ class Simulator {
 		return $attrs;
 	}
 
+	/**
+	 * Converts a Connector or Condition object to XML strings and inserts it into an array of indented lines
+	 *
+	 * @access  private
+	 * @param   \EUREKA\G6KBundle\Entity\Connector|\EUREKA\G6KBundle\Entity\Condition $connector The Connector or Condition object
+	 * @param   string $indent The indentation spaces
+	 * @param   array &$xml array of indented lines
+	 * @return  void
+	 *
+	 */
 	private function saveConnector($connector, $indent, &$xml) {
 		if ($connector instanceof Condition) {
 			$htmlcondition = '<Condition operand="' . $connector->getOperand() . '" operator="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $connector->getOperator()) . '"';
@@ -2294,6 +3262,14 @@ class Simulator {
 		}
 	}
 
+	/**
+	 * Loads an XML file from the APC cache
+	 *
+	 * @access  private
+	 * @param   string $url The location of the file
+	 * @return  string The contents of the file
+	 *
+	 */
 	private function loadFileFromCache($url) {
 		$mtimekey = $url . "-mtime";
 		$mtime = filemtime($url);
@@ -2308,6 +3284,15 @@ class Simulator {
 		return $file;
 	}
 
+	/**
+	 * Loads a simulator XML definition skeleton into this Simulator object.
+	 *
+	 * Used to create a new simulator.
+	 *
+	 * @access  public
+	 * @return  void
+	 *
+	 */
 	public function loadEmptySimulator() {
 		$datasrc = $this->controller->databasesDir . '/DataSources.xml';
 		if(extension_loaded('apc') && ini_get('apc.enabled')) {
