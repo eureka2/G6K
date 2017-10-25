@@ -66,7 +66,7 @@ class G6KExceptionListener
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
 	 * @param   \Exception $exception <parameter description>
-	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
+	 * @return  \Symfony\Component\HttpFoundation\Response The HTML response
 	 *
 	 */
 	protected function htmlResponse(Request $request, \Exception $exception) {
@@ -141,7 +141,7 @@ EOT;
 	 *
 	 * @access  protected
 	 * @param   \Exception $exception <parameter description>
-	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
+	 * @return  \Symfony\Component\HttpFoundation\Response The HTML response
 	 *
 	 */
 	protected function htmlAdminResponse(\Exception $exception) {
