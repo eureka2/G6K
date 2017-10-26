@@ -84,6 +84,14 @@ class Deployer {
 	private $output = array();
 
 	/**
+	 * @var array  $output The list of imported CSS file
+	 *
+	 * @access  private
+	 *
+	 */
+	private $importedCSS = array();
+
+	/**
 	 * Constructor of class Deployer
 	 *
 	 * @access  public
@@ -286,6 +294,27 @@ class Deployer {
 	}
 
 	/**
+	 * Retrieves imported css in a css file.
+	 *
+	 * @access  private
+	 * @param   string $cssFileName The name of the css file.
+	 * @return  array  The imported css file names.
+	 *
+	 */
+	private function getImportedCSS($cssFileName) {
+		$imported = array();
+		$css = file_get_contents($cssFileName);
+		if (preg_match_all("|@import\s+'([^']+)'|", $css, $matches) > 0) {
+			$imported = array_merge($imported, $matches[1]);
+		} elseif (preg_match_all('|@import\s+"([^"]+)"|', $css, $matches) > 0) {
+			$imported = array_merge($imported, $matches[1]);
+		} elseif (preg_match_all("|@import\s+url\(([^\)]+)\)|", $css, $matches) > 0) {
+			$imported = array_merge($imported, array_filter($matches[1], function ($i) { return !preg_match("|https?:|", $i); }));
+		}
+		return $imported ;
+	}
+
+	/**
 	 * Entry point of the service
 	 *
 	 * Reads the 'deployment' parameter from the parameters.yml file and starts the deployment on all the servers listed under this parameter?
@@ -321,6 +350,7 @@ class Deployer {
 	 */
 	public function deploy($simu){
 		$this->output = array();
+		$this->importedCSS = array();
 		$this->lockHandler = new LockHandler('g6k.deployment.lock');
 		if (!$this->lockHandler->lock()) {
 			$this->output[] = $this->translator->trans('A deployment is in progress');
@@ -369,6 +399,16 @@ class Deployer {
 			}
 			foreach ($finder as $file) {
 				$pathname = str_replace('\\', '/', $file->getRelativePathname());
+				$relativePath = str_replace('\\', '/', $file->getRelativePath());
+				$cssFiles = $this->getImportedCSS($file->getRealPath());
+				foreach($cssFiles as $cssFile) {
+					if (! in_array($relativePath.'/'.$cssFile, $this->importedCSS)) {
+						$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $relativePath.'/'.$cssFile)) . '</h5>';
+						$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/public/'.$relativePath.'/'.$cssFile;
+						$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
+						$this->importedCSS[] = $relativePath.'/'.$cssFile;
+					}
+				}
 				$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $pathname)) . '</h5>';
 				$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/public/'.$pathname;
 				$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);  
