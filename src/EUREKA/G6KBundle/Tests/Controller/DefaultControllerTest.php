@@ -1,5 +1,29 @@
 <?php
 
+/*
+The MIT License (MIT)
+
+Copyright (c) 2017 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
 namespace EUREKA\G6KBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -12,12 +36,54 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\ExecutableFinder;
 
+/**
+ *
+ * This class run functional tests of the simulation engine (DefaultController) from tab delimited text files
+ * These text files located in the "src/EUREKA/G6KBundle/Resources/data/tests" directory contain the data of each of the simulators to be tested.
+ *
+ * This class can use either PhantomJS or SlimerJS as Javascript engine, the one installed
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class DefaultControllerTest extends WebTestCase
 {
+
+	/**
+	 * @var int        $testCount The number of tests performed
+	 *
+	 * @access  private
+	 * @static 
+	 *
+	 */
 	private static $testCount = 0;
+
+	/**
+	 * @var string|null $jsEngine The executable path of the Javascript engine
+	 *
+	 * @access  private
+	 * @static 
+	 *
+	 */
 	private static $jsEngine = null;
+
+	/**
+	 * @var int $startTime The start time of the tests
+	 *
+	 * @access  private
+	 * @static 
+	 *
+	 */
 	private static $startTime = null;
 
+	/**
+	 * Sets static variables before running tests
+	 *
+	 * @access  public
+	 * @static 
+	 * @return  void
+	 *
+	 */
 	public static function setUpBeforeClass () {
 		$finder = new ExecutableFinder();
 		self::$jsEngine = $finder->find("phantomjs");
@@ -35,11 +101,26 @@ class DefaultControllerTest extends WebTestCase
 		fwrite(STDOUT, PHP_EOL); 
 	}
 
+	/**
+	 * Displays the name of the test at launch
+	 *
+	 * @access  public
+	 * @return  void
+	 *
+	 */
 	public function setUp () {
 		self::$testCount++;
 		fwrite(STDOUT, "Test number " . self::$testCount . " : " . $this->getName() . PHP_EOL); 
 	}
 
+	/**
+	 * Displays the test statistics after the tests are over
+	 *
+	 * @access  public
+	 * @static 
+	 * @return  void
+	 *
+	 */
 	public static function tearDownAfterClass () {
 		$s = time() - self::$startTime;
 		$h = floor($s / 3600);
@@ -52,18 +133,37 @@ class DefaultControllerTest extends WebTestCase
 	}
 
 	/**
-     * @dataProvider simusProvider
-     */
+	 * Starts the functional tests of a simulator in a given view on the Calcul action of the DefaultController
+	 *
+	 * @dataProvider simusProvider
+	 */
 	 public function testCalcul($view, $simu, $fields)
 	{
 		$this->runSimuTest($view, $simu, $fields);
 	}
 
+	/**
+	 * Returns the custom data provider iterator for the tests
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Tests\Controller\DataProviderIterator The custom data provider iterator
+	 *
+	 */
 	public function simusProvider()
 	{
 		return new DataProviderIterator();
 	}
 
+	/**
+	 * Starts the functional tests of a simulator in a given view
+	 *
+	 * @access  private
+	 * @param   string $view The name of the view
+	 * @param   string $simu The name of the simulator
+	 * @param   array $fields The fields and values that make up the test set
+	 * @return  void
+	 *
+	 */
 	private function runSimuTest($view, $simu, $fields) {
 		if (self::$jsEngine != null) {
 			try {
@@ -75,7 +175,19 @@ class DefaultControllerTest extends WebTestCase
 			$this->runSimuTestWithoutJS($view, $simu, $fields);
 		}
 	}
-	
+
+	/**
+	 * Starts the functional tests of a simulator in a given view with a Javascript engine
+	 *
+	 * @access  private
+	 * @param   string $view The name of the view
+	 * @param   string $simu The name of the simulator
+	 * @param   array $fields The fields and values that make up the test set
+	 * @return  void
+	 * @throws \RuntimeException
+	 * @throws \Symfony\Component\Process\Exception\ProcessFailedException
+	 *
+	 */
 	private function runSimuTestWithJS($view, $simu, $fields) {
 		$url = $this->makeUrl($view, $simu);
 		$jfields = json_encode($fields);
@@ -199,7 +311,17 @@ EOS;
 			throw new ProcessFailedException($process);
 		}
 	}
-	
+
+	/**
+	 * Starts the functional tests of a simulator in a given view with a crawler
+	 *
+	 * @access  private
+	 * @param   string $view The name of the view
+	 * @param   string $simu The name of the simulator
+	 * @param   array $fields The fields and values that make up the test set
+	 * @return  void
+	 *
+	 */
 	private function runSimuTestWithoutJS($view, $simu, $fields) {
 		$client = static::createClient();
 		$crawler = $client->request('GET', $simu);
@@ -259,7 +381,7 @@ EOS;
 		$webapp = current(iterator_to_array($finder))->getRelativePath();
 		return $scheme.$server."/".$root."/".$webapp.$simu.$view;
 	}
-	
+
 	private function isOutput($crawler, $name) {
 		$output = false;
 		$element = $crawler->filter("span[id=" . $name . "]");
@@ -268,7 +390,7 @@ EOS;
 		}
 		return $output;
 	}
-	
+
 	private function echoField($form) {
 		$fields = $form->all();
 		foreach($fields as $field) {

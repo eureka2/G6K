@@ -62,7 +62,7 @@ class Filters extends \Twig_Extension {
 	 * Returns the string as is without any modification
 	 *
 	 * @access  public
-	 * @param   mixed $string The string to be filtered
+	 * @param   string $string The string to be filtered
 	 * @return  void
 	 *
 	 */
