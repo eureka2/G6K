@@ -275,8 +275,8 @@
     Translator.add("Deployment on the server \u00ab %server% \u00bb", "D\u00e9ploiement sur le serveur \u00ab %server% \u00bb", "messages", "fr");
     Translator.add("Deploy simulator", "D\u00e9ployer", "messages", "fr");
     Translator.add("Description", "Description", "messages", "fr");
-    Translator.add("Disabled", "D\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("disabled", "d\u00e9sactiv\u00e9", "messages", "fr");
+    Translator.add("Disabled", "D\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("Display", "Affichage", "messages", "fr");
     Translator.add("Disposition", "Disposition", "messages", "fr");
     Translator.add("does not corresponds to", "est diff\u00e9rente de", "messages", "fr");
@@ -333,8 +333,8 @@
     Translator.add("Field description", "Description du champ", "messages", "fr");
     Translator.add("Field label", "\u00c9tiquette du champ", "messages", "fr");
     Translator.add("Field prompt", "Invite du champ", "messages", "fr");
-    Translator.add("fieldrow", "rang\u00e9e", "messages", "fr");
     Translator.add("Fieldrow", "Rang\u00e9e", "messages", "fr");
+    Translator.add("fieldrow", "rang\u00e9e", "messages", "fr");
     Translator.add("Fieldrow #%id% : %label%", "Rang\u00e9e #%id% : %label%", "messages", "fr");
     Translator.add("Fieldrow %id% (nolabel)", "Rang\u00e9e %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Fieldrow label", "Libell\u00e9 de la rang\u00e9e", "messages", "fr");
@@ -464,8 +464,8 @@
     Translator.add("m-d-Y", "MM-JJ-AAAA", "messages", "fr");
     Translator.add("m\/d", "MM\/JJ", "messages", "fr");
     Translator.add("m\/d\/Y", "MM\/JJ\/AAAA", "messages", "fr");
-    Translator.add("m\/y", "MM\/AA", "messages", "fr");
     Translator.add("m\/Y", "MM\/AAAA", "messages", "fr");
+    Translator.add("m\/y", "MM\/AA", "messages", "fr");
     Translator.add("Main referer", "Referer principal", "messages", "fr");
     Translator.add("March", "Mars", "messages", "fr");
     Translator.add("matches", "correspondances", "messages", "fr");
@@ -854,6 +854,7 @@
     Translator.add("This section is used in rule #%id%. You must modify this rule before you can delete this section", "Cette section est utilis\u00e9e dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir la supprimer.", "messages", "fr");
     Translator.add("This section name already exists", "Ce nom de section existe d\u00e9j\u00e0", "messages", "fr");
     Translator.add("This simulator does not exist", "Ce simulateur n'existe pas", "messages", "fr");
+    Translator.add("This simulator does not exist or is not available", "Ce simulateur n'existe pas ou n'est pas disponible", "messages", "fr");
     Translator.add("This source is used in data #%id% : %label%. You must modify this data before you can delete this source", "Cette source est utilis\u00e9e dans la d\u00e9finition de la donn\u00e9e #%id% : %label%. Vous devez modifier cette donn\u00e9e avant de pouvoir la supprimer.", "messages", "fr");
     Translator.add("This step is used in rule #%id%. You must modify this rule before you can delete this step", "Cette \u00e9tape est utilis\u00e9e dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir la supprimer.", "messages", "fr");
     Translator.add("This step name already exists", "Ce nom d'\u00e9tape existe d\u00e9j\u00e0", "messages", "fr");
@@ -911,8 +912,8 @@
     Translator.add("XML Validation errors", "Erreurs de validation XML", "messages", "fr");
     Translator.add("y", "AA", "messages", "fr");
     Translator.add("Y", "AAAA", "messages", "fr");
-    Translator.add("Y-m", "AAAA-MM", "messages", "fr");
     Translator.add("y-m", "AA-MM", "messages", "fr");
+    Translator.add("Y-m", "AAAA-MM", "messages", "fr");
     Translator.add("Y-m-d", "AAAA-MM-JJ", "messages", "fr");
     Translator.add("y-m-d", "AA-MM-JJ", "messages", "fr");
     Translator.add("Year", "Ann\u00e9e", "messages", "fr");
