@@ -70,7 +70,7 @@ class StringTemplateLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderI
 	 */
 	public function exists($name)
 	{
-		return preg_match('/\s/', $name);
+		return preg_match('/\s/', $name) == 1;
 	}
 
 }
