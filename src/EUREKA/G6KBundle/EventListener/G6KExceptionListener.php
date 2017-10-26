@@ -84,6 +84,7 @@ class G6KExceptionListener
 				$view = "Default";
 			}
 		}
+		$message = $exception->getStatusCode() == 404 ? 'This simulator does not exist or is not available' : 'The simulation engine is currently under maintenance';
 		$template = <<<EOT
 {% extends "EUREKAG6KBundle:{$view}/layout:pagelayout.html.twig" %}
 {% block content %}
@@ -104,7 +105,7 @@ Code : {{ code }}
 {% else %}
 <div class="exception alert alert-danger has-error">
 <span class="help-block">
-{{ 'The simulation engine is currently under maintenance'|trans }}
+{{ '{$message}'|trans }}
 </span>
 <span class="help-block">
 {{ 'Please retry later'|trans }}
