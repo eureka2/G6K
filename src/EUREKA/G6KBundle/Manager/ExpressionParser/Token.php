@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,13 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\ExpressionParser;
 
+/**
+ *
+ * This class represents one token of an arithmetic or a logical expression.
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class Token {
 
 	const	T_UNDEFINED			= 0,
@@ -74,13 +81,43 @@ class Token {
 			A_LEFT				= 1,
 			A_RIGHT				= 2;
 
-	public $type, $value;
+	/**
+	 * @var int      $type Token type one of Token::T_* constants
+	 *
+	 * @access  public
+	 *
+	 */
+	public $type;
 
+	/**
+	 * @var string      $value String representation of the value of this token
+	 *
+	 * @access  public
+	 *
+	 */
+	public $value;
+
+	/**
+	 * Constructor of class Token
+	 *
+	 * @access  public
+	 * @param   int $type The type of this token
+	 * @param   string $value The value of this token
+	 * @return  void
+	 *
+	 */
 	public function __construct($type, $value) {
 		$this->type  = $type;
 		$this->value = $value;
 	}
 
+	/**
+	 * Determines whether this token represents an unary operator or not.
+	 *
+	 * @access  public
+	 * @return  bool true if this token represents an unary operator, false otherwise
+	 *
+	 */
 	public function isUnaryOperator(){
 		switch ($this->type) {
 			case self::T_NOT:
@@ -93,6 +130,13 @@ class Token {
 		return false;
 	}
 
+	/**
+	 * Determines whether this token represents a binary operator or not.
+	 *
+	 * @access  public
+	 * @return  bool true if this token represents a binary operator, false otherwise
+	 *
+	 */
 	public function isBinaryOperator(){
 		switch ($this->type) {
 			case self::T_POW:
@@ -111,6 +155,13 @@ class Token {
 		return false;
 	}
 
+	/**
+	 * Determines whether this token represents a ternary operator or not.
+	 *
+	 * @access  public
+	 * @return  bool true if this token represents a ternary operator, false otherwise
+	 *
+	 */
 	public function isTernaryOperator(){
 		switch ($this->type) {
 			case self::T_TERNARY:
@@ -119,12 +170,26 @@ class Token {
 		return false;
 	}
 
+	/**
+	 * Determines whether this token represents an operator or not.
+	 *
+	 * @access  public
+	 * @return  bool true if this token represents an operator, false otherwise
+	 *
+	 */
 	public function isOperator(){
 		return $this->isUnaryOperator() 
 			|| $this->isBinaryOperator() 
 			|| $this->isTernaryOperator();
 	}
 
+	/**
+	 * Determines whether this token represents a comparison operator or not.
+	 *
+	 * @access  public
+	 * @return  bool true if this token represents a comparison operator, false otherwise
+	 *
+	 */
 	public function isComparator(){
 		switch ($this->type) {
 			case self::T_EQUAL:
@@ -140,6 +205,13 @@ class Token {
 		return false;
 	}
 
+	/**
+	 * Determines whether this token represents a variable identifier or not.
+	 *
+	 * @access  public
+	 * @return  bool true if this token represents a variable identifier, false otherwise
+	 *
+	 */
 	public function isVariable(){
 		switch ($this->type) {
 			case self::T_IDENT:
@@ -150,10 +222,24 @@ class Token {
 		return false;
 	}
 
+	/**
+	 * Determines whether this token represents an undefined value or not.
+	 *
+	 * @access  public
+	 * @return  bool true if this token represents an undefined value, false otherwise
+	 *
+	 */
 	public function isUndefined(){
 		return $this->type == self::T_UNDEFINED;
 	}
 
+	/**
+	 * Determines whether this token is just before a function argument or not.
+	 *
+	 * @access  public
+	 * @return  bool true if this token is just before a function argument, false otherwise
+	 *
+	 */
 	public function isBeforeFunctionArgument(){
 		switch ($this->type) {
 			case self::T_POPEN:
@@ -164,6 +250,13 @@ class Token {
 		return false;
 	}
 
+	/**
+	 * Returns the priority of the operator represented by this token
+	 *
+	 * @access  public
+	 * @return  int The priority of the operator
+	 *
+	 */
 	public function precedence(){
 		switch ($this->type) {
 			case self::T_POPEN:
@@ -213,6 +306,13 @@ class Token {
 		return 16;
 	}
 
+	/**
+	 * Determines if the operator represented by this token is right-associative, left-associative or non-associative
+	 *
+	 * @access  public
+	 * @return  int One of the associativity constant: A_RIGHT, A_LEFT or A_NONE
+	 *
+	 */
 	public function associativity(){
 		switch ($this->type) {
 			case self::T_POW:
@@ -250,6 +350,13 @@ class Token {
 		return self::A_NONE;
 	}
 
+	/**
+	 * Returns a string representation of this token.
+	 *
+	 * @access  public
+	 * @return  string
+	 *
+	 */
 	public function __toString() {
 		switch ($this->type) {
 			case self::T_DATE:

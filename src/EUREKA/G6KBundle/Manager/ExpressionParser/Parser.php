@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +26,26 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\ExpressionParser;
 
+/**
+ *
+ * This class allows to parse an aritmetic or a logical expression
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class Parser {
 
+/**
+ * @var string     PATTERN The pattern of all operators symbols
+ */
 const PATTERN = '/([\s!,\+\-\*\/\^%\(\)\[\]=\<\>\~\&\^\|\?\:°])/u';
 
+	/**
+	 * @var array      $lookup Correspondence table between operator symbols and token constants
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $lookup = array(
 		'+' => Token::T_PLUS,
 		'-' => Token::T_MINUS,
@@ -61,6 +77,15 @@ const PATTERN = '/([\s!,\+\-\*\/\^%\(\)\[\]=\<\>\~\&\^\|\?\:°])/u';
 		return "¤".count($this->text);
 	}
 
+	/**
+	 * Parses and converts an infixed aritmetic or logical expression string into an Expression object.
+	 *
+	 * @access  public
+	 * @param   string $infix The infixed expression string
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Expression The Expression object
+	 * @throws \Exception if an error has occurred
+	 *
+	 */
 	public function parse ($infix) {
 		$constants = array(
 			'pi'	=> new Token(Token::T_NUMBER, M_PI),

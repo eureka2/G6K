@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,27 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\ExpressionParser;
 
+/**
+ *
+ * This class provides static functions that perform logical or arithmetic operations
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class Operation {
 
+	/**
+	 * Calculates and returns the result of adding two numbers, a date and a number of days, or the concatenation of two strings..
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the second operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the addition
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function plus(Token $arg1, Token $arg2, Token &$result) {
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -74,6 +93,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of subtracting two numbers or a date and a number of days.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the second operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the subtraction
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function minus(Token $arg1, Token $arg2, Token &$result) {
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -104,6 +135,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the product of two numbers.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the product
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function times(Token $arg1, Token $arg2, Token &$result) {
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -115,6 +158,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the quotient of the Euclidean division of one number by another.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the dividend
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the divisor
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the quotient of the division
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function div(Token $arg1, Token $arg2, Token &$result) {
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -126,6 +181,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the remainder of the Euclidean division of one number by another.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the dividend
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the divisor
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the remainder of the division
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function mod(Token $arg1, Token $arg2, Token &$result) {
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -137,6 +204,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of the first operand raised to the power of the operand.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the second operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the operation
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function pow(Token $arg1, Token $arg2, Token &$result) {
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -148,6 +227,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of the bitwise AND on the two given operands.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the second operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the bitwide AND
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function bitwiseAnd(Token $arg1, Token $arg2, Token &$result) {
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -159,6 +250,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of the bitwise XOR on the two given operands.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the second operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the bitwide XOR
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function bitwiseXor(Token $arg1, Token $arg2, Token &$result) {
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -170,6 +273,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of the bitwise OR on the two given operands.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the second operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the bitwide OR
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function bitwiseOr(Token $arg1, Token $arg2, Token &$result) {
 		if ($arg1->isVariable() || $arg2->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -181,6 +296,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of the logical AND on the two given operands.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the second operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the logical AND
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function logicalAnd(Token $arg1, Token $arg2, Token &$result) {
 		$result->type = Token::T_BOOLEAN;
 		if ($arg1->type == Token::T_BOOLEAN && $arg2->type == Token::T_BOOLEAN) {
@@ -211,6 +338,18 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of the logical OR on the two given operands.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the second operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the logical OR
+	 * @return  void
+	 * @throws \Exception <description of the exception>
+	 *
+	 */
 	public static function logicalOr(Token $arg1, Token $arg2, Token &$result) {
 		$result->type = Token::T_BOOLEAN;
 		if ($arg1->type == Token::T_BOOLEAN && $arg2->type == Token::T_BOOLEAN) {
@@ -241,6 +380,17 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of the unary positive operation on the given operand.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the operation
+	 * @return  void
+	 * @throws \Exception <description of the exception>
+	 *
+	 */
 	public static function unaryPlus(Token $arg1, Token &$result) {
 		if ($arg1->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -252,6 +402,17 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of the unary negation on the given operand.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the negation
+	 * @return  void
+	 * @throws \Exception <description of the exception>
+	 *
+	 */
 	public static function unaryMinus(Token $arg1, Token &$result) {
 		if ($arg1->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -263,6 +424,17 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Calculates and returns the result of the logical negation on the given operand.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the logical negation
+	 * @return  void
+	 * @throws \Exception <description of the exception>
+	 *
+	 */
 	public static function not(Token $arg1, Token &$result) {
 		if ($arg1->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -275,6 +447,17 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Converts a number expressed in radians to a number expressed in degrees 
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the number expressed in radians
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the number expressed in degrees
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function degre(Token $arg1, Token &$result) {
 		if ($arg1->isVariable()) {
 			$result->type = Token::T_UNDEFINED;
@@ -286,10 +469,33 @@ class Operation {
 		}
 	}
 
+	/**
+	 * Transfers the argument into the result token (for the else part of a ternary operation)
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the first operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the ternary else operation
+	 * @return  void
+	 *
+	 */
 	public static function ternaryElse(Token $arg1, Token &$result) {
 		$result = $arg1;
 	}
 
+	/**
+	 * Evaluates the first argument, if true the result is the second argument otherwise the result is the third argument
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The token containing the boolean operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The token containing the second operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg3 The token containing the third operand
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$result The token containing the result of the ternary operation
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public static function ternary(Token $arg1, Token $arg2, Token $arg3, Token &$result) {
 		if ($arg1->isVariable()) {
 			$result->type = Token::T_UNDEFINED;

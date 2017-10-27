@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,25 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\ExpressionParser;
 
+/**
+ *
+ * This class provides static functions about holidays and working days
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class Holidays {
 
+	/**
+	 * Returns the number of working days between two dates
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \DateTime $startDate The starting date
+	 * @param   \DateTime $endDate The end date
+	 * @return  int The number of working days
+	 *
+	 */
 	public static function workdays(\DateTime $startDate, \DateTime $endDate) {
 		// Validate input
 		if ($endDate < $startDate)
@@ -71,6 +88,15 @@ class Holidays {
 		return $days;
 	}
 
+	/**
+	 * Returns the working day following the given date
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \DateTime $date The given date
+	 * @return  The next working day
+	 *
+	 */
 	public static function nextWorkingDay(\DateTime $date) {
 		$d = $date;
 		while (! self::isWorkingDay($d)) {
@@ -79,6 +105,16 @@ class Holidays {
 		return $d;
 	}
 
+	/**
+	 * Returns the list of fixed holidays of the given year for the given lang and country
+	 *
+	 * @access  private
+	 * @static 
+	 * @param   int $year The given year
+	 * @param   string $lang (default: "en.US") The given lang and country
+	 * @return  array The list of fixed holidays
+	 *
+	 */
 	private static function fixedHolidays($year, $lang = "en-US") {
 		$fholidays = array(
 			"US" => array(
@@ -100,6 +136,16 @@ class Holidays {
 		return $holidays;
 	}
 
+	/**
+	 * Returns the list of moveable holidays of the given year for the given lang and country
+	 *
+	 * @access  private
+	 * @static 
+	 * @param   int $year The given year
+	 * @param   string $lang (default: "en.US") The given lang and country
+	 * @return  array The list of moveable holidays
+	 *
+	 */
 	private static function moveableHolidays($year, $lang = "en-US") {
 		$easter = self::easter($year);
 		$holidays = array(
@@ -118,6 +164,16 @@ class Holidays {
 		return $holidays[$lg];
 	}
 
+	/**
+	 * Returns the list of holidays of the given year for the given lang and country
+	 *
+	 * @access  private
+	 * @static 
+	 * @param   int $year The given year
+	 * @param   string $lang (default: "en.US") The given lang and country
+	 * @return  array The list of holidays
+	 *
+	 */
 	private static function holidays($year, $lang = "en.US") {
 		$holidays =  self::moveableHolidays($year, $lang);
 		$fixed =  self::fixedHolidays($year, $lang);
@@ -127,6 +183,15 @@ class Holidays {
 		return $holidays;
 	}
 
+	/**
+	 * Returns the easter day of the given year
+	 *
+	 * @access  private
+	 * @static 
+	 * @param   int $year The given year
+	 * @return  \DateTime The easter day
+	 *
+	 */
 	private static function easter($year) {
 		$days = easter_days($year);
 		$easter = \DateTime::createFromFormat('Y-m-d', $year.'-3-21');
@@ -136,6 +201,15 @@ class Holidays {
 		return $easter;
 	}
 
+	/**
+	 * Determines whether the given date is a working day
+	 *
+	 * @access  private
+	 * @static 
+	 * @param   \DateTime $date The given date
+	 * @return  bool true if the dat is a working day, false otherwise
+	 *
+	 */
 	private static function isWorkingDay(\DateTime $date) {
 		$day = ((int)$date->format('N')) % 7;
 		if ($day == 0 || $day == 6) {

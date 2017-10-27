@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,34 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\ExpressionParser;
 
+/**
+ *
+ * This class allows the evaluation of postfixed expressions (RPN notation)
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class Evaluator {
 
+	/**
+	 * Constructor of class Evaluator
+	 *
+	 * @access  public
+	 * @return  void
+	 *
+	 */
 	public function __construct() {
 	}
 
+	/**
+	 * Performs the evaluation of a postfixed expression
+	 *
+	 * @access  public
+	 * @param   array &$tokens The postfixed expression
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token|false The result token of the evaluation
+	 * @throws \Exception
+	 *
+	 */
 	public function run(&$tokens) {
 		try {
 			$ops = array();
@@ -67,6 +90,16 @@ class Evaluator {
 		}
 	}
 
+	/**
+	 * Realizes an unary, binary or ternary operation and returns the result token.
+	 *
+	 * @access  private
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $op The operator token
+	 * @param   array &$args The arguments of the operation
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token The result token of the operation
+	 * @throws \Exception
+	 *
+	 */
 	private function operation(Token $op, &$args) {
 		if ($op->isUnaryOperator()) {
 			if (count($args) < 1) {
@@ -149,6 +182,16 @@ class Evaluator {
 		}
 	}
 
+	/**
+	 * Compares two arguments with a comparison operator and returns the result token.
+	 *
+	 * @access  private
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $op The comparison operator token
+	 * @param   array &$args The arguments of the comparison
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token The result token of the comparison
+	 * @throws \Exception
+	 *
+	 */
 	private function comparison(Token $op, &$args) {
 		if (count($args) < 2) {
 			throw new \Exception("Illegal number (".count($args).") of operands for " . $op);
@@ -193,6 +236,15 @@ class Evaluator {
 		return $result;
 	}
 
+	/**
+	 * Determines whether two arguments have compatible types.
+	 *
+	 * @access  private
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg1 The first argument
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $arg2 The second argument
+	 * @return  bool true if the two arguments have compatible types, false otherwise
+	 *
+	 */
 	private function compatible(Token $arg1, Token $arg2) {
 		if ($arg1->type == $arg2->type) {
 			return true;
@@ -213,6 +265,15 @@ class Evaluator {
 		}
 	}
 
+	/**
+	 * Guess the type of a token value
+	 *
+	 * @access  private
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$token <parameter description>
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	private function guessType(Token &$token) {
 		if ($token->type == Token::T_TEXT) {
 			if (is_numeric($token->value)) {
@@ -234,6 +295,16 @@ class Evaluator {
 		}
 	}
 
+	/**
+	 * Evaluates a function and returns the result token.
+	 *
+	 * @access  private
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $func The function token
+	 * @param   array &$args The arguments of the fuction
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token The result token
+	 * @throws \Exception
+	 *
+	 */
 	private function func(Token $func, &$args) {
 		$functions = array(
 			"abs" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return abs($a); }),

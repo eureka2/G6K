@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,32 +26,97 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\ExpressionParser;
 
+/**
+ *
+ * This class represents an arithmetic or a logical expression.
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class Expression {
 
+	/**
+	 * @var array      $tokens The token list of this expression
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $tokens = array( );
+
+	/**
+	 * @var bool       $postfixed Indicates whether this expression is already postfixed or not.
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $postfixed = false;
 
+	/**
+	 * Returns the token list of this expression.
+	 *
+	 * @access  public
+	 * @return  array The token list of this expression
+	 *
+	 */
 	public function get(){
 		return $this->tokens;
 	}
 
+	/**
+	 * Sets the token list of this expression
+	 *
+	 * @access  public
+	 * @param   array $tokens The token list of this expression
+	 * @return  void
+	 *
+	 */
 	public function set($tokens){
 		$this->tokens = $tokens;
 		$this->postfixed = true;
 	}
 
+	/**
+	 * Adds a token at the end of the token list of this expression.
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $t The token to be added
+	 * @return  void
+	 *
+	 */
 	public function push(Token $t){
 		$this->tokens[] = $t;
 	}
 
+	/**
+	 * Returns the last added token of this expression and removes it from the list of tokens.
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token The last added token
+	 *
+	 */
 	public function pop(){
 		return array_pop($this->tokens);
 	}
 
+	/**
+	 * Returns the last added token of this expression
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token The last added token
+	 *
+	 */
 	public function peek(){
 		return end($this->tokens);
 	}
 
+	/**
+	 * Implementation of the <i>Shunting Yard</i> algorithm to transform an infix expression to a RPN expression.
+	 *
+	 * @access  public
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	public function postfix () {
 		$stack = array();
 		$rpn = array();
@@ -115,6 +180,14 @@ class Expression {
 		$this->postfixed = true;
 	}
 
+	/**
+	 * Sets the value of all tokens with type T_FIELD
+	 *
+	 * @access  public
+	 * @param   array $fields The token values
+	 * @return  void
+	 *
+	 */
 	public function setFields($fields) {
 		foreach ($this->tokens as $token) {
 			if ($token->type == Token::T_FIELD && count($fields) >= $token->value) {
@@ -124,6 +197,13 @@ class Expression {
 		}
 	}
 
+	/**
+	 * Sets the value of all tokens with type T_IDENT
+	 *
+	 * @access  public
+	 * @param   array $fields The token values
+	 *
+	 */
 	public function setNamedFields($fields) {
 		foreach ($this->tokens as $token) {
 			if ($token->type == Token::T_IDENT && isset($fields[$token->value])) {
@@ -133,6 +213,14 @@ class Expression {
 		}
 	}
 
+	/**
+	 * Sets the value of all tokens with type T_IDENT or T_FIELD
+	 *
+	 * @access  public
+	 * @param   array $variables The token values
+	 * @return  bool true if all tokens with type T_IDENT or T_FIELD have a value, false otherwise
+	 *
+	 */
 	public function setVariables($variables) {
 		$completed = true;
 		foreach ($this->tokens as $token) {
@@ -151,6 +239,15 @@ class Expression {
 		return $completed;
 	}
 
+	/**
+	 * Detects the type of the given value, converts it according to this type and sets the value of the given token with the result.
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$token The given token
+	 * @param   string $value The given value
+	 * @return  void
+	 *
+	 */
 	protected function setToken(Token &$token, $value) {
 		if (is_array($value)) {
 			$token->type = Token::T_ARRAY;
@@ -169,6 +266,16 @@ class Expression {
 		}
 	}
 
+	/**
+	 * Converts the given value into a DateTime object and sets the value of the given token with the result.
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token &$token The given token
+	 * @param   string $value The given value
+	 * @return  void
+	 * @throws \Exception
+	 *
+	 */
 	protected function setDateToken(Token &$token, $value) {
 		$token->type = Token::T_DATE;
 		$date = \DateTime::createFromFormat("d/m/Y", $value, new \DateTimeZone( 'Europe/Paris' ));
@@ -180,6 +287,13 @@ class Expression {
 		$token->value = $date;
 	}
 
+	/**
+	 * Evaluates this expression
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token||false The result token of the evaluation
+	 *
+	 */
 	public function evaluate() {
 		try {
 			$evaluator = new Evaluator();
