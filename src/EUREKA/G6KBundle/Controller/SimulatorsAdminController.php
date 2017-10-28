@@ -1633,7 +1633,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *                     'name' => 'rate',
 	 *                     'operator' => '&gt;',
 	 *                     'value' => 15.5
-	                    )
+	 *                  )
 	 *             )
 	 *         ),
 	 *         array(
