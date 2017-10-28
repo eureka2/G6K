@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,11 +36,40 @@ use EUREKA\G6KBundle\Entity\ChoiceSource;
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
 
+/**
+ *
+ * This class implements common functions needed in G6KBundle controllers.
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class ControllersHelper {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Controller\BaseAdminController|\EUREKA\G6KBundle\Controller\BaseController     $controller The controller that uses this helper
+	 *
+	 * @access  private
+	 *
+	 */
 	private $controller;
+
+	/**
+	 * @var \Symfony\Component\DependencyInjection\ContainerInterface      $container The service container instance
+	 *
+	 * @access  private
+	 *
+	 */
 	private $container;
 
+	/**
+	 * Constructor of class ControllersHelper
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Controller\BaseAdminController|\EUREKA\G6KBundle\Controller\BaseController $controller The controller that uses this helper
+	 * @param   \Symfony\Component\DependencyInjection\ContainerInterface $container The service container instance
+	 * @return  void
+	 *
+	 */
 	public function __construct($controller, $container) {
 		$this->controller = $controller;
 		$this->container = $container;
@@ -51,6 +80,14 @@ class ControllersHelper {
 		$this->controller->viewsDir = $resourcesDir . '/views';
 	}
 
+	/**
+	 * Formats a source parameter value
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Parameter The source parameter
+	 * @return  string|null The formatted value
+	 *
+	 */
 	protected function formatParamValue(Parameter $param) {
 		$data = $this->controller->simu->getDataById($param->getData());
 		$value = $data->getValue();
@@ -90,6 +127,14 @@ class ControllersHelper {
 		return $value;
 	}
 
+	/**
+	 * Returns the data source accessed by a source query
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Source $source The source
+	 * @return  \EUREKA\G6KBundle\Entity\DataSource The data source
+	 *
+	 */
 	protected function getDatasource(Source $source) {
 		$datasource = $source->getDatasource();
 		if (is_numeric($datasource)) {
@@ -100,6 +145,14 @@ class ControllersHelper {
 		return $datasource;
 	}
 
+	/**
+	 * Process a source query and returns the result of that query.
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Source $source The source
+	 * @return  mixed The result of the query.
+	 *
+	 */
 	public function processSource(Source $source) {
 		$params = $source->getParameters();
 		$datasource = $this->getDatasource($source);
@@ -237,6 +290,14 @@ class ControllersHelper {
 		return null;
 	}
 
+	/**
+	 * Populates the list of values of a data item of type choice from a data source.
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Data &$data The data item of type choice
+	 * @return  void
+	 *
+	 */
 	public function populateChoiceWithSource(Data &$data) {
 		$choiceSource = $data->getChoiceSource();
 		if ($choiceSource !== null) {
@@ -252,6 +313,15 @@ class ControllersHelper {
 		}
 	}
 
+	/**
+	 * Populates the list of values of a data item of type choice from a data source where columns are in the given ChoiceSource object.
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Entity\Data &$data The data item of type choice
+	 * @param   \EUREKA\G6KBundle\Entity\ChoiceSource $choiceSource The given ChoiceSource object
+	 * @return  void
+	 *
+	 */
 	protected function populateChoice(Data &$data, ChoiceSource $choiceSource) {
 		$source = $choiceSource->getId();
 		if ($source != "") {
@@ -282,12 +352,21 @@ class ControllersHelper {
 		}
 	}
 
+	/**
+	 * Returns the formatted value of the data item where the ID is in the first element of the given array.
+	 * If the second element of the given array is 'L' and if the data item is a choice, the label is returned instead of the value.
+	 *
+	 * @access  protected
+	 * @param   array $matches The given array
+	 * @return  string The formatted value of the data item
+	 *
+	 */
 	protected function replaceVariable($matches) {
 		if (preg_match("/^\d+$/", $matches[1])) {
 			$id = (int)$matches[1];
 			$data = $this->controller->simu->getDataById($id);
 		} else {
-			$name = $matches[3];
+			$name = $matches[1];
 			$data = $this->controller->simu->getDataByName($name);
 		}
 		if ($data === null) {
@@ -317,6 +396,14 @@ class ControllersHelper {
 		}
 	}
 
+	/**
+	 * Replaces all data ID by their corresponding value into the given text.
+	 *
+	 * @access  public
+	 * @param   string $target The target text
+	 * @return  string The result text
+	 *
+	 */
 	public function replaceVariables($target) {
 		$result = preg_replace_callback(
 			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
@@ -331,6 +418,14 @@ class ControllersHelper {
 		return $result;
 	}
 
+	/**
+	 * Prefix with a # and returns the prefixed ID of the data item where the ID is in the first element of the given array.
+	 *
+	 * @access  protected
+	 * @param   array $matches The given array
+	 * @return  string The prefixed ID
+	 *
+	 */
 	protected function replaceVariableTag($matches)
 	{
 		$variable = '#' . $matches[1];
@@ -340,6 +435,14 @@ class ControllersHelper {
 		return $variable;
 	}
 
+	/**
+	 * Replaces all the html tag var containing the ID of a data item by # followed by the ID 
+	 *
+	 * @access  public
+	 * @param   string $target The target text
+	 * @return  string The result text
+	 *
+	 */
 	public function replaceVarTagByVariable($target) {
 		$result = preg_replace_callback(
 			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
@@ -349,6 +452,13 @@ class ControllersHelper {
 		return $result;
 	}
 
+	/**
+	 * Returns the list of available widgets.
+	 *
+	 * @access  public
+	 * @return  array The list of available widgets
+	 *
+	 */
 	public function getWidgets() {
 		$widgets = array();
 		if ($this->container->hasParameter('widgets')) {
@@ -359,10 +469,27 @@ class ControllersHelper {
 		return $widgets;
 	}
 
+	/**
+	 * Retrieves the Data object of a data item of the current simulator by its ID.
+	 *
+	 * @access  public
+	 * @param   int $id The ID of the data item.
+	 * @return  \EUREKA\G6KBundle\Entity\Data The Data object
+	 *
+	 */
 	public function getDataById($id) {
 		return $this->controller->simu !== null ? $this->controller->simu->getDataById($id) : null;
 	}
 
+	/**
+	 * Retrieves an action node by its name in the actions tree from the supplied node
+	 *
+	 * @access  public
+	 * @param   string $name The name of the action
+	 * @param   array $fromNode The supplied node
+	 * @return  array|null The action node
+	 *
+	 */
 	public function findAction($name, $fromNode) {
 		foreach ($fromNode as $action) {
 			if ($action['name'] == $name) {
@@ -372,6 +499,15 @@ class ControllersHelper {
 		return null;
 	}
 
+	/**
+	 * Retrieves an action field node in the given fields list for the given current option node
+	 *
+	 * @access  public
+	 * @param   array $fields The fields list
+	 * @param   array $currentNode The current option node
+	 * @return  array|null The action field node 
+	 *
+	 */
 	public function findActionField($fields, $currentNode) {
 		foreach ($fields as $field) {
 			$names = array_keys($field);
@@ -385,6 +521,16 @@ class ControllersHelper {
 		return $currentNode;
 	}
 
+	/**
+	 * Retrieves an action field option node by its value in the field list of the given action node
+	 *
+	 * @access  public
+	 * @param   string $name The field name
+	 * @param   string $value The option value
+	 * @param   array $node The action node
+	 * @return  array|null The action field option node
+	 *
+	 */
 	public function findActionOption($name, $value, $node) {
 		$fields = isset($node['fields']) ? $node['fields'] : array();
 		foreach ($fields as $field) {
@@ -400,6 +546,16 @@ class ControllersHelper {
 		return null;
 	}
 
+	/**
+	 * Parses a date string to the given format and converts it to a DateTime object
+	 *
+	 * @access  public
+	 * @param   string $format The given format
+	 * @param   string $dateStr The date to be converted
+	 * @return  \DateTime|null The DateTime object
+	 * @throws \Exception
+	 *
+	 */
 	public function parseDate($format, $dateStr) {
 		if (empty($dateStr)) {
 			return null;
@@ -412,6 +568,13 @@ class ControllersHelper {
 		return $date;
 	}
 
+	/**
+	 * Determines whether the symfony kernel is in development mode or not.
+	 *
+	 * @access  public
+	 * @return  bool true if the symfony kernel is in development mode, false otherwise
+	 *
+	 */
 	public function isDevelopmentEnvironment() {
 		return in_array($this->controller->get('kernel')->getEnvironment(), array('test', 'dev'));
 	}

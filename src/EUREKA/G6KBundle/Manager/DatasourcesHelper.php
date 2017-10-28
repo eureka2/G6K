@@ -30,14 +30,48 @@ use EUREKA\G6KBundle\Entity\Database;
 use EUREKA\G6KBundle\Manager\DatasourcesHelper;
 use EUREKA\G6KBundle\Manager\Json\JSONToSQLConverter;
 
+/**
+ *
+ * This class implements common functions needed for data sources management.
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class DatasourcesHelper {
 
+	/**
+	 * @var \SimpleXMLElement $datasources The data sources of DataSources.xml 
+	 *
+	 * @access  private
+	 *
+	 */
 	private $datasources;
 
+	/**
+	 * Constructor of class DatasourcesHelper
+	 *
+	 * @access  public
+	 * @param   \SimpleXMLElement $datasources The data sources of DataSources.xml 
+	 * @return  void
+	 *
+	 */
 	public function __construct($datasources) {
 		$this->datasources = $datasources;
 	}
 
+	/**
+	 * Creates and returns a DOM XML document from json-schema.org compliant JSON data files and schemas
+	 *
+	 * @access  public
+	 * @param   string $name The name of the data source
+	 * @param   string $schemafile The path of the JSON schema file
+	 * @param   string $datafile The path of the JSON data file
+	 * @param   array $parameters The database parameters
+	 * @param   string $databasesDir The databases directory
+	 * @param   int &$id The ID of the data source
+	 * @return  \DOMDocument The XML DOM document
+	 *
+	 */
 	public function makeDatasourceDom($name, $schemafile, $datafile, $parameters, $databasesDir, &$id) {
 		$converter = new JSONToSQLConverter($parameters, $databasesDir);
 		$form = $converter->convert($name, $schemafile, $datafile);
@@ -98,6 +132,14 @@ class DatasourcesHelper {
 		return $dom;
 	}
 
+	/**
+	 * Creates and returns a data source into a DOM element from a form. 
+	 *
+	 * @access  public
+	 * @param   array $form The form fields
+	 * @return  \DOMElement The DOM element
+	 *
+	 */
 	public function doCreateDatasource ($form) {
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
@@ -162,6 +204,17 @@ class DatasourcesHelper {
 		return $datasource;
 	}
 
+	/**
+	 * Creates and returns a database interface
+	 *
+	 * @access  public
+	 * @param   array $parameters The database parameters
+	 * @param   int $dbid The database id in DataSources.xml
+	 * @param   string $databasesDir The databases directory
+	 * @param   bool $withDbName (default: true)  if false the database name is not inserted into the dsn string
+	 * @return  \EUREKA\G6KBundle\Entity\Database The Database object of the databae interface.
+	 *
+	 */
 	public function getDatabase($parameters, $dbid, $databasesDir, $withDbName = true) {
 		$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".$dbid."']");
 		$dbtype = (string)$databases[0]['type'];
