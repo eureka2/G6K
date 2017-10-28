@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,9 +31,10 @@ use EUREKA\G6KBundle\Manager\ExpressionParser\Token;
 use EUREKA\G6KBundle\Manager\Splitter;
 
 /**
- * @package EUREKA\G6KBundle\Manager
- * @version 1.0
+ * This class allows the tokenization of an SQL select request.
+ *
  * @author Jacques Archimède
+ *
  */
 class SQLSelectTokenizer  {
 
@@ -173,12 +174,34 @@ class SQLSelectTokenizer  {
 		'avg' => 1
 	);
 
+	/**
+	 * @var array|null $tables The list of tables of the SQL select
+	 *
+	 * @access  private
+	 *
+	 */
 	private $tables = null;
 
+	/**
+	 * Constructor of class SQLSelectTokenizer
+	 *
+	 * @access  public
+	 * @param   array $tables (default: null) The list of tables of the SQL select
+	 * @return  void
+	 *
+	 */
 	public function __construct($tables = null) {
 		$this->setTables($tables);
 	}
 
+	/**
+	 * Sets the list of tables of the SQL select
+	 *
+	 * @access  public
+	 * @param   array $tables The list of tables of the SQL select
+	 * @return  void
+	 *
+	 */
 	public function setTables($tables) {
 		$this->tables = $tables;
 	}
@@ -217,8 +240,8 @@ class SQLSelectTokenizer  {
 	 * Checks if a string contains an expression.
 	 *
 	 * @access protected
-	 * @param string $string the string to check
-	 * @return bool TRUE if the string contains an expression, and FALSE if not.
+	 * @param string $string The string to check
+	 * @return bool true if the string contains an expression, and false if not.
 	 */
 	protected function isExpression($string) {
 		if (preg_match("/^\d{4}\-\d{1,2}\-\d{1,2}( \d{1,2}\:\d{1,2}:\d{1,2})?$/", $string)) { // date
@@ -231,8 +254,8 @@ class SQLSelectTokenizer  {
 	 * Parses and converts a sql expression into a php one
 	 *
 	 * @access protected
-	 * @param string $expression the expression to parse
-	 * @return string the parsed expression
+	 * @param string $expression The expression to parse
+	 * @return string The parsed expression
 	 */
 	protected function parseExpression($expression) {
 		$expression = str_replace(
@@ -250,8 +273,8 @@ class SQLSelectTokenizer  {
 	 * Parses and converts sql conditions into a php one
 	 *
 	 * @access protected
-	 * @param string $conditions the conditions to parse
-	 * @return string the converted conditions
+	 * @param string $conditions The conditions to parse
+	 * @return string The converted conditions
 	 */
 	protected function parseConditions($conditions) {
 		$conditions = preg_replace("/([\w\.]+)\s+between\s+([^\s]+)\s+and\s+([^\s\(\)]+)/i", "$1 >= $2 and $1 <= $3", $conditions);
@@ -264,6 +287,15 @@ class SQLSelectTokenizer  {
 		return $conditions;
 	}
 
+	/**
+	 * Inserts a token into a condition
+	 *
+	 * @access  protected
+	 * @param   \stdClass &$condition The target condition
+	 * @param   \EUREKA\G6KBundle\Manager\ExpressionParser\Token $token The token to be inserted
+	 * @return  void
+	 *
+	 */
 	protected function addTokenInCondition(&$condition, Token $token) {
 		if ($token->isBinaryOperator() && $token->type != Token::T_MOD) {
 			$value = ' ' . $token->value . ' ';
@@ -282,6 +314,14 @@ class SQLSelectTokenizer  {
 		}
 	}
 
+	/**
+	 * Resets a condition
+	 *
+	 * @access  protected
+	 * @param   \stdClass &$condition The condition to reset
+	 * @return  void
+	 *
+	 */
 	protected function resetCondition(&$condition) {
 		$condition->operand = '';
 		$condition->operator = '';
@@ -291,6 +331,15 @@ class SQLSelectTokenizer  {
 		$condition->infunction = false;
 	}
 
+	/**
+	 * Inserts a condition into a condition array if it does not already exist and returns its position in the array.
+	 *
+	 * @access  protected
+	 * @param   array &$conditions The target array of conditions
+	 * @param   \stdClass $condition The condition to be inserted
+	 * @return  int The position of the condition in the array.
+	 *
+	 */
 	protected function insertCondition(&$conditions, \stdClass $condition) {
 		foreach ($conditions as $c => $cond) {
 			if ($cond->operand == $condition->operand &&
@@ -307,6 +356,14 @@ class SQLSelectTokenizer  {
 		return count($conditions);
 	}
 
+	/**
+	 * Parses a where clause
+	 *
+	 * @access  protected
+	 * @param   string $where The where clause
+	 * @return  \stdClass The parsed where clause
+	 *
+	 */
 	protected function parseWhere($where) {
 		$parser = new Parser();
 		$expr = str_replace(array(' and ', ' AND ', ' or ', ' OR '), array(' && ', ' && ', ' || ', ' || '), $where);
@@ -399,8 +456,8 @@ class SQLSelectTokenizer  {
 	 *	( 'LIMIT' ( ( offset ',' ) ? row_count | row_count 'OFFSET' offset ) ) ? 
 	 *
 	 * @access protected
-	 * @param string $sql the select statement
-	 * @return array the parsed request
+	 * @param string $sql The select statement
+	 * @return array The parsed request
 	 * @throws SQLSelectTokenizerException
 	 */
 	public function parseSelect($sql) {
@@ -630,8 +687,8 @@ class SQLSelectTokenizer  {
 	 * if the statement contains no set operator, just parses the select request
 	 *
 	 * @access protected
-	 * @param string $sql the select statement
-	 * @return array the parsed request
+	 * @param string $sql The select statement
+	 * @return array The parsed request
 	 * @throws SQLSelectTokenizerException
 	 */
 	public function parseSetOperations($sql) {

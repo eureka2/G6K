@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,45 +39,83 @@ use EUREKA\G6KBundle\Manager\Splitter;
  * - The JSON schema is saved in a file whose name is in the form <database name>.schema.json
  * - The data is saved in a file whose name is in the form <database name>.json
  *
- * @package EUREKA\G6KBundle\Entity
- * @version 1.0
  * @author Jacques Archimède
  */
 class Parser  {
 
+	/**
+	 * @var string     SQL_SELECT_KEYWORD
+	 */
 	const SQL_SELECT_KEYWORD = 'SELECT ';
+
+	/**
+	 * @var string     SQL_FROM_KEYWORD
+	 */
 	const SQL_FROM_KEYWORD = 'FROM ';
+
+	/**
+	 * @var string     SQL_WHERE_KEYWORD
+	 */
 	const SQL_WHERE_KEYWORD = 'WHERE ';
+
+	/**
+	 * @var string     SQL_ORDER_BY_KEYWORD
+	 */
 	const SQL_ORDER_BY_KEYWORD = 'ORDER BY ';
+
+	/**
+	 * @var string     SQL_LIMIT_KEYWORD
+	 */
 	const SQL_LIMIT_KEYWORD = 'LIMIT ';
+
+	/**
+	 * @var string     SQL_UPDATE_KEYWORD
+	 */
 	const SQL_UPDATE_KEYWORD = 'UPDATE ';
+
+	/**
+	 * @var string     SQL_CREATE_KEYWORD
+	 */
 	const SQL_CREATE_KEYWORD = 'CREATE TABLE ';
+
+	/**
+	 * @var string     SQL_DELETE_KEYWORD
+	 */
 	const SQL_DELETE_KEYWORD = 'DELETE FROM ';
 
 	/**
 	 * A pointer on  the JsonSQL owner.
 	 *
-	 * @var object
+	 * @var \EUREKA\G6KBundle\Manager\Json\JsonSQL The JsonSQL instance
 	 * @access protected
 	 */
 	protected $jsonsql = null;
 
 	/**
-	 * A pointer on  JSON database engine.
+	 * A pointer on JSON database engine.
 	 *
-	 * @var object
+	 * @var \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The JsonSQL engine
 	 * @access protected
 	 */
 	protected $engine = null;
 
 	/**
-	 * the sql request.
+	 * The sql request.
 	 *
 	 * @var string
 	 * @access protected
 	 */
 	protected $sql = null;
 
+	/**
+	 * Constructor of class Parser
+	 *
+	 * @access  protected
+	 * @param   \EUREKA\G6KBundle\Manager\Json\JsonSQL $jsonsql The JsonSQL instance
+	 * @param   string $sql The sql request
+	 * @return  void
+	 *
+	 */
 	protected function __construct(JsonSQL $jsonsql, $sql) {
 		$this->jsonsql = $jsonsql;
 		$this->sql = $sql;
@@ -89,8 +127,8 @@ class Parser  {
 	 *
 	 * @access protected
 	 * @static
-	 * @param string $sql the sql statement
-	 * @return object the parsed request
+	 * @param string $sql The sql statement
+	 * @return \stdClass The parsed request
 	 * @throws JsonSQLException
 	 */
 	public static function create(JsonSQL $jsonsql, $sql) {
@@ -121,7 +159,7 @@ class Parser  {
 	 * Parses the sql statement.
 	 *
 	 * @access public
-	 * @return object the parsed request
+	 * @return \stdClass The parsed request
 	 * @throws JsonSQLException
 	 */
 	public function parse() {

@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,19 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Manager;
 
 /**
- * @package EUREKA\G6KBundle\Manager
- * @version 1.0
+ * Utility class for splitting terms from a string
+ * 
  * @author Jacques Archimède
  */
 class Splitter  {
 
+	/**
+	 * Constructor of class Splitter
+	 *
+	 * @access  public
+	 * @return  void
+	 *
+	 */
 	public function __construct() {
 	}
 

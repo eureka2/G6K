@@ -27,10 +27,8 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
 /**
- * This class Represents an error raised by JsonSQL.
+ * This class represents an error raised by JsonSQL.
  *
- * @package EUREKA\G6KBundle\Entity
- * @version 1.0
  * @author Jacques Archimède
  */
 class JsonSQLException extends \Exception {
@@ -39,9 +37,9 @@ class JsonSQLException extends \Exception {
 	 * Class constructor
 	 *
 	 * @access public
-	 * @param string $message the Exception message to throw. 
-	 * @param int $code the Exception code
-	 * @param Exception $previous the previous exception used for the exception chaining.
+	 * @param string $message The Exception message to throw. 
+	 * @param int $code The Exception code
+	 * @param Exception $previous The previous exception used for the exception chaining.
 	 */
 	public function __construct($message, $code = 0, \Exception $previous = null) {
 		parent::__construct($message, $code, $previous);
@@ -51,7 +49,7 @@ class JsonSQLException extends \Exception {
 	 * Returns the string representation of the exception.
 	 *
 	 * @access public
-	 * @return string the string representation of the exception.
+	 * @return string The string representation of the exception.
 	 */
 	public function __toString() {
 		return __CLASS__ . ": [{$this->code}]: {$this->message}\n";

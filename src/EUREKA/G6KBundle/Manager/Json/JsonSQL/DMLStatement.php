@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,11 +31,25 @@ use EUREKA\G6KBundle\Manager\Json\JsonSQL;
 use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
 
 /**
- *  The class JsonSQLStatement Represents a prepared statement and, 
+ *  The class JsonSQLStatement represents a prepared statement and, 
  *  after the statement is executed, an associated result set.
  */
 class DMLStatement extends Statement {
+
+	/**
+	 * @var mixed|null $builtins <description of the property>
+	 *
+	 * @access  private
+	 *
+	 */
 	private $builtins = null;
+
+	/**
+	 * @var mixed|null $parser <description of the property>
+	 *
+	 * @access  private
+	 *
+	 */
 	private $parser = null;
 
 	/**
@@ -63,7 +77,7 @@ class DMLStatement extends Statement {
 	 * Fetches the next row from a result set
 	 *
 	 * @access public
-	 * @return int the next row from a result set.
+	 * @return int The next row from a result set.
 	 */
 	public function fetch() {
 		return next($this->result);
@@ -72,9 +86,9 @@ class DMLStatement extends Statement {
 	/**
 	 * Returns a single column from the next row of a result set
 	 *
-	 * @param int $c the parameter identifier
+	 * @param int $c The parameter identifier
 	 * @access public
-	 * @return mixed a single column from the next row of a result set or FALSE
+	 * @return mixed a single column from the next row of a result set or false
 	 */
 	public function fetchColumn($c = 0) {
 		$row = $this->fetch();
@@ -85,7 +99,7 @@ class DMLStatement extends Statement {
 	 * Returns an array containing all of the result set rows
 	 *
 	 * @access public
-	 * @return mixed the array of rows in the result set or FALSE
+	 * @return array the array of rows in the result set or false
 	 */
 	public function fetchAll() {
 		return $this->result;
@@ -95,7 +109,7 @@ class DMLStatement extends Statement {
 	 * Executes a prepared select statement.
 	 *
 	 * @access protected
-	 * @return bool TRUE.
+	 * @return bool Always true.
 	 */
 	protected function executeSelect() {
 		$result = $this->select();
@@ -113,7 +127,7 @@ class DMLStatement extends Statement {
 	 * Executes a prepared select statement with set opertations.
 	 *
 	 * @access protected
-	 * @return bool TRUE.
+	 * @return bool Always true.
 	 */
 	protected function executeCompoundSelect() {
 		$request = $this->request;
@@ -163,7 +177,7 @@ class DMLStatement extends Statement {
 	 * Executes a prepared insert statement.
 	 *
 	 * @access protected
-	 * @return bool TRUE.
+	 * @return bool Always true.
 	 */
 	protected function executeInsert() {
 		if (isset($this->request->rows)) {
@@ -201,7 +215,7 @@ class DMLStatement extends Statement {
 	 * Executes a prepared update statement.
 	 *
 	 * @access protected
-	 * @return bool TRUE.
+	 * @return bool Always true.
 	 */
 	protected function executeUpdate() {
 		$table = $this->engine->table($this->request->update);
@@ -230,7 +244,7 @@ class DMLStatement extends Statement {
 	 * Executes a prepared delete statement.
 	 *
 	 * @access protected
-	 * @return bool TRUE.
+	 * @return bool Always true.
 	 */
 	protected function executeDelete() {
 		$table = $this->engine->table($this->request->from);
@@ -250,7 +264,7 @@ class DMLStatement extends Statement {
 	 * Executes a prepared 'truncate' statement.
 	 *
 	 * @access protected
-	 * @return bool TRUE.
+	 * @return bool Always true.
 	 */
 	protected function executeTruncate() {
 		foreach($this->request->tables as $table) {
@@ -265,8 +279,8 @@ class DMLStatement extends Statement {
 	 * containing all the variables in the scope of the running request.
 	 *
 	 * @access protected
-	 * @param array $row the table row 
-	 * @return array array of variables.
+	 * @param \stdClas $row The table row 
+	 * @return array The array of variables.
 	 */
 	protected function makeExpressionVariables(&$row) {
 		$variables = array();
@@ -290,8 +304,8 @@ class DMLStatement extends Statement {
 	 *
 	 * @access protected
 	 * @param string $conditions the condition to evaluate 
-	 * @param array $row the table row 
-	 * @return mixed the evaluation of the condition.
+	 * @param \stdClas $row The table row 
+	 * @return string|bool The evaluation of the condition.
 	 * @throws JsonSQLException
 	 */
 	protected function evaluate($conditions, &$row) {
@@ -314,7 +328,7 @@ class DMLStatement extends Statement {
 	 * Selects rows that satisfy the where clause of the request.
 	 *
 	 * @access protected
-	 * @return array the result of th selection.
+	 * @return array The result of the selection.
 	 */
 	protected function select() {
 		foreach($this->request->from as $k => &$t) {
@@ -334,8 +348,8 @@ class DMLStatement extends Statement {
 	 * Returns the next row resulting from the joining of tables in the query.
 	 *
 	 * @access protected
-	 * @param int $len number of tables 
-	 * @return object|null the next row or null if no more row.
+	 * @param int $len The number of tables 
+	 * @return \stdClass|null The next row or null if no more row.
 	 */
 	protected function joins($len) {
 		$done = false;
@@ -402,8 +416,8 @@ class DMLStatement extends Statement {
 	 * Checks if a string contains an expression.
 	 *
 	 * @access protected
-	 * @param string $string the string to check
-	 * @return bool TRUE if the string contains an expression, and FALSE if not.
+	 * @param string $string The string to check
+	 * @return bool true if the string contains an expression, and false if not.
 	 */
 	protected function isExpression($string) {
 		if (preg_match("/^\d{4}\-\d{1,2}\-\d{1,2}( \d{1,2}\:\d{1,2}:\d{1,2})?$/", $string)) { // date
@@ -416,8 +430,8 @@ class DMLStatement extends Statement {
 	 * Determines if the given value is a builtin value.
 	 *
 	 * @access protected
-	 * @param string $value the value to check
-	 * @return bool TRUE if the value is a builtin value, and FALSE if not.
+	 * @param string $value The value to check
+	 * @return bool true if the value is a builtin value, and false if not.
 	 */
 	protected function isBuiltin($value) {
 		return in_array(strtoupper($value), array_keys($this->builtins));
@@ -427,8 +441,8 @@ class DMLStatement extends Statement {
 	 * Realizes the operation of projection of result set 
 	 *
 	 * @access protected
-	 * @param array $scope the result set 
-	 * @return array subset of the result set after projection 
+	 * @param array $scope The result set 
+	 * @return array The subset of the result set after projection 
 	 */
 	protected function project($scope) {
 		$result = array();
@@ -467,6 +481,15 @@ class DMLStatement extends Statement {
 		return $result;
 	}
 
+	/**
+	 * Returns the value of a field
+	 *
+	 * @access  private
+	 * @param   \stdClas $row The table row 
+	 * @param   mixed $column The table column 
+	 * @return  mixed The value 
+	 *
+	 */
 	private function fieldValue($row, $column) {
 		if (!isset($row->$column)) {
 			$value = '';
@@ -482,8 +505,8 @@ class DMLStatement extends Statement {
 	 * Performs group by clause on the given result set, if any
 	 *
 	 * @access protected
-	 * @param array $result the result set 
-	 * @return array the grouped result set 
+	 * @param array $result The result set 
+	 * @return array The grouped result set 
 	 */
 	protected function aggregate($result) {
 		if (count($this->request->groupby) == 0) {
@@ -551,7 +574,7 @@ class DMLStatement extends Statement {
 	 * Initializes aggregate functions for all columns in the query
 	 *
 	 * @access protected
-	 * @param array $aggregates the initialized aggregate functions
+	 * @param array $aggregates The initialized aggregate functions
 	 * @return void
 	 */
 	protected function resetAggregates(&$aggregates) {
@@ -568,8 +591,8 @@ class DMLStatement extends Statement {
 	 * Sorts the result set according to the 'order by' clause.
 	 *
 	 * @access protected
-	 * @param array $result the result set 
-	 * @return array the new result set
+	 * @param array $result The result set 
+	 * @return array The new result set
 	 */
 	protected function sort($result) {
 		if (count($this->request->orderby) == 0) {
@@ -600,8 +623,8 @@ class DMLStatement extends Statement {
 	 * Applies the 'limit' clause on the result set
 	 *
 	 * @access protected
-	 * @param array $result the result set 
-	 * @return array the new result set
+	 * @param array $result The result set 
+	 * @return array The new result set
 	 */
 	protected function limit($result) {
 		if ($this->request->limit > 0) {

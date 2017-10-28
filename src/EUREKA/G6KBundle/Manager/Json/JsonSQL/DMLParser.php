@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,6 @@ use EUREKA\G6KBundle\Manager\Splitter;
  * - The JSON schema is saved in a file whose name is in the form <database name>.schema.json
  * - The data is saved in a file whose name is in the form <database name>.json
  *
- * @package EUREKA\G6KBundle\Entity
- * @version 1.0
  * @author Jacques Archimède
  */
 class DMLParser extends Parser {
@@ -162,6 +160,15 @@ class DMLParser extends Parser {
 		'avg'
 	);
 
+	/**
+	 * Constructor of class DMLParser
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Manager\Json\JsonSQL $jsonsql The JsonSQL instance
+	 * @param   string $sql The DML statement
+	 * @return  void
+	 *
+	 */
 	public function __construct(JsonSQL $jsonsql, $sql) {
 		parent::__construct($jsonsql, $sql);
 	}
@@ -187,8 +194,8 @@ class DMLParser extends Parser {
 	 *	( 'LIMIT' ( ( offset ',' ) ? row_count | row_count 'OFFSET' offset ) ) ? 
 	 *
 	 * @access protected
-	 * @param string $sql the select statement
-	 * @return array the parsed request
+	 * @param string $sql The select statement
+	 * @return array The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseSelect($sql) {
@@ -400,8 +407,8 @@ class DMLParser extends Parser {
 	 * if the statement contains no set operator, just parses the select request
 	 *
 	 * @access protected
-	 * @param string $sql the select statement
-	 * @return array the parsed request
+	 * @param string $sql The select statement
+	 * @return array The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseSetOperations($sql) {
@@ -454,8 +461,8 @@ class DMLParser extends Parser {
 	 *	)
 	 *
 	 * @access protected
-	 * @param string $sql the insert into statement
-	 * @return array the parsed request
+	 * @param string $sql The insert into statement
+	 * @return array The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseInsert($sql) {
@@ -549,8 +556,8 @@ class DMLParser extends Parser {
 	 *	( 'WHERE' condition ) ? 
 	 *
 	 * @access protected
-	 * @param string $sql the update statement
-	 * @return array the parsed request
+	 * @param string $sql The update statement
+	 * @return array The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseUpdate($sql) {
@@ -600,8 +607,8 @@ class DMLParser extends Parser {
 	 *	'DELETE FROM' table_name ( 'WHERE' condition ) ? 
 	 *
 	 * @access protected
-	 * @param string $sql the delete from statement
-	 * @return array the parsed request
+	 * @param string $sql The delete from statement
+	 * @return array The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseDelete($sql) {
@@ -634,8 +641,8 @@ class DMLParser extends Parser {
 	 *	'TRUNCATE TABLE' table_name ( ', ' table_name ) *
 	 *
 	 * @access protected
-	 * @param string $sql the truncate table statement
-	 * @return array the parsed request
+	 * @param string $sql The truncate table statement
+	 * @return array The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseTruncate($sql) {
@@ -656,9 +663,9 @@ class DMLParser extends Parser {
 	 * Parses and converts a sql expression into a php one
 	 *
 	 * @access protected
-	 * @param string $expression the expression to parse
-	 * @param string $columns the columns of the request
-	 * @return string the parsed expression
+	 * @param string $expression The expression to parse
+	 * @param string $columns The columns of the request
+	 * @return string The parsed expression
 	 */
 	protected function parseExpression($expression, &$columns) {
 		$expression = preg_replace("/(\w+)\.(\w+)/", "$1__$2", $expression);
@@ -696,10 +703,10 @@ class DMLParser extends Parser {
 	 * Parses and converts sql conditions into a php one
 	 *
 	 * @access protected
-	 * @param string $conditions the conditions to parse
-	 * @param string $columns the columns of the request
-	 * @param array $select the select list of the request
-	 * @return string the converted conditions
+	 * @param string $conditions The conditions to parse
+	 * @param string $columns The columns of the request
+	 * @param array $select The select list of the request
+	 * @return string The converted conditions
 	 */
 	protected function parseConditions($conditions, &$columns, $select = array()) {
 		$conditions = preg_replace("/([\w\.]+)\s+between\s+([^\s]+)\s+and\s+([^\s\(\)]+)/i", "$1 >= $2 and $1 <= $3", $conditions);
@@ -766,7 +773,7 @@ class DMLParser extends Parser {
 	 * before being evaluated by the eval function
 	 *
 	 * @access public
-	 * @param string $expression php expression to check
+	 * @param string $expression The php expression to check
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -795,8 +802,8 @@ class DMLParser extends Parser {
 	 * Checks if a string contains an expression.
 	 *
 	 * @access protected
-	 * @param string $string the string to check
-	 * @return bool TRUE if the string contains an expression, and FALSE if not.
+	 * @param string $string The string to check
+	 * @return bool true if the string contains an expression, and false if not.
 	 */
 	protected function isExpression($string) {
 		if (preg_match("/^\d{4}\-\d{1,2}\-\d{1,2}( \d{1,2}\:\d{1,2}:\d{1,2})?$/", $string)) { // date
@@ -809,8 +816,8 @@ class DMLParser extends Parser {
 	 * Replaces into an expression, the SQL functions by their PHP equivalents
 	 *
 	 * @access private
-	 * @param string $expr the SQL expression
-	 * @return string the new expression with PHP functions.
+	 * @param string $expr The SQL expression
+	 * @return string The new expression with PHP functions.
 	 */
 	private function replaceSynonyms($expr) {
 		return preg_replace_callback(

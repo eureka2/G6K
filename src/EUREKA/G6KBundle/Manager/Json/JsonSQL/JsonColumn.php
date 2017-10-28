@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,12 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
+/**
+ * This class provides static functions to update the definition of columns in a JsonSQL database
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class JsonColumn  {
 
 	/**
@@ -33,11 +39,11 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column the name of the new column
-	 * @param object $columnDef column definition 
-	 * @param array $required an array with the column name if required
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The name of the new column
+	 * @param object $columnDef The column definition 
+	 * @param array $required An array with the column name if required
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -66,10 +72,10 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column actual column name in the table
-	 * @param string $newname new name of the column
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $columnThe  actual column name in the table
+	 * @param string $newname The new name of the column
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -96,10 +102,10 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column actual column name to drop in the table
-	 * @param bool $ifexists if TRUE, don't throw an error if the table or the column doesn't exists
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The actual column name to drop in the table
+	 * @param bool $ifexists if true, don't throw an error if the table or the column doesn't exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -132,10 +138,10 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column actual column name
-	 * @param bool $ifexists if TRUE, don't throw an error if the table or the column doesn't exists
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The actual column name
+	 * @param bool $ifexists if true, don't throw an error if the table or the column doesn't exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -358,10 +364,10 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param bool $allownull if TRUE, the column allow null value
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param bool $allownull if true, the column allow null value
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -389,10 +395,10 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param mixed $default the default value. If FALSE, remove the default
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param string|bool $default The default value. If false, remove the default
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -416,10 +422,10 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param bool $remove if TRUE, remove the primary key
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param bool $remove if true, remove the primary key
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -472,10 +478,10 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param bool $remove if TRUE, remove the primary key
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param bool $remove if true, remove the primary key
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -526,10 +532,10 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param mixed $title the title content. If FALSE, remove the title
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param string|bool $title The title content. If false, remove the title
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -556,10 +562,10 @@ class JsonColumn  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param mixed $description the description content. If FALSE, remove the description
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param string|bool $description The description content. If false, remove the description
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -581,6 +587,18 @@ class JsonColumn  {
 		$engine->notifySchemaModification();
 	}
 
+	/**
+	 * Checks the existence of a column
+	 *
+	 * @access  private
+	 * @static 
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @return  void
+	 * @throws \EUREKA\G6KBundle\Manager\Json\JsonSQL\JsonSQLException if the column doesn't exists
+	 *
+	 */
 	private static function checkColumn(Engine $engine, $table, $column) {
 		if (!isset($engine->getDb()->schema->properties->{$table})) {
 			throw new JsonSQLException("table '$table' doesn't exists");

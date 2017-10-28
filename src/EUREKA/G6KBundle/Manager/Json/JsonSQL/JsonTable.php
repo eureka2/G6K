@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,12 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
+/**
+ * This class provides static functions to update the definition of tables in a JsonSQL database
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class JsonTable  {
 
 	/**
@@ -33,12 +39,12 @@ class JsonTable  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param object $columns columns definition 
-	 * @param array $required list of required columns
-	 * @param array $foreignkeys list of foreign keys definition
-	 * @param bool $ifnotexists if TRUE, don't throw an error if the table already exists
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param object $columns The columns definition 
+	 * @param array $required The list of required columns
+	 * @param array $foreignkeys The list of foreign keys definition
+	 * @param bool $ifnotexists if true, don't throw an error if the table already exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -82,9 +88,9 @@ class JsonTable  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param bool $ifexists if TRUE, don't throw an error if the table doesn't exists
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param bool $ifexists if true, don't throw an error if the table doesn't exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -106,9 +112,9 @@ class JsonTable  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param string $newname new name of the table
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string $newname The new name of the table
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -132,9 +138,9 @@ class JsonTable  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param mixed $title the title content. If FALSE, remove the title
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string|bool $title The title content. If false, remove the title
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -163,9 +169,9 @@ class JsonTable  {
 	 *
 	 * @access public
 	 * @static
-	 * @param Engine $engine the engine using this function
-	 * @param string $table table name
-	 * @param mixed $description the description content. If FALSE, remove the description
+	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
+	 * @param string $table The table name
+	 * @param string|bool $description The description content. If false, remove the description
 	 * @return void
 	 * @throws JsonSQLException
 	 */

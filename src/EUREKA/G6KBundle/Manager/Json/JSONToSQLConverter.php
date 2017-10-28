@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,20 @@ namespace EUREKA\G6KBundle\Manager\Json;
 
 use EUREKA\G6KBundle\Entity\Database;
 
+/**
+ * This class allows the conversion of a json-schema.org compliant JSON database and exported from G6K to a SQL database
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class JSONToSQLConverter {
 
+	/**
+	 * @var array      $parameters The database parameters
+	 *
+	 * @access  private
+	 *
+	 */
 	private $parameters = array(
 		'database_driver' => 'pdo_sqlite',
 		'database_host' => null,
@@ -40,6 +52,12 @@ class JSONToSQLConverter {
 		'database_path' => null
 	);
 
+	/**
+	 * @var array      $datatypes The SQL datatypes by SQL driver
+	 *
+	 * @access  private
+	 *
+	 */
 	private $datatypes = array(
 		'pdo_sqlite' => array(
 			'boolean' => 'BOOLEAN',
@@ -70,14 +88,44 @@ class JSONToSQLConverter {
 		)
 	);
 
+	/**
+	 * @var string      $databasesDir The G6K databases directory
+	 *
+	 * @access  private
+	 *
+	 */
 	private $databasesDir;
+
+	/**
+	 * @var \EUREKA\G6KBundle\Entity\Database      $database The Database object
+	 *
+	 * @access  private
+	 *
+	 */
 	private $database;
 
+	/**
+	 * Constructor of class JSONToSQLConverter
+	 *
+	 * @access  public
+	 * @param   array $fparameters The database parameters
+	 * @param   string $databasesDir The G6K databases directory
+	 * @return  void
+	 *
+	 */
 	public function __construct($fparameters, $databasesDir) {
 		$this->databasesDir = $databasesDir;
 		$this->parameters = array_merge($this->parameters, $fparameters);
 	}
 
+	/**
+	 * Returns the data type of a database column
+	 *
+	 * @access  private
+	 * @param   \stdClass $coldef The database column definition
+	 * @return  string The data type
+	 *
+	 */
 	private function getType(\stdClass $coldef) {
 		$driver = $this->parameters['database_driver'];
 		if ($coldef->type == 'string') {
@@ -96,6 +144,15 @@ class JSONToSQLConverter {
 		return $type;
 	}
 
+	/**
+	 * Prepares a value according to its type for its insertion in a SQL database
+	 *
+	 * @access  private
+	 * @param   string $type The type of the value
+	 * @param   string $value The value
+	 * @return  string The new value
+	 *
+	 */
 	private function getValue($type, $value) {
 		if ($type == 'string') {
 			$value = $this->database->quote($value, \PDO::PARAM_STR);
@@ -107,6 +164,14 @@ class JSONToSQLConverter {
 		return $value;
 	}
 
+	/**
+	 * Decodes a properties list from JSON schema
+	 *
+	 * @access  private
+	 * @param   string $arg The properties list
+	 * @return  \stdClass The decoded properties
+	 *
+	 */
 	private function properties($arg) {
 		$props = array();
 		$params = array_map(function ($i) { return trim($i); }, str_getcsv($arg, ",", "'"));
@@ -117,6 +182,15 @@ class JSONToSQLConverter {
 		return (object)$props;
 	}
 
+	/**
+	 * Connects to the database
+	 *
+	 * @access  private
+	 * @param   string $dbschema The database name
+	 * @param   string $dbtype The database type
+	 * @return  void
+	 *
+	 */
 	private function connectDatabase($dbschema, $dbtype) {
 		$this->database = new Database(null, $this->databasesDir, 1, $dbtype, str_replace('-', '_', $dbschema));
 		if ($this->parameters['database_host'] != "") {
@@ -134,6 +208,17 @@ class JSONToSQLConverter {
 		$this->database->connect(false);
 	}
 
+	/**
+	 * Imports a JSON database to a SQL database and returns an array descriptor of the database for the update of DataSources.xml
+	 *
+	 * @access  public
+	 * @param   string $name The name of the database
+	 * @param   string $schemafile The JSON schema file
+	 * @param   string $datafile The JSON data file
+	 * @return  array The array descriptor of the SQL database
+	 * @throws \Exception
+	 *
+	 */
 	public function convert($name, $schemafile, $datafile) {
 		$schema = file_get_contents($schemafile);
 		if ($schema === false) {

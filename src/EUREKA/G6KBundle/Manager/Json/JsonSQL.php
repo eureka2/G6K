@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -41,8 +41,6 @@ use EUREKA\G6KBundle\Manager\Json\JsonSQL\JsonSQLException;
  * - The JSON schema is saved in a file whose name is in the form <database name>.schema.json
  * - The data is saved in a file whose name is in the form <database name>.json
  *
- * @package EUREKA\G6KBundle\Entity
- * @version 1.0
  * @author Jacques Archimède
  */
 class JsonSQL  {
@@ -52,7 +50,7 @@ class JsonSQL  {
 	 * there is one instance per database
 	 *
 	 * @static
-	 * @var object
+	 * @var array $_instance 
 	 * @access private
 	 */
  	private static $_instance = array();
@@ -60,7 +58,7 @@ class JsonSQL  {
 	/**
 	 * The JsonSQL engine attached to this instance 
 	 *
-	 * @var EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine
+	 * @var \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine
 	 * @access private
 	 */
 	private $engine = null;
@@ -69,7 +67,6 @@ class JsonSQL  {
 	 * Represents a connection between PHP and a json database in memory.
 	 *
 	 * @access private
-	 * @param string $name the name of json database (without the file extension)
 	 * @throws JsonSQLException
 	 */
 	private function __construct() {
@@ -82,9 +79,9 @@ class JsonSQL  {
 	 * @access public
 	 * @static
 	 * @see JsonSQL::create()
-	 * @param string $name the name of json database (without the file extension)
+	 * @param string $name The name of json database (without the file extension)
 	 * @param boolean $create if true, creates the database if it doesn't exists
-	 * @return object a JsonSQL instance
+	 * @return \EUREKA\G6KBundle\Manager\Json\JsonSQL The JsonSQL instance
 	 */
 	public static function open($name, $create = false) {
 		if(!isset(self::$_instance[$name])) {
@@ -96,12 +93,12 @@ class JsonSQL  {
 	}
 
 	/**
-	 * Create a json database then open it
+	 * Creates a json database then open it
 	 *
 	 * @access public
 	 * @static
-	 * @param string $name the name of json database (without the file extension)
-	 * @return object a JsonSQL instance
+	 * @param string $name The name of json database (without the file extension)
+	 * @return \EUREKA\G6KBundle\Manager\Json\JsonSQL The JsonSQL instance
 	 * @throws JsonSQLException
 	 */
 	public static function create($name) {
@@ -111,26 +108,33 @@ class JsonSQL  {
 		return self::open($name, true);
 	}
 
+	/**
+	 * Returns the JsonSQL engine attached to this instance 
+	 *
+	 * @access  public
+	 * @return  \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine The JsonSQL engine
+	 *
+	 */
 	public function getEngine() {
 		return $this->engine;
 	}
 
 	/**
-	 * returns a pointer to the json schema object
+	 * Returns a pointer to the json schema object
 	 *
 	 * @access public
-	 * @return object the json schema object
+	 * @return \stdClass The json schema object
 	 */
 	public function schema() {
 		return $this->engine->schema();
 	}
 
 	/**
-	 * returns a ArrayIterator on the rows of the table $name
+	 * Returns a ArrayIterator on the rows of the table $name
 	 *
 	 * @access public
-	 * @param string $name the table name
-	 * @return ArrayIterator the ArrayIterator
+	 * @param string $name The table name
+	 * @return ArrayIterator The ArrayIterator
 	 */
 	public function table($name) {
 		return $this->engine->table($name);
@@ -141,7 +145,7 @@ class JsonSQL  {
 	 *
 	 * @access public
 	 * @param string $sql a valid SQL statement 
-	 * @return object a Statement instance
+	 * @return  \EUREKA\G6KBundle\Manager\Json\JsonSQL\Statement a Statement instance
 	 */
 	public function prepare($sql) {
 		if (extension_loaded('apc') && ini_get('apc.enabled')) {
@@ -159,7 +163,7 @@ class JsonSQL  {
 	 *
 	 * @access public
 	 * @param string $sql a valid SQL statement to prepare and execute.
-	 * @return object a Statement instance
+	 * @return \EUREKA\G6KBundle\Manager\Json\JsonSQL\Statement a Statement instance
 	 */
 	public function query($sql) {
 		$statement = $this->prepare($sql);
@@ -174,8 +178,8 @@ class JsonSQL  {
 	 * returning the number of rows affected by the statement.
 	 *
 	 * @access public
-	 * @param string $sql a valid SQL statement to prepare and execute.
-	 * @return int the number of rows that were modified or deleted by the SQL statement
+	 * @param string $sql The valid SQL statement to prepare and execute.
+	 * @return int The number of rows that were modified or deleted by the SQL statement
 	 */
 	public function exec($sql) {
 		$statement = $this->query($sql);
@@ -186,7 +190,7 @@ class JsonSQL  {
 	 * Quotes a string for use in a query.
 	 *
 	 * @access public
-	 * @param string $string the string to be quoted.
+	 * @param string $string The string to be quoted.
 	 * @param int $type provides a PDO data type hint (default : PDO::PARAM_STR).
 	 * @return string a quoted string that is safe to pass into an SQL statement
 	 */
@@ -238,7 +242,7 @@ class JsonSQL  {
 	 * Checks if inside a transaction.
 	 *
 	 * @access public
-	 * @return bool TRUE if a transaction is currently active, and FALSE if not.
+	 * @return bool true if a transaction is currently active, and false if not.
 	 */
 	public function inTransaction() {
 		return $this->engine->inTransaction();
@@ -248,8 +252,8 @@ class JsonSQL  {
 	 * Appends a row to a table
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param array $row row to append
+	 * @param string $table The table name
+	 * @param array $row The row to append
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -261,8 +265,8 @@ class JsonSQL  {
 	 * Deletes a table row
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param int $index position of the row in the table
+	 * @param string $table The table name
+	 * @param int $index The position of the row in the table
 	 * @return void
 	 */
 	public function delete($table, $index) {
@@ -273,9 +277,9 @@ class JsonSQL  {
 	 * Replaces a table row by another
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param int $index position of the row in the table
-	 * @param array $row new row
+	 * @param string $table The table name
+	 * @param int $index The position of the row in the table
+	 * @param array $row The new row
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -287,11 +291,11 @@ class JsonSQL  {
 	 * Creates a table in the database
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param object $columns columns definition 
-	 * @param array $required list of required columns
-	 * @param array $foreignkeys list of foreign keys definition
-	 * @param bool $ifnotexists if TRUE, don't throw an error if the table already exists
+	 * @param string $table The table name
+	 * @param \stdClass $columns The columns definition 
+	 * @param array $required The list of required columns
+	 * @param array $foreignkeys The list of foreign keys definition
+	 * @param bool $ifnotexists if true, don't throw an error if the table already exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -303,7 +307,7 @@ class JsonSQL  {
 	 * Deletes all rows from a table
 	 *
 	 * @access public
-	 * @param string $table table name
+	 * @param string $table The table name
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -315,8 +319,8 @@ class JsonSQL  {
 	 * Drops a table
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param bool $ifexists if TRUE, don't throw an error if the table doesn't exists
+	 * @param string $table The table name
+	 * @param bool $ifexists if true, don't throw an error if the table doesn't exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -328,8 +332,8 @@ class JsonSQL  {
 	 * Renames a table
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $newname new name of the table
+	 * @param string $table The table name
+	 * @param string $newname The new name of the table
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -341,9 +345,9 @@ class JsonSQL  {
 	 * Adds a column in a table of the database
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column the name of the new column
-	 * @param object $columnDef column definition 
+	 * @param string $table The table name
+	 * @param string $column The name of the new column
+	 * @param \stdClass $columnDef The column definition 
 	 * @param array $required an array with the column name if required
 	 * @return void
 	 * @throws JsonSQLException
@@ -356,9 +360,9 @@ class JsonSQL  {
 	 * Renames a column
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name in the table
-	 * @param string $newname new name of the column
+	 * @param string $table The table name
+	 * @param string $column The actual column name in the table
+	 * @param string $newname The new name of the column
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -370,9 +374,9 @@ class JsonSQL  {
 	 * Drops a column
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name to drop in the table
-	 * @param bool $ifexists if TRUE, don't throw an error if the table or the column doesn't exists
+	 * @param string $table The table name
+	 * @param string $column The actual column name to drop in the table
+	 * @param bool $ifexists if true, don't throw an error if the table or the column doesn't exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -384,9 +388,9 @@ class JsonSQL  {
 	 * Changes the type of a column
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name
-	 * @param bool $ifexists if TRUE, don't throw an error if the table or the column doesn't exists
+	 * @param string $table The table name
+	 * @param string $column The actual column name
+	 * @param bool $ifexists if true, don't throw an error if the table or the column doesn't exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -398,9 +402,9 @@ class JsonSQL  {
 	 * Changes whether a column is marked to allow null values or to reject null values
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param bool $allownull if TRUE, the column allow null value
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param bool $allownull if true, the column allow null value
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -412,9 +416,9 @@ class JsonSQL  {
 	 * Set or remove the default value for a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param mixed $default the default value. If FALSE, remove the default
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param string|bool $default The default value. If false, remove the default
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -426,9 +430,9 @@ class JsonSQL  {
 	 * Set or remove primary key for a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param bool $remove if TRUE, remove the primary key
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param bool $remove if true, remove the primary key
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -440,9 +444,9 @@ class JsonSQL  {
 	 * Set or remove autoincrement for a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param bool $remove if TRUE, remove the primary key
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param bool $remove if true, remove the primary key
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -454,8 +458,8 @@ class JsonSQL  {
 	 * Set or remove the title of a table.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param mixed $title the title content. If FALSE, remove the title
+	 * @param string $table The table name
+	 * @param string|bool $title The title content. If false, remove the title
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -467,8 +471,8 @@ class JsonSQL  {
 	 * Set or remove the description of a table.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param mixed $description the description content. If FALSE, remove the description
+	 * @param string $table The table name
+	 * @param string|bool $description The description content. If false, remove the description
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -480,9 +484,9 @@ class JsonSQL  {
 	 * Set or remove the title of a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param mixed $title the title content. If FALSE, remove the title
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param string|bool $title The title content. If false, remove the title
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -494,9 +498,9 @@ class JsonSQL  {
 	 * Set or remove the description of a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param mixed $description the description content. If FALSE, remove the description
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param string|bool $description The description content. If false, remove the description
 	 * @return void
 	 * @throws JsonSQLException
 	 */

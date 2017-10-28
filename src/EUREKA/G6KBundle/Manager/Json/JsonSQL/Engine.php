@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,6 @@ use EUREKA\G6KBundle\Manager\Splitter;
  * - The JSON schema is saved in a file whose name is in the form <database name>.schema.json
  * - The data is saved in a file whose name is in the form <database name>.json
  *
- * @package EUREKA\G6KBundle\Entity
- * @version 1.0
  * @author Jacques Archimède
  */
 class Engine  {
@@ -48,7 +46,7 @@ class Engine  {
 	/**
 	 * A pointer on the JsonSQL owner.
 	 *
-	 * @var object
+	 * @var \EUREKA\G6KBundle\Manager\Json\JsonSQL The JsonSQL instance
 	 * @access private
 	 */
 	private $jsonsql = null;
@@ -64,7 +62,7 @@ class Engine  {
 	/**
 	 * The committed content of the JSON database managed by that engine 
 	 *
-	 * @var object
+	 * @var \stdClass
 	 * @access private
 	 */
 	 private $json = null;
@@ -79,7 +77,7 @@ class Engine  {
 	private static $compact = false;
 
 	/**
-	 * TRUE if a transaction is currently active, and FALSE if not.
+	 * true if a transaction is currently active, and false if not.
 	 *
 	 * @var bool
 	 * @access private
@@ -89,14 +87,14 @@ class Engine  {
 	/**
 	 * Content being updated during a transaction 
 	 *
-	 * @var object
+	 * @var \stdClass
 	 * @access private
 	 */
 	private $backup = null;
 
 	/**
 	 * 
-	 * TRUE if data has been modified, and FALSE if not.
+	 * true if data has been modified, and false if not.
 	 *
 	 * @var bool
 	 * @access private
@@ -105,7 +103,7 @@ class Engine  {
 
 	/**
 	 * 
-	 * TRUE if the database schema has been modified, and FALSE if not.
+	 * true if the database schema has been modified, and false if not.
 	 *
 	 * @var bool
 	 * @access private
@@ -126,11 +124,19 @@ class Engine  {
 	 * if a transaction is currently active for this instance, point to the non-commited content ($this->backup)
 	 * otherwise point to the commited content ($this->json)
 	 *
-	 * @var object
+	 * @var \stdClass
 	 * @access private
 	 */
 	private $db = null;
 
+	/**
+	 * Constructor of class Engine
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Manager\Json\JsonSQL $jsonsql The JsonSQL instance
+	 * @return  void
+	 *
+	 */
 	public function __construct(JsonSQL $jsonsql) {
 		$this->jsonsql = $jsonsql;
 	}
@@ -145,6 +151,13 @@ class Engine  {
 		$this->commit();
 	}
 
+	/**
+	 * Returns the pointer on the content of the JSON database
+	 *
+	 * @access  public
+	 * @return  \stdClass The pointer on the content of the JSON database
+	 *
+	 */
 	public function getDb() {
 		return $this->db;
 	}
@@ -154,7 +167,7 @@ class Engine  {
 	 *
 	 * @access public
 	 * @param string $name the name of json database (without the file extension)
-	 * @param boolean $create if true, creates the database if it doesn't exists
+	 * @param bool $create if true, creates the database if it doesn't exists
 	 */
 	public function open($name, $create = false) {
 		if (!file_exists($name.'.json') && $create) {
@@ -183,12 +196,12 @@ class Engine  {
 	}
 
 	/**
-	 * Create a json database then open it
+	 * Creates a json database then open it
 	 *
 	 * @access public
 	 * @static
-	 * @param string $name the name of json database (without the file extension)
-	 * @return object a JsonSQL instance
+	 * @param string $name The name of json database (without the file extension)
+	 * @param bool $compact if true, the content of the database will be compact
 	 * @throws JsonSQLException
 	 */
 	public function create($name, $compact) {
@@ -211,10 +224,10 @@ class Engine  {
 	}
 
 	/**
-	 * returns a pointer to the json schema object
+	 * Returns a pointer to the json schema object
 	 *
 	 * @access public
-	 * @return object the json schema object
+	 * @return \stdClass The json schema object
 	 */
 	public function schema() {
 		return $this->db->schema;
@@ -224,8 +237,8 @@ class Engine  {
 	 * returns a ArrayIterator on the rows of the table $name
 	 *
 	 * @access public
-	 * @param string $name the table name
-	 * @return ArrayIterator the ArrayIterator
+	 * @param string $name The table name
+	 * @return ArrayIterator The ArrayIterator
 	 */
 	public function table($name) {
 		return new \ArrayIterator($this->db->data->{$name});
@@ -235,7 +248,7 @@ class Engine  {
 	 * Quotes a string for use in a query.
 	 *
 	 * @access public
-	 * @param string $string the string to be quoted.
+	 * @param string $string The string to be quoted.
 	 * @param int $type provides a PDO data type hint (default : PDO::PARAM_STR).
 	 * @return string a quoted string that is safe to pass into an SQL statement
 	 */
@@ -308,7 +321,7 @@ class Engine  {
 	}
 
 	/**
-	 * Commit any modification
+	 * Commits any modification
 	 *
 	 * @access public
 	 * @return bool  always true
@@ -319,7 +332,7 @@ class Engine  {
 	}
 
 	/**
-	 * Commit any modification of the schema
+	 * Commits any modification of the schema
 	 *
 	 * @access public
 	 * @return bool  always true
@@ -348,7 +361,7 @@ class Engine  {
 	 * Checks if inside a transaction.
 	 *
 	 * @access public
-	 * @return bool TRUE if a transaction is currently active, and FALSE if not.
+	 * @return bool true if a transaction is currently active, and false if not.
 	 */
 	public function inTransaction() {
 		return $this->transaction;
@@ -360,8 +373,8 @@ class Engine  {
 	 * otherwise, the database is loaded from the filesystem and decoded.
 	 *
 	 * @access private
-	 * @param string $path the name of json database (without the file extension)
-	 * @return object the json database (schema and data)
+	 * @param string $path The name of json database (without the file extension)
+	 * @return object The json database (schema and data)
 	 * @throws JsonSQLException
 	 */
 	private function loadJsonFromCache($path) {
@@ -401,8 +414,8 @@ class Engine  {
 	 * only select statement are stored into memory cache.
 	 *
 	 * @access private
-	 * @param string $sql the sql statement
-	 * @return object the parsed request (select statement only)
+	 * @param string $sql The sql statement
+	 * @return object The parsed request (select statement only)
 	 */
 	public function loadRequestFromCache($sql) {
 		$sqlkey = md5($sql);
@@ -422,8 +435,8 @@ class Engine  {
 	 * Checks if the table already contains a record with the provided keys
 	 *
 	 * @access protected
-	 * @param string $table table name
-	 * @param array $keys array of keys
+	 * @param string $table The table name
+	 * @param array $keys The array of keys
 	 * @param int $exclude optionally, don't verify for the row with this index
 	 * @return void
 	 * @throws JsonSQLException
@@ -451,8 +464,8 @@ class Engine  {
 	 * Appends a row to a table
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param array $row row to append
+	 * @param string $table The table name
+	 * @param array $row The row to append
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -523,8 +536,8 @@ class Engine  {
 	 * Deletes a table row
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param int $index position of the row in the table
+	 * @param string $table The table name
+	 * @param int $index The position of the row in the table
 	 * @return void
 	 */
 	public function delete($table, $index) {
@@ -537,9 +550,9 @@ class Engine  {
 	 * Replaces a table row by another
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param int $index position of the row in the table
-	 * @param array $row new row
+	 * @param string $table The table name
+	 * @param int $index The position of the row in the table
+	 * @param array $row The new row
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -588,11 +601,11 @@ class Engine  {
 	 * Creates a table in the database
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param object $columns columns definition 
-	 * @param array $required list of required columns
-	 * @param array $foreignkeys list of foreign keys definition
-	 * @param bool $ifnotexists if TRUE, don't throw an error if the table already exists
+	 * @param string $table The table name
+	 * @param object $columns The columns definition 
+	 * @param array $required The list of required columns
+	 * @param array $foreignkeys The list of foreign keys definition
+	 * @param bool $ifnotexists if true, don't throw an error if the table already exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -604,7 +617,7 @@ class Engine  {
 	 * Deletes all rows from a table
 	 *
 	 * @access public
-	 * @param string $table table name
+	 * @param string $table The table name
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -622,8 +635,8 @@ class Engine  {
 	 * Drops a table
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param bool $ifexists if TRUE, don't throw an error if the table doesn't exists
+	 * @param string $table The table name
+	 * @param bool $ifexists if true, don't throw an error if the table doesn't exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -635,8 +648,8 @@ class Engine  {
 	 * Renames a table
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $newname new name of the table
+	 * @param string $table The table name
+	 * @param string $newname The new name of the table
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -648,9 +661,9 @@ class Engine  {
 	 * Adds a column in a table of the database
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column the name of the new column
-	 * @param object $columnDef column definition 
+	 * @param string $table The table name
+	 * @param string $column The name of the new column
+	 * @param object $columnDef The column definition 
 	 * @param array $required an array with the column name if required
 	 * @return void
 	 * @throws JsonSQLException
@@ -663,9 +676,9 @@ class Engine  {
 	 * Renames a column
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name in the table
-	 * @param string $newname new name of the column
+	 * @param string $table The table name
+	 * @param string $column The actual column name in the table
+	 * @param string $newname The new name of the column
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -677,9 +690,9 @@ class Engine  {
 	 * Drops a column
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name to drop in the table
-	 * @param bool $ifexists if TRUE, don't throw an error if the table or the column doesn't exists
+	 * @param string $table The table name
+	 * @param string $column The actual column name to drop in the table
+	 * @param bool $ifexists if true, don't throw an error if the table or the column doesn't exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -691,9 +704,9 @@ class Engine  {
 	 * Changes the type of a column
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name
-	 * @param bool $ifexists if TRUE, don't throw an error if the table or the column doesn't exists
+	 * @param string $table The table name
+	 * @param string $column The actual column name
+	 * @param bool $ifexists if true, don't throw an error if the table or the column doesn't exists
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -705,9 +718,9 @@ class Engine  {
 	 * Changes whether a column is marked to allow null values or to reject null values
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param bool $allownull if TRUE, the column allow null value
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param bool $allownull if true, the column allow null value
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -719,9 +732,9 @@ class Engine  {
 	 * Set or remove the default value for a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param mixed $default the default value. If FALSE, remove the default
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param string|bool $default The default value. If false, remove the default
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -733,9 +746,9 @@ class Engine  {
 	 * Set or remove primary key for a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param bool $remove if TRUE, remove the primary key
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param bool $remove if true, remove the primary key
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -747,9 +760,9 @@ class Engine  {
 	 * Set or remove autoincrement for a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param bool $remove if TRUE, remove the primary key
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param bool $remove if true, remove the primary key
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -761,8 +774,8 @@ class Engine  {
 	 * Set or remove the title of a table.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param mixed $title the title content. If FALSE, remove the title
+	 * @param string $table The table name
+	 * @param string|bool $title The title content. If false, remove the title
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -774,8 +787,8 @@ class Engine  {
 	 * Set or remove the description of a table.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param mixed $description the description content. If FALSE, remove the description
+	 * @param string $table The table name
+	 * @param string|bool $description The description content. If false, remove the description
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -787,9 +800,9 @@ class Engine  {
 	 * Set or remove the title of a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param mixed $title the title content. If FALSE, remove the title
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param string|bool $title The title content. If false, remove the title
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -801,9 +814,9 @@ class Engine  {
 	 * Set or remove the description of a column.
 	 *
 	 * @access public
-	 * @param string $table table name
-	 * @param string $column actual column name 
-	 * @param mixed $description the description content. If FALSE, remove the description
+	 * @param string $table The table name
+	 * @param string $column The actual column name 
+	 * @param string|bool $description The description content. If false, remove the description
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -843,9 +856,9 @@ class Engine  {
 	 *	Converts a string value according to its json data type
 	 *
 	 * @access public
-	 * @param string $type json data type (string, integer, number or boolean)
-	 * @param string $value the value to convert
-	 * @return mixed the converted value
+	 * @param string $type The json data type (string, integer, number or boolean)
+	 * @param string $value The value to convert
+	 * @return string|float|bool|int The converted value
 	 */
 	public function normalizeValue($type, $value) {
 		if ($value == 'null') {
@@ -870,8 +883,8 @@ class Engine  {
 	 * Actually, only 'primarykey' and 'autoincrement' are used.
 	 *
 	 * @access public
-	 * @param string $list the list of comma separated properties
-	 * @return object the properties object.
+	 * @param string $list The list of comma separated properties
+	 * @return \stdClass The properties object.
 	 */
 	public function properties($arg) {
 		$props = array();

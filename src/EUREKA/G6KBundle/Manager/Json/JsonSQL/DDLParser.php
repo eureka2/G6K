@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,6 @@ use EUREKA\G6KBundle\Manager\Splitter;
  * - The JSON schema is saved in a file whose name is in the form <database name>.schema.json
  * - The data is saved in a file whose name is in the form <database name>.json
  *
- * @package EUREKA\G6KBundle\Entity
- * @version 1.0
  * @author Jacques Archimède
  */
 class DDLParser extends Parser {
@@ -94,6 +92,15 @@ class DDLParser extends Parser {
 		'year' => 'integer'
 	);
 
+	/**
+	 * Constructor of class DDLParser
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Manager\Json\JsonSQL $jsonsql The JsonSQL instance
+	 * @param   string $sql The DDL statement
+	 * @return  void
+	 *
+	 */
 	public function __construct(JsonSQL $jsonsql, $sql) {
 		parent::__construct($jsonsql, $sql);
 	}
@@ -127,8 +134,8 @@ class DDLParser extends Parser {
 	 *    )
 	 *
 	 * @access protected
-	 * @param string $sql the create table statement
-	 * @return array the parsed request
+	 * @param string $sql The create table statement
+	 * @return array The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseCreate($sql) {
@@ -332,6 +339,16 @@ class DDLParser extends Parser {
 		return $request;
 	}
 
+	/**
+	 * Copy the definitions of columns
+	 *
+	 * @access  private
+	 * @param   string $table The name of the table
+	 * @param   string $field The name of the field
+	 * @param   array &$scolumns The columns of the table
+	 * @return  void
+	 *
+	 */
 	private function fillTableField($table, $field, &$scolumns) {
 		$dbcol = $this->engine->getDb()->schema->properties->{$table}->items->properties->{$field};
 		$scolumns[$field] = (object)array(
@@ -378,8 +395,8 @@ class DDLParser extends Parser {
 	 *    )
 	 *
 	 * @access protected
-	 * @param string $sql the create alter statement
-	 * @return array the parsed request
+	 * @param string $sql The create alter statement
+	 * @return array The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseAlter($sql) {
@@ -655,8 +672,8 @@ class DDLParser extends Parser {
 	 *	'DROP TABLE' ( 'IF EXISTS' ) ? table_name ( ', ' table_name ) *
 	 *
 	 * @access protected
-	 * @param string $sql the drop table statement
-	 * @return array the parsed request
+	 * @param string $sql The drop table statement
+	 * @return array The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseDropTable($sql) {
@@ -679,8 +696,8 @@ class DDLParser extends Parser {
 	 * Encode text between quote with base64
 	 *
 	 * @access private
-	 * @param string $text to encode
-	 * @return string encoded text.
+	 * @param string $text The text to encode
+	 * @return string The encoded text.
 	 */
 	private function encodeLiteral($text) {
 		$encoded = "";
@@ -705,8 +722,8 @@ class DDLParser extends Parser {
 	 * Decode text encoded with base64
 	 *
 	 * @access private
-	 * @param string $text to decode
-	 * @return string decoded text.
+	 * @param string $text The text to decode
+	 * @return string The decoded text.
 	 */
 	private function decodeLiteral($text, $withQuotes = false) {
 		return preg_replace_callback("/base64_encoded\:(.*)\:base64_encoded/", function ($m) use ($withQuotes) {

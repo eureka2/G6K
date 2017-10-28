@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,25 +29,65 @@ namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 use EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
 /**
- *  The class JsonSQLStatement Represents a prepared statement and, 
+ *  The class JsonSQLStatement represents a prepared statement and, 
  *  after the statement is executed, an associated result set.
  */
-
 class Statement  {
 
+	/**
+	 * @var \EUREKA\G6KBundle\Manager\Json\JsonSQL $jsonsql the JsonSQL instance
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $jsonsql = null;
+
+	/**
+	 * @var \stdClass $request The prepared statement
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $request = null;
+
+	/**
+	 * @var array $result The result set
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $result = null;
+
+	/**
+	 * @var int $rowCount The number of rows affected by the last SQL statement
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $rowCount = null;
+
+	/**
+	 * @var array      $params The list of parameters to be bound
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $params = array();
+
+	/**
+	 * @var \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The JsonSQL engine
+	 *
+	 * @access  protected
+	 *
+	 */
 	protected $engine = null;
 
 	/**
 	 * Class Constructor
 	 *
 	 * @access protected
-	 * @param JsonSQL $jsonsql the JsonSQL instance
-	 * @param object $request the prepared statement
+	 * @param JsonSQL $jsonsql The JsonSQL instance
+	 * @param \stdClass $request The prepared statement
 	 */
 	protected function __construct(JsonSQL $jsonsql, \stdClass &$request) {
 		$this->jsonsql = $jsonsql;
@@ -63,8 +103,8 @@ class Statement  {
 	 *
 	 * @access public
 	 * @static 
-	 * @param JsonSQL $jsonsql the JsonSQL instance
-	 * @param object $request the prepared statement
+	 * @param JsonSQL $jsonsql The JsonSQL instance
+	 * @param \stdClass $request The prepared statement
 	 */
 	public function create(JsonSQL $jsonsql, \stdClass &$request) {
 		switch($request->statement) {
@@ -90,10 +130,10 @@ class Statement  {
 	 * in the SQL statement that was used to prepare the statement.
 	 *
 	 * @access public
-	 * @param mixed $parameter the parameter identifier
-	 * @param  mixed $value the value to bind to the parameter
-	 * @param int $type the data type for the parameter using the PDO::PARAM_* constants.
-	 * @return boolean TRUE on success or FALSE on failure.
+	 * @param mixed $parameter The parameter identifier
+	 * @param  mixed $value The value to bind to the parameter
+	 * @param int $type The data type for the parameter using the PDO::PARAM_* constants.
+	 * @return bool true on success or false on failure.
 	 */
 	public function bindValue($parameter, $value, $type=\PDO::PARAM_STR) {
 		$this->checkValue($value);
@@ -141,10 +181,10 @@ class Statement  {
 	 * at the time that execute() is called.
 	 *
 	 * @access public
-	 * @param mixed $parameter the parameter identifier
-	 * @param  mixed $value the value to bind to the parameter
-	 * @param int $type the data type for the parameter using the PDO::PARAM_* constants.
-	 * @return boolean TRUE on success or FALSE on failure.
+	 * @param mixed $parameter The parameter identifier
+	 * @param  mixed $value The value to bind to the parameter
+	 * @param int $type The data type for the parameter using the PDO::PARAM_* constants.
+	 * @return bool true on success or false on failure.
 	 */
 	public function bindParam($parameter, &$variable, $type=\PDO::PARAM_STR) {
 		$this->params[] = array($parameter, &$variable, $type);
@@ -157,7 +197,7 @@ class Statement  {
 	 * @access public
 	 * @param array $parameter An array of values with as many elements as there are bound parameters 
 	 * in the SQL statement being executed. All values are treated as PDO::PARAM_STR.
-	 * @return boolean TRUE on success or FALSE on failure.
+	 * @return bool true on success or false on failure.
 	 */
 	public function execute($parameters = array()) {
 		foreach($parameters as $parameter => $value) {
@@ -199,7 +239,7 @@ class Statement  {
 	 * Returns the number of rows affected by the last SQL statement
 	 *
 	 * @access public
-	 * @return int the number of rows.
+	 * @return int The number of rows.
 	 */
 	public function rowCount() {
 		return $this->rowCount;
@@ -209,7 +249,7 @@ class Statement  {
 	 * Returns the number of columns in the result set
 	 *
 	 * @access public
-	 * @return int the number of columns in the result set. 
+	 * @return int The number of columns in the result set. 
 	 * If there is no result set, returns 0.
 	 */
 	public function columnCount() {
@@ -220,8 +260,8 @@ class Statement  {
 	 * Checks if a value corresponds to its type and if it is safety in case of string
 	 *
 	 * @access protected
-	 * @param string $value the value
-	 * @param int $type the expected type
+	 * @param string $value The value
+	 * @param int $type The expected type
 	 * @return void
 	 * @throws JsonSQLException
 	 */
