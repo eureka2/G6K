@@ -50,8 +50,14 @@ However, on some platforms, this message does not appear. If so, run the followi
 
 ## Documentation
 
+### Administrator's Guide
+
 [ [en](http://eureka2.github.io/g6k/documentation/en/index.html) ] 
 [ [fr](http://eureka2.github.io/g6k/documentation/fr/index.html) ] 
+
+### Classes
+
+[Documentation of G6K classes](http://eureka2.github.io/g6k/documentation/classes/)
 
 ## Copyright and license
 
