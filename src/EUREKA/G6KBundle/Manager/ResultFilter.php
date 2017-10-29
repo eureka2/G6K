@@ -1,10 +1,9 @@
 <?php
 
-
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2017 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +29,32 @@ namespace EUREKA\G6KBundle\Manager;
 use Symfony\Component\DomCrawler\Crawler;
 use Flow\JSONPath\JSONPath;
 
+/**
+ *
+ * This class is used to filter the results of a query on a data source with the 'return path' defined in the source.
+ * The return path can be a JSONPath or XPath expression, a CSS selector or a line and column number.
+ *
+ * @copyright Jacques Archimède
+ *
+ */
 class ResultFilter {
 
+	/**
+	 * @var array      $functions The list of custom php functions that can be found in a 'return path' expression
+	 *
+	 * @access  private
+	 *
+	 */
 	private $functions = array(
 		'timestamp'
 	);
 
+	/**
+	 * @var array      $phpfunctions The list of native php functions that can be found in a 'return path' expression
+	 *
+	 * @access  private
+	 *
+	 */
 	private $phpfunctions = array(
 		'addcslashes',
 		'addslashes',
@@ -141,9 +160,30 @@ class ResultFilter {
 		'is_​string'
 	);
 
+	/**
+	 * Constructor of class ResultFilter
+	 *
+	 * @access  public
+	 * @return  void
+	 *
+	 */
 	public function __construct() {
 	}
 
+	/**
+	 * Filters the results of a query on a data source with the 'return path' defined in the source.
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   string $format The result type (json, csv, html or xml)
+	 * @param   mixed $result The results of a query
+	 * @param   string $path The return path defined in the source.
+	 * @param   array $namespaces (default: array() The list of namespaces if the result is in xml or html format
+	 * @param   string $separator The field separator if the result is in csv format
+	 * @param   string $delimiter The field delimiter if the result is in csv format
+	 * @return  mixed|null The filtered result
+	 *
+	 */
 	public static function filter($format, $result, $path, $namespaces = array(), $separator = ",", $delimiter = "") {
 		$resultfilter = new ResultFilter();
 		switch ($format) {
@@ -160,6 +200,16 @@ class ResultFilter {
 		}
 	}
 
+	/**
+	 * Filters the JSON results of a query on a data source with the 'return path' defined in the source.
+	 * The return path is a JSONPath or a XPath expression
+	 *
+	 * @access  protected
+	 * @param   mixed $json The JSON results
+	 * @param   string $path The return path defined in the source.
+	 * @return  array The filtered result
+	 *
+	 */
 	protected function filterJSON($json, $path) {
 		if ($path == '') {
 			$result = $json;
@@ -172,6 +222,18 @@ class ResultFilter {
 		return $result;
 	}
 
+	/**
+	 * Filters the CSV results of a query on a data source with the 'return path' defined in the source.
+	 * The return path is in the form "line number/column number"
+	 *
+	 * @access  protected
+	 * @param   string $csv The CSV results 
+	 * @param   string $path The return path defined in the source.
+	 * @param   string $separator The field separator
+	 * @param   string $delimiter The field delimiter
+	 * @return  mixed The filtered result
+	 *
+	 */
 	protected function filterCSV($csv, $path, $separator, $delimiter) {
 		$result = array();
 		$lines = explode("\n", $csv);
@@ -195,6 +257,17 @@ class ResultFilter {
 		return $result;
 	}
 
+	/**
+	 * Filters the HTML results of a query on a data source with the 'return path' defined in the source.
+	 * The return path is a XPath expression or a CSS selector
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\DomCrawler\Crawler $crawler The HTML results
+	 * @param   string $path The return path defined in the source.
+	 * @param   array $namespaces (default: array() The list of namespaces
+	 * @return  array The filtered result
+	 *
+	 */
 	protected function filterHTML($crawler, $path, $namespaces = array()) {
 		if (strpos($path, "/") !== false) {
 			$path = $this->replacePathFunctions($path);
@@ -217,6 +290,17 @@ class ResultFilter {
 		return $result;
 	}
 
+	/**
+	 * Filters the XML results of a query on a data source with the 'return path' defined in the source.
+	 * The return path is a XPath expression
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\DomCrawler\Crawler $crawler The XML results
+	 * @param   string $path The return path defined in the source.
+	 * @param   array $namespaces (default: array() The list of namespaces
+	 * @return  array  The filtered result
+	 *
+	 */
 	protected function filterXML(Crawler $crawler, $path, $namespaces = array()) {
 		$result = $crawler->getNode(0)->ownerDocument->saveXML();
 		$xml = new \SimpleXMLElement($result);
@@ -227,6 +311,14 @@ class ResultFilter {
 		return $xml;
 	}
 
+	/**
+	 * Replaces the php functions in an XPath expression with the syntax required for their executions
+	 *
+	 * @access  protected
+	 * @param   string $path The XPath expression
+	 * @return  string The new XPath expression
+	 *
+	 */
 	protected function replacePathFunctions($path) {
 		foreach ($this->phpfunctions as $func) {
 			$path = preg_replace("/". $func . "\s*\(/", "php:functionString('" . $func . "', ", $path);
@@ -237,6 +329,15 @@ class ResultFilter {
 		return $path;
 	}
 
+	/**
+	 * Converts an array to a XML DOM document
+	 *
+	 * @access  protected
+	 * @param   string $node_name The root of the XML DOM document
+	 * @param   array $arr (default: array() The array to be converted
+	 * @return  \DomDocument The new XML DOM document
+	 *
+	 */
 	protected function createXML($node_name, $arr=array()) {
 		$xml = new \DomDocument('1.0', 'UTF-8');
 		$xml->formatOutput = true;
@@ -245,17 +346,44 @@ class ResultFilter {
 		return $result;
 	}
 
+	/**
+	 * Converts a true/false (boolean) value to a string
+	 *
+	 * @access  protected
+	 * @param   bool $v The boolean value
+	 * @return  string The result of the conversion
+	 *
+	 */
 	protected function bool2str($v) {
 		$v = $v === true ? 'true' : $v;
 		$v = $v === false ? 'false' : $v;
 		return $v;
 	}
 
+	/**
+	 * Determines whether the given tag name is valid or not.
+	 *
+	 * @access  protected
+	 * @param   string $tag The tag name
+	 * @return  bool true if the tag name is valid, false otherwise
+	 *
+	 */
 	protected function isValidTagName($tag) {
 		$pattern = '/^[a-z_]+[a-z0-9\:\-\.\_]*[^:]*$/i';
 		return preg_match($pattern, $tag, $matches) && $matches[0] == $tag;
 	}
 
+	/**
+	 * Converts an array to a XML DOM node of a DOM document
+	 *
+	 * @access  protected
+	 * @param   \DOMDocument &$dom The DOM document
+	 * @param   string $node_name The name of the node
+	 * @param   array $arr (default: array()) The array to be converted
+	 * @return  \DOMNode The new DOM node
+	 * @throws \Exception
+	 *
+	 */
 	protected function &convertToXML(\DomDocument &$dom, $node_name, $arr=array()) {
 		$node = $dom->createElement($node_name);
 		if(is_array($arr)){
@@ -314,12 +442,28 @@ class ResultFilter {
 		return $node;
 	}
 
+	/**
+	 * Creates and returns an array from a list of XML DOM node
+	 *
+	 * @access  protected
+	 * @param   \DOMNodeList $xml The list of XML DOM node
+	 * @return  array The new array
+	 *
+	 */
 	protected function createArray($xml) {
 		$result = $this->convertToArray($xml);
 		$this->replaceTextKeys($result);
 		return $result;
 	}
 
+	/**
+	 * Replaces all '#text' keys of the given array by the corresponding text
+	 *
+	 * @access  protected
+	 * @param   array &$array The given array
+	 * @return  void
+	 *
+	 */
 	protected function replaceTextKeys(&$array) {
 		if (count($array) == 1) {
 			$keys = array_keys($array);
@@ -346,7 +490,15 @@ class ResultFilter {
 			}
 		}
 	}
-	
+
+	/**
+	 * Determines whether a DOM node has at least one DOM element as child.
+	 *
+	 * @access  protected
+	 * @param   \DOMNode $node The DOM node
+	 * @return  bool true if DOM node has at least one DOM element as child, false otherwise
+	 *
+	 */
 	protected function nodeHasChild( \DOMNode $node ) {
 		if ( $node->hasChildNodes() ) {
 			foreach ( $node->childNodes as $child ) {
@@ -358,6 +510,14 @@ class ResultFilter {
 		return false;
 	}
 
+	/**
+	 * Converts a list of XML DOM node to an array
+	 *
+	 * @access  protected
+	 * @param   \DOMNodeList|\DOMNode $xml The list of XML DOM node
+	 * @return  array The new array
+	 *
+	 */
 	protected function &convertToArray( $xml ) {
 		if ( $xml instanceOf \DOMNodeList ) {
 			$items = array();
@@ -381,11 +541,31 @@ class ResultFilter {
 		return $itemData;
 	}
 
+	/**
+	 * Filters an array with an XPath expression
+	 *
+	 * @access  protected
+	 * @param   string $root A pseudo root node name for the XPath expression
+	 * @param   array $array The array to be filtered
+	 * @param   string $path The XPath expression
+	 * @return  array The new array
+	 *
+	 */
 	protected function xPathFilter( $root, $array, $path ) {
 		$doc = $this->createXML($root, $array);
 		return $this->xPathDOMFilter( $doc, $path );
 	}
 
+	/**
+	 * Filters an XML DOM document with an XPath expression and converts it to an array
+	 *
+	 * @access  protected
+	 * @param   \DOMDocument $doc The DOM document
+	 * @param   string $path The XPath expression
+	 * @param   array $namespaces (default: array() The list of namespaces
+	 * @return  array The new array
+	 *
+	 */
 	protected function xPathDOMFilter( $doc, $path, $namespaces = array() ) {
 		$xPath = new \DOMXPath($doc);
 		foreach ($namespaces as $prefix => $nsuri) {
@@ -398,6 +578,15 @@ class ResultFilter {
 		return $result;
 	}
 
+	/**
+	 * Converts an array of SimpleXMLElement to an associative array
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   array $xml The array of SimpleXMLElement
+	 * @return  array|string The associative array
+	 *
+	 */
 	public static function xml2array($xml) {
 		$result = (array)$xml;
 		if (count($result) == 0) {
@@ -421,6 +610,17 @@ class ResultFilter {
 		return $result;
 	}
 
+	/**
+	 *  Parses a date string according to the given format and returns its timestamp
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   string $format The given format
+	 * @param   string $dateStr The date string
+	 * @return  int|null The timestamp or null if there is an error
+	 * @throws \Exception
+	 *
+	 */
 	public static function timestamp($format, $dateStr) {
 		$result = null;
 		$dateStr = trim($dateStr);

@@ -1002,7 +1002,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   int $dsid The datasource ID
-	 * @param   bool $withDbName (default: true) <parameter description>
+	 * @param   bool $withDbName (default: true) if false, the name of the database will not be inserted in the dsn string.
 	 * @return  \EUREKA\G6KBundle\Entity\Database The Database object
 	 *
 	 */
