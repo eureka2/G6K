@@ -505,7 +505,7 @@ class SQLSelectTokenizer  {
 			'having' => !isset($clauses['having']) ? "true" : $clauses['having'],
 			'orderby' => !isset($clauses['orderby']) ? array() : Splitter::splitList($clauses['orderby']),
 			'limit' => !isset($clauses['limit']) ? array() : explode(',', preg_replace('/\s+/', '', $clauses['limit'])),
-			'offset' => !isset($clauses['offset']) ? 0 : (int)trim($clauses['offset']) - 1
+			'offset' => !isset($clauses['offset']) ? 0 : (int)trim($clauses['offset'])
 		);
 		unset($fromclause['from']);
 		$request = (object)array_merge(array( 'select' => array('*'), 'distinct' => false, 'from' => array('json'), 'where' => "true", 'groupby' => array(), 'having' => "true", 'orderby' => array(), 'limit' => array() ), $ops);

@@ -451,14 +451,14 @@ THE SOFTWARE.
 				});
 				attributes.append(orderbykeys);
 				if (source.nbresult == '' || source.nbresult == 0) {
-					attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'number', 'nbresult', Translator.trans('Number of results'), source.limit, Translator.trans('All results'), true, Translator.trans('Number of results')));
+					attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'number', 'nbresult', Translator.trans('Number of results'), source.nbresult, Translator.trans('All results'), true, Translator.trans('Number of results')));
 				} else {
-					attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'number', 'nbresult', Translator.trans('Number of results'), source.limit, source.limit, true, Translator.trans('Number of results')));
+					attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'number', 'nbresult', Translator.trans('Number of results'), source.nbresult, source.nbresult, true, Translator.trans('Number of results')));
 				}
 				if (source.from == '' || source.from == 0) {
-					attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'number', 'from', Translator.trans('From'), source.offset, Translator.trans('from start'), true, Translator.trans('From')));
+					attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'number', 'from', Translator.trans('From'), source.from, Translator.trans('from start'), true, Translator.trans('From')));
 				} else {
-					attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'number', 'from', Translator.trans('From'), source.offset, source.offset, true, Translator.trans('From')));
+					attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'number', 'from', Translator.trans('From'), source.from, source.from, true, Translator.trans('From')));
 				}
 			} else {
 				if (source.request) {

@@ -567,7 +567,7 @@ THE SOFTWARE.
 			} else if (request.limit.length > 1) {
 				request.limit = parseInt(request.limit[1], 10);
 				if (!clauses['offset']) {
-					request.offset = parseInt(request.limit[0], 10) - 1;
+					request.offset = parseInt(request.limit[0], 10);
 				}
 			}
 			if (request.where != '') {
