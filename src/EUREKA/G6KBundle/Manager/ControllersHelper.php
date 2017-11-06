@@ -99,6 +99,9 @@ class ControllersHelper {
 				$format = $param->getFormat();
 				if ($format != "" && $value != "") {
 					$date = \DateTime::createFromFormat("j/n/Y", $value);
+					if ($date === false) {
+						return null;
+					}
 					$value = $date->format($format);
 				}
 				break;
@@ -106,6 +109,9 @@ class ControllersHelper {
 				$format = $param->getFormat();
 				if ($format != "" && $value != "") {
 					$date = \DateTime::createFromFormat("j/n/Y", $value."/1/2015");
+					if ($date === false) {
+						return null;
+					}
 					$value = $date->format($format);
 				}
 				break;
@@ -113,6 +119,9 @@ class ControllersHelper {
 				$format = $param->getFormat();
 				if ($format != "" && $value != "") {
 					$date = \DateTime::createFromFormat("j/n/Y", "1/".$value."/2015");
+					if ($date === false) {
+						return null;
+					}
 					$value = $date->format($format);
 				}
 				break;
@@ -120,6 +129,9 @@ class ControllersHelper {
 				$format = $param->getFormat();
 				if ($format != "" && $value != "") {
 					$date = \DateTime::createFromFormat("j/n/Y", "1/1/".$value);
+					if ($date === false) {
+						return null;
+					}
 					$value = $date->format($format);
 				}
 				break;
