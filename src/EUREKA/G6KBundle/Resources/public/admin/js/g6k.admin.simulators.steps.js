@@ -2179,7 +2179,12 @@ THE SOFTWARE.
 
 	Simulators.drawFieldSetForDisplay = function(fieldset, inClass) {
 		var fieldsetElementId = 'step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id;
-		var fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': Translator.trans('Add field'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
+		var fieldsetPanelContainer;
+		if (fieldset.disposition == 'grid') {
+			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
+		} else {
+			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': Translator.trans('Add field'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
+		}
 		var fieldsetPanelBody = fieldsetPanelContainer.find('.panel-body');
 		var fieldsetContainer = $('<div class="panel panel-default block-container fieldset" id="' + fieldsetElementId + '-attributes-panel" data-step="' + fieldset.stepId + '" data-panel="' + fieldset.panelId + '" data-id="' + fieldset.id + '"></div>');
 		var fieldsetContainerBody = $('<div class="panel-body"></div>');
@@ -2193,8 +2198,12 @@ THE SOFTWARE.
 		fieldsetContainer.append(fieldsetContainerBody);
 		fieldsetPanelBody.append(fieldsetContainer);
 		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body fieldset-legend rich-text">' + fieldset.legend + '</div></div>');
-		fieldsetPanelBody.append('<div class="panel panel-default columns-panel" id="' + fieldsetElementId + '-columns-panel"><div class="panel-body sortable"></div></div>');
-		fieldsetPanelBody.append('<div class="panel panel-default fields-panel" id="' + fieldsetElementId + '-fields-panel"><div class="panel-body sortable"></div></div>');
+		if (fieldset.disposition == 'grid') {
+			fieldsetPanelBody.append('<div class="panel panel-default fieldset-grid-panel" id="fieldset-' + fieldset.id + '-fieldset-grid-panel"><div class="panel-heading"><button class="btn btn-default pull-right update-button add-column" data-parent="#fieldset-' + fieldset.id + '-fieldset-grid-panel" title="' + Translator.trans('Add column') + '"><span class="button-label">' + Translator.trans('Add column') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-fieldrow" data-parent="#fieldset-' + fieldset.id + '-fieldset-grid-panel" title="' + Translator.trans('Add fieldrow') + '"><span class="button-label">' + Translator.trans('Add fieldrow') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><h4 class="panel-title">' + Translator.trans('Grid') + '</h4></div><div class="panel-body"><div class="panel panel-default columns-panel" id="step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id + '-columns-panel"><div class="panel-body sortable"></div></div><div class="panel panel-default fieldrows-panel" id="step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id + '-fieldrows-panel"><div class="panel-body sortable"></div></div></div></div>');
+		} else {
+			fieldsetPanelBody.append('<div class="panel panel-default columns-panel" id="' + fieldsetElementId + '-columns-panel"><div class="panel-body sortable"></div></div>');
+			fieldsetPanelBody.append('<div class="panel panel-default fields-panel" id="' + fieldsetElementId + '-fields-panel"><div class="panel-body sortable"></div></div>');
+		}
 		return fieldsetPanelContainer;
 	}
 
@@ -2327,9 +2336,19 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-fieldset')) {
 				var oldFieldSet = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }]);
 				oldLegend = oldFieldSet.legend;
-				fieldset['fields'] = oldFieldSet['fields'];
+				if (oldFieldSet.disposition == 'grid') {
+					fieldset['columns'] = oldFieldSet['columns'];
+					fieldset['fieldrows'] = oldFieldSet['fieldrows'];
+				} else {
+					fieldset['fields'] = oldFieldSet['fields'];
+				}
 			} else {
-				fieldset['fields'] = [];
+				if (fieldset.disposition == 'grid') {
+					fieldset['columns'] = [];
+					fieldset['fieldrows'] = [];
+				} else {
+					fieldset['fields'] = [];
+				}
 			}
 			var newFieldSetPanel = Simulators.drawFieldSetForDisplay(fieldset, 'in');
 			if ($(this).hasClass('validate-edit-fieldset')) {
@@ -2759,7 +2778,7 @@ THE SOFTWARE.
 		var id = columnPanelContainer.find('.column-container').attr('data-id');
 		var fieldset = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId }]);
 		var exists = false;
-			$.each(fieldset.columns, function(c, column) {
+		$.each(fieldset.columns, function(c, column) {
 			if (column.id != id && column.name == columnName) {
 				exists = true;
 				return false;
