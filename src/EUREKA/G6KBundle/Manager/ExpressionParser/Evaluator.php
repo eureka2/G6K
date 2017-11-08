@@ -384,6 +384,11 @@ class Evaluator {
 			"ucfirst" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return ucfirst($a); }),
 			"upper" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return strtoupper($a); }),
 			"workdays" => array(2, array(Token::T_DATE, Token::T_DATE), Token::T_NUMBER, function(\DateTime $a, \DateTime $b) { return Holidays::workdays($a, $b); }),
+			"workdaysofmonth" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { 
+				$d1 = \DateTime::createFromFormat('Y-n-j', $a . '-' . $b . '-1');
+				$d2 = DateFunction::lastDayOfMonth($d1);
+				return Holidays::workdays($d1, $d2);
+			}), 
 			"year" => array(1, array(Token::T_DATE), Token::T_NUMBER, function(\DateTime $a) { return (float)$a->format('Y'); })
 		);
 		if ($func->value == "defined") {

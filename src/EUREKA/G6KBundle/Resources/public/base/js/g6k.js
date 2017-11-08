@@ -2747,6 +2747,7 @@ THE SOFTWARE.
 				"atan": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.atan(a); }],
 				"atan2": [2, [Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a, b) { return Math.atan2(a, b); }],
 				"atanh": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.atanh(a); }],
+				"ceil": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.ceil(a); }],
 				"concat": [-1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) {
 					var c = '';
 					$.each(a, function(i, v) {
@@ -2754,7 +2755,6 @@ THE SOFTWARE.
 					});
 					return c; 
 				}],
-				"ceil": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.ceil(a); }],
 				"cos": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.cos(a); }],
 				"cosh": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.cosh(a); }],
 				"count": [-1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) {
@@ -2774,6 +2774,7 @@ THE SOFTWARE.
 				"get": [2, [Token.TYPE.T_ARRAY, Token.TYPE.T_NUMBER], Token.TYPE.T_TEXT, function(a, b) { return b < a.lengh + 1 ? a[b - 1] : ''; }],
 				"lastday": [2, [Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a, b) { var d = Date.createFromFormat('Y-n-j', a + '-' + b + '-1' );return d.lastday(false); }],
 				"lastDayOfMonth": [1, [Token.TYPE.T_DATE], Token.TYPE.T_DATE, function(a) { return a.lastDayOfMonth(); }],
+				"lcfirst": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) { return a.replace(/(^[A-Z])/,function (p) { return p.toLowerCase(); } ); }],
 				"length": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_NUMBER, function(a) { return a.length; }],
 				"log": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.log(a); }],
 				"log10": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.log10(a); }],
@@ -2805,6 +2806,8 @@ THE SOFTWARE.
 				}],
 				"tan": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.tan(a); }],
 				"tanh": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.tanh(a); }],
+				"trim": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) { return $.trim(a); }],
+				"ucfirst": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) { return a.replace(/(^[a-z])/,function (p) { return p.toUpperCase(); } ); }],
 				"upper": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) { return a.toUpperCase(); }],
 				"workdays": [2, [Token.TYPE.T_DATE, Token.TYPE.T_DATE], Token.TYPE.T_NUMBER, function(a, b) { return a.workingDaysBefore(b); }],
 				"workdaysofmonth": [2, [Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a, b) {

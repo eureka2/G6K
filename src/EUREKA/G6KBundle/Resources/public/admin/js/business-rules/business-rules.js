@@ -23,8 +23,8 @@ THE SOFTWARE.
 */
 
 (function($) {
-	
- 	var functions = {
+
+	var functions = {
 		"abs" : {arity: 1, args: ['number'], type: 'number'},
 		"acos" : {arity: 1, args: ['number'], type: 'number'},
 		"acosh" : {arity: 1, args: ['number'], type: 'number'},
@@ -35,6 +35,7 @@ THE SOFTWARE.
 		"atan2" : {arity: 2, args: ['number', 'number'], type: 'number'},
 		"atanh" : {arity: 1, args: ['number'], type: 'number'},
 		"ceil" : {arity: 1, args: ['number'], type: 'number'},
+		"concat" : {arity: -1, args: ['text'], type: 'text'},
 		"cos" : {arity: 1, args: ['number'], type: 'number'},
 		"cosh" : {arity: 1, args: ['number'], type: 'number'},
 		"count" : {arity: -1, args: ['number'], type: 'number'},
@@ -46,8 +47,12 @@ THE SOFTWARE.
 		"get" : {arity: 2, args: ['array', 'number'], type: 'text'},
 		"lastday" : {arity: 2, args: ['number', 'number'], type: 'number'},
 		"lastDayOfMonth" : {arity: 1, args: ['date'], type: 'date'},
+		"lcfirst" : {arity: 1, args: ['text'], type: 'text'},
+		"length" : {arity: 1, args: ['text'], type: 'number'},
 		"log" : {arity: 1, args: ['number'], type: 'number'},
 		"log10" : {arity: 1, args: ['number'], type: 'number'},
+		"lower" : {arity: 1, args: ['text'], type: 'text'},
+		"match" : {arity: 2, args: ['text', 'text'], type: 'boolean'},
 		"max" : {arity: 2, args: ['number', 'number'], type: 'number'},
 		"min" : {arity: 2, args: ['number', 'number'], type: 'number'},
 		"money": {arity: 1, args: ['number'], type: 'text'},
@@ -62,9 +67,13 @@ THE SOFTWARE.
 		"size" : {arity: 1, args: ['array'], type: 'number'},
 		"split" : {arity: 2, args: ['text', 'text'], type: 'array'},
 		"sqrt" : {arity: 1, args: ['number'], type: 'number'},
+		"substr": {arity: 3, args: ['text', 'number', 'number'], type: 'text'},
 		"sum" : {arity: -1, args: ['number'], type: 'number'},
 		"tan" : {arity: 1, args: ['number'], type: 'number'},
 		"tanh" : {arity: 1, args: ['number'], type: 'number'},
+		"trim" : {arity: 1, args: ['text'], type: 'text'},
+		"ucfirst" : {arity: 1, args: ['text'], type: 'text'},
+		"upper" : {arity: 1, args: ['text'], type: 'text'},
 		"workdays" : {arity: 2, args: ['date', 'date'], type: 'number'},
 		"workdaysofmonth" : {arity: 2, args: ['number', 'number'], type: 'number'},
 		"year" : {arity: 1, args: ['date'], type: 'number'}
