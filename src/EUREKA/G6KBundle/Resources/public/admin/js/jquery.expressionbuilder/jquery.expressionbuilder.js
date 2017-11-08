@@ -669,10 +669,16 @@ var ExpressionBuilder_I18N = {
 						var initargs = null;
 						if (initial) {
 							initargs = [];
+							var npar = 0;
 							while (initial.length > 0) {
 								var op = initial.shift();
-								if (op === ',') {
+								if (op === ',' && npar == 0) {
 									break;
+								}
+								if (op === '(') {
+									npar++;
+								} else if (op === ')') {
+									npar--;
 								}
 								initargs.push(op);
 							}
