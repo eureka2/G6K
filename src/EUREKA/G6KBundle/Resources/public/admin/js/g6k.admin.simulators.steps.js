@@ -573,23 +573,23 @@ THE SOFTWARE.
 			container = $("#collapsesteps");
 		}
 		container.find('button.edit-step').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editStep($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-step').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteStep($($(this).attr('data-parent')));
 		});
 		container.find('button.add-action-button').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addActionButton($($(this).attr('data-parent')));
 		});
 		container.find('button.add-footnotes, a.add-footnotes').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addFootNotes($($(this).attr('data-parent')));
 		});
 		container.find('button.add-panel, a.add-panel').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addPanel($($(this).attr('data-parent')));
 		});
 	}
@@ -969,15 +969,15 @@ THE SOFTWARE.
 			container = $("#steps");
 		}
 		container.find('button.edit-footnotes').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editFootNotes($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-footnotes').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteFootNotes($($(this).attr('data-parent')));
 		});
 		container.find('button.add-footnote').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addFootNote($($(this).attr('data-parent')));
 		});
 	}
@@ -1183,11 +1183,11 @@ THE SOFTWARE.
 			container = $("#steps");
 		}
 		container.find('button.edit-footnote').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editFootNote($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-footnote').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteFootNote($($(this).attr('data-parent')));
 		});
 	}
@@ -1467,11 +1467,11 @@ THE SOFTWARE.
 			container = $("#steps");
 		}
 		container.find('button.edit-action-button').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editActionButton($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-action-button').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteActionButton($($(this).attr('data-parent')));
 		});
 	}
@@ -1836,19 +1836,19 @@ THE SOFTWARE.
 			container = $("#steps .panels-panel");
 		}
 		container.find('button.edit-panel').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editPanel($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-panel').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deletePanel($($(this).attr('data-parent')));
 		});
 		container.find('button.add-fieldset, a.add-fieldset').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addFieldSet($($(this).attr('data-parent')));
 		});
 		container.find('button.add-blockinfo, a.add-blockinfo').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addBlockInfo($($(this).attr('data-parent')));
 		});
 	}
@@ -2264,23 +2264,26 @@ THE SOFTWARE.
 			container = $("#steps .blocks-panel");
 		}
 		container.find('button.edit-fieldset').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editFieldSet($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-fieldset').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteFieldSet($($(this).attr('data-parent')));
 		});
 		container.find('button.add-field').click(function(e) {
-		    e.preventDefault();
-			Simulators.addField($($(this).attr('data-parent')));
+			e.preventDefault();
+			var fieldrowContainer = $($(this).attr('data-parent')).find('.fieldrow-container');
+			if (fieldrowContainer.length == 0) {
+				Simulators.addField($($(this).attr('data-parent')));
+			}
 		});
 		container.find('button.add-fieldrow').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addFieldRow($($(this).attr('data-parent')));
 		});
 		container.find('button.add-column').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addFieldSetColumn($($(this).attr('data-parent')));
 		});
 	}
@@ -2337,8 +2340,15 @@ THE SOFTWARE.
 				var oldFieldSet = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }]);
 				oldLegend = oldFieldSet.legend;
 				if (oldFieldSet.disposition == 'grid') {
-					fieldset['columns'] = oldFieldSet['columns'];
-					fieldset['fieldrows'] = oldFieldSet['fieldrows'];
+					if (fieldset.disposition == 'grid') {
+						fieldset['columns'] = oldFieldSet['columns'];
+						fieldset['fieldrows'] = oldFieldSet['fieldrows'];
+					} else {
+						fieldset['fields'] = [];
+					}
+				} else if (fieldset.disposition == 'grid') {
+					fieldset['columns'] = [];
+					fieldset['fieldrows'] = [];
 				} else {
 					fieldset['fields'] = oldFieldSet['fields'];
 				}
@@ -2351,23 +2361,15 @@ THE SOFTWARE.
 				}
 			}
 			var newFieldSetPanel = Simulators.drawFieldSetForDisplay(fieldset, 'in');
+			fieldsetPanelContainer.replaceWith(newFieldSetPanel);
+			Simulators.bindFieldSetButtons(newFieldSetPanel);
+			Simulators.bindSortableFields(newFieldSetPanel.find('.fields-panel'));
+			Simulators.addFieldSetInActions(fieldset);
+			delete fieldset['stepId'];
+			delete fieldset['panelId'];
 			if ($(this).hasClass('validate-edit-fieldset')) {
-				fieldsetContainer.replaceWith(newFieldSetPanel.find('.block-container.fieldset'));
-				if (fieldset.legend != oldLegend) {
-					fieldsetPanelContainer.find('> div > .panel-heading > h4 a').text(' ' + Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend + '</span>').text() + ' ');
-					Simulators.changeFieldSetLegendInRules(stepId, panelId, fieldset.id, fieldset.legend);
-				}
-				delete fieldset['stepId'];
-				delete fieldset['panelId'];
 				Simulators.updateInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }], fieldset);
-				newFieldSetPanel = fieldsetPanelContainer;
 			} else {
-				fieldsetPanelContainer.replaceWith(newFieldSetPanel);
-				Simulators.bindFieldSetButtons(newFieldSetPanel);
-				Simulators.bindSortableFields(newFieldSetPanel.find('.fields-panel'));
-				Simulators.addFieldSetInActions(fieldset);
-				delete fieldset['stepId'];
-				delete fieldset['panelId'];
 				Simulators.addInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }], fieldset);
 			}
 			$('.update-button').show();
@@ -2658,11 +2660,11 @@ THE SOFTWARE.
 			container = $("#steps .columns-panel");
 		}
 		container.find('button.edit-column').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editFieldSetColumn($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-column').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteFieldSetColumn($($(this).attr('data-parent')));
 		});
 	}
@@ -3113,15 +3115,15 @@ THE SOFTWARE.
 			container = $("#steps .fieldrows-panel");
 		}
 		container.find('button.edit-fieldrow').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editFieldRow($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-fieldrow').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteFieldRow($($(this).attr('data-parent')));
 		});
 		container.find('button.add-field').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addField($($(this).attr('data-parent')));
 		});
 	}
@@ -3633,11 +3635,11 @@ THE SOFTWARE.
 			container = $("#steps .fields-panel");
 		}
 		container.find('button.edit-field').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editField($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-field').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteField($($(this).attr('data-parent')));
 		});
 	}
@@ -4022,15 +4024,15 @@ THE SOFTWARE.
 			container = $("#steps .blocks-panel");
 		}
 		container.find('button.edit-blockinfo').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editBlockInfo($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-blockinfo').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteBlockInfo($($(this).attr('data-parent')));
 		});
 		container.find('button.add-chapter').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addChapter($($(this).attr('data-parent')));
 		});
 	}
@@ -4436,15 +4438,15 @@ THE SOFTWARE.
 			container = $("#steps .chapters-panel");
 		}
 		container.find('button.edit-chapter').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editChapter($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-chapter').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteChapter($($(this).attr('data-parent')));
 		});
 		container.find('button.add-section').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.addSection($($(this).attr('data-parent')));
 		});
 	}
@@ -4849,11 +4851,11 @@ THE SOFTWARE.
 			container = $("#steps .sections-panel");
 		}
 		container.find('button.edit-section').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.editSection($($(this).attr('data-parent')));
 		});
 		container.find('button.delete-section').click(function(e) {
-		    e.preventDefault();
+			e.preventDefault();
 			Simulators.deleteSection($($(this).attr('data-parent')));
 		});
 	}
