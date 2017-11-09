@@ -2338,7 +2338,6 @@ THE SOFTWARE.
 			var oldLegend = '';
 			if ($(this).hasClass('validate-edit-fieldset')) {
 				var oldFieldSet = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }]);
-				oldLegend = oldFieldSet.legend;
 				if (oldFieldSet.disposition == 'grid') {
 					if (fieldset.disposition == 'grid') {
 						fieldset['columns'] = oldFieldSet['columns'];
@@ -2361,15 +2360,31 @@ THE SOFTWARE.
 				}
 			}
 			var newFieldSetPanel = Simulators.drawFieldSetForDisplay(fieldset, 'in');
-			fieldsetPanelContainer.replaceWith(newFieldSetPanel);
-			Simulators.bindFieldSetButtons(newFieldSetPanel);
-			Simulators.bindSortableFields(newFieldSetPanel.find('.fields-panel'));
-			Simulators.addFieldSetInActions(fieldset);
-			delete fieldset['stepId'];
-			delete fieldset['panelId'];
 			if ($(this).hasClass('validate-edit-fieldset')) {
+				if (fieldset.disposition == oldFieldSet.disposition) {
+					fieldsetContainer.replaceWith(newFieldSetPanel.find('.block-container.fieldset'));
+					if (fieldset.legend != oldFieldSet.legend) {
+						fieldsetPanelContainer.find('> div > .panel-heading > h4 a').text(' ' + Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend + '</span>').text() + ' ');
+						Simulators.changeFieldSetLegendInRules(stepId, panelId, fieldset.id, fieldset.legend);
+					}
+					newFieldSetPanel = fieldsetPanelContainer;
+				} else {
+					fieldsetPanelContainer.replaceWith(newFieldSetPanel);
+					Simulators.bindFieldSetButtons(newFieldSetPanel);
+					Simulators.bindSortableFields(newFieldSetPanel.find('.fields-panel'));
+					Simulators.deleteFieldSetInActions(oldFieldSet.stepId, oldFieldSet.panelId, oldFieldSet.id);
+					Simulators.addFieldSetInActions(fieldset);
+				}
+				delete fieldset['stepId'];
+				delete fieldset['panelId'];
 				Simulators.updateInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }], fieldset);
 			} else {
+				fieldsetPanelContainer.replaceWith(newFieldSetPanel);
+				Simulators.bindFieldSetButtons(newFieldSetPanel);
+				Simulators.bindSortableFields(newFieldSetPanel.find('.fields-panel'));
+				Simulators.addFieldSetInActions(fieldset);
+				delete fieldset['stepId'];
+				delete fieldset['panelId'];
 				Simulators.addInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }], fieldset);
 			}
 			$('.update-button').show();
