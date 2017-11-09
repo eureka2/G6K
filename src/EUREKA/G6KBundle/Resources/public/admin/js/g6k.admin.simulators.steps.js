@@ -1909,6 +1909,7 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-panel')) {
 				panelContainer.replaceWith(newPanelPanel.find('.panel-container'));
 				if (panel.label != oldLabel) {
+					panelPanelContainer.find('> div > .panel-heading > h4 a').text(' ' + Translator.trans('Panel') + ' #' + panel.id + ' : ' + panel.label + ' ');
 					Simulators.changePanelLabelInRules(stepId, panel.id, panel.label);
 				}
 				delete panel['stepId'];
@@ -2741,6 +2742,7 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-column')) {
 				columnContainer.replaceWith(newFieldSetColumnPanel.find('.column-container'));
 				if (column.label != oldLabel) {
+					columnPanelContainer.find('> div > .panel-heading > h4 a').text(Translator.trans('Column #%id% : %label%', {'id': column.id, 'label': column.label }));
 					Simulators.changeFieldSetColumnLabelInRules(stepId, panelId, fieldsetId, column.id, column.label);
 				}
 				delete column['stepId'];
@@ -3056,8 +3058,8 @@ THE SOFTWARE.
 
 	Simulators.checkAddFieldButton = function(fieldPanel) {
 		var fieldsPanel = fieldPanel.parents('.fields-panel');
-		var columnsPanel = fieldsPanel.parents('.columns-panel');
-		var fieldrowsPanel = fieldsPanel.parents('.fieldrows-panel');
+		var fieldsetGridPanel = fieldsPanel.parents('.fieldset-grid-panel');
+		var columnsPanel = fieldsetGridPanel.find('.columns-panel');
 		var nfields = fieldsPanel.find('> div.sortable > div').length;
 		var ncolumns = columnsPanel.find('> div.sortable > div').length;
 		if (nfields >= ncolumns) {
@@ -3206,6 +3208,7 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-fieldrow')) {
 				fieldrowContainer.replaceWith(newFieldRowPanel.find('.fieldrow-container'));
 				if (fieldrow.label != oldLabel) {
+					fieldrowPanelContainer.find('> div > .panel-heading > h4 a').text(Translator.trans('Fieldrow #%id% : %label%', {'id': fieldrow.id, 'label': fieldrow.label }));
 					Simulators.changeFieldRowLabelInRules(stepId, panelId, fieldsetId, fieldrow.id, fieldrow.label);
 				}
 				delete fieldrow['stepId'];
@@ -3968,6 +3971,8 @@ THE SOFTWARE.
 		if (disposition === 'grid') {
 			var fieldrow = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fieldrows' }, { key: 'id', val: fieldrowId }]);
 			Simulators.renumberFields(fieldrow.fields, stepId, panelId, fieldsetId, fieldrowId, fparent.find('> div'));
+			Simulators.addFieldButtonToFieldRows(fparent.parents('.fieldset-grid-panel').eq(0));
+			Simulators.checkAddFieldButton(fparent);
 		} else {
 			var fieldset = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId }]);
 			Simulators.renumberFields(fieldset.fields, stepId, panelId, fieldsetId, '', fparent.find('> div'));
