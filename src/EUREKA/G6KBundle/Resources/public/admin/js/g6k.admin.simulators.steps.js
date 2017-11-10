@@ -2927,13 +2927,18 @@ THE SOFTWARE.
 
 	Simulators.deleteFieldRowsColumn = function(stepId, panelId, fieldsetId, columnId) {
 		var fieldrows = $('#step-' + stepId + '-panel-' + panelId + '-fieldset-' + fieldsetId + '-fieldrows-panel').find('> .sortable').find('> div');
+		var deleted = [];
 		fieldrows.each(function(r) {
 			var fieldContainerGroups = $(this).find('.panel-group');
 			fieldContainerGroups.each(function(c) {
 				var fieldContainerGroup = $(this);
 				var column = fieldContainerGroup.find('.field-container');
 				if (column.attr('data-id') == columnId) {
-					Simulators.deleteField(fieldContainerGroup, false);
+					var elementId = fieldContainerGroup.attr('id')
+					if ($.inArray(elementId, deleted) < 0) {
+						Simulators.deleteField(fieldContainerGroup, false);
+						deleted.push(elementId);
+					}
 				}
 			});
 		});
