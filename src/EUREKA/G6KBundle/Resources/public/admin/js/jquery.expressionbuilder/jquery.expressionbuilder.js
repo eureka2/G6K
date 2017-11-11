@@ -34,6 +34,7 @@ var ExpressionBuilder_I18N = {
 		'menu-action-insert': 'Insert operand before',
 		'menu-action-nested': 'Change to nested expression',
 		'menu-action-delete': 'Delete this operand',
+		'menu-action-add-argument': 'Add an argument to this function',
 		'literal-label': 'Literal',
 		'literal-placeholder': 'Enter a value',
 		'fields-label': 'Fields',
@@ -201,6 +202,26 @@ var ExpressionBuilder_I18N = {
 					holder.attr('title', i18n['operand-holder-tip']).css(jQuery.extend( {}, holderCSS, { display : "none" } ));
 					holder.contextmenu({
 						target: '#holder-menu' + expressionId,
+						before: function(e, context) {
+							if (!context || !context[0] || !context[0].firstChild) {
+								return true;
+							}
+							var items = jQuery('#holder-menu' + expressionId + ' > ul'); 
+							var addarg = items.find("[menu-action='add-argument']");
+							var name = context[0].firstChild.textContent;
+							if (settings.functions[name] && settings.functions[name].arity == -1) {
+								if (addarg.length == 0) {
+									items.append('<li class="divider"></li>');
+									items.append('<li><a tabindex="-1" menu-action="add-argument"><span class="pull-right">Ctrl+Shift+A</span>' + i18n['menu-action-add-argument'] + '</a></li>');
+								}
+							} else {
+								if (addarg.length) {
+									addarg.parent('li').prev().remove();
+									addarg.parent('li').remove();
+								}
+							}
+							return true;
+						},
 						onItem: function (context, e) {
 							var action = jQuery(e.target).attr('menu-action');
 							var wrapper = jQuery(context).parent('span');
@@ -219,6 +240,10 @@ var ExpressionBuilder_I18N = {
 									break;
 								case 'delete':
 									deleteOperand(wrapper);
+									break;
+								case 'add-argument':
+									var functionWrapper = wrapper.children('span.function-wrapper')
+									addFunctionArgument(functionWrapper);
 									break;
 							}
 						}
@@ -268,6 +293,15 @@ var ExpressionBuilder_I18N = {
 						var wrapper = jQuery(this).parent('span');
 						setTimeout(function() {
 							deleteOperand(wrapper);
+						}, 0);
+						return false;
+					});
+
+					holder.on('keydown', null, 'Ctrl+Shift+A', function (e) {
+						var wrapper = jQuery(this).parent('span');
+						var functionWrapper = wrapper.children('span.function-wrapper')
+						setTimeout(function() {
+							addFunctionArgument(functionWrapper);
 						}, 0);
 						return false;
 					});
@@ -379,13 +413,34 @@ var ExpressionBuilder_I18N = {
 					operandWrapper.children('select').focus();
 				}
 
-
 				function deleteOperand(wrapper) {
 					var holder = wrapper.children('button.operand-holder');
 					if (wrapper.is(':nth-child(2)')) { //first child is context-menu
 						if (wrapper.is(':last-child')) {
-							var choices = showOperandChoices(wrapper);
-							choices.val('');
+							var deletearg = false;
+							var functionw = holder.parent().parents('.function-operand-wrapper');
+							if (functionw.length > 0) {
+								var holderw = functionw.eq(0).children('button.operand-holder');
+								var funcName = holderw.data('operand-value');
+								if (funcName && settings.functions[funcName].arity == -1) {
+									var args = functionw.eq(0).find('> span.function-wrapper > span.nested-expression');
+									if (args.length > 2) {
+										deletearg = true;
+									}
+								}
+							}
+							if (deletearg) {
+								var nestedExpr = wrapper.parent('.nested-expression');
+								if (nestedExpr.prev().hasClass('comma-holder')) {
+									nestedExpr.prev().remove();
+								} else if (nestedExpr.next().hasClass('comma-holder')) {
+									nestedExpr.next().remove();
+								}
+								nestedExpr.remove();
+							} else {
+								var choices = showOperandChoices(wrapper);
+								choices.val('');
+							}
 						} else {
 							if (holder.data('right-operator')) {
 								holder.data('right-operator').remove();
@@ -612,27 +667,19 @@ var ExpressionBuilder_I18N = {
 					showHolder(wrapper, parameter, parameterLabel, 'parameter');
 				}
 
-				function functionExpression(wrapper, funcName, initial) {
-					var holder = wrapper.children('button.operand-holder');
-					if (wrapper.hasClass('function-operand-wrapper')) {
-						if (holder.data('operand-value') == funcName) {
-							return;
-						} else {
-							wrapper.children('span.function-wrapper').remove();
-						}
+				function addFunctionArgument(functionWrapper, initial) {
+					var rightParenthesis = functionWrapper.children('.right-parenthesis-holder');
+					var nesteds = functionWrapper.children('.nested-expression');
+					if (nesteds.length > 0) {
+						var comma = jQuery('<button class="comma-holder">,</button>');
+						comma.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
+						jQuery.each(settings.operatorHolder.classes, function(c, clazz) {
+							comma.addClass(clazz);
+						});
+						rightParenthesis.before(comma);
 					}
-					wrapper.removeClass('operand-wrapper').removeClass('nested-operand-wrapper').addClass('function-operand-wrapper');
-					var func = settings.functions[funcName];
-					showHolder(wrapper, funcName, funcName, 'function');
-					var functionWrapper = jQuery('<span class="function-wrapper"></span>');
-					wrapper.append(functionWrapper);
-					var leftParenthesis = jQuery('<button class="left-parenthesis-holder">(</button>');
-					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
-						leftParenthesis.addClass(clazz);
-					});
-					functionWrapper.append(leftParenthesis);
 					var nested = jQuery('<span class="nested-expression"></span>');
-					functionWrapper.append(nested);
+					rightParenthesis.before(nested);
 					var initargs = null;
 					if (initial) {
 						initargs = [];
@@ -657,40 +704,31 @@ var ExpressionBuilder_I18N = {
 							initial: initargs
 						})
 					);
-					for (var i = 1; i < func.arity; i++) {
-						var comma = jQuery('<button class="comma-holder">,</button>');
-						comma.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
-						jQuery.each(settings.operatorHolder.classes, function(c, clazz) {
-							comma.addClass(clazz);
-						});
-						functionWrapper.append(comma);
-						var nested = jQuery('<span class="nested-expression"></span>');
-						functionWrapper.append(nested);
-						var initargs = null;
-						if (initial) {
-							initargs = [];
-							var npar = 0;
-							while (initial.length > 0) {
-								var op = initial.shift();
-								if (op === ',' && npar == 0) {
-									break;
-								}
-								if (op === '(') {
-									npar++;
-								} else if (op === ')') {
-									npar--;
-								}
-								initargs.push(op);
-							}
+				}
+
+				function functionExpression(wrapper, funcName, initial) {
+					var holder = wrapper.children('button.operand-holder');
+					if (wrapper.hasClass('function-operand-wrapper')) {
+						if (holder.data('operand-value') == funcName) {
+							return;
+						} else {
+							wrapper.children('span.function-wrapper').remove();
 						}
-						nested.expressionbuilder(
-							jQuery.extend({}, settings, {
-								onCompleted: function(type, expression) { checkState(); },
-								onEditing: function(expression) { checkState(); },
-								initial: initargs
-							})
-						);
 					}
+					wrapper.removeClass('operand-wrapper').removeClass('nested-operand-wrapper').addClass('function-operand-wrapper');
+					var func = settings.functions[funcName];
+					var arity = func.arity;
+					if (arity == -1) {
+						arity = initial ? Math.max(2, initial.filter(function(i) { return i !== ','}).length) : 2;
+					}
+					showHolder(wrapper, funcName, funcName, 'function');
+					var functionWrapper = jQuery('<span class="function-wrapper"></span>');
+					wrapper.append(functionWrapper);
+					var leftParenthesis = jQuery('<button class="left-parenthesis-holder">(</button>');
+					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
+						leftParenthesis.addClass(clazz);
+					});
+					functionWrapper.append(leftParenthesis);
 					var rightParenthesis = jQuery('<button class="right-parenthesis-holder">)</button>');
 					jQuery.each(settings.nestedExpression.classes, function(c, clazz) {
 						rightParenthesis.addClass(clazz);
@@ -698,6 +736,9 @@ var ExpressionBuilder_I18N = {
 					functionWrapper.append(rightParenthesis);
 					leftParenthesis.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
 					rightParenthesis.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
+					for (var i = 0; i < arity; i++) {
+						addFunctionArgument(functionWrapper, initial);
+					}
 					holder.data('operand-completed', false);
 					checkState();
 				}
@@ -714,7 +755,7 @@ var ExpressionBuilder_I18N = {
 							rightOperator.hide();
 						}
 					} else {
-						holder.data('right-operator', addOperator());
+						holder.data('right-operator', addOperator()); // TODO ; verify opportunity to do that
 					}
 					var leftOperator = wrapper.prev();
 					if (leftOperator && leftOperator.hasClass('operator-wrapper')) {
@@ -1037,7 +1078,11 @@ var ExpressionBuilder_I18N = {
 					var func = settings.functions[funcName];
 					var functionWrapper = wrapper.children('span.function-wrapper');
 					var args = functionWrapper.children('span.nested-expression');
-					for (var i = 0; i < func.arity; i++) {
+					var arity = func.arity;
+					if (arity == -1) {
+						arity = Math.max(2, args.length);
+					}
+					for (var i = 0; i < arity; i++) {
 						if (! args.eq(i).expressionbuilder('completed')) {
 							isCompleted = false;
 							break;
@@ -1112,10 +1157,11 @@ var ExpressionBuilder_I18N = {
 							var functionWrapper = self.children('span.function-wrapper');
 							var args = functionWrapper.children('span.nested-expression');
 							expression += funcName + '(' + args.eq(0).expressionbuilder('val');
-							if (func.arity == -1) {
-								console.log("function : " + funcName + " args.length = " + args.length);
+							var arity = func.arity;
+							if (arity == -1) {
+								arity = Math.max(2, args.length);
 							}
-							for (var i = 1; i < func.arity; i++) {
+							for (var i = 1; i < arity; i++) {
 								expression += ', ' + args.eq(i).expressionbuilder('val');
 							}
 							expression += ')';

@@ -28,6 +28,7 @@ ExpressionBuilder_I18N['fr'] = {
 	'menu-action-insert': 'Insérer un opérande avant celui-ci',
 	'menu-action-nested': 'Changer en une sous-expression entre-parenthèses&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
 	'menu-action-delete': 'Supprimer cet opérande',
+	'menu-action-add-argument': 'Ajouter un argument à cette fonction',
 	'literal-label': 'Constante',
 	'literal-placeholder': 'Entrez une valeur',
 	'fields-label': 'Champs',
