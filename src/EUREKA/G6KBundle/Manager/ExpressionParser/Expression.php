@@ -127,6 +127,10 @@ class Expression {
 					while (!empty($stack) && end($stack)->type != Token::T_POPEN) {
 						$rpn[] = array_pop($stack);
 					}
+					if (count($stack) > 1
+						&& $stack[count($stack)-2]->type == Token::T_FUNCTION) {
+						$stack[count($stack)-2]->arity++;
+					}
 					break;
 				case Token::T_NUMBER:
 				case Token::T_DATE:
@@ -149,6 +153,7 @@ class Expression {
 					array_pop($stack);
 					if (!empty($stack)
 						&& end($stack)->type == Token::T_FUNCTION) {
+						end($stack)->arity++;
 						$rpn[] = array_pop($stack);
 					}
 					break;

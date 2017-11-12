@@ -1930,6 +1930,7 @@ THE SOFTWARE.
 
 	function Token(type, value) {
 		this.type  = type;
+		this.arity = 0;
 		this.value = value;
 	};
 
@@ -2209,6 +2210,10 @@ THE SOFTWARE.
 						while (stack.length != 0 && stack[stack.length-1].type != Token.TYPE.T_POPEN) {
 							rpn.push(stack.pop());
 						}
+						if (stack.length > 1
+							&& stack[stack.length-2].type == Token.TYPE.T_FUNCTION) {
+							stack[stack.length-2].arity++;
+						}
 						break;
 					case Token.TYPE.T_NUMBER:
 					case Token.TYPE.T_DATE:
@@ -2231,6 +2236,7 @@ THE SOFTWARE.
 						stack.pop();
 						if (stack.length != 0
 							&& stack[stack.length-1].type == Token.TYPE.T_FUNCTION) {
+							stack[stack.length-1].arity++;
 							rpn.push(stack.pop());
 						}
 						break;
@@ -2780,8 +2786,8 @@ THE SOFTWARE.
 				"log10": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.log10(a); }],
 				"lower": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) { return a.toLowerCase(); }],
 				"match": [2, [Token.TYPE.T_TEXT, Token.TYPE.T_TEXT], Token.TYPE.T_BOOLEAN, function(a, b) { return b.match(a) != null; }],
-				"max": [2, [Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a, b) { return Math.max(a, b); }],
-				"min": [2, [Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a, b) { return Math.min(a, b); }],
+				"max": [-1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.max.apply(null, a); }],
+				"min": [-1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.min.apply(null, a); }],
 				"money": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_TEXT, function(a) { return accounting.formatNumber(a, 2, " ", ",").toString(); }],
 				"month": [1, [Token.TYPE.T_DATE], Token.TYPE.T_NUMBER, function(a) { return a.getMonth() + 1; }],
 				"nextWorkDay": [1, [Token.TYPE.T_DATE], Token.TYPE.T_DATE, function(a) { return a.nextWorkingDay(); }],
@@ -2836,7 +2842,7 @@ THE SOFTWARE.
 			var argc = functions[func.value][0];
 			var variableArgsCount = false;
 			if (argc == -1) {
-				argc = args.length;
+				argc = func.arity;
 				variableArgsCount = true;
 			}
 			if (args.length < argc) {
@@ -2872,7 +2878,7 @@ THE SOFTWARE.
 						throw new Error("Illegal type for argument '" + arg + "' : operand must be a " + expected + " for " + func);
 					}
 				} else if (arg.isVariable()) {
-					arg.value = undefined;
+					return new Token(Token.TYPE.T_UNDEFINED, [arg]);
 				}
 				argv.unshift(arg.value); 
 			}

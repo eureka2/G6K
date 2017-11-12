@@ -352,8 +352,8 @@ class Evaluator {
 			"log10" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log10($a); }),
 			"lower" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return strtolower($a); }),
 			"match" => array(2, array(Token::T_TEXT, Token::T_TEXT), Token::T_BOOLEAN, function($a, $b) { return preg_match($a, $b); }),
-			"max" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return max($a, $b); }),
-			"min" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return min($a, $b); }),
+			"max" => array(-1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return max($a); }),
+			"min" => array(-1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return min($a); }),
 			"money" => array(1, array(Token::T_NUMBER), Token::T_TEXT, function($a) { return (string)number_format($a , 2 , "," , " "); }),
 			"month" => array(1, array(Token::T_DATE), Token::T_NUMBER, function(\DateTime $a) { return (float)$a->format('m'); }),
 			"nextWorkDay" => array(1, array(Token::T_DATE), Token::T_DATE, function(\DateTime $a) { return Holidays::nextWorkingDay($a); }),
@@ -410,7 +410,7 @@ class Evaluator {
 		$argscount = $functions[$func->value][0];
 		$variableArgsCount = false;
 		if ($argscount == -1) {
-			$argscount = count($args);
+			$argscount = $func->arity;
 			$variableArgsCount = true;
 		}
 		if (count($args) < $argscount) {
@@ -447,7 +447,7 @@ class Evaluator {
 				}
 				array_unshift($argslist, $arg->value); 
 			} else if ($arg->isVariable()) {
-				unset($arg->value);
+				return new Token(Token::T_UNDEFINED, array($arg));
 			} else {
 				array_unshift($argslist, $arg->value); 
 			}

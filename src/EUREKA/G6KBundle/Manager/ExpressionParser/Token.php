@@ -98,6 +98,14 @@ class Token {
 	public $value;
 
 	/**
+	 * @var string      $arity Number of parsed arguments if this token is a funcion
+	 *
+	 * @access  public
+	 *
+	 */
+	public $arity;
+
+	/**
 	 * Constructor of class Token
 	 *
 	 * @access  public
@@ -109,6 +117,7 @@ class Token {
 	public function __construct($type, $value) {
 		$this->type  = $type;
 		$this->value = $value;
+		$this->arity = 0;
 	}
 
 	/**
