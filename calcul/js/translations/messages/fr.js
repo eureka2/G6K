@@ -10,8 +10,8 @@
     Translator.add("acos", "arcCosinus", "messages", "fr");
     Translator.add("acosh", "arcCosinusHyperbolique", "messages", "fr");
     Translator.add("action", "action", "messages", "fr");
-    Translator.add("actionbutton", "bouton d'action", "messages", "fr");
     Translator.add("Action Button", "Bouton d'action", "messages", "fr");
+    Translator.add("actionbutton", "bouton d'action", "messages", "fr");
     Translator.add("Action button label", "Libell\u00e9 du bouton", "messages", "fr");
     Translator.add("Action button name without spaces or special characters", "Nom du bouton sans espaces ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Actions Buttons", "Boutons d'action", "messages", "fr");
@@ -50,6 +50,7 @@
     Translator.add("All of the following conditions are met", "toutes les conditions suivantes sont satisfaites", "messages", "fr");
     Translator.add("Allow collapse\/expand ?", "Permettre Plier \/ D\u00e9plier ?", "messages", "fr");
     Translator.add("All results", "tous", "messages", "fr");
+    Translator.add("all versions of this simulator", "toutes les versions de ce simulateur", "messages", "fr");
     Translator.add("A logical operator can not begin an expression", "Un op\u00e9rateur logique ne peut pas commencer une expression", "messages", "fr");
     Translator.add("and", "et", "messages", "fr");
     Translator.add("An update is in progress,", "Vous avez commenc\u00e9 une mise \u00e0 jour,", "messages", "fr");
@@ -57,6 +58,7 @@
     Translator.add("Any of the following", "L'une des conditions suivantes : ", "messages", "fr");
     Translator.add("Any of the following conditions is met", "au moins une des conditions suivantes est satisfaite", "messages", "fr");
     Translator.add("April", "Avril", "messages", "fr");
+    Translator.add("Are you sure you want to delete all versions of the simulator %simulator%?", "\u00cates-vous s\u00fbr de vouloir supprimer toutes les versions du simulateur %simulator% ?", "messages", "fr");
     Translator.add("Are you sure you want to delete the action button : %label%", "Voulez-vous vraiment supprimer le bouton d'action : %label%", "messages", "fr");
     Translator.add("Are you sure you want to delete the blockinfo : %label%", "Voulez-vous vraiment supprimer le bloc d'infos : %label%", "messages", "fr");
     Translator.add("Are you sure you want to delete the chapter : %label%", "Voulez-vous vraiment supprimer le chapitre : %label%", "messages", "fr");
@@ -74,6 +76,7 @@
     Translator.add("Are you sure you want to delete the rule : %label% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la r\u00e8gle : %label% ?", "messages", "fr");
     Translator.add("Are you sure you want to delete the section : %label%", "Voulez-vous vraiment supprimer la section : %label%", "messages", "fr");
     Translator.add("Are you sure you want to delete the step : %label%", "Voulez-vous vraiment supprimer l'\u00e9tape : %label%", "messages", "fr");
+    Translator.add("Are you sure you want to delete the working version of the simulator %simulator%?", "\u00cates-vous s\u00fbr de vouloir supprimer la version de travail du simulateur %simulator% ?", "messages", "fr");
     Translator.add("Are you sure you want to delete this source", "\u00cates-vous certain de vouloir supprimer cette source", "messages", "fr");
     Translator.add("Are you sure you want to deploy the simulator %simulator% on the front servers?", "\u00cates-vous s\u00fbr de vouloir d\u00e9ployer le simulateur %simulator% sur les serveurs frontaux ?", "messages", "fr");
     Translator.add("Are you sure you want to drop the datasource %datasource% ?", "\u00cates-vous s\u00fbr de vouloir supprimer la source de donn\u00e9es %datasource% ?", "messages", "fr");
@@ -200,8 +203,8 @@
     Translator.add("count", "nombre", "messages", "fr");
     Translator.add("country", "pays", "messages", "fr");
     Translator.add("Create", "Cr\u00e9er", "messages", "fr");
-    Translator.add("Create Datasource", "Cr\u00e9er une source de donn\u00e9es", "messages", "fr");
     Translator.add("Create Data source", "Cr\u00e9er une source de donn\u00e9es", "messages", "fr");
+    Translator.add("Create Datasource", "Cr\u00e9er une source de donn\u00e9es", "messages", "fr");
     Translator.add("Create simulator", "Cr\u00e9er un simulateur", "messages", "fr");
     Translator.add("Create view", "Cr\u00e9er une vue", "messages", "fr");
     Translator.add("Credentials expire at", "Droits expirent le", "messages", "fr");
@@ -234,8 +237,8 @@
     Translator.add("Datas", "Donn\u00e9es", "messages", "fr");
     Translator.add("dataset", "ensemble des donn\u00e9es", "messages", "fr");
     Translator.add("Dataset", "Ensemble des donn\u00e9es", "messages", "fr");
-    Translator.add("Datasource", "Source de donn\u00e9es", "messages", "fr");
     Translator.add("Data source", "Source de donn\u00e9es", "messages", "fr");
+    Translator.add("Datasource", "Source de donn\u00e9es", "messages", "fr");
     Translator.add("Data sources", "Sources de donn\u00e9es", "messages", "fr");
     Translator.add("Data sources management", "Gestion des sources de donn\u00e9es", "messages", "fr");
     Translator.add("Data to continue this simulation are not accessible. Please try again later.", "Les donn\u00e9es permettant de continuer cette simulation ne sont plus accessibles. Veuillez recommencer ult\u00e9rieurement.", "messages", "fr");
@@ -316,8 +319,8 @@
     Translator.add("Expand all", "Tout d\u00e9plier", "messages", "fr");
     Translator.add("Expired", "Expir\u00e9", "messages", "fr");
     Translator.add("Expires at", "Expire le", "messages", "fr");
-    Translator.add("explanation", "explication", "messages", "fr");
     Translator.add("Explanation", "Explication", "messages", "fr");
+    Translator.add("explanation", "explication", "messages", "fr");
     Translator.add("Export", "Exporter", "messages", "fr");
     Translator.add("Export datasource", "Exporter", "messages", "fr");
     Translator.add("Export simulator", "Exporter", "messages", "fr");
@@ -339,8 +342,8 @@
     Translator.add("Fieldrow %id% (nolabel)", "Rang\u00e9e %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Fieldrow label", "Libell\u00e9 de la rang\u00e9e", "messages", "fr");
     Translator.add("Fields", "Champs", "messages", "fr");
-    Translator.add("fieldset", "groupe de champs", "messages", "fr");
     Translator.add("FieldSet", "Groupe de champs", "messages", "fr");
+    Translator.add("fieldset", "groupe de champs", "messages", "fr");
     Translator.add("Fieldset %id% (nolegend)", "Groupe de champs %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Fields marked with an %asterisk% are required.", "Les champs marqu\u00e9s d'un %asterisk% sont obligatoires.", "messages", "fr");
     Translator.add("File", "Fichier", "messages", "fr");
@@ -471,8 +474,8 @@
     Translator.add("matches", "correspondances", "messages", "fr");
     Translator.add("max", "max", "messages", "fr");
     Translator.add("max can not refer to the data itself", "max ne peut pas se r\u00e9f\u00e9rer \u00e0 la donn\u00e9e elle-m\u00eame", "messages", "fr");
-    Translator.add("Maximum", "Maximum", "messages", "fr");
     Translator.add("maximum", "valeur maximale", "messages", "fr");
+    Translator.add("Maximum", "Maximum", "messages", "fr");
     Translator.add("Maximum value", "Valeur maximum", "messages", "fr");
     Translator.add("max value", "valeur max", "messages", "fr");
     Translator.add("May", "Mai", "messages", "fr");
@@ -544,11 +547,11 @@
     Translator.add("or", "ou", "messages", "fr");
     Translator.add("Order by", "Tri\u00e9 par", "messages", "fr");
     Translator.add("Origin", "Provenance", "messages", "fr");
-    Translator.add("output", "restitution \u00e0 l'utilisateur", "messages", "fr");
     Translator.add("Output", "Sortie", "messages", "fr");
+    Translator.add("output", "restitution \u00e0 l'utilisateur", "messages", "fr");
     Translator.add("Page %pageno% of %numberofpages%", "Page %pageno%\/%numberofpages%", "messages", "fr");
-    Translator.add("panel", "panneau", "messages", "fr");
     Translator.add("Panel", "Panneau", "messages", "fr");
+    Translator.add("panel", "panneau", "messages", "fr");
     Translator.add("Panel %id% (nolabel)", "Panneau %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Panel label", "Libell\u00e9 du panneau", "messages", "fr");
     Translator.add("Panel name", "Nom du panneau", "messages", "fr");
@@ -601,11 +604,11 @@
     Translator.add("Postal code obtained by autocompletion on the name of the commune or its postal code", "Code postal obtenu par auto-compl\u00e9tion sur le nom de la commune ou son code postal", "messages", "fr");
     Translator.add("Postal code obtained by autocompletion on the name of the commune or its postal code (In place mode)", "Code postal obtenu par auto-compl\u00e9tion sur le nom de la commune ou son code postal (\u00e9dition en place)", "messages", "fr");
     Translator.add("POST data", "Donn\u00e9es de la requ\u00eate en mode POST", "messages", "fr");
-    Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("postnote", "post note", "messages", "fr");
+    Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("pow", "puissance", "messages", "fr");
-    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("PreNote", "Pre Note", "messages", "fr");
+    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("Previous", "Pr\u00e9c\u00e9dent", "messages", "fr");
     Translator.add("Primary", "Principal", "messages", "fr");
     Translator.add("Prior step", "Etape pr\u00e9c\u00e9dente", "messages", "fr");
@@ -649,8 +652,8 @@
     Translator.add("Save", "Enregistrer", "messages", "fr");
     Translator.add("Search", "Rechercher", "messages", "fr");
     Translator.add("Secondary", "Secondaire", "messages", "fr");
-    Translator.add("section", "section", "messages", "fr");
     Translator.add("Section", "Section", "messages", "fr");
+    Translator.add("section", "section", "messages", "fr");
     Translator.add("Section #%id%", "Section #%id%", "messages", "fr");
     Translator.add("Section #%id% : %label%", "Section #%id% : %label%", "messages", "fr");
     Translator.add("Section %id% (nolabel)", "Section %id% (pas de libell\u00e9)", "messages", "fr");
@@ -684,8 +687,8 @@
     Translator.add("Set", "Mettre", "messages", "fr");
     Translator.add("set", "mettre", "messages", "fr");
     Translator.add("Set value", "Mettre la valeur", "messages", "fr");
-    Translator.add("Show", "Montrer", "messages", "fr");
     Translator.add("show", "montrer", "messages", "fr");
+    Translator.add("Show", "Montrer", "messages", "fr");
     Translator.add("Show choices as radio buttons ?", "Afficher les choix avec des boutons radio ?", "messages", "fr");
     Translator.add("Show colon after field label ?", "Afficher ':' apr\u00e8s l'\u00e9tiquette de champ?", "messages", "fr");
     Translator.add("Show data description as help ?", "Utiliser la description de donn\u00e9es comme aide ?", "messages", "fr");
@@ -715,8 +718,8 @@
     Translator.add("Space", "Espace", "messages", "fr");
     Translator.add("SQL Request", "Requ\u00eate SQL", "messages", "fr");
     Translator.add("sqrt", "racineCarree", "messages", "fr");
-    Translator.add("step", "\u00e9tape", "messages", "fr");
     Translator.add("Step", "Etape", "messages", "fr");
+    Translator.add("step", "\u00e9tape", "messages", "fr");
     Translator.add("Step %id% (nolabel)", "\u00c9tape %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Step Label", "Libell\u00e9 de l'\u00e9tape", "messages", "fr");
     Translator.add("Step Name", "Nom de l'\u00e9tape", "messages", "fr");
@@ -908,12 +911,13 @@
     Translator.add("whose label is", "dont le libell\u00e9 est", "messages", "fr");
     Translator.add("workdays", "jours ouvr\u00e9s", "messages", "fr");
     Translator.add("workdaysofmonth", "jours ouvr\u00e9s du mois", "messages", "fr");
+    Translator.add("working version only", "la version de travail seulement", "messages", "fr");
     Translator.add("XML Validation against schema fail", "La validation XML par rapport au sch\u00e9ma a \u00e9chou\u00e9", "messages", "fr");
     Translator.add("XML Validation errors", "Erreurs de validation XML", "messages", "fr");
     Translator.add("y", "AA", "messages", "fr");
     Translator.add("Y", "AAAA", "messages", "fr");
-    Translator.add("y-m", "AA-MM", "messages", "fr");
     Translator.add("Y-m", "AAAA-MM", "messages", "fr");
+    Translator.add("y-m", "AA-MM", "messages", "fr");
     Translator.add("Y-m-d", "AAAA-MM-JJ", "messages", "fr");
     Translator.add("y-m-d", "AA-MM-JJ", "messages", "fr");
     Translator.add("Year", "Ann\u00e9e", "messages", "fr");

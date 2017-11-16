@@ -66,6 +66,21 @@ THE SOFTWARE.
 					<div class="panel panel-primary">
 						<div id="simulator-options-panel" class="panel-heading" role="tab">
 							<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'simulators-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span></a> 
+							{% if hiddens.action != 'create'%}
+							<div class="btn-group pull-right update-button">
+								<button class="btn btn-primary dropdown-toggle" title="{{ 'Delete'|trans }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<span class="button-label">{{ 'Delete'|trans }}</span> <span class="glyphicon glyphicon-minus-sign"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'delete'}) }}" class="delete-simulator" data-parent="#simulator" title="{{ 'all versions of this simulator'|trans }}" data-confirm="{{ 'Are you sure you want to delete all versions of the simulator %simulator%?'|trans({ '%simulator%': simulator.name }) }}">{{ 'all versions of this simulator'|trans }}</a>
+									</li>
+									<li{% if not hiddens.updated %} class="disabled" aria-hidden="true"{% endif %}>
+										<a href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'delete-working-version'}) }}" class="delete-working-version" data-parent="#simulator" title="{{ 'working version only'|trans }}" data-confirm="{{ 'Are you sure you want to delete the working version of the simulator %simulator%?'|trans({ '%simulator%': simulator.name }) }}">{{ 'working version only'|trans }}</a>
+									</li>
+								</ul>
+							</div>
+							{% endif %}
 							{% if hiddens.action != 'create' and valid %}
 							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name, 'view': simulator.defaultView }) }}" class="btn btn-primary pull-right view-button" title="{{ 'Try it'|trans }}" target="_blank"><span class="button-label">{{ 'Try it'|trans }}</span> <span class="glyphicon glyphicon-eye-open"></span></a>
 							{% endif %}

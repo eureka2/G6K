@@ -65,6 +65,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Finder\Finder;
 
 use EUREKA\G6KBundle\Entity\Database;
 
@@ -253,9 +254,15 @@ class SimulatorsAdminController extends BaseAdminController {
 				$this->update($simulator, $form);
 				return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $this->simu->getName())));
 			} elseif (isset($form['delete'])) {
-				$this->doDelete($simulator);
+				$this->doDeleteWorkingVersion($simulator);
 				return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulators'));
 			}
+		} elseif ($crud == 'delete-working-version') {
+			$this->doDeleteWorkingVersion($simulator);
+			return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simulator)));
+		} elseif ($crud == 'delete') {
+			$this->doDelete($simulator);
+			return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulators'));
 		} elseif ($crud == 'import') {
 			$hiddens['action'] = 'import';
 		} elseif ($crud == 'doimport') {
@@ -595,9 +602,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	/**
 	 * Deletes a simulator whose name is in the $simulator parameter
 	 *
-	 * Route path : /admin/simulators/{simulator}/save
-	 *
-	 * $form['delete'] isset
+	 * Route path : /admin/simulators/{simulator}/delete
 	 *
 	 * @access  protected
 	 * @param   string $simulator simulator name
@@ -607,8 +612,36 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function doDelete($simulator) {
 		$fs = new Filesystem();
 		try {
+			$this->doDeleteWorkingVersion($simulator);
+			if ($fs->exists($this->simulatorsDir."/".$simulator.".xml")) {
+				$fs->remove($this->simulatorsDir."/".$simulator.".xml");
+			}
+			$finder = new Finder();
+			$finder->name($simulator.'.css')->in($this->publicDir)->exclude('admin')->exclude('base');
+			foreach ($finder as $file) {
+				$fs->remove($file->getRealPath());
+			}
+		} catch (\Exception $e) {
+		}
+	}
+
+	/**
+	 * Deletes a simulator whose name is in the $simulator parameter
+	 *
+	 * Route path : /admin/simulators/{simulator}/delete-working-version
+	 *
+	 * or /admin/simulators/{simulator}/save and $form['delete'] isset
+	 *
+	 * @access  protected
+	 * @param   string $simulator simulator name
+	 * @return  void
+	 *
+	 */
+	protected function doDeleteWorkingVersion($simulator) {
+		$fs = new Filesystem();
+		try {
 			if ($fs->exists($this->simulatorsDir."/work/".$simulator.".xml")) {
-				$fs-remove($this->simulatorsDir."/work/".$simulator.".xml");
+				$fs->remove($this->simulatorsDir."/work/".$simulator.".xml");
 			}
 		} catch (\Exception $e) {
 		}

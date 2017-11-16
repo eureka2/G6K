@@ -2878,7 +2878,7 @@ THE SOFTWARE.
 						throw new Error("Illegal type for argument '" + arg + "' : operand must be a " + expected + " for " + func);
 					}
 				} else if (arg.isVariable()) {
-					return new Token(Token.TYPE.T_UNDEFINED, [arg]);
+					arg.value = undefined;
 				}
 				argv.unshift(arg.value); 
 			}
