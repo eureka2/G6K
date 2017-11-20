@@ -26,6 +26,8 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Services;
 
+use EUREKA\G6KBundle\Entity\Simulator;
+
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Finder\Finder;
@@ -348,7 +350,7 @@ class Deployer {
 	 * @return  array The result of the deployment
 	 *
 	 */
-	public function deploy($simu){
+	public function deploy(Simulator $simu){
 		$this->output = array();
 		$this->importedCSS = array();
 		$this->lockHandler = new LockHandler('g6k.deployment.lock');
