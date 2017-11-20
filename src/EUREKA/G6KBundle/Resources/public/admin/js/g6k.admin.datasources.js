@@ -151,7 +151,7 @@ THE SOFTWARE.
 			$('#page-datasources #edit-table-rows-form').find("button[name='btnFilter']").click(function(e) {
 				e.preventDefault();
 				$('#page-datasources #edit-table-rows-form').find("input[name='page']").val(1);
-				// $('#page-datasources #edit-table-rows-form').submit();
+				$('#page-datasources #edit-table-rows-form').submit();
 			});
 		}
 	}
