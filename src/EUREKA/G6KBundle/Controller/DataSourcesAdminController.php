@@ -568,9 +568,15 @@ class DataSourcesAdminController extends BaseAdminController {
 												$date = $this->helper->parseDate("j/m/Y", $filtertext);
 												$filtertext = $date->format("Y-m-d");
 												$where[] = $infos['name'] . " = '" . $filtertext . "'";
-											} elseif ($infos['g6k_type'] == 'number' || $infos['g6k_type'] == 'money' || $infos['g6k_type'] == 'percent') {
+											} elseif ($infos['g6k_type'] == 'number' || $infos['g6k_type'] == 'integer' || $infos['g6k_type'] == 'money' || $infos['g6k_type'] == 'percent') {
 												$filtertext = str_replace(array(" ", ","), array("", "."), $filtertext);
-												$where[] = $infos['name'] . " LIKE '%" . $filtertext . "%'";
+												if (preg_match("/^(\<|\<\=|\>|\>\=)(.*)$/", $filtertext, $m)) {
+													$op = $m[1];
+													$filtertext = $m[2];
+												} else {
+													$op = '=';
+												}
+												$where[] = $infos['name'] . $op . $filtertext;
 											} else {
 												$where[] = $infos['name'] . " LIKE '%" . $filtertext . "%'";
 											}
