@@ -110,7 +110,8 @@ THE SOFTWARE.
 			});
 			Datasources.emptyRow = '<tr>' + cells + '</tr>';
 	
-			$('#page-datasources #btnAddNewRow').click(function() {
+			$('#page-datasources #btnAddNewRow').click(function(e) {
+				e.preventDefault();
 				$('#page-datasources .tabledit-toolbar-column').remove();
 				$('#page-datasources #' + tablename + ' tbody td').each(function() {
 					var text = $(this).find('.tabledit-span').text();
@@ -150,7 +151,7 @@ THE SOFTWARE.
 			$('#page-datasources #edit-table-rows-form').find("button[name='btnFilter']").click(function(e) {
 				e.preventDefault();
 				$('#page-datasources #edit-table-rows-form').find("input[name='page']").val(1);
-				$('#page-datasources #edit-table-rows-form').submit();
+				// $('#page-datasources #edit-table-rows-form').submit();
 			});
 		}
 	}
