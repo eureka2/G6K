@@ -755,7 +755,7 @@ var ExpressionBuilder_I18N = {
 							rightOperator.hide();
 						}
 					} else {
-						holder.data('right-operator', addOperator()); // TODO ; verify opportunity to do that
+						holder.data('right-operator', addOperator());
 					}
 					var leftOperator = wrapper.prev();
 					if (leftOperator && leftOperator.hasClass('operator-wrapper')) {
