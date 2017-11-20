@@ -9,7 +9,7 @@
             "homepage": "https://github.com/eureka2/G6K"
         }
     ],
-	"autoload": {
+    "autoload": {
         "psr-0": { "EUREKA\\": "src/", "SymfonyStandard": "app/" }
     },
     "require": {
@@ -24,12 +24,13 @@
         "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
-		"tfox/mpdf-port-bundle": "1.2.*",
-		"jbinfo/mobile-detect-service-provider": "~1",
+        "tfox/mpdf-port-bundle": "1.2.*",
+        "jbinfo/mobile-detect-service-provider": "~1",
         "silex/silex": "~1",
         "willdurand/js-translation-bundle": "@stable",
         "friendsofsymfony/user-bundle": "~2.0@dev",
-        "flow/jsonpath": "^0.3.4"
+        "flow/jsonpath": "^0.3.4",
+        "ashleydawson/simple-pagination-bundle": "^1.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

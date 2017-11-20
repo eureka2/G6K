@@ -98,6 +98,11 @@ class DataSourcesAdminController extends BaseAdminController {
 	/**
 	 * @const string
 	 */
+	const SQL_OFFSET_KEYWORD = 'OFFSET ';
+
+	/**
+	 * @const string
+	 */
 	const SQL_UPDATE_KEYWORD = 'UPDATE ';
 
 	/**
@@ -426,7 +431,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$tabledef = array();
 		$tables = array();
 		$tableinfos = array();
-		$tabledatas = array();
+		$pagination = null;
 		$dbname = '';
 		if ($dsid !== null) {
 			if ($dsid == 0) {
@@ -553,23 +558,54 @@ class DataSourcesAdminController extends BaseAdminController {
 								}
 							}
 							if ($datasource['type'] == 'internal') {
-								$tabledatas = $database->query(self::SQL_SELECT_KEYWORD . "*" . self::SQL_FROM_KEYWORD . $table);
-								foreach($tabledatas as $r => $row) {
-									$i = 0;
-									foreach ($row as $c => $cell) {
-										if ($tableinfos[$i]['g6k_type'] == 'date' && $cell !== null) {
-											$date = $this->helper->parseDate('Y-m-d', substr($cell, 0, 10));
-											$tabledatas[$r][$c] = $date->format('d/m/Y');
-										} elseif ($tableinfos[$i]['g6k_type'] == 'money' || $tableinfos[$i]['g6k_type'] == 'percent') {
-											$tabledatas[$r][$c] = number_format ( (float) $cell, 2, ",", "" );
-										} elseif ($tableinfos[$i]['g6k_type'] == 'number') {
-											$tabledatas[$r][$c] = str_replace ( ".", ",", $cell);
-										} elseif ($tableinfos[$i]['g6k_type'] == 'choice') {
-											$tabledatas[$r][$c] = $tableinfos[$i]['choices'][$cell];
+								$where = array();
+								foreach($tableinfos as &$infos) {
+									if ($infos['name'] != 'id') {
+										$filtertext = $this->get('request')->get($infos['name'] . '-filter', "");
+										$infos['filtertext'] = $filtertext;
+										if ($filtertext != '') {
+											if ($infos['g6k_type'] == 'date') {
+												$date = $this->helper->parseDate("j/m/Y", $filtertext);
+												$filtertext = $date->format("Y-m-d");
+												$where[] = $infos['name'] . " = '" . $filtertext . "'";
+											} elseif ($infos['g6k_type'] == 'number' || $infos['g6k_type'] == 'money' || $infos['g6k_type'] == 'percent') {
+												$filtertext = str_replace(array(" ", ","), array("", "."), $filtertext);
+												$where[] = $infos['name'] . " LIKE '%" . $filtertext . "%'";
+											} else {
+												$where[] = $infos['name'] . " LIKE '%" . $filtertext . "%'";
+											}
 										}
-										$i++;
 									}
 								}
+								$where = count($where) > 0? " " . self::SQL_WHERE_KEYWORD . implode(" AND ", $where) : "";
+								$paginator = $this->get('ashley_dawson_simple_pagination.paginator');
+								$paginator->setItemTotalCallback(function () use ($database, $table, $where) {
+									$rowCount = $database->query(self::SQL_SELECT_KEYWORD . "count(*) as c " . self::SQL_FROM_KEYWORD . $table . $where);
+									return $rowCount[0]['c'];
+								});
+								$paginator->setSliceCallback(function ($offset, $length) use ($database, $table, $tableinfos, $where) {
+									$tabledatas = $database->query(self::SQL_SELECT_KEYWORD . "* " . self::SQL_FROM_KEYWORD . $table . $where . " " . self::SQL_LIMIT_KEYWORD . $length . " " . self::SQL_OFFSET_KEYWORD . $offset);
+									foreach($tabledatas as $r => $row) {
+										$i = 0;
+										foreach ($row as $c => $cell) {
+											if ($tableinfos[$i]['g6k_type'] == 'date' && $cell !== null) {
+												$date = $this->helper->parseDate('Y-m-d', substr($cell, 0, 10));
+												$tabledatas[$r][$c] = $date->format('d/m/Y');
+											} elseif ($tableinfos[$i]['g6k_type'] == 'money' || $tableinfos[$i]['g6k_type'] == 'percent') {
+												$tabledatas[$r][$c] = number_format ( (float) $cell, 2, ",", "" );
+											} elseif ($tableinfos[$i]['g6k_type'] == 'number') {
+												$tabledatas[$r][$c] = str_replace ( ".", ",", $cell);
+											} elseif ($tableinfos[$i]['g6k_type'] == 'choice') {
+												$tabledatas[$r][$c] = $tableinfos[$i]['choices'][$cell];
+											}
+											$i++;
+										}
+									}
+									return $tabledatas;
+								});
+								$itemsPerPage = (int)$this->get('request')->get('itemsPerPage', 25);
+								$paginator->setItemsPerPage($itemsPerPage)->setPagesInRange(10);
+								$pagination = $paginator->paginate((int)$this->get('request')->get('page', 1));
 							}
 						}
 					}
@@ -588,8 +624,8 @@ class DataSourcesAdminController extends BaseAdminController {
 							$tables[$i]['label'] = ($dstable !== null) ? (string)$dstable['label'] : $tbl['name'];
 							$tables[$i]['description'] = ($dstable !== null) ? (string)$dstable->Description : '';
 							if ($table !== null && $tbl['name'] == $table) {
-								$tabledef['label'] = $tables[$i]['label'];
-								$tabledef['description'] = $tables[$i]['description'];
+								$tabledef['label'] = trim($tables[$i]['label']);
+								$tabledef['description'] = trim($tables[$i]['description']);
 							}
 						}
 					}
@@ -614,7 +650,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					'tables' => $tables,
 					'table' => $tabledef,
 					'tableinfos' => $tableinfos,
-					'tabledatas' => $tabledatas,
+					'pagination' => $pagination,
 					'hiddens' => $hiddens,
 					'script' => $this->script,
 					'simulator' => null,

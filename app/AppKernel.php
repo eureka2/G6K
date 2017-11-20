@@ -20,6 +20,7 @@ class AppKernel extends Kernel
 			new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
 			new TFox\MpdfPortBundle\TFoxMpdfPortBundle(),
             new EUREKA\G6KBundle\EUREKAG6KBundle(),
+			new AshleyDawson\SimplePaginationBundle\AshleyDawsonSimplePaginationBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

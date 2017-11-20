@@ -27,6 +27,7 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Entity;
 
 use EUREKA\G6KBundle\Manager\Json\JsonSQL;
+use \PDO;
 
 /**
  *

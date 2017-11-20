@@ -124,20 +124,87 @@ THE SOFTWARE.
 				$('#page-datasources #' + tablename + ' tbody tr:first-child').find('.tabledit-edit-button').trigger( "click" );
 			});
 			Datasources.doeditable(tablename, locale);
-			$('#page-datasources #' + tablename).bdt({
-				pageRowCount: 25,
-				arrowDown: 'fa-angle-down',
-				arrowUp: 'fa-angle-up',
-				pageFieldText : Translator.trans('Lines per page'),
-				previousText: Translator.trans('Next'),
-				nextText: Translator.trans('Previous'),
-				searchFieldText: Translator.trans('Search') + '...',
-				showSearchForm : 0
-			});
+			Datasources.sortColumn($('#page-datasources #' + tablename));
 			$('#page-datasources #' + tablename).resizableColumns({
 				store: store
 			});
+			$('#page-datasources thead tr:eq(1) th.date input').datepicker({
+				format: 'dd/mm/yyyy',
+				autoclose: true,
+				language: locale
+			});
+			$('#page-datasources #edit-table-rows-form ul.pagination li a').click(function(e) {
+				e.preventDefault();
+				var form = $('#page-datasources #edit-table-rows-form').find("input[name='page']")
+				var pagenum = $(this).attr('data-page');
+				if (pagenum > 0) {
+					$('#page-datasources #edit-table-rows-form').find("input[name='page']").val(pagenum);
+					$('#page-datasources #edit-table-rows-form').submit();
+				}
+			});
+			$('#page-datasources #edit-table-rows-form').find("select[name='itemsPerPage']").change(function(e) {
+				e.preventDefault();
+				$('#page-datasources #edit-table-rows-form').find("input[name='page']").val(1);
+				$('#page-datasources #edit-table-rows-form').submit();
+			});
+			$('#page-datasources #edit-table-rows-form').find("button[name='btnFilter']").click(function(e) {
+				e.preventDefault();
+				$('#page-datasources #edit-table-rows-form').find("input[name='page']").val(1);
+				$('#page-datasources #edit-table-rows-form').submit();
+			});
 		}
+	}
+
+	Datasources.sortColumn = function(obj) {
+		var table = obj;
+		var arrowDown = 'fa-angle-down';
+		var arrowUp = 'fa-angle-up';
+		var oldIndex = 0;
+		obj
+			.find('thead > tr:first-child th')
+			.wrapInner('<span class="sort-element"/>')
+			.append($('<span/>').addClass('sort-icon fa'))
+			.css({cursor: 'pointer'})
+			.each(function () {
+				var th = $(this);
+				var thIndex = th.index();
+				var inverse = false;
+				var addOrRemove = true;
+				th.click(function () {
+					if(!$(this).hasClass('disable-sorting')) {
+						if($(this).find('.sort-icon').hasClass(arrowDown)) {
+							$(this)
+								.find('.sort-icon')
+								.removeClass( arrowDown )
+								.addClass(arrowUp);
+						} else {
+							$(this)
+								.find('.sort-icon')
+								.removeClass( arrowUp )
+								.addClass(arrowDown);
+						}
+						if(oldIndex != thIndex) {
+							obj.find('.sort-icon').removeClass(arrowDown);
+							obj.find('.sort-icon').removeClass(arrowUp);
+							$(this)
+								.find('.sort-icon')
+								.toggleClass( arrowDown, addOrRemove );
+						}
+						table.find('td').filter(function () {
+							return $(this).index() === thIndex;
+						}).sortElements(function (a, b) {
+							return $.text([a]) > $.text([b]) ?
+								inverse ? -1 : 1
+								: inverse ? 1 : -1;
+						}, function () {
+							// parentNode is the element we want to move
+							return this.parentNode;
+						});
+						inverse = !inverse;
+						oldIndex = thIndex;
+					}
+				});
+			});
 	}
 
 	Datasources.simpleAttributeForInput = function(id, type, name, label, value, required, placeholder, options) {
@@ -653,6 +720,8 @@ THE SOFTWARE.
 				return; 
 			},
 		});
+		$('#page-datasources #' + tablename).find('thead tr:eq(1)').append('<th class="tabledit-toolbar-column"><button name="btnFilter" class="btn btn-default" style="white-space: nowrap; margin:0;padding:0;width:100%"><span class="button-label" style="font-size: 0.8em;">' + Translator.trans('Filter') + '</span> <span class="glyphicon glyphicon-filter"></span></button></th>');
+
 	}
 
 	Datasources.checkTableFieldValue = function(name, value) {
