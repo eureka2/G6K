@@ -720,7 +720,7 @@ THE SOFTWARE.
 				return; 
 			},
 		});
-		$('#page-datasources #' + tablename).find('thead tr:eq(1)').append('<th class="tabledit-toolbar-column"><button name="btnFilter" class="btn btn-default" style="white-space: nowrap; margin:0;padding:0;width:100%"><span class="button-label" style="font-size: 0.8em;">' + Translator.trans('Filter') + '</span> <span class="glyphicon glyphicon-filter"></span></button></th>');
+		$('#page-datasources #' + tablename).find('thead tr:eq(1)').append('<th class="tabledit-toolbar-column"><button name="btnFilter" class="btn btn-default" style="white-space: nowrap; margin:0;padding:0.3em;width:100%"><span class="button-label" style="font-size: 0.8em;">' + Translator.trans('Filter') + '</span> <span style="float:none;" class="glyphicon glyphicon-filter"></span></button></th>');
 
 	}
 
