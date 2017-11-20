@@ -5,7 +5,7 @@ namespace EUREKA\G6KBundle\Twig\Loader;
 /**
  * This class implements a String template loader for twig
  *
- * @copyright Jacques Archimède
+ * @copyright Jacques ArchimÃ¨de
  *
  */
 class StringTemplateLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface /*, \Twig_SourceContextLoaderInterface */{

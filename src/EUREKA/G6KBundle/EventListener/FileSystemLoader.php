@@ -5,7 +5,7 @@ namespace EUREKA\G6KBundle\EventListener;
 /**
  * Loads twig template from the filesystem.
  *
- * @copyright Jacques Archimède
+ * @copyright Jacques ArchimÃ¨de
  *
  */
 class FileSystemLoader extends \Twig_Loader_Filesystem {

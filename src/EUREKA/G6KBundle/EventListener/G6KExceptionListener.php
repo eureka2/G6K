@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * Custom exception listener
  *
- * @copyright Jacques Archimède
+ * @copyright Jacques ArchimÃ¨de
  *
  */
 class G6KExceptionListener
