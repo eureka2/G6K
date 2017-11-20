@@ -1423,7 +1423,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->load($this->simulatorsDir."/".$simu.'.xml');
 		try {
 			$output = $this->get('g6k.deployer')->deploy($this->simu);
-		} catch (Exception $ex) {
+		} catch (\Exception $ex) {
 		}
 		$hiddens = array();
 		$silex = new Application();
