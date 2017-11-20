@@ -174,8 +174,8 @@
     Translator.add("click to select the operator", "Cliquez pour s\u00e9lectionner l'op\u00e9rateur", "messages", "fr");
     Translator.add("Close", "Fermer", "messages", "fr");
     Translator.add("Collapse all", "Tout replier", "messages", "fr");
-    Translator.add("column", "colonne", "messages", "fr");
     Translator.add("Column", "Colonne", "messages", "fr");
+    Translator.add("column", "colonne", "messages", "fr");
     Translator.add("Column #%id% : %label%", "Colonne #%id% : %label%", "messages", "fr");
     Translator.add("Column %id% (nolabel)", "Colonne %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Column label", "Libell\u00e9 de la colonne", "messages", "fr");
@@ -228,8 +228,8 @@
     Translator.add("Database password", "mot de passe de la base de donn\u00e9es", "messages", "fr");
     Translator.add("Database port", "Port de la base de donn\u00e9es", "messages", "fr");
     Translator.add("Database user", "Identifiant de connexion \u00e0 la base de donn\u00e9es", "messages", "fr");
-    Translator.add("datagroup", "groupe de donn\u00e9es", "messages", "fr");
     Translator.add("Datagroup", "Groupe de donn\u00e9es", "messages", "fr");
+    Translator.add("datagroup", "groupe de donn\u00e9es", "messages", "fr");
     Translator.add("Data label", "\u00c9tiquette de la donn\u00e9e", "messages", "fr");
     Translator.add("Data memo ?", "M\u00e9mo de donn\u00e9es?", "messages", "fr");
     Translator.add("Data name", "Nom de la donn\u00e9e", "messages", "fr");
@@ -272,8 +272,8 @@
     Translator.add("Deleting source", "Suppression source", "messages", "fr");
     Translator.add("Deleting step", "Suppression \u00e9tape", "messages", "fr");
     Translator.add("Delimiter", "D\u00e9limiteur", "messages", "fr");
-    Translator.add("department", "d\u00e9partement", "messages", "fr");
     Translator.add("Department", "D\u00e9partement", "messages", "fr");
+    Translator.add("department", "d\u00e9partement", "messages", "fr");
     Translator.add("Deployment of the \u00ab %simulator% \u00bb simulator", "D\u00e9ploiement du simulateur \u00ab %simulator% \u00bb", "messages", "fr");
     Translator.add("Deployment on the server \u00ab %server% \u00bb", "D\u00e9ploiement sur le serveur \u00ab %server% \u00bb", "messages", "fr");
     Translator.add("Deploy simulator", "D\u00e9ployer", "messages", "fr");
@@ -350,15 +350,16 @@
     Translator.add("file", "fichier", "messages", "fr");
     Translator.add("File \u00ab%file%\u00bb", "Fichier \u00ab%file%\u00bb", "messages", "fr");
     Translator.add("Filter", "Filtre", "messages", "fr");
+    Translator.add("Filtrate", "Filtrer", "messages", "fr");
     Translator.add("first click \u00abCancel\u00bb or \u00abValidate\u00bb", "cliquez d'abord sur \u00abAnnuler\u00bb ou terminez votre saisie puis cliquez sur \u00abValider\u00bb", "messages", "fr");
     Translator.add("firstDayOfMonth", "premierJourDuMois", "messages", "fr");
     Translator.add("floor", "arrondiParDefaut", "messages", "fr");
-    Translator.add("footnote", "note de bas de page", "messages", "fr");
     Translator.add("FootNote", "Note de bas de page", "messages", "fr");
+    Translator.add("footnote", "note de bas de page", "messages", "fr");
     Translator.add("FootNote #%id%", "Note de bas de page #%id%", "messages", "fr");
     Translator.add("FootNotes", "Notes de bas de page", "messages", "fr");
-    Translator.add("For", "Vers", "messages", "fr");
     Translator.add("for", "pour", "messages", "fr");
+    Translator.add("For", "Vers", "messages", "fr");
     Translator.add("Forgot password?", "Mot de passe oubli\u00e9 ?", "messages", "fr");
     Translator.add("Format", "Format", "messages", "fr");
     Translator.add("From", "\u00e0 partir de", "messages", "fr");
@@ -411,8 +412,8 @@
     Translator.add("Index", "Indice", "messages", "fr");
     Translator.add("index name", "nom d'index", "messages", "fr");
     Translator.add("in fieldset \u00ab%fieldset%\u00bb", "dans le groupe de champs \u00ab%fieldset%\u00bb", "messages", "fr");
-    Translator.add("Inline", "En ligne", "messages", "fr");
     Translator.add("inline", "en ligne", "messages", "fr");
+    Translator.add("Inline", "En ligne", "messages", "fr");
     Translator.add("Inline PDF", "PDF en ligne", "messages", "fr");
     Translator.add("in panel \u00ab%panel%\u00bb", "dans le panneau \u00ab%panel%\u00bb", "messages", "fr");
     Translator.add("In place form field editor", "\u00c9diteur en place de champ de formulaire", "messages", "fr");
@@ -474,8 +475,8 @@
     Translator.add("matches", "correspondances", "messages", "fr");
     Translator.add("max", "max", "messages", "fr");
     Translator.add("max can not refer to the data itself", "max ne peut pas se r\u00e9f\u00e9rer \u00e0 la donn\u00e9e elle-m\u00eame", "messages", "fr");
-    Translator.add("maximum", "valeur maximale", "messages", "fr");
     Translator.add("Maximum", "Maximum", "messages", "fr");
+    Translator.add("maximum", "valeur maximale", "messages", "fr");
     Translator.add("Maximum value", "Valeur maximum", "messages", "fr");
     Translator.add("max value", "valeur max", "messages", "fr");
     Translator.add("May", "Mai", "messages", "fr");
@@ -547,8 +548,8 @@
     Translator.add("or", "ou", "messages", "fr");
     Translator.add("Order by", "Tri\u00e9 par", "messages", "fr");
     Translator.add("Origin", "Provenance", "messages", "fr");
-    Translator.add("Output", "Sortie", "messages", "fr");
     Translator.add("output", "restitution \u00e0 l'utilisateur", "messages", "fr");
+    Translator.add("Output", "Sortie", "messages", "fr");
     Translator.add("Page %pageno% of %numberofpages%", "Page %pageno%\/%numberofpages%", "messages", "fr");
     Translator.add("Panel", "Panneau", "messages", "fr");
     Translator.add("panel", "panneau", "messages", "fr");
@@ -604,8 +605,8 @@
     Translator.add("Postal code obtained by autocompletion on the name of the commune or its postal code", "Code postal obtenu par auto-compl\u00e9tion sur le nom de la commune ou son code postal", "messages", "fr");
     Translator.add("Postal code obtained by autocompletion on the name of the commune or its postal code (In place mode)", "Code postal obtenu par auto-compl\u00e9tion sur le nom de la commune ou son code postal (\u00e9dition en place)", "messages", "fr");
     Translator.add("POST data", "Donn\u00e9es de la requ\u00eate en mode POST", "messages", "fr");
-    Translator.add("postnote", "post note", "messages", "fr");
     Translator.add("PostNote", "Post Note", "messages", "fr");
+    Translator.add("postnote", "post note", "messages", "fr");
     Translator.add("pow", "puissance", "messages", "fr");
     Translator.add("PreNote", "Pre Note", "messages", "fr");
     Translator.add("prenote", "pre note", "messages", "fr");
@@ -622,8 +623,8 @@
     Translator.add("Query string parameter", "Param\u00e8tre de la cha\u00eene de requ\u00eate (query string)", "messages", "fr");
     Translator.add("rand", "nombreAleatoire", "messages", "fr");
     Translator.add("referer URL", "URL du referer", "messages", "fr");
-    Translator.add("Region", "R\u00e9gion", "messages", "fr");
     Translator.add("region", "r\u00e9gion", "messages", "fr");
+    Translator.add("Region", "R\u00e9gion", "messages", "fr");
     Translator.add("Related informations", "Informations connexes", "messages", "fr");
     Translator.add("Remove this Action", "Enlever cette action", "messages", "fr");
     Translator.add("Remove this Condition", "Enlever cette condition", "messages", "fr");
@@ -646,8 +647,8 @@
     Translator.add("Return to the definition of the simulator \u00ab %simulator% \u00bb", "Retournez \u00e0 la d\u00e9finition du simulateur \u00ab %simulator% \u00bb", "messages", "fr");
     Translator.add("Return type", "Format des donn\u00e9es retourn\u00e9es", "messages", "fr");
     Translator.add("Roles", "R\u00f4les", "messages", "fr");
-    Translator.add("round", "arrondi", "messages", "fr");
     Translator.add("Round", "Arrondi", "messages", "fr");
+    Translator.add("round", "arrondi", "messages", "fr");
     Translator.add("Rule", "R\u00e8gle", "messages", "fr");
     Translator.add("Save", "Enregistrer", "messages", "fr");
     Translator.add("Search", "Rechercher", "messages", "fr");
@@ -708,8 +709,8 @@
     Translator.add("Single value", "Valeur simple", "messages", "fr");
     Translator.add("sinh", "sinusHyperbolique", "messages", "fr");
     Translator.add("size", "taille", "messages", "fr");
-    Translator.add("source", "source", "messages", "fr");
     Translator.add("Source", "Source", "messages", "fr");
+    Translator.add("source", "source", "messages", "fr");
     Translator.add("Source column id", "Champ de la source \u00e0 utiliser comme ID", "messages", "fr");
     Translator.add("Source column label", "Champ de la source \u00e0 utiliser comme libell\u00e9 dans la liste de choix", "messages", "fr");
     Translator.add("Source column value", "Champ de la source \u00e0 utiliser comme valeur de la donn\u00e9e", "messages", "fr");
@@ -718,8 +719,8 @@
     Translator.add("Space", "Espace", "messages", "fr");
     Translator.add("SQL Request", "Requ\u00eate SQL", "messages", "fr");
     Translator.add("sqrt", "racineCarree", "messages", "fr");
-    Translator.add("Step", "Etape", "messages", "fr");
     Translator.add("step", "\u00e9tape", "messages", "fr");
+    Translator.add("Step", "Etape", "messages", "fr");
     Translator.add("Step %id% (nolabel)", "\u00c9tape %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Step Label", "Libell\u00e9 de l'\u00e9tape", "messages", "fr");
     Translator.add("Step Name", "Nom de l'\u00e9tape", "messages", "fr");
@@ -880,8 +881,8 @@
     Translator.add("Unit", "Unit\u00e9", "messages", "fr");
     Translator.add("unit text", "texte d'unit\u00e9", "messages", "fr");
     Translator.add("Unknown error", "Erreur inconnue", "messages", "fr");
-    Translator.add("Unset", "Effacer", "messages", "fr");
     Translator.add("unset", "effacer", "messages", "fr");
+    Translator.add("Unset", "Effacer", "messages", "fr");
     Translator.add("URI", "URI", "messages", "fr");
     Translator.add("URI \/ Step", "URI \/ Etape", "messages", "fr");
     Translator.add("Usage", "Utilisation", "messages", "fr");
