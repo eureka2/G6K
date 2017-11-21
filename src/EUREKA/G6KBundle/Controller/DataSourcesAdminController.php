@@ -706,6 +706,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$converter = new SQLToJSONConverter($parameters, $this->databasesDir);
 		$result = $converter->convert($datasource);
+		ini_set("serialize_precision", -1);
 		$content = array(
 			array(
 				'name' => (string)$datasource['name'].".schema.json",
