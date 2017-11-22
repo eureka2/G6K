@@ -1593,6 +1593,20 @@ THE SOFTWARE.
 			actionContainer.find('.alert').show();
 			return false;
 		}
+		var step = actionContainer.find('.action-button-container').attr('data-step');
+		var containerElementId =  actionContainer.find('.action-button-container').attr('id');
+		var exists = false;
+		$('#collapsestep-' + step + '-action-buttons').find('.action-button-container').each(function(i) {
+			if ($(this).attr('id') != containerElementId && $(this).attr('data-id') == actionName) {
+				exists = true;
+				return false;
+			}
+		});
+		if (exists) {
+			actionContainer.find('.error-message').text(Translator.trans('The action button name already exists'));
+			actionContainer.find('.alert').show();
+			return false;
+		}
 		var actionLabel = $.trim($('#' + actionElementId + '-label').val());
 		if (actionLabel === '') {
 			actionContainer.find('.error-message').text(Translator.trans('The action button label is required'));

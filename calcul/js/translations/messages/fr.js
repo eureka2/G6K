@@ -278,8 +278,8 @@
     Translator.add("Deployment on the server \u00ab %server% \u00bb", "D\u00e9ploiement sur le serveur \u00ab %server% \u00bb", "messages", "fr");
     Translator.add("Deploy simulator", "D\u00e9ployer", "messages", "fr");
     Translator.add("Description", "Description", "messages", "fr");
-    Translator.add("disabled", "d\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("Disabled", "D\u00e9sactiv\u00e9", "messages", "fr");
+    Translator.add("disabled", "d\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("Display", "Affichage", "messages", "fr");
     Translator.add("Disposition", "Disposition", "messages", "fr");
     Translator.add("does not corresponds to", "est diff\u00e9rente de", "messages", "fr");
@@ -336,8 +336,8 @@
     Translator.add("Field description", "Description du champ", "messages", "fr");
     Translator.add("Field label", "\u00c9tiquette du champ", "messages", "fr");
     Translator.add("Field prompt", "Invite du champ", "messages", "fr");
-    Translator.add("Fieldrow", "Rang\u00e9e", "messages", "fr");
     Translator.add("fieldrow", "rang\u00e9e", "messages", "fr");
+    Translator.add("Fieldrow", "Rang\u00e9e", "messages", "fr");
     Translator.add("Fieldrow #%id% : %label%", "Rang\u00e9e #%id% : %label%", "messages", "fr");
     Translator.add("Fieldrow %id% (nolabel)", "Rang\u00e9e %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Fieldrow label", "Libell\u00e9 de la rang\u00e9e", "messages", "fr");
@@ -747,6 +747,7 @@
     Translator.add("the action", "l'action", "messages", "fr");
     Translator.add("the actionbutton", "le bouton d'action", "messages", "fr");
     Translator.add("The action button label is required", "Le libell\u00e9 du bouton d'action est requis", "messages", "fr");
+    Translator.add("The action button name already exists", "Le nom du bouton d'action existe d\u00e9j\u00e0", "messages", "fr");
     Translator.add("The action button name is required", "Le nom du bouton d'action est requis", "messages", "fr");
     Translator.add("The action button uri is required in this context", "L'uri du bouton d'action est n\u00e9cessaire dans ce contexte", "messages", "fr");
     Translator.add("the blockinfo", "le bloc d'infos", "messages", "fr");
@@ -915,8 +916,8 @@
     Translator.add("working version only", "la version de travail seulement", "messages", "fr");
     Translator.add("XML Validation against schema fail", "La validation XML par rapport au sch\u00e9ma a \u00e9chou\u00e9", "messages", "fr");
     Translator.add("XML Validation errors", "Erreurs de validation XML", "messages", "fr");
-    Translator.add("y", "AA", "messages", "fr");
     Translator.add("Y", "AAAA", "messages", "fr");
+    Translator.add("y", "AA", "messages", "fr");
     Translator.add("Y-m", "AAAA-MM", "messages", "fr");
     Translator.add("y-m", "AA-MM", "messages", "fr");
     Translator.add("Y-m-d", "AAAA-MM-JJ", "messages", "fr");
