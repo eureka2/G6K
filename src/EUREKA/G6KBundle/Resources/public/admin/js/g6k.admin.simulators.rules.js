@@ -741,7 +741,7 @@ THE SOFTWARE.
 			if (raction) {
 				raction.value = name;
 			}
-			rfootnote = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName }]);
+			raction = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName }]);
 			if (raction) {
 				raction.value = name;
 			}
