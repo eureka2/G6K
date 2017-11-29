@@ -128,15 +128,20 @@ $(document).ready(function() {
 			$('#users tbody tr:first-child').find('.tabledit-edit-button').trigger( "click" );
 		});
 		Users.doeditable();
-		$('#users').bdt({
-			pageRowCount: 20,
-			arrowDown: 'fa-angle-down',
-			arrowUp: 'fa-angle-up',
-			pageFieldText : Translator.trans('Lines per page'),
-			previousText: Translator.trans('Next'),
-			nextText: Translator.trans('Previous'),
-			searchFieldText: Translator.trans('Search') + '...',
-			showSearchForm : 0
+		$('#page-users #users-table-form').find("select[name='itemsPerPage']").change(function(e) {
+			e.preventDefault();
+			$('#page-users #users-table-form').find("input[name='page']").val(1);
+			$('#page-users #users-table-form').find('input[type=password]').val('******').attr('autocomplete', 'off').attr('type', 'text');
+			$('#page-users #users-table-form').submit();
+		});
+		$('#page-users #users-table-form ul.pagination li a').click(function(e) {
+			e.preventDefault();
+			var pagenum = $(this).attr('data-page');
+			if (pagenum > 0) {
+				$('#page-users #users-table-form').find("input[name='page']").val(pagenum);
+				$('#page-users #users-table-form').find('input[type=password]').val('******').attr('autocomplete', 'off').attr('type', 'text');
+				$('#page-users #users-table-form').submit();
+			}
 		});
 		$('#users').resizableColumns({
 			store: store

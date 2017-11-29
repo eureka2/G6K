@@ -41,8 +41,27 @@ THE SOFTWARE.
 							<span class="sr-only">{{ 'Error'|trans }}:</span>
 							<ul></ul>
 						</div>
+						<form id="users-table-form" method="post" action="{{ path('eureka_g6k_admin_users') }}" enctype="multipart/form-data">
+						<input type="hidden" name="page" value="{{ pagination.currentPageNumber }}">
 						<div class="table-responsive">
 							<button id="btnAddNewRow" class="btn btn-default" title="{{ 'Add user'|trans }}"><span class="button-label">{{ 'Add user'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
+							<div class="pull-left">
+								<label class="pull-left control-label">{{ 'Lines per page'|trans }}</label>
+								<div class="pull-left">
+								<select name="itemsPerPage" class="form-control">
+								<option value="5"{% if pagination.itemsPerPage == 5 %} selected="selected"{% endif %}>5</option>
+								<option value="10"{% if pagination.itemsPerPage == 10 %} selected="selected"{% endif %}>10</option>
+								<option value="15"{% if pagination.itemsPerPage == 15 %} selected="selected"{% endif %}>15</option>
+								<option value="20"{% if pagination.itemsPerPage == 20 %} selected="selected"{% endif %}>20</option>
+								<option value="25"{% if pagination.itemsPerPage == 25 %} selected="selected"{% endif %}>25</option>
+								<option value="30"{% if pagination.itemsPerPage == 30 %} selected="selected"{% endif %}>30</option>
+								<option value="35"{% if pagination.itemsPerPage == 35 %} selected="selected"{% endif %}>35</option>
+								<option value="40"{% if pagination.itemsPerPage == 40 %} selected="selected"{% endif %}>40</option>
+								<option value="45"{% if pagination.itemsPerPage == 45 %} selected="selected"{% endif %}>45</option>
+								<option value="50"{% if pagination.itemsPerPage == 50 %} selected="selected"{% endif %}>50</option>
+								</select>
+								</div>
+							</div>
 							<table id="users" class="table-condensed table-striped table-bordered table-hover">
 								<thead>
 									<tr>
@@ -56,7 +75,7 @@ THE SOFTWARE.
 									</tr>
 								</thead>
 								<tbody>
-									{% for user in users %}
+									{% for user in pagination.items %}
 									<tr>
 										<td class="integer">{{ user.id }}</td>
 										<td class="text">{{ user.userName }}</td>
@@ -65,11 +84,65 @@ THE SOFTWARE.
 										<td class="boolean">{{ user.enabled == 0 ? 'No'|trans : 'Yes'|trans }}</td>
 										<td class="choice">{{ user.roles|join(', ')|replace({"ROLE_USER": "user"|trans, "ROLE_MANAGER": "manager"|trans, "ROLE_CONTRIBUTOR": "contributor"|trans, "ROLE_ADMIN": "admin"|trans, "ROLE_SUPER_ADMIN": "superadmin"|trans}) }}</td>
 										<td class="date">{{ user.lastLogin|date("d/m/Y H:i:s") }}</td>
-								</tr>
+									</tr>
 									{% endfor %}
 								</tbody>
 							</table>
+							{% if pagination.lastPageNumber > 1 %}
+							<nav class="pull-right" id="table-nav">
+								<ul class="pagination pull-right">
+									{% if pagination.firstPageNumber and pagination.firstPageNumber != pagination.currentPageNumber %}
+									<li>
+										<a data-page="{{ pagination.firstPageNumber }}" href="#">&laquo;</a>
+									</li>
+									{% else %}
+									<li class="disabled">
+										<a data-page="0">&laquo;</a>
+									</li>
+									{% endif %}
+									{% if pagination.previousPageNumber %}
+									<li>
+										<a data-page="{{ pagination.previousPageNumber }}" href="#"><span aria-hidden="true">&lsaquo;</span><span class="sr-only">{{ 'Previous'|trans }}</span></a>
+									</li>
+									{% else %}
+									<li class="disabled">
+										<a href="#"><span aria-hidden="true">&lsaquo;</span><span class="sr-only">{{ 'Previous'|trans }}</span></a>
+									</li>
+									{% endif %}
+									{% for page in pagination.pages %}
+									{% if page == pagination.currentPageNumber %}
+									<li class="active">
+										<a data-page="0">{{ page }}</a>
+									</li>
+									{% else %}
+									<li>
+										<a data-page="{{ page }}" href="#">{{ page }}</a>
+									</li>
+									{% endif %}
+									{% endfor %}
+									{% if pagination.nextPageNumber %}
+									<li>
+										<a data-page="{{ pagination.nextPageNumber }}" href="#"><span aria-hidden="true">&rsaquo;</span><span class="sr-only">{{ 'Next'|trans }}</span></a>
+									</li>
+									{% else %}
+									<li class="disabled">
+										<a data-page="0" href="#"><span aria-hidden="true">&rsaquo;</span><span class="sr-only">{{ 'Next'|trans }}</span></a>
+									</li>
+									{% endif %}
+									{% if pagination.lastPageNumber and pagination.lastPageNumber != pagination.currentPageNumber %}
+									<li>
+										<a data-page="{{ pagination.lastPageNumber }}" href="#">&raquo;</a>
+									</li>
+									{% else %}
+									<li class="disabled">
+										<a data-page="0">&raquo;</a>
+									</li>
+									{% endif %}
+								</ul>
+							</nav>
+							{% endif %}
 						</div>
+						</form>
 					</div>
 				</div>
 			</div>

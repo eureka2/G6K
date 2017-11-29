@@ -108,8 +108,19 @@ class UsersAdminController extends BaseAdminController {
 		} else {
 			$userManager = $this->get('fos_user.user_manager');
 			$users = $userManager->findUsers();
-	
-		 	$hiddens = array();		
+
+			$paginator = $this->get('ashley_dawson_simple_pagination.paginator');
+			$paginator->setItemTotalCallback(function () use ($users) {
+				return count($users);
+			});
+			$paginator->setSliceCallback(function ($offset, $length) use ($users) {
+				return array_slice($users, $offset, $length);
+			});
+			$itemsPerPage = (int)$this->container->get('request_stack')->getCurrentRequest()->get('itemsPerPage', 25);
+			$paginator->setItemsPerPage($itemsPerPage)->setPagesInRange(10);
+			$pagination = $paginator->paginate((int)$this->container->get('request_stack')->getCurrentRequest()->get('page', 1));
+
+		 	$hiddens = array();
 			$hiddens['script'] = $script;
 			$silex = new Application();
 			$silex->register(new MobileDetectServiceProvider());
@@ -120,7 +131,7 @@ class UsersAdminController extends BaseAdminController {
 						'ua' => $silex["mobile_detect"],
 						'path' => $request->getScheme().'://'.$request->getHttpHost(),
 						'nav' => 'users',
-						'users' => $users,
+						'pagination' => $pagination,
 						'hiddens' => $hiddens
 					)
 				);
