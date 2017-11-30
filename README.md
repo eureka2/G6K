@@ -27,6 +27,7 @@ A calculation simulator is an online service made available to a user to enable 
 * pdo_pgsql and / or pdo_sqlite activated
 * pgsql and / or sqlite3 activated
 * SimpleXML enabled
+* serialize_precision = -1
 
 ## Installation
 1. Create a database using administration tool of your RDBMS.
