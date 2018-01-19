@@ -984,6 +984,7 @@ THE SOFTWARE.
 					case 'field':
 					case 'prenote':
 					case 'postnote':
+					case 'choice':
 						action.text(' ' + Translator.trans('of panel «%panel%»', {'panel': label}));
 						break;
 				}
@@ -1163,6 +1164,7 @@ THE SOFTWARE.
 					case 'field':
 					case 'prenote':
 					case 'postnote':
+					case 'choice':
 						action.text(' ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': legend}));
 						break;
 				}
@@ -3279,27 +3281,96 @@ THE SOFTWARE.
 							};
 							break;
 						case 'choice':
-							clause = {
-								name: 'action-select', 
-								value:	$(this).attr('data-name'), 
-								fields: [
-									{
-										name: 'objectId', 
-										value: target, 
-										fields: [
-											{	name: 'fieldName', 
-												value: Simulators.findDataNameById($(this).attr('data-data')),
-												fields: [
-													{
-														name: 'choiceId', 
-														value: $(this).attr('data-choice')
-													}
-												]
-											}
-										]
-									}
-								]
-							};
+							var fieldset = Simulators.findInArray(steps, [{ key: 'id', val: $(this).attr('data-step'), list: 'panels' }, { key: 'id', val: $(this).attr('data-panel'), list: 'blocks' }, { key: 'id', val: $(this).attr('data-fieldset') }]);
+							if (fieldset.disposition === 'grid') {
+								clause = {
+									name: 'action-select', 
+									value: $(this).attr('data-name'), 
+									fields: [
+										{
+											name: 'objectId',
+											value: target, 
+											fields: [
+												{
+													name: 'stepId', 
+													value: $(this).attr('data-step'), 
+													fields: [
+														{
+															name: 'panelId', 
+															value: $(this).attr('data-panel'), 
+															fields: [
+																{
+																	name: 'fieldsetId', 
+																	value: $(this).attr('data-fieldset'),
+																	fields: [
+																		{
+																			name: 'fieldrowId', 
+																			value: $(this).attr('data-fieldrow'),
+																			fields: [
+																				{
+																					name: 'fieldId',
+																					value: $(this).attr('data-field'),
+																					fields: [
+																						{
+																							name: 'choiceId',
+																							value: $(this).attr('data-choice')
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								};
+							} else {
+								clause = {
+									name: 'action-select', 
+									value: $(this).attr('data-name'), 
+									fields: [
+										{
+											name: 'objectId',
+											value: target, 
+											fields: [
+												{
+													name: 'stepId', 
+													value: $(this).attr('data-step'), 
+													fields: [
+														{
+															name: 'panelId', 
+															value: $(this).attr('data-panel'), 
+															fields: [
+																{
+																	name: 'fieldsetId', 
+																	value: $(this).attr('data-fieldset'),
+																	fields: [
+																		{
+																			name: 'fieldId',
+																			value: $(this).attr('data-field'),
+																			fields: [
+																				{
+																					name: 'choiceId',
+																					value: $(this).attr('data-choice')
+																				}
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								};
+							}
 							break;
 					}
 					break;
@@ -3871,9 +3942,17 @@ THE SOFTWARE.
 						action = ruleAction.fields[0].fields[0].fields[0].value;
 						break;
 					case 'choice':
-						choice = ruleAction.fields[0].fields[0].fields[0].value;
-						dataObj = Simulators.dataset[ruleAction.fields[0].fields[0].value];
-						data = dataObj.id;
+						panel = ruleAction.fields[0].fields[0].fields[0].value;
+						fieldset = ruleAction.fields[0].fields[0].fields[0].fields[0].value;
+						var fieldsetObj = Simulators.findInArray(steps, [{ key: 'id', val: step, list: 'panels' }, { key: 'id', val: panel, list: 'blocks' }, { key: 'id', val: fieldset }]);
+						if (fieldsetObj.disposition === 'grid') {
+							fieldrow = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+							field = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].fields[0].value;
+							choice = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						} else {
+							field = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].value;
+							choice = ruleAction.fields[0].fields[0].fields[0].fields[0].fields[0].fields[0].value;
+						}
 						break;
 				}
 				break;
@@ -3980,8 +4059,18 @@ THE SOFTWARE.
 					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 				case 'choice':
-					actionContainer.append('<span class="action-choice"> «' + Simulators.findActionField([data, choice], optionNode).label + '»</span>');
-					actionContainer.append('<span class="action-data"> ' + Translator.trans('of data «%label%»', {'label': dataObj.label}) + '</span>');
+					if (fieldsetObj.disposition === 'grid') {
+						actionContainer.append('<span class="action-choice"> ' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}, {fieldId: field}, {choiceId: choice}], optionNode).label + '</span>');
+						actionContainer.append('<span class="action-field"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-fieldrow"> ' + Translator.trans('in') + ' ' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}], optionNode).label + '</span>');
+						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('of fieldset «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					} else {
+						actionContainer.append('<span class="action-choice"> ' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}, {choiceId: choice}], optionNode).label + '</span>');
+						actionContainer.append('<span class="action-field"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
+					}
+					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
+					actionContainer.append('<span class="action-step"> ' + Translator.trans('of step «%label%»', {'label': Simulators.findActionField([{stepId: step}], optionNode).label}) + '</span>');
 					break;
 			}
 		} else if (name === 'setAttribute') {

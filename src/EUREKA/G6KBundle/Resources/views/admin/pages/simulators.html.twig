@@ -386,8 +386,19 @@ THE SOFTWARE.
 		<span class="action-action">«{{ simulator.controller.helper.findActionField([{'stepId': action.step}, {'actionId': action.action}], optionNode).label }}»</span>
 		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.helper.findActionField([{'stepId': action.step}], optionNode).label }) }}</span>
 	{% elseif action.target == 'choice' %}
-		<span class="action-choice">«{{ simulator.controller.helper.findActionField([action.data, action.choice], optionNode).label }}»</span>
-		<span class="action-data"> {{ 'of data «%label%»'|trans({'%label%': simulator.replaceByDataLabel(action.data).label }) }}</span>
+		{% set fieldset = step.panelById(action.panel).fieldSetById(action.fieldset) %}
+		{% if fieldset.disposition == 'grid' %}
+		<span class="action-choice">«{{ simulator.controller.helper.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}, {'fieldId': action.field}, {'choiceId': action.choice}], optionNode).label }}»</span>
+		<span class="action-field"> {{ 'of field «%label%»'|trans({'%label%': simulator.controller.helper.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}, {'fieldId': action.field}], optionNode).label }) }}</span>
+		<span class="action-fieldrow"> {{ 'in'|trans }} «{{ simulator.controller.helper.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldrowId': action.fieldrow}], optionNode).label }}»</span>
+		<span class="action-fieldset"> {{ 'of fieldset «%label%»'|trans({'%label%': simulator.controller.helper.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
+		{% else %}
+		<span class="action-choice">«{{ simulator.controller.helper.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldId': action.field}, {'choiceId': action.choice}], optionNode).label }}»</span>
+		<span class="action-field"> {{ 'of field «%label%»'|trans({'%label%': simulator.controller.helper.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}, {'fieldId': action.field}], optionNode).label }) }}</span>
+		<span class="action-fieldset"> {{ 'in fieldset «%fieldset%»'|trans({'%fieldset%': simulator.controller.helper.findActionField([{'stepId': action.step}, {'panelId': action.panel}, {'fieldsetId': action.fieldset}], optionNode).label}) }}</span>
+		{% endif %}
+		<span class="action-panel"> {{ 'of panel «%panel%»'|trans({'%panel%': simulator.controller.helper.findActionField([{'stepId': action.step}, {'panelId': action.panel}], optionNode).label}) }}</span>
+		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.helper.findActionField([{'stepId': action.step}], optionNode).label }) }}</span>
 	{% endif %}
 {% elseif action.name == 'setAttribute' %}
 	<span class="action-name">{{ 'set'|trans }}</span> <span class="action-target">{{ targetlib|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span> <span class="action-value"> {{ 'to'|trans }} {{ simulator.replaceByDataLabel(action.value)|jscode }}</span>

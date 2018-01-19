@@ -1075,7 +1075,12 @@ class BaseController extends Controller {
 						case 'field':
 							$panel = $step->getPanelById($action->getpanel());
 							$fieldset = $panel->getFieldSetById($action->getFieldset());
-							$field = $fieldset->getFieldByPosition($action->getField());
+							if ($fieldset->getDisposition() == 'grid') {
+								$fieldrow = $fieldset->getFieldRowById($action->getFieldrow());
+								$field = $fieldrow->getFieldByPosition($action->getField());
+							} else {
+								$field = $fieldset->getFieldByPosition($action->getField());
+							}
 							$field->setDisplayable($action->getName() == 'showObject');
 							break;
 						case 'blocinfo':
@@ -1122,7 +1127,12 @@ class BaseController extends Controller {
 						case 'choice':
 							$panel = $step->getPanelById($action->getpanel());
 							$fieldset = $panel->getFieldSetById($action->getFieldset());
-							$field = $fieldset->getFieldByPosition($action->getField());
+							if ($fieldset->getDisposition() == 'grid') {
+								$fieldrow = $fieldset->getFieldRowById($action->getFieldrow());
+								$field = $fieldrow->getFieldByPosition($action->getField());
+							} else {
+								$field = $fieldset->getFieldByPosition($action->getField());
+							}
 							$data =  $this->simu->getDataById($field->getData());
 							$choice = $data->getChoiceById($action->getChoice());
 							$choice->setSelected($action->getName() == 'showObject');

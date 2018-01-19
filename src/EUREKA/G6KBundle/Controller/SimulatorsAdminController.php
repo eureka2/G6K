@@ -1163,9 +1163,21 @@ class SimulatorsAdminController extends BaseAdminController {
 					case 'step':
 						break;
 					case 'choice':
-						$data = $this->simu->getDataByName($action['fields'][0]['fields'][0]['value']);
-						$ruleActionObj->setData($data->getId());
-						$ruleActionObj->setChoice($action['fields'][0]['fields'][0]['fields'][0]['value']);
+						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
+						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
+						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+						if ($disposition == 'grid') {
+							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
+							$position = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
+							$choice = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
+						} else {
+							$position = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
+							$choice = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
+						}
+						$ruleActionObj->setPanel($panel);
+						$ruleActionObj->setFieldset($fieldset);
+						$ruleActionObj->setField($position);
+						$ruleActionObj->setChoice($choice);
 						break;
 				}
 				break;
@@ -1733,6 +1745,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$footnotes = array();
 		$actionbuttons = array();
 		$choices = array();
+		$fchoices = array();
 		foreach ($this->simu->getDatas() as $data) {
 			if ($data instanceof DataGroup) {
 				$datagroups[] = array(
@@ -1870,6 +1883,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			$ostepfields = array ();
 			$ostepprenotes = array ();
 			$osteppostnotes = array ();
+			$ostepchoices = array();
 			$ostepblockinfos = array ();
 			$ostepchapters = array ();
 			$ostepsections = array ();
@@ -1915,6 +1929,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				$opanelfields = array ();
 				$opanelprenotes = array ();
 				$opanelpostnotes = array ();
+				$opanelchoices = array();
 				$opanelblockinfos = array ();
 				$opanelchapters = array ();
 				$opanelsections = array ();
@@ -1936,6 +1951,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					$ofieldsetfields = array ();
 					$ofieldsetprenotes = array ();
 					$ofieldsetpostnotes = array ();
+					$ofieldsetchoices = array();
 					$oblockinfos = array ();
 					$oblockinfochapters = array ();
 					$oblockinfosections = array ();
@@ -1950,6 +1966,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							$ocolumns = array ();
 							$ofieldrows = array ();
 							$ofieldrowfields = array ();
+							$ofieldrowchoices = array ();
 							if ($fieldset->getDisposition() != 'grid') {
 								$tblock = array(
 									'type' => 'fieldset',
@@ -1963,13 +1980,30 @@ class SimulatorsAdminController extends BaseAdminController {
 								$ofields = array();
 								$oprenotes = array();
 								$opostnotes = array();
+								$ochoices = array();
 								foreach ($fieldset->getFields() as $field) {
+									$data = $this->simu->getDataById($field->getData());
+									$name = $data->getName();
 									$tfield = $this->loadBusinessRuleField($field);
 									$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
 									$ofields[] = array (
 										"label" => $fieldLabel,
 										"name" => $field->getPosition()
 									);
+									if (isset($this->dataset[$name]) && isset($this->dataset[$name]['options'])) {
+										$ochoices[] = array (
+											"label" => $fieldLabel,
+											"name" => $field->getPosition(),
+											"fields" => array(
+												array(
+													"label" => $this->get('translator')->trans('whose label is'),
+													"name" => "choiceId",
+													"fieldType" => "select",
+													"options" => $this->dataset[$name]['options']
+												)
+											)
+										);
+									}
 									if ($field->getPreNote()) {
 										$tfield['Note'] = array(
 											'position' => 'beforeField',
@@ -2034,6 +2068,20 @@ class SimulatorsAdminController extends BaseAdminController {
 										)
 									);
 								}
+								if (count($ochoices) > 0) {
+									$ofieldsetchoices[] = array(
+										"label" => $fieldsetLabel,
+										"name" => $fieldset->getId(),
+										"fields" => array(
+											array(
+												"label" => $this->get('translator')->trans("of field"),
+												"name" => "fieldId",
+												"fieldType" => "select",
+												"options" => $ochoices
+											)
+										)
+									);
+								}
 							} else {
 								$tblock = array(
 									'type' => 'fieldset',
@@ -2075,12 +2123,29 @@ class SimulatorsAdminController extends BaseAdminController {
 										"name" => $fieldrow->getId()
 									);
 									$ofields = array();
+									$ochoices = array();
 									foreach ($fieldrow->getFields() as $field) {
+										$data = $this->simu->getDataById($field->getData());
+										$name = $data->getName();
 										$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
 										$ofields[] = array (
 											"label" => $fieldLabel,
 											"name" => $field->getPosition()
 										);
+										if (isset($this->dataset[$name]) && isset($this->dataset[$name]['options'])) {
+											$ochoices[] = array (
+												"label" => $fieldLabel,
+												"name" => $field->getPosition(),
+												"fields" => array(
+													array(
+														"label" => $this->get('translator')->trans('whose label is'),
+														"name" => "choiceId",
+														"fieldType" => "select",
+														"options" => $this->dataset[$name]['options']
+													)
+												)
+											);
+										}
 										$tfieldrow['fields'][] = $this->loadBusinessRuleField($field);
 									}
 									if (count($ofields) > 0) {
@@ -2093,6 +2158,20 @@ class SimulatorsAdminController extends BaseAdminController {
 													"name" => "fieldId",
 													"fieldType" => "select",
 													"options" => $ofields
+												)
+											)
+										);
+									}
+									if (count($ochoices) > 0) {
+										$ofieldrowchoices[] = array(
+											"label" => $fieldrowLabel,
+											"name" => $fieldrow->getId(),
+											"fields" => array(
+												array(
+													"label" => $this->get('translator')->trans("of field"),
+													"name" => "fieldId",
+													"fieldType" => "select",
+													"options" => $ochoices
 												)
 											)
 										);
@@ -2138,6 +2217,20 @@ class SimulatorsAdminController extends BaseAdminController {
 											"name" => "fieldrowId",
 											"fieldType" => "select",
 											"options" => $ofieldrowfields
+										)
+									)
+								);
+							}
+							if (count($ofieldrowchoices) > 0) {
+								$ofieldsetchoices[] = array(
+									"label" => $fieldsetLabel,
+									"name" => $fieldset->getId(),
+									"fields" => array(
+										array(
+											"label" => $this->get('translator')->trans("of fieldrow"),
+											"name" => "fieldrowId",
+											"fieldType" => "select",
+											"options" => $ofieldrowchoices
 										)
 									)
 								);
@@ -2320,6 +2413,20 @@ class SimulatorsAdminController extends BaseAdminController {
 							)
 						);
 					}
+					if (count($ofieldsetchoices) > 0) {
+						$opanelchoices[] = array(
+							"label" => $panelLabel,
+							"name" => $panel->getId(),
+							"fields" => array(
+								array(
+									"label" => $this->get('translator')->trans("of fieldset"),
+									"name" => "fieldsetId",
+									"fieldType" => "select",
+									"options" => $ofieldsetchoices
+								)
+							)
+						);
+					}
 					if (count($oblockinfos) > 0) {
 						$opanelblockinfos[] = array(
 							"label" => $panelLabel,
@@ -2462,7 +2569,21 @@ class SimulatorsAdminController extends BaseAdminController {
 						)
 					);
 				}
-				if (count($opanelblockinfos) > 0) {
+				if (count($opanelchoices) > 0) {
+					$ostepchoices[] = array(
+						"label" => $stepLabel,
+						"name" => $step->getId(),
+						"fields" => array(
+							array(
+								"label" => $this->get('translator')->trans("of panel"),
+								"name" => "panelId",
+								"fieldType" => "select",
+								"options" => $opanelchoices
+							)
+						)
+					);
+				}
+			if (count($opanelblockinfos) > 0) {
 					$ostepblockinfos[] = array(
 						"label" => $stepLabel,
 						"name" => $step->getId(),
@@ -2682,6 +2803,20 @@ class SimulatorsAdminController extends BaseAdminController {
 						)
 				);
 			}
+			if (count($ostepchoices) > 0) {
+				$fchoices = array(
+						"label" => $this->get('translator')->trans("the choice"),
+						"name" => "choice",
+						"fields" => array(
+							array(
+								"label" => $this->get('translator')->trans("of step"),
+								"name" => "stepId",
+								"fieldType" => "select", 
+								"options" => $ostepchoices
+							)
+						)
+				);
+			}
 			if (count($ostepblockinfos) > 0) {
 				$blockinfos = array(
 						"label" => $this->get('translator')->trans("the blockinfo"),
@@ -2753,37 +2888,6 @@ class SimulatorsAdminController extends BaseAdminController {
 				);
 			}
 		}
-		$schoices = array();
-		foreach ($this->dataset as $name => $data) {
-			if (isset($data['options'])) {
-				$schoices[] = array(
-					'label' => $data['label'],
-					'name' => $name,
-					'fields' => array(
-						array(
-							'label' => $this->get('translator')->trans('whose label is'),
-							'name' => 'choiceId',
-							'fieldType' => 'select',
-							'options' => $data['options']
-						)
-					)
-				);
-			}
-		}
-		if (count($schoices) > 0) {
-			$choices = array(
-				'label' => $this->get('translator')->trans('the choice'),
-				'name' => 'choice',
-				'fields' => array(
-					array(
-						'label' => $this->get('translator')->trans('of data'),
-						'name' => 'fieldName',
-						'fieldType' => 'select',
-						'options' => $schoices
-					)
-				)
-			);
-		}
 		$objects = array();
 		if (count($steps) > 0) {
 			$objects[] = $steps;
@@ -2824,8 +2928,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		if (count($footnotes) > 0) {
 			$objects[] = $footnotes;
 		}
-		if (count($choices) > 0) {
-			$objects[] = $choices;
+		if (count($fchoices) > 0) {
+			$objects[] = $fchoices;
 		}
 		$this->actions = array(
 			array(
@@ -3471,16 +3575,54 @@ class SimulatorsAdminController extends BaseAdminController {
 							);
 							break;
 						case 'choice':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'fieldName', 'value' => $this->findDataNameById($action->getData()), 'fields' => array(
-													array('name' => 'choiceId', 'value' => $action->getTargetId())
+							$step = $action->getStep();
+							$panel = $action->getPanel();
+							$fieldset = $action->getFieldset();
+							$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+							if ($disposition == 'grid') {
+								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
+										array('name' => 'objectId',	'value' => $target, 'fields' => array(
+												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
+														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
+																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
+																		array('name' => 'fieldrowId', 'value' => $action->getFieldrow(), 'fields' => array(
+																				array('name' => 'fieldId', 'value' => $action->getField(), 'fields' => array(
+																						array('name' => 'choiceId', 'value' => $action->getTargetId())
+																					)
+																				)
+																			)
+																		)
+																	)
+																)
+															)
+														)
+													)
 												)
 											)
 										)
 									)
-								)
-							);
+								);
+							} else {
+								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
+										array('name' => 'objectId',	'value' => $target, 'fields' => array(
+												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
+														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
+																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
+																		array('name' => 'fieldId', 'value' => $action->getField(), 'fields' => array(
+																				array('name' => 'choiceId', 'value' => $action->getTargetId())
+																			)
+																		)
+																	)
+																)
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								);
+							}
 							break;
 					}
 					break;
