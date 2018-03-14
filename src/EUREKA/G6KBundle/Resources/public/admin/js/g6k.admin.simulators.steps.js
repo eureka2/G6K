@@ -637,6 +637,9 @@ THE SOFTWARE.
 					step[$(this).attr('data-attribute')] = $(this).val();
 				}
 			});
+			if (step['name']) {
+				step['name'] = $.trim(step['name']);
+			}
 			step['description'] =  stepPanelContainer.find('.step-description').val();
 			var oldLabel = '';
 			if ($(this).hasClass('validate-edit-step')) {
@@ -1526,6 +1529,9 @@ THE SOFTWARE.
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
 				action[$(this).attr('data-attribute')] = $(this).val();
 			});
+			if (action['name']) {
+				action['name'] = $.trim(action['name']);
+			}
 			var newActionButtonPanel = Simulators.drawActionButtonForDisplay(action);
 			if ($(this).hasClass('validate-edit-action')) {
 				actionContainer.replaceWith(newActionButtonPanel.find('.action-button-container'));
@@ -1911,6 +1917,9 @@ THE SOFTWARE.
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
 				panel[$(this).attr('data-attribute')] = $(this).val();
 			});
+			if (panel['name']) {
+				panel['name'] = $.trim(panel['name']);
+			}
 			var oldLabel = '';
 			if ($(this).hasClass('validate-edit-panel')) {
 				var oldPanel = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: id }]);
@@ -4122,6 +4131,9 @@ THE SOFTWARE.
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
 				blockinfo[$(this).attr('data-attribute')] = $(this).val();
 			});
+			if (blockinfo['name']) {
+				blockinfo['name'] = $.trim(blockinfo['name']);
+			}
 			var oldLabel = '';
 			if ($(this).hasClass('validate-edit-blockinfo')) {
 				var oldBlockInfo = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }]);
@@ -4539,6 +4551,9 @@ THE SOFTWARE.
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
 				chapter[$(this).attr('data-attribute')] = $(this).val();
 			});
+			if (chapter['name']) {
+				chapter['name'] = $.trim(chapter['name']);
+			}
 			var oldLabel = '';
 			if ($(this).hasClass('validate-edit-chapter')) {
 				var oldChapter = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: blockinfoId, list: 'chapters' }, { key: 'id', val: id }]);
@@ -4957,6 +4972,9 @@ THE SOFTWARE.
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
 				section[$(this).attr('data-attribute')] = $(this).val();
 			});
+			if (section['name']) {
+				section['name'] = $.trim(section['name']);
+			}
 			section['content'] = sectionPanelContainer.find('.section-content').val();
 			var annotations = sectionPanelContainer.find('.section-annotations').val();
 			if (annotations != '') {
