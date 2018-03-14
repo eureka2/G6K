@@ -519,6 +519,9 @@ THE SOFTWARE.
 				}
 				data[$(this).attr('data-attribute')] = value;
 			});
+			if (data['name']) {
+				data['name'] = $.trim(data['name']);
+			}
 			data['description'] =  dataPanelContainer.find('.data-description').val();
 			var newDataPanel = Simulators.drawDataForDisplay(data);
 			var choices = [];
@@ -744,6 +747,9 @@ THE SOFTWARE.
 					datagroup[$(this).attr('data-attribute')] = $(this).val();
 				}
 			});
+			if (datagroup['name']) {
+				datagroup['name'] = $.trim(datagroup['name']);
+			}
 			datagroup['description'] =  dataPanelContainer.find('.datagroup-description').val();
 			var newDataPanel = Simulators.drawDatagroupForDisplay(datagroup);
 			newDataPanel.find('.description-panel').after(dataPanelContainer.find('.datas-panel'));
