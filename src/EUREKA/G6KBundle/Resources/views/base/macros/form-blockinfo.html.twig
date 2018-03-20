@@ -30,13 +30,16 @@ THE SOFTWARE.
 {% set panel = blockinfo.panel %}
 {% set simu = step.simulator %}
 <div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}" class="blockinfo-container">
+	{% if blockinfo.label is not empty %}
 	<div class="blockinfo-label">
 	<h2>{{ blockinfo.label }}</h2>
 	</div>
+	{% endif %}
 	<div class="blockinfo-chapters">
 		{% for chapter in blockinfo.chapters %}
 		{%- if chapter.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
 		<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}" class="chapter-container {{ chapterContainerClass }}" data-chapter-id="{{ chapter.id }}">
+			{% if chapter.label is not empty %}
 			<div class="chapter-label {{ chapterHeadingClass }}">
 				<h3>
 					{%- if chapter.collapsible -%}
@@ -48,6 +51,7 @@ THE SOFTWARE.
 					{% endif %}
 				</h3>
 			</div>
+			{% endif %}
 			<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections" class="blockinfo-chapter-sections {{ chapterContentClass }}{%- if chapter.collapsible %} collapse{%- endif -%}">
 				{% for section in chapter.sections %}
 				{%- if section.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}

@@ -254,9 +254,9 @@ THE SOFTWARE.
 		<button type="button" data-toggle="collapse" data-target="#help-{{ name }}" aria-controls="help-{{ name }}" class="btn btn-help collapsed" title="aide sur {{ label }}"><span class="icon icon-help" aria-hidden="true"></span><span class="blank">Aide</span></button>
 	{% endif %}
 		{%- if (step.dynamic or (simu.dynamic and step.id == 0)) and field.usage == 'input' -%}
-		<div class="field-error{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- else %} hidden{%- endif %}" aria-live="assertive">{%- if data.error -%}{%- for errorMessage in data.errorMessages -%}<p>{{ errorMessage }}</p>{%- endfor -%}{%- endif -%}</div>
+		<div id="{{ name }}-field-error" class="field-error{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- else %} hidden{%- endif %}">{%- if data.error -%}{%- for errorMessage in data.errorMessages -%}<p>{{ errorMessage }}</p>{%- endfor -%}{%- endif -%}</div>
 		{%- else -%}
-		{%- if data.error -%}<div class="field-error has-error" aria-live="assertive">{%- for errorMessage in data.errorMessages -%}<p>{{ errorMessage }}</p>{%- endfor -%}</div>{%- elseif data.warning -%}<div class="field-error has-warning" aria-live="assertive">{%- for warningMessage in data.warningMessages -%}<p>{{ warningMessage }}</p>{%- endfor -%}</div>{% endif %}
+		{%- if data.error -%}<div id="{{ name }}-field-error" class="field-error has-error">{%- for errorMessage in data.errorMessages -%}<p>{{ errorMessage }}</p>{%- endfor -%}</div>{%- elseif data.warning -%}<div id="{{ name }}-field-error" class="field-error has-warning" aria-live="assertive">{%- for warningMessage in data.warningMessages -%}<p>{{ warningMessage }}</p>{%- endfor -%}</div>{% endif %}
 		{% endif %}
 		{%- if field.explanation is not empty -%}
 		<span id="{{ name }}-explanation" class="explanation">{{ field.explanation }}</span>

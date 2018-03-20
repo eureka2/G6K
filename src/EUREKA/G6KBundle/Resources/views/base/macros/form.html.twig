@@ -40,6 +40,7 @@ THE SOFTWARE.
 {% set simu = step.simulator %}
 {% set panels = 0 %}
 {% set blocks = 0 %}
+{% set fieldsets = 0 %}
 {%- for panel in step.panels -%}
 		{%- if panel.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
 			{% set panels = panels + 1 %}
@@ -47,6 +48,9 @@ THE SOFTWARE.
 		{%- for blck in panel.fieldSets -%}
 		{%- if blck.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
 			{% set blocks = blocks + 1 %}
+			{%- if blck.class == 'FieldSet' -%}
+				{% set fieldsets = fieldsets + 1 %}
+			{% endif %}	
 		{% endif %}
 	{% endfor %}
 {% endfor %}
@@ -85,12 +89,12 @@ THE SOFTWARE.
 			{% endif %}
 			{% endif %}
 			{%- if fieldset.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-			<{%- if blocks > 1 and fieldset.hasInputFields -%}fieldset class="fieldset-container disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% else %}div class="fieldset disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% endif %} id="{{ step.name }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}">
+			<{%- if fieldsets > 1 and fieldset.hasInputFields -%}fieldset class="fieldset-container disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% else %}div class="fieldset disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% endif %} id="{{ step.name }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}">
 			{%- if fieldset.display is not empty and fieldset.display == 'pop-in' -%}
 			{{ form.popinheader(context, fieldset) }}
 			{%- endif -%}
-			{%- if blocks > 1  and fieldset.hasInputFields %}
-				<legend>{%- if fieldset.legend is not empty -%}{{ fieldset.legend }}{%- else -%}{{ step.label }}{%- endif -%}</legend>
+			{%- if fieldsets > 1  and fieldset.hasInputFields %}
+				{%- if fieldset.legend is not empty -%}<legend>{{ fieldset.legend }}</legend>{%- endif -%}
 			{% else %}
 				{%- if fieldset.legend is not empty -%}{{ form.heading(fieldset.legend, 3, "legend") }}{%- endif -%}
 			{% endif %}
@@ -104,7 +108,7 @@ THE SOFTWARE.
 			{%- if fieldset.display is not empty and fieldset.display == 'pop-in' -%}
 			{{ form.popinfooter(context) }}
 			{%- endif -%}
-			</{%- if blocks > 1 and fieldset.hasInputFields -%}fieldset{% else %}div{% endif %}>
+			</{%- if fieldsets > 1 and fieldset.hasInputFields -%}fieldset{% else %}div{% endif %}>
 			{% endif %} {# end fieldset.displayable #}
 		{%- elseif blck.class == 'BlockInfo' -%}
 			{%- if blck.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
@@ -274,12 +278,12 @@ THE SOFTWARE.
 {% macro paragraphs(text) %}
 	{% set paragraphs = text|trim|split("\n") %}
 	{%- for paragraph in paragraphs -%}
-	<p>{%- if paragraph|trim is empty -%}&nbsp;{%- else -%}{{ paragraph|jscode }}{%- endif -%}</p>
+	{%- if paragraph|trim is empty -%}<br>{%- else -%}<p>{{ paragraph|jscode }}</p>{%- endif -%}
 	{% endfor %}
 {% endmacro %}
 
 {% macro heading(text, level, class) %}
-	<h{{ level }} class="{{ class }}">{{ text|trim|replace({"\n": "<br />"})|jscode }}</h{{ level }}>
+	{%- if text is not empty -%}<h{{ level }} class="{{ class }}">{{ text|trim|replace({"\n": "<br />"})|jscode }}</h{{ level }}>{%- endif -%}
 {% endmacro %}
 
 {% macro asset(c, resource) %}{% set pathlength = c.pathlength %}{% set updir = 'src/EUREKA/G6KBundle/Resources/public/' ~ resource %}{%- if pathlength > 0 %}{% for i in 1..pathlength %}{% set updir = '../' ~ updir %}{% endfor %}{% endif %}{{ updir }}{% endmacro %}

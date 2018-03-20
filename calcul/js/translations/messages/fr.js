@@ -1,5 +1,6 @@
 (function (Translator) {
     // fr
+    Translator.add("%title% - New window", "%title% - Nouvelle fen\u00eatre", "messages", "fr");
     Translator.add("--- Select a data ---", "--- S\u00e9lectionnez une donn\u00e9e ---", "messages", "fr");
     Translator.add("--- Select a datagroup ---", "--- S\u00e9lectionnez un groupe de donn\u00e9es ---", "messages", "fr");
     Translator.add("abs", "valeurAbsolue", "messages", "fr");
@@ -10,8 +11,8 @@
     Translator.add("acos", "arcCosinus", "messages", "fr");
     Translator.add("acosh", "arcCosinusHyperbolique", "messages", "fr");
     Translator.add("action", "action", "messages", "fr");
-    Translator.add("Action Button", "Bouton d'action", "messages", "fr");
     Translator.add("actionbutton", "bouton d'action", "messages", "fr");
+    Translator.add("Action Button", "Bouton d'action", "messages", "fr");
     Translator.add("Action button label", "Libell\u00e9 du bouton", "messages", "fr");
     Translator.add("Action button name without spaces or special characters", "Nom du bouton sans espaces ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("Actions Buttons", "Boutons d'action", "messages", "fr");
@@ -153,6 +154,7 @@
     Translator.add("clearing cache", "nettoyage du cache", "messages", "fr");
     Translator.add("Clear production cache", "Vider le cache de l'environnement de prod", "messages", "fr");
     Translator.add("Clear test cache", "Vider le cache de l'environnement de test", "messages", "fr");
+    Translator.add("Clear this field", "Effacer ce champ", "messages", "fr");
     Translator.add("Click for geolocation", "Cliquez pour vous g\u00e9olocaliser", "messages", "fr");
     Translator.add("Click the + button on the right to add a column", "Cliquez sur le bouton + \u00e0 droite pour ajouter une colonne", "messages", "fr");
     Translator.add("Click the + button on the right to add a condition", "Cliquez sur le bouton + \u00e0 droite pour ajouter une condition", "messages", "fr");
@@ -245,8 +247,8 @@
     Translator.add("date", "date", "messages", "fr");
     Translator.add("Date format", "Format de date", "messages", "fr");
     Translator.add("Date format of the parameter", "Format de date du param\u00e8tre", "messages", "fr");
-    Translator.add("day", "jour", "messages", "fr");
     Translator.add("Day", "Jour", "messages", "fr");
+    Translator.add("day", "jour", "messages", "fr");
     Translator.add("December", "D\u00e9cembre", "messages", "fr");
     Translator.add("Decimal point", "Point d\u00e9cimal", "messages", "fr");
     Translator.add("default", "valeur par d\u00e9faut", "messages", "fr");
@@ -272,8 +274,8 @@
     Translator.add("Deleting source", "Suppression source", "messages", "fr");
     Translator.add("Deleting step", "Suppression \u00e9tape", "messages", "fr");
     Translator.add("Delimiter", "D\u00e9limiteur", "messages", "fr");
-    Translator.add("Department", "D\u00e9partement", "messages", "fr");
     Translator.add("department", "d\u00e9partement", "messages", "fr");
+    Translator.add("Department", "D\u00e9partement", "messages", "fr");
     Translator.add("Deployment of the \u00ab %simulator% \u00bb simulator", "D\u00e9ploiement du simulateur \u00ab %simulator% \u00bb", "messages", "fr");
     Translator.add("Deployment on the server \u00ab %server% \u00bb", "D\u00e9ploiement sur le serveur \u00ab %server% \u00bb", "messages", "fr");
     Translator.add("Deploy simulator", "D\u00e9ployer", "messages", "fr");
@@ -329,8 +331,8 @@
     Translator.add("External webservice (Rest API)", "Web service externe (API Rest)", "messages", "fr");
     Translator.add("false", "faux", "messages", "fr");
     Translator.add("February", "F\u00e9vrier", "messages", "fr");
-    Translator.add("field", "champ", "messages", "fr");
     Translator.add("Field", "Champ", "messages", "fr");
+    Translator.add("field", "champ", "messages", "fr");
     Translator.add("Field %id% (nolabel)", "Champ %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Field data", "Donn\u00e9e du champ", "messages", "fr");
     Translator.add("Field description", "Description du champ", "messages", "fr");
@@ -412,8 +414,8 @@
     Translator.add("Index", "Indice", "messages", "fr");
     Translator.add("index name", "nom d'index", "messages", "fr");
     Translator.add("in fieldset \u00ab%fieldset%\u00bb", "dans le groupe de champs \u00ab%fieldset%\u00bb", "messages", "fr");
-    Translator.add("inline", "en ligne", "messages", "fr");
     Translator.add("Inline", "En ligne", "messages", "fr");
+    Translator.add("inline", "en ligne", "messages", "fr");
     Translator.add("Inline PDF", "PDF en ligne", "messages", "fr");
     Translator.add("in panel \u00ab%panel%\u00bb", "dans le panneau \u00ab%panel%\u00bb", "messages", "fr");
     Translator.add("In place form field editor", "\u00c9diteur en place de champ de formulaire", "messages", "fr");
@@ -468,8 +470,8 @@
     Translator.add("m-d-Y", "MM-JJ-AAAA", "messages", "fr");
     Translator.add("m\/d", "MM\/JJ", "messages", "fr");
     Translator.add("m\/d\/Y", "MM\/JJ\/AAAA", "messages", "fr");
-    Translator.add("m\/Y", "MM\/AAAA", "messages", "fr");
     Translator.add("m\/y", "MM\/AA", "messages", "fr");
+    Translator.add("m\/Y", "MM\/AAAA", "messages", "fr");
     Translator.add("Main referer", "Referer principal", "messages", "fr");
     Translator.add("March", "Mars", "messages", "fr");
     Translator.add("matches", "correspondances", "messages", "fr");
@@ -605,11 +607,11 @@
     Translator.add("Postal code obtained by autocompletion on the name of the commune or its postal code", "Code postal obtenu par auto-compl\u00e9tion sur le nom de la commune ou son code postal", "messages", "fr");
     Translator.add("Postal code obtained by autocompletion on the name of the commune or its postal code (In place mode)", "Code postal obtenu par auto-compl\u00e9tion sur le nom de la commune ou son code postal (\u00e9dition en place)", "messages", "fr");
     Translator.add("POST data", "Donn\u00e9es de la requ\u00eate en mode POST", "messages", "fr");
-    Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("postnote", "post note", "messages", "fr");
+    Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("pow", "puissance", "messages", "fr");
-    Translator.add("PreNote", "Pre Note", "messages", "fr");
     Translator.add("prenote", "pre note", "messages", "fr");
+    Translator.add("PreNote", "Pre Note", "messages", "fr");
     Translator.add("Previous", "Pr\u00e9c\u00e9dent", "messages", "fr");
     Translator.add("Primary", "Principal", "messages", "fr");
     Translator.add("Prior step", "Etape pr\u00e9c\u00e9dente", "messages", "fr");
@@ -623,8 +625,8 @@
     Translator.add("Query string parameter", "Param\u00e8tre de la cha\u00eene de requ\u00eate (query string)", "messages", "fr");
     Translator.add("rand", "nombreAleatoire", "messages", "fr");
     Translator.add("referer URL", "URL du referer", "messages", "fr");
-    Translator.add("region", "r\u00e9gion", "messages", "fr");
     Translator.add("Region", "R\u00e9gion", "messages", "fr");
+    Translator.add("region", "r\u00e9gion", "messages", "fr");
     Translator.add("Related informations", "Informations connexes", "messages", "fr");
     Translator.add("Remove this Action", "Enlever cette action", "messages", "fr");
     Translator.add("Remove this Condition", "Enlever cette condition", "messages", "fr");
@@ -882,8 +884,8 @@
     Translator.add("Unit", "Unit\u00e9", "messages", "fr");
     Translator.add("unit text", "texte d'unit\u00e9", "messages", "fr");
     Translator.add("Unknown error", "Erreur inconnue", "messages", "fr");
-    Translator.add("unset", "effacer", "messages", "fr");
     Translator.add("Unset", "Effacer", "messages", "fr");
+    Translator.add("unset", "effacer", "messages", "fr");
     Translator.add("URI", "URI", "messages", "fr");
     Translator.add("URI \/ Step", "URI \/ Etape", "messages", "fr");
     Translator.add("Usage", "Utilisation", "messages", "fr");
@@ -895,6 +897,7 @@
     Translator.add("Users", "Utilisateurs", "messages", "fr");
     Translator.add("Users list", "Liste des utilisateurs", "messages", "fr");
     Translator.add("Users management", "Gestion des utilisateurs", "messages", "fr");
+    Translator.add("Use the up or down key to access and browse suggestions after entering. Confirm your choice with the Enter key, or the Esc key to close the suggestion box.", "Utilisez la touche haut ou bas pour acc\u00e9der et parcourir les suggestions apr\u00e8s la saisie. Confirmez votre choix avec la touche Entr\u00e9e, ou la touche \u00c9chap pour fermer la bo\u00eete de suggestions.", "messages", "fr");
     Translator.add("Validate", "Valider", "messages", "fr");
     Translator.add("Validation errors", "Erreurs de validation", "messages", "fr");
     Translator.add("Value", "Valeur", "messages", "fr");
@@ -916,8 +919,8 @@
     Translator.add("working version only", "la version de travail seulement", "messages", "fr");
     Translator.add("XML Validation against schema fail", "La validation XML par rapport au sch\u00e9ma a \u00e9chou\u00e9", "messages", "fr");
     Translator.add("XML Validation errors", "Erreurs de validation XML", "messages", "fr");
-    Translator.add("Y", "AAAA", "messages", "fr");
     Translator.add("y", "AA", "messages", "fr");
+    Translator.add("Y", "AAAA", "messages", "fr");
     Translator.add("Y-m", "AAAA-MM", "messages", "fr");
     Translator.add("y-m", "AA-MM", "messages", "fr");
     Translator.add("Y-m-d", "AAAA-MM-JJ", "messages", "fr");

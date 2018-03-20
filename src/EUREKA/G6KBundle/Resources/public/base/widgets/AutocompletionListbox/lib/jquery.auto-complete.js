@@ -34,11 +34,28 @@
         return this.each(function(){
             var that = $(this);
             // sc = 'suggestions container'
-            that.sc = $('<div class="autocomplete-suggestions '+o.menuClass+'"></div>');
+            that.sc = $('<div>', { id: o.menuId, class: 'autocomplete-suggestions' }); // modified by Eureka2
+            if (o.menuClass) { // added by Eureka2
+                that.sc.addClass(o.menuClass); // added by Eureka2
+            } // added by Eureka2
+            if (o.menuRole) { // added by Eureka2
+                that.sc.attr('role', o.menuRole); // added by Eureka2
+            } // added by Eureka2
             that.data('sc', that.sc).data('autocomplete', that.attr('autocomplete'));
             that.attr('autocomplete', 'off');
             that.cache = {};
             that.last_val = '';
+
+            if (o.clearButton) {// added by Eureka2 - start
+                var clearButton = $('<button>', { id: o.menuId + '-clear', class: "autocomplete-input-clear-button", role: "button", 'aria-label': o.clearButton, title: o.clearButton });
+                clearButton.append('<span class="glyphicon glyphicon-remove"></span></a>');
+                clearButton.on('click', function(e) {
+                    e.preventDefault();
+                    that.autoComplete('clearSuggestions');
+                    return false;
+                });
+                that.after(clearButton);
+            }// added by Eureka2 - end
 
             that.updateSC = function(resize, next){
                 var positioner = o.alignOnParent ? that.parent() : that; // added by Eureka2
@@ -65,6 +82,12 @@
             $(window).on('resize.autocomplete', that.updateSC);
 
             that.sc.appendTo('body');
+
+            if (o.helpText) { // added by Eureka2
+                var helpText = $('<div>', { id: that.sc.attr('id') + '-help', class: 'sr-only', text: o.helpText }); // added by Eureka2
+                that.sc.before(helpText); // added by Eureka2
+                that.attr('aria-describedby', that.sc.attr('id') + '-help'); // added by Eureka2
+            }
 
             that.sc.on('mouseleave', '.autocomplete-suggestion', function (){
                 $('.autocomplete-suggestion.selected').removeClass('selected');
@@ -165,12 +188,16 @@
         delay: 150,
         cache: 1,
         alignOnParent: false, // added by Eureka2
+        menuId: 'autocomplete-suggestions', // added by Eureka2
+        menuRole: '', // added by Eureka2
         menuClass: '',
+        helpText: '',  // added by Eureka2
+		clearButton: '', // added by Eureka2
         renderItem: function (item, search){
             // escape special characters
             search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
             var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-            return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
+            return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>'; // modified by Eureka2
         },
         onSelect: function(e, term, item){}
     };

@@ -902,12 +902,14 @@ var ExpressionBuilder_I18N = {
 					expr = expr.replace(/'\$(\d+)\$(s|d|f)'/g, function (match, m1, m2, str) {
 						return "$" + m1 + "$" + m2;
 					});
+					expr = expr.replace(/\\\'/g, '`');
 					expr = expr.replace(/('[^']*')/g, function (match, m1, str) {
-						text.push(m1.substr(1, m1.length - 2));
+						text.push(m1.substr(1, m1.length - 2).replace(/`/g, "\'"));
 						return "¤" + text.length;
 					});
+					expr = expr.replace(/\\\"/g, '`');
 					expr = expr.replace(/("[^"]*")/g, function (match, m1, str) {
-						text.push(m1.substr(1, m1.length - 2));
+						text.push(m1.substr(1, m1.length - 2).replace(/`/g, '\"'));
 						return "¤" + text.length;
 					});
 					expr = expr.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, "D$1.$2.$3");

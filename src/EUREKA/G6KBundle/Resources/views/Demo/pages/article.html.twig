@@ -15,7 +15,7 @@
 
 		<div id="step{{ step.id }}" class="step-page step-container{% if step.simulator.dynamic %} dynamic{%- endif -%}{% if script == 0 %} no-js{%- endif -%}">
 			{{ form.heading(step.description, 2, "step-description legend") }}
-			<div class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|jscode }}</div>
+			<p class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|jscode }}</p>
 			<form method="post" action="#main" enctype="multipart/form-data" id="g6k_form">
 			{{ form.draw(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control', 'panel panel-default', 'panel-heading', 'panel-body') }}
 			</form>

@@ -30,17 +30,23 @@
 	}
 
 	geoAPIZipCode.editable = function(input, initial, onComplete) {
-		var input2 = $('<input>', {id: 'geoAPIZipCode' + input.attr('name'), type: 'text', tabindex: 0 });
+		var id = 'geoAPIZipCode' + input.attr('name');
+		var input2 = $('<input>', { id: id, type: 'text' });
 		var attributes = input.prop("attributes");
 		$.each(attributes, function() {
 			if (this.name != 'id' && this.name != 'name' && this.name != 'value' && this.name != 'type') {
 				input2.attr(this.name, this.value);
 			}
 		});
+		input2.attr('aria-owns', id + '-suggestions');
+		var label = input.parent().parent().find('label[for='+ input.attr('id') + ']');
+		label.attr('for', input2.attr('id'));
 		input.hide();
+		input.attr('tabindex', '-1');
 		input.attr('aria-hidden', 'true');
 		input.before(input2);
 		input2.val(initial);
+
 		input2.bind("keypress", function(event) {
 			if (event.keyCode == 13) {
 				event.preventDefault();
@@ -48,7 +54,11 @@
 			}
 		});
 		input2.autoComplete({
+			menuId: id + '-suggestions',
+			menuRole: 'listbox',
+			helpText: Translator.trans('Use the up or down key to access and browse suggestions after entering. Confirm your choice with the Enter key, or the Esc key to close the suggestion box.'),
 			minChars: 2,
+			clearButton: Translator.trans('Clear this field'),
 			source: function(term, response){
 				try { 
 					xhr.abort(); 
@@ -101,7 +111,6 @@
 				return '<div class="autocomplete-suggestion" data-val="' + val + '" data-value="' + item.codePostal + '" data-text="' + item.nom + '" data-insee="' + item.code + '" data-departement="' + item.departement + '" data-region="' + item.region + '" data-surface="' + item.surface + '" data-population="' + item.population + '" data-longitude="' + item.coordinates[0] + '" data-latitude="' + item.coordinates[1] + '">' +  item.nom.replace(re, "<b>$1</b>") + ' (' + item.codePostal + ')</div>'; 
 			},
 			onSelect: function(e, term, item){
-				// input2.val(item.data('text') + ' (' + item.data('value') + ')');
 				onComplete(item.data('value'), item.data('text'));
 			}
 		});

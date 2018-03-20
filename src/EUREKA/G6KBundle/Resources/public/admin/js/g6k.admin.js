@@ -87,6 +87,7 @@ THE SOFTWARE.
 				val = val.replace(/(\s*\<br\>\s*)+$/mi, '');
 				val = val.replace(/^\<p\>(\s*\<br\>\s*)+/mi, '<p>');
 				val = val.replace(/(\s*\<br\>\s*)+\<\/p\>$/mi, '</p>');
+				val = addTitleToExternalLink(val);
 				this.setValue(val);
 			},
 			"beforeload": function() { 
@@ -104,6 +105,22 @@ THE SOFTWARE.
 			}
 		}
 	};
+
+	var addTitleToExternalLink = function(richtext) {
+		var $richtext = $('<div></div>');
+		$richtext.append($.parseHTML(richtext));
+		var links = $richtext.find('a');
+		links.each(function() {
+			if (this.hasAttribute("target") && $(this).attr('target') == '_blank') {
+				if (! this.hasAttribute("title")) {
+					$(this).attr('title', Translator.trans('%title% - New window', { 'title': $.trim($(this).html()) }));
+				}
+			} else if (this.hasAttribute("title")) {
+				$(this).removeAttr("title");
+			}
+		});
+		return $richtext.html();
+	}
 
 	Admin.types = { 
 		date: Translator.trans('date'), 

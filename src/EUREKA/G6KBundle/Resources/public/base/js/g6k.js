@@ -2937,12 +2937,14 @@ THE SOFTWARE.
 			};
 			var expr = new Expression(infix);
 			var self = this;
+			infix = infix.replace(/\\\'/g, '`');
 			infix = infix.replace(/('[^']*')/g, function (match, m1, str) {
-				self.text.push(m1.substr(1, m1.length - 2));
+				self.text.push(m1.substr(1, m1.length - 2).replace(/`/g, "\'"));
 				return "¤" + self.text.length;
 			});
+			infix = infix.replace(/\\\"/g, '`');
 			infix = infix.replace(/("[^"]*")/g, function (match, m1, str) {
-				self.text.push(m1.substr(1, m1.length - 2));
+				self.text.push(m1.substr(1, m1.length - 2).replace(/`/g, '\"'));
 				return "¤" + self.text.length;
 			});
 			infix = infix.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, "D$1.$2.$3");
@@ -3254,9 +3256,9 @@ THE SOFTWARE.
 					});
 					self.removeGlobalError();
 					if ( $("div.foot-notes").children("div.foot-note").filter(":visible").length) {
-						$("div.foot-notes").show();
+						$("div.foot-notes").show().removeAttr('aria-hidden');
 					} else {
-						$("div.foot-notes").hide();
+						$("div.foot-notes").attr('aria-hidden', true).hide();
 					}
 				}
 			});
@@ -3429,14 +3431,14 @@ THE SOFTWARE.
 		setGlobalWarning: function(warning) {
 			if (!$("#global-error").hasClass('has-error')) {
 				$("#global-error").removeClass('hidden').addClass('has-warning').html(warning);
-				$("#global-error").show();
+				$("#global-error").show().removeAttr('aria-hidden');
 			}
 		},
 
 		removeGlobalWarning: function() {
 			if (!$("#global-error").hasClass('has-error')) {
 				$("#global-error").addClass('hidden').removeClass('has-warning').text("");
-				$("#global-error").hide();
+				$("#global-error").attr('aria-hidden', true).hide();
 			}
 		},
 
@@ -3444,7 +3446,7 @@ THE SOFTWARE.
 			var errorContainer = $("#"+name+"-error");
 			if (! errorContainer.hasClass('has-error')) {
 				errorContainer.removeClass('hidden').addClass('has-warning').html(warning);
-				errorContainer.show();
+				errorContainer.show().removeAttr('aria-hidden');
 			}
 		},
 
@@ -3452,7 +3454,7 @@ THE SOFTWARE.
 			var errorContainer = $("#"+name+"-error");
 			if (! errorContainer.hasClass('has-error')) {
 				errorContainer.addClass('hidden').removeClass('has-warning').text("");
-				errorContainer.hide();
+				errorContainer.attr('aria-hidden', true).hide();
 			}
 		},
 
@@ -3475,8 +3477,8 @@ THE SOFTWARE.
 				this.setGroupWarning(this.getData(name).datagroup, warning);
 			} else if (visible) {
 				fieldContainer.find("div.field-error").last().removeClass('hidden').addClass('has-warning').html(warning);
-				fieldContainer.show();
-				fieldContainer.parent().show();
+				fieldContainer.show().removeAttr('aria-hidden');
+				fieldContainer.parent().show().removeAttr('aria-hidden');
 				this.hasWarning = true;
 			}
 		},
@@ -3505,35 +3507,53 @@ THE SOFTWARE.
 			this.hasError = true;
 			$("#global-error").addClass("fatal-error");
 			$("#g6k_form input, #g6k_form select, #g6k_form textarea" ).prop( "disabled", true );
-			$("#global-error").removeClass('hidden').addClass('has-error').html(error);
-			$("#global-error").show();
+			var errorhtml = "";
+			if ($.isArray(error)) {
+				errorhtml = '<p>' + error.join('</p><p>') + '</p>';
+			} else {
+				errorhtml = '<p>' + error + '</p>';
+			}
+			$("#global-error").removeClass('hidden').addClass('has-error').html(errorhtml);
+			$("#global-error").show().removeAttr('aria-hidden');
 		},
 
 		setGlobalError: function(error) {
 			this.hasGlobalError = true;
 			this.hasError = true;
-			$("#global-error").removeClass('hidden').addClass('has-error').html(error);
-			$("#global-error").show();
+			var errorhtml = "";
+			if ($.isArray(error)) {
+				errorhtml = '<p>' + error.join('</p><p>') + '</p>';
+			} else {
+				errorhtml = '<p>' + error + '</p>';
+			}
+			$("#global-error").removeClass('hidden').addClass('has-error').html(errorhtml);
+			$("#global-error").show().removeAttr('aria-hidden');
 		},
 
 		removeGlobalError: function() {
 			$("#g6k_form input, #g6k_form select, #g6k_form textarea" ).prop( "disabled", false );
 			$("#global-error").addClass('hidden').removeClass('has-error').text("");
-			$("#global-error").hide();
+			$("#global-error").attr('aria-hidden', true).hide();
 			this.hasGlobalError = false;
 		},
 
 		setGroupError: function(name, error) {
 			this.hasError = true;
 			var errorContainer = $("#"+name+"-error");
-			errorContainer.removeClass('hidden').addClass('has-error').html(error);
-			errorContainer.show();
+			var errorhtml = "";
+			if ($.isArray(error)) {
+				errorhtml = '<p>' + error.join('</p><p>') + '</p>';
+			} else {
+				errorhtml = '<p>' + error + '</p>';
+			}
+			errorContainer.removeClass('hidden').addClass('has-error').html(errorhtml);
+			errorContainer.show().removeAttr('aria-hidden');
 		},
 
 		removeGroupError: function(name) {
 			var errorContainer = $("#"+name+"-error");
 			errorContainer.addClass('hidden').removeClass('has-error').text("");
-			errorContainer.hide();
+			errorContainer.attr('aria-hidden', true).hide();
 		},
 
 		setError: function(name, error) {
@@ -3547,6 +3567,7 @@ THE SOFTWARE.
 				}
 				if (visible) {
 					$(this).addClass('has-error');
+					$(this).attr('aria-describedby', name + '-field-error');
 					$(this).parent('.input-group').removeClass('hidden').addClass('has-error');
 					$(this).attr('aria-invalid', true);
 					$(this).focus();
@@ -3555,9 +3576,15 @@ THE SOFTWARE.
 			if (this.getData(name).datagroup) {
 				this.setGroupError(this.getData(name).datagroup, error);
 			} else if (visible) {
-				fieldContainer.find("div.field-error").last().removeClass('hidden').addClass('has-error').html(error);
-				fieldContainer.show();
-				fieldContainer.parent().show();
+				var errorhtml = "";
+				if ($.isArray(error)) {
+					errorhtml = '<p>' + error.join('</p><p>') + '</p>';
+				} else {
+					errorhtml = '<p>' + error + '</p>';
+				}
+				fieldContainer.find("div.field-error").last().removeClass('hidden').addClass('has-error').html(errorhtml);
+				fieldContainer.show().removeAttr('aria-hidden');
+				fieldContainer.parent().show().removeAttr('aria-hidden');
 				this.hasError = true;
 			}
 		},
@@ -3576,6 +3603,7 @@ THE SOFTWARE.
 					if (n != name) return true;
 				}
 				$(this).removeClass('has-error');
+				$(this).removeAttr('aria-describedby');
 				$(this).parent('.input-group').removeClass('has-error');
 				$(this).attr('aria-invalid', false);
 			});
@@ -3780,9 +3808,9 @@ THE SOFTWARE.
 					}
 				});
 				if ( $("div.foot-notes").children("div.foot-note").has(":visible")) {
-					$("div.foot-notes").show();
+					$("div.foot-notes").show().removeAttr('aria-hidden');
 				} else {
-					$("div.foot-notes").hide();
+					$("div.foot-notes").attr('aria-hidden', true).hide();
 				}
 			}
 			if (data.sourceDependencies) {
@@ -4368,68 +4396,68 @@ THE SOFTWARE.
 								break;
 							case 'panel':
 								var panelId = data.find("objectId", "stepId", "panelId");
-								$("#" + self.simu.step.name + "-panel-" + panelId).hide();
+								$("#" + self.simu.step.name + "-panel-" + panelId).attr('aria-hidden', true).hide();
 								break;
 							case 'fieldset':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).hide();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).attr('aria-hidden', true).hide();
 								break;
 							case 'fieldrow':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldrowId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldrowId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId + "-fieldrow-" + fieldrowId).hide();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId + "-fieldrow-" + fieldrowId).attr('aria-hidden', true).hide();
 								break;
 							case 'field':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "]").hide();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "]").attr('aria-hidden', true).hide();
 								break;
 							case 'blockinfo':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId).hide();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId).attr('aria-hidden', true).hide();
 								break;
 							case 'chapter':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
 								var chapterId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId ).hide();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId ).attr('aria-hidden', true).hide();
 								break;
 							case 'section':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
 								var chapterId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId");
 								var sectionId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId", "sectionId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId + "-section-" + sectionId).hide();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId + "-section-" + sectionId).attr('aria-hidden', true).hide();
 								break;
 							case 'prenote':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .pre-note").hide();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .pre-note").attr('aria-hidden', true).hide();
 								break;
 							case 'postnote':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .post-note").hide();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .post-note").attr('aria-hidden', true).hide();
 								break;
 							case 'action':
 								var actionId = data.find("objectId", "stepId", "actionId");
 								var action = "#g6k_form button[name=" + actionId + "], #g6k_form input[name=" + actionId + "]";
-								$(action).hide();
+								$(action).attr('aria-hidden', true).prop('disabled', true).hide();
 								break;
 							case 'footnote':
 								var footnoteId = data.find("objectId", "stepId", "footnoteId");
 								var footnote = "#foot-note-" + footnoteId;
-								$(footnote).hide();
+								$(footnote).attr('aria-hidden', true).hide();
 								if ( $("div.foot-notes").has("div.foot-note:visible").length) {
-									$("div.foot-notes").show();
+									$("div.foot-notes").show().removeAttr('aria-hidden');
 								} else {
-									$("div.foot-notes").hide();
+									$("div.foot-notes").attr('aria-hidden', true).hide();
 								}
 								break;
 							case 'choice':
@@ -4447,7 +4475,7 @@ THE SOFTWARE.
 									}
 								} else {
 									var input = field.find("input[value=" + choiceId + "]");
-									input.parent('label').hide();
+									input.parent('label').attr('aria-hidden', true).hide();
 								}
 								break;
 						}
@@ -4463,65 +4491,65 @@ THE SOFTWARE.
 								break;
 							case 'panel':
 								var panelId = data.find("objectId", "stepId", "panelId");
-								$("#" + self.simu.step.name + "-panel-" + panelId).show();
+								$("#" + self.simu.step.name + "-panel-" + panelId).show().removeAttr('aria-hidden');
 								break;
 							case 'fieldset':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).show();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).show().removeAttr('aria-hidden');
 								break;
 							case 'fieldrow':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldrowId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldrowId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId + "-fieldrow-" + fieldrowId).show();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId + "-fieldrow-" + fieldrowId).show().removeAttr('aria-hidden');
 								break;
 							case 'field':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "]").show();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "]").show().removeAttr('aria-hidden');
 								break;
 							case 'blockinfo':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId).show();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId).show().removeAttr('aria-hidden');
 								break;
 							case 'chapter':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
 								var chapterId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId).show();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId).show().removeAttr('aria-hidden');
 								break;
 							case 'section':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
 								var chapterId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId");
 								var sectionId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId", "sectionId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId + "-section-" + sectionId).show();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId + "-section-" + sectionId).show().removeAttr('aria-hidden');
 								break;
 							case 'prenote':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .pre-note").show();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .pre-note").show().removeAttr('aria-hidden');
 								break;
 							case 'postnote':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .post-note").show();
+								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .post-note").show().removeAttr('aria-hidden');
 								break;
 							case 'action':
 								var actionId = data.find("objectId", "stepId", "actionId");
 								var action = "#g6k_form button[name=" + actionId + "], #g6k_form input[name=" + actionId + "]";
-								$(action).show();
+								$(action).show().removeAttr('aria-hidden').prop('disabled', false);
 								break;
 							case 'footnote':
 								var footnoteId = data.find("objectId", "stepId", "footnoteId");
 								var footnote = "#foot-note-" + footnoteId;
-								$(footnote).show();
-								$("div.foot-notes").show();
+								$(footnote).show().removeAttr('aria-hidden');
+								$("div.foot-notes").show().removeAttr('aria-hidden');
 								break;
 							case 'choice':
 								var panelId = data.find("objectId", "stepId", "panelId");
@@ -4538,7 +4566,7 @@ THE SOFTWARE.
 									}
 								} else {
 									var input = field.find("input[value=" + choiceId + "]");
-									input.parent('label').show();
+									input.parent('label').show().removeAttr('aria-hidden');
 								}
 								break;
 						}
@@ -4721,9 +4749,9 @@ THE SOFTWARE.
 				});
 			}
 			if ( $("div.foot-notes").children("div.foot-note").filter(":visible").length) {
-				$("div.foot-notes").show();
+				$("div.foot-notes").show().removeAttr('aria-hidden');
 			} else {
-				$("div.foot-notes").hide();
+				$("div.foot-notes").attr('aria-hidden', true).hide();
 			}
 		},
 
