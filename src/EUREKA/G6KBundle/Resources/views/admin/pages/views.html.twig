@@ -222,7 +222,7 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 		{% endif %}
 		{% if node.isdir %}
 		<form class="add-folder-or-file-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'add-node'}) }}" enctype="multipart/form-data">
-		{{ page.popinheader(viewname ~ node.num, 'popin-add-tree-node', 'Add a sub-folder or a file into «%folder%»'|trans({'%folder%': node.name}), '<span class="glyphicon glyphicon-import"></span>'|jscode, 'btn btn-sm btn-default add-tree-node' ) }}
+		{{ page.popinheader(viewname ~ node.num, 'popin-add-tree-node', 'Add a sub-folder or a file into «%folder%»'|trans({'%folder%': node.name}), '<span class="glyphicon glyphicon-import"></span>'|nofilter, 'btn btn-sm btn-default add-tree-node' ) }}
 		<div class="add-node-container" data-node-type="{{ node.type }}">
 			<fieldset id="add-folder-or-file-{{ node.num }}">
 				<div class="form-group radio"><label class="control-label"><input type="radio" id="add-folder-{{ node.num }}" name="add-folder-or-file" value="folder" />{{ 'sub-folder'|trans }}</label></div>
@@ -235,7 +235,7 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 		{% endif %}
 		<form class="rename-node-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'rename-node'}) }}" enctype="multipart/form-data">
 		<input type="hidden" name="node-name" value="{{ node.name }}" />
-		{{ page.popinheader('rename-' ~ viewname ~ node.num, 'popin-rename-tree-node', 'Rename «%node%»'|trans({'%node%': node.name}), '<span class="glyphicon glyphicon-edit"></span>'|jscode, 'btn btn-sm btn-default rename-tree-node' ) }}
+		{{ page.popinheader('rename-' ~ viewname ~ node.num, 'popin-rename-tree-node', 'Rename «%node%»'|trans({'%node%': node.name}), '<span class="glyphicon glyphicon-edit"></span>'|nofilter, 'btn btn-sm btn-default rename-tree-node' ) }}
 		<div class="rename-node-container" data-node-type="{% if node.isdir -%}folder{% else %}file{% endif %}">
 			<div class="form-group"><label class="control-label">{{ 'New name'|trans }}<input type="text" id="rename-node-name-{{ node.num }}" name="rename-node-name" value="{{ node.name }}" class="form-control input-sm" required="required"/></label></div>
 		</div>
@@ -254,7 +254,7 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 {% endmacro %}
 
 {% macro popinheader(popinId, popinClass, popinTitle, popinButtonLabel, popinButtonClass) %}
-<a href="#" data-toggle="modal" data-target="#popin-{{ popinId }}" class="{{ popinButtonClass }}" alt="{{ popinTitle }}" title="{{ popinTitle }}">{{ popinButtonLabel|jscode }}</a>
+<a href="#" data-toggle="modal" data-target="#popin-{{ popinId }}" class="{{ popinButtonClass }}" alt="{{ popinTitle }}" title="{{ popinTitle }}">{{ popinButtonLabel|nofilter }}</a>
 <div class="modal fade {{ popinClass }}" id="popin-{{ popinId }}" tabindex="-1" role="dialog" aria-labelledby="popin-{{ popinId }}-label">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">

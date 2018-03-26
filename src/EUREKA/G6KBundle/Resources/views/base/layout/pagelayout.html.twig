@@ -121,6 +121,7 @@ jQuery(document).ready(function(){
 	$(':input[data-widget]').each(function() {
 		var widget = window[$(this).attr('data-widget')];
 		var that = $(this);
+		that.data('g6k', g6k);
 		widget.call(null, that, function (value, text) {
 			that.val(value);
 			that.trigger('change');

@@ -2614,13 +2614,16 @@ class Simulator {
 	 *
 	 */
 	private function cleanRichText($text) {
-		$text = preg_replace("|<p>&nbsp;</p>".PHP_EOL."|smi", PHP_EOL, $text);
-		$text = preg_replace("|<p>&nbsp;</p>|smi", "", $text);
+		$text = preg_replace("|\r|smi", "", $text);
+		$text = preg_replace("|<p>&nbsp;</p>|smi", "\n", $text);
+		$text = preg_replace("|<p><br></p>|smi", "\n", $text);
+		$text = preg_replace("|<br>|smi", "\n", $text);
 		$pattern = '{<p>((?:(?:(?!<p[^>]*>|</p>).)++|<p[^>]*>(?1)</p>)*)</p>}smi';
-		$text = preg_replace($pattern, "$1", $text);
+		$text = preg_replace($pattern, "$1\n", $text);
+		$text = preg_replace("|\n\n+|smi", "\n\n", $text);
 		$lines = explode("\n", $text);
 		foreach($lines as &$line) {
-			$line = trim(str_replace(array("<br>", "\t", "&nbsp;"), array(PHP_EOL, " ", " "), $line));
+			$line = trim(str_replace(array("\t", "&nbsp;"), array(" ", " "), $line));
 		}
 		$cleaned = implode(PHP_EOL ,$lines);
 		return trim($cleaned);

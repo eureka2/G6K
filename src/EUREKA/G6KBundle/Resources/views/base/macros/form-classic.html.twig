@@ -55,25 +55,25 @@ THE SOFTWARE.
 		{%- if label == '' -%}
 		<span class="label">{% if field.required or field.visibleRequired %} * {% endif %}</span>
 		{% elseif (type == 'choice' and field.expanded == 1) or type == 'multichoice' %}
-		<label id="{{ name }}-label" class="{{ fieldLabelClass }}">{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{{ label }}{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{% if field.hasColon %} : {% endif %}</label>
+		<label id="{{ name }}-label" class="{{ fieldLabelClass }}">{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{{ label|fnref }}{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{% if field.hasColon %} : {% endif %}</label>
 		{% else %}
-		<label id="{{ name }}-label" class="{{ fieldLabelClass }}" for="{{ name }}">{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{{ label }}{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{% if field.hasColon %} : {% endif %}</label>
+		<label id="{{ name }}-label" class="{{ fieldLabelClass }}" for="{{ name }}">{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{{ label|fnref }}{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{% if field.hasColon %} : {% endif %}</label>
 		{% endif %}
 		<div class="{{ fieldGroupClass }}">
 		{%- if type == 'money' and simu.symbolPosition == 'before' %}<span id="{{ name }}-money-symbol" class="money-symbol">{{ simu.moneySymbol }}</span> {% endif %}
 		{%- if type == 'choice' -%}
 		{%- if field.expanded == 1 -%}
 			<fieldset id="{{ name }}">
-				<legend class="sr-only">{{ label }}</legend>
+				<legend class="sr-only">{{ label|fnref }}</legend>
 				{%- for choice in data.choices -%}
 				{%- if choice.class == 'ChoiceGroup' -%}
 				{%- for gchoice in choice.choices -%}
 				{%- if gchoice.selected -%}
-				<label class="choice{%- if gchoice.value == value %} checked{% endif %}" for="{{ name }}_{{ gchoice.id }}"><input id="{{ name }}_{{ gchoice.id }}" type="radio" name="{{ name }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} checked="checked"{% endif %} />{{ gchoice.label }}</label>
+				<label class="choice{%- if gchoice.value == value %} checked{% endif %}" for="{{ name }}_{{ gchoice.id }}"><input id="{{ name }}_{{ gchoice.id }}" type="radio" name="{{ name }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} checked="checked"{% endif %} />{{ gchoice.label|fnref }}</label>
 				{% endif %}
 				{% endfor %}
 				{%- elseif choice.class == 'Choice' and choice.selected -%}
-				<label class="choice{%- if choice.value == value %} checked{% endif %}" for="{{ name }}_{{ choice.id }}"><input id="{{ name }}_{{ choice.id }}" type="radio" name="{{ name }}" value="{{ choice.value }}"{%- if choice.value == value %} checked="checked"{% endif %} />{{ choice.label }}</label>
+				<label class="choice{%- if choice.value == value %} checked{% endif %}" for="{{ name }}_{{ choice.id }}"><input id="{{ name }}_{{ choice.id }}" type="radio" name="{{ name }}" value="{{ choice.value }}"{%- if choice.value == value %} checked="checked"{% endif %} />{{ choice.label|fnref }}</label>
 				{% endif %}
 				{% endfor %}
 			</fieldset>
@@ -85,28 +85,28 @@ THE SOFTWARE.
 			<optgroup label="{{ choice.label }}">
 			{%- for gchoice in choice.choices -%}
 				{%- if gchoice.selected or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-				<option id="{{ name }}_{{ gchoice.id }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} selected="selected"{% endif %}>{{ gchoice.label }}</option>
+				<option id="{{ name }}_{{ gchoice.id }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} selected="selected"{% endif %}>{{ gchoice.label|nofnref }}</option>
 				{% endif %}
 			{% endfor %}
 			</optgroup>
 			{%- elseif choice.class == 'Choice' and (choice.selected or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0)) -%}
-			<option id="{{ name }}_{{ choice.id }}" value="{{ choice.value }}"{%- if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
+			<option id="{{ name }}_{{ choice.id }}" value="{{ choice.value }}"{%- if choice.value == value %} selected="selected"{% endif %}>{{ choice.label|nofnref }}</option>
 			{% endif %}
 			{% endfor %}
 			</select>
 		{% endif %}
 	{% elseif type == 'multichoice' %}
 		<fieldset id="{{ name }}">
-			<legend class="sr-only">{{ label }}</legend>
+			<legend class="sr-only">{{ label|fnref }}</legend>
 			{%- for choice in data.choices -%}
 			{%- if choice.class == 'ChoiceGroup' -%}
 			{%- for gchoice in choice.choices -%}
 			{%- if gchoice.selected -%}
-			<label class="choice" for="{{ name }}_{{ gchoice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ gchoice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|jscode }} value="{{ gchoice.value }}"{%- if gchoice.value in value %} checked="checked"{% endif %} />{{ gchoice.label }}</label>
+			<label class="choice" for="{{ name }}_{{ gchoice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ gchoice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|jscode }} value="{{ gchoice.value }}"{%- if gchoice.value in value %} checked="checked"{% endif %} />{{ gchoice.label|fnref }}</label>
 			{% endif %}
 			{% endfor %}
 			{%- elseif choice.class == 'Choice' and choice.selected -%}
-			<label class="choice" for="{{ name }}_{{ choice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ choice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|jscode }} value="{{ choice.value }}"{%- if choice.value in value %} checked="checked"{% endif %} />{{ choice.label }}</label>
+			<label class="choice" for="{{ name }}_{{ choice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ choice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|jscode }} value="{{ choice.value }}"{%- if choice.value in value %} checked="checked"{% endif %} />{{ choice.label|fnref }}</label>
 			{% endif %}
 			{% endfor %}
 		</fieldset>
@@ -180,18 +180,18 @@ THE SOFTWARE.
 	{% elseif field.usage == 'output' %}
 	{%- if label is not empty -%}
 	{%- if field.emphasized -%}
-	<span id="{{ name }}-label" class="label emphasized">{{ label }}{% if field.hasColon %} : {% endif %}</span>
+	<span id="{{ name }}-label" class="label emphasized">{{ label|fnref }}{% if field.hasColon %} : {% endif %}</span>
 	{% else %}
-	<span id="{{ name }}-label" class="label">{{ label }}{% if field.hasColon %} : {% endif %}</span>
+	<span id="{{ name }}-label" class="label">{{ label|fnref }}{% if field.hasColon %} : {% endif %}</span>
 	{%- endif -%}
 	{%- endif -%}
 	{%- if type == 'table' -%}
 	<table id="{{ data.table.id }}" summary="{{ data.table.description }}">
-		<caption>{{ data.table.label }}</caption>
+		<caption>{{ data.table.label|fnref }}</caption>
 		<thead>
 			<tr>
 			{%- for column in data.table.columns -%}
-				<th id="{{ column.id }}" abbr="{{ column.name }}" scope="col">{{ column.label }}</th>
+				<th id="{{ column.id }}" abbr="{{ column.name }}" scope="col">{{ column.label|fnref }}</th>
 			{% endfor %}
 			<tr>
 		</thead>
@@ -199,7 +199,7 @@ THE SOFTWARE.
 		{%- for row in data.table.rows -%}
 			<tr>
 			{%- for cell in row.cells -%}
-				<td headers="{{ cell.column.id }}">{{ cell }}</td>
+				<td headers="{{ cell.column.id }}">{{ cell|fnref }}</td>
 			{% endfor %}
 			</tr>
 		{% endfor %}
@@ -212,20 +212,20 @@ THE SOFTWARE.
 		{%- for choice in data.choices -%}
 		{%- if choice.class == 'ChoiceGroup' -%}
 		{%- for gchoice in choice.choices if gchoice.value == value -%}
-		{{- gchoice.label|trim -}}
+		{{- gchoice.label|trim|nofnref -}}
 		{%- endfor -%}
 		{%- elseif choice.class == 'Choice' and choice.value == value -%}
-		{{- choice.label|trim -}}
+		{{- choice.label|trim|nofnref -}}
 		{%- endif -%}
 		{%- endfor -%}
 	{%- elseif type == 'multichoice' -%}
 		{%- for choice in data.choices -%}
 		{%- if choice.class == 'ChoiceGroup' -%}
 		{%- for gchoice in choice.choices if gchoice.value in value -%}
-		<span>{{- gchoice.label|trim -}}</span>
+		<span>{{- gchoice.label|trim|nofnref -}}</span>
 		{%- endfor -%}
 		{%- elseif choice.class == 'Choice' and choice.value in value -%}
-		<span>{{- choice.label|trim -}}</span>
+		<span>{{- choice.label|trim|nofnref -}}</span>
 		{%- endif -%}
 		{%- endfor -%}
 	{%- elseif type == 'array' -%}
@@ -251,7 +251,7 @@ THE SOFTWARE.
 	{%- endif %}
 	{% endif %}
 	{%- if field.hasHelp -%}
-		<button type="button" data-toggle="collapse" data-target="#help-{{ name }}" aria-controls="help-{{ name }}" class="btn btn-help collapsed" title="aide sur {{ label }}"><span class="icon icon-help" aria-hidden="true"></span><span class="blank">Aide</span></button>
+		<button type="button" data-toggle="collapse" data-target="#help-{{ name }}" aria-controls="help-{{ name }}" class="btn btn-help collapsed" title="aide sur {{ label|nofnref }}"><span class="icon icon-help" aria-hidden="true"></span><span class="blank">Aide</span></button>
 	{% endif %}
 		{%- if (step.dynamic or (simu.dynamic and step.id == 0)) and field.usage == 'input' -%}
 		<div id="{{ name }}-field-error" class="field-error{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- else %} hidden{%- endif %}">{%- if data.error -%}{%- for errorMessage in data.errorMessages -%}<p>{{ errorMessage }}</p>{%- endfor -%}{%- endif -%}</div>
@@ -268,7 +268,7 @@ THE SOFTWARE.
 		{% set paragraphs = data.description|trim|split("\n") %}
 		<div class="collapse help-panel" id="help-{{ name }}">
 			<dl>
-				<dt>aide sur {{ label }}</dt>
+				<dt>aide sur {{ label|fnref }}</dt>
 				<dd>
 					{%- for paragraph in paragraphs -%}
 					<p>{{ paragraph|jscode }}</p>

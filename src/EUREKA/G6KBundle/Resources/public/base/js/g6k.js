@@ -3262,21 +3262,21 @@ THE SOFTWARE.
 					}
 				}
 			});
-			var collapseAllButton = $(".step-page .collapse-expand-all-tools button:first-child"),
-				expandAllButton = $(".step-page .collapse-expand-all-tools button:last-child");
+			var collapseAllButton = $(".step-page .blockinfo-container .collapse-expand-all-tools button:first-child"),
+				expandAllButton = $(".step-page .blockinfo-container .collapse-expand-all-tools button:last-child");
 			collapseAllButton.bind("click", function(e) {
-				var scope = $(this).parents('.step-panel-container');
+				var scope = $(this).parents('.blockinfo-container');
 				scope.find(".chapter-label > h3 > button.btn-collapse[aria-expanded=true]").trigger("click");
 				e.stopPropagation();
 				return false;
 			});
 			expandAllButton.bind("click", function(e) {
-				var scope = $(this).parents('.step-panel-container');
+				var scope = $(this).parents('.blockinfo-container');
 				scope.find(".chapter-label > h3 > button.btn-collapse[aria-expanded=false]").trigger("click");
 				e.stopPropagation();
 				return false;
 			});
-			$( ".disposition-classic select, .disposition-grid select").each(function(k) {
+			$( ".disposition-classic select").each(function(k) {
 				if (! this.hasAttribute('data-widget')) {
 					$(this).listbox();
 				}

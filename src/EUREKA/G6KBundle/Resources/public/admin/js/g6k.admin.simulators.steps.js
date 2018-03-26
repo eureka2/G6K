@@ -557,7 +557,7 @@ THE SOFTWARE.
 		stepContainerBody.append(attributesContainer);
 		stepContainer.append(stepContainerBody);
 		stepPanelBody.append(stepContainer);
-		stepContainerBody.append('<div class="panel panel-default description-panel elements-container" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + stepElementId + '-description" id="' + stepElementId + '-description" wrap="hard" class="form-control step-description">' + step.description + '</textarea></div></div>');
+		stepContainerBody.append('<div class="panel panel-default description-panel elements-container" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + stepElementId + '-description" id="' + stepElementId + '-description" wrap="hard" class="form-control step-description">' + Simulators.paragraphs(step.description) + '</textarea></div></div>');
 		var stepButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + stepElementId + '-buttons-panel"></div>');
 		var stepButtonsBody = $('<div class="panel-body step-buttons"></div>');
 		stepButtonsBody.append('<button class="btn btn-success pull-right validate-edit-step">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -1169,7 +1169,7 @@ THE SOFTWARE.
 		footnoteContainerHeading.append('<h4 class="panel-title">' + Translator.trans('FootNote #%id%', { 'id': footnote.id }) + '</h4>');
 		footnoteContainer.append(footnoteContainerHeading);
 		var footnoteContainerBody = $('<div class="panel-body step-footnote"></div>');
-		footnoteContainerBody.append('<textarea rows="5" name="' + footnoteElementId + '-text" id="' + footnoteElementId + '-text" wrap="hard" class="form-control footnote-text">' + footnote.text + '</textarea>');
+		footnoteContainerBody.append('<textarea rows="5" name="' + footnoteElementId + '-text" id="' + footnoteElementId + '-text" wrap="hard" class="form-control footnote-text">' + Simulators.paragraphs(footnote.text) + '</textarea>');
 		var footnoteButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + footnoteElementId + '-buttons-panel"></div>');
 		var footnoteButtonsBody = $('<div class="panel-body footnote-buttons"></div>');
 		footnoteButtonsBody.append('<button class="btn btn-success pull-right validate-edit-footnote">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -2269,7 +2269,7 @@ THE SOFTWARE.
 		fieldsetContainerBody.append(attributesContainer);
 		fieldsetContainer.append(fieldsetContainerBody);
 		fieldsetPanelBody.append(fieldsetContainer);
-		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldsetElementId + '-legend" id="' + fieldsetElementId + '-legend" wrap="hard" class="form-control fieldset-legend">' + fieldset.legend + '</textarea></div></div>');
+		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldsetElementId + '-legend" id="' + fieldsetElementId + '-legend" wrap="hard" class="form-control fieldset-legend">' + Simulators.paragraphs(fieldset.legend) + '</textarea></div></div>');
 		var fieldsetButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + fieldsetElementId + '-buttons-panel"></div>');
 		var fieldsetButtonsBody = $('<div class="panel-body fieldset-buttons"></div>');
 		fieldsetButtonsBody.append('<button class="btn btn-success pull-right validate-edit-fieldset">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -3661,7 +3661,7 @@ THE SOFTWARE.
 					noteAfter = ' selected="selected"';
 				}
 			}
-			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right"><label for="' + fieldElementId + '-note-position">' + Translator.trans('Note position') + '</label><select id="' + fieldElementId + '-note-position"><option value="beforeField"' + noteBefore + '>' + Translator.trans('placed before the field') + '</option><option value="afterField"' + noteAfter + '>' + Translator.trans('placed after the field') + '</option></select></span>' + Translator.trans('Note') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldElementId + '-note" id="' + fieldElementId + '-note" wrap="hard" class="form-control field-note">' + note + '</textarea></div></div>');
+			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right"><label for="' + fieldElementId + '-note-position">' + Translator.trans('Note position') + '</label><select id="' + fieldElementId + '-note-position"><option value="beforeField"' + noteBefore + '>' + Translator.trans('placed before the field') + '</option><option value="afterField"' + noteAfter + '>' + Translator.trans('placed after the field') + '</option></select></span>' + Translator.trans('Note') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldElementId + '-note" id="' + fieldElementId + '-note" wrap="hard" class="form-control field-note">' + Simulators.paragraphs(note) + '</textarea></div></div>');
 		}
 		var fieldButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + fieldElementId + '-buttons-panel"></div>');
 		var fieldButtonsBody = $('<div class="panel-body field-buttons"></div>');
@@ -4885,8 +4885,8 @@ THE SOFTWARE.
 		sectionContainerBody.append(attributesContainer);
 		sectionContainer.append(sectionContainerBody);
 		sectionPanelBody.append(sectionContainer);
-		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-content" id="' + sectionElementId + '-content" wrap="hard" class="form-control section-content">' + section.content + '</textarea></div></div>');
-		sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-annotations" id="' + sectionElementId + '-annotations" wrap="hard" class="form-control section-annotations">' + section.annotations + '</textarea></div></div>');
+		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-content" id="' + sectionElementId + '-content" wrap="hard" class="form-control section-content">' + Simulators.paragraphs(section.content) + '</textarea></div></div>');
+		sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-annotations" id="' + sectionElementId + '-annotations" wrap="hard" class="form-control section-annotations">' + Simulators.paragraphs(section.annotations) + '</textarea></div></div>');
 		var sectionButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + sectionElementId + '-buttons-panel"></div>');
 		var sectionButtonsBody = $('<div class="panel-body section-buttons"></div>');
 		sectionButtonsBody.append('<button class="btn btn-success pull-right validate-edit-section">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -5136,6 +5136,9 @@ THE SOFTWARE.
 			section['panelId'] = panelId;
 			section['blockinfoId'] = blockinfoId;
 			section['chapterId'] = chapterId;
+			if (! section['annotations']) {
+				section['annotations'] = '';
+			}
 			$('.update-button').hide();
 			$('.toggle-collapse-all').hide();
 			var sectionPanelContainer = Simulators.drawSectionForInput(section);

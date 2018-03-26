@@ -30,9 +30,15 @@ THE SOFTWARE.
 {% set panel = blockinfo.panel %}
 {% set simu = step.simulator %}
 <div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}" class="blockinfo-container">
+	{%- if blockinfo.hasCollapsibles %}
+		<p class="collapse-expand-all-tools">
+			<button class="btn">Tout replier</button>
+			<button class="btn">Tout déplier</button>
+		</p>
+	{% endif %}
 	{% if blockinfo.label is not empty %}
 	<div class="blockinfo-label">
-	<h2>{{ blockinfo.label }}</h2>
+	<h2>{{ blockinfo.label|fnref }}</h2>
 	</div>
 	{% endif %}
 	<div class="blockinfo-chapters">
@@ -45,7 +51,7 @@ THE SOFTWARE.
 					{%- if chapter.collapsible -%}
 					<button id="ui-collapse-{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}" role="button" aria-expanded="false" class="btn btn-collapse" data-toggle="collapse" type="button" data-target="#{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections"><span>
 					{% endif %}
-					{{ chapter.label }}
+					{{ chapter.label|fnref }}
 					{%- if chapter.collapsible -%}
 					</span></button>
 					{% endif %}
@@ -55,10 +61,10 @@ THE SOFTWARE.
 			<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections" class="blockinfo-chapter-sections {{ chapterContentClass }}{%- if chapter.collapsible %} collapse{%- endif -%}">
 				{% for section in chapter.sections %}
 				{%- if section.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-				<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}" class="section-container">
+				<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}" class="section-container{%- if section.annotations is not empty %} with-annotations{%- endif -%}">
 					{%- if section.label is not empty -%}
 					<div class="section-label">
-						<h2>{{ section.label }}</h2>
+						<h2>{{ section.label|fnref }}</h2>
 					</div>
 					{% endif %}
 					<div class="section-body-container">

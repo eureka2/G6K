@@ -176,8 +176,8 @@
     Translator.add("click to select the operator", "Cliquez pour s\u00e9lectionner l'op\u00e9rateur", "messages", "fr");
     Translator.add("Close", "Fermer", "messages", "fr");
     Translator.add("Collapse all", "Tout replier", "messages", "fr");
-    Translator.add("Column", "Colonne", "messages", "fr");
     Translator.add("column", "colonne", "messages", "fr");
+    Translator.add("Column", "Colonne", "messages", "fr");
     Translator.add("Column #%id% : %label%", "Colonne #%id% : %label%", "messages", "fr");
     Translator.add("Column %id% (nolabel)", "Colonne %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Column label", "Libell\u00e9 de la colonne", "messages", "fr");
@@ -220,8 +220,8 @@
     Translator.add("d\/m\/Y", "JJ\/MM\/AAAA", "messages", "fr");
     Translator.add("d\/m\/y", "JJ\/MM\/AA", "messages", "fr");
     Translator.add("Dashboard", "Tableau de bord", "messages", "fr");
-    Translator.add("Data", "Donn\u00e9e", "messages", "fr");
     Translator.add("data", "donn\u00e9e", "messages", "fr");
+    Translator.add("Data", "Donn\u00e9e", "messages", "fr");
     Translator.add("Data %id%", "Donn\u00e9e %id%", "messages", "fr");
     Translator.add("Database", "Base de donn\u00e9es", "messages", "fr");
     Translator.add("Database host", "Serveur de base de donn\u00e9es", "messages", "fr");
@@ -280,8 +280,8 @@
     Translator.add("Deployment on the server \u00ab %server% \u00bb", "D\u00e9ploiement sur le serveur \u00ab %server% \u00bb", "messages", "fr");
     Translator.add("Deploy simulator", "D\u00e9ployer", "messages", "fr");
     Translator.add("Description", "Description", "messages", "fr");
-    Translator.add("Disabled", "D\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("disabled", "d\u00e9sactiv\u00e9", "messages", "fr");
+    Translator.add("Disabled", "D\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("Display", "Affichage", "messages", "fr");
     Translator.add("Disposition", "Disposition", "messages", "fr");
     Translator.add("does not corresponds to", "est diff\u00e9rente de", "messages", "fr");
@@ -338,8 +338,8 @@
     Translator.add("Field description", "Description du champ", "messages", "fr");
     Translator.add("Field label", "\u00c9tiquette du champ", "messages", "fr");
     Translator.add("Field prompt", "Invite du champ", "messages", "fr");
-    Translator.add("fieldrow", "rang\u00e9e", "messages", "fr");
     Translator.add("Fieldrow", "Rang\u00e9e", "messages", "fr");
+    Translator.add("fieldrow", "rang\u00e9e", "messages", "fr");
     Translator.add("Fieldrow #%id% : %label%", "Rang\u00e9e #%id% : %label%", "messages", "fr");
     Translator.add("Fieldrow %id% (nolabel)", "Rang\u00e9e %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Fieldrow label", "Libell\u00e9 de la rang\u00e9e", "messages", "fr");
@@ -610,8 +610,8 @@
     Translator.add("postnote", "post note", "messages", "fr");
     Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("pow", "puissance", "messages", "fr");
-    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("PreNote", "Pre Note", "messages", "fr");
+    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("Previous", "Pr\u00e9c\u00e9dent", "messages", "fr");
     Translator.add("Primary", "Principal", "messages", "fr");
     Translator.add("Prior step", "Etape pr\u00e9c\u00e9dente", "messages", "fr");
@@ -624,9 +624,10 @@
     Translator.add("Query string", "Cha\u00eene de requ\u00eate (query string)", "messages", "fr");
     Translator.add("Query string parameter", "Param\u00e8tre de la cha\u00eene de requ\u00eate (query string)", "messages", "fr");
     Translator.add("rand", "nombreAleatoire", "messages", "fr");
+    Translator.add("Reference to the footnote %footnote%", "Renvoi sur la note de bas de page %footnote%", "messages", "fr");
     Translator.add("referer URL", "URL du referer", "messages", "fr");
-    Translator.add("Region", "R\u00e9gion", "messages", "fr");
     Translator.add("region", "r\u00e9gion", "messages", "fr");
+    Translator.add("Region", "R\u00e9gion", "messages", "fr");
     Translator.add("Related informations", "Informations connexes", "messages", "fr");
     Translator.add("Remove this Action", "Enlever cette action", "messages", "fr");
     Translator.add("Remove this Condition", "Enlever cette condition", "messages", "fr");
@@ -649,8 +650,8 @@
     Translator.add("Return to the definition of the simulator \u00ab %simulator% \u00bb", "Retournez \u00e0 la d\u00e9finition du simulateur \u00ab %simulator% \u00bb", "messages", "fr");
     Translator.add("Return type", "Format des donn\u00e9es retourn\u00e9es", "messages", "fr");
     Translator.add("Roles", "R\u00f4les", "messages", "fr");
-    Translator.add("Round", "Arrondi", "messages", "fr");
     Translator.add("round", "arrondi", "messages", "fr");
+    Translator.add("Round", "Arrondi", "messages", "fr");
     Translator.add("Rule", "R\u00e8gle", "messages", "fr");
     Translator.add("Save", "Enregistrer", "messages", "fr");
     Translator.add("Search", "Rechercher", "messages", "fr");
@@ -690,6 +691,8 @@
     Translator.add("Set", "Mettre", "messages", "fr");
     Translator.add("set", "mettre", "messages", "fr");
     Translator.add("Set value", "Mettre la valeur", "messages", "fr");
+    Translator.add("Several localities are served by the postal code entered, please specify", "Plusieurs communes sont desservies par le code postal saisi, veuillez pr\u00e9ciser", "messages", "fr");
+    Translator.add("Several localities match the name entered, please specify", "Plusieurs communes correspondent au nom saisi, veuillez pr\u00e9ciser", "messages", "fr");
     Translator.add("show", "montrer", "messages", "fr");
     Translator.add("Show", "Montrer", "messages", "fr");
     Translator.add("Show choices as radio buttons ?", "Afficher les choix avec des boutons radio ?", "messages", "fr");
@@ -711,8 +714,8 @@
     Translator.add("Single value", "Valeur simple", "messages", "fr");
     Translator.add("sinh", "sinusHyperbolique", "messages", "fr");
     Translator.add("size", "taille", "messages", "fr");
-    Translator.add("Source", "Source", "messages", "fr");
     Translator.add("source", "source", "messages", "fr");
+    Translator.add("Source", "Source", "messages", "fr");
     Translator.add("Source column id", "Champ de la source \u00e0 utiliser comme ID", "messages", "fr");
     Translator.add("Source column label", "Champ de la source \u00e0 utiliser comme libell\u00e9 dans la liste de choix", "messages", "fr");
     Translator.add("Source column value", "Champ de la source \u00e0 utiliser comme valeur de la donn\u00e9e", "messages", "fr");
@@ -733,6 +736,7 @@
     Translator.add("Stylesheet (optional)", "Feuille de styles (facultatif)", "messages", "fr");
     Translator.add("sub-folder", "sous-dossier", "messages", "fr");
     Translator.add("Submit", "Soumettre", "messages", "fr");
+    Translator.add("Suggestions will be proposed when you enter. Use the up or down key to access and browse suggestions after entering. Confirm your choice with the Enter key, or the Esc key to close the suggestion box.", "Des suggestions vous seront propos\u00e9es lors de votre saisie. Utilisez la touche haut ou bas pour acc\u00e9der et parcourir les suggestions apr\u00e8s la saisie. Confirmez votre choix avec la touche Entr\u00e9e, ou la touche \u00c9chap pour fermer la bo\u00eete de suggestions.", "messages", "fr");
     Translator.add("sum", "somme", "messages", "fr");
     Translator.add("Surface", "Superficie", "messages", "fr");
     Translator.add("Symbol position", "Position du symbole", "messages", "fr");
@@ -777,6 +781,7 @@
     Translator.add("the default", "la valeur par d\u00e9faut", "messages", "fr");
     Translator.add("The default value can not refer to the data itself", "La valeur par d\u00e9faut ne peut pas se r\u00e9f\u00e9rer \u00e0 la donn\u00e9e elle-m\u00eame", "messages", "fr");
     Translator.add("The email field is required!", "Le champ email est obligatoire!", "messages", "fr");
+    Translator.add("The entered value does not allow to find the information of the locality.", "La valeur saisie ne permet pas de retrouver les informations de la commune.", "messages", "fr");
     Translator.add("the explanation", "l'explication", "messages", "fr");
     Translator.add("the field", "le champ", "messages", "fr");
     Translator.add("The field '%field%' is invalid", "Le champ '%field%' est non valide", "messages", "fr");
@@ -816,6 +821,9 @@
     Translator.add("The profile name is required", "Le nom du profil est requis", "messages", "fr");
     Translator.add("The profiles title is required", "Le titre des profils est requis", "messages", "fr");
     Translator.add("There's no record with id 0.", "Il n'y a pas d'enregistrement avec l'id 0.", "messages", "fr");
+    Translator.add("There are %count% suggestions, use up and down arrows to review.", "Il y a %count% suggestions, utilisez les fl\u00e8ches haut et bas pour passer en revue.", "messages", "fr");
+    Translator.add("There is no suggestion", "Il n'y a aucune suggestion", "messages", "fr");
+    Translator.add("There is one suggestion", "Il y a une suggestion", "messages", "fr");
     Translator.add("The request field is required", "Le champ requ\u00eate est requis", "messages", "fr");
     Translator.add("the result index", "l'index de r\u00e9sultat", "messages", "fr");
     Translator.add("The rule label is required", "Le libell\u00e9 de la r\u00e8gle est requis", "messages", "fr");
@@ -897,7 +905,6 @@
     Translator.add("Users", "Utilisateurs", "messages", "fr");
     Translator.add("Users list", "Liste des utilisateurs", "messages", "fr");
     Translator.add("Users management", "Gestion des utilisateurs", "messages", "fr");
-    Translator.add("Use the up or down key to access and browse suggestions after entering. Confirm your choice with the Enter key, or the Esc key to close the suggestion box.", "Utilisez la touche haut ou bas pour acc\u00e9der et parcourir les suggestions apr\u00e8s la saisie. Confirmez votre choix avec la touche Entr\u00e9e, ou la touche \u00c9chap pour fermer la bo\u00eete de suggestions.", "messages", "fr");
     Translator.add("Validate", "Valider", "messages", "fr");
     Translator.add("Validation errors", "Erreurs de validation", "messages", "fr");
     Translator.add("Value", "Valeur", "messages", "fr");
@@ -919,10 +926,10 @@
     Translator.add("working version only", "la version de travail seulement", "messages", "fr");
     Translator.add("XML Validation against schema fail", "La validation XML par rapport au sch\u00e9ma a \u00e9chou\u00e9", "messages", "fr");
     Translator.add("XML Validation errors", "Erreurs de validation XML", "messages", "fr");
-    Translator.add("y", "AA", "messages", "fr");
     Translator.add("Y", "AAAA", "messages", "fr");
-    Translator.add("Y-m", "AAAA-MM", "messages", "fr");
+    Translator.add("y", "AA", "messages", "fr");
     Translator.add("y-m", "AA-MM", "messages", "fr");
+    Translator.add("Y-m", "AAAA-MM", "messages", "fr");
     Translator.add("Y-m-d", "AAAA-MM-JJ", "messages", "fr");
     Translator.add("y-m-d", "AA-MM-JJ", "messages", "fr");
     Translator.add("Year", "Ann\u00e9e", "messages", "fr");

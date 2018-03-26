@@ -58,7 +58,7 @@ THE SOFTWARE.
 <ul class="nav nav-tabs">
 {%- for panel in step.panels -%}
 	<li{%- if loop.index == 1 %} class="active"{%- endif -%}>
-		<a aria-expanded="{%- if loop.index == 1 -%}true{%- else -%}false{%- endif -%}" id="ui-tab-panel-{{ panel.id}}" role="button" data-toggle="tab" href="#{{ step.name }}-panel-{{ panel.id }}">{{ panel.label }}{%- if loop.index == 1 %}<span class="sr-only"> (actif)</span>{% endif -%}</a>
+		<a aria-expanded="{%- if loop.index == 1 -%}true{%- else -%}false{%- endif -%}" id="ui-tab-panel-{{ panel.id}}" role="button" data-toggle="tab" href="#{{ step.name }}-panel-{{ panel.id }}">{{ panel.label|nofnref }}{%- if loop.index == 1 %}<span class="sr-only"> (actif)</span>{% endif -%}</a>
 	</li>
 {% endfor %}
 </ul>
@@ -68,15 +68,9 @@ THE SOFTWARE.
 {%- for panel in step.panels -%}
 	{%- if panels > 1 %}
 	<div id="{{ step.name }}-panel-{{ panel.id }}" class="step-panel-container tab-pane{%- if loop.index == 1 %} active{%- endif -%}">
-		<h2 tabindex="-1" class="sr-only">{{ panel.label }}</h2>
+		<h2 tabindex="-1" class="sr-only">{{ panel.label|fnref }}</h2>
 	{% else %}
 	<div id="{{ step.name }}-panel-{{ panel.id }}" class="step-panel-container">
-	{% endif %}
-	{%- if panel.hasCollapsibles %}
-		<p class="collapse-expand-all-tools">
-			<button class="btn">Tout replier</button>
-			<button class="btn">Tout déplier</button>
-		</p>
 	{% endif %}
 	{%- for blck in panel.fieldSets -%}
 		{%- if blck.class == 'FieldSet' -%}
@@ -94,7 +88,7 @@ THE SOFTWARE.
 			{{ form.popinheader(context, fieldset) }}
 			{%- endif -%}
 			{%- if fieldsets > 1  and fieldset.hasInputFields %}
-				{%- if fieldset.legend is not empty -%}<legend>{{ fieldset.legend }}</legend>{%- endif -%}
+				{%- if fieldset.legend is not empty -%}<legend>{{ fieldset.legend|fnref }}</legend>{%- endif -%}
 			{% else %}
 				{%- if fieldset.legend is not empty -%}{{ form.heading(fieldset.legend, 3, "legend") }}{%- endif -%}
 			{% endif %}
@@ -152,7 +146,7 @@ THE SOFTWARE.
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="popin-{{ context.step.id ~ '-' ~ fieldset.id }}-label">{{ fieldset.legend }}</h4>
+				<h4 class="modal-title" id="popin-{{ context.step.id ~ '-' ~ fieldset.id }}-label">{{ fieldset.legend|fnref }}</h4>
 			</div>
 			<div class="modal-body">
 {% endmacro %}
@@ -172,7 +166,7 @@ THE SOFTWARE.
 {% set simu = step.simulator %}
 <div class="action_buttons">
 {%- for action in step.actions -%}
-	 <button class="btn {{ action.class }}" type="{{ action.what }}" name="{{ action.name }}">{% if action.for == 'priorStep' %}<span class="glyphicon glyphicon-menu-left"> </span>{% endif %}{{ action.label }}{%if action.for == 'nextStep' %}<span class="glyphicon glyphicon-menu-right"> </span>{% endif %}</button>
+	 <button class="btn {{ action.class }}" type="{{ action.what }}" name="{{ action.name }}">{% if action.for == 'priorStep' %}<span class="glyphicon glyphicon-menu-left"> </span>{% endif %}{{ action.label|nofnref }}{%if action.for == 'nextStep' %}<span class="glyphicon glyphicon-menu-right"> </span>{% endif %}</button>
 {% endfor %}
 </div>
 {% endmacro %}
@@ -185,7 +179,7 @@ THE SOFTWARE.
 {%- for footnote in footnotes.footNotes -%}
 	{%- if footnote.displayable or (step.simulator.dynamic and step.id == 0) or (step.dynamic and context.script == 1) -%}
 	<div id="foot-note-{{ footnote.id }}" class="foot-note">
-	{{ footnote.text|jscode }}
+	{{ _self.paragraphs(footnote.text|jscode) }}
 	</div>
 	{% endif %}
 {% endfor %}
@@ -236,10 +230,10 @@ THE SOFTWARE.
 {% set step = context.step %}
 {% if step.simulator.profiles is not empty and (step.id == 0 or step.id == 1) %}
 <div class="simulator-profiles">
-	<p>{{ step.simulator.profiles.label }}</p>
+	<p>{{ step.simulator.profiles.label|fnref }}</p>
 	<ul class="nav nav-pills">
 		{% for p in step.simulator.profiles.profiles %}
-		<li tabindex="0" data-profile-id="{{ p.id }}">{{ p.label }}</li>
+		<li tabindex="0" data-profile-id="{{ p.id }}">{{ p.label|fnref }}</li>
 		{% endfor %}
 	</ul>
 </div>
@@ -264,9 +258,9 @@ THE SOFTWARE.
 	{% if s.id > 0 and s.displayable and (s.output is empty or s.output == 'normal') %} 
 		{% set stepnum = stepnum + 1 %}
 		{% if s.id == step.id %}
-		<li class="current" title="{{ 'Current step'|trans }} : {{ s.label }}"><p><span class="sr-only">{{ 'Current step'|trans }}</span><strong><span>{{ stepnum }}</span> <span>{{ s.label }}</span></strong></p></li>
+		<li class="current" title="{{ 'Current step'|trans }} : {{ s.label|fnref }}"><p><span class="sr-only">{{ 'Current step'|trans }}</span><strong><span>{{ stepnum }}</span> <span>{{ s.label|fnref }}</span></strong></p></li>
 		{% else %}
-		<li aria-hidden="true"><p><span>{{ stepnum }}</span> <span>{{ s.label }}</span></p></li>
+		<li aria-hidden="true"><p><span>{{ stepnum }}</span> <span>{{ s.label|fnref }}</span></p></li>
 		{% endif %}
 	{% endif %}
 {% endfor %}

@@ -216,6 +216,34 @@ THE SOFTWARE.
 		return ! found;
 	}
 
+	Simulators.paragraphs = function(text) {
+		text = text.replace(/<p>&nbsp;<\/p>/g, "\n");
+		text = text.replace(/<p><br><\/p>/g, "\n");
+		text = text.replace(/<br>/g, "\n");
+		text = text.replace(/<\/p>/g, "\n");
+		text = text.replace(/<p>/g, "");
+		console.log(text);
+		var paragraphs = $.trim(text).split("\n");
+		var result = "";
+		if (paragraphs.length > 0) {
+			if (paragraphs.length == 1) {
+				result = paragraphs[0];
+			} else {
+				$.each(paragraphs, function(p, paragraph) {
+					paragraph = $.trim(paragraph);
+					result += '<p>';
+					if (paragraph.length == 0) {
+						result += '&nbsp;';
+					} else {
+						result +=  paragraph;
+					}
+					result += '</p>';
+				});
+			}
+		}
+		return result;
+	}
+
 	Simulators.simpleAttributeForDisplay = function(element, type, name, label, value, display, required, placeholder, options) {
 		if (required || (value && value !== '')) {
 			var attribute = '<div class="form-group col-sm-12">';
@@ -659,12 +687,12 @@ THE SOFTWARE.
 		var simulatorDescriptionPanel = $('<div class="panel panel-default" id="simulator-description-panel"></div>');
 		simulatorDescriptionPanel.append('<div class="panel-heading">' + Translator.trans('Description') + '</div>');
 		var simulatorDescriptionBody = $('<div class="panel-body simulator-description rich-text"></div>');
-		simulatorDescriptionBody.append('<textarea rows="10" name="simulator-description" id="simulator-description" wrap="hard" class="form-control">' + simulator.description + '</textarea>');
+		simulatorDescriptionBody.append('<textarea rows="10" name="simulator-description" id="simulator-description" wrap="hard" class="form-control">' + Simulators.paragraphs(simulator.description) + '</textarea>');
 		simulatorDescriptionPanel.append(simulatorDescriptionBody);
 		var simulatorRelatedInformationsPanel = $('<div class="panel panel-default" id="simulator-related-informations-panel"></div>');
 		simulatorRelatedInformationsPanel.append('<div class="panel-heading">' + Translator.trans('Related informations') + '</div>');
 		var simulatorRelatedInformationsBody = $('<div class="panel-body simulator-related-informations"></div>');
-		simulatorRelatedInformationsBody.append('<textarea rows="10" name="simulator-related-informations" id="simulator-related-informations" wrap="hard" class="form-control">' + simulator.relatedInformations + '</textarea>');
+		simulatorRelatedInformationsBody.append('<textarea rows="10" name="simulator-related-informations" id="simulator-related-informations" wrap="hard" class="form-control">' + Simulators.paragraphs(simulator.relatedInformations) + '</textarea>');
 		simulatorRelatedInformationsPanel.append(simulatorRelatedInformationsBody);
 		var simulatorButtonsPanel = $('<div class="panel panel-default" id="simulator-buttons-panel"></div>');
 		var simulatorButtonsBody = $('<div class="panel-body simulator-buttons"></div>');

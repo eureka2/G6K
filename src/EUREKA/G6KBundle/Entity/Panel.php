@@ -266,39 +266,6 @@ class Panel {
 	}
 
 	/**
-	 * Searchs if there is a block of information of which at least one of the chapters can be folded / unfolded and returns true or false according to the result of the search.
-	 *
-	 * This method is an alias of getCollapsibles.
-	 *
-	 * @access  public
-	 * @return  bool true if a collapsible chapter exists, false otherwise
-	 *
-	 */
-	public function hasCollapsibles() {
-		foreach ($this->fieldsets as $block) {
-			if ($block instanceof BlockInfo) {
-				foreach ($block->getChapters() as $chapter) {
-					if ($chapter->isCollapsible()) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Searchs if there is a block of information of which at least one of the chapters can be folded / unfolded and returns true or false according to the result of the search.
-	 *
-	 * @access  public
-	 * @return  bool true if a collapsible chapter exists, false otherwise
-	 *
-	 */
-	public function getCollapsibles() {
-		return $this->hasCollapsibles();
-	}
-
-	/**
 	 * Returns the displayable attribute of this Panel object 
 	 *
 	 * @access  public

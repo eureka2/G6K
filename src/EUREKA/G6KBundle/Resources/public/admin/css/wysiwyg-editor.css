@@ -1,0 +1,6 @@
+body > p {
+	margin: 0; 
+}
+body > p:first-child {
+	margin-top: 0; 
+}

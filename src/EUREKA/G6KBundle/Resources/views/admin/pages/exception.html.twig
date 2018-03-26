@@ -28,7 +28,7 @@ THE SOFTWARE.
 <h2>{{ 'Exception occured'|trans }}</h2>
 
 <div class="alert alert-danger has-error">
-	<p class="help-block">{{ message|jscode }}</p>
+	<p class="help-block">{{ message|nofilter }}</p>
 	{% if code is not empty and code != 0 %}
 	<p class="help-block">Code : {{ code }}</p>
 	{% endif %}
@@ -37,7 +37,7 @@ THE SOFTWARE.
 {% if app.user and is_granted('ROLE_ADMIN') %}
 <div class="alert alert-danger has-error">
 <span class="help-block">
-{{ stacktrace|jscode }}
+{{ stacktrace|nofilter }}
 </span>
 </div>
 

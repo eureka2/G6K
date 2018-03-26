@@ -30,6 +30,7 @@ THE SOFTWARE.
 
 	Admin.lang = 'en';
 	Admin.locale = 'en-US';
+	Admin.editorCSS = '';
 
 	Admin.wysihtml5Custom = {
 		insertData: function(context) {
@@ -155,6 +156,7 @@ $(document).ready(function() {
 	});
 
 	Admin.wysihtml5Options.locale = Admin.locale;
+	Admin.wysihtml5Options.stylesheets = [Admin.editorCSS];
 
 	function centerModal() {
 		$('.modal').find('.modal-dialog').each(function(index) {

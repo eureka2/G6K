@@ -245,6 +245,35 @@ class BlockInfo {
 	}
 
 	/**
+	 * Searchs if this block of information contains at least one chapter that can be folded / unfolded and returns true or false according to the result of the search.
+	 *
+	 * This method is an alias of getCollapsibles.
+	 *
+	 * @access  public
+	 * @return  bool true if a collapsible chapter exists, false otherwise
+	 *
+	 */
+	public function hasCollapsibles() {
+		foreach ($this->chapters as $chapter) {
+			if ($chapter->isCollapsible()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Searchs if this block of information contains at least one chapter that can be folded / unfolded and returns true or false according to the result of the search.
+	 *
+	 * @access  public
+	 * @return  bool true if a collapsible chapter exists, false otherwise
+	 *
+	 */
+	public function getCollapsibles() {
+		return $this->hasCollapsibles();
+	}
+
+	/**
 	 * Returns the displayable attribute of this BlockInfo object 
 	 *
 	 * @access  public

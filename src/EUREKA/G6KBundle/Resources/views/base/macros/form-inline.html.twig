@@ -55,58 +55,58 @@ THE SOFTWARE.
 		{%- if label == '' -%}
 		<span class="label">{% if field.required or field.visibleRequired %} * {% endif %}</span>
 		{% elseif (type == 'choice' and field.expanded == 1) or type == 'multichoice' %}
-		<label id="{{ name }}-label">{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{{ label }}{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{% if field.hasColon %} : {% endif %}</label>
+		<label id="{{ name }}-label">{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{{ label|fnref }}{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{% if field.hasColon %} : {% endif %}</label>
 		{% else %}
-		<label id="{{ name }}-label" for="{{ name }}">{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{{ label }}{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{% if field.hasColon %} : {% endif %}</label>
+		<label id="{{ name }}-label" for="{{ name }}">{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{{ label|fnref }}{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{% if field.hasColon %} : {% endif %}</label>
 		{% endif %}
 		<div>
 		{%- if type == 'money' and simu.symbolPosition == 'before' %}<span id="{{ name }}-money-symbol" class="money-symbol">{{ simu.moneySymbol }}</span> {% endif %}
 		{%- if type == 'choice' -%}
 		{%- if field.expanded == 1 -%}
 			<fieldset id="{{ name }}">
-				<legend class="sr-only">{{ label }}</legend>
+				<legend class="sr-only">{{ label|fnref }}</legend>
 				{%- for choice in data.choices -%}
 				{%- if choice.class == 'ChoiceGroup' -%}
 				{%- for gchoice in choice.choices -%}
 				{%- if gchoice.selected -%}
-				<label class="choice" for="{{ name }}_{{ gchoice.id }}"><input id="{{ name }}_{{ gchoice.id }}" type="radio" name="{{ name }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} checked="checked"{% endif %} />{{ gchoice.label }}</label>
+				<label class="choice" for="{{ name }}_{{ gchoice.id }}"><input id="{{ name }}_{{ gchoice.id }}" type="radio" name="{{ name }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} checked="checked"{% endif %} />{{ gchoice.label|fnref }}</label>
 				{% endif %}
 				{% endfor %}
 				{%- elseif choice.class == 'Choice' and choice.selected -%}
-				<label class="choice" for="{{ name }}_{{ choice.id }}"><input id="{{ name }}_{{ choice.id }}" type="radio" name="{{ name }}" value="{{ choice.value }}"{%- if choice.value == value %} checked="checked"{% endif %} />{{ choice.label }}</label>
+				<label class="choice" for="{{ name }}_{{ choice.id }}"><input id="{{ name }}_{{ choice.id }}" type="radio" name="{{ name }}" value="{{ choice.value }}"{%- if choice.value == value %} checked="checked"{% endif %} />{{ choice.label|fnref }}</label>
 				{% endif %}
 				{% endfor %}
 			</fieldset>
 		{% else %}
-			<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}>
+			<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}>
 			{%- if not(data.default) -%}<option id="{{ name }}_none" value="">{{ prompt }}</option>{% endif %}
 			{%- for choice in data.choices -%}
 			{%- if choice.class == 'ChoiceGroup' -%}
-			<optgroup label="{{ choice.label }}">
+			<optgroup label="{{ choice.label|nofnref }}">
 			{%- for gchoice in choice.choices -%}
 				{%- if gchoice.selected or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-				<option id="{{ name }}_{{ gchoice.id }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} selected="selected"{% endif %}>{{ gchoice.label }}</option>
+				<option id="{{ name }}_{{ gchoice.id }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} selected="selected"{% endif %}>{{ gchoice.label|nofnref }}</option>
 				{% endif %}
 			{% endfor %}
 			</optgroup>
 			{%- elseif choice.class == 'Choice' and (choice.selected or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0)) -%}
-			<option id="{{ name }}_{{ choice.id }}" value="{{ choice.value }}"{%- if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
+			<option id="{{ name }}_{{ choice.id }}" value="{{ choice.value }}"{%- if choice.value == value %} selected="selected"{% endif %}>{{ choice.label|nofnref }}</option>
 			{% endif %}
 			{% endfor %}
 			</select>
 		{% endif %}
 	{% elseif type == 'multichoice' %}
 		<fieldset id="{{ name }}">
-			<legend class="sr-only">{{ label }}</legend>
+			<legend class="sr-only">{{ label|fnref }}</legend>
 			{%- for choice in data.choices -%}
 			{%- if choice.class == 'ChoiceGroup' -%}
 			{%- for gchoice in choice.choices -%}
 			{%- if gchoice.selected -%}
-			<label class="choice" for="{{ name }}_{{ gchoice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ gchoice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|jscode }} value="{{ gchoice.value }}"{%- if gchoice.value in value %} checked="checked"{% endif %} />{{ gchoice.label }}</label>
+			<label class="choice" for="{{ name }}_{{ gchoice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ gchoice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|jscode }} value="{{ gchoice.value }}"{%- if gchoice.value in value %} checked="checked"{% endif %} />{{ gchoice.label|fnref }}</label>
 			{% endif %}
 			{% endfor %}
 			{%- elseif choice.class == 'Choice' and choice.selected -%}
-			<label class="choice" for="{{ name }}_{{ choice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ choice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|jscode }} value="{{ choice.value }}"{%- if choice.value in value %} checked="checked"{% endif %} />{{ choice.label }}</label>
+			<label class="choice" for="{{ name }}_{{ choice.id }}_{{ loop.index }}"><input id="{{ name }}_{{ choice.id }}_{{ loop.index }}" type="checkbox" name="{{ name }}[]"{{ widget|jscode }} value="{{ choice.value }}"{%- if choice.value in value %} checked="checked"{% endif %} />{{ choice.label|fnref }}</label>
 			{% endif %}
 			{% endfor %}
 		</fieldset>
@@ -118,15 +118,15 @@ THE SOFTWARE.
 		<input type="checkbox" id="{{ name }}"{{ widget|jscode }} name="{{ name }}" value="true"{%- if value == 'true' %} checked="checked"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
 	{% elseif type == 'date' %}
 		{%- if context.script == 0 %}
-		<input type="date" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}" title="format : {{ simu.dateFormat|trans }}"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}/>
+		<input type="date" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}" title="format : {{ simu.dateFormat|trans }}"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}/>
 		{% else %}
-		<input type="text" aria-describedby="{{ name }}-aria-description" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}" title="format : {{ simu.dateFormat|trans }}"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %} />
+		<input type="text" aria-describedby="{{ name }}-aria-description" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}" title="format : {{ simu.dateFormat|trans }}"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %} />
 		<span id="{{ name }}-aria-description" class="sr-only">{{ 'Enter the date as %dateformat%'|trans({ '%dateformat%': simu.dateFormat|trans }) }}</span>
 		{% endif %}
 	{% elseif type == 'day' %}
 		{% set min = data.min ?: 01 %}
 		{% set max = data.max ?: 31 %}
-		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}>
+		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}>
 		{%- if not(data.default) -%}<option value="00">--</option>{% endif %}
 		{% for i in min..max %}
 		<option value="{{ i }}"{%- if i == value %} selected="selected"{% endif %}>{{ i }}</option>
@@ -135,7 +135,7 @@ THE SOFTWARE.
 	{% elseif type == 'month' %}
 		{% set min = data.min|default(01) %}
 		{% set max = data.max|default(12) %}
-		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}>
+		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}>
 		{%- if not(data.default) -%}<option value="00">{{ prompt }}</option>{% endif %}
 		{% for i in min..max %}
 		<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ form.monthname(i)|trans }}</option>
@@ -144,32 +144,32 @@ THE SOFTWARE.
 	{% elseif type == 'year' %}
 		{% set min = data.min|default(1964) %}
 		{% set max = data.max|default(min + 100) %}
-		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}>
+		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}>
 		{%- if not(data.default) -%}<option value="">----</option>{% endif %}
 		{% for i in min..max %}
 		<option value="{{ i }}"{%- if i == value %} selected="selected"{% endif %}>{{ i }}</option>
 		{% endfor %}
 		</select>
 	{% elseif type == 'region' %}
-		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}>
+		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}>
 		{{ form.regions() }}
 		</select>
 	{% elseif type == 'department' %}
-		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}>
+		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}>
 		{{ form.departments(value, prompt) }}
 		</select>
 	{% elseif type == 'textarea' %}
-		<textarea id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}>{{ value }}</textarea>
+		<textarea id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}>{{ value }}</textarea>
 	{% elseif type == 'number' and data.type == 'integer' %}
-		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}/>
+		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}/>
 	{% elseif type == 'number' %}
-		<input type="{{ type }}" step="any" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}/>
+		<input type="{{ type }}" step="any" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: nombre"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}/>
 	{% elseif type == 'percent' %}
-		<input type="percent" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" aria-describedby="{{ name }}-percent-symbol"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}  title="format: pourcentage"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %}/>
+		<input type="percent" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" aria-describedby="{{ name }}-percent-symbol"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}  title="format: pourcentage"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %}/>
 	{% elseif type == 'money' %}
-		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" aria-describedby="{{ name }}-money-symbol"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: montant en euros"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %} />
+		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" aria-describedby="{{ name }}-money-symbol"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="format: montant en euros"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %} />
 	{% else %}
-		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label }}"{% endif %} />
+		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %} />
 	{% endif %}
 	</div>
 	{%- if type == 'money' and simu.symbolPosition == 'after' %}
@@ -180,18 +180,18 @@ THE SOFTWARE.
 	{% elseif field.usage == 'output' %}
 	{%- if label is not empty -%}
 	{%- if field.emphasized -%}
-	<span id="{{ name }}-label" class="label emphasized">{{ label }}{% if field.hasColon %} : {% endif %}</span>
+	<span id="{{ name }}-label" class="label emphasized">{{ label|fnref }}{% if field.hasColon %} : {% endif %}</span>
 	{% else %}
-	<span id="{{ name }}-label" class="label">{{ label }}{% if field.hasColon %} : {% endif %}</span>
+	<span id="{{ name }}-label" class="label">{{ label|fnref }}{% if field.hasColon %} : {% endif %}</span>
 	{%- endif -%}
 	{%- endif -%}
 	{%- if type == 'table' -%}
 	<table id="{{ data.table.id }}" summary="{{ data.table.description }}">
-		<caption>{{ data.table.label }}</caption>
+		<caption>{{ data.table.label|fnref }}</caption>
 		<thead>
 			<tr>
 			{%- for column in data.table.columns -%}
-				<th id="{{ column.id }}" abbr="{{ column.name }}" scope="col">{{ column.label }}</th>
+				<th id="{{ column.id }}" abbr="{{ column.name }}" scope="col">{{ column.label|fnref }}</th>
 			{% endfor %}
 			<tr>
 		</thead>
@@ -212,20 +212,20 @@ THE SOFTWARE.
 		{%- for choice in data.choices -%}
 		{%- if choice.class == 'ChoiceGroup' -%}
 		{%- for gchoice in choice.choices if gchoice.value == value -%}
-		{{- gchoice.label|trim -}}
+		{{- gchoice.label|trim|nofnref -}}
 		{%- endfor -%}
 		{%- elseif choice.class == 'Choice' and choice.value == value -%}
-		{{- choice.label|trim -}}
+		{{- choice.label|trim|nofnref -}}
 		{%- endif -%}
 		{%- endfor -%}
 	{%- elseif type == 'multichoice' -%}
 		{%- for choice in data.choices -%}
 		{%- if choice.class == 'ChoiceGroup' -%}
 		{%- for gchoice in choice.choices if gchoice.value in value -%}
-		<span>{{- gchoice.label|trim -}}</span>
+		<span>{{- gchoice.label|trim|nofnref -}}</span>
 		{%- endfor -%}
 		{%- elseif choice.class == 'Choice' and choice.value in value -%}
-		<span>{{- choice.label|trim -}}</span>
+		<span>{{- choice.label|trim|nofnref -}}</span>
 		{%- endif -%}
 		{%- endfor -%}
 	{%- elseif type == 'array' -%}
@@ -251,7 +251,7 @@ THE SOFTWARE.
 	{%- endif %}
 	{% endif %}
 	{%- if field.hasHelp -%}
-		<button type="button" data-toggle="collapse" data-target="#help-{{ name }}" aria-controls="help-{{ name }}" class="btn btn-help collapsed" title="aide sur {{ label }}"><span class="icon icon-help" aria-hidden="true"></span><span class="blank">Aide</span></button>
+		<button type="button" data-toggle="collapse" data-target="#help-{{ name }}" aria-controls="help-{{ name }}" class="btn btn-help collapsed" title="aide sur {{ label|nofnref }}"><span class="icon icon-help" aria-hidden="true"></span><span class="blank">Aide</span></button>
 	{% endif %}
 		{%- if (step.dynamic or (simu.dynamic and step.id == 0)) and field.usage == 'input' -%}
 		<div id="{{ name }}-field-error" class="field-error{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- else %} hidden{%- endif %}">{%- if data.error -%}{%- for errorMessage in data.errorMessages -%}<p>{{ errorMessage }}</p>{%- endfor -%}{%- endif -%}</div>
@@ -268,7 +268,7 @@ THE SOFTWARE.
 		{% set paragraphs = data.description|trim|split("\n") %}
 		<div class="collapse help-panel" id="help-{{ name }}">
 			<dl>
-				<dt>aide sur {{ label }}</dt>
+				<dt>aide sur {{ label|fnref }}</dt>
 				<dd>
 					{%- for paragraph in paragraphs -%}
 					<p>{{ paragraph|jscode }}</p>

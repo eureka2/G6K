@@ -46,6 +46,7 @@ parameters:
             deps:
                 - AutocompletionListbox
             css: 
+                - css/geoAPILocalities.css
             js: 
                 - js/geoAPILocalities.js
         geoAPILocalitiesEditable:

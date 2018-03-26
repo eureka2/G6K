@@ -197,7 +197,7 @@ THE SOFTWARE.
 						<form id="edit-table-rows-form" method="post" action="{{ path('eureka_g6k_admin_datasource_table', {'dsid': dsid, 'table': table.name}) }}" enctype="multipart/form-data">
 						<input type="hidden" name="page" value="{{ pagination.currentPageNumber }}">
 						<div class="table-responsive">
-							<div>{{ table.description|jscode }}</div>
+							<div>{{ table.description|nofilter }}</div>
 							<button id="btnAddNewRow" class="btn btn-default" title="{{ 'Add record'|trans }}"><span class="button-label">{{ 'Add record'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
 							<div class="pull-left">
 								<label class="pull-left control-label">{{ 'Lines per page'|trans }}</label>
@@ -367,7 +367,7 @@ THE SOFTWARE.
 								{{ 'Description'|trans }}
 							</div>
 							<div class="panel-body datasource-description">
-								{{ datasource.description|jscode }}
+								{{ datasource.description|nofilter }}
 							</div>
 						</div>
 						{% if datasource.type == "internal" or datasource.type == "database" %}

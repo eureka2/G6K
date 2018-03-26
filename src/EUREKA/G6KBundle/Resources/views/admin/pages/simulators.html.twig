@@ -130,7 +130,7 @@ THE SOFTWARE.
 									{{ 'Description'|trans }}
 								</div>
 								<div class="panel-body simulator-description rich-text">
-									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.description)|jscode) }}
+									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.description)|nofilter) }}
 								</div>
 							</div>
 							<div class="panel panel-default" id="simulator-related-informations-panel-holder">
@@ -138,7 +138,7 @@ THE SOFTWARE.
 									{{ 'Related informations'|trans }}
 								</div>
 								<div class="panel-body simulator-related-informations rich-text">
-									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.relatedInformations)|jscode) }}
+									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.relatedInformations)|nofilter) }}
 								</div>
 							</div>
 							<div class="panel panel-default" id="simulator-elements-panel">
@@ -227,7 +227,7 @@ THE SOFTWARE.
 			{{ 'Description'|trans }}
 		</div>
 		<div class="panel-body  datagroup-description rich-text">
-			{{ page.paragraphs(simulator.replaceByDataLabel(data.description)|jscode) }}
+			{{ page.paragraphs(simulator.replaceByDataLabel(data.description)|nofilter) }}
 		</div>
 	</div>
 	<div class="panel panel-default datas-panel" id="datagroup-{{ data.id }}-datas-panel">
@@ -401,7 +401,7 @@ THE SOFTWARE.
 		<span class="action-step"> {{ 'of step «%label%»'|trans({'%label%': simulator.controller.helper.findActionField([{'stepId': action.step}], optionNode).label }) }}</span>
 	{% endif %}
 {% elseif action.name == 'setAttribute' %}
-	<span class="action-name">{{ 'set'|trans }}</span> <span class="action-target">{{ targetlib|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span> <span class="action-value"> {{ 'to'|trans }} {{ simulator.replaceByDataLabel(action.value)|jscode }}</span>
+	<span class="action-name">{{ 'set'|trans }}</span> <span class="action-target">{{ targetlib|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span> <span class="action-value"> {{ 'to'|trans }} {{ simulator.replaceByDataLabel(action.value)|nofilter }}</span>
 {% elseif action.name == 'unsetAttribute' %}
 	<span class="action-name">{{ 'unset'|trans }}</span> <span class="action-target">{{ targetlib|trans }}</span> <span class="action-data"> {{ 'of «%label%»'|trans({'%label%': simulator.getDataById(action.data).label}) }}</span>
 {% endif %}
@@ -436,7 +436,7 @@ THE SOFTWARE.
 					{{ 'Description'|trans }}
 				</div>
 				<div class="panel-body step-description rich-text">
-					{{ page.paragraphs(simulator.replaceByDataLabel(step.description)|jscode) }}
+					{{ page.paragraphs(simulator.replaceByDataLabel(step.description)|nofilter) }}
 				</div>
 			</div>
 		</div>
@@ -481,7 +481,7 @@ THE SOFTWARE.
 		</h4>
 	</div>
 	<div class="panel-body step-footnote rich-text">
-	{{ page.paragraphs(step.simulator.replaceByDataLabel(footnote.text)|jscode) }}
+	{{ page.paragraphs(step.simulator.replaceByDataLabel(footnote.text)|nofilter) }}
 	</div>
 </div>
 {% endfor %}
@@ -706,7 +706,7 @@ THE SOFTWARE.
 			{{ 'Legend'|trans }}
 			</div>
 			<div class="panel-body fieldset-legend rich-text">
-				{{ page.paragraphs(step.simulator.replaceByDataLabel(fieldset.legend)|jscode) }}
+				{{ page.paragraphs(step.simulator.replaceByDataLabel(fieldset.legend)|nofilter) }}
 			</div>
 		</div>
 	</div>
@@ -833,7 +833,7 @@ THE SOFTWARE.
 				{{ 'Note'|trans }}
 			</div>
 			<div class="panel-body field-note rich-text">
-			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.preNote.text)|jscode) }}
+			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.preNote.text)|nofilter) }}
 			</div>
 		</div>
 		{% elseif field.postNote %}
@@ -843,7 +843,7 @@ THE SOFTWARE.
 				{{ 'Note'|trans }}
 			</div>
 			<div class="panel-body field-note rich-text">
-			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.postNote.text)|jscode) }}
+			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.postNote.text)|nofilter) }}
 			</div>
 		</div>
 		{% endif %}
@@ -919,7 +919,7 @@ THE SOFTWARE.
 		{{ 'Content'|trans }}
 	</div>
 	<div class="panel-body section-content rich-text">
-		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.content)|jscode) }}
+		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.content)|nofilter) }}
 	</div>
 </div>
 <div class="panel panel-default annotations-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-annotations-panel">
@@ -927,7 +927,7 @@ THE SOFTWARE.
 		{{ 'Annotations'|trans }}
 	</div>
 	<div class="panel-body section-annotations rich-text">
-		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.annotations)|jscode) }}
+		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.annotations)|nofilter) }}
 	</div>
 </div>
 {{ page.closeCollapsiblePanel() }}  
@@ -1044,7 +1044,7 @@ THE SOFTWARE.
 		{{ 'Description'|trans }}
 	</div>
 	<div class="panel-body data-description rich-text">
-		{{ page.paragraphs(data.simulator.replaceByDataLabel(data.description)|jscode) }}
+		{{ page.paragraphs(data.simulator.replaceByDataLabel(data.description)|nofilter) }}
 	</div>
 </div>
 {% if data.choices is not empty or data.choiceSource is not empty %}
@@ -1115,7 +1115,7 @@ THE SOFTWARE.
 	</ul>
 	</li>
 {% else %}
-	<li class="condition"><var class="data" data-id="{{ condition.id }}">«{{ condition.name }}»</var> {{ condition.operator }} {{ condition.value|jscode }}</li>
+	<li class="condition"><var class="data" data-id="{{ condition.id }}">«{{ condition.name }}»</var> {{ condition.operator }} {{ condition.value|nofilter }}</li>
 {% endif %}
 
 {% endmacro %}
@@ -1165,7 +1165,7 @@ THE SOFTWARE.
 				{{ 'Description'|trans }}
 			</div>
 			<div class="panel-body profile-description rich-text">
-				{{ page.paragraphs(simulator.replaceByDataLabel(profile.description)|jscode) }}
+				{{ page.paragraphs(simulator.replaceByDataLabel(profile.description)|nofilter) }}
 			</div>
 		</div>
 	</div>
@@ -1215,10 +1215,10 @@ THE SOFTWARE.
 	{% set paragraphs = text|trim|split("\n") %}
 	{% if paragraphs is not empty %}
 		{% if paragraphs|length == 1 %}
-			{{ paragraphs[0]|jscode }}
+			{{ paragraphs[0]|nofilter }}
 		{% else %}
 			{%- for paragraph in paragraphs -%}
-				<p>{%- if paragraph|trim is empty -%}&nbsp;{%- else -%}{{ paragraph|jscode }}{%- endif -%}</p>
+				{%- if paragraph|trim is empty -%}<p>&nbsp;</p>{%- else -%}<p>{{ paragraph|nofilter }}</p>{%- endif -%}
 			{% endfor %}
 		{% endif %}
 	{% endif %}

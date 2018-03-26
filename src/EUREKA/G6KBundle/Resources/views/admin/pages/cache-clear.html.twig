@@ -28,7 +28,7 @@ THE SOFTWARE.
 <h2>{{ 'Caches management'|trans }}</h2>
 
 {% for l in log %}
-{{ l|jscode }}
+{{ l|nofilter }}
 {% endfor %}
 
 {% endblock %}

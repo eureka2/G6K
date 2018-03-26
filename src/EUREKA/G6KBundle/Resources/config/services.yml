@@ -19,6 +19,7 @@ services:
     # TwigExtensions
     g6k.twig.filters_extension:
         class: EUREKA\G6KBundle\Twig\Extension\Filters
+        arguments: [@translator]
         tags:
             - { name: twig.extension }
 
