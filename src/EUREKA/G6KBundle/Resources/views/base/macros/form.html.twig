@@ -179,7 +179,7 @@ THE SOFTWARE.
 {%- for footnote in footnotes.footNotes -%}
 	{%- if footnote.displayable or (step.simulator.dynamic and step.id == 0) or (step.dynamic and context.script == 1) -%}
 	<div id="foot-note-{{ footnote.id }}" class="foot-note">
-	{{ _self.paragraphs(footnote.text|jscode) }}
+	{{ _self.paragraphs(footnote.text) }}
 	</div>
 	{% endif %}
 {% endfor %}
@@ -270,14 +270,11 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro paragraphs(text) %}
-	{% set paragraphs = text|trim|split("\n") %}
-	{%- for paragraph in paragraphs -%}
-	{%- if paragraph|trim is empty -%}<br>{%- else -%}<p>{{ paragraph|jscode }}</p>{%- endif -%}
-	{% endfor %}
+	{{ text|htmlraw }}
 {% endmacro %}
 
 {% macro heading(text, level, class) %}
-	{%- if text is not empty -%}<h{{ level }} class="{{ class }}">{{ text|trim|replace({"\n": "<br />"})|jscode }}</h{{ level }}>{%- endif -%}
+	{%- if text is not empty -%}<h{{ level }} class="{{ class }}">{{ text|trim|replace({"\n": "<br>"})|jscode }}</h{{ level }}>{%- endif -%}
 {% endmacro %}
 
 {% macro asset(c, resource) %}{% set pathlength = c.pathlength %}{% set updir = 'src/EUREKA/G6KBundle/Resources/public/' ~ resource %}{%- if pathlength > 0 %}{% for i in 1..pathlength %}{% set updir = '../' ~ updir %}{% endfor %}{% endif %}{{ updir }}{% endmacro %}

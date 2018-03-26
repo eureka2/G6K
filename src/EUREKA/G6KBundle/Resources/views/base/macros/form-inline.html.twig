@@ -265,14 +265,11 @@ THE SOFTWARE.
 		<div class="post-note">{{ form.paragraphs(field.postNote.text) }}</div>
 		{% endif %}
 		{%- if field.hasHelp %}
-		{% set paragraphs = data.description|trim|split("\n") %}
 		<div class="collapse help-panel" id="help-{{ name }}">
 			<dl>
 				<dt>aide sur {{ label|fnref }}</dt>
 				<dd>
-					{%- for paragraph in paragraphs -%}
-					<p>{{ paragraph|jscode }}</p>
-					{% endfor %}
+					{{ data.description|htmlraw }}
 				</dd>
 			</dl>
 		</div>

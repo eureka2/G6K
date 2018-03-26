@@ -216,31 +216,36 @@ THE SOFTWARE.
 		return ! found;
 	}
 
-	Simulators.paragraphs = function(text) {
+	Simulators.cleanRichtext = function(text) {
 		text = text.replace(/<p>&nbsp;<\/p>/g, "\n");
 		text = text.replace(/<p><br><\/p>/g, "\n");
 		text = text.replace(/<br>/g, "\n");
 		text = text.replace(/<\/p>/g, "\n");
 		text = text.replace(/<p>/g, "");
-		console.log(text);
+		return text;
+	}
+
+	Simulators.paragraphs = function(text) {
+		text = Simulators.cleanRichtext(text);
+		var blocktags = ['address', 'article', 'aside', 'blockquote', 'canvas', 'dd', 'div', 'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'noscript', 'ol', 'output', 'pre', 'section', 'table', 'tfoot', 'ul', 'video'];
 		var paragraphs = $.trim(text).split("\n");
 		var result = "";
-		if (paragraphs.length > 0) {
-			if (paragraphs.length == 1) {
-				result = paragraphs[0];
+		$.each(paragraphs, function(p, paragraph) {
+			paragraph = $.trim(paragraph);
+			result += '<p>';
+			if (paragraph.length == 0) {
+				result += '&nbsp;';
 			} else {
-				$.each(paragraphs, function(p, paragraph) {
-					paragraph = $.trim(paragraph);
-					result += '<p>';
-					if (paragraph.length == 0) {
-						result += '&nbsp;';
-					} else {
-						result +=  paragraph;
-					}
-					result += '</p>';
-				});
+				result +=  paragraph;
 			}
-		}
+			result += '</p>';
+		});
+		$.each(blocktags, function(t, tag) {
+			result = result.replace(new RegExp("<p>\\s*<" + tag + ">", 'g'), "<" + tag + ">");
+			result = result.replace(new RegExp("<" + tag + ">\\s*<\/p>", 'g'), "<" + tag + ">");
+			result = result.replace(new RegExp("<p>\\s*<\/" + tag + ">", 'g'), "</" + tag + ">");
+			result = result.replace(new RegExp("<\\/" + tag + ">\\s*<\\/p>", 'g'), "</" + tag + ">");
+		});
 		return result;
 	}
 
