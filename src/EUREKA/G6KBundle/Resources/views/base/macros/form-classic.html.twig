@@ -267,7 +267,7 @@ THE SOFTWARE.
 		{%- if field.hasHelp %}
 		<div class="collapse help-panel" id="help-{{ name }}">
 			<dl>
-				<dt>aide sur {{ label|fnref }}</dt>
+				<dt>{{ label|fnref }}</dt>
 				<dd>
 					{{ data.description|htmlraw }}
 				</dd>

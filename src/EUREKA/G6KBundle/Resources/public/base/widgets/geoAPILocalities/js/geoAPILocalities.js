@@ -125,7 +125,6 @@
 
 		var isSelected = false;
 		input2.bind("keypress", function(event) {
-			isSelected = false;
 			if (event.keyCode == 13) {
 				event.preventDefault();
 				event.stopPropagation();
@@ -163,6 +162,7 @@
 			},
 			onSelect: function(e, term, item){
 				geoAPIFromInseeCode (item.data('value'), function(items) {
+					selected = null;
 					if (items.length > 0) {
 						selected = {
 							value: item.data('value'),
@@ -189,11 +189,13 @@
 				suggestions = [];
 				selected = null;
 			},
-			onStartInput: function() {
-				geoAPIRemoveError(input, input2);
-				$('#' + id + 'localities-confirm').remove();
-				suggestions = [];
-				selected = null;
+			onInput: function() {
+				if (selected) {
+					geoAPIRemoveError(input, input2);
+					$('#' + id + 'localities-confirm').remove();
+					suggestions = [];
+					selected = null;
+				}
 			},
 			onTab: function() {
 				$('#' + id + '-validate-button').focus();
@@ -204,7 +206,7 @@
 		input2.next().after(validateButton);
 		validateButton.click(function(ev) {
 			$('#' + id + 'localities-confirm').remove();
-			if (isSelected) {
+			if (isSelected && selected) {
 				geoAPIRemoveError(input, input2);
 				onComplete(selected.value, selected.text, selected.zipcode, selected.departement, selected.region, selected.surface, selected.population, selected.latitude, selected.longitude, selected.contour);
 				geoAPIDetectError(input, input2);

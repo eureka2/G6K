@@ -101,7 +101,7 @@ THE SOFTWARE.
 				Simulators.changeDataIdInConnector(rule.connector, oldId, id);
 			}
 			$.each(rule.ifdata, function(a, action) {
-				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
+				if (action.value == "setAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
 						val = val.replace(re, "#" + id);
@@ -110,7 +110,7 @@ THE SOFTWARE.
 				}
 			});
 			$.each(rule.elsedata, function(a, action) {
-				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
+				if (action.value == "setAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
 						val = val.replace(re, "#" + id);

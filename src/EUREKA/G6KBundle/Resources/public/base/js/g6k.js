@@ -3226,7 +3226,7 @@ THE SOFTWARE.
 			this.variables['script'] = 1;
 			$("div.help-panel dl dt").append('<a title="Fermer" href="javascript:">X</a>');
 			$("div.help-panel dl dt a").click(function() {
-				$(this).parents(".help-panel").collapse('hide');
+				$(this).parents(".help-panel").parent().find('[data-toggle=collapse]').trigger('click');
 			});
 			$("input[type='reset'], button[type='reset']").click(function() {
 				$('#g6k_form').clearForm();
@@ -3776,13 +3776,27 @@ THE SOFTWARE.
 						if (field.prenote) {
 							var prenote = self.replaceVariables(field.prenote);
 							if (prenote !== false) {
-								$('#' + dependency + '-container .pre-note').html(prenote);
+								var id = '#' + dependency + '-container .pre-note';
+								var oldNote = $(id).html();
+								if (prenote != oldNote) {
+									$(id).html(prenote);
+									$(id).attr('aria-live', 'polite');
+								} else {
+									$(id).removeAttr('aria-live');
+								}
 							}
 						}
 						if (field.postnote) {
 							var postnote = self.replaceVariables(field.postnote);
 							if (postnote !== false) {
-								$('#' + dependency + '-container .post-note').html(postnote);
+								var id = '#' + dependency + '-container .post-note';
+								var oldNote = $(id).html();
+								if (postnote != oldNote) {
+									$(id).html(postnote);
+									$(id).attr('aria-live', 'polite');
+								} else {
+									$(id).removeAttr('aria-live');
+								}
 							}
 						}
 					}
@@ -3794,17 +3808,30 @@ THE SOFTWARE.
 					var chapterId = dependency.replace(/-section-.*$/, '');
 					var blockinfoId = dependency.replace(/-chapter-.*$/, '');
 					var content = self.simu.step.panels[blockinfoId].chapters[chapterId].sections[sectionId].content;
-					content = self.replaceVariablesOrBlank(content);
-					$('#' + sectionId + '-content').html(content);
+					var newcontent = self.replaceVariablesOrBlank(content);
+					var id = '#' + sectionId + '-content';
+					var oldContent = $(id).html();
+					if (newcontent != oldContent) {
+						$(id).html(newcontent);
+						$(id).attr('aria-live', 'polite');
+					} else {
+						$(id).removeAttr('aria-live');
+					}
 				});
 			}
 			if (data.footNoteDependencies) {
 				$.each(data.footNoteDependencies, function( d, dependency ) {
 					var footnote = self.simu.step.footnotes[dependency];
-					var id = "#foot-note-" + dependency;
 					var footnotetext = self.replaceVariables(footnote.text);
 					if (footnotetext !== false) {
-						$(id).html(footnotetext);
+						var id = "#foot-note-" + dependency;
+						var oldNote = $(id).html();
+						if (footnotetext != oldNote) {
+							$(id).html(footnotetext);
+							$(id).attr('aria-live', 'polite');
+						} else {
+							$(id).removeAttr('aria-live');
+						}
 					}
 				});
 				if ( $("div.foot-notes").children("div.foot-note").has(":visible")) {
