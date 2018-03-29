@@ -3401,19 +3401,19 @@ THE SOFTWARE.
 						ok = false;
 						switch (data.type) {
 							case 'date':
-								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "jj/mm/aaaa" }, 'messages'));
+								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("d/m/Y") }, 'messages'));
 								break;
 							case 'number': 
-								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "chiffres seulement" }, 'messages'));
+								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("numbers only") }, 'messages'));
 								break;
 							case 'integer': 
-								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "chiffres seulement" }, 'messages'));
+								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("numbers only") }, 'messages'));
 								break;
 							case 'money': 
-								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "montant" }, 'messages'));
+								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("amount") }, 'messages'));
 								break;
 							case 'percent':
-								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "pourcentage" }, 'messages'));
+								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("percentage") }, 'messages'));
 								break;
 							default:
 								this.setError(name, Translator.trans("This value is not in the expected format"));
@@ -3681,7 +3681,8 @@ THE SOFTWARE.
 		},
 
 		setValue: function(name, value) {
-			var data = this.getData(name);
+			var self = this;
+			var data = self.getData(name);
 			if (($.isArray(value) || $.isPlainObject(value)) && data.type != "array" && data.type != "multichoice") {
 				var avalue = value;
 				value = "";
@@ -3694,7 +3695,6 @@ THE SOFTWARE.
 				value = value.toString().replace(/,/g, '.');
 				value = Math.round(parseFloat(value) * 100)/100;
 			}
-			// console && console.log("setValue : " + name + " => " + value);
 			if (value && data.type === "multichoice" && ! $.isArray(value)) {
 				if (/\[\]$/.test(value)) {
 					value = JSON.parse(value);
@@ -3704,18 +3704,18 @@ THE SOFTWARE.
 					value = ovalues;
 				}
 			}
-			this.variables[name] = data.value = value;
-			this.validate(name);
-			if (name !== this.lastUserInputName || data.type === "integer" || data.type === "number" || data.type === "date") {
-				this.setFormValue(name, value);
+			self.variables[name] = data.value = value;
+			self.validate(name);
+			if (name !== self.lastUserInputName || data.type === "integer" || data.type === "number" || data.type === "date") {
+				self.setFormValue(name, value);
 			}
-			if (this.simu.memo && this.simu.memo == "1" && data.memorize && data.memorize == "1") {
+			if (self.simu.memo && self.simu.memo == "1" && data.memorize && data.memorize == "1") {
 				if (! $.cookie(name) || $.cookie(name) != value) {
-					$.cookie(name, value, { expires: 365, path: this.basePath });
+					$.cookie(name, value, { expires: 365, path: self.basePath });
 				}
 			}
-			this.lastUserInputName = "";
-			this.reevaluateFields(name);
+			self.lastUserInputName = "";
+			setTimeout(function(){ self.reevaluateFields(name); }, 0);
 		},
 
 		evaluate: function (expression) {
@@ -3867,7 +3867,6 @@ THE SOFTWARE.
 				});
 			}
 			if (data.rulesConditionsDependency) {
-				// console.log("reevaluateFields for " + name);
 				$.each(data.rulesConditionsDependency, function(r) {
 					self.rulesengine.run(
 						data.rulesConditionsDependency[r] - 1, 
@@ -4651,19 +4650,19 @@ THE SOFTWARE.
 				if (!self.check(data)) {
 					switch (data.type) {
 						case 'date':
-							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "jj/mm/aaaa" }, 'messages'));
+							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("d/m/Y") }, 'messages'));
 							break;
 						case 'number': 
-							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "chiffres seulement" }, 'messages'));
+							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("numbers only") }, 'messages'));
 							break;
 						case 'integer': 
-							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "chiffres seulement" }, 'messages'));
+							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("numbers only") }, 'messages'));
 							break;
 						case 'money': 
-							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "montant" }, 'messages'));
+							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("amount") }, 'messages'));
 							break;
 						case 'percent':
-							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": "pourcentage" }, 'messages'));
+							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("percentage") }, 'messages'));
 							break;
 						default:
 							self.setError(name, Translator.trans("This value is not in the expected format"));

@@ -224,7 +224,7 @@
 						value = v.code;
 						text = v.nom;
 						zipcode = v.codePostal;
-						if (inputVal == val || unaccent(text).toLowerCase().indexOf(unaccent(inputVal).toLowerCase()) >= 0 || inputVal == zipcode) {
+						if (unaccent(text).toLowerCase() == unaccent(inputVal).toLowerCase() || inputVal == zipcode) {
 							found = true;
 							temp.push(v);
 						}

@@ -664,19 +664,19 @@ class BaseController extends Controller {
 					$data->setError(true);
 					switch ($data->getType()) {
 						case 'date':
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'jj/mm/aaaa')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('d/m/Y'))));
 							break;
 						case 'number': 
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('numbers only'))));
 							break;
 						case 'integer': 
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'chiffres seulement')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('numbers only'))));
 							break;
 						case 'money': 
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'montant')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('amount'))));
 							break;
 						case 'percent':
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => 'pourcentage')));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('percentage'))));
 							break;
 						default:
 							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format"));
