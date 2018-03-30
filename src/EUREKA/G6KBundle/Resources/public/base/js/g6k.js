@@ -3715,7 +3715,7 @@ THE SOFTWARE.
 				}
 			}
 			self.lastUserInputName = "";
-			setTimeout(function(){ self.reevaluateFields(name); }, 0);
+			self.reevaluateFields(name);
 		},
 
 		evaluate: function (expression) {
@@ -4355,7 +4355,7 @@ THE SOFTWARE.
 								}
 							} else {
 								if (data.value !== '') {
-									self.setValue(fieldName, '');
+									setTimeout(function(){ self.setValue(fieldName, ''); }, 0);
 								}
 							}
 							break;
@@ -4388,7 +4388,7 @@ THE SOFTWARE.
 							var data = self.getData(fieldName);
 							data.unparsedContent = '';
 							if (data.value !== '') {
-								self.setValue(fieldName, '');
+								setTimeout(function(){ self.setValue(fieldName, ''); }, 0);
 							}
 							break;
 						case 'default':
