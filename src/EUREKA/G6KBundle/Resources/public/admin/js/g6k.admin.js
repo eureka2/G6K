@@ -113,9 +113,7 @@ THE SOFTWARE.
 		var links = $richtext.find('a');
 		links.each(function() {
 			if (this.hasAttribute("target") && $(this).attr('target') == '_blank') {
-				if (! this.hasAttribute("title")) {
-					$(this).attr('title', Translator.trans('%title% - New window', { 'title': $.trim($(this).html()) }));
-				}
+				$(this).attr('title', Translator.trans('%title% - New window', { 'title': $.trim($(this).html()) }));
 			} else if (this.hasAttribute("title")) {
 				$(this).removeAttr("title");
 			}
