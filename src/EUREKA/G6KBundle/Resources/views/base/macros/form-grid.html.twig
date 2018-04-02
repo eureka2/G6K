@@ -138,7 +138,7 @@ THE SOFTWARE.
 								{% set min = data.min|default(01) %}
 								{% set max = data.max|default(12) %}
 								<select aria-label="{{ row.label|nofnref }} {{ fieldset.columns[loop.index0].label|nofnref }} : sélectionner le mois dans la liste déroulante" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
-								{%- if not(data.default) -%}<option value="00">-------------------</option>{% endif %}
+								{%- if not(data.default) -%}<option value="">-------------------</option>{% endif %}
 								{% for i in min..max %}
 								<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{form.monthname(i)|trans }}</option>
 								{% endfor %}
@@ -214,7 +214,10 @@ THE SOFTWARE.
 						{%- elseif type == 'department' -%}
 							{{form.departmentname(value) }}
 						{%- elseif type == 'money' -%}
+							{%- if data.value == '' -%}
+							{%- else -%}
 							{{ data.value|number_format(2, simu.decimalPoint, ' ') }}
+							{%- endif -%}
 						{%- else -%}
 							{{ value }}
 						{%- endif -%}

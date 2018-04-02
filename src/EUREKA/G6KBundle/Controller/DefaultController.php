@@ -259,7 +259,7 @@ class DefaultController extends BaseController {
 	{
  		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
-        $page = $this->render(
+		$page = $this->render(
 			'EUREKAG6KBundle:'.$view.'/'.$step->getTemplate(),
 			array(
 				'view' => $view,

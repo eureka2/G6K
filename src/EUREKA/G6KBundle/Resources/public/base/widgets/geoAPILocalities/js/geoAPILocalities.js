@@ -71,6 +71,17 @@
 						}
 					});
 				});
+				items.sort(function(a, b) {
+					a = unaccent(a.nom).toLowerCase();
+					b = unaccent(b.nom).toLowerCase();
+					if (a == b) {
+						return 0;
+					}
+					if (a > b) {
+						return 1;
+					}
+					return -1;
+				});
 				response(items); 
 			}
 		);
@@ -133,6 +144,7 @@
 
 		var suggestions = [];
 		var selected = null;
+		var validateButton = $('<button>', { id: id + '-validate-button', type: 'button', class: 'btn btn-primary', text: Translator.trans('Validate')});
 
 		input2.autoComplete({
 			menuId: id + '-suggestions',
@@ -144,7 +156,8 @@
 			},
 			cache: 0,
 			renderItem: function (item,  search) {
-				search = normalizeTerm(search);
+				search = search.replace(/^st[- ]/, 'saint-');
+				search = search.replace(/^ste[- ]/, 'sainte-');
 				search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 				var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
 				var val = item.nom + ' (' + item.codePostal + ')';
@@ -182,27 +195,29 @@
 				});
 			},
 			onClear: function() {
-				input.val("");
-				input.trigger("change");
+				onComplete('', '');
 				geoAPIRemoveError(input, input2);
 				$('#' + id + 'localities-confirm').remove();
 				suggestions = [];
 				selected = null;
 			},
-			onInput: function() {
+			onInput: function(val) {
 				if (selected) {
+					onComplete('', '');
 					geoAPIRemoveError(input, input2);
 					$('#' + id + 'localities-confirm').remove();
 					suggestions = [];
 					selected = null;
+				} if (val.length < 2) {
+					onComplete('', '');
+					geoAPIRemoveError(input, input2);
 				}
 			},
 			onTab: function() {
-				$('#' + id + '-validate-button').focus();
+				// nothing todo
 			}
 
 		});
-		var validateButton = $('<button>', { id: id + '-validate-button', type: 'button', class: 'btn btn-primary', text: Translator.trans('Validate')});
 		input2.next().after(validateButton);
 		validateButton.click(function(ev) {
 			$('#' + id + 'localities-confirm').remove();
@@ -222,7 +237,7 @@
 					$.each(suggestions, function(i, v) {
 						var val = v.nom + ' (' + v.codePostal + ')';
 						value = v.code;
-						text = v.nom;
+						text = normalizeTerm(v.nom);
 						zipcode = v.codePostal;
 						if (unaccent(text).toLowerCase() == unaccent(inputVal).toLowerCase() || inputVal == zipcode) {
 							found = true;
@@ -281,8 +296,7 @@
 							break;
 					}
 				} else {
-					input.val("");
-					input.trigger("change");
+					onComplete('', '');
 					geoAPIDetectError(input, input2);
 					input2.focus();
 				}
@@ -292,7 +306,7 @@
 	}
 
 	function normalizeTerm(s) {
-		s = s.replace(/^(le|la|les)\s*(.*)$/, '$2');
+		s = s.replace(/^(le|la|les)\s+(.*)$/i, '$2');
 		if (/([^\s]+)\s+([^\s]+)/.test(s)) {
 			s = s.replace(/\s+([^\s]+)/g, '-$1');
 		}

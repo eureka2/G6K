@@ -23,10 +23,10 @@
 					}
 					$(that.data('sc')).remove();
 					that.removeData('sc').removeData('autocomplete');
-				} else if (options == 'clearSuggestions') { // added by Eureka2
+				} else if (options == 'clearSuggestions') {
 					that.val('');
 					that.last_val = '\n';
-					setTimeout(function(){ that.focus(); }, o.delay + 360);
+					// setTimeout(function(){ that.focus(); }, o.delay + 360); // should we go back to the input field ?
 				}
 			});
 			return this;
@@ -36,7 +36,7 @@
 			var that = $(this);
 			// sc = 'suggestions container'
 			that.sc = $('<div>', { id: o.menuId, role: 'listbox', class: 'autocomplete-suggestions' }); // modified by Eureka2
-			that.attr({ // added by Eureka2
+			that.attr({
 				'role': 'combobox',
 				'aria-owns': o.menuId,
 				'aria-autocomplete': 'both',
@@ -44,17 +44,18 @@
 				'autocapitalize': 'off', 
 				'spellcheck': 'false'
 			});
-			if (o.menuClass) { // added by Eureka2
-				that.sc.addClass(o.menuClass); // added by Eureka2
+			if (o.menuClass) {
+				that.sc.addClass(o.menuClass);
 			} // added by Eureka2
 			that.data('sc', that.sc).data('autocomplete', that.attr('autocomplete')).data('suggestions', 0);
 			that.attr('autocomplete', 'off');
 			that.cache = {};
 			that.last_val = '';
+			that.userInput = that.val();
 			var announce = $('<div>', { id: o.menuId + '-announce', 'class': 'sr-only', 'aria-live': 'polite'} );
 			that.before(announce);
 
-			if (o.clearButton) {// added by Eureka2 - start
+			if (o.clearButton) {
 				var clearButton = $('<button>', { id: o.menuId + '-clear', class: "autocomplete-input-clear-button", role: "button", 'aria-label': o.clearButton, title: o.clearButton });
 				clearButton.append('<span class="glyphicon glyphicon-remove"></span></a>');
 				clearButton.on('click', function(e) {
@@ -64,7 +65,7 @@
 					return false;
 				});
 				that.after(clearButton);
-			}// added by Eureka2 - end
+			}
 
 			that.updateSC = function(resize, next){
 				var positioner = o.alignOnParent ? that.parent() : that; // added by Eureka2
@@ -93,26 +94,27 @@
 
 			that.sc.appendTo('body');
 
-			if (o.helpText) { // added by Eureka2
+			if (o.helpText) {
 				var helpText = $('<p>', { id: that.sc.attr('id') + '-help', class: 'sr-only', text: o.helpText }); // added by Eureka2
-				that.before(helpText); // added by Eureka2
-				that.attr('aria-describedby', that.sc.attr('id') + '-help'); // added by Eureka2
+				that.before(helpText);
+				that.attr('aria-describedby', that.sc.attr('id') + '-help');
+				helpText.hide();
 			}
 
 			that.sc.on('mouseleave', '.autocomplete-suggestion', function (){
 				$('.autocomplete-suggestion.selected').removeClass('selected');
-				that.removeAttr('aria-activedescendant'); // added by Eureka2
+				that.removeAttr('aria-activedescendant');
 			});
 
 			that.sc.on('mouseenter', '.autocomplete-suggestion', function (){
 				$('.autocomplete-suggestion.selected').removeClass('selected');
 				$(this).addClass('selected');
-				that.attr('aria-activedescendant', $(this).attr('id')); // added by Eureka2
+				that.attr('aria-activedescendant', $(this).attr('id'));
 			});
 
 			that.sc.on('mousedown click', '.autocomplete-suggestion', function (e){
 				var item = $(this), v = item.data('val');
-				if (v || item.hasClass('autocomplete-suggestion')) { // else outside click
+				if (v || item.hasClass('autocomplete-suggestion')) {
 					that.val(v);
 					o.onSelect(e, v, item);
 					updateAnnounce('');
@@ -123,12 +125,12 @@
 			});
 
 			that.on('blur.autocomplete', function(){
-				try { over_sb = $('.autocomplete-suggestions:hover').length; } catch(e){ over_sb = 0; } // IE7 fix :hover
+				try { over_sb = $('.autocomplete-suggestions:hover').length; } catch(e){ over_sb = 0; }
 				if (!over_sb) {
 					that.last_val = that.val();
 					that.sc.hide();
 					updateAnnounce('');
-					setTimeout(function(){ that.sc.hide(); }, 350); // hide suggestions on fast input
+					setTimeout(function(){ that.sc.hide(); }, 350);
 				} else if (!that.is(':focus')) setTimeout(function(){ that.focus(); }, 20);
 			});
 
@@ -136,11 +138,12 @@
 
 			function suggest(data){
 				var val = that.val();
+				that.userInput = that.val();
 				that.cache[val] = data;
 				that.data('suggestions', data.length);
 				var newAnnounce = o.announce(data.length);
 				if (data.length && val.length >= o.minChars) {
-					that.sc.empty(); // added by Eureka2
+					that.sc.empty();
 					for (var i = 0; i < data.length; i++) {
 						var sugg = $(o.renderItem(data[i], val));
 						sugg.attr({
@@ -183,27 +186,35 @@
 				if (sugg.length) {
 					sugg.addClass('selected');
 					that.val(sugg.data('val')); 
-					that.attr('aria-activedescendant', sugg.attr('id')); // added by Eureka2
+					that.attr('aria-activedescendant', sugg.attr('id'));
 					that.updateSC(0, sugg);
 				}
 			}
 
-			function leaveSugg(sugg) {
-				sugg.removeClass('selected'); 
-				that.val(that.last_val);
-				that.removeAttr('aria-activedescendant'); // added by Eureka2
-			}
-
 			function selectSugg(e, sugg) {
 				if (sugg.length && that.sc.is(':visible')) { 
+					e.preventDefault();
+					e.stopPropagation();
 					o.onSelect(e, sugg.data('val'), sugg); 
 					setTimeout(function(){
-						that.removeAttr('aria-activedescendant'); // added by Eureka2
+						that.removeAttr('aria-activedescendant');
 						that.sc.empty();
 						that.sc.hide(); 
 						updateAnnounce('');
 					}, 20);
 				}
+			}
+
+			function tabToThat(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				that.val(that.userInput);
+				that.last_val = that.val();
+				that.removeAttr('aria-activedescendant');
+				setTimeout(function(){ 
+					that.sc.empty();
+					that.focus();
+				}, 300);
 			}
 
 			that.on('keydown.autocomplete', function(e){
@@ -243,7 +254,7 @@
 					that.val(that.last_val).sc.hide();
 					updateAnnounce('');
 					that.focus();
-				} else if (e.which == 13) { // enter
+				} else if (e.which == 13 || e.which == 32) { // enter or space
 					var sel = $('.autocomplete-suggestion.selected', that.sc);
 					selectSugg(e, sel);
 				} else if (e.which == 9) { // tab
@@ -261,14 +272,7 @@
 									gotoSugg(next);
 									return false;
 								} else {
-									e.preventDefault();
-									selectSugg(e, sel);
-									that.last_val = that.val();
-									that.removeAttr('aria-activedescendant'); // added by Eureka2
-									setTimeout(function(){ 
-										that.sc.empty();
-										that.focus();
-									}, 300);
+									tabToThat(e);
 								}
 							}
 						} else { // down
@@ -284,19 +288,19 @@
 									gotoSugg(next);
 									return false;
 								} else {
-									selectSugg(e, sel);
-									that.last_val = that.val();
-									that.removeAttr('aria-activedescendant'); // added by Eureka2
-									setTimeout(function(){ 
-										that.sc.empty();
-										o.onTab();
-									}, 300);
+									tabToThat(e);
 								}
 							}
 						}
 					} else {
-						var sel = $('.autocomplete-suggestion.selected', that.sc);
-						selectSugg(e, sel);
+						if (! e.shiftKey) {
+							if (! o.clearButton) {
+								setTimeout(function(){ 
+									that.sc.empty();
+									o.onTab();
+								}, 300);
+							}
+						}
 					}
 				} else if (e.which == 8 || e.which == 46) { // del or backspace
 					that.sc.empty();
@@ -304,15 +308,17 @@
 					setTimeout(function(){ 
 						if (that.val() == '') {
 							o.onClear();
+						} else {
+							o.onInput(that.val());
 						}
 					}, 20);
 				} else {
-					o.onInput();
+					setTimeout(function(){ o.onInput(that.val()); }, 20);
 				}
 			});
 
 			that.on('keyup.autocomplete', function(e){
-				if (!~$.inArray(e.which, [9, 13, 27, 35, 36, 37, 38, 39, 40])) {
+				if (!~$.inArray(e.which, [9, 13, 16, 27, 32, 35, 36, 37, 38, 39, 40])) {
 					var val = that.val();
 					if (val.length >= o.minChars) {
 						if (val != that.last_val) {
@@ -342,18 +348,18 @@
 		minChars: 3,
 		delay: 150,
 		cache: 1,
-		alignOnParent: false, // added by Eureka2
-		menuId: 'autocomplete-suggestions', // added by Eureka2
+		alignOnParent: false,
+		menuId: 'autocomplete-suggestions',
 		menuClass: '',
-		helpText: '',  // added by Eureka2
-		clearButton: '', // added by Eureka2
+		helpText: '',
+		clearButton: '',
 		renderItem: function (item, search){
 			// escape special characters
 			search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 			var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-			return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>'; // modified by Eureka2
+			return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
 		},
-		announce: function( count) {// added by Eureka2
+		announce: function( count) {
 		   switch (count) {
 			   case 0:
 				   return 'There is no suggestion';
@@ -364,9 +370,9 @@
 		   }
 		},
 		onSelect: function(e, term, item){},
-		onClear: function() {}, // added by Eureka2
-		onInput: function() {}, // added by Eureka2
-		onTab: function() {} // added by Eureka2
+		onClear: function() {},
+		onInput: function(val) {},
+		onTab: function() {}
 	};
 
 }(jQuery));

@@ -136,7 +136,7 @@ THE SOFTWARE.
 		{% set min = data.min|default(01) %}
 		{% set max = data.max|default(12) %}
 		<select id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>
-		{%- if not(data.default) -%}<option value="00">{{ prompt }}</option>{% endif %}
+		{%- if not(data.default) -%}<option value="">{{ prompt }}</option>{% endif %}
 		{% for i in min..max %}
 		<option value="{{ i }}"{%- if value == i %} selected="selected"{% endif %}>{{ form.monthname(i)|trans }}</option>
 		{% endfor %}
@@ -237,7 +237,10 @@ THE SOFTWARE.
 	{%- elseif type == 'department' -%}
 		{{ form.departmentname(value) }}
 	{%- elseif type == 'money' -%}
+		{%- if data.value == '' -%}
+		{%- else -%}
 		{{ data.value|number_format(2, simu.decimalPoint, ' ') }}
+		{%- endif -%}
 	{%- else -%}
 		{{ value }}
 	{%- endif -%}

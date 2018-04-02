@@ -115,7 +115,7 @@ THE SOFTWARE.
 {% if panels > 1 %}
 </div>
 {% endif %}
-{%- if simu.error or simu.warning (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
+{%- if simu.error or simu.warning or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
 <div id="global-error" class="{%- if simu.error %} has-error{%- elseif simu.warning %} has-warning{%- else %} hidden{%- endif -%}" aria-live="assertive">
 {%- if simu.error -%}
 {%- for errorMessage in simu.errorMessages -%}<p>{{ errorMessage }}</p>{%- endfor -%}

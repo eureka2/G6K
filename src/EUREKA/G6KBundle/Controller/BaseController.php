@@ -1021,8 +1021,8 @@ class BaseController extends Controller {
 							}
 							break;
 						case 'dataset':
-							$$this->simu->setError(true);
-							$$this->simu->addErrorMessage($this->helper->replaceVariables($action->getValue()));
+							$this->simu->setError(true);
+							$this->simu->addErrorMessage($this->helper->replaceVariables($action->getValue()));
 							$this->error = true;
 							break;
 					}
@@ -1050,8 +1050,8 @@ class BaseController extends Controller {
 							}
 							break;
 						case 'dataset':
-							$$this->simu->setWarning(true);
-							$$this->simu->addWarningMessage($this->helper->replaceVariables($action->getValue()));
+							$this->simu->setWarning(true);
+							$this->simu->addWarningMessage($this->helper->replaceVariables($action->getValue()));
 							break;
 					}
 					break;

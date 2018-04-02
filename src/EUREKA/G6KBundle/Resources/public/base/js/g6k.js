@@ -3250,6 +3250,8 @@ THE SOFTWARE.
 									}
 								}
 								self.variables[name] = data.value = content;
+							} else if (data.value !== '') {
+								self.variables[name] = data.value = '';
 							}
 						}
 						self.reevaluateFields(name);
@@ -3660,7 +3662,7 @@ THE SOFTWARE.
 			}
 		},
 
-		unsetValue: function(name, value) { // only for type = 'multichoice'
+		unsetChoiceValue: function(name, value) { // only for type = 'multichoice'
 			var data = this.getData(name);
 			if (value && data && data.type === "multichoice" && ! $.isArray(value)) {
 				var ovalues = data.value ? data.value : [];
@@ -3677,6 +3679,14 @@ THE SOFTWARE.
 					this.lastUserInputName = "";
 					this.reevaluateFields(name);
 				}
+			}
+		},
+
+		unsetValue: function(name) {
+			var self = this;
+			var data = self.getData(name);
+			if (data.value !== '') {
+				setTimeout(function(){ self.setValue(name, ''); }, 0);
 			}
 		},
 
@@ -3764,6 +3774,8 @@ THE SOFTWARE.
 							if (field.value !== content) {
 								self.setValue(dependency, content);
 							}
+						} else {
+							self.unsetValue(dependency);
 						}
 					}
 				});
@@ -3835,9 +3847,9 @@ THE SOFTWARE.
 					}
 				});
 				if ( $("div.foot-notes").children("div.foot-note").has(":visible")) {
-					$("div.foot-notes").show().removeAttr('aria-hidden');
+					self.showObjectLater($("div.foot-notes"));
 				} else {
-					$("div.foot-notes").attr('aria-hidden', true).hide();
+					self.hideObject($("div.foot-notes"));
 				}
 			}
 			if (data.sourceDependencies) {
@@ -3862,6 +3874,7 @@ THE SOFTWARE.
 							self.getInternalSource(dependency);
 						}
 					} else {
+						self.resetSourceDatas(dependency);
 						self.populateChoiceDependencies(dependency, []);
 					}
 				});
@@ -4201,6 +4214,8 @@ THE SOFTWARE.
 								} else {
 									self.setValue(name, result[index.toLowerCase()]);
 								}
+							} else {
+								self.unsetValue(name);
 							}
 						} else {
 							self.setValue(name, result);
@@ -4209,6 +4224,18 @@ THE SOFTWARE.
 				}
 			});
 			this.populateChoiceDependencies(source, result);
+		},
+
+		resetSourceDatas: function(source) {
+			var self = this;
+			$.each(this.simu.datas, function( name, data ) {
+				if (typeof data.unparsedSource !== "undefined" && data.unparsedSource !== "") {
+					var s = self.evaluate(data.unparsedSource);
+					if (s == source) {
+						self.unsetValue(name);
+					}
+				}
+			});
 		},
 
 		populateChoiceDependencies : function (source, result) {
@@ -4354,9 +4381,7 @@ THE SOFTWARE.
 									}
 								}
 							} else {
-								if (data.value !== '') {
-									setTimeout(function(){ self.setValue(fieldName, ''); }, 0);
-								}
+								self.unsetValue(fieldName);
 							}
 							break;
 						case 'default':
@@ -4387,9 +4412,7 @@ THE SOFTWARE.
 						case 'content':
 							var data = self.getData(fieldName);
 							data.unparsedContent = '';
-							if (data.value !== '') {
-								setTimeout(function(){ self.setValue(fieldName, ''); }, 0);
-							}
+							self.unsetValue(fieldName);
 							break;
 						case 'default':
 							self.getData(fieldName).unparsedDefault = '';
@@ -4422,54 +4445,54 @@ THE SOFTWARE.
 								break;
 							case 'panel':
 								var panelId = data.find("objectId", "stepId", "panelId");
-								$("#" + self.simu.step.name + "-panel-" + panelId).attr('aria-hidden', true).hide();
+								self.hideObject($("#" + self.simu.step.name + "-panel-" + panelId));
 								break;
 							case 'fieldset':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).attr('aria-hidden', true).hide();
+								self.hideObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId));
 								break;
 							case 'fieldrow':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldrowId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldrowId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId + "-fieldrow-" + fieldrowId).attr('aria-hidden', true).hide();
+								self.hideObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId + "-fieldrow-" + fieldrowId));
 								break;
 							case 'field':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "]").attr('aria-hidden', true).hide();
+								self.hideObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "]"));
 								break;
 							case 'blockinfo':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId).attr('aria-hidden', true).hide();
+								self.hideObject($("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId));
 								break;
 							case 'chapter':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
 								var chapterId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId ).attr('aria-hidden', true).hide();
+								self.hideObject($("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId));
 								break;
 							case 'section':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
 								var chapterId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId");
 								var sectionId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId", "sectionId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId + "-section-" + sectionId).attr('aria-hidden', true).hide();
+								self.hideObject($("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId + "-section-" + sectionId));
 								break;
 							case 'prenote':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .pre-note").attr('aria-hidden', true).hide();
+								self.hideObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .pre-note"));
 								break;
 							case 'postnote':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .post-note").attr('aria-hidden', true).hide();
+								self.hideObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .post-note"));
 								break;
 							case 'action':
 								var actionId = data.find("objectId", "stepId", "actionId");
@@ -4479,11 +4502,11 @@ THE SOFTWARE.
 							case 'footnote':
 								var footnoteId = data.find("objectId", "stepId", "footnoteId");
 								var footnote = "#foot-note-" + footnoteId;
-								$(footnote).attr('aria-hidden', true).hide();
+								self.hideObject($(footnote));
 								if ( $("div.foot-notes").has("div.foot-note:visible").length) {
-									$("div.foot-notes").show().removeAttr('aria-hidden');
+									self.showObjectLater($("div.foot-notes"));
 								} else {
-									$("div.foot-notes").attr('aria-hidden', true).hide();
+									self.hideObject($("div.foot-notes"));
 								}
 								break;
 							case 'choice':
@@ -4506,7 +4529,7 @@ THE SOFTWARE.
 								break;
 						}
 					}
-				},        
+				},
 				showObject: function(data) {
 					var currStepId = $('input[name=step]').eq(0).val();
 					var objectId = data.find("objectId");
@@ -4517,54 +4540,54 @@ THE SOFTWARE.
 								break;
 							case 'panel':
 								var panelId = data.find("objectId", "stepId", "panelId");
-								$("#" + self.simu.step.name + "-panel-" + panelId).show().removeAttr('aria-hidden');
+								self.showObjectLater($("#" + self.simu.step.name + "-panel-" + panelId));
 								break;
 							case 'fieldset':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).show().removeAttr('aria-hidden');
+								self.showObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId));
 								break;
 							case 'fieldrow':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldrowId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldrowId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId + "-fieldrow-" + fieldrowId).show().removeAttr('aria-hidden');
+								self.showObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId + "-fieldrow-" + fieldrowId));
 								break;
 							case 'field':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "]").show().removeAttr('aria-hidden');
+								self.showObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "]"));
 								break;
 							case 'blockinfo':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId).show().removeAttr('aria-hidden');
+								self.showObjectLater($("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId));
 								break;
 							case 'chapter':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
 								var chapterId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId).show().removeAttr('aria-hidden');
+								self.showObjectLater($("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId));
 								break;
 							case 'section':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var blockinfoId = data.find("objectId", "stepId", "panelId", "blockinfoId");
 								var chapterId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId");
 								var sectionId = data.find("objectId", "stepId", "panelId", "blockinfoId", "chapterId", "sectionId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId + "-section-" + sectionId).show().removeAttr('aria-hidden');
+								self.showObjectLater($("#" + self.simu.step.name + "-panel-" + panelId + "-blockinfo-" + blockinfoId + "-chapter-" + chapterId + "-section-" + sectionId));
 								break;
 							case 'prenote':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .pre-note").show().removeAttr('aria-hidden');
+								self.showObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .pre-note"));
 								break;
 							case 'postnote':
 								var panelId = data.find("objectId", "stepId", "panelId");
 								var fieldsetId = data.find("objectId", "stepId", "panelId", "fieldsetId");
 								var fieldId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldId");
-								$("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .post-note").show().removeAttr('aria-hidden');
+								self.showObject($("#" + self.simu.step.name + "-panel-" + panelId + "-fieldset-" + fieldsetId).find("div[data-field-position=" + fieldId + "] .post-note"));
 								break;
 							case 'action':
 								var actionId = data.find("objectId", "stepId", "actionId");
@@ -4575,7 +4598,7 @@ THE SOFTWARE.
 								var footnoteId = data.find("objectId", "stepId", "footnoteId");
 								var footnote = "#foot-note-" + footnoteId;
 								$(footnote).show().removeAttr('aria-hidden');
-								$("div.foot-notes").show().removeAttr('aria-hidden');
+								self.showObjectLater($("div.foot-notes"));
 								break;
 							case 'choice':
 								var panelId = data.find("objectId", "stepId", "panelId");
@@ -4597,7 +4620,7 @@ THE SOFTWARE.
 								break;
 						}
 					}
-				}        
+				}
 			};
 			this.rulesengine = new RuleEngine({
 				rulesData: rulesData,
@@ -4637,7 +4660,7 @@ THE SOFTWARE.
 							if ($(this).is(':checked')) {
 								self.setValue(name, value);
 							} else {
-								self.unsetValue(name, value);
+								self.unsetChoiceValue(name, value);
 							}
 					}
 				} else {
@@ -4761,7 +4784,10 @@ THE SOFTWARE.
 							}
 						}
 						self.variables[name] = data.value = content;
+					} else if (data.value !== '') {
+						self.variables[name] = data.value = '';
 					}
+
 				}
 			});
 			if ($("input[name='script']").val() == 0) {
@@ -4775,10 +4801,26 @@ THE SOFTWARE.
 				});
 			}
 			if ( $("div.foot-notes").children("div.foot-note").filter(":visible").length) {
-				$("div.foot-notes").show().removeAttr('aria-hidden');
+				self.showObjectLater($("div.foot-notes"));
 			} else {
-				$("div.foot-notes").attr('aria-hidden', true).hide();
+				self.hideObject($("div.foot-notes"));
 			}
+		},
+
+		hideObject: function(obj) {
+			obj.attr('aria-hidden', true).hide();
+			return obj;
+		},
+
+		showObject: function(obj, delay) {
+			obj.show().removeAttr('aria-hidden');
+			return obj;
+		},
+
+		showObjectLater: function(obj, delay) {
+			delay = delay || 120;
+			setTimeout(function(){ obj.show().removeAttr('aria-hidden'); }, delay);
+			return obj;
 		},
 
 		choiceLabel: function(data) {
