@@ -3607,7 +3607,11 @@ THE SOFTWARE.
 				$(this).removeClass('has-error');
 				$(this).removeAttr('aria-describedby');
 				$(this).parent('.input-group').removeClass('has-error');
-				$(this).attr('aria-invalid', false);
+				if (this.hasAttribute('type') && $(this).attr('type') == 'number') {
+					$(this).removeAttr('aria-invalid');
+				} else {
+					$(this).attr('aria-invalid', false);
+				}
 			});
 		},
 
