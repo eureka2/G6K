@@ -120,7 +120,7 @@ THE SOFTWARE.
 		{%- if context.script == 0 %}
 		<input type="date" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}" title="{{ 'format: %format%'|trans({ '%format%': simu.dateFormat|trans }) }}"{% if field.required %} aria-required="true"{% endif %}/>
 		{% else %}
-		<input type="text" aria-describedby="{{ name }}-aria-description" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}" title="{{ 'format: %format%'|trans({ '%format%': simu.dateFormat|trans }) }}"{% if field.required %} aria-required="true"{% endif %} />
+		<input type="text" aria-describedby="{{ name }}-aria-description" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}"{% if field.required %} aria-required="true"{% endif %} />
 		<span id="{{ name }}-aria-description" class="sr-only">{{ 'Enter the date as %dateformat% or tab to activate the date selector to the right of this input field'|trans({ '%dateformat%': simu.dateFormat|trans }) }}</span>
 		{% endif %}
 	{% elseif type == 'day' %}
