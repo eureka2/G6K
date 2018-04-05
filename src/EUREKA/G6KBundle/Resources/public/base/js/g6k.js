@@ -3390,6 +3390,40 @@ THE SOFTWARE.
 			return true;
 		},
 
+		checkMin: function(data) {
+			if (!data || !data.value || data.value.length == 0 || (data.type != 'number' && data.type != 'integer')) {
+				return true;
+			}
+			if (data.unparsedMin) {
+				var min = this.evaluate(data.unparsedMin);
+				if (min !== false) {
+					min = data.type == 'integer' ? parseInt(min, 10) : parseFloat(min);
+					var val  = data.type == 'integer' ? parseInt(data.value, 10) : parseFloat(data.value);
+					if (min && val < min ) {
+						return false;
+					}
+				}
+			}
+			return true;
+		},
+
+		checkMax: function(data) {
+			if (!data || !data.value || data.value.length == 0 || (data.type != 'number' && data.type != 'integer')) {
+				return true;
+			}
+			if (data.unparsedMax) {
+				var max = this.evaluate(data.unparsedMax);
+				if (max !== false) {
+					max = data.type == 'integer' ? parseInt(max, 10) : parseFloat(max);
+					var val  = data.type == 'integer' ? parseInt(data.value, 10) : parseFloat(data.value);
+					if (max && val > max) {
+						return false;
+					}
+				}
+			}
+			return true;
+		},
+
 		validate: function(name) {
 			var ok = true;
 			name = this.normalizeName(name);
@@ -3424,6 +3458,12 @@ THE SOFTWARE.
 						this.setError(name, Translator.trans("The '%field%' field is required",  { "field": field.label }, 'messages'));
 					} else if (field.visibleRequired && this.isVisible(name) && (!data.value || data.value.length == 0)) {
 						this.setError(name, Translator.trans("The '%field%' field is required",  { "field": field.label }, 'messages'));
+					} else if (!this.checkMin(data)) {
+						var min = this.evaluate(data.unparsedMin);
+						this.setError(name, Translator.trans("The value of the field '%field%' cannot be less than %min%",  { "field": field.label, "min": min }, 'messages'));
+					} else if (!this.checkMax(data)) {
+						var max = this.evaluate(data.unparsedMax);
+						this.setError(name, Translator.trans("The value of the field '%field%' cannot be greater than %max%",  { "field": field.label, "max": max }, 'messages'));
 					}
 				}
 			}
@@ -4694,6 +4734,12 @@ THE SOFTWARE.
 						default:
 							self.setError(name, Translator.trans("This value is not in the expected format"));
 					}
+				} else if (!self.checkMin(data)) {
+					var min = self.evaluate(data.unparsedMin);
+					self.setError(name, Translator.trans("This value can not be less than %min%",  { "min": min }, 'messages'));
+				} else if (!self.checkMax(data)) {
+					var max = self.evaluate(data.unparsedMax);
+					self.setError(name, Translator.trans("This value can not be greater than %max%",  { "max": max }, 'messages'));
 				}
 			});
 			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").bind("keypress", function(event) {

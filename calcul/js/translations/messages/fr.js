@@ -178,8 +178,8 @@
     Translator.add("click to select the operator", "Cliquez pour s\u00e9lectionner l'op\u00e9rateur", "messages", "fr");
     Translator.add("Close", "Fermer", "messages", "fr");
     Translator.add("Collapse all", "Tout replier", "messages", "fr");
-    Translator.add("column", "colonne", "messages", "fr");
     Translator.add("Column", "Colonne", "messages", "fr");
+    Translator.add("column", "colonne", "messages", "fr");
     Translator.add("Column #%id% : %label%", "Colonne #%id% : %label%", "messages", "fr");
     Translator.add("Column %id% (nolabel)", "Colonne %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Column label", "Libell\u00e9 de la colonne", "messages", "fr");
@@ -207,8 +207,8 @@
     Translator.add("count", "nombre", "messages", "fr");
     Translator.add("country", "pays", "messages", "fr");
     Translator.add("Create", "Cr\u00e9er", "messages", "fr");
-    Translator.add("Create Datasource", "Cr\u00e9er une source de donn\u00e9es", "messages", "fr");
     Translator.add("Create Data source", "Cr\u00e9er une source de donn\u00e9es", "messages", "fr");
+    Translator.add("Create Datasource", "Cr\u00e9er une source de donn\u00e9es", "messages", "fr");
     Translator.add("Create simulator", "Cr\u00e9er un simulateur", "messages", "fr");
     Translator.add("Create view", "Cr\u00e9er une vue", "messages", "fr");
     Translator.add("Credentials expire at", "Droits expirent le", "messages", "fr");
@@ -222,8 +222,8 @@
     Translator.add("d\/m\/y", "JJ\/MM\/AA", "messages", "fr");
     Translator.add("d\/m\/Y", "JJ\/MM\/AAAA", "messages", "fr");
     Translator.add("Dashboard", "Tableau de bord", "messages", "fr");
-    Translator.add("Data", "Donn\u00e9e", "messages", "fr");
     Translator.add("data", "donn\u00e9e", "messages", "fr");
+    Translator.add("Data", "Donn\u00e9e", "messages", "fr");
     Translator.add("Data %id%", "Donn\u00e9e %id%", "messages", "fr");
     Translator.add("Database", "Base de donn\u00e9es", "messages", "fr");
     Translator.add("Database host", "Serveur de base de donn\u00e9es", "messages", "fr");
@@ -282,8 +282,8 @@
     Translator.add("Deployment on the server \u00ab %server% \u00bb", "D\u00e9ploiement sur le serveur \u00ab %server% \u00bb", "messages", "fr");
     Translator.add("Deploy simulator", "D\u00e9ployer", "messages", "fr");
     Translator.add("Description", "Description", "messages", "fr");
-    Translator.add("disabled", "d\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("Disabled", "D\u00e9sactiv\u00e9", "messages", "fr");
+    Translator.add("disabled", "d\u00e9sactiv\u00e9", "messages", "fr");
     Translator.add("Display", "Affichage", "messages", "fr");
     Translator.add("Disposition", "Disposition", "messages", "fr");
     Translator.add("does not corresponds to", "est diff\u00e9rente de", "messages", "fr");
@@ -655,8 +655,8 @@
     Translator.add("Return to the definition of the simulator \u00ab %simulator% \u00bb", "Retournez \u00e0 la d\u00e9finition du simulateur \u00ab %simulator% \u00bb", "messages", "fr");
     Translator.add("Return type", "Format des donn\u00e9es retourn\u00e9es", "messages", "fr");
     Translator.add("Roles", "R\u00f4les", "messages", "fr");
-    Translator.add("round", "arrondi", "messages", "fr");
     Translator.add("Round", "Arrondi", "messages", "fr");
+    Translator.add("round", "arrondi", "messages", "fr");
     Translator.add("Rule", "R\u00e8gle", "messages", "fr");
     Translator.add("Save", "Enregistrer", "messages", "fr");
     Translator.add("Search", "Rechercher", "messages", "fr");
@@ -729,8 +729,8 @@
     Translator.add("Space", "Espace", "messages", "fr");
     Translator.add("SQL Request", "Requ\u00eate SQL", "messages", "fr");
     Translator.add("sqrt", "racineCarree", "messages", "fr");
-    Translator.add("step", "\u00e9tape", "messages", "fr");
     Translator.add("Step", "Etape", "messages", "fr");
+    Translator.add("step", "\u00e9tape", "messages", "fr");
     Translator.add("Step %id% (nolabel)", "\u00c9tape %id% (pas de libell\u00e9)", "messages", "fr");
     Translator.add("Step Label", "Libell\u00e9 de l'\u00e9tape", "messages", "fr");
     Translator.add("Step Name", "Nom de l'\u00e9tape", "messages", "fr");
@@ -846,6 +846,8 @@
     Translator.add("The step template is required", "Le gabarit d'affichage de l'\u00e9tape est requis", "messages", "fr");
     Translator.add("The two passwords do not match !", "Les deux mots de passe ne correspondent pas !", "messages", "fr");
     Translator.add("The username field is required  (3 car .min)!", "Le champ de l'identifiant est requis (3 char .min)!", "messages", "fr");
+    Translator.add("The value of the field '%field%' cannot be greater than %max%", "La valeur du champ '%field%' ne doit pas \u00eatre sup\u00e9rieure \u00e0 %max%", "messages", "fr");
+    Translator.add("The value of the field '%field%' cannot be less than %min%", "La valeur du champ '%field%' ne doit pas \u00eatre inf\u00e9rieure \u00e0 %min%", "messages", "fr");
     Translator.add("The Web Service URI is required", "L'URI du web service est requis", "messages", "fr");
     Translator.add("This action button is used in rule #%id%. You must modify this rule before you can delete this action button", "Ce bouton d'action est utilis\u00e9 dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir le supprimer.", "messages", "fr");
     Translator.add("This blockinfo is used in rule #%id%. You must modify this rule before you can delete this blockinfo", "Ce bloc d'informations est utilis\u00e9 dans la r\u00e8gle %id%. Vous devez modifier cette r\u00e8gle avant de pouvoir le supprimer.", "messages", "fr");
@@ -881,10 +883,10 @@
     Translator.add("This template does not exist", "Ce template n'existe pas", "messages", "fr");
     Translator.add("This user doesn't  exists !", "Cet utilisateur n'existe pas!", "messages", "fr");
     Translator.add("This username already exists !", "Cet identifiant existe d\u00e9j\u00e0 !", "messages", "fr");
-    Translator.add("This value can not be greater than %max%", "Cette donn\u00e9e ne peut \u00eatre sup\u00e9rieure \u00e0 %max%", "messages", "fr");
-    Translator.add("This value can not be less than %min%", "Cette donn\u00e9e ne peut \u00eatre inf\u00e9rieure \u00e0 %min%", "messages", "fr");
-    Translator.add("This value is not in the expected format", "Cette donn\u00e9e n'est pas au format attendu", "messages", "fr");
-    Translator.add("This value is not in the expected format (%format%)", "Cette donn\u00e9e n'est pas au format attendu (%format%)", "messages", "fr");
+    Translator.add("This value can not be greater than %max%", "Cette valeur ne peut \u00eatre sup\u00e9rieure \u00e0 %max%", "messages", "fr");
+    Translator.add("This value can not be less than %min%", "Cette valeur ne peut \u00eatre inf\u00e9rieure \u00e0 %min%", "messages", "fr");
+    Translator.add("This value is not in the expected format", "Cette valeur n'est pas au format attendu", "messages", "fr");
+    Translator.add("This value is not in the expected format (%format%)", "Cette valeur n'est pas au format attendu (%format%)", "messages", "fr");
     Translator.add("This view already exists", "Cette vue existe d\u00e9j\u00e0", "messages", "fr");
     Translator.add("Timeout !", "Temps imparti d\u00e9pass\u00e9 !", "messages", "fr");
     Translator.add("Title", "Titre", "messages", "fr");
