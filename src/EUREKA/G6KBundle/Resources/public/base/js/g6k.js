@@ -3615,7 +3615,11 @@ THE SOFTWARE.
 				}
 				if (visible) {
 					$(this).addClass('has-error');
-					$(this).attr('aria-describedby', name + '-field-error');
+					if (self.getData(name).datagroup) {
+						$(this).attr('aria-describedby', self.getData(name).datagroup + '-error');
+					} else {
+						$(this).attr('aria-describedby', name + '-field-error');
+					}
 					$(this).parent('.input-group').removeClass('hidden').addClass('has-error');
 					$(this).attr('aria-invalid', true);
 					$(this).focus();
