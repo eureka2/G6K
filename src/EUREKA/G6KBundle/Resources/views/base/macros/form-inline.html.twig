@@ -254,7 +254,7 @@ THE SOFTWARE.
 	{%- endif %}
 	{% endif %}
 	{%- if field.hasHelp -%}
-		<button type="button" data-toggle="collapse" data-target="#help-{{ name }}" aria-controls="help-{{ name }}" class="btn btn-help collapsed" title="aide sur {{ label|nofnref }}"><span class="icon icon-help" aria-hidden="true"></span><span class="blank">Aide</span></button>
+		<a href="#help-{{ name }}" type="button" data-toggle="collapse" data-target="#help-{{ name }}" aria-controls="help-{{ name }}" class="btn btn-help collapsed" title="aide sur {{ label|nofnref }}"><span class="icon icon-help" aria-hidden="true"></span><span class="blank">Aide</span></a>
 	{% endif %}
 		{%- if (step.dynamic or (simu.dynamic and step.id == 0)) and field.usage == 'input' -%}
 		<div id="{{ name }}-field-error" class="field-error{%- if data.error %} has-error{%- elseif data.warning %} has-warning{%- else %} hidden{%- endif %}">{%- if data.error -%}{%- for errorMessage in data.errorMessages -%}<p>{{ errorMessage }}</p>{%- endfor -%}{%- endif -%}</div>
