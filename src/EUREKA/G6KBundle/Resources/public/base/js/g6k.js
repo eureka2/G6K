@@ -3391,7 +3391,10 @@ THE SOFTWARE.
 		},
 
 		checkMin: function(data) {
-			if (!data || !data.value || data.value.length == 0 || (data.type != 'number' && data.type != 'integer')) {
+			if (!data || !data.value || data.value.length == 0) {
+				return true;
+			}
+			if (data.type != 'number' && data.type != 'integer' && data.type != 'percent' && data.type != 'money') {
 				return true;
 			}
 			if (data.unparsedMin) {
@@ -3408,7 +3411,10 @@ THE SOFTWARE.
 		},
 
 		checkMax: function(data) {
-			if (!data || !data.value || data.value.length == 0 || (data.type != 'number' && data.type != 'integer')) {
+			if (!data || !data.value || data.value.length == 0) {
+				return true;
+			}
+			if (data.type != 'number' && data.type != 'integer' && data.type != 'percent' && data.type != 'money') {
 				return true;
 			}
 			if (data.unparsedMax) {
