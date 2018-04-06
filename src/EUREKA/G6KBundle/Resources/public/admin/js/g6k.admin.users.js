@@ -116,7 +116,8 @@ THE SOFTWARE.
 
 $(document).ready(function() {
 	if ( $( "#page-users" ).length ) {
-		$('#page-users #btnAddNewRow').click(function() {
+		$('#page-users #btnAddNewRow').click(function(e) {
+			e.preventDefault();
 			$('#page-users .tabledit-toolbar-column').remove();
 			$('#users tbody td').each(function() {
 				var text = $(this).find('.tabledit-span').text();
