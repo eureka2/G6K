@@ -1813,14 +1813,25 @@ class Simulator {
 	 *
 	 */
 	public function paragraphs ($text) {
-		$result = "";
-		$paras = explode("\n", trim($text));
-		foreach ($paras as $para) {
-			$para = trim($para);
-			$result .= "<p>";
-			$result .= $para == "" ? "&nbsp;" : $para;
-			$result .= "</p>";
+		$blocktags = array('address', 'article', 'aside', 'blockquote', 'canvas', 'dd', 'div', 'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'noscript', 'ol', 'output', 'pre', 'section', 'table', 'tfoot', 'ul', 'video');
+		$paragraphs = explode("\n", trim($text));
+		$result = '';
+		foreach($paragraphs as $paragraph) {
+			$paragraph = trim($paragraph);
+			if ($paragraph == '') {
+				$result .= '<br>';
+			} else {
+				$result .= '<p>' . $paragraph . '</p>';
+			}
 		}
+		foreach($blocktags as $tag) {
+			$result = preg_replace("|<p>\s*<" . $tag . ">|", "<" . $tag . ">", $result);
+			$result = preg_replace("|<" . $tag . ">\s*<\/p>|", "<" . $tag . ">", $result);
+			$result = preg_replace("|<p>\s*<\/" . $tag . ">|", "</" . $tag . ">", $result);
+			$result = preg_replace("|<\/" . $tag . ">\s*<\/p>|", "</" . $tag . ">", $result);
+		}
+		$result = preg_replace("/\[([^\^]+)\^(\d+)\(([^\]]+)\)\]/", '<a href="#foot-note-$2" title="$3">$1</a>', $result);
+		$result = preg_replace("/\[([^\^]+)\^(\d+)\]/", '<a href="#foot-note-$2" title="' . $this->controller->get('translator')->trans("Reference to the footnote %footnote%", array('%footnote%' => '$2')) . ' ">$1</a>', $result);
 		return $result;
 	}
 
