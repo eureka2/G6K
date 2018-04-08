@@ -269,6 +269,13 @@ THE SOFTWARE.
 {% endif %}
 {% endmacro %}
 
+{% macro requiredmention(context) %}
+{% set step = context.step %}
+{% if step.hasRequiredFields %}
+<p class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|nofilter }}</p>
+{% endif %}
+{% endmacro %}
+
 {% macro paragraphs(text) %}
 	{{ text|htmlraw }}
 {% endmacro %}

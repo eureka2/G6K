@@ -20,7 +20,7 @@
 	<div class="step-description">
 		{{ form.paragraphs(step.description) }}
 	</div>
-	<p class="mention-asterisk">{{ 'Fields marked with an %asterisk% are required.'|trans({ '%asterisk%': '<span class="asterisk">*</span>' })|jscode }}</p>
+	{{ form.requiredmention(_context) }}
 	
 	<form method="post" action="#main" enctype="multipart/form-data" id="g6k_form">
 	{{ form.draw(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control') }}

@@ -537,6 +537,38 @@ class Step {
 	public function setDisplayable($displayable) {
 		$this->displayable = $displayable;
 	}
+
+	/**
+	 * Does this step contain at least one input field?
+	 *
+	 * @access  public
+	 * @return  bool true if this step contains at least one field entered by the user, false otherwise
+	 *
+	 */
+	public function hasInputFields() {
+		foreach ($this->panels as $panel) {
+			if ($panel->hasInputFields()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Does this step contain at least one required input field?
+	 *
+	 * @access  public
+	 * @return  bool true if this step contains at least one required field entered by the user, false otherwise
+	 *
+	 */
+	public function hasRequiredFields() {
+		foreach ($this->panels as $panel) {
+			if ($panel->hasRequiredFields()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 ?>

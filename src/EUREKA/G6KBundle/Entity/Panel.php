@@ -299,6 +299,38 @@ class Panel {
 		$this->displayable = $displayable;
 	}
 
+	/**
+	 * Does this panel contain at least one input field?
+	 *
+	 * @access  public
+	 * @return  bool true if this panel contains at least one field entered by the user, false otherwise
+	 *
+	 */
+	public function hasInputFields() {
+		foreach ($this->fieldsets as $fieldset) {
+			if ($fieldset instanceof FieldSet && $fieldset->hasInputFields()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Does this panel contain at least one required input field?
+	 *
+	 * @access  public
+	 * @return  bool true if this panel contains at least one required field entered by the user, false otherwise
+	 *
+	 */
+	public function hasRequiredFields() {
+		foreach ($this->fieldsets as $fieldset) {
+			if ($fieldset instanceof FieldSet && $fieldset->hasRequiredFields()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
 
 ?>

@@ -107,6 +107,14 @@ class FieldSet {
 	private $inputFields = false;
 
 	/**
+	 * @var bool       $inputFields  Indicates whether this field set contains at least one required field entered by the user or not.
+	 *
+	 * @access  private
+	 *
+	 */
+	private $requiredFields = false;
+
+	/**
 	 * @var array      $fields The list of fields or field rows contained in this field set.
 	 *
 	 * @access  private
@@ -350,6 +358,40 @@ class FieldSet {
 	 */
 	public function setInputFields($inputFields) {
 		$this->inputFields = $inputFields;
+	}
+
+	/**
+	 * Returns the requiredFields attribute of this FieldSet object
+	 *
+	 * @access  public
+	 * @return  bool true if this field set contains at least one required field entered by the user, false otherwise
+	 *
+	 */
+	public function hasRequiredFields() {
+		return $this->requiredFields;
+	}
+
+	/**
+	 * Returns the requiredFields attribute of this FieldSet object
+	 *
+	 * @access  public
+	 * @return  bool true if this field set contains at least one required field entered by the user, false otherwise
+	 *
+	 */
+	public function getRequiredFields() {
+		return $this->requiredFields;
+	}
+
+	/**
+	 * Determines whether this field set contains at least one required field entered by the user or not.
+	 *
+	 * @access  public
+	 * @param   bool       $requiredFields true if this field set contains at least one required field entered by the user, false otherwise
+	 * @return  void
+	 *
+	 */
+	public function setRequiredFields($requiredFields) {
+		$this->requiredFields = $requiredFields;
 	}
 
 	/**
