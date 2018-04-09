@@ -320,7 +320,7 @@ class BaseController extends Controller {
 									$data = $this->simu->getDataById($id);
 									$data->setInputStepId($s->getId());
 									$fieldset->setInputFields(true);
-									if ($field->isRequired()) {
+									if ($field->isRequired() || $field->isVisibleRequired()) {
 										$fieldset->setRequiredFields(true);
 									}
 									if ($data->getType() == 'boolean' && $s->getId() == $istep && !isset($form[$data->getName()])) {
@@ -337,7 +337,7 @@ class BaseController extends Controller {
 										$data = $this->simu->getDataById($id);
 										$data->setInputStepId($s->getId());
 										$fieldset->setInputFields(true);
-										if ($field->isRequired()) {
+										if ($field->isRequired() || $field->isVisibleRequired()) {
 											$fieldset->setRequiredFields(true);
 										}
 										if ($data->getType() == 'boolean' && $s->getId() == $istep && !isset($form[$data->getName()])) {
