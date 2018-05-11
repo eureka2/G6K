@@ -27,6 +27,7 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Twig\Extension;
 
 use Symfony\Component\Translation\TranslatorInterface;
+use EUREKA\G6KBundle\Entity\RichText;
 
 /**
  * This class is a Twig extension custom filter that implements 'jscode' to replace the deprecated raw filter
@@ -105,24 +106,29 @@ class Filters extends \Twig_Extension {
 	 *
 	 */
 	public function htmlRaw($string) {
-		$blocktags = array('address', 'article', 'aside', 'blockquote', 'canvas', 'dd', 'div', 'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'noscript', 'ol', 'output', 'pre', 'section', 'table', 'tfoot', 'ul', 'video');
-		$paragraphs = explode("\n", trim($string));
-		$result = '';
-		foreach($paragraphs as $paragraph) {
-			$paragraph = trim($paragraph);
-			if ($paragraph == '') {
-				$result .= '<br>';
-			} else {
-				$result .= '<p>' . $paragraph . '</p>';
+		if ($string instanceof RichText && ! $string->isManual()) { 
+			return $this->replaceFootnotesReference($string);
+		} else {
+			$text = $string instanceof RichText ? $string->getContent() : $string;
+			$blocktags = array('address', 'article', 'aside', 'blockquote', 'canvas', 'dd', 'div', 'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'noscript', 'ol', 'output', 'pre', 'section', 'table', 'tfoot', 'ul', 'video');
+			$paragraphs = explode("\n", trim($text));
+			$result = '';
+			foreach($paragraphs as $paragraph) {
+				$paragraph = trim($paragraph);
+				if ($paragraph == '' || $paragraph == '&nbsp;') {
+					$result .= '<br>';
+				} else {
+					$result .= '<p>' . $paragraph . '</p>';
+				}
 			}
+			foreach($blocktags as $tag) {
+				$result = preg_replace("|<p>\s*<" . $tag . ">|", "<" . $tag . ">", $result);
+				$result = preg_replace("|<" . $tag . ">\s*<\/p>|", "<" . $tag . ">", $result);
+				$result = preg_replace("|<p>\s*<\/" . $tag . ">|", "</" . $tag . ">", $result);
+				$result = preg_replace("|<\/" . $tag . ">\s*<\/p>|", "</" . $tag . ">", $result);
+			}
+			return $this->replaceFootnotesReference($result);
 		}
-		foreach($blocktags as $tag) {
-			$result = preg_replace("|<p>\s*<" . $tag . ">|", "<" . $tag . ">", $result);
-			$result = preg_replace("|<" . $tag . ">\s*<\/p>|", "<" . $tag . ">", $result);
-			$result = preg_replace("|<p>\s*<\/" . $tag . ">|", "</" . $tag . ">", $result);
-			$result = preg_replace("|<\/" . $tag . ">\s*<\/p>|", "</" . $tag . ">", $result);
-		}
-		return $this->replaceFootnotesReference($result);
 	}
 
 	/**
@@ -134,19 +140,21 @@ class Filters extends \Twig_Extension {
 	 *
 	 */
 	public function noFilter($string) {
-		return $string;
+		$text = $string instanceof RichText ? $string->getContent() : $string;
+		return $text;
 	}
 
 	/**
 	 * Replaces footnotes reference in a text by a html link
 	 *
 	 * @access  public
-	 * @param   string $text
+	 * @param   string $string
 	 * @return  string
 	 *
 	 */
-	public function replaceFootnotesReference($text) 
+	public function replaceFootnotesReference($string) 
 	{
+		$text = $string instanceof RichText ? $string->getContent() : $string;
 		$text = preg_replace("/\[([^\^]+)\^(\d+)\(([^\]]+)\)\]/", '<a href="#foot-note-$2" title="$3">$1</a>', $text);
 		$text = preg_replace("/\[([^\^]+)\^(\d+)\]/", '<a href="#foot-note-$2" title="' . $this->translator->trans("Reference to the footnote %footnote%", array('%footnote%' => '$2')) . ' ">$1</a>', $text);
 		return $text;
@@ -156,12 +164,13 @@ class Filters extends \Twig_Extension {
 	 * Removes footnotes reference in a text 
 	 *
 	 * @access  public
-	 * @param   string $text
+	 * @param   string $string
 	 * @return  string
 	 *
 	 */
-	public function removeFootnotesReference($text) 
+	public function removeFootnotesReference($string) 
 	{
+		$text = $string instanceof RichText ? $string->getContent() : $string;
 		$text = preg_replace("/\[([^\^]+)\^(\d+)\(([^\]]+)\)\]/", '$1', $text);
 		$text = preg_replace("/\[([^\^]+)\^(\d+)\]/", '$1', $text);
 		return $text;

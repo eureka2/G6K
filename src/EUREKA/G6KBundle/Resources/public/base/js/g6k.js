@@ -4910,7 +4910,7 @@ THE SOFTWARE.
 		replaceVariablesBase: function(target) {
 			var self = this;
 			var result = target.replace(
-				/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/g,
+				/\<data\s+[^\s]*\s*value="(\d+)(L?)"[^\>]*\>[^\<]+\<\/data\>/g,
 				function (match, m1, m2, offs, str) {
 					var name = self.getDataNameById(m1);
 					return (name) ? '#(' + name + ')' + m2 : match;
@@ -4965,7 +4965,7 @@ THE SOFTWARE.
 				}
 			);
 			result = result.replace(
-				/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/g,
+				/\<data\s+[^\s]*\s*value="(\d+)(L?)"[^\>]*\>[^\<]+\<\/data\>/g,
 				function (match, m1, m2, offs, str) {
 					var data = self.getData(m1);
 					switch (data.type) {

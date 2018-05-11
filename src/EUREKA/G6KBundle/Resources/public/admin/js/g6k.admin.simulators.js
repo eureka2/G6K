@@ -167,13 +167,14 @@ THE SOFTWARE.
 
 	Simulators.init = function() {
 		Admin.wysihtml5Options.toolbar.insertData = true;
+		Admin.wysihtml5Options.toolbar.insertFootnoteReference = true;
 		Simulators.collectDataset();
 		$('.save-simulator').hide();
 	}
 
 	Simulators.changeDataIdInRichText = function(oldId, id) {
 		var re1 = new RegExp("#" + oldId + '\\b', 'g');
-		var re2 = new RegExp('\\<var\\s+([^\\s]*\\s*)data\\-id=\\"' + oldId + '\\"', 'g');
+		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + oldId + '\\"', 'g');
 		$('#simulator').find('.rich-text').each(function(r) {
 			var updated = false;
 			var richtext = $(this).html();
@@ -182,7 +183,7 @@ THE SOFTWARE.
 				updated = true;
 			}
 			if (re2.test(richtext)) {
-				richtext = richtext.replace(re2, '<var $1data-id="' + id + '"');
+				richtext = richtext.replace(re2, '<data $1value="' + id + '"');
 				updated = true;
 			}
 			if (updated) {
@@ -225,20 +226,24 @@ THE SOFTWARE.
 		return text;
 	}
 
-	Simulators.paragraphs = function(text) {
+	Simulators.paragraphs = function(str) {
+		if (str.edition && str.edition != 'manual') {
+			return str;
+		}
+		var text = typeof str.content != 'undefined' ? str.content : str;
 		text = Simulators.cleanRichtext(text);
 		var blocktags = ['address', 'article', 'aside', 'blockquote', 'canvas', 'dd', 'div', 'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'noscript', 'ol', 'output', 'pre', 'section', 'table', 'tfoot', 'ul', 'video'];
 		var paragraphs = $.trim(text).split("\n");
 		var result = "";
 		$.each(paragraphs, function(p, paragraph) {
 			paragraph = $.trim(paragraph);
-			result += '<p>';
 			if (paragraph.length == 0) {
-				result += '&nbsp;';
+				result += '<br>';
 			} else {
+				result += '<p>';
 				result +=  paragraph;
+				result += '</p>';
 			}
-			result += '</p>';
 		});
 		$.each(blocktags, function(t, tag) {
 			result = result.replace(new RegExp("<p>\\s*<" + tag + ">", 'g'), "<" + tag + ">");
@@ -246,7 +251,12 @@ THE SOFTWARE.
 			result = result.replace(new RegExp("<p>\\s*<\/" + tag + ">", 'g'), "</" + tag + ">");
 			result = result.replace(new RegExp("<\\/" + tag + ">\\s*<\\/p>", 'g'), "</" + tag + ">");
 		});
-		return result;
+		if (typeof str.content != 'undefined') {
+			str.content = result;
+			return str;
+		} else {
+			return result;
+		}
 	}
 
 	Simulators.simpleAttributeForDisplay = function(element, type, name, label, value, display, required, placeholder, options) {
@@ -557,7 +567,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindSimulatorOptions = function(simulatorContainer) {
-		simulatorContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		simulatorContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
 		simulatorContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -599,8 +609,10 @@ THE SOFTWARE.
 					$('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").attr('data-value', '0');
 					$('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").text(Translator.trans('No'));
 				}
-				$('#simulator-description-panel-holder').find(".simulator-description").html($('#simulator-description').val());
-				$('#simulator-related-informations-panel-holder').find(".simulator-related-informations").html($('#simulator-related-informations').val());
+				$('#simulator-description-panel-holder').find(".simulator-description").html(Admin.clearHTML($('#simulator-description')));
+				$('#simulator-description-panel-holder').find(".simulator-description").attr('data-edition', 'wysihtml');
+				$('#simulator-related-informations-panel-holder').find(".simulator-related-informations").html(Admin.clearHTML($('#simulator-related-informations')));
+				$('#simulator-related-informations-panel-holder').find(".simulator-related-informations").attr('data-edition', 'wysihtml');
 				$('#simulator-attributes-panel').remove();
 				$('#simulator-description-panel').remove();
 				$('#simulator-related-informations-panel').remove();
@@ -692,12 +704,12 @@ THE SOFTWARE.
 		var simulatorDescriptionPanel = $('<div class="panel panel-default" id="simulator-description-panel"></div>');
 		simulatorDescriptionPanel.append('<div class="panel-heading">' + Translator.trans('Description') + '</div>');
 		var simulatorDescriptionBody = $('<div class="panel-body simulator-description rich-text"></div>');
-		simulatorDescriptionBody.append('<textarea rows="10" name="simulator-description" id="simulator-description" wrap="hard" class="form-control">' + Simulators.paragraphs(simulator.description) + '</textarea>');
+		simulatorDescriptionBody.append('<textarea rows="10" name="simulator-description" id="simulator-description" wrap="hard" class="form-control">' + Simulators.paragraphs(simulator.description).content + '</textarea>');
 		simulatorDescriptionPanel.append(simulatorDescriptionBody);
 		var simulatorRelatedInformationsPanel = $('<div class="panel panel-default" id="simulator-related-informations-panel"></div>');
 		simulatorRelatedInformationsPanel.append('<div class="panel-heading">' + Translator.trans('Related informations') + '</div>');
 		var simulatorRelatedInformationsBody = $('<div class="panel-body simulator-related-informations"></div>');
-		simulatorRelatedInformationsBody.append('<textarea rows="10" name="simulator-related-informations" id="simulator-related-informations" wrap="hard" class="form-control">' + Simulators.paragraphs(simulator.relatedInformations) + '</textarea>');
+		simulatorRelatedInformationsBody.append('<textarea rows="10" name="simulator-related-informations" id="simulator-related-informations" wrap="hard" class="form-control">' + Simulators.paragraphs(simulator.relatedInformations).content + '</textarea>');
 		simulatorRelatedInformationsPanel.append(simulatorRelatedInformationsBody);
 		var simulatorButtonsPanel = $('<div class="panel panel-default" id="simulator-buttons-panel"></div>');
 		var simulatorButtonsBody = $('<div class="panel-body simulator-buttons"></div>');
@@ -734,8 +746,14 @@ $(document).ready(function() {
 				symbolPosition: attributesPanel.find("p[data-attribute='symbolPosition']").attr('data-value'),
 				dynamic: attributesPanel.find("p[data-attribute='dynamic']").attr('data-value'),
 				memo: attributesPanel.find("p[data-attribute='memo']").attr('data-value'),
-				description: descriptionPanel.find('.simulator-description').html(),
-				relatedInformations: relatedInformationsPanel.find('.simulator-related-informations').html()
+				description: {
+					content: descriptionPanel.find('.simulator-description').html(),
+					edition: descriptionPanel.find('.simulator-description').attr('data-edition')
+				},
+				relatedInformations: {
+					content: relatedInformationsPanel.find('.simulator-related-informations').html(),
+					edition: relatedInformationsPanel.find('.simulator-related-informations').attr('data-edition')
+				}
 			};
 			attributesPanel.hide();
 			descriptionPanel.hide();
@@ -781,7 +799,7 @@ $(document).ready(function() {
 		Simulators.bindSortableRules();
 		Simulators.bindSortableProfileDatas();
 		Simulators.bindSortableProfiles();
-		$('#page-simulators textarea').wysihtml5(Admin.wysihtml5Options);
+		$('#page-simulators textarea').wysihtml(Admin.wysihtml5Options);
 		$('#page-simulators .delete-attribute').click(function() {
 			Simulators.removeAttribute($(this));
 		});
@@ -824,8 +842,14 @@ $(document).ready(function() {
 				symbolPosition: $('#simulator-attributes-panel-holder').find("p[data-attribute='symbolPosition']").attr('data-value'),
 				dynamic: $('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").attr('data-value'),
 				memo: $('#simulator-attributes-panel-holder').find("p[data-attribute='memo']").attr('data-value'),
-				description: $('#simulator-description-panel-holder').find(".simulator-description").html(),
-				relatedInformations: $('#simulator-related-informations-panel-holder').find('.simulator-related-informations').html()
+				description: {
+					content: $('#simulator-description-panel-holder').find(".simulator-description").html(),
+					edition: $('#simulator-description-panel-holder').find(".simulator-description").attr('data-edition')
+				},
+				relatedInformations: {
+					content: $('#simulator-related-informations-panel-holder').find('.simulator-related-informations').html(),
+					edition: $('#simulator-related-informations-panel-holder').find('.simulator-related-informations').attr('data-edition')
+				}
 			};
 			$('input[name=simulator]').val(JSON.stringify(simulator));
 			$('input[name=sources]').val(JSON.stringify(Simulators.collectSources()));

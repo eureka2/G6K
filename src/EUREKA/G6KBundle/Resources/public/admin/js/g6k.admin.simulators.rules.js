@@ -69,10 +69,10 @@ THE SOFTWARE.
 				val = val.replace(re, "#" + id);
 				$(this).attr('data-value', val);
 			}
-			var datas = $(this).find('var.data');
+			var datas = $(this).find('data.data');
 			datas.each(function(d) {
-				if ($(this).attr('data-id') == oldId) {
-					$(this).attr('data-id', id);
+				if ($(this).attr('value') == oldId) {
+					$(this).attr('value', id);
 				}
 			});
 		});
@@ -86,10 +86,10 @@ THE SOFTWARE.
 				val = val.replace(re, "#" + id);
 				$(this).attr('data-value', val);
 			}
-			var datas = $(this).find('var.data');
+			var datas = $(this).find('data.data');
 			datas.each(function(d) {
-				if ($(this).attr('data-id') == oldId) {
-					$(this).attr('data-id', id);
+				if ($(this).attr('value') == oldId) {
+					$(this).attr('value', id);
 				}
 			});
 		});
@@ -191,9 +191,9 @@ THE SOFTWARE.
 	Simulators.changeDataLabelInRules = function(id, label) {
 		var rulesObj= $('#business-rules').find('.rule-conditions, .rule-action');
 		rulesObj.each(function(r) {
-			var datas = $(this).find('var.data');
+			var datas = $(this).find('data.data');
 			datas.each(function(d) {
-				if ($(this).attr('data-id') == id) {
+				if ($(this).attr('value') == id) {
 					$(this).text('«' + label + '»');
 				}
 			});
@@ -330,10 +330,10 @@ THE SOFTWARE.
 			if (this.hasAttribute('data-datagroup') && $(this).attr('data-datagroup') == oldName) {
 				$(this).attr('data-datagroup', name);
 			}
-			var datas = $(this).find('var.datagroup');
+			var datas = $(this).find('data.datagroup');
 			datas.each(function(d) {
-				if ($(this).attr('data-id') == oldName) {
-					$(this).attr('data-id', name);
+				if ($(this).attr('value') == oldName) {
+					$(this).attr('value', name);
 				}
 			});
 		});
@@ -374,9 +374,9 @@ THE SOFTWARE.
 	Simulators.changeDatagroupLabelInRules = function(name, label) {
 		var rulesObj= $('#business-rules').find('.rule-action');
 		rulesObj.each(function(r) {
-			var datas = $(this).find('var.datagroup');
+			var datas = $(this).find('data.datagroup');
 			datas.each(function(d) {
-				if ($(this).attr('data-id') == name) {
+				if ($(this).attr('value') == name) {
 					$(this).text('«' + label + '»');
 				}
 			});
@@ -1175,7 +1175,7 @@ THE SOFTWARE.
 	Simulators.addFieldSetInActions = function(fieldset) {
 		var ractions = ['hideObject', 'showObject'];
 		var afieldset = {
-			label: fieldset.legend != '' ? fieldset.legend.trim() : Translator.trans("Fieldset %id% (nolegend)", { id: fieldset.id}), 
+			label: fieldset.legend.content != '' ? fieldset.legend.content.trim() : Translator.trans("Fieldset %id% (nolegend)", { id: fieldset.id}), 
 			name: fieldset.id
 		};
 		var stepId = fieldset.stepId;
@@ -3716,7 +3716,7 @@ THE SOFTWARE.
 		} else if (condition.none) {
 			conditionContainer = '<li class="condition">' + Translator.trans('None of the following conditions is met') + ' :<ul>' + Simulators.drawConditionsForDisplay(condition.none) + '</ul></li>';
 		} else {
-			conditionContainer = '<li class="condition">«' + condition.name + '» ' + condition.operator + ' ' + condition.value + '</li>';
+			conditionContainer = '<li class="condition"><data class="data" value="' + condition.id + '">«' + condition.name + '»</data> ' + condition.operator + ' ' + condition.value + '</li>';
 		}
 		return conditionContainer;
 	}
@@ -3762,20 +3762,27 @@ THE SOFTWARE.
 				var matches;
 				var type = 'boolean';
 				if (ruleData.name === 'script') {
+					var data = Simulators.dataset[ruleData.name];
+					ruleData["id"] = data.id;
 					ruleData["name"] = Translator.trans('Javascript');
 					ruleData["operator"] = Translator.trans('is');
 					ruleData["value"] = ruleData.value == 1 ? Translator.trans('enabled') : Translator.trans('disabled');
 				} else if (ruleData.name === 'dynamic') {
+					var data = Simulators.dataset[ruleData.name];
+					ruleData["id"] = data.id;
 					ruleData["name"] = Translator.trans('User Interface');
 					ruleData["operator"] =  ruleData.value == 1 ? Translator.trans('is') : Translator.trans('is not');
 					ruleData["value"] = Translator.trans('interactive');
 				} else if (matches = ruleData.name.match(/step(\d+)\.dynamic$/)) {
+					var data = Simulators.dataset[ruleData.name];
+					ruleData["id"] = data.id;
 					ruleData["name"] = Translator.trans('User Interface for step %id%', { 'id': matches[1] });
 					ruleData["operator"] =  ruleData.value == 1 ? Translator.trans('is') : Translator.trans('is not');
 					ruleData["value"] = Translator.trans('interactive');
 				} else if (matches = ruleData.name.match(/^#(\d+)$/)) {
 					var data = Simulators.findDataById(matches[1]);
 					type = data.type;
+					ruleData["id"] = data.id;
 					ruleData["name"] = data.label;
 					if (data.type === 'choice') {
 						var label = Simulators.getChoiceLabel(data, ruleData.value);
@@ -3786,6 +3793,7 @@ THE SOFTWARE.
 				} else {
 					var data = Simulators.dataset[ruleData.name];
 					type = data.type;
+					ruleData["id"] = data.id;
 					ruleData["name"] = data.label;
 					if (data.type === 'choice') {
 						var label = Simulators.getChoiceLabel(data, ruleData.value);
@@ -3962,9 +3970,9 @@ THE SOFTWARE.
 			var actionName = name === 'notifyError' ? Translator.trans('notify Error') : Translator.trans('notify Warning');
 			actionContainer.append('<span class="action-name">' + actionName + ' : </span> <span class="action-value">' + Simulators.replaceByDataLabel(value) + '</span> <span class="action-target"> ' + Translator.trans('on') + ' ' + Translator.trans('the ' + target) + ' </span>');
 			if (target === 'data') {
-				actionContainer.append('<span class="action-data"><var class="data" data-id="' + dataObj.id + '">«' + dataObj.label + '»</var></span>');
+				actionContainer.append('<span class="action-data"><data class="data" value="' + dataObj.id + '">«' + dataObj.label + '»</data></span>');
 			} else if (target === 'datagroup') {
-				actionContainer.append('<span class="action-datagroup"><var class="datagroup" data-id="' + datagroupObj.name + '">«' + datagroupObj.label + '»</var></span>');
+				actionContainer.append('<span class="action-datagroup"><data class="datagroup" value="' + datagroupObj.name + '">«' + datagroupObj.label + '»</data></span>');
 			}
 		} else if (name === 'hideObject' || name === 'showObject') {
 			var actionNode = Simulators.findAction(name, actions);

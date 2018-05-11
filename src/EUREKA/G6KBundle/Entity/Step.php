@@ -88,7 +88,7 @@ class Step {
 	 * @access  private
 	 *
 	 */
-	private $description = "";
+	private $description = null;
 
 	/**
 	 * @var bool       $dynamic if true, the simulation engine will use Javascript to give interactivity to the simulation for this step 

@@ -127,24 +127,24 @@ THE SOFTWARE.
 
 	Simulators.isDataIdInSteps = function(id) {
 		var re1 = new RegExp("#" + id + '\\b', 'g');
-		var re2 = new RegExp('\\<var\\s+([^\\s]*\\s*)data\\-id=\\"' + id + '\\"', 'g');
+		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + id + '\\"', 'g');
 		var found = false;
 		$.each(steps, function(s, step) {
-			if (re1.test(step.description)) {
+			if (re1.test(step.description.content)) {
 				found = step.id;
 				return false;
 			}
-			if (re2.test(step.description)) {
+			if (re2.test(step.description.content)) {
 				found = step.id;
 				return false;
 			}
 			if (step.footNotes && step.footNotes.footNotes) {
 				$.each(step.footNotes.footNotes, function(fn, footnote) {
-					if (re1.test(footnote.text)) {
+					if (re1.test(footnote.text.content)) {
 						found = step.id;
 						return false;
 					}
-					if (re2.test(footnote.text)) {
+					if (re2.test(footnote.text.content)) {
 						found = step.id;
 						return false;
 					}
@@ -156,11 +156,11 @@ THE SOFTWARE.
 			$.each(step.panels || [], function(p, panel) {
 				$.each(panel.blocks || [], function(b, block) {
 					if (block.type == 'fieldset') {
-						if (re1.test(block.legend)) {
+						if (re1.test(block.legend.content)) {
 							found = step.id;
 							return false;
 						}
-						if (re2.test(block.legend)) {
+						if (re2.test(block.legend.content)) {
 							found = step.id;
 							return false;
 						}
@@ -172,11 +172,11 @@ THE SOFTWARE.
 										return false;
 									}
 									if (field.Note && field.Note.text) {
-										if (re1.test(field.Note.text)) {
+										if (re1.test(field.Note.text.content)) {
 											found = step.id;
 											return false;
 										}
-										if (re2.test(field.Note.text)) {
+										if (re2.test(field.Note.text.content)) {
 											found = step.id;
 											return false;
 										}
@@ -193,11 +193,11 @@ THE SOFTWARE.
 									return false;
 								}
 								if (field.Note && field.Note.text) {
-									if (re1.test(field.Note.text)) {
+									if (re1.test(field.Note.text.content)) {
 										found = step.id;
 										return false;
 									}
-									if (re2.test(field.Note.text)) {
+									if (re2.test(field.Note.text.content)) {
 										found = step.id;
 										return false;
 									}
@@ -207,19 +207,19 @@ THE SOFTWARE.
 					} else { // blockinfo
 						$.each(block.chapters || [], function(c, chapter) {
 							$.each(chapter.sections || [], function(sn, section) {
-								if (re1.test(section.content)) {
+								if (re1.test(section.content.content)) {
 									found = step.id;
 									return false;
 								}
-								if (re2.test(section.content)) {
+								if (re2.test(section.content.content)) {
 									found = step.id;
 									return false;
 								}
-								if (re1.test(section.annotations)) {
+								if (re1.test(section.annotations.content)) {
 									found = step.id;
 									return false;
 								}
-								if (re2.test(section.content)) {
+								if (re2.test(section.annotations.content)) {
 									found = step.id;
 									return false;
 								}
@@ -246,32 +246,32 @@ THE SOFTWARE.
 
 	Simulators.changeDataIdInSteps = function(oldId, id) {
 		var re1 = new RegExp("#" + oldId + '\\b', 'g');
-		var re2 = new RegExp('\\<var\\s+([^\\s]*\\s*)data\\-id=\\"' + oldId + '\\"', 'g');
+		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + oldId + '\\"', 'g');
 		$.each(steps, function(s, step) {
-			if (re1.test(step.description)) {
-				step.description = step.description.replace(re1, "#" + id);
+			if (re1.test(step.description.content)) {
+				step.description.content = step.description.content.replace(re1, "#" + id);
 			}
-			if (re2.test(step.description)) {
-				step.description = step.description.replace(re2, '<var $1data-id="' + id + '"');
+			if (re2.test(step.description.content)) {
+				step.description.content = step.description.content.replace(re2, '<data $1value="' + id + '"');
 			}
 			if (step.footNotes && step.footNotes.footNotes) {
 				$.each(step.footNotes.footNotes, function(fn, footnote) {
-					if (re1.test(footnote.text)) {
-						footnote.text = footnote.text.replace(re1, "#" + id);
+					if (re1.test(footnote.text.content)) {
+						footnote.text.content = footnote.text.content.replace(re1, "#" + id);
 					}
-					if (re2.test(footnote.text)) {
-						footnote.text = footnote.text.replace(re2, '<var $1data-id="' + id + '"');
+					if (re2.test(footnote.text.content)) {
+						footnote.text.content = footnote.text.content.replace(re2, '<data $1value="' + id + '"');
 					}
 				});
 			}
 			$.each(step.panels || [], function(p, panel) {
 				$.each(panel.blocks || [], function(b, block) {
 					if (block.type == 'fieldset') {
-						if (re1.test(block.legend)) {
-							block.legend = block.legend.replace(re1, "#" + id);
+						if (re1.test(block.legend.content)) {
+							block.legend.content = block.legend.content.replace(re1, "#" + id);
 						}
-						if (re2.test(block.legend)) {
-							block.legend = block.legend.replace(re2, '<var $1data-id="' + id + '"');
+						if (re2.test(block.legend.content)) {
+							block.legend.content = block.legend.content.replace(re2, '<data $1value="' + id + '"');
 						}
 						if (block.fieldrows) {
 							$.each(block.fieldrows || [], function(fr, fieldrow) {
@@ -280,11 +280,11 @@ THE SOFTWARE.
 										field.data = id;
 									}
 									if (field.Note && field.Note.text) {
-										if (re1.test(field.Note.text)) {
-											field.Note.text = field.Note.text.replace(re1, "#" + id);
+										if (re1.test(field.Note.text.content)) {
+											field.Note.text.content = field.Note.text.content.replace(re1, "#" + id);
 										}
-										if (re2.test(field.Note.text)) {
-											field.Note.text = field.Note.text.replace(re2, '<var $1data-id="' + id + '"');
+										if (re2.test(field.Note.text.content)) {
+											field.Note.text.content = field.Note.text.content.replace(re2, '<data $1value="' + id + '"');
 										}
 									}
 								});
@@ -295,11 +295,11 @@ THE SOFTWARE.
 									field.data = id;
 								}
 								if (field.Note && field.Note.text) {
-									if (re1.test(field.Note.text)) {
-										field.Note.text = field.Note.text.replace(re1, "#" + id);
+									if (re1.test(field.Note.text.content)) {
+										field.Note.text.content = field.Note.text.content.replace(re1, "#" + id);
 									}
-									if (re2.test(field.Note.text)) {
-										field.Note.text = field.Note.text.replace(re2, '<var $1data-id="' + id + '"');
+									if (re2.test(field.Note.text.content)) {
+										field.Note.text.content = field.Note.text.content.replace(re2, '<data $1value="' + id + '"');
 									}
 								}
 							});
@@ -307,17 +307,17 @@ THE SOFTWARE.
 					} else { // blockinfo
 						$.each(block.chapters || [], function(c, chapter) {
 							$.each(chapter.sections || [], function(sn, section) {
-								if (re1.test(section.content)) {
-									section.content = section.content.replace(re1, "#" + id);
+								if (re1.test(section.content.content)) {
+									section.content.content = section.content.content.replace(re1, "#" + id);
 								}
-								if (re2.test(section.content)) {
-									section.content = section.content.replace(re2, '<var $1data-id="' + id + '"');
+								if (re2.test(section.content.content)) {
+									section.content.content = section.content.content.replace(re2, '<data $1value="' + id + '"');
 								}
-								if (re1.test(section.annotations)) {
-									section.annotations = section.annotations.replace(re1, "#" + id);
+								if (re1.test(section.annotations.content)) {
+									section.annotations.content = section.annotations.content.replace(re1, "#" + id);
 								}
-								if (re2.test(section.content)) {
-									section.annotations = section.annotations.replace(re2, '<var $1data-id="' + id + '"');
+								if (re2.test(section.annotations.content)) {
+									section.annotations.content = section.annotations.content.replace(re2, '<data $1value="' + id + '"');
 								}
 							});
 						});
@@ -512,7 +512,7 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'checkbox', 'dynamic', Translator.trans('Interactive UI'), step.dynamic, step.dynamic, false, Translator.trans('Interactive UI')));
 		attributesContainer.append(requiredAttributes);
 		stepContainerBody.append(attributesContainer);
-		stepContainerBody.append('<div class="panel panel-default description-panel" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body step-description rich-text">' + step.description + '</div></div>');
+		stepContainerBody.append('<div class="panel panel-default description-panel" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body step-description rich-text" data-edition="' + step.description.edition + '">' + step.description.content + '</div></div>');
 		stepContainer.append(stepContainerBody);
 		stepPanelBody.append(stepContainer);
 		return stepPanelContainer;
@@ -557,7 +557,7 @@ THE SOFTWARE.
 		stepContainerBody.append(attributesContainer);
 		stepContainer.append(stepContainerBody);
 		stepPanelBody.append(stepContainer);
-		stepContainerBody.append('<div class="panel panel-default description-panel elements-container" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + stepElementId + '-description" id="' + stepElementId + '-description" wrap="hard" class="form-control step-description">' + Simulators.paragraphs(step.description) + '</textarea></div></div>');
+		stepContainerBody.append('<div class="panel panel-default description-panel elements-container" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + stepElementId + '-description" id="' + stepElementId + '-description" wrap="hard" class="form-control step-description">' + Simulators.paragraphs(step.description).content + '</textarea></div></div>');
 		var stepButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + stepElementId + '-buttons-panel"></div>');
 		var stepButtonsBody = $('<div class="panel-body step-buttons"></div>');
 		stepButtonsBody.append('<button class="btn btn-success pull-right validate-edit-step">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -595,7 +595,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindStep = function(stepPanelContainer) {
-		stepPanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		stepPanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
 		stepPanelContainer.find('.delete-attribute').click(function() {
 			Simulators.removeAttribute($(this));
 		});
@@ -640,7 +640,10 @@ THE SOFTWARE.
 			if (step['name']) {
 				step['name'] = $.trim(step['name']);
 			}
-			step['description'] =  stepPanelContainer.find('.step-description').val();
+			step.description = {
+				content: Admin.clearHTML(stepPanelContainer.find('.step-description')),
+				edition: 'wysihtml'
+			};
 			var oldLabel = '';
 			if ($(this).hasClass('validate-edit-step')) {
 				var oldStep = Simulators.findInArray(steps, [{ key: 'id', val: id }]);
@@ -765,7 +768,10 @@ THE SOFTWARE.
 				template: 'pages:article.html.twig',
 				output: 'normal',
 				dynamic: '1',
-				description: '',
+				description: {
+					content: '',
+					edition: ''
+				},
 				panels: [],
 				actions: [],
 				footNotes: [],
@@ -1157,7 +1163,7 @@ THE SOFTWARE.
 		footnoteContainerHeading.append('<h4 class="panel-title">' + Translator.trans('FootNote #%id%', { 'id': footnote.id }) + '</h4>');
 		footnoteContainer.append(footnoteContainerHeading);
 		var footnoteContainerBody = $('<div class="panel-body step-footnote rich-text"></div>');
-		footnoteContainerBody.append(footnote.text);
+		footnoteContainerBody.append(footnote.text.content);
 		footnoteContainer.append(footnoteContainerBody);
 		return footnoteContainer;
 	}
@@ -1169,7 +1175,7 @@ THE SOFTWARE.
 		footnoteContainerHeading.append('<h4 class="panel-title">' + Translator.trans('FootNote #%id%', { 'id': footnote.id }) + '</h4>');
 		footnoteContainer.append(footnoteContainerHeading);
 		var footnoteContainerBody = $('<div class="panel-body step-footnote"></div>');
-		footnoteContainerBody.append('<textarea rows="5" name="' + footnoteElementId + '-text" id="' + footnoteElementId + '-text" wrap="hard" class="form-control footnote-text">' + Simulators.paragraphs(footnote.text) + '</textarea>');
+		footnoteContainerBody.append('<textarea rows="5" name="' + footnoteElementId + '-text" id="' + footnoteElementId + '-text" wrap="hard" class="form-control footnote-text">' + Simulators.paragraphs(footnote.text).content + '</textarea>');
 		var footnoteButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + footnoteElementId + '-buttons-panel"></div>');
 		var footnoteButtonsBody = $('<div class="panel-body footnote-buttons"></div>');
 		footnoteButtonsBody.append('<button class="btn btn-success pull-right validate-edit-footnote">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -1196,7 +1202,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindFootNote = function(footnotePanelContainer) {
-		footnotePanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		footnotePanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
 		footnotePanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -1228,7 +1234,10 @@ THE SOFTWARE.
 			var id = footnoteContainerGroup.attr('data-id');
 			var footnote = { id: id };
 			footnote['stepId'] = stepId;
-			footnote['text'] =  footnotePanelContainer.find('.footnote-text').val();
+			footnote.text = {
+				content: Admin.clearHTML(footnotePanelContainer.find('.footnote-text')),
+				edition: 'wysihtml'
+			};
 			var step = Simulators.findInArray(steps, [{ key: 'id', val: stepId }]);
 			var newFootNotePanel = Simulators.drawFootNoteForDisplay(footnote);
 			delete footnote['stepId'];
@@ -1252,7 +1261,10 @@ THE SOFTWARE.
 			var id = footnotePanelContainer.attr('data-id');
 			var footnote = { id: id };
 			footnote['stepId'] = stepId;
-			footnote['text'] =  footnotePanelContainer.find('.footnote-text').val();
+			footnote.text = {
+				content: footnotePanelContainer.find('.footnote-text').val(),
+				edition: 'wysihtml'
+			};
 			var step = Simulators.findInArray(steps, [{ key: 'id', val: stepId }]);
 			var newFootNotePanel = Simulators.drawFootNoteForDisplay(footnote);
 			footnotePanelContainer.replaceWith(newFootNotePanel);
@@ -1295,7 +1307,10 @@ THE SOFTWARE.
 			var footnote = {
 				stepId: stepId,
 				id: parseInt(id) + 1, 
-				text: ''
+				text: {
+					content: '',
+					edition: ''
+				}
 			};
 			$('.toggle-collapse-all').hide();
 			$('.update-button').hide();
@@ -2124,9 +2139,9 @@ THE SOFTWARE.
 				panelGroup.attr('id', attr);
 				var a = panelGroup.find('> .panel > .panel-heading').find('> h4 > a');
 				if (block.type == 'fieldset') {
-					a.text(' ' + Translator.trans('FieldSet') + ' #' + id + ' : ' + block.legend + ' ');
+					a.text(' ' + Translator.trans('FieldSet') + ' #' + id + ' : ' + block.legend.content + ' ');
 				} else {
-					a.text(' ' + Translator.trans('BlockInfo') + ' #' + id + ' : ' + block.label + ' ');
+					a.text(' ' + Translator.trans('BlockInfo') + ' #' + id + ' : ' + block.label.content + ' ');
 				}
 				var container =  panelGroup.find('.block-container');
 				container.attr('data-id', id);
@@ -2205,9 +2220,9 @@ THE SOFTWARE.
 		var fieldsetElementId = 'step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id;
 		var fieldsetPanelContainer;
 		if (fieldset.disposition == 'grid') {
-			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
+			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend.content + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
 		} else {
-			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': Translator.trans('Add field'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
+			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend.content + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': Translator.trans('Add field'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
 		}
 		var fieldsetPanelBody = fieldsetPanelContainer.find('.panel-body');
 		var fieldsetContainer = $('<div class="panel panel-default block-container fieldset" id="' + fieldsetElementId + '-attributes-panel" data-step="' + fieldset.stepId + '" data-panel="' + fieldset.panelId + '" data-id="' + fieldset.id + '"></div>');
@@ -2221,7 +2236,7 @@ THE SOFTWARE.
 		fieldsetContainerBody.append(attributesContainer);
 		fieldsetContainer.append(fieldsetContainerBody);
 		fieldsetPanelBody.append(fieldsetContainer);
-		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body fieldset-legend rich-text">' + fieldset.legend + '</div></div>');
+		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body fieldset-legend rich-text" data-edition="' + fieldset.legend.edition + '">' + fieldset.legend.content + '</div></div>');
 		if (fieldset.disposition == 'grid') {
 			fieldsetPanelBody.append('<div class="panel panel-default fieldset-grid-panel" id="fieldset-' + fieldset.id + '-fieldset-grid-panel"><div class="panel-heading"><button class="btn btn-default pull-right update-button add-column" data-parent="#fieldset-' + fieldset.id + '-fieldset-grid-panel" title="' + Translator.trans('Add column') + '"><span class="button-label">' + Translator.trans('Add column') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-fieldrow" data-parent="#fieldset-' + fieldset.id + '-fieldset-grid-panel" title="' + Translator.trans('Add fieldrow') + '"><span class="button-label">' + Translator.trans('Add fieldrow') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><h4 class="panel-title">' + Translator.trans('Grid') + '</h4></div><div class="panel-body"><div class="panel panel-default columns-panel" id="step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id + '-columns-panel"><div class="panel-body sortable"></div></div><div class="panel panel-default fieldrows-panel" id="step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id + '-fieldrows-panel"><div class="panel-body sortable"></div></div></div></div>');
 		} else {
@@ -2235,7 +2250,7 @@ THE SOFTWARE.
 		var fieldsetElementId = 'step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id;
 		var fieldsetPanelContainer = $('<div>', { 'class': 'panel-group', id: fieldsetElementId, role: 'tablist', 'aria-multiselectable': 'true' });
 		var fieldsetPanel = $('<div>', { 'class': 'panel panel-info' });
-		fieldsetPanel.append('<div class="panel-heading" role="tab" id="' + fieldsetElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + fieldsetElementId + '" href="#collapse' + fieldsetElementId + '" aria-expanded="true" aria-controls="collapse' + fieldsetElementId + '">#' + fieldset.id + ' : ' + fieldset.legend + '</a></h4></div>');
+		fieldsetPanel.append('<div class="panel-heading" role="tab" id="' + fieldsetElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + fieldsetElementId + '" href="#collapse' + fieldsetElementId + '" aria-expanded="true" aria-controls="collapse' + fieldsetElementId + '">#' + fieldset.id + ' : ' + fieldset.legend.content + '</a></h4></div>');
 		var fieldsetPanelCollapse = $('<div id="collapse' + fieldsetElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + fieldsetElementId + '-panel"></div>');
 		var fieldsetPanelBody = $('<div class="panel-body"></div>');
 		var fieldsetContainer = $('<div class="panel panel-default block-container fieldset" id="' + fieldsetElementId + '-attributes-panel" data-step="' + fieldset.stepId + '" data-panel="' + fieldset.panelId + '" data-id="' + fieldset.id + '" data-name="' + fieldset.name + '"></div>');
@@ -2269,7 +2284,7 @@ THE SOFTWARE.
 		fieldsetContainerBody.append(attributesContainer);
 		fieldsetContainer.append(fieldsetContainerBody);
 		fieldsetPanelBody.append(fieldsetContainer);
-		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldsetElementId + '-legend" id="' + fieldsetElementId + '-legend" wrap="hard" class="form-control fieldset-legend">' + Simulators.paragraphs(fieldset.legend) + '</textarea></div></div>');
+		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldsetElementId + '-legend" id="' + fieldsetElementId + '-legend" wrap="hard" class="form-control fieldset-legend">' + Simulators.paragraphs(fieldset.legend).content + '</textarea></div></div>');
 		var fieldsetButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + fieldsetElementId + '-buttons-panel"></div>');
 		var fieldsetButtonsBody = $('<div class="panel-body fieldset-buttons"></div>');
 		fieldsetButtonsBody.append('<button class="btn btn-success pull-right validate-edit-fieldset">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -2313,7 +2328,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindFieldSet = function(fieldsetPanelContainer) {
-		fieldsetPanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		fieldsetPanelContainer.find('textarea').wysihtml(Admin.wysihtml5InlineOnlyOptions);
 		fieldsetPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -2355,11 +2370,13 @@ THE SOFTWARE.
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
 				fieldset[$(this).attr('data-attribute')] = $(this).val();
 			});
-			fieldset['legend'] =  fieldsetPanelContainer.find('.fieldset-legend').val();
+			fieldset.legend = {
+				content: Admin.clearHTML(fieldsetPanelContainer.find('.fieldset-legend')),
+				edition: 'wysihtml'
+			};
 			if (! fieldset.popinLink) {
 				fieldset.popinLink = '';
 			}
-			var oldLegend = '';
 			if ($(this).hasClass('validate-edit-fieldset')) {
 				var oldFieldSet = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }]);
 				if (oldFieldSet.disposition == 'grid') {
@@ -2387,9 +2404,9 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-fieldset')) {
 				if (fieldset.disposition == oldFieldSet.disposition) {
 					fieldsetContainer.replaceWith(newFieldSetPanel.find('.block-container.fieldset'));
-					if (fieldset.legend != oldFieldSet.legend) {
-						fieldsetPanelContainer.find('> div > .panel-heading > h4 a').text(' ' + Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend + '</span>').text() + ' ');
-						Simulators.changeFieldSetLegendInRules(stepId, panelId, fieldset.id, fieldset.legend);
+					if (fieldset.legend.content != oldFieldSet.legend.content) {
+						fieldsetPanelContainer.find('> div > .panel-heading > h4 a').text(' ' + Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend.content + '</span>').text() + ' ');
+						Simulators.changeFieldSetLegendInRules(stepId, panelId, fieldset.id, fieldset.legend.content);
 					}
 					newFieldSetPanel = fieldsetPanelContainer;
 				} else {
@@ -2477,7 +2494,10 @@ THE SOFTWARE.
 				display: 'inline',
 				disposition: 'classic',
 				popinLink: '',
-				legend: '',
+				legend: {
+					content: '',
+					edition: ''
+				},
 				fields: []
 			};
 			$('.toggle-collapse-all').hide();
@@ -2536,7 +2556,7 @@ THE SOFTWARE.
 			var id = fieldsetContainer.attr('data-id');
 			var panel = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId }]);
 			var fieldset = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }]);
-			var legend = fieldset.legend !== '' ? fieldset.legend : 'fieldset #' + fieldset.id; 
+			var legend = fieldset.legend.content !== '' ? fieldset.legend.content : 'fieldset #' + fieldset.id; 
 			var rule;
 			if ((rule = Simulators.isFieldSetInRules(stepId, panelId, id)) !== false) {
 				bootbox.alert({
@@ -2547,7 +2567,7 @@ THE SOFTWARE.
 			}
 			bootbox.confirm({
 				title: Translator.trans('Deleting fieldset'),
-				message: Translator.trans("Are you sure you want to delete the fieldset : %legend%", { 'legend': legend }), 
+				message: Translator.trans("Are you sure you want to delete the fieldset : %legend%", { 'legend': legend.content }), 
 				callback: function(confirmed) {
 					if (confirmed) {
 						Simulators.deleteInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }]);
@@ -3533,7 +3553,7 @@ THE SOFTWARE.
 		fieldPanelBody.append(fieldContainer);
 		if (field.fieldrowId === '' && field.Note) {
 			var position = field.Note == 'beforeField' ? Translator.trans('placed before the field') : Translator.trans('placed after the field');
-			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right">' + Translator.trans('Note position') + ' : ' + position + '</span>' + Translator.trans('Note') + '</div><div class="panel-body field-note rich-text">' + field.Note.text + '</div></div>');
+			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right">' + Translator.trans('Note position') + ' : ' + position + '</span>' + Translator.trans('Note') + '</div><div class="panel-body field-note rich-text">' + field.Note.text.content + '</div></div>');
 		}
 		return fieldPanelContainer;
 	}
@@ -3650,7 +3670,7 @@ THE SOFTWARE.
 		fieldContainer.append(fieldContainerBody);
 		fieldPanelBody.append(fieldContainer);
 		if (field.fieldrowId === '') {
-			var note = '';
+			var note = { content: '', edition: '' };
 			var noteBefore = '';
 			var noteAfter = '';
 			if (field.Note) {
@@ -3661,7 +3681,7 @@ THE SOFTWARE.
 					noteAfter = ' selected="selected"';
 				}
 			}
-			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right"><label for="' + fieldElementId + '-note-position">' + Translator.trans('Note position') + '</label><select id="' + fieldElementId + '-note-position"><option value="beforeField"' + noteBefore + '>' + Translator.trans('placed before the field') + '</option><option value="afterField"' + noteAfter + '>' + Translator.trans('placed after the field') + '</option></select></span>' + Translator.trans('Note') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldElementId + '-note" id="' + fieldElementId + '-note" wrap="hard" class="form-control field-note">' + Simulators.paragraphs(note) + '</textarea></div></div>');
+			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right"><label for="' + fieldElementId + '-note-position">' + Translator.trans('Note position') + '</label><select id="' + fieldElementId + '-note-position"><option value="beforeField"' + noteBefore + '>' + Translator.trans('placed before the field') + '</option><option value="afterField"' + noteAfter + '>' + Translator.trans('placed after the field') + '</option></select></span>' + Translator.trans('Note') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldElementId + '-note" id="' + fieldElementId + '-note" wrap="hard" class="form-control field-note">' + Simulators.paragraphs(note).content + '</textarea></div></div>');
 		}
 		var fieldButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + fieldElementId + '-buttons-panel"></div>');
 		var fieldButtonsBody = $('<div class="panel-body field-buttons"></div>');
@@ -3691,7 +3711,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindField = function(fieldPanelContainer) {
-		fieldPanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		fieldPanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
 		fieldPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -3767,12 +3787,15 @@ THE SOFTWARE.
 			if (! field.label) {
 				field.label = '';
 			}
-			var note = fieldPanelContainer.find('.field-note').val();
+			var note = Admin.clearHTML(fieldPanelContainer.find('.field-note'));
 			if (fieldrowId == '' && note != '') {
 				var posNote = fieldPanelContainer.find('.note-position select').val();
 				field['Note'] = {
 					position: posNote,
-					text: note
+					text: {
+						content: note,
+						edition: 'wysihtml'
+					}
 				};
 			} else {
 				delete field['Note'];
@@ -4851,9 +4874,9 @@ THE SOFTWARE.
 		sectionContainerBody.append(attributesContainer);
 		sectionContainer.append(sectionContainerBody);
 		sectionPanelBody.append(sectionContainer);
-		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body section-content rich-text">' + section.content + '</div></div>');
+		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body section-content rich-text" data-edition="' + section.content.edition + '">' + section.content.content + '</div></div>');
 		if (section.annotations) {
-			sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body section-annotations rich-text">' + section.annotations + '</div></div>');
+			sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body section-annotations rich-text" data-edition="' + section.annotations.edition + '">' + section.annotations.content + '</div></div>');
 		}
 		return sectionPanelContainer;
 	}
@@ -4885,8 +4908,8 @@ THE SOFTWARE.
 		sectionContainerBody.append(attributesContainer);
 		sectionContainer.append(sectionContainerBody);
 		sectionPanelBody.append(sectionContainer);
-		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-content" id="' + sectionElementId + '-content" wrap="hard" class="form-control section-content">' + Simulators.paragraphs(section.content) + '</textarea></div></div>');
-		sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-annotations" id="' + sectionElementId + '-annotations" wrap="hard" class="form-control section-annotations">' + Simulators.paragraphs(section.annotations) + '</textarea></div></div>');
+		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-content" id="' + sectionElementId + '-content" wrap="hard" class="form-control section-content">' + Simulators.paragraphs(section.content).content + '</textarea></div></div>');
+		sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-annotations" id="' + sectionElementId + '-annotations" wrap="hard" class="form-control section-annotations">' + Simulators.paragraphs(section.annotations).content + '</textarea></div></div>');
 		var sectionButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + sectionElementId + '-buttons-panel"></div>');
 		var sectionButtonsBody = $('<div class="panel-body section-buttons"></div>');
 		sectionButtonsBody.append('<button class="btn btn-success pull-right validate-edit-section">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -4915,7 +4938,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindSection = function(sectionPanelContainer) {
-		sectionPanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		sectionPanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
 		sectionPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -4966,7 +4989,15 @@ THE SOFTWARE.
 				panelId: panelId,
 				blockinfoId: blockinfoId,
 				chapterId: chapterId,
-				label: ''
+				label: '',
+				content: {
+					content: '',
+					edition: ''
+				},
+				annotations: {
+					content: '',
+					edition: ''
+				}
 			};
 			var attributes = sectionContainer.find('.attributes-container');
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
@@ -4975,10 +5006,16 @@ THE SOFTWARE.
 			if (section['name']) {
 				section['name'] = $.trim(section['name']);
 			}
-			section['content'] = sectionPanelContainer.find('.section-content').val();
-			var annotations = sectionPanelContainer.find('.section-annotations').val();
+			section.content = {
+				content: Admin.clearHTML(sectionPanelContainer.find('.section-content')),
+				edition: 'wysihtml'
+			};
+			var annotations = Admin.clearHTML(sectionPanelContainer.find('.section-annotations'));
 			if (annotations != '') {
-				section['annotations'] = annotations;
+				section.annotations = {
+					content: annotations,
+					edition: 'wysihtml'
+				};
 			} else {
 				delete section['annotations'];
 			}
@@ -5094,8 +5131,14 @@ THE SOFTWARE.
 				id: parseInt(id) + 1, 
 				name: '',
 				label: '',
-				content: '',
-				annotations: '',
+				content: {
+					content: '',
+					edition: ''
+				},
+				annotations: {
+					content: '',
+					edition: ''
+				}
 			};
 			$('.toggle-collapse-all').hide();
 			$('.update-button').hide();
@@ -5137,7 +5180,10 @@ THE SOFTWARE.
 			section['blockinfoId'] = blockinfoId;
 			section['chapterId'] = chapterId;
 			if (! section['annotations']) {
-				section['annotations'] = '';
+				section['annotations'] = {
+					content: '',
+					edition: ''
+				};
 			}
 			$('.update-button').hide();
 			$('.toggle-collapse-all').hide();

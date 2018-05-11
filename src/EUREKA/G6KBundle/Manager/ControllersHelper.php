@@ -32,6 +32,7 @@ use EUREKA\G6KBundle\Entity\Parameter;
 use EUREKA\G6KBundle\Entity\ChoiceGroup;
 use EUREKA\G6KBundle\Entity\Choice;
 use EUREKA\G6KBundle\Entity\ChoiceSource;
+use EUREKA\G6KBundle\Entity\RichText;
 
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
@@ -412,22 +413,28 @@ class ControllersHelper {
 	 * Replaces all data ID by their corresponding value into the given text.
 	 *
 	 * @access  public
-	 * @param   string $target The target text
-	 * @return  string The result text
+	 * @param   \EUREKA\G6KBundle\Entity\RichText|string $target The target text
+	 * @return  \EUREKA\G6KBundle\Entity\RichText|string The result text
 	 *
 	 */
 	public function replaceVariables($target) {
+		$text = $target instanceof RichText ? $target->getContent(): $target;
 		$result = preg_replace_callback(
-			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
+			'/\<data\s+[^\s]*\s*value="(\d+)(L?)"[^\>]*\>[^\<]+\<\/data\>/',
 			array($this, 'replaceVariableTag'),
-			$target
+			$text
 		);
 		$result = preg_replace_callback(
 			"/#(\d+)(L?)|#\(([^\)]+)\)(L?)/",
 			array($this, 'replaceVariable'),
-			$result
+			$text
 		);
-		return $result;
+		if ($target instanceof RichText) {
+			$target->setContent($result);
+			return $target;
+		} else {
+			return $result;
+		}
 	}
 
 	/**
@@ -448,7 +455,7 @@ class ControllersHelper {
 	}
 
 	/**
-	 * Replaces all the html tag var containing the ID of a data item by # followed by the ID 
+	 * Replaces all the html tag data containing the ID of a data item by # followed by the ID 
 	 *
 	 * @access  public
 	 * @param   string $target The target text
@@ -456,12 +463,18 @@ class ControllersHelper {
 	 *
 	 */
 	public function replaceVarTagByVariable($target) {
+		$text = $target instanceof RichText ? $target->getContent(): $target;
 		$result = preg_replace_callback(
-			'/\<var\s+[^\s]*\s*data-id="(\d+)(L?)"[^\>]*\>[^\<]+\<\/var\>/',
+			'/\<data\s+[^\s]*\s*value="(\d+)(L?)"[^\>]*\>[^\<]+\<\/data\>/',
 			array($this, 'replaceVariableTag'),
-			$target
+			$text
 		);
-		return $result;
+		if ($target instanceof RichText) {
+			$target->setContent($result);
+			return $target;
+		} else {
+			return $result;
+		}
 	}
 
 	/**

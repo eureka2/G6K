@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2015 rel. 3 (x64) (http://www.altova.com) by Jacques ARCHIMEDE (DILA) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="Simulator">
 		<xs:annotation>
@@ -6,7 +7,7 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="Description"/>
+				<xs:element name="Description" type="RichText"/>
 				<xs:element name="DataSet">
 					<xs:complexType>
 						<xs:sequence>
@@ -15,7 +16,7 @@
 								<xs:element name="DataGroup" minOccurs="0">
 									<xs:complexType>
 										<xs:sequence>
-											<xs:element name="Description" minOccurs="0"/>
+											<xs:element name="Description" type="RichText"  minOccurs="0"/>
 											<xs:element name="Data" type="DataType" maxOccurs="unbounded"/>
 										</xs:sequence>
 										<xs:attributeGroup ref="IdGroup"/>
@@ -42,7 +43,7 @@
 							<xs:element name="Profile" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="Description" minOccurs="0"/>
+										<xs:element name="Description" type="RichText" minOccurs="0"/>
 										<xs:element name="Data" maxOccurs="unbounded">
 											<xs:complexType>
 												<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
@@ -65,7 +66,7 @@
 							<xs:element name="Step" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="Description" type="xs:string" minOccurs="0"/>
+										<xs:element name="Description" type="RichText" minOccurs="0"/>
 										<xs:element name="Panels">
 											<xs:complexType>
 												<xs:sequence>
@@ -75,7 +76,7 @@
 																<xs:element name="FieldSet">
 																	<xs:complexType>
 																		<xs:sequence>
-																			<xs:element name="Legend" type="xs:string" minOccurs="0"/>
+																			<xs:element name="Legend" type="RichText" minOccurs="0"/>
 																			<xs:choice>
 																				<xs:sequence maxOccurs="unbounded">
 																					<xs:element name="Field" type="FieldType"/>
@@ -134,8 +135,8 @@
 																						<xs:element name="Section" maxOccurs="unbounded">
 																							<xs:complexType>
 																								<xs:sequence>
-																									<xs:element name="Content" type="xs:string"/>
-																									<xs:element name="Annotations" minOccurs="0"/>
+																									<xs:element name="Content" type="RichText"/>
+																									<xs:element name="Annotations" type="RichText" minOccurs="0"/>
 																								</xs:sequence>
 																								<xs:attributeGroup ref="IdGroup"/>
 																							</xs:complexType>
@@ -197,6 +198,7 @@
 													<xs:element name="FootNote" maxOccurs="unbounded">
 														<xs:complexType mixed="true">
 															<xs:attribute name="id" type="xs:positiveInteger"/>
+															<xs:attribute name="edition" type="xs:string"/>
 														</xs:complexType>
 													</xs:element>
 												</xs:sequence>
@@ -355,7 +357,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="RelatedInformations" minOccurs="0"/>
+				<xs:element name="RelatedInformations" type="RichText" minOccurs="0"/>
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" use="required"/>
 			<xs:attribute name="label" type="xs:string" use="required"/>
@@ -392,20 +394,8 @@
 	</xs:complexType>
 	<xs:complexType name="FieldType">
 		<xs:choice minOccurs="0">
-			<xs:element name="PreNote">
-				<xs:complexType>
-					<xs:simpleContent>
-						<xs:extension base="xs:string"/>
-					</xs:simpleContent>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="PostNote">
-				<xs:complexType>
-					<xs:simpleContent>
-						<xs:extension base="xs:string"/>
-					</xs:simpleContent>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="PreNote" type="RichText" />
+			<xs:element name="PostNote" type="RichText" />
 		</xs:choice>
 		<xs:attribute name="newline" type="xs:boolean" default="1"/>
 		<xs:attribute name="position" type="xs:positiveInteger" use="required"/>
@@ -432,7 +422,7 @@
 	</xs:complexType>
 	<xs:complexType name="DataType">
 		<xs:sequence minOccurs="0">
-			<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			<xs:element name="Description" type="RichText" minOccurs="0"/>
 			<xs:element name="Choices" minOccurs="0">
 				<xs:complexType>
 					<xs:choice>
@@ -457,7 +447,7 @@
 			<xs:element name="Table" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Description" type="xs:string" minOccurs="0"/>
+						<xs:element name="Description" type="RichText" minOccurs="0"/>
 						<xs:element name="Column" type="ColumnType" maxOccurs="unbounded"/>
 					</xs:sequence>
 					<xs:attribute name="id" type="xs:string"/>
@@ -594,5 +584,15 @@
 		<xs:attribute name="operand" type="xs:string" use="required"/>
 		<xs:attribute name="operator" type="xs:string" use="required"/>
 		<xs:attribute name="expression"/>
+	</xs:complexType>
+	<xs:complexType name="RichText" mixed="true">
+		<xs:attribute name="edition">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKENS">
+					<xs:enumeration value="manual"/>
+					<xs:enumeration value="wysihtml"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
 	</xs:complexType>
 </xs:schema>

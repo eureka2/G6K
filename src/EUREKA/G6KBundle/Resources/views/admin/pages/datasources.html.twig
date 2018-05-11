@@ -1,7 +1,7 @@
 {#
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ THE SOFTWARE.
 		<div id="data-source" class="nav panel panel-primary">
 			<div class="panel-heading"><h3>{{ 'Data source'|trans }} : <br /> {{ dbname }}</h3></div>
 			<div class="panel-body">
-				<form action="{{ path('eureka_g6k_admin_datasource_table', {'dsid': dsid, 'table': 'new'}) }}">
+				<form id="formAddNewTable" action="{{ path('eureka_g6k_admin_datasource_table', {'dsid': dsid, 'table': 'new'}) }}">
 				<button id="btnAddNewTable" class="btn btn-default" title="{{ 'Add table'|trans }}"><span class="button-label">{{ 'Add table'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
 				</form>
 				<h4>{{ 'Tables'|trans }} :</h4>
@@ -53,12 +53,12 @@ THE SOFTWARE.
 			<div class="panel-heading"><h3>{{ 'Data sources'|trans }}</h3></div>
 			<div class="panel-body">
 				<div>
-					<form action="{{ path('eureka_g6k_admin_datasource', {'dsid': 0}) }}">
+					<form id="formAddNewDataSource" action="{{ path('eureka_g6k_admin_datasource', {'dsid': 0}) }}">
 					<button id="btnAddNewDataSource" class="btn btn-default pull-right">{{ 'Create Datasource'|trans }} <span class="glyphicon glyphicon-plus-sign"></span></button>
 					</form>
 				</div>
 				<div>
-					<form action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': 0, 'table': 'dummy', 'crud': 'import-datasource'}) }}">
+					<form id="formImportDataSource" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': 0, 'table': 'dummy', 'crud': 'import-datasource'}) }}">
 					<button id="btnImportDataSource" class="btn btn-default pull-right">{{ 'Import Datasource'|trans }} <span class="glyphicon glyphicon-import"></span></button>
 					</form>
 				</div>
@@ -102,9 +102,9 @@ THE SOFTWARE.
 						</div>
 						{% if table.action == 'create-table' or table.action == 'edit-table' %}
 						{% if table.action == 'create-table' %}
-						<form id="new-table-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': 'new', 'crud': 'create'}) }}">
+						<form id="new-table-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': 'new', 'crud': 'create'}) }}" enctype="multipart/form-data">
 						{% else %}
-						<form id="edit-table-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'doedit'}) }}">
+						<form id="edit-table-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'doedit'}) }}" enctype="multipart/form-data">
 						{% endif %}
 						<div class="panel-body">
 							<div class="attributes-container">
@@ -126,7 +126,7 @@ THE SOFTWARE.
 							<div id="table-description-panel" class="panel panel-default">
 								<div class="panel-heading">{{ 'Description'|trans }}</div>
 								<div class="panel-body table-description">
-									<textarea name="table-description" class="form-control input-sm">{{ table.description }}</textarea>
+									<textarea rows="1" name="table-description" class="richtext form-control input-sm">{{ table.description|nofilter }}</textarea>
 								</div>
 							</div>
 						</div>
@@ -148,9 +148,9 @@ THE SOFTWARE.
 							</table>
 						</div>
 						{% if table.action == 'create-table' %}
-						<button id="btnSaveNewTable" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+						<button id="btnSaveNewTable" type="submit" form="new-table-form" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
 						{% else %}
-						<button id="btnSaveEditedTable" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+						<button id="btnSaveEditedTable" type="submit" form="edit-table-form" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
 						{% endif %}
 						</form>
 						{% elseif table.action == 'import-table' %}
@@ -191,7 +191,7 @@ THE SOFTWARE.
 								</div>
 							</div>
 						</div>
-						<button id="btnImportTable" class="btn btn-primary pull-right">{{ 'Import'|trans }}</button>
+						<button id="btnImportTable" type="submit" form="import-table-form" class="btn btn-primary pull-right">{{ 'Import'|trans }}</button>
 						</form>
 						{% else %}
 						<form id="edit-table-rows-form" method="post" action="{{ path('eureka_g6k_admin_datasource_table', {'dsid': dsid, 'table': table.name}) }}" enctype="multipart/form-data">
@@ -456,9 +456,9 @@ THE SOFTWARE.
 						{% else %}
 						{% if datasource.action == 'create' or datasource.action == 'edit'%}
 						{% if datasource.action == 'create' %}
-						<form id="datasource-creation-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'create-datasource'}) }}">
+						<form id="datasource-creation-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'create-datasource'}) }}" enctype="multipart/form-data">
 						{% else %}
-						<form id="datasource-edition-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'doedit-datasource'}) }}">
+						<form id="datasource-edition-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'doedit-datasource'}) }}" enctype="multipart/form-data">
 						{% endif %}
 						<div class="panel panel-default">
 							<div class="panel-body">
@@ -489,7 +489,7 @@ THE SOFTWARE.
 								{{ 'Description'|trans }}
 							</div>
 							<div class="panel-body datasource-description">
-								<textarea name="datasource-description" class="form-control input-sm">{{ datasource.description }}</textarea>
+								<textarea rows="1" name="datasource-description" class="richtext form-control input-sm">{{ datasource.description|nofilter }}</textarea>
 							</div>
 						</div>
 						<div class="panel panel-default" id="datasource-database-panel-holder">
@@ -574,7 +574,11 @@ THE SOFTWARE.
 								</div>
 							</div>
 						</div>
-						<button id="btnSaveDatasource" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+						{% if datasource.action == 'create' %}
+						<button id="btnSaveDatasource" type="submit" form="datasource-creation-form" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+						{% else %}
+						<button id="btnSaveDatasource" type="submit" form="datasource-edition-form" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+						{% endif %}
 						</form>
 						{% endif %}
 						{% endif %}
@@ -599,7 +603,7 @@ THE SOFTWARE.
 								</div>
 							</div>
 						</div>
-						<button id="btnDoImportDatasource" class="btn btn-primary pull-right">{{ 'Import'|trans }}</button>
+						<button id="btnDoImportDatasource" type="submit" form="datasource-import-form" class="btn btn-primary pull-right">{{ 'Import'|trans }}</button>
 						</form>
 						{% endif %}
 					</div>

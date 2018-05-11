@@ -1,0 +1,21 @@
+.wysihtml-editor table caption {
+	min-height: 1em;
+	background: #eee;
+	font-weight: bold;
+}
+.wysihtml-editor table thead th {
+	background: #ddd;
+}
+
+.wysihtml-editor table th,
+.wysihtml-editor table td,
+.wysihtml-editor table caption {
+	outline: 1px dotted #abc;
+	min-width: 5em;
+	min-height: 1em;
+}
+
+.wysihtml-editor table th.wysiwyg-tmp-selected-cell,
+.wysihtml-editor table td.wysiwyg-tmp-selected-cell {
+	outline: 2px solid green;
+}

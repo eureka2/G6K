@@ -88,9 +88,9 @@ THE SOFTWARE.
 			{{ form.popinheader(context, fieldset) }}
 			{%- endif -%}
 			{%- if fieldsets > 1  and fieldset.hasInputFields %}
-				{%- if fieldset.legend is not empty -%}<legend>{{ fieldset.legend|fnref }}</legend>{%- endif -%}
+				{%- if fieldset.legend is not empty and fieldset.legend.content is not empty -%}<legend>{{ fieldset.legend|fnref }}</legend>{%- endif -%}
 			{% else %}
-				{%- if fieldset.legend is not empty -%}{{ form.heading(fieldset.legend, 3, "legend") }}{%- endif -%}
+				{%- if fieldset.legend is not empty and fieldset.legend.content is not empty -%}{{ form.heading(fieldset.legend, 3, "legend") }}{%- endif -%}
 			{% endif %}
 			{%- if disposition == "grid" -%}
 			{{ grid.row(context, fieldset, fieldsetContainerClass, fieldContainerClass, fieldGroupClass, fieldClass) }}
@@ -281,6 +281,9 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro heading(text, level, class) %}
+	{% if text.content is defined %}
+		{% set text = text.content %}
+	{% endif %}
 	{%- if text is not empty -%}<h{{ level }} class="{{ class }}">{{ text|trim|replace({"\n": "<br>"})|jscode }}</h{{ level }}>{%- endif -%}
 {% endmacro %}
 

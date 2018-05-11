@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -55,6 +55,7 @@ use EUREKA\G6KBundle\Entity\Condition;
 use EUREKA\G6KBundle\Entity\RuleAction;
 use EUREKA\G6KBundle\Entity\Profiles;
 use EUREKA\G6KBundle\Entity\Profile;
+use EUREKA\G6KBundle\Entity\RichText;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 use EUREKA\G6KBundle\Manager\SQLSelectTokenizer;
@@ -224,7 +225,10 @@ class SimulatorsAdminController extends BaseAdminController {
 				'file' => $file, 
 				'name' => $s['name'], 
 				'label' => $s['label'], 
-				'description' => $s->Description
+				'description' => array(
+					'content' => $s->Description,
+					'edition' => (string)$s->Description['edition']
+				)
 			);
 			if ($simulator !== null && $file == $simulator) {
 				$this->simu = new Simulator($this);
@@ -537,8 +541,18 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->setReferer($simulatorData["referer"]);
 		$this->simu->setDynamic($simulatorData['dynamic'] == '1');
 		$this->simu->setMemo($simulatorData['memo'] == '1');
-		$this->simu->setDescription(trim($this->helper->replaceVarTagByVariable($simulatorData['description'])));
-		$this->simu->setRelatedInformations(trim($this->helper->replaceVarTagByVariable($simulatorData['relatedInformations'])));
+		$this->simu->setDescription(
+			new RichText(
+				trim($this->helper->replaceVarTagByVariable($simulatorData['description']['content'])),
+				$simulatorData['description']['edition']
+			)
+		);
+		$this->simu->setRelatedInformations(
+			new RichText(
+				trim($this->helper->replaceVarTagByVariable($simulatorData['relatedInformations']['content'])),
+				$simulatorData['relatedInformations']['edition']
+			)
+		);
 		$this->simu->setDateFormat($simulatorData['dateFormat']);
 		$this->simu->setDecimalPoint($simulatorData['decimalPoint']);
 		$this->simu->setMoneySymbol($simulatorData['moneySymbol']);
@@ -719,7 +733,12 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function makeDataGroup($datagroup) {
 		$dataGroupObj = new DataGroup($this->simu, (int)$datagroup['id'], $datagroup['name']);
 		$dataGroupObj->setLabel($datagroup['label']);
-		$dataGroupObj->setDescription(trim($this->helper->replaceVarTagByVariable($datagroup['description'])));
+		$dataGroupObj->setDescription(
+			new RichText(
+				trim($this->helper->replaceVarTagByVariable($datagroup['description']['content'])),
+				$datagroup['description']['edition']
+			)
+		);
 		foreach ($datagroup['datas'] as $data) {
 			$dataGroupObj->addData($this->makeData($data));
 		}
@@ -779,7 +798,12 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 		}
 		if (isset($data['description'])) {
-			$dataObj->setDescription(trim($this->helper->replaceVarTagByVariable($data['description'])));
+			$dataObj->setDescription(
+				new RichText(
+					trim($this->helper->replaceVarTagByVariable($data['description']['content'])),
+					$data['description']['edition']
+				)
+			);
 		}
 		return $dataObj;
 	}
@@ -795,7 +819,12 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function makeStep($step) {
 		$stepObj = new Step($this, (int)$step['id'], $step['name'], $step['label'], $step['template']);
 		$stepObj->setOutput($step['output']);
-		$stepObj->setDescription($step['description']);
+		$stepObj->setDescription(
+			new RichText(
+				trim($this->helper->replaceVarTagByVariable($step['description']['content'])),
+				$step['description']['edition']
+			)
+		);
 		$stepObj->setDynamic($step['dynamic'] == '1');
 		foreach ($step['panels'] as $p => $panel) {
 			$stepObj->addPanel($this->makePanel($panel, $stepObj));
@@ -812,7 +841,12 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 				foreach ($footnotes['footNotes'] as $footnote) {
 					$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
-					$footnoteObj->setText(trim($this->helper->replaceVarTagByVariable($footnote['text'])));
+					$footnoteObj->setText(
+						new RichText(
+							trim($this->helper->replaceVarTagByVariable($footnote['text']['content'])),
+							$footnote['text']['edition']
+						)
+					);
 					$footnotesObj->addFootNote($footnoteObj);
 				}
 				$stepObj->setFootNotes($footnotesObj);
@@ -855,7 +889,12 @@ class SimulatorsAdminController extends BaseAdminController {
 	 */
 	protected function makeFieldSet($fieldset, $panelObj) {
 		$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
-		$fieldsetObj->setLegend(trim($this->helper->replaceVarTagByVariable($fieldset['legend'])));
+		$fieldsetObj->setLegend(
+			new RichText(
+				trim($this->helper->replaceVarTagByVariable($fieldset['legend']['content'])),
+				$fieldset['legend']['edition']
+			)
+		);
 		if ($fieldset['disposition'] != "") {
 			$fieldsetObj->setDisposition($fieldset['disposition']);
 		}
@@ -932,11 +971,21 @@ class SimulatorsAdminController extends BaseAdminController {
 			$note = $field['Note'];
 			if ($note['position'] == 'beforeField') {
 				$noteObj = new FieldNote($this);
-				$noteObj->setText(trim($this->helper->replaceVarTagByVariable($note['text'])));
+				$noteObj->setText(
+					new RichText(
+						trim($this->helper->replaceVarTagByVariable($note['text']['content'])),
+						$note['text']['edition']
+					)
+				);
 				$fieldObj->setPreNote($noteObj);
 			} elseif ($note['position'] == 'afterField') {
 				$noteObj = new FieldNote($this);
-				$noteObj->setText(trim($this->helper->replaceVarTagByVariable($note['text'])));
+				$noteObj->setText(
+					new RichText(
+						trim($this->helper->replaceVarTagByVariable($note['text']['content'])),
+						$note['text']['edition']
+					)
+				);
 				$fieldObj->setPostNote($noteObj);
 			}
 		}
@@ -996,9 +1045,19 @@ class SimulatorsAdminController extends BaseAdminController {
 		$sectionObj = new Section($chapterObj, (int)$section['id']);
 		$sectionObj->setName($section['name']);
 		$sectionObj->setLabel($section['label']);
-		$sectionObj->setContent(trim($this->helper->replaceVarTagByVariable($section['content'])));
+		$sectionObj->setContent(
+			new RichText(
+				trim($this->helper->replaceVarTagByVariable($section['content']['content'])),
+				$section['content']['edition']
+			)
+		);
 		if (isset($section['annotations'])) {
-			$sectionObj->setAnnotations(trim($this->helper->replaceVarTagByVariable($section['annotations'])));
+			$sectionObj->setAnnotations(
+				new RichText(
+					trim($this->helper->replaceVarTagByVariable($section['annotations']['content'])),
+					$section['annotations']['edition']
+				)
+			);
 		}
 		return $sectionObj;
 	}
@@ -1213,7 +1272,12 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function makeProfile($profile) {
 		$profileObj = new Profile($profile['id'], $profile['name']);
 		$profileObj->setLabel($profile['label']);
-		$profileObj->setDescription(trim($this->helper->replaceVarTagByVariable($profile['description'])));
+		$profileObj->setDescription(
+			new RichText(
+				trim($this->helper->replaceVarTagByVariable($profile['description']['content'])),
+				$profile['description']['edition']
+			)
+		);
 		foreach ($profile['datas'] as $data) {
 			$profileObj->addData((int)$data['id'], $data['default']);
 		}
@@ -1781,8 +1845,9 @@ class SimulatorsAdminController extends BaseAdminController {
 							$this->dataset[$name]['options'] = $options;
 						}
 					}
-					if ($gdata->getDescription() != '') {
-						$this->dataset[$name]['description'] = $this->paragraphs($gdata->getDescription());
+					if ($gdata->getDescription() && $gdata->getDescription()->getContent() != '') {
+						$description = $this->paragraphs($gdata->getDescription());
+						$this->dataset[$name]['description'] = array( 'content' => $description->getContent(), 'edition' => $description->getEdition() );
 					}
 					if ($gdata->getUnparsedDefault() != '' && ! preg_match("/[\?:]/", $gdata->getUnparsedDefault())) {
 						$this->dataset[$name]['unparsedDefault'] = $gdata->getUnparsedDefault();
@@ -1841,8 +1906,9 @@ class SimulatorsAdminController extends BaseAdminController {
 						$this->dataset[$name]['options'] = $options;
 					}
 				}
-				if ($data->getDescription() != '') {
-					$this->dataset[$name]['description'] = $this->paragraphs($data->getDescription());
+				if ($data->getDescription() && $data->getDescription()->getContent() != '') {
+					$description = $this->paragraphs($data->getDescription());
+					$this->dataset[$name]['description'] = array( 'content' => $description->getContent(), 'edition' => $description->getEdition() );
 				}
 				if ($data->getUnparsedDefault() != '' && ! preg_match("/[\?:]/", $data->getUnparsedDefault())) {
 					$this->dataset[$name]['unparsedDefault'] = $data->getUnparsedDefault();
@@ -1890,6 +1956,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			$ostepfootnotes = array();
 			$ostepactionbuttons = array();
 			foreach ($this->simu->getSteps() as $step) {
+				$description = $step->getDescription();
 				$tstep = array(
 					'id' => $step->getId(),
 					'name' => $step->getName(),
@@ -1897,7 +1964,10 @@ class SimulatorsAdminController extends BaseAdminController {
 					'template' => $step->getTemplate(),
 					'output' => $step->getOutput(),
 					'dynamic' => $step->isDynamic() ? '1' : '0',
-					'description' => $step->getDescription(),
+					'description' => array(
+						'content' => $description->getContent(),
+						'edition' => $description->getEdition()
+					),
 					'panels' => array(),
 					'actions' => array(),
 					'footNotes' => array()
@@ -1958,7 +2028,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					foreach ($panel->getFieldSets() as $block) {
 						if ($block instanceof FieldSet) {
 							$fieldset = $block;
-							$fieldsetLabel = $fieldset->getLegend() != '' ? trim($fieldset->getLegend()) : $this->get('translator')->trans('Fieldset %id% (nolegend)', array('%id%' => $fieldset->getId()));
+							$fieldsetLabel = $fieldset->getLegend()->getContent() != '' ? trim($fieldset->getLegend()->getContent()) : $this->get('translator')->trans('Fieldset %id% (nolegend)', array('%id%' => $fieldset->getId()));
 							$ofieldsets[] = array (
 								"label" => $fieldsetLabel,
 								"name" => $fieldset->getId()
@@ -1968,13 +2038,17 @@ class SimulatorsAdminController extends BaseAdminController {
 							$ofieldrowfields = array ();
 							$ofieldrowchoices = array ();
 							if ($fieldset->getDisposition() != 'grid') {
+								$legend = $block->getLegend();
 								$tblock = array(
 									'type' => 'fieldset',
 									'id' => $block->getId(),
 									'disposition' => $block->getDisposition(),
 									'display' => $block->getDisplay(),
 									'popinLink' => $block->getPopinLink(),
-									'legend' => $block->getLegend(),
+									'legend' => array(
+										'content' => $legend->getContent(),
+										'edition' => $legend->getEdition()
+									),
 									'fields' => array()
 								);
 								$ofields = array();
@@ -2005,9 +2079,13 @@ class SimulatorsAdminController extends BaseAdminController {
 										);
 									}
 									if ($field->getPreNote()) {
+										$text = $field->getPreNote()->getText();
 										$tfield['Note'] = array(
 											'position' => 'beforeField',
-											'text' => $field->getPreNote()->getText()
+											'text' => array(
+												'content' => $text->getContent(),
+												'edition' => $text->getEdition()
+											)
 										);
 										$oprenotes[] = array(
 											'label' => $fieldLabel,
@@ -2015,9 +2093,13 @@ class SimulatorsAdminController extends BaseAdminController {
 										);
 									}
 									if ($field->getPostNote()) {
+										$text = $field->getPostNote()->getText();
 										$tfield['Note'] = array(
 											'position' => 'afterField',
-											'text' => $field->getPostNote()->getText()
+											'text' => array(
+												'content' => $text->getContent(),
+												'edition' => $text->getEdition()
+											)
 										);
 										$opostnotes[] = array(
 											'label' => $fieldLabel,
@@ -2083,13 +2165,17 @@ class SimulatorsAdminController extends BaseAdminController {
 									);
 								}
 							} else {
+								$legend = $block->getLegend();
 								$tblock = array(
 									'type' => 'fieldset',
 									'id' => $block->getId(),
 									'disposition' => $block->getDisposition(),
 									'display' => $block->getDisplay(),
 									'popinLink' => $block->getPopinLink(),
-									'legend' => $block->getLegend(),
+									'legend' => array(
+										'content' => $legend->getContent(),
+										'edition' => $legend->getEdition()
+									),
 									'columns' => array(),
 									'fieldrows' => array()
 								);
@@ -2272,8 +2358,14 @@ class SimulatorsAdminController extends BaseAdminController {
 										'id' => $section->getId(),
 										'name' => $section->getName(),
 										'label' => $section->getLabel(),
-										'content' => $section->getContent(),
-										'annotations' => $section->getAnnotations()
+										'content' => array(
+											'content' => $section->getContent()->getContent(),
+											'edition' => $section->getContent()->getEdition()
+										),
+										'annotations' => array(
+											'content' => $section->getAnnotations()->getContent(),
+											'edition' => $section->getAnnotations()->getEdition()
+										)
 									);
 									$sectionLabel = $section->getLabel() != '' ? $section->getLabel() : $this->get('translator')->trans('Section %id% (nolabel)', array('%id%' => $section->getId()));
 									$osections[] = array (
@@ -2663,9 +2755,13 @@ class SimulatorsAdminController extends BaseAdminController {
 						'footNotes' => array()
 					);
 					foreach ($footnoteList->getFootNotes() as $footnote) {
+						$text = $footnote->getText();
 						$tfootnote = array(
 							'id' => $footnote->getId(),
-							'text' => $footnote->getText()
+							'text' => array(
+								'content' => $text->getContent(),
+								'edition' => $text->getEdition()
+							)
 						);
 						$ofootnotes[] = array(
 							'label' => $this->get('translator')->trans('FootNote %id%', array('%id%' => $footnote->getId())),
@@ -3666,20 +3762,33 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * Transforms the lines of a text into html paragraphs
 	 *
 	 * @access  private
-	 * @param   string $text
+	 * @param   string $string
 	 * @return  string
 	 *
 	 */
-	private function paragraphs ($text) {
+	private function paragraphs ($string) {
+		if ($string instanceof RichText && ! $string->isManual()) {
+			return $string;
+		}
+		$text = $string instanceof RichText ? $string->getContent(): $string;
 		$result = "";
 		$paras = explode("\n", trim($text));
 		foreach ($paras as $para) {
 			$para = trim($para);
-			$result .= "<p>";
-			$result .= $para == "" ? "&nbsp;" : $para;
-			$result .= "</p>";
+			if ($para == '' || $para == "&nbsp;") {
+				$result .= "<br>";
+			} else {
+				$result .= "<p>";
+				$result .= $para;
+				$result .= "</p>";
+			}
 		}
-		return $result;
+		if ($string instanceof RichText) {
+			$string->setContent($result);
+			return $string;
+		} else {
+			return $result;
+		}
 	}
 
 	/**

@@ -1,0 +1,94 @@
+.wysiwig-font-name-couriernew {
+  font-family: "Courier New", monospace;
+}
+
+.wysiwig-font-name-arial {
+  font-family: "Arial", sans-serif;
+}
+
+.wysiwig-font-name-bookman {
+  font-family: "Bookman", serif;
+}
+
+.wysiwig-font-name-comicsansms {
+  font-family: "Comic Sans MS", cursive;
+}
+
+.wysiwig-font-name-garamond {
+  font-family: "Garamond", serif;
+}
+
+.wysiwig-font-name-georgia {
+  font-family: "Georgia", serif;
+}
+
+.wysiwig-font-name-helvetica {
+  font-family: "Helvetica", sans-serif;
+}
+
+.wysiwig-font-name-impact {
+  font-family: "Impact", fantasy;
+}
+
+.wysiwig-font-name-palatino {
+  font-family: "Palatino", serif;
+}
+
+.wysiwig-font-name-timesnewroman {
+  font-family: "Times New Roman", serif;
+}
+
+.wysiwig-font-name-trebuchetms {
+  font-family: "Trebuchet MS", sans-serif;
+}
+
+.wysiwig-font-name-verdana {
+  font-family: "Verdana", sans-serif;
+}
+.wysiwyg-font-size-smaller {
+  font-size: smaller;
+}
+
+.wysiwyg-font-size-larger {
+  font-size: larger;
+}
+
+.wysiwyg-font-size-xx-large {
+  font-size: xx-large;
+}
+
+.wysiwyg-font-size-x-large {
+  font-size: x-large;
+}
+
+.wysiwyg-font-size-large {
+  font-size: large;
+}
+
+.wysiwyg-font-size-medium {
+  font-size: medium;
+}
+
+.wysiwyg-font-size-small {
+  font-size: small;
+}
+
+.wysiwyg-font-size-x-small {
+  font-size: x-small;
+}
+
+.wysiwyg-font-size-xx-small {
+  font-size: xx-small;
+}
+
+a[target="_blank"]::after {
+  content: "\f08e";
+  font-family: "FontAwesome";
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: 1;
+  text-transform: none;
+  text-decoration: none;
+  margin-left: 2px;
+}

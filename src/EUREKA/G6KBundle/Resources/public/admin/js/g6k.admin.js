@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,74 +38,210 @@ THE SOFTWARE.
 			var options = context.options;
 			var datas = [];
 			$.each(Simulators.dataset, function(name, d) {
-				datas.push('<li><a data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="<var class=data data-id=' + d.id + '>«' + d.label + '»</var>" tabindex="-1">' + d.label + '</a></li>');
+				datas.push('<li><a data-wysihtml-command="insertDataReference" data-wysihtml-command-value="' + d.id + '|' + d.label + '">' + d.label + '</a></li>');
 			});
-			return '<li class="dropdown">' +
-				'<a class="btn btn-default dropdown-toggle" data-toggle="dropdown">' + 
-					'<span class="current-font">' + Translator.trans('Variables') + ' </span>' +
-					'<b class="caret"></b>' + 
-				'</a>' +
-				'<ul class="dropdown-menu">' + 
-				datas.join("")  +
-				'</ul>' + 
-			'</li>';
+			return 	'<li class="dropdown">' +
+						'<button title="Insert a data" type="button" data-wysihtml-command-group="insertDataReference" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">' + 
+							'<span class="current-font">Datas </span>' +
+							'<b class="caret"></b>' + 
+						'</button>' +
+						'<ul class="wysihtml-custom-data-list dropdown-menu" style="display: none;">' + 
+						datas.join("")  +
+						'</ul>' + 
+					'</li>';
+		},
+		insertFootnoteReference: function(context) {
+			var locale = context.locale;
+			var options = context.options;
+			return '<li class="foot-note-reference"><a title="Insert a reference to a footnote" class="btn btn-default" data-wysihtml-command="insertFootnoteReference"><img width="16" height="16" alt="!" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAcCAYAAACOGPReAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gQeDg4P1ryLUAAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAABWklEQVRIx+2WMUvDUBDH/xeCq5MRpKAfwA6FuKhT45ZN51bi4urYQUjBqVBHhy4KXYNQv4CL4FBBRTcHwdFufoK/Q3jh+ZqkNU3AwYODR97d713ucvciJCEiRElCUgRAaUAltn7CojD1xhYqEGveCJSaUaXVI8kpSdENiqRD+dtm5dKM748k2LnCKgCgEQKb75ccDiczC5UnSys4AOADANbWgebGNYDJQjmtpFD/0GJtmjVUsj6zvCFkldHzZhB20e7J86muUPrAEBG22+Ic18QXifX2EcuJx9cL0O9vxXs1X85u6lMDh4znia6tFpzoEA/m8yl1u0Q09lL24gVJ6DoaoT7Yw0c28IQYPPm6z0yoAl808TkFdPaJ3ltg2s8FJYm7IXZPGxrY8YjwuZNmmwo118p4HMHruiDgEp3X0IT8OtIEfA4P270gz0axflwnf/o2reRnopKB8g3K/kUKbv6tqAAAAABJRU5ErkJggg=="></a></li>';
 		}
+	};
+
+	Admin.wysihtml5CustomDialog = {
+		insertFootnoteReference:
+			`<div>
+				<label class="control-label">
+					<span>Footnote:</span>
+					<input type="number" min="1" class="form-control input-sm" data-wysihtml-dialog-field="value" value="1">
+				</label>
+				<label class="control-label">
+					<span>Title:</span>
+					<input class="form-control input-sm" data-wysihtml-dialog-field="title" value="">
+				</label>
+			</div>`,
 	};
 
 	Admin.wysihtml5Options = {
 		toolbar: {
 			'locale': Admin.locale,
-			'font-styles': false,
-			'color': false,
-			'emphasis': true,
-			'blockquote': true,
+			'blocks': [
+				// 'h1',
+				'h2',
+				'h3',
+				'h4',
+				'h5',
+				'h6',
+			],
+			'font-names': true,
+			// 'font-fixed-sizes': true,
+			'font-named-sizes': true,
+			'color': true,
+			'hilite': true,
+			'emphasis': [
+				'bold',
+				'italic',
+				'underline',
+				// 'superscript',
+				// 'subscript',
+			],
 			'lists': true,
-			'html': false,
+			'align': [
+				'alignLeft',
+				'alignCenter',
+				'alignRight',
+				// 'justifyFull'
+			],
 			'link': true,
-			'image': false,
-			'insertData': false
+			'image': true,
+			// 'code': true,
+			'table': true,
+			'undo': true,
+			// 'html': true,
+			'insertData': false,
+			'insertFootnoteReference': false
 		},
 		customTemplates: Admin.wysihtml5Custom,
+		customDialogs: Admin.wysihtml5CustomDialog,
+		stylesheets: [ Admin.editorCSS ],
 		shortcuts: {
 		   '83': 'small'     // S
 		},
 		parserRules: {
-			classes: {
-				"data": 1
-			},
 			tags: {
-				'var': {
+				"data": {
+					"unwrap": 0,
 					"check_attributes": {
-						"data-id": "numbers"
+						"value": "numbers",
+						"title": "any",
+						"contenteditable": "any"
 					}
 				}
 			}
 		},
+		pasteParserRulesets: window.wysihtmlParserPasteRulesets,
+		translate: function(term, locale) {
+			return Translator.trans(term);
+		},
+		tableToolsOffset: {
+			top: -102,
+			left: 0
+		},
 		events: {
-			'change': function(e) {
-				var val = this.getValue();
-				val = val.replace(/^(\s*\<br\>\s*)+/mi, '');
-				val = val.replace(/(\s*\<br\>\s*)+$/mi, '');
-				val = val.replace(/^\<p\>(\s*\<br\>\s*)+/mi, '<p>');
-				val = val.replace(/(\s*\<br\>\s*)+\<\/p\>$/mi, '</p>');
-				val = addTitleToExternalLink(val);
-				this.setValue(val);
+			'beforecommand:composer': function(e) {
+				var editor = this;
+				if ($.inArray(e.command, ['indent', 'insertUnorderedList', 'insertOrderedList']) >= 0) {
+					$(editor.composer.doc.body).find('data.data-reference, data.foot-note-reference').removeAttr('contenteditable');
+				}
+			},
+			'aftercommand:composer': function(e) {
+				var editor = this;
+				if ($.inArray(e.command, ['indent', 'insertUnorderedList', 'insertOrderedList']) >= 0) {
+					$(editor.composer.doc.body).find('data.data-reference, data.foot-note-reference').attr('contenteditable', 'false');
+				}
+			},
+			'interaction': function(e) {
+				var editor = this;
+				if (editor.composer.commands.state('insertDataReference')) {
+					var value = editor.composer.commands.stateValue('insertDataReference');
+					setTimeout(function() {
+						var selecteds = editor.toolbar.container.querySelectorAll('ul.wysihtml-custom-data-list a.wysihtml-command-active');
+						for (var i = 0; i < selecteds.length; i++) {
+							if (selecteds[i].getAttribute('data-wysihtml-command-value') !== value) {
+								selecteds[i].className = '';
+							}
+						}
+					}, 0);
+				}
+			},
+			'save:dialog': function(e) {
+				var editor = this;
+				var command = e.command;
+				var dialog = $(e.dialogContainer);
+			},
+			'load': function(e) {
 			},
 			"beforeload": function() { 
-				if (typeof Simulators !== 'undefined') {
-					var val = this.getValue();
-					val = val.replace(
-						/#(\d+)/g,
-						function (match, m1, offs, str) {
-							var data = Simulators.findDataById(m1);
-							return '<var class="data" data-id="' + data.id + '">«' + data.label + '»</var>';
-						}
-					);
-					this.setValue(val);
-				}
+				var val = this.getValue();
+				val = val.replace(
+					/\<data\s+(.*)\s*class="data"/g,
+					'<data contenteditable="false" $1 class="data-reference"'
+				);
+				val = val.replace(
+					/#(\d+)/g,
+					function (match, m1, offs, str) {
+						var data = Simulators.findDataById(m1);
+						return '<data contenteditable="false" class="data-reference" title="' + data.label + '" value="' + data.id + '">« ' + data.label + ' »</data>';
+					}
+				);
+				val = val.replace(
+					/\[([^\^]+)\^(\d+)\(([^\)]+)\)\]/g,
+					function (match, m1, m2, m3, offs, str) {
+						return '<data contenteditable="false" class="foot-note-reference" title="' + m3 + '" value="' + m2 + '">« ' + m1 + ' »</data>';
+					}
+				);
+				this.setValue(val);
 			}
 		}
 	};
+
+	Admin.wysihtml5InlineOnlyOptions = $.extend(true, {}, Admin.wysihtml5Options, {
+		toolbar: {
+			'blocks': false,
+			'lists': false,
+			'align': false,
+			'image': false,
+			'table': false
+		},
+		parserRules: {
+			tags: {
+				"h1": {
+					"unwrap": 1
+				},
+				"h2": {
+					"unwrap": 1
+				},
+				"h3": {
+					"unwrap": 1
+				},
+				"h4": {
+					"unwrap": 1
+				},
+				"h5": {
+					"unwrap": 1
+				},
+				"h6": {
+					"unwrap": 1
+				},
+				"hr": {
+					"remove": 1
+				},
+				"p": {
+					"unwrap": 1
+				}
+			}
+		},
+		events: {
+			'load': function(e) {
+				var editor = this;
+				wysihtml.dom.observe(editor.composer.doc.body, 'keydown', function(e) {
+					var key = e.which || e.keyCode;
+					if (key == 13) {
+						e.preventDefault();
+					}
+				});
+			}
+		}
+	});
 
 	var addTitleToExternalLink = function(richtext) {
 		var $richtext = $('<div></div>');
@@ -119,6 +255,22 @@ THE SOFTWARE.
 			}
 		});
 		return $richtext.html();
+	}
+
+	Admin.clearHTML = function(editable) {
+		editable.wysihtml('cleanUp');
+		var div = $('<div>');
+		div.append(editable.wysihtml('getHTML', true)); // true = beautify
+		div.find("data[class=data-reference]").addClass('data').removeClass('data-reference');
+		div.find("data[class=foot-note-reference]").each(function(elt) {
+			var footnote = $(this).attr('value');
+			var title = $(this).attr('title');
+			var text = $(this).text();
+			text = text.replace(/^« /, '').replace(/ »$/, '');
+			$(this).replaceWith('[' + text + '^' + footnote + '(' + title + ')]');
+			
+		});
+		return div.html();
 	}
 
 	Admin.types = { 
@@ -146,6 +298,117 @@ THE SOFTWARE.
 
 	global.Admin = Admin;
 }(this));
+
+wysihtml.commands.insertFootnoteReference = (function() {
+	var nodeOptions = {
+		nodeName: "DATA",
+		className: "foot-note-reference",
+		classRegExp: /foot-note-reference/g,
+		toggle: true
+	};
+
+	return {
+		exec: function(composer, command, value) {
+			var node = composer.selection.getSelectedNode(), html;
+			if (node.nodeType == Node.TEXT_NODE) {
+				node = node.parentNode;
+			}
+			if (value && value.value && value.title) {
+				if (node.nodeName == "DATA") {
+					if (node.classList.contains("foot-note-reference")) {
+						var data = composer.doc.createElement("data");
+						data.className = "foot-note-reference";
+						data.setAttribute('value', value.value);
+						data.setAttribute('title', value.title);
+						data.setAttribute('contenteditable', 'false');
+						data.appendChild(composer.doc.createTextNode(node.textContent));
+						node.replaceWith(data);
+					}
+				} else {
+					var text = composer.selection.getText();
+					var espace = '';
+					if (/\s+$/.test(text)) {
+						text = text.replace(/\s+$/, '');
+						espace = ' ';
+					}
+					html = '<data contenteditable="false" class="foot-note-reference" value="';
+					html += value.value;
+					html += '" title="';
+					html += value.title;
+					html += '">« ';
+					html += text;
+					html += ' »</data>';
+					html += espace;
+					composer.commands.exec('insertHTML', html);
+				}
+			}
+		},
+
+		state: function(composer, command) {
+			var node =  wysihtml.commands.formatInline.state(composer, command, nodeOptions);
+			return node === false || ! node[0].classList.contains("foot-note-reference")? false : node;
+		}
+	};
+
+})();
+
+wysihtml.commands.insertDataReference = (function() {
+	var nodeOptions = {
+		nodeName: "DATA",
+		className: "data-reference",
+		classRegExp: /data-reference/g,
+		toggle: true
+	};
+
+	return {
+		exec: function(composer, command, value) {
+			var node = composer.selection.getSelectedNode(), html;
+			if (node.nodeType == Node.TEXT_NODE) {
+				node = node.parentNode;
+			}
+			if (value) {
+				value = value.split(/\|/);
+				if (node.nodeName == "DATA") {
+					if (node.classList.contains("data-reference")) {
+						var data = composer.doc.createElement("data");
+						data.className = "data-reference";
+						data.setAttribute('value', value[0]);
+						data.setAttribute('title', value[1]);
+						data.setAttribute('contenteditable', 'false');
+						data.appendChild(composer.doc.createTextNode(value[1]));
+						node.replaceWith(data);
+					}
+				} else {
+					html = '<data contenteditable="false" class="data-reference" value="';
+					html += value[0];
+					html += '" title="';
+					html += value[1];
+					html += '">« ';
+					html += value[1];
+					html += ' »</data>';
+					composer.commands.exec('insertHTML', html);
+				}
+			}
+		},
+
+		state: function(composer, command) {
+			var node =  wysihtml.commands.formatInline.state(composer, command, nodeOptions);
+			return node === false || ! node[0].classList.contains("data-reference")? false : [node[0]];
+		},
+
+		stateValue: function(composer, command, props) {
+			var st = this.state(composer, command);
+			if (st && wysihtml.lang.object(st).isArray()) {
+				st = st[0];
+			}
+			if (st) {
+				return st.getAttribute("value") + '|' + st.getAttribute("title");
+			}
+			return false;
+		}
+	};
+
+})();
 
 
 $(document).ready(function() {

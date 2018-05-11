@@ -67,7 +67,7 @@ class Profile {
 	 * @access  private
 	 *
 	 */
-	private $description = "";
+	private $description = null;
 
 	/**
 	 * @var array      $datas array The list of data that are pre-filled by this profile.

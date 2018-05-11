@@ -129,16 +129,16 @@ THE SOFTWARE.
 								<div class="panel-heading">
 									{{ 'Description'|trans }}
 								</div>
-								<div class="panel-body simulator-description rich-text">
-									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.description)|nofilter) }}
+								<div class="panel-body simulator-description rich-text" data-edition="{{ simulator.description.edition }}">
+									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.description))|nofilter }}
 								</div>
 							</div>
 							<div class="panel panel-default" id="simulator-related-informations-panel-holder">
 								<div class="panel-heading">
 									{{ 'Related informations'|trans }}
 								</div>
-								<div class="panel-body simulator-related-informations rich-text">
-									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.relatedInformations)|nofilter) }}
+								<div class="panel-body simulator-related-informations rich-text" data-edition="{{ simulator.relatedInformations.edition }}">
+									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.relatedInformations))|nofilter }}
 								</div>
 							</div>
 							<div class="panel panel-default" id="simulator-elements-panel">
@@ -226,8 +226,8 @@ THE SOFTWARE.
 		<div class="panel-heading">
 			{{ 'Description'|trans }}
 		</div>
-		<div class="panel-body  datagroup-description rich-text">
-			{{ page.paragraphs(simulator.replaceByDataLabel(data.description)|nofilter) }}
+		<div class="panel-body  datagroup-description rich-text" data-edition="{{ data.description.edition }}">
+			{{ page.paragraphs(simulator.replaceByDataLabel(data.description))|nofilter }}
 		</div>
 	</div>
 	<div class="panel panel-default datas-panel" id="datagroup-{{ data.id }}-datas-panel">
@@ -300,9 +300,9 @@ THE SOFTWARE.
 {% if action.name == 'notifyError' or action.name == 'notifyWarning' %}
 	<span class="action-name">{{ action.name == 'notifyError' ? 'notify Error'|trans : 'notify Warning'|trans }} : </span> <span class="action-value">«{{ action.value }}»</span> <span class="action-target"> {{ 'on'|trans }} {{ targetlib|trans }} </span>
 	{% if action.target == 'data' %}
-		<span class="action-data"><var class="data" data-id="{{ action.data }}">«{{ simulator.getDataById(action.data).label }}»</var></span>
+		<span class="action-data"><data class="data" value="{{ action.data }}">« {{ simulator.getDataById(action.data).label }} »</data></span>
 	{% elseif action.target == 'datagroup' %}
-		<span class="action-datagroup"><var class="datagroup" data-id="{{ action.datagroup }}">«{{ simulator.getDataGroupByName(action.datagroup).label }}»</var></span>
+		<span class="action-datagroup"><data class="datagroup" value="{{ action.datagroup }}">« {{ simulator.getDataGroupByName(action.datagroup).label }} »</data></span>
 	{% endif %}
 {% elseif action.name == 'hideObject' or action.name == 'showObject' %}
 	{% set actionNode = simulator.controller.helper.findAction(action.name, actions) %}
@@ -435,8 +435,8 @@ THE SOFTWARE.
 				<div class="panel-heading">
 					{{ 'Description'|trans }}
 				</div>
-				<div class="panel-body step-description rich-text">
-					{{ page.paragraphs(simulator.replaceByDataLabel(step.description)|nofilter) }}
+				<div class="panel-body step-description rich-text" data-edition="{{ step.description.edition }}">
+					{{ page.paragraphs(simulator.replaceByDataLabel(step.description))|nofilter }}
 				</div>
 			</div>
 		</div>
@@ -480,8 +480,8 @@ THE SOFTWARE.
 			{{ 'FootNote #%id%'|trans({'%id%': footnote.id }) }}
 		</h4>
 	</div>
-	<div class="panel-body step-footnote rich-text">
-	{{ page.paragraphs(step.simulator.replaceByDataLabel(footnote.text)|nofilter) }}
+	<div class="panel-body step-footnote rich-text" data-edition="{{ footnote.text.edition }}">
+	{{ page.paragraphs(step.simulator.replaceByDataLabel(footnote.text))|nofilter }}
 	</div>
 </div>
 {% endfor %}
@@ -688,9 +688,9 @@ THE SOFTWARE.
 {% macro showFieldSet(step, panel, fieldset, inClass) %}
 {% import _self as page %}
 {% if fieldset.disposition == "grid" %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~  fieldset.legend|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~  fieldset.legend.content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 {% else %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~  fieldset.legend|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~  fieldset.legend.content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 {% endif %}
 <div class="panel panel-default block-container fieldset" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-id="{{ fieldset.id }}">
 	<div class="panel-body">
@@ -705,8 +705,8 @@ THE SOFTWARE.
 			<div class="panel-heading">
 			{{ 'Legend'|trans }}
 			</div>
-			<div class="panel-body fieldset-legend rich-text">
-				{{ page.paragraphs(step.simulator.replaceByDataLabel(fieldset.legend)|nofilter) }}
+			<div class="panel-body fieldset-legend rich-text" data-edition="{{ fieldset.legend.edition }}">
+				{{ page.paragraphs(step.simulator.replaceByDataLabel(fieldset.legend))|nofilter }}
 			</div>
 		</div>
 	</div>
@@ -832,8 +832,8 @@ THE SOFTWARE.
 				<span class="note-position pull-right">{{ 'Note position'|trans }} : {{ 'placed before the field'|trans }}</span> 
 				{{ 'Note'|trans }}
 			</div>
-			<div class="panel-body field-note rich-text">
-			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.preNote.text)|nofilter) }}
+			<div class="panel-body field-note rich-text" data-edition="{{ field.preNote.text.edition }}">
+			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.preNote.text))|nofilter }}
 			</div>
 		</div>
 		{% elseif field.postNote %}
@@ -842,8 +842,8 @@ THE SOFTWARE.
 				<span class="note-position pull-right">{{ 'Note position'|trans }} : {{ 'placed after the field'|trans }}</span> 
 				{{ 'Note'|trans }}
 			</div>
-			<div class="panel-body field-note rich-text">
-			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.postNote.text)|nofilter) }}
+			<div class="panel-body field-note rich-text" data-edition="{{ field.postNote.text.edition }}">
+			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.postNote.text))|nofilter }}
 			</div>
 		</div>
 		{% endif %}
@@ -918,16 +918,16 @@ THE SOFTWARE.
 	<div class="panel-heading">
 		{{ 'Content'|trans }}
 	</div>
-	<div class="panel-body section-content rich-text">
-		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.content)|nofilter) }}
+	<div class="panel-body section-content rich-text" data-edition="{{ section.content.edition }}">
+		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.content))|nofilter }}
 	</div>
 </div>
 <div class="panel panel-default annotations-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-annotations-panel">
 	<div class="panel-heading">
 		{{ 'Annotations'|trans }}
 	</div>
-	<div class="panel-body section-annotations rich-text">
-		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.annotations)|nofilter) }}
+	<div class="panel-body section-annotations rich-text" data-edition="{{ section.annotations.edition }}">
+		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.annotations))|nofilter }}
 	</div>
 </div>
 {{ page.closeCollapsiblePanel() }}  
@@ -1043,8 +1043,8 @@ THE SOFTWARE.
 	<div class="panel-heading">
 		{{ 'Description'|trans }}
 	</div>
-	<div class="panel-body data-description rich-text">
-		{{ page.paragraphs(data.simulator.replaceByDataLabel(data.description)|nofilter) }}
+	<div class="panel-body data-description rich-text" data-edition="{{ data.description.edition }}">
+		{{ page.paragraphs(data.simulator.replaceByDataLabel(data.description))|nofilter }}
 	</div>
 </div>
 {% if data.choices is not empty or data.choiceSource is not empty %}
@@ -1115,7 +1115,7 @@ THE SOFTWARE.
 	</ul>
 	</li>
 {% else %}
-	<li class="condition"><var class="data" data-id="{{ condition.id }}">«{{ condition.name }}»</var> {{ condition.operator }} {{ condition.value|nofilter }}</li>
+	<li class="condition"><data class="data" value="{{ condition.id }}">« {{ condition.name }} »</data> {{ condition.operator }} {{ condition.value|nofilter }}</li>
 {% endif %}
 
 {% endmacro %}
@@ -1164,8 +1164,8 @@ THE SOFTWARE.
 			<div class="panel-heading">
 				{{ 'Description'|trans }}
 			</div>
-			<div class="panel-body profile-description rich-text">
-				{{ page.paragraphs(simulator.replaceByDataLabel(profile.description)|nofilter) }}
+			<div class="panel-body profile-description rich-text" data-edition="{{ profile.description.edition }}">
+				{{ page.paragraphs(simulator.replaceByDataLabel(profile.description))|nofilter }}
 			</div>
 		</div>
 	</div>
@@ -1212,14 +1212,21 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro paragraphs(text) %}
-	{% set paragraphs = text|trim|split("\n") %}
-	{% if paragraphs is not empty %}
-		{% if paragraphs|length == 1 %}
-			{{ paragraphs[0]|nofilter }}
-		{% else %}
-			{%- for paragraph in paragraphs -%}
-				{%- if paragraph|trim is empty -%}<p>&nbsp;</p>{%- else -%}<p>{{ paragraph|nofilter }}</p>{%- endif -%}
-			{% endfor %}
+	{% if text.edition is defined and text.edition != 'manual' %}
+		{{ text.content|nofilter }}
+	{% else %}
+		{% if text.content is defined %}
+		{% set text = text.content %}
+		{% endif %}
+		{% set paragraphs = text|trim|split("\n") %}
+		{% if paragraphs is not empty %}
+			{% if paragraphs|length == 1 %}
+				{{ paragraphs[0]|nofilter }}
+			{% else %}
+				{%- for paragraph in paragraphs -%}
+					{%- if paragraph|trim is empty or paragraph|trim == '&nbsp;' -%}<br>{%- else -%}<p>{{ paragraph|nofilter }}</p>{%- endif -%}
+				{% endfor %}
+			{% endif %}
 		{% endif %}
 	{% endif %}
 {% endmacro %}

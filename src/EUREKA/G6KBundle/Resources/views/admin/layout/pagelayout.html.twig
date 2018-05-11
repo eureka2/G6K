@@ -61,6 +61,7 @@ var widgets = {{ widgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant
 <script type="text/javascript" src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/translations/config.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
+{% include 'EUREKAG6KBundle:admin/sections:scripts.html.twig' %}
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/admin/js/g6k.admin.js') }}"></script>
 <script type="text/javascript">
@@ -68,7 +69,6 @@ Admin.lang = '{{ app.request.locale }}';
 Admin.locale = '{{ app.request.locale }}-{{ app.request.locale|upper }}';
 Admin.editorCSS = "{{ asset('bundles/eurekag6k/admin/css/wysiwyg-editor.css') }}";
 </script>
-{% include 'EUREKAG6KBundle:admin/sections:scripts.html.twig' %}
   {% endblock %}
 {% endblock %}
 

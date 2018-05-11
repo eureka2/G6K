@@ -64,7 +64,7 @@ class FieldSet {
 	 * @access  private
 	 *
 	 */
-	private $legend = "";
+	private $legend = null;
 
 	/**
 	 * @var string     $disposition  The disposition of this field set: classic (default), grid or inline

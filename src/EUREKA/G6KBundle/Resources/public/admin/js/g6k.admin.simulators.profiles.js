@@ -314,7 +314,7 @@ THE SOFTWARE.
 		attributes.append(Simulators.simpleAttributeForDisplay(profileElementId, 'text', 'label', Translator.trans('Label'), profile.label, profile.label, true, Translator.trans('Label')));
 		attributesContainer.append(attributes);
 		profileContainerBody.append(attributesContainer);
-		profileContainerBody.append('<div class="panel panel-default description-panel" id="' + profileElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body profile-description rich-text">' + profile.description + '</div></div>');
+		profileContainerBody.append('<div class="panel panel-default description-panel" id="' + profileElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body profile-description rich-text" data-edition="' + profile.description.edition + '">' + profile.description.content + '</div></div>');
 		profileContainer.append(profileContainerBody);
 		profilePanelBody.append(profileContainer);
 		return profilePanelContainer;
@@ -336,7 +336,7 @@ THE SOFTWARE.
 		profileContainerBody.append(attributesContainer);
 		profileContainer.append(profileContainerBody);
 		profilePanelBody.append(profileContainer);
-		profileContainerBody.append('<div class="panel panel-default description-panel elements-container" id="' + profileElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + profileElementId + '-description" id="' + profileElementId + '-description" wrap="hard" class="form-control profile-description">' + profile.description + '</textarea></div></div>');
+		profileContainerBody.append('<div class="panel panel-default description-panel elements-container" id="' + profileElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + profileElementId + '-description" id="' + profileElementId + '-description" wrap="hard" class="form-control profile-description">' + profile.description.content + '</textarea></div></div>');
 		var profileButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + profileElementId + '-buttons-panel"></div>');
 		var profileButtonsBody = $('<div class="panel-body profile-buttons"></div>');
 		profileButtonsBody.append('<button class="btn btn-success pull-right validate-edit-profile">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -370,7 +370,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindProfile = function(profilePanelContainer) {
-		profilePanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		profilePanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
 		profilePanelContainer.find('.cancel-edit-profile').click(function() {
 			profilePanelContainer.find('.profile-container').replaceWith(Simulators.profileBackup);
 			$('.update-button').show();
@@ -401,7 +401,10 @@ THE SOFTWARE.
 			attributes.find('input:not(:checkbox).simple-value, input:checkbox:checked.simple-value, select.simple-value').each(function (index) {
 				profile[$(this).attr('data-attribute')] =  $(this).val();
 			});
-			profile['description'] =  profilePanelContainer.find('.profile-description').val();
+			profile.description= {
+				content: Admin.clearHTML(profilePanelContainer.find('.profile-description')),
+				edition: 'wysihtml'
+			};
 			if ($(this).hasClass('validate-edit-profile')) {
 				profile['datas'] = Simulators.collectProfileDatas(Simulators.profileBackup);
 			} else {
@@ -483,7 +486,10 @@ THE SOFTWARE.
 				id: Simulators.maxProfileId() + 1, 
 				name: '',
 				label: '',
-				description: ''
+				description: {
+					content: '',
+					edition: ''
+				}
 			};
 			var profilePanelContainer = Simulators.drawProfileForInput(profile);
 			profilePanelContainer.find('button.cancel-edit-profile').addClass('cancel-add-profile').removeClass('cancel-edit-profile');
@@ -512,7 +518,10 @@ THE SOFTWARE.
 				id: id, 
 				name: attributesContainer.find("p[data-attribute='name']").attr('data-value'),
 				label: attributesContainer.find("p[data-attribute='label']").attr('data-value'),
-				description: profileContainer.find(".profile-description").html()
+				description: {
+					content: profileContainer.find(".profile-description").html(),
+					edition: profileContainer.find(".profile-description").attr('data-edition')
+				}
 			};
 			$('.update-button').hide();
 			$('.toggle-collapse-all').hide();
@@ -949,7 +958,10 @@ THE SOFTWARE.
 				id: i + 1, 
 				name: attributesContainer.find("p[data-attribute='name']").attr('data-value'),
 				label: attributesContainer.find("p[data-attribute='label']").attr('data-value') || '',
-				description: $(this).parent().find(".profile-description").html() || '',
+				description: {
+					content: $(this).parent().find(".profile-description").html() || '',
+					edition: $(this).parent().find(".profile-description").attr('data-edition') || 'wysihtml'
+				},
 				datas: Simulators.collectProfileDatas($(this))
 			});
 		});

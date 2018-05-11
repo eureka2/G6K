@@ -76,7 +76,7 @@ class Section {
 	 * @access  private
 	 *
 	 */
-	private $content = "";
+	private $content = null;
 
 	/**
 	 * @var string     $annotations The annotations on the text of this section
@@ -84,7 +84,7 @@ class Section {
 	 * @access  private
 	 *
 	 */
-	private $annotations = "";
+	private $annotations = null;
 
 	/**
 	 * @var bool       $displayable Indicates whether this section set should be displayed or not.

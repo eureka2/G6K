@@ -61,19 +61,19 @@ THE SOFTWARE.
 			<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections" class="blockinfo-chapter-sections {{ chapterContentClass }}{%- if chapter.collapsible %} collapse{%- endif -%}">
 				{% for section in chapter.sections %}
 				{%- if section.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-				<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}" class="section-container{%- if section.annotations is not empty %} with-annotations{%- endif -%}">
+				<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}" class="section-container{%- if section.annotations is not empty and section.annotations.content is not empty %} with-annotations{%- endif -%}">
 					{%- if section.label is not empty -%}
 					<div class="section-label">
 						<h2>{{ section.label|fnref }}</h2>
 					</div>
 					{% endif %}
 					<div class="section-body-container">
-						{%- if section.annotations is not empty %}
+						{%- if section.annotations is not empty and section.annotations.content is not empty %}
 						<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-annotations" class="section-annotations">
 							{{ section.annotations|htmlraw }}
 						</div>
 						{% endif %}
-						<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-content" class="section-content{%- if section.annotations is not empty %} with-annotations{%- endif -%}">
+						<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-content" class="section-content{%- if section.annotations is not empty and section.annotations.content is not empty %} with-annotations{%- endif -%}">
 							{{ section.content|htmlraw }}
 						</div>
 					</div>

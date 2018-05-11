@@ -38,7 +38,10 @@ THE SOFTWARE.
 				var datagroup = {
 					id:  $(this).attr('data-id'),
 					label: $(this).find(".attributes-container p[data-attribute='label']").attr('data-value'),
-					description: $(this).parent().find(".datagroup-description").html()
+					description: {
+						content: $(this).parent().find(".datagroup-description").html(),
+						edition: $(this).parent().find(".datagroup-description").attr('data-edition')
+					}
 				};
 				Simulators.datagroups[name] = datagroup;
 				$(this).parent().find('.datagroup-data-container').each(function(d) {
@@ -56,7 +59,10 @@ THE SOFTWARE.
 						datagroup: datagroup.id,
 						label: $(this).find("p[data-attribute='label']").attr('data-value'),
 						type: $(this).find("p[data-attribute='type']").attr('data-value'),
-						description: $(this).parent().find(".data-description").html()
+						description: {
+							content: $(this).parent().find(".data-description").html(),
+							edition: $(this).parent().find(".data-description").attr('data-edition')
+						}
 					};
 					if (choices.length > 0) {
 						data['options'] = choices;
@@ -78,7 +84,10 @@ THE SOFTWARE.
 					datagroup: '',
 					label: $(this).find("p[data-attribute='label']").attr('data-value'),
 					type: $(this).find("p[data-attribute='type']").attr('data-value'),
-					description: $(this).parent().find(".data-description").html()
+					description: {
+						content: $(this).parent().find(".data-description").html(),
+						edition: $(this).parent().find(".data-description").attr('data-edition')
+					}
 				};
 				if (choices.length > 0) {
 					data['options'] = choices;
@@ -192,7 +201,7 @@ THE SOFTWARE.
 			/#(\d+)/g, 
 			function(match, p1) {
 				var data = Simulators.findDataById(p1);
-				return data != null ? '<var data-id="' + data.id + '" class="data">«' + data.label + '»</var>' : "#" + p1;
+				return data != null ? '<data value="' + data.id + '" class="data">« ' + data.label + ' »</data>' : "#" + p1;
 			}
 		);
 	}
@@ -461,7 +470,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindData = function(dataPanelContainer) {
-		dataPanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		dataPanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
 		dataPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -522,7 +531,10 @@ THE SOFTWARE.
 			if (data['name']) {
 				data['name'] = $.trim(data['name']);
 			}
-			data['description'] =  dataPanelContainer.find('.data-description').val();
+			data.description = {
+				content: Admin.clearHTML(dataPanelContainer.find('.data-description')),
+				edition: 'wysihtml'
+			};
 			var newDataPanel = Simulators.drawDataForDisplay(data);
 			var choices = [];
 			if (data.type == 'choice') {
@@ -600,7 +612,10 @@ THE SOFTWARE.
 				id: data.id,
 				label: data.label,
 				type: data.type,
-				description: data.description
+				description: {
+					content: data.description.content,
+					edition: 'wysihtml'
+				}
 			}
 			if (choices.length > 0) {
 				Simulators.dataset[data.name].options = choices;
@@ -695,7 +710,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindDatagroup = function(dataPanelContainer) {
-		dataPanelContainer.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		dataPanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
 		dataPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -750,7 +765,11 @@ THE SOFTWARE.
 			if (datagroup['name']) {
 				datagroup['name'] = $.trim(datagroup['name']);
 			}
-			datagroup['description'] =  dataPanelContainer.find('.datagroup-description').val();
+			datagroup.description = {
+				content: Admin.clearHTML(dataPanelContainer.find('.datagroup-description')),
+				edition: 'wysihtml'
+			};
+			dataPanelContainer.find('.datagroup-description').attr('data-edition', 'wysihtml');
 			var newDataPanel = Simulators.drawDatagroupForDisplay(datagroup);
 			newDataPanel.find('.description-panel').after(dataPanelContainer.find('.datas-panel'));
 			dataPanelContainer.replaceWith(newDataPanel);
@@ -769,7 +788,10 @@ THE SOFTWARE.
 			Simulators.datagroups[datagroup.name] = {
 				id: datagroup.id,
 				label: datagroup.label,
-				description: datagroup.description
+				description: {
+					content: datagroup.description.content,
+					edition: datagroup.description.edition
+				}
 			}
 			newDataPanel.find('button.edit-datagroup').click(function(e) {
 				e.preventDefault();
@@ -1110,7 +1132,7 @@ THE SOFTWARE.
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body data-description rich-text">' + data.description + '</div></div>');
+		dataPanelBody.append('<div class="panel panel-default" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body data-description rich-text" data-edition="' + data.description.edition + '">' + data.description.content + '</div></div>');
 		dataPanelCollapse.append(dataPanelBody);
 		dataPanel.append(dataPanelCollapse);
 		dataPanelContainer.append(dataPanel);
@@ -1177,7 +1199,7 @@ THE SOFTWARE.
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + dataElementId + '-description" id="' + dataElementId + '-description" wrap="hard" class="form-control data-description">' + Simulators.paragraphs(data.description) + '</textarea></div></div>');
+		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + dataElementId + '-description" id="' + dataElementId + '-description" wrap="hard" class="form-control data-description">' + Simulators.paragraphs(data.description).content + '</textarea></div></div>');
 		var dataButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + dataElementId + '-buttons-panel"></div>');
 		var dataButtonsBody = $('<div class="panel-body data-buttons"></div>');
 		dataButtonsBody.append('<button class="btn btn-success pull-right validate-edit-data">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -1208,7 +1230,7 @@ THE SOFTWARE.
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body datagroup-description rich-text">' + datagroup.description + '</div></div>');
+		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body datagroup-description rich-text" data-edition="' + datagroup.description.edition + '">' + datagroup.description.content + '</div></div>');
 		dataPanelBody.append('<div class="panel panel-default datas-panel" id="' + dataElementId + '-datas-panel"><div class="panel-body sortable"></div></div>');
 		dataPanelCollapse.append(dataPanelBody);
 		dataPanel.append(dataPanelCollapse);
@@ -1233,7 +1255,7 @@ THE SOFTWARE.
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + dataElementId + '-description" id="' + dataElementId + '-description" wrap="hard" class="form-control datagroup-description">' + Simulators.paragraphs(datagroup.description) + '</textarea></div></div>');
+		dataPanelBody.append('<div class="panel panel-default description-panel" id="' + dataElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + dataElementId + '-description" id="' + dataElementId + '-description" wrap="hard" class="form-control datagroup-description">' + Simulators.paragraphs(datagroup.description).content + '</textarea></div></div>');
 		var dataButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + dataElementId + '-buttons-panel"></div>');
 		var dataButtonsBody = $('<div class="panel-body datagroup-buttons"></div>');
 		dataButtonsBody.append('<button class="btn btn-success pull-right validate-edit-datagroup">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -1355,7 +1377,10 @@ THE SOFTWARE.
 				datagroup: datagroup,
 				name: '',
 				label: '',
-				description: ''
+				description: {
+					content: '',
+					edition: ''
+				}
 			};
 			var dataPanelContainer = Simulators.drawDataForInput(data);
 			dataPanelContainer.find('button.cancel-edit-data').addClass('cancel-add-data').removeClass('cancel-edit-data');
@@ -1393,7 +1418,10 @@ THE SOFTWARE.
 				name: attributesContainer.find("p[data-attribute='name']").attr('data-value'),
 				label: attributesContainer.find("p[data-attribute='label']").attr('data-value'),
 				type: attributesContainer.find("p[data-attribute='type']").attr('data-value'),
-				description: dataContainerGroup.find('.data-description').html()
+				description: {
+					content: dataContainerGroup.find('.data-description').html(),
+					edition: dataContainerGroup.find('.data-description').attr('data-edition')
+				}
 			};
 			$.each(Simulators.optionalAttributes, function (name, attr) {
 				var oattr = attributesContainer.find("p[data-attribute='" + name + "'], span[data-attribute='" + name + "']");
@@ -1554,7 +1582,10 @@ THE SOFTWARE.
 				id: parseInt(Simulators.maxDatasetId()) + 1, 
 				name: '',
 				label: '',
-				description: ''
+				description: {
+					content: '',
+					edition: ''
+				}
 			};
 			var dataPanelContainer = Simulators.drawDatagroupForInput(datagroup);
 			dataPanelContainer.find('button.cancel-edit-datagroup').addClass('cancel-add-datagroup').removeClass('cancel-edit-datagroup');
@@ -1583,7 +1614,10 @@ THE SOFTWARE.
 				id: dataContainer.attr('data-id'), 
 				name: attributesContainer.find("p[data-attribute='name']").attr('data-value'),
 				label: attributesContainer.find("p[data-attribute='label']").attr('data-value'),
-				description: dataContainerGroup.find('.datagroup-description').html()
+				description: {
+					content: dataContainerGroup.find('.datagroup-description').html(),
+					edition: dataContainerGroup.find('.datagroup-description').attr('data-edition')
+				}
 			};
 			var dataPanelContainer = Simulators.drawDatagroupForInput(datagroup);
 			Simulators.datagroupBackup = dataContainerGroup.clone();
@@ -1693,7 +1727,10 @@ THE SOFTWARE.
 						source: $(this).find("p[data-attribute='source']").attr('data-value'),
 						index: $(this).find("p[data-attribute='index']").attr('data-value'),
 						memorize: $(this).find("input[data-attribute='memorize']").is(':checked') ? 1 : 0,
-						description: $(this).parent().find(".data-description").html(),
+						description: {
+							content: $(this).parent().find(".data-description").html(),
+							edition: $(this).parent().find(".data-description").attr('data-edition')
+						},
 						choices: choices,
 						choicesource: choicesource
 					});
@@ -1703,7 +1740,10 @@ THE SOFTWARE.
 					id:  $(this).attr('data-id'),
 					name: $(this).find("p[data-attribute='name']").attr('data-value'),
 					label: $(this).find("p[data-attribute='label']").attr('data-value'),
-					description: $(this).parent().find(".datagroup-description").html(),
+					description: {
+						content: $(this).parent().find(".datagroup-description").html(),
+						edition: 'wysihtml'
+					},
 					datas: gdatas
 				});
 			} else {
@@ -1739,7 +1779,10 @@ THE SOFTWARE.
 					source: $(this).find("p[data-attribute='source']").attr('data-value'),
 					index: $(this).find("p[data-attribute='index']").attr('data-value'),
 					memorize: $(this).find("input[data-attribute='memorize']").is(':checked') ? 1 : 0,
-					description: $(this).parent().find(".data-description").html(),
+					description: {
+						content: $(this).parent().find(".data-description").html(),
+						edition: $(this).parent().find(".data-description").attr('data-edition')
+					},
 					choices: choices,
 					choicesource: choicesource
 				});

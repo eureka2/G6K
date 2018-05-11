@@ -98,7 +98,7 @@ class Simulator {
 	 * @access  private
 	 *
 	 */
-	private $description = "";
+	private $description = null;
 
 	/**
 	 * @var string     $dateFormat The current date format in the display language of this simulator
@@ -202,7 +202,7 @@ class Simulator {
 	 * @access  private
 	 *
 	 */
-	private $relatedInformations = "";
+	private $relatedInformations = null;
 
 	/**
 	 * @var string     $dependencies The name of a data dependency
@@ -1151,33 +1151,40 @@ class Simulator {
 	}
 
 	/**
-	 * Returns the label (inside a HTML var) of a data item whose ID is the first element of the given array.
+	 * Returns the label (inside a HTML data) of a data item whose ID is the first element of the given array.
 	 *
 	 * @access  private
 	 * @param   array $matches An array where the first element is the ID of the data item.
-	 * @return  string The label inside a HTML var
+	 * @return  string The label inside a HTML data
 	 *
 	 */
 	private function replaceIdByDataLabel($matches) {
 		$id = $matches[1];
 		$data = $this->getDataById($id);
-		return $data !== null ? '<var data-id="' . $data->getId() . '" class="data">«' . $data->getLabel() . '»</var>' : "#" . $id;
+		return $data !== null ? '<data value="' . $data->getId() . '" class="data">« ' . $data->getLabel() . ' »</data>' : "#" . $id;
 	}
 
 	/**
-	 * Replaces, into the given text, the ID (prefixed with #) of all data by their label inside a HTML var.
+	 * Replaces, into the given text, the ID (prefixed with #) of all data by their label inside a HTML data.
 	 *
 	 * @access  public
-	 * @param   string $target The initial text
-	 * @return  string The replaced text with data labels
+	 * @param   \EUREKA\G6KBundle\Entity\RichText|string $target The initial text
+	 * @return  \EUREKA\G6KBundle\Entity\RichText|string The replaced text with data labels
 	 *
 	 */
 	public function replaceByDataLabel($target) {
-		return preg_replace_callback(
+		$text = $target instanceof RichText ? $target->getContent() : $target;
+		$result = preg_replace_callback(
 			"/#(\d+)/", 
 			array($this, 'replaceIdByDataLabel'),
-			$target
+			$text
 		);
+		if ($target instanceof RichText) {
+			$target->setContent($result);
+			return $target;
+		} else {
+			return $result;
+		}
 	}
 
 	/**
@@ -1235,7 +1242,7 @@ class Simulator {
 			$tableObj = new Table($dataObj, (string)$table['id']);
 			$tableObj->setName((string)$table['name']);
 			$tableObj->setLabel((string)$table['label']);
-			$tableObj->setDescription((string)$table->Description);
+			$tableObj->setDescription(new RichText((string)$table->Description, (string)$table->Description['edition']));
 			foreach ($table->Column as $column) {
 				$columnObj = new Column($tableObj, (int)$column['id'], (string)$column['name'], (string)$column['type']);
 				$columnObj->setLabel((string)$column['label']);
@@ -1243,7 +1250,7 @@ class Simulator {
 			}
 			$dataObj->setTable($tableObj);
 		}
-		$dataObj->setDescription((string)$data->Description);
+		$dataObj->setDescription(new RichText((string)$data->Description, (string)$data->Description['edition']));
 		return $dataObj;
 	}
 
@@ -1315,8 +1322,8 @@ class Simulator {
 		$this->setReferer((string)$simulator["referer"]);
 		$this->setDynamic((string)$simulator['dynamic'] == '1');
 		$this->setMemo((string)$simulator['memo'] == '1');
-		$this->setDescription((string)$simulator->Description);
-		$this->setRelatedInformations($simulator->RelatedInformations);
+		$this->setDescription(new RichText((string)$simulator->Description, (string)$simulator->Description['edition']));
+		$this->setRelatedInformations(new RichText((string)$simulator->RelatedInformations, (string)$simulator->RelatedInformations['edition']));
 		$this->setDateFormat((string)($simulator->DataSet['dateFormat']));
 		$this->setDecimalPoint((string)($simulator->DataSet['decimalPoint']));
 		$this->setMoneySymbol((string)($simulator->DataSet['moneySymbol']));
@@ -1327,7 +1334,7 @@ class Simulator {
 					$datagroup = $child;
 					$dataGroupObj = new DataGroup($this, (int)$datagroup['id'], (string)$datagroup['name']);
 					$dataGroupObj->setLabel((string)$datagroup['label']);
-					$dataGroupObj->setDescription((string)$datagroup->Description);
+					$dataGroupObj->setDescription(new RichText((string)$datagroup->Description, (string)$datagroup->Description['edition']));
 					foreach ($datagroup->Data as $data) {
 						$dataGroupObj->addData( $this->loadData($data));
 					}
@@ -1343,7 +1350,7 @@ class Simulator {
 			foreach ($simulator->Profiles->Profile as $profile) {
 				$profileObj = new Profile((int)$profile['id'], (string)$profile['name']);
 				$profileObj->setLabel((string)$profile['label']);
-				$profileObj->setDescription((string)$profile->Description);
+				$profileObj->setDescription(new RichText((string)$profile->Description, (string)$profile->Description['edition']));
 				foreach ($profile->Data as $data) {
 					$profileObj->addData((int)$data['id'], (string)$data['default']);
 				}
@@ -1358,7 +1365,7 @@ class Simulator {
 					$step0 = true;
 				}
 				$stepObj->setOutput((string)$step['output']);
-				$stepObj->setDescription((string)$step->Description);
+				$stepObj->setDescription(new RichText((string)$step->Description, (string)$step->Description['edition']));
 				$stepObj->setDynamic((string)$step['dynamic'] == '1');
 				foreach ($step->Panels->Panel as $panel) {
 					$panelObj = new Panel($stepObj, (int)$panel['id']);
@@ -1368,7 +1375,7 @@ class Simulator {
 						if ($block->getName() == "FieldSet") {
 							$fieldset = $block;
 							$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
-							$fieldsetObj->setLegend((string)$fieldset->Legend);
+							$fieldsetObj->setLegend(new RichText((string)$fieldset->Legend, (string)$fieldset->Legend['edition']));
 							if ((string)$fieldset['disposition'] != "") {
 								$fieldsetObj->setDisposition((string)$fieldset['disposition']);
 							}
@@ -1416,8 +1423,8 @@ class Simulator {
 									$sectionObj = new Section($chapterObj, (int)$section['id']);
 									$sectionObj->setName((string)$section['name']);
 									$sectionObj->setLabel((string)$section['label']);
-									$sectionObj->setContent((string)$section->Content);
-									$sectionObj->setAnnotations((string)$section->Annotations);
+									$sectionObj->setContent(new RichText((string)$section->Content, (string)$section->Content['edition']));
+									$sectionObj->setAnnotations(new RichText((string)$section->Annotations, (string)$section->Annotations['edition']));
 									$chapterObj->addSection($sectionObj);
 								}
 								$blockinfoObj->addChapter($chapterObj);
@@ -1444,7 +1451,7 @@ class Simulator {
 					}
 					foreach ($footnotes as $footnote) {
 						$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
-						$footnoteObj->setText((string)$footnote);
+						$footnoteObj->setText(new RichText((string)$footnote, (string)$footnote['edition']));
 						$footnotesObj->addFootNote($footnoteObj);
 					}
 					$stepObj->setFootNotes($footnotesObj);
@@ -1529,12 +1536,12 @@ class Simulator {
 		$fieldObj->setWidget((string)$field['widget']);
 		if ($field->PreNote) {
 			$noteObj = new FieldNote($this);
-			$noteObj->setText((string)$field->PreNote);
+			$noteObj->setText(new RichText((string)$field->PreNote, (string)$field->PreNote['edition']));
 			$fieldObj->setPreNote($noteObj);
 		}
 		if ($field->PostNote) {
 			$noteObj = new FieldNote($this);
-			$noteObj->setText((string)$field->PostNote);
+			$noteObj->setText(new RichText((string)$field->PostNote, (string)$field->PostNote['edition']));
 			$fieldObj->setPostNote($noteObj);
 		}
 		return $fieldObj;
@@ -1755,7 +1762,7 @@ class Simulator {
 	}
 
 	/**
-	 * Replaces, into the given text, the ID (prefixed with # or inside a HTML var) of all data by their name surrounded by '#(' and ')'.
+	 * Replaces, into the given text, the ID (prefixed with # or inside a HTML data) of all data by their name surrounded by '#(' and ')'.
 	 *
 	 * @access  private
 	 * @param   string $target The initial text
@@ -1764,7 +1771,7 @@ class Simulator {
 	 */
 	private function replaceIdByName($target) {
 		$result = preg_replace_callback(
-			'/\<var\s+[^\s]*\s*data-id="(\d+)"[^\>]*\>[^\<]+\<\/var\>/',
+			'/\<data\s+[^\s]*\s*value="(\d+)"[^\>]*\>[^\<]+\<\/data\>/',
 			array($this, 'replaceDataIdByName'),
 			$target
 		);
@@ -1789,7 +1796,7 @@ class Simulator {
 	}
 
 	/**
-	 * Replaces, into the given text, the ID (prefixed with # or inside a HTML var) of all data by their name.
+	 * Replaces, into the given text, the ID (prefixed with # or inside a HTML data) of all data by their name.
 	 *
 	 * @access  private
 	 * @param   string $target The initial text
@@ -1808,11 +1815,18 @@ class Simulator {
 	 * Converts the lines of the given text into HTML paragraphs
 	 *
 	 * @access  public
-	 * @param   string $text <parameter description>
+	 * @param   string $string <parameter description>
 	 * @return  string <description of the return value>
 	 *
 	 */
-	public function paragraphs ($text) {
+	public function paragraphs ($string) {
+		if ($string instanceof RichText && ! $string->isManual()) {
+			$result = preg_replace("/\[([^\^]+)\^(\d+)\(([^\]]+)\)\]/", '<a href="#foot-note-$2" title="$3">$1</a>', $string->getContent());
+			$result = preg_replace("/\[([^\^]+)\^(\d+)\]/", '<a href="#foot-note-$2" title="' . $this->controller->get('translator')->trans("Reference to the footnote %footnote%", array('%footnote%' => '$2')) . ' ">$1</a>', $result);
+			$string->setContent($result);
+			return $string;
+		}
+		$text = $string instanceof RichText ? $string->getContent() : $string;
 		$blocktags = array('address', 'article', 'aside', 'blockquote', 'canvas', 'dd', 'div', 'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'noscript', 'ol', 'output', 'pre', 'section', 'table', 'tfoot', 'ul', 'video');
 		$paragraphs = explode("\n", trim($text));
 		$result = '';
@@ -1874,14 +1888,14 @@ class Simulator {
 		$this->dependencies = 'noteDependencies';
 		if ($field->PreNote) {
 			$nfield['prenote'] = $this->paragraphs(preg_replace_callback(
-				'/#(\d+)|\<var\s+class="data"\s+data-id="(\d+)L?"\>[^\<]+\<\/var\>/', 
+				'/#(\d+)|\<data\s+class="data"\s+value="(\d+)L?"\>[^\<]+\<\/data\>/', 
 				array($this, 'addNoteDependency'), 
 				(string)$field->PreNote
 			));
 		}
 		if ($field->PostNote) {
 			$nfield['postnote'] = $this->paragraphs(preg_replace_callback(
-				'/#(\d+)|\<var\s+class="data"\s+data-id="(\d+)L?"\>[^\<]+\<\/var\>/', 
+				'/#(\d+)|\<data\s+class="data"\s+value="(\d+)L?"\>[^\<]+\<\/data\>/', 
 				array($this, 'addNoteDependency'),
 				(string)$field->PostNote
 			));
@@ -2348,7 +2362,10 @@ class Simulator {
 					'id' => (int)$profile['id'],
 					'name' => (string)$profile['name'],
 					'label' => (string)$profile['label'],
-					'description' => $this->paragraphs((string)$profile->Description),
+					'description' => array(
+						'content' => $this->paragraphs((string)$profile->Description),
+						'edition' => (string)$profile->Description['edition']
+					),
 					'datas' => $pdatas
 				);
 			}
@@ -2408,7 +2425,10 @@ class Simulator {
 								}
 								$nfieldset = array(
 									'id'	 => (int)$fieldset['id'],
-									'legend' => (string)$fieldset->Legend,
+									'legend' => array(
+										'content' => (string)$fieldset->Legend,
+										'edition' => (string)$fieldset->Legend['edition']
+									),
 									'display' => (string)$fieldset['display'],
 									'popinLink' => (string)$fieldset['popinLink'],
 									'fields' => $fields
@@ -2424,7 +2444,7 @@ class Simulator {
 									foreach ($chapter->Section as $section) {
 										$this->name = (string)$step['name']."-panel-".$panel['id']."-blockinfo-".$blockinfo['id']."-chapter-".$chapter['id']."-section-".$section['id'];
 										$content = preg_replace_callback(
-											'/#(\d+)|\<var\s+class="data"\s+data-id="(\d+)L?"\>[^\<]+\<\/var\>/', 
+											'/#(\d+)|\<data\s+class="data"\s+value="(\d+)L?"\>[^\<]+\<\/data\>/', 
 											array($this, 'addNoteDependency'), 
 											 $this->paragraphs((string)$section->Content)
 										);
@@ -2476,7 +2496,7 @@ class Simulator {
 							$this->dependencies = 'footNoteDependencies';
 							$nfootnote = array(
 								'text'	=> $this->paragraphs(preg_replace_callback(
-									'/#(\d+)|\<var\s+class="data"\s+data-id="(\d+)L?"\>[^\<]+\<\/var\>/', 
+									'/#(\d+)|\<data\s+class="data"\s+value="(\d+)L?"\>[^\<]+\<\/data\>/', 
 									array($this, 'addNoteDependency'), 
 									$footnote
 								))
@@ -2624,7 +2644,14 @@ class Simulator {
 	 * @return  string The cleaned text
 	 *
 	 */
-	private function cleanRichText($text) {
+	private function cleanRichText($richtext) {
+		if ($richtext == null) {
+			return '';
+		}
+		if (! $richtext->isManual()) {
+			return $richtext->getContent();
+		}
+		$text = $richtext->getContent();
 		$text = preg_replace("|\r|smi", "", $text);
 		$text = preg_replace("|<p>&nbsp;</p>|smi", "\n", $text);
 		$text = preg_replace("|<p><br></p>|smi", "\n", $text);
@@ -2652,7 +2679,7 @@ class Simulator {
 		$xml = array();
 		$xml[] = '<?xml version="1.0" encoding="utf-8"?>';
 		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $this->getLabel()) . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '">';
-		$xml[] = '	<Description><![CDATA[';
+		$xml[] = '	<Description edition="' . $this->getDescription()->getEdition() . '"><![CDATA[';
 		$xml[] = $this->cleanRichText($this->getDescription());
 		$xml[] = '	]]></Description>';
 		$xml[] = '	<DataSet dateFormat="' . $this->getDateFormat() . '" decimalPoint="' . $this->getDecimalPoint() . '" moneySymbol="' . $this->getMoneySymbol() . '" symbolPosition="' . $this->getSymbolPosition() . '">';
@@ -2692,7 +2719,7 @@ class Simulator {
 					if ($description != '' || $gdata->getType() == 'choice') {
 						$xml[] = '			<Data ' . $attrs . '>';
 						if ($description != '') {
-							$xml[] = '				<Description><![CDATA[';
+							$xml[] = '				<Description edition="' . $gdata->getDescription()->getEdition() . '"><![CDATA[';
 							$xml[] = $description;
 							$xml[] = '				]]></Description>';
 						}
@@ -2768,7 +2795,7 @@ class Simulator {
 				if ($description != '' || $data->getType() == 'choice') {
 					$xml[] = '		<Data ' . $attrs . '>';
 					if ($description != '') {
-						$xml[] = '			<Description><![CDATA[';
+						$xml[] = '			<Description edition="' . $data->getDescription()->getEdition() . '"><![CDATA[';
 						$xml[] = $description;
 						$xml[] = '			]]></Description>';
 					}
@@ -2820,7 +2847,7 @@ class Simulator {
 				$xml[] = '		<Profile id="' . $profile->getId() . '" name="' . $profile->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $profile->getLabel()) . '">';
 				$description = $this->cleanRichText($profile->getDescription());
 				if ($description != '') {
-					$xml[] = '			<Description><![CDATA[';
+					$xml[] = '			<Description edition="' . $profile->getDescription()->getEdition() . '"><![CDATA[';
 					$xml[] = $description;
 					$xml[] = '			]]></Description>';
 				}
@@ -2844,7 +2871,7 @@ class Simulator {
 				$xml[] = '		<Step ' . $attrs . '>';
 				$description = $this->cleanRichText($step->getDescription());
 				if ($description != '') {
-					$xml[] = '			<Description><![CDATA[';
+					$xml[] = '			<Description edition="' . $step->getDescription()->getEdition() . '"><![CDATA[';
 					$xml[] = $description;
 					$xml[] = '			]]></Description>';
 				}
@@ -2870,7 +2897,7 @@ class Simulator {
 							$xml[] = '					<FieldSet ' . $attrs . '>';
 							$legend = $this->cleanRichText($fieldset->getLegend());
 							if ($legend != '') {
-								$xml[] = '						<Legend><![CDATA[';
+								$xml[] = '						<Legend edition="' . $fieldset->getLegend()->getEdition() . '"><![CDATA[';
 								$xml[] = $legend;
 								$xml[] = '						]]></Legend>';
 							}
@@ -2940,12 +2967,12 @@ class Simulator {
 										if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
 											$xml[] = '							<Field ' . $attrs . '>';
 											if ($field->getPreNote() !== null) {
-												$xml[] = '							<PreNote><![CDATA[';
+												$xml[] = '							<PreNote edition="' . $field->getPreNote()->getText()->getEdition() . '"><![CDATA[';
 												$xml[] = $this->cleanRichText($field->getPreNote()->getText());
 												$xml[] = '							]]></PreNote>';
 											}
 											if ($field->getPostNote() !== null) {
-												$xml[] = '							<PostNote><![CDATA[';
+												$xml[] = '							<PostNote edition="' . $field->getPostNote()->getText()->getEdition() . '"><![CDATA[';
 												$xml[] = $this->cleanRichText($field->getPostNote()->getText());
 												$xml[] = '							]]></PostNote>';
 											}
@@ -2991,12 +3018,12 @@ class Simulator {
 									if ($field->getPreNote() !== null || $field->getPostNote() !== null) {
 										$xml[] = '						<Field ' . $attrs . '>';
 										if ($field->getPreNote() !== null) {
-											$xml[] = '							<PreNote><![CDATA[';
+											$xml[] = '							<PreNote edition="' . $field->getPreNote()->getText()->getEdition() . '"><![CDATA[';
 											$xml[] = $this->cleanRichText($field->getPreNote()->getText());
 											$xml[] = '							]]></PreNote>';
 										}
 										if ($field->getPostNote() !== null) {
-											$xml[] = '							<PostNote><![CDATA[';
+											$xml[] = '							<PostNote edition="' . $field->getPostNote()->getText()->getEdition() . '"><![CDATA[';
 											$xml[] = $this->cleanRichText($field->getPostNote()->getText());
 											$xml[] = '							]]></PostNote>';
 										}
@@ -3029,12 +3056,12 @@ class Simulator {
 									$attrs .= ' name="' . $section->getName() . '"';
 									$attrs .= ' label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $section->getLabel()) . '"';
 									$xml[] = '							<Section ' . $attrs . '>';
-									$xml[] = '								<Content><![CDATA[';
+									$xml[] = '								<Content edition="' . $section->getContent()->getEdition() . '"><![CDATA[';
 									$xml[] = $this->cleanRichText($section->getContent());
 									$xml[] = '								]]></Content>';
 									$annotations = $this->cleanRichText($section->getAnnotations());
 									if ($annotations != '') {
-										$xml[] = '								<Annotations><![CDATA[';
+										$xml[] = '								<Annotations edition="' . $section->getAnnotations()->getEdition() . '"><![CDATA[';
 										$xml[] = $annotations;
 										$xml[] = '								]]></Annotations>';
 									}
@@ -3074,6 +3101,7 @@ class Simulator {
 						if ($footnote->getId() != '') {
 							$attrs .= ' id="' . $footnote->getId() . '"'; 
 						}
+						$attrs .= ' edition="' . $footnote->getText()->getEdition() . '"';
 						$xml[] = '				<FootNote' . $attrs . '><![CDATA[';
 						$xml[] = $this->cleanRichText($footnote->getText());
 						$xml[] = '				]]></FootNote>';
@@ -3166,7 +3194,7 @@ class Simulator {
 		}
 		$relatedInformations = $this->cleanRichText($this->getRelatedInformations());
 		if ($relatedInformations != '') {
-			$xml[] = '	<RelatedInformations><![CDATA[';
+			$xml[] = '	<RelatedInformations edition="' . $this->getRelatedInformations()->getEdition() . '"><![CDATA[';
 			$xml[] = $relatedInformations;
 			$xml[] = '	]]></RelatedInformations>';
 		}

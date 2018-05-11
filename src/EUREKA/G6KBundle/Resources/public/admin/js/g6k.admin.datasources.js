@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ THE SOFTWARE.
 		});
 		Datasources.datasourcesSelect = JSON.stringify(datasourcesSelect);
 		if (action === 'create-table') {
-			$("#page-datasources textarea[name='table-description']").wysihtml5(Admin.wysihtml5Options);
+			$("#page-datasources textarea[name='table-description']").wysihtml(Admin.wysihtml5InlineOnlyOptions);
 			$('#btnAddNewColumn').click(function(e) {
 				Datasources.addNewColumn([0, '', '', '', '', '']);
 				e.preventDefault();
@@ -60,8 +60,15 @@ THE SOFTWARE.
 				return true;
 			});
 			Datasources.addNewColumn([0, '', '', '', '', '']);
+			$('#btnSaveEditedTable').click(function (e) {
+				$('textarea.richtext').each(function() {
+					$(this).val(Admin.clearHTML($(this)));
+				});
+				e.preventDefault();
+				$(this).parent('form').submit();
+			});
 		} else if (action === 'edit-table') {
-			$("#page-datasources textarea[name='table-description']").wysihtml5(Admin.wysihtml5Options);
+			$("#page-datasources textarea[name='table-description']").wysihtml(Admin.wysihtml5InlineOnlyOptions);
 			$('#btnAddNewColumn').click(function(e) {
 				Datasources.addNewColumn([0, '', '', '', '-1', '']);
 				e.preventDefault();
@@ -80,6 +87,13 @@ THE SOFTWARE.
 			});
 			$.each(fields, function(index, field) {
 				Datasources.addNewColumn(field);
+			});
+			$('#btnSaveEditedTable').click(function (e) {
+				$('textarea.richtext').each(function() {
+					$(this).val(Admin.clearHTML($(this)));
+				});
+				e.preventDefault();
+				$(this).parent('form').submit();
 			});
 		} else if (action !== 'import-table') {
 			Datasources.fields = {};
@@ -466,7 +480,7 @@ THE SOFTWARE.
 	}
 
 	Datasources.addNewColumn = function(field) {
-		var num = Math.floor($('#edition-table tbody tr').length / 3) + 1;
+		var num = Math.floor($('#edition-table > tbody > tr').length / 3) + 1;
 		var column = '<tr>' +
 			'<td class="new-field-id" rowspan="3">' + num + '</td>' +
 			'<td class="new-field-name">' +
@@ -514,7 +528,7 @@ THE SOFTWARE.
 			'</tr>' +
 			'<tr>' +
 			'<td class="new-field-description" colspan="5">' +
-			'<textarea name="description[]" class="form-control input-sm" placeholder="' + Translator.trans('Field description') + '">' + field[3] + '</textarea>' +
+			'<textarea rows="1" name="description[]" class="richtext form-control input-sm" placeholder="' + Translator.trans('Field description') + '">' + field[3] + '</textarea>' +
 			'</td>' +
 			'</tr>' +
 			'<tr>' +
@@ -522,8 +536,8 @@ THE SOFTWARE.
 			'</td>' +
 			'</tr>';
 		var $column = $(column);
-		$column.appendTo($('#edition-table tbody'));
-		$column.find('textarea').wysihtml5(Admin.wysihtml5Options);
+		$column.appendTo($('#edition-table > tbody'));
+		$column.find('textarea').wysihtml(Admin.wysihtml5InlineOnlyOptions);
 		$column.find('select').select2({
 			language: Admin.lang,
 			minimumResultsForSearch: 100
@@ -612,7 +626,7 @@ THE SOFTWARE.
 					errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 				}
 			} else {
-				var description = $(this).find("textarea").val();
+				var description = Admin.clearHTML($(this).find("textarea"));
 				if (field === '' && description !== '') { 
 					errors.push(Translator.trans("incorrect description for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 				}
@@ -648,7 +662,7 @@ THE SOFTWARE.
 					errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 				}
 			} else {
-				var description = $(this).find("textarea").val();
+				var description = Admin.clearHTML($(this).find("textarea"));
 				if (field === '' && description !== '') { 
 					errors.push(Translator.trans("incorrect description for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
 				}
@@ -948,7 +962,7 @@ $(document).ready(function() {
 			Admin.updated = true;
 		});
 		if ( $("#datasource-creation-form, #datasource-edition-form" ).length) {
-			$("#page-datasources textarea[name='datasource-description']").wysihtml5(Admin.wysihtml5Options);
+			$("#page-datasources textarea[name='datasource-description']").wysihtml(Admin.wysihtml5InlineOnlyOptions);
 			Datasources.toggleDatasourceFields('datasource-type');
 			Datasources.toggleDatasourceFields('datasource-database-type');
 			$("#datasource-database-password").on("input propertychange", function (e) {
@@ -973,6 +987,13 @@ $(document).ready(function() {
 				Datasources.hideErrors();
 				Admin.updated = false;
 				return true;
+			});
+			$('#btnSaveDatasource').click(function(e) {
+				$('textarea.richtext').each(function() {
+					$(this).val(Admin.clearHTML($(this)));
+				});
+				e.preventDefault();
+				$(this).parent('form').submit();
 			});
 		}
 		if ( $("#datasource-import-form" ).length) {

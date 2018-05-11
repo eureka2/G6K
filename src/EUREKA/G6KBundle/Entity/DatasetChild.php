@@ -76,7 +76,7 @@ abstract class DatasetChild {
 	 * @access  protected
 	 *
 	 */
-	protected $description = "";
+	protected $description = null;
 
 	/**
 	 * @var bool       $error Indicates whether an error is occurred for this dataset child.

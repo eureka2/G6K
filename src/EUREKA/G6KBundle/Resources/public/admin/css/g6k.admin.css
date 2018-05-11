@@ -82,6 +82,24 @@ ul.rule-conditions > li {
 .button-label {
 	display: none;
 }
+#page .rich-text table {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+#page .rich-text table caption {
+	background: #eee;
+	text-align: center;
+	color: #000;
+	font-weight: bold;
+}
+#page .rich-text table th {
+	text-align: center;
+	background: #ddd;
+}
+#page .rich-text table th,
+#page .rich-text table td {
+	border: 1px solid #ccc;
+}
 /*==============================================
     MEDIA QUERIES     
     =============================================*/

@@ -66,7 +66,7 @@ class FootNote {
 	 * @access  private
 	 *
 	 */
-	private $text = "";
+	private $text = null;
 
 	/**
 	 * Constructor of class FootNote
