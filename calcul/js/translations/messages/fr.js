@@ -618,8 +618,8 @@
     Translator.add("m-d-Y", "MM-JJ-AAAA", "messages", "fr");
     Translator.add("m\/d", "MM\/JJ", "messages", "fr");
     Translator.add("m\/d\/Y", "MM\/JJ\/AAAA", "messages", "fr");
-    Translator.add("m\/y", "MM\/AA", "messages", "fr");
     Translator.add("m\/Y", "MM\/AAAA", "messages", "fr");
+    Translator.add("m\/y", "MM\/AA", "messages", "fr");
     Translator.add("Main referer", "Referer principal", "messages", "fr");
     Translator.add("March", "Mars", "messages", "fr");
     Translator.add("Maroon", "Marron", "messages", "fr");
@@ -647,8 +647,8 @@
     Translator.add("Midnight Blue", "Bleu nuit", "messages", "fr");
     Translator.add("min", "min", "messages", "fr");
     Translator.add("min can not refer to the data itself", "min ne peut pas se r\u00e9f\u00e9rer \u00e0 la donn\u00e9e elle-m\u00eame", "messages", "fr");
-    Translator.add("minimum", "valeur minimale", "messages", "fr");
     Translator.add("Minimum", "Minimum", "messages", "fr");
+    Translator.add("minimum", "valeur minimale", "messages", "fr");
     Translator.add("Minimum value", "valeur minimale", "messages", "fr");
     Translator.add("Mint Cream", "Cr\u00e8me \u00e0 la menthe", "messages", "fr");
     Translator.add("min value", "valeur min", "messages", "fr");
@@ -802,8 +802,8 @@
     Translator.add("PostNote", "Post Note", "messages", "fr");
     Translator.add("pow", "puissance", "messages", "fr");
     Translator.add("Powder Blue", "Bleu poudre", "messages", "fr");
-    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("PreNote", "Pre Note", "messages", "fr");
+    Translator.add("prenote", "pre note", "messages", "fr");
     Translator.add("Previous", "Pr\u00e9c\u00e9dent", "messages", "fr");
     Translator.add("Primary", "Principal", "messages", "fr");
     Translator.add("Prior step", "Etape pr\u00e9c\u00e9dente", "messages", "fr");
@@ -849,8 +849,8 @@
     Translator.add("Right", "Droite", "messages", "fr");
     Translator.add("Roles", "R\u00f4les", "messages", "fr");
     Translator.add("Rosy Brown", "Brun ros\u00e9", "messages", "fr");
-    Translator.add("round", "arrondi", "messages", "fr");
     Translator.add("Round", "Arrondi", "messages", "fr");
+    Translator.add("round", "arrondi", "messages", "fr");
     Translator.add("Rows:", "Rang\u00e9es :", "messages", "fr");
     Translator.add("Royal Blue", "Bleu royal", "messages", "fr");
     Translator.add("Rule", "R\u00e8gle", "messages", "fr");
@@ -896,8 +896,8 @@
     Translator.add("Semicolon", "Point-virgule", "messages", "fr");
     Translator.add("Separator", "S\u00e9parateur", "messages", "fr");
     Translator.add("September", "Septembre", "messages", "fr");
-    Translator.add("Set", "Mettre", "messages", "fr");
     Translator.add("set", "mettre", "messages", "fr");
+    Translator.add("Set", "Mettre", "messages", "fr");
     Translator.add("Set value", "Mettre la valeur", "messages", "fr");
     Translator.add("Several localities are served by the postal code entered, please specify", "Plusieurs communes sont desservies par le code postal saisi, veuillez pr\u00e9ciser", "messages", "fr");
     Translator.add("Several localities match the name entered, please specify", "Plusieurs communes correspondent au nom saisi, veuillez pr\u00e9ciser", "messages", "fr");
@@ -925,8 +925,8 @@
     Translator.add("sinh", "sinusHyperbolique", "messages", "fr");
     Translator.add("size", "taille", "messages", "fr");
     Translator.add("Sky Blue", "Bleu ciel", "messages", "fr");
-    Translator.add("Slate Blue", "Bleu ardoise", "messages", "fr");
     Translator.add("SlateBlue", "Bleu ardoise", "messages", "fr");
+    Translator.add("Slate Blue", "Bleu ardoise", "messages", "fr");
     Translator.add("Slate Gray", "Gris ardoise", "messages", "fr");
     Translator.add("small", "petit", "messages", "fr");
     Translator.add("smaller", "plus petit", "messages", "fr");
@@ -985,6 +985,7 @@
     Translator.add("The action button name is required", "Le nom du bouton d'action est requis", "messages", "fr");
     Translator.add("The action button uri is required in this context", "L'uri du bouton d'action est n\u00e9cessaire dans ce contexte", "messages", "fr");
     Translator.add("The alt attribute is mandatory!", "Le texte alternatif est obligatoire", "messages", "fr");
+    Translator.add("The annotations of the section #%id% of step #%stepId% \/ panel %panelId% \/ blockinfo #%blockinfoId% \/ chapter #%chapterId% contains a reference to this footnote", "Les annotations de la section #%id% de l'\u00e9tape #%stepId% \/ panneau %panelId% \/ bloc d'infos #%blockinfoId% \/ chapitre #%chapterId% contient un renvoi vers cette note de bas de page", "messages", "fr");
     Translator.add("the blockinfo", "le bloc d'infos", "messages", "fr");
     Translator.add("The blockinfo name is required", "Le nom du bloc d'infos est requis", "messages", "fr");
     Translator.add("the chapter", "le chapitre", "messages", "fr");
@@ -994,6 +995,7 @@
     Translator.add("The column label is required", "Le libell\u00e9 de la colonne est requis", "messages", "fr");
     Translator.add("The column name is required", "Le nom de la colonne est requis", "messages", "fr");
     Translator.add("the content", "la valeur", "messages", "fr");
+    Translator.add("The content of the section #%id% of step #%stepId% \/ panel %panelId% \/ blockinfo #%blockinfoId% \/ chapter #%chapterId% contains a reference to this footnote", "Le contenu de la section #%id% de l'\u00e9tape #%stepId% \/ panneau %panelId% \/ bloc d'infos #%blockinfoId% \/ chapitre #%chapterId% contient un renvoi vers cette note de bas de page", "messages", "fr");
     Translator.add("the data", "la donn\u00e9e", "messages", "fr");
     Translator.add("The database host is required", "Le serveur de base de donn\u00e9es est requis", "messages", "fr");
     Translator.add("The database label is required", "Le libell\u00e9 de la base de donn\u00e9es est requis", "messages", "fr");
@@ -1009,6 +1011,10 @@
     Translator.add("The data value is required", "La valeur de la donn\u00e9e est requise", "messages", "fr");
     Translator.add("the default", "la valeur par d\u00e9faut", "messages", "fr");
     Translator.add("The default value can not refer to the data itself", "La valeur par d\u00e9faut ne peut pas se r\u00e9f\u00e9rer \u00e0 la donn\u00e9e elle-m\u00eame", "messages", "fr");
+    Translator.add("The description of the data #%id% contains a reference to this footnote", "La description de la donn\u00e9e #%id% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The description of the datagroup #%id% contains a reference to this footnote", "La description du groupe de donn\u00e9es #%id% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The description of the simulator contains a reference to this footnote", "La description du simulateur contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The description of the step #%id% contains a reference to this footnote", "La description de l'\u00e9tape #%id% contient un renvoi vers cette note de bas de page", "messages", "fr");
     Translator.add("The email field is required!", "Le champ email est obligatoire!", "messages", "fr");
     Translator.add("The entered value does not allow to find the information of the locality.", "La valeur saisie ne permet pas de retrouver les informations de la commune.", "messages", "fr");
     Translator.add("the explanation", "l'explication", "messages", "fr");
@@ -1032,12 +1038,26 @@
     Translator.add("the footnote", "la note de bas de page", "messages", "fr");
     Translator.add("The JSON data file extension must be '.json'", "L'extension du fichier de donn\u00e9es JSON doit \u00eatre '.json'", "messages", "fr");
     Translator.add("The JSON schema file extension must be '.schema.json'", "L'extension du fichier du sch\u00e9ma JSON doit \u00eatre '.schema.json'", "messages", "fr");
+    Translator.add("The label of the blockinfo #%id% of step #%stepId% \/ panel #%panelId% contains a reference to this footnote", "Le libell\u00e9 du bloc d'infos #%id% de l'\u00e9tape #%stepId% \/ panneau #%panelId% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the chapter #%id% of step #%stepId% \/ panel %panelId% \/ blockinfo #%blockinfoId% contains a reference to this footnote", "Le libell\u00e9 du chapitre #%id% de l'\u00e9tape #%stepId% \/ panneau #%panelId% \/ bloc d'infos #%blockinfoId% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the column #%id% of step #%stepId% \/ panel %panelId% \/ fieldset #%fieldsetId% contains a reference to this footnote", "Le libell\u00e9 de la colonne #%id% de l'\u00e9tape #%stepId% \/ panneau #%panelId% \/ groupe de champs #%fieldsetId% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the data #%id% contains a reference to this footnote", "Le libell\u00e9 de la donn\u00e9e #%id% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the datagroup #%id% contains a reference to this footnote", "Le libell\u00e9 du groupe de donn\u00e9es #%id% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the field #%id% of step #%stepId% \/ panel #%panelId% \/ fieldset #%fieldsetId% contains a reference to this footnote", "Le libell\u00e9 du champ #%id% de l'\u00e9tape #%stepId% \/ panneau #%panelId% \/ groupe de champs #%fieldsetId% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the field #%id% of step #%stepId% \/ panel %panelId% \/ fieldset #%fieldsetId% \/ fieldrow #%fieldrowId% contains a reference to this footnote", "Le libell\u00e9 du champ #%id% de l'\u00e9tape #%stepId% \/ panneau #%panelId% \/ groupe de champs #%fieldsetId% \/ rang\u00e9e #%fieldrowId% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the panel #%id% of step #%stepId% contains a reference to this footnote", "Le libell\u00e9 du panneau #%id% de l'\u00e9tape #%stepId% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the section #%id% of step #%stepId% \/ panel %panelId% \/ blockinfo #%blockinfoId% \/ chapter #%chapterId% contains a reference to this footnote", "Le libell\u00e9 de la section #%id% de l'\u00e9tape #%stepId% \/ panneau #%panelId% \/ bloc d'infos #%blockinfoId% \/ chapitre #%chapterId% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the simulator contains a reference to this footnote", "Le libell\u00e9 du simulateur contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The label of the step #%id% contains a reference to this footnote", "Le libell\u00e9 de l'\u00e9tape #%id% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The legend of the fieldset #%id% of step #%stepId% contains a reference to this footnote", "La l\u00e9gende du groupe de champs #%id% de l'\u00e9tape #%stepId% contient un renvoi vers cette note de bas de page", "messages", "fr");
     Translator.add("the maximum", "la valeur maximale", "messages", "fr");
     Translator.add("the minimum", "la valeur minimale", "messages", "fr");
     Translator.add("The name is required", "Le nom est requis", "messages", "fr");
     Translator.add("The name must not contains any space or special character", "Le nom ne doit contenir ni espaces, ni caract\u00e8res sp\u00e9ciaux ou accentu\u00e9s", "messages", "fr");
     Translator.add("The names of the two files without extension should be the same.", "Les noms des deux fichiers (sans l'extension) doivent \u00eatre les m\u00eames", "messages", "fr");
     Translator.add("then do ...", "alors  ...", "messages", "fr");
+    Translator.add("The note of the field #%id% of step #%stepId% \/ panel #%panelId% \/ fieldset #%fieldsetId% contains a reference to this footnote", "La note associ\u00e9e au champ #%id% de l'\u00e9tape #%stepId% \/ panneau #%panelId% \/ groupe de champs #%fieldsetId% contient un renvoi vers cette note de bas de page", "messages", "fr");
+    Translator.add("The note of the field #%id% of step #%stepId% \/ panel %panelId% \/ fieldset #%fieldsetId% \/ fieldrow #%fieldrowId% contains a reference to this footnote", "La note associ\u00e9e au champ #%id% de l'\u00e9tape #%stepId% \/ panneau #%panelId% \/ groupe de champs #%fieldsetId% \/ rang\u00e9e #%fieldrowId% contient un renvoi vers cette note de bas de page", "messages", "fr");
     Translator.add("The opening and closing parenthesis do not match", "Les parenth\u00e8ses ouvrantes et fermantes ne correspondent pas", "messages", "fr");
     Translator.add("the panel", "le panneau", "messages", "fr");
     Translator.add("The panel name is required", "Le nom du panneau est requis", "messages", "fr");
@@ -1053,6 +1073,7 @@
     Translator.add("There are %count% suggestions, use up and down arrows to review.", "Il y a %count% suggestions, utilisez les fl\u00e8ches haut et bas pour passer en revue.", "messages", "fr");
     Translator.add("There is no suggestion", "Il n'y a aucune suggestion", "messages", "fr");
     Translator.add("There is one suggestion", "Il y a une suggestion", "messages", "fr");
+    Translator.add("The related informations of the simulator contain a reference to this footnote", "Les informations connexes du simulateur contiennent un renvoi vers cette note de bas de page", "messages", "fr");
     Translator.add("The request field is required", "Le champ requ\u00eate est requis", "messages", "fr");
     Translator.add("the result index", "l'index de r\u00e9sultat", "messages", "fr");
     Translator.add("The rule label is required", "Le libell\u00e9 de la r\u00e8gle est requis", "messages", "fr");
@@ -1180,8 +1201,8 @@
     Translator.add("y", "AA", "messages", "fr");
     Translator.add("Y-m", "AAAA-MM", "messages", "fr");
     Translator.add("y-m", "AA-MM", "messages", "fr");
-    Translator.add("Y-m-d", "AAAA-MM-JJ", "messages", "fr");
     Translator.add("y-m-d", "AA-MM-JJ", "messages", "fr");
+    Translator.add("Y-m-d", "AAAA-MM-JJ", "messages", "fr");
     Translator.add("Year", "Ann\u00e9e", "messages", "fr");
     Translator.add("year", "ann\u00e9e", "messages", "fr");
     Translator.add("Yellow", "Jaune", "messages", "fr");
@@ -1199,5 +1220,6 @@
     Translator.add("You have entered an invalid url!", "Vous avez entr\u00e9 une URL invalide!", "messages", "fr");
     Translator.add("You have not selected a file or it is invalid!", "Vous n'avez pas s\u00e9lectionn\u00e9 de fichier ou il est invalide!", "messages", "fr");
     Translator.add("You have unsaved stuff. Are you sure to leave?", "Vous avez des choses non enregistr\u00e9es. Etes-vous s\u00fbr de vouloir quitter cette page ?", "messages", "fr");
+    Translator.add("You must remove this reference before you can remove this footnote.", "Vous devez enlever ce renvoi avant d epouvoir supprimer cette note de bas de page.", "messages", "fr");
     Translator.add("Your update are not saved. Sure to leave?", "Vos mises \u00e0 jour ne sont pas enregistr\u00e9es. Certain de quitter cette page ?", "messages", "fr");
 })(Translator);

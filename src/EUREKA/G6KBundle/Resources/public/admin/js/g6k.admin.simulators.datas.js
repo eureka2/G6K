@@ -470,7 +470,12 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindData = function(dataPanelContainer) {
-		dataPanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
+		var wysihtml5Options = $.extend(true, {}, Admin.wysihtml5Options, {
+			toolbar: {
+				insertFootnoteReference: false
+			}
+		});
+		dataPanelContainer.find('textarea').wysihtml(wysihtml5Options);
 		dataPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
@@ -710,7 +715,12 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindDatagroup = function(dataPanelContainer) {
-		dataPanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
+		var wysihtml5Options = $.extend(true, {}, Admin.wysihtml5Options, {
+			toolbar: {
+				insertFootnoteReference: false
+			}
+		});
+		dataPanelContainer.find('textarea').wysihtml(wysihtml5Options);
 		dataPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"

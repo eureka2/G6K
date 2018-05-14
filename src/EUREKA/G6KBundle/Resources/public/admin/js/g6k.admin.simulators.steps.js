@@ -395,6 +395,222 @@ THE SOFTWARE.
 		});
 	}
 
+	Simulators.isFootnoteIdReferenced = function(stepId, id) {
+		var re1 = new RegExp("\\[[^\\^]+\\^" + id + '\\([^\\)]+\\)\\]', 'g');
+		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + id + '\\"', 'g');
+		var found = false;
+		$('#simulator-options-panel').find('[data-attribute=label]').each(function() {
+			if (re1.test($(this).text())) {
+				found = Translator.trans("The label of the simulator contains a reference to this footnote");
+				return false;
+			}
+		});
+		if (found === false) {
+			$('#step-' + stepId).find('.step-container').find('[data-attribute=label]').each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.step-container');
+					found = Translator.trans("The label of the step #%id% contains a reference to this footnote", {
+						id: container.attr('data-id')
+					});
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			$('#step-' + stepId).find('.panel-container').find('[data-attribute=label]').each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.panel-container');
+					found = Translator.trans("The label of the panel #%id% of step #%stepId% contains a reference to this footnote", {
+						id: container.attr('data-id'),
+						stepId: container.attr('data-step')
+					});
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			$('#step-' + stepId).find('.field-container').find('[data-attribute=label]').each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.field-container');
+					if (container.attr('data-fieldrow')) {
+						found = Translator.trans("The label of the field #%id% of step #%stepId% / panel %panelId% / fieldset #%fieldsetId% / fieldrow #%fieldrowId% contains a reference to this footnote", {
+							id: container.attr('data-id'),
+							stepId : container.attr('data-step'),
+							panelId : container.attr('data-panel'),
+							fieldsetId : container.attr('data-fieldset'),
+							fieldrowId : container.attr('data-fieldrow')
+						});
+					} else {
+						found = Translator.trans("The label of the field #%id% of step #%stepId% / panel #%panelId% / fieldset #%fieldsetId% contains a reference to this footnote", {
+							id: container.attr('data-id'),
+							stepId : container.attr('data-step'),
+							panelId : container.attr('data-panel'),
+							fieldsetId : container.attr('data-fieldset')
+						});
+					}
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			$('#step-' + stepId).find('.column-container').find('[data-attribute=label]').each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.column-container');
+					found = Translator.trans("The label of the column #%id% of step #%stepId% / panel %panelId% / fieldset #%fieldsetId% contains a reference to this footnote", {
+						id: container.attr('data-id'),
+						stepId : container.attr('data-step'),
+						panelId : container.attr('data-panel'),
+						fieldsetId : container.attr('data-fieldset')
+					});
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			$('#step-' + stepId).find('.block-container.blockinfo').find('[data-attribute=label]').each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.block-container.blockinfo');
+					found = Translator.trans("The label of the blockinfo #%id% of step #%stepId% / panel #%panelId% contains a reference to this footnote", {
+						id: container.attr('data-id'),
+						stepId : container.attr('data-step'),
+						panelId : container.attr('data-panel')
+					});
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			$('#step-' + stepId).find('.chapter-container').find('[data-attribute=label]').each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.chapter-container');
+					found = Translator.trans("The label of the chapter #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% contains a reference to this footnote", {
+						id: container.attr('data-id'),
+						stepId : container.attr('data-step'),
+						panelId : container.attr('data-panel'),
+						blockinfoId : container.attr('data-blockinfo')
+					});
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			$('#step-' + stepId).find('.section-container').find('[data-attribute=label]').each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.section-container');
+					found = Translator.trans("The label of the section #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% / chapter #%chapterId% contains a reference to this footnote", {
+						id: container.attr('data-id'),
+						stepId : container.attr('data-step'),
+						panelId : container.attr('data-panel'),
+						blockinfoId : container.attr('data-blockinfo'),
+						chapterId : container.attr('data-chapter')
+					});
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			var richtexts = $('#simulator-description-panel-holder').find('.rich-text');
+			richtexts.each(function() {
+				if (re1.test($(this).text())) {
+					found = Translator.trans("The description of the simulator contains a reference to this footnote");
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			var richtexts = $('#simulator-related-informations-panel-holder').find('.rich-text');
+			richtexts.each(function() {
+				if (re1.test($(this).text())) {
+					found = Translator.trans("The related informations of the simulator contains a reference to this footnote");
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			var richtexts = $('#step-' + stepId).find('.step-description.rich-text');
+			richtexts.each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.step-container');
+					found = Translator.trans("The description of the step #%id% contains a reference to this footnote", {
+						id: container.attr('data-id')
+					});
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			var richtexts = $('#step-' + stepId).find('.fieldset-legend.rich-text');
+			richtexts.each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.block-container.fieldset');
+					found = Translator.trans("The legend of the fieldset #%id% of step #%stepId% contains a reference to this footnote", {
+						id: container.attr('data-id'),
+						stepId : container.attr('data-step')
+					});
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			var richtexts = $('#step-' + stepId).find('.field-note.rich-text');
+			richtexts.each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parents('.field-container');
+					if (container.attr('data-fieldrow')) {
+						found = Translator.trans("The note of the field #%id% of step #%stepId% / panel %panelId% / fieldset #%fieldsetId% / fieldrow #%fieldrowId% contains a reference to this footnote", {
+							id: container.attr('data-id'),
+							stepId : container.attr('data-step'),
+							panelId : container.attr('data-panel'),
+							fieldsetId : container.attr('data-fieldset'),
+							fieldrowId : container.attr('data-fieldrow')
+						});
+					} else {
+						found = Translator.trans("The note of the field #%id% of step #%stepId% / panel #%panelId% / fieldset #%fieldsetId% contains a reference to this footnote", {
+							id: container.attr('data-id'),
+							stepId : container.attr('data-step'),
+							panelId : container.attr('data-panel'),
+							fieldsetId : container.attr('data-fieldset')
+						});
+					}
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			var richtexts = $('#step-' + stepId).find('.section-content.rich-text');
+			richtexts.each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parent().prev();
+					found = Translator.trans("The content of the section #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% / chapter #%chapterId% contains a reference to this footnote", {
+						id: container.attr('data-id'),
+						stepId : container.attr('data-step'),
+						panelId : container.attr('data-panel'),
+						blockinfoId : container.attr('data-blockinfo'),
+						chapterId : container.attr('data-chapter')
+					});
+					return false;
+				}
+			});
+		}
+		if (found === false) {
+			var richtexts = $('#step-' + stepId).find('.section-annotations.rich-text');
+			richtexts.each(function() {
+				if (re1.test($(this).text())) {
+					var container = $(this).parent().prev().prev();
+					found = Translator.trans("The annotations of the section #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% / chapter #%chapterId% contains a reference to this footnote", {
+						id: container.attr('data-id'),
+						stepId : container.attr('data-step'),
+						panelId : container.attr('data-panel'),
+						blockinfoId : container.attr('data-blockinfo'),
+						chapterId : container.attr('data-chapter')
+					});
+					return false;
+				}
+			});
+		}
+		return found;
+	}
+
 	Simulators.renumberSteps = function(panelGroups) {
 		var step0 = 0;
 		$.each(steps, function(index, step) {
@@ -1361,6 +1577,14 @@ THE SOFTWARE.
 				});
 				return;
 			}
+			var referenced;
+			if ((referenced = Simulators.isFootnoteIdReferenced(stepId, id)) !== false) {
+				bootbox.alert({
+					title: Translator.trans('Deleting footnote'),
+					message: referenced + ". " + Translator.trans("You must remove this reference before you can remove this footnote.")
+				});
+				return;
+			}
 			bootbox.confirm({
 				title: Translator.trans('Deleting footnote'),
 				message: Translator.trans("Are you sure you want to delete the footnote : %id%", { 'id': id }), 
@@ -2284,7 +2508,7 @@ THE SOFTWARE.
 		fieldsetContainerBody.append(attributesContainer);
 		fieldsetContainer.append(fieldsetContainerBody);
 		fieldsetPanelBody.append(fieldsetContainer);
-		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldsetElementId + '-legend" id="' + fieldsetElementId + '-legend" wrap="hard" class="form-control fieldset-legend">' + Simulators.paragraphs(fieldset.legend).content + '</textarea></div></div>');
+		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body"><textarea rows="1" name="' + fieldsetElementId + '-legend" id="' + fieldsetElementId + '-legend" wrap="hard" class="form-control fieldset-legend">' + Simulators.paragraphs(fieldset.legend).content + '</textarea></div></div>');
 		var fieldsetButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + fieldsetElementId + '-buttons-panel"></div>');
 		var fieldsetButtonsBody = $('<div class="panel-body fieldset-buttons"></div>');
 		fieldsetButtonsBody.append('<button class="btn btn-success pull-right validate-edit-fieldset">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
@@ -2328,7 +2552,13 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindFieldSet = function(fieldsetPanelContainer) {
-		fieldsetPanelContainer.find('textarea').wysihtml(Admin.wysihtml5InlineOnlyOptions);
+		var wysihtml5Options = $.extend(true, {}, Admin.wysihtml5InlineOnlyOptions, {
+			toolbar: {
+				insertData: true,
+				insertFootnoteReference: true
+			}
+		});
+		fieldsetPanelContainer.find('textarea').wysihtml(wysihtml5Options);
 		fieldsetPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"

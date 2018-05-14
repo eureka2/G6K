@@ -2475,12 +2475,12 @@
                 <target>MM/JJ/AAAA</target>
             </trans-unit>
             <trans-unit id="619">
-                <source>m/y</source>
-                <target>MM/AA</target>
-            </trans-unit>
-            <trans-unit id="620">
                 <source>m/Y</source>
                 <target>MM/AAAA</target>
+            </trans-unit>
+            <trans-unit id="620">
+                <source>m/y</source>
+                <target>MM/AA</target>
             </trans-unit>
             <trans-unit id="621">
                 <source>Main referer</source>
@@ -2591,12 +2591,12 @@
                 <target>min ne peut pas se référer à la donnée elle-même</target>
             </trans-unit>
             <trans-unit id="648">
-                <source>minimum</source>
-                <target>valeur minimale</target>
-            </trans-unit>
-            <trans-unit id="649">
                 <source>Minimum</source>
                 <target>Minimum</target>
+            </trans-unit>
+            <trans-unit id="649">
+                <source>minimum</source>
+                <target>valeur minimale</target>
             </trans-unit>
             <trans-unit id="650">
                 <source>Minimum value</source>
@@ -3211,12 +3211,12 @@
                 <target>Bleu poudre</target>
             </trans-unit>
             <trans-unit id="803">
-                <source>prenote</source>
-                <target>pre note</target>
-            </trans-unit>
-            <trans-unit id="804">
                 <source>PreNote</source>
                 <target>Pre Note</target>
+            </trans-unit>
+            <trans-unit id="804">
+                <source>prenote</source>
+                <target>pre note</target>
             </trans-unit>
             <trans-unit id="805">
                 <source>Previous</source>
@@ -3399,12 +3399,12 @@
                 <target>Brun rosé</target>
             </trans-unit>
             <trans-unit id="850">
-                <source>round</source>
-                <target>arrondi</target>
-            </trans-unit>
-            <trans-unit id="851">
                 <source>Round</source>
                 <target>Arrondi</target>
+            </trans-unit>
+            <trans-unit id="851">
+                <source>round</source>
+                <target>arrondi</target>
             </trans-unit>
             <trans-unit id="852">
                 <source>Rows:</source>
@@ -3587,12 +3587,12 @@
                 <target>Septembre</target>
             </trans-unit>
             <trans-unit id="897">
-                <source>Set</source>
-                <target>Mettre</target>
-            </trans-unit>
-            <trans-unit id="898">
                 <source>set</source>
                 <target>mettre</target>
+            </trans-unit>
+            <trans-unit id="898">
+                <source>Set</source>
+                <target>Mettre</target>
             </trans-unit>
             <trans-unit id="899">
                 <source>Set value</source>
@@ -3703,11 +3703,11 @@
                 <target>Bleu ciel</target>
             </trans-unit>
             <trans-unit id="926">
-                <source>Slate Blue</source>
+                <source>SlateBlue</source>
                 <target>Bleu ardoise</target>
             </trans-unit>
             <trans-unit id="927">
-                <source>SlateBlue</source>
+                <source>Slate Blue</source>
                 <target>Bleu ardoise</target>
             </trans-unit>
             <trans-unit id="928">
@@ -3943,862 +3943,950 @@
                 <target>Le texte alternatif est obligatoire</target>
             </trans-unit>
             <trans-unit id="986">
+                <source>The annotations of the section #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% / chapter #%chapterId% contains a reference to this footnote</source>
+                <target>Les annotations de la section #%id% de l'étape #%stepId% / panneau %panelId% / bloc d'infos #%blockinfoId% / chapitre #%chapterId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="987">
                 <source>the blockinfo</source>
                 <target>le bloc d'infos</target>
             </trans-unit>
-            <trans-unit id="987">
+            <trans-unit id="988">
                 <source>The blockinfo name is required</source>
                 <target>Le nom du bloc d'infos est requis</target>
             </trans-unit>
-            <trans-unit id="988">
+            <trans-unit id="989">
                 <source>the chapter</source>
                 <target>le chapitre</target>
             </trans-unit>
-            <trans-unit id="989">
+            <trans-unit id="990">
                 <source>The chapter name is required</source>
                 <target>Le nom du chapitre est obligatoire</target>
             </trans-unit>
-            <trans-unit id="990">
+            <trans-unit id="991">
                 <source>the choice</source>
                 <target>le choix</target>
             </trans-unit>
-            <trans-unit id="991">
+            <trans-unit id="992">
                 <source>the column</source>
                 <target>la colonne</target>
             </trans-unit>
-            <trans-unit id="992">
+            <trans-unit id="993">
                 <source>The column label is required</source>
                 <target>Le libellé de la colonne est requis</target>
             </trans-unit>
-            <trans-unit id="993">
+            <trans-unit id="994">
                 <source>The column name is required</source>
                 <target>Le nom de la colonne est requis</target>
             </trans-unit>
-            <trans-unit id="994">
+            <trans-unit id="995">
                 <source>the content</source>
                 <target>la valeur</target>
             </trans-unit>
-            <trans-unit id="995">
+            <trans-unit id="996">
+                <source>The content of the section #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% / chapter #%chapterId% contains a reference to this footnote</source>
+                <target>Le contenu de la section #%id% de l'étape #%stepId% / panneau %panelId% / bloc d'infos #%blockinfoId% / chapitre #%chapterId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="997">
                 <source>the data</source>
                 <target>la donnée</target>
             </trans-unit>
-            <trans-unit id="996">
+            <trans-unit id="998">
                 <source>The database host is required</source>
                 <target>Le serveur de base de données est requis</target>
             </trans-unit>
-            <trans-unit id="997">
+            <trans-unit id="999">
                 <source>The database label is required</source>
                 <target>Le libellé de la base de données est requis</target>
             </trans-unit>
-            <trans-unit id="998">
+            <trans-unit id="1000">
                 <source>The database name is required</source>
                 <target>Le nom de la base de données est requis</target>
             </trans-unit>
-            <trans-unit id="999">
+            <trans-unit id="1001">
                 <source>The database port is required</source>
                 <target>Le port de la base de données est requis</target>
             </trans-unit>
-            <trans-unit id="1000">
+            <trans-unit id="1002">
                 <source>The database user is required</source>
                 <target>L'identifiant de connexion à la base de données est requis</target>
             </trans-unit>
-            <trans-unit id="1001">
+            <trans-unit id="1003">
                 <source>The data file extension must be '.csv' or '.txt'</source>
                 <target>L'extension du fichier de données doit être '.csv' ou '.txt'</target>
             </trans-unit>
-            <trans-unit id="1002">
+            <trans-unit id="1004">
                 <source>the datagroup</source>
                 <target>le groupe de données</target>
             </trans-unit>
-            <trans-unit id="1003">
+            <trans-unit id="1005">
                 <source>The data label is required</source>
                 <target>Le libellé de la donnée est requis</target>
             </trans-unit>
-            <trans-unit id="1004">
+            <trans-unit id="1006">
                 <source>The data name is required</source>
                 <target>Le nom de la donnée est requis</target>
             </trans-unit>
-            <trans-unit id="1005">
+            <trans-unit id="1007">
                 <source>the dataset</source>
                 <target>l'ensemble des données</target>
             </trans-unit>
-            <trans-unit id="1006">
+            <trans-unit id="1008">
                 <source>The datasource name is required</source>
                 <target>Le nom de la source de données est requis</target>
             </trans-unit>
-            <trans-unit id="1007">
+            <trans-unit id="1009">
                 <source>The data value is required</source>
                 <target>La valeur de la donnée est requise</target>
             </trans-unit>
-            <trans-unit id="1008">
+            <trans-unit id="1010">
                 <source>the default</source>
                 <target>la valeur par défaut</target>
             </trans-unit>
-            <trans-unit id="1009">
+            <trans-unit id="1011">
                 <source>The default value can not refer to the data itself</source>
                 <target>La valeur par défaut ne peut pas se référer à la donnée elle-même</target>
             </trans-unit>
-            <trans-unit id="1010">
+            <trans-unit id="1012">
+                <source>The description of the data #%id% contains a reference to this footnote</source>
+                <target>La description de la donnée #%id% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1013">
+                <source>The description of the datagroup #%id% contains a reference to this footnote</source>
+                <target>La description du groupe de données #%id% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1014">
+                <source>The description of the simulator contains a reference to this footnote</source>
+                <target>La description du simulateur contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1015">
+                <source>The description of the step #%id% contains a reference to this footnote</source>
+                <target>La description de l'étape #%id% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1016">
                 <source>The email field is required!</source>
                 <target>Le champ email est obligatoire!</target>
             </trans-unit>
-            <trans-unit id="1011">
+            <trans-unit id="1017">
                 <source>The entered value does not allow to find the information of the locality.</source>
                 <target>La valeur saisie ne permet pas de retrouver les informations de la commune.</target>
             </trans-unit>
-            <trans-unit id="1012">
+            <trans-unit id="1018">
                 <source>the explanation</source>
                 <target>l'explication</target>
             </trans-unit>
-            <trans-unit id="1013">
+            <trans-unit id="1019">
                 <source>the field</source>
                 <target>le champ</target>
             </trans-unit>
-            <trans-unit id="1014">
+            <trans-unit id="1020">
                 <source>The field '%field%' is invalid</source>
                 <target>Le champ '%field%' est non valide</target>
             </trans-unit>
-            <trans-unit id="1015">
+            <trans-unit id="1021">
                 <source>The field '%field%' is not a number</source>
                 <target>Le champ '%field%' n'est pas un nombre</target>
             </trans-unit>
-            <trans-unit id="1016">
+            <trans-unit id="1022">
                 <source>The field '%field%' is not a valid currency</source>
                 <target>Le champ '%field%' n'est pas un montant valide</target>
             </trans-unit>
-            <trans-unit id="1017">
+            <trans-unit id="1023">
                 <source>The field '%field%' is not a valid date</source>
                 <target>Le champ '%field%' n'est pas une date valide</target>
             </trans-unit>
-            <trans-unit id="1018">
+            <trans-unit id="1024">
                 <source>The field '%field%' is not a valid year</source>
                 <target>Le champ '%field%' n'est pas une année valide</target>
             </trans-unit>
-            <trans-unit id="1019">
+            <trans-unit id="1025">
                 <source>The field '%field%' is not numeric</source>
                 <target>Le champ '%field%' n'est pas numérique</target>
             </trans-unit>
-            <trans-unit id="1020">
+            <trans-unit id="1026">
                 <source>The field '%field%' is required</source>
                 <target>Le champ '%field%' est obligatoire</target>
             </trans-unit>
-            <trans-unit id="1021">
+            <trans-unit id="1027">
                 <source>the fieldrow</source>
                 <target>la rangée</target>
             </trans-unit>
-            <trans-unit id="1022">
+            <trans-unit id="1028">
                 <source>The fieldrow label is required</source>
                 <target>Le libellé de la rangée est requis</target>
             </trans-unit>
-            <trans-unit id="1023">
+            <trans-unit id="1029">
                 <source>the fieldset</source>
                 <target>le groupe de champs</target>
             </trans-unit>
-            <trans-unit id="1024">
+            <trans-unit id="1030">
                 <source>The file extension can not be changed</source>
                 <target>L'extension du fichier ne peut être changée</target>
             </trans-unit>
-            <trans-unit id="1025">
+            <trans-unit id="1031">
                 <source>The file extension of the assets file must be '.zip'</source>
                 <target>L'extension du fichier des ressources multimédia doit être '.zip '</target>
             </trans-unit>
-            <trans-unit id="1026">
+            <trans-unit id="1032">
                 <source>The file extension of the simulator file must be '.xml'</source>
                 <target>L'extension de fichier du fichier du simulateur doit être '.xml'</target>
             </trans-unit>
-            <trans-unit id="1027">
+            <trans-unit id="1033">
                 <source>The file extension of the stylesheet must be '.css'</source>
                 <target>L'extension de fichier de la feuille de style doit être '.css'</target>
             </trans-unit>
-            <trans-unit id="1028">
+            <trans-unit id="1034">
                 <source>The file extension of the template file must be '.twig'</source>
                 <target>L'extension du fichier gabarit doit être '.twig'</target>
             </trans-unit>
-            <trans-unit id="1029">
+            <trans-unit id="1035">
                 <source>The file extension of the templates file must be '.zip'</source>
                 <target>L'extension du fichier des gabarits doit être '.zip '</target>
             </trans-unit>
-            <trans-unit id="1030">
+            <trans-unit id="1036">
                 <source>the footnote</source>
                 <target>la note de bas de page</target>
             </trans-unit>
-            <trans-unit id="1031">
+            <trans-unit id="1037">
                 <source>The JSON data file extension must be '.json'</source>
                 <target>L'extension du fichier de données JSON doit être '.json'</target>
             </trans-unit>
-            <trans-unit id="1032">
+            <trans-unit id="1038">
                 <source>The JSON schema file extension must be '.schema.json'</source>
                 <target>L'extension du fichier du schéma JSON doit être '.schema.json'</target>
             </trans-unit>
-            <trans-unit id="1033">
+            <trans-unit id="1039">
+                <source>The label of the blockinfo #%id% of step #%stepId% / panel #%panelId% contains a reference to this footnote</source>
+                <target>Le libellé du bloc d'infos #%id% de l'étape #%stepId% / panneau #%panelId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1040">
+                <source>The label of the chapter #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% contains a reference to this footnote</source>
+                <target>Le libellé du chapitre #%id% de l'étape #%stepId% / panneau #%panelId% / bloc d'infos #%blockinfoId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1041">
+                <source>The label of the column #%id% of step #%stepId% / panel %panelId% / fieldset #%fieldsetId% contains a reference to this footnote</source>
+                <target>Le libellé de la colonne #%id% de l'étape #%stepId% / panneau #%panelId% / groupe de champs #%fieldsetId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1042">
+                <source>The label of the data #%id% contains a reference to this footnote</source>
+                <target>Le libellé de la donnée #%id% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1043">
+                <source>The label of the datagroup #%id% contains a reference to this footnote</source>
+                <target>Le libellé du groupe de données #%id% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1044">
+                <source>The label of the field #%id% of step #%stepId% / panel #%panelId% / fieldset #%fieldsetId% contains a reference to this footnote</source>
+                <target>Le libellé du champ #%id% de l'étape #%stepId% / panneau #%panelId% / groupe de champs #%fieldsetId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1045">
+                <source>The label of the field #%id% of step #%stepId% / panel %panelId% / fieldset #%fieldsetId% / fieldrow #%fieldrowId% contains a reference to this footnote</source>
+                <target>Le libellé du champ #%id% de l'étape #%stepId% / panneau #%panelId% / groupe de champs #%fieldsetId% / rangée #%fieldrowId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1046">
+                <source>The label of the panel #%id% of step #%stepId% contains a reference to this footnote</source>
+                <target>Le libellé du panneau #%id% de l'étape #%stepId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1047">
+                <source>The label of the section #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% / chapter #%chapterId% contains a reference to this footnote</source>
+                <target>Le libellé de la section #%id% de l'étape #%stepId% / panneau #%panelId% / bloc d'infos #%blockinfoId% / chapitre #%chapterId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1048">
+                <source>The label of the simulator contains a reference to this footnote</source>
+                <target>Le libellé du simulateur contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1049">
+                <source>The label of the step #%id% contains a reference to this footnote</source>
+                <target>Le libellé de l'étape #%id% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1050">
+                <source>The legend of the fieldset #%id% of step #%stepId% contains a reference to this footnote</source>
+                <target>La légende du groupe de champs #%id% de l'étape #%stepId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1051">
                 <source>the maximum</source>
                 <target>la valeur maximale</target>
             </trans-unit>
-            <trans-unit id="1034">
+            <trans-unit id="1052">
                 <source>the minimum</source>
                 <target>la valeur minimale</target>
             </trans-unit>
-            <trans-unit id="1035">
+            <trans-unit id="1053">
                 <source>The name is required</source>
                 <target>Le nom est requis</target>
             </trans-unit>
-            <trans-unit id="1036">
+            <trans-unit id="1054">
                 <source>The name must not contains any space or special character</source>
                 <target>Le nom ne doit contenir ni espaces, ni caractères spéciaux ou accentués</target>
             </trans-unit>
-            <trans-unit id="1037">
+            <trans-unit id="1055">
                 <source>The names of the two files without extension should be the same.</source>
                 <target>Les noms des deux fichiers (sans l'extension) doivent être les mêmes</target>
             </trans-unit>
-            <trans-unit id="1038">
+            <trans-unit id="1056">
                 <source>then do ...</source>
                 <target>alors  ...</target>
             </trans-unit>
-            <trans-unit id="1039">
+            <trans-unit id="1057">
+                <source>The note of the field #%id% of step #%stepId% / panel #%panelId% / fieldset #%fieldsetId% contains a reference to this footnote</source>
+                <target>La note associée au champ #%id% de l'étape #%stepId% / panneau #%panelId% / groupe de champs #%fieldsetId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1058">
+                <source>The note of the field #%id% of step #%stepId% / panel %panelId% / fieldset #%fieldsetId% / fieldrow #%fieldrowId% contains a reference to this footnote</source>
+                <target>La note associée au champ #%id% de l'étape #%stepId% / panneau #%panelId% / groupe de champs #%fieldsetId% / rangée #%fieldrowId% contient un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1059">
                 <source>The opening and closing parenthesis do not match</source>
                 <target>Les parenthèses ouvrantes et fermantes ne correspondent pas</target>
             </trans-unit>
-            <trans-unit id="1040">
+            <trans-unit id="1060">
                 <source>the panel</source>
                 <target>le panneau</target>
             </trans-unit>
-            <trans-unit id="1041">
+            <trans-unit id="1061">
                 <source>The panel name is required</source>
                 <target>Le nom du panneau est requis</target>
             </trans-unit>
-            <trans-unit id="1042">
+            <trans-unit id="1062">
                 <source>The password field is required (6 car. min)!</source>
                 <target>Le champ de mot de passe est requis (6 char. Min)!</target>
             </trans-unit>
-            <trans-unit id="1043">
+            <trans-unit id="1063">
                 <source>The position could not be determined</source>
                 <target>La position n’a pu être déterminée</target>
             </trans-unit>
-            <trans-unit id="1044">
+            <trans-unit id="1064">
                 <source>the postnote</source>
                 <target>la post note</target>
             </trans-unit>
-            <trans-unit id="1045">
+            <trans-unit id="1065">
                 <source>the prenote</source>
                 <target>la pre note</target>
             </trans-unit>
-            <trans-unit id="1046">
+            <trans-unit id="1066">
                 <source>The profile data is required</source>
                 <target>La donnée du profil est requise</target>
             </trans-unit>
-            <trans-unit id="1047">
+            <trans-unit id="1067">
                 <source>The profile label is required</source>
                 <target>Le libellé du profil est requis</target>
             </trans-unit>
-            <trans-unit id="1048">
+            <trans-unit id="1068">
                 <source>The profile name is required</source>
                 <target>Le nom du profil est requis</target>
             </trans-unit>
-            <trans-unit id="1049">
+            <trans-unit id="1069">
                 <source>The profiles title is required</source>
                 <target>Le titre des profils est requis</target>
             </trans-unit>
-            <trans-unit id="1050">
+            <trans-unit id="1070">
                 <source>There's no record with id 0.</source>
                 <target>Il n'y a pas d'enregistrement avec l'id 0.</target>
             </trans-unit>
-            <trans-unit id="1051">
+            <trans-unit id="1071">
                 <source>There are %count% suggestions, use up and down arrows to review.</source>
                 <target>Il y a %count% suggestions, utilisez les flèches haut et bas pour passer en revue.</target>
             </trans-unit>
-            <trans-unit id="1052">
+            <trans-unit id="1072">
                 <source>There is no suggestion</source>
                 <target>Il n'y a aucune suggestion</target>
             </trans-unit>
-            <trans-unit id="1053">
+            <trans-unit id="1073">
                 <source>There is one suggestion</source>
                 <target>Il y a une suggestion</target>
             </trans-unit>
-            <trans-unit id="1054">
+            <trans-unit id="1074">
+                <source>The related informations of the simulator contain a reference to this footnote</source>
+                <target>Les informations connexes du simulateur contiennent un renvoi vers cette note de bas de page</target>
+            </trans-unit>
+            <trans-unit id="1075">
                 <source>The request field is required</source>
                 <target>Le champ requête est requis</target>
             </trans-unit>
-            <trans-unit id="1055">
+            <trans-unit id="1076">
                 <source>the result index</source>
                 <target>l'index de résultat</target>
             </trans-unit>
-            <trans-unit id="1056">
+            <trans-unit id="1077">
                 <source>The rule label is required</source>
                 <target>Le libellé de la règle est requis</target>
             </trans-unit>
-            <trans-unit id="1057">
+            <trans-unit id="1078">
                 <source>The rule name is required</source>
                 <target>Le nom de la règle est requis</target>
             </trans-unit>
-            <trans-unit id="1058">
+            <trans-unit id="1079">
                 <source>the same window</source>
                 <target>la même fenêtre</target>
             </trans-unit>
-            <trans-unit id="1059">
+            <trans-unit id="1080">
                 <source>the section</source>
                 <target>la section</target>
             </trans-unit>
-            <trans-unit id="1060">
+            <trans-unit id="1081">
                 <source>The section content is required</source>
                 <target>Le contenu de la section est obligatoire</target>
             </trans-unit>
-            <trans-unit id="1061">
+            <trans-unit id="1082">
                 <source>The section name is required</source>
                 <target>Le nom de la section est requis</target>
             </trans-unit>
-            <trans-unit id="1062">
+            <trans-unit id="1083">
                 <source>The simulation engine is currently under maintenance</source>
                 <target>Le moteur de simulation est actuellement en maintenance</target>
             </trans-unit>
-            <trans-unit id="1063">
+            <trans-unit id="1084">
                 <source>The simulator decimal point is required</source>
                 <target>Le point décimal est requis</target>
             </trans-unit>
-            <trans-unit id="1064">
+            <trans-unit id="1085">
                 <source>The simulator label is required</source>
                 <target>L'étiquette de simulateur est requis</target>
             </trans-unit>
-            <trans-unit id="1065">
+            <trans-unit id="1086">
                 <source>The simulator name is required</source>
                 <target>Le nom du simulateur est requis</target>
             </trans-unit>
-            <trans-unit id="1066">
+            <trans-unit id="1087">
                 <source>the step</source>
                 <target>l'étape</target>
             </trans-unit>
-            <trans-unit id="1067">
+            <trans-unit id="1088">
                 <source>The step label is required</source>
                 <target>Le libellé de l'étape est requis</target>
             </trans-unit>
-            <trans-unit id="1068">
+            <trans-unit id="1089">
                 <source>The step name is required</source>
                 <target>Le nom de l'étape est requis</target>
             </trans-unit>
-            <trans-unit id="1069">
+            <trans-unit id="1090">
                 <source>The step template is required</source>
                 <target>Le gabarit d'affichage de l'étape est requis</target>
             </trans-unit>
-            <trans-unit id="1070">
+            <trans-unit id="1091">
                 <source>The two passwords do not match !</source>
                 <target>Les deux mots de passe ne correspondent pas !</target>
             </trans-unit>
-            <trans-unit id="1071">
+            <trans-unit id="1092">
                 <source>The username field is required  (3 car .min)!</source>
                 <target>Le champ de l'identifiant est requis (3 char .min)!</target>
             </trans-unit>
-            <trans-unit id="1072">
+            <trans-unit id="1093">
                 <source>The value of the field '%field%' cannot be greater than %max%</source>
                 <target>La valeur du champ '%field%' ne doit pas être supérieure à %max%</target>
             </trans-unit>
-            <trans-unit id="1073">
+            <trans-unit id="1094">
                 <source>The value of the field '%field%' cannot be less than %min%</source>
                 <target>La valeur du champ '%field%' ne doit pas être inférieure à %min%</target>
             </trans-unit>
-            <trans-unit id="1074">
+            <trans-unit id="1095">
                 <source>The Web Service URI is required</source>
                 <target>L'URI du web service est requis</target>
             </trans-unit>
-            <trans-unit id="1075">
+            <trans-unit id="1096">
                 <source>This action button is used in rule #%id%. You must modify this rule before you can delete this action button</source>
                 <target>Ce bouton d'action est utilisé dans la règle %id%. Vous devez modifier cette règle avant de pouvoir le supprimer.</target>
             </trans-unit>
-            <trans-unit id="1076">
+            <trans-unit id="1097">
                 <source>This blockinfo is used in rule #%id%. You must modify this rule before you can delete this blockinfo</source>
                 <target>Ce bloc d'informations est utilisé dans la règle %id%. Vous devez modifier cette règle avant de pouvoir le supprimer.</target>
             </trans-unit>
-            <trans-unit id="1077">
+            <trans-unit id="1098">
                 <source>This blockinfo name already exists</source>
                 <target>Ce nom de bloc d'infos existe déjà</target>
             </trans-unit>
-            <trans-unit id="1078">
+            <trans-unit id="1099">
                 <source>This chapter is used in rule #%id%. You must modify this rule before you can delete this chapter</source>
                 <target>Ce chapitre est utilisé dans la règle %id%. Vous devez modifier cette règle avant de pouvoir le supprimer.</target>
             </trans-unit>
-            <trans-unit id="1079">
+            <trans-unit id="1100">
                 <source>This chapter name already exists</source>
                 <target>Ce nom de chapitre existe déjà</target>
             </trans-unit>
-            <trans-unit id="1080">
+            <trans-unit id="1101">
                 <source>This column is used in rule #%id%. You must modify this rule before you can delete this column</source>
                 <target>Cette colonne est utilisée dans la règle %id%. Vous devez modifier cette règle avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1081">
+            <trans-unit id="1102">
                 <source>This datagroup is used in rule #%id%. You must modify this rule before you can delete this datagroup</source>
                 <target>Ce groupe de données est utilisé dans la règle %id%. Vous devez modifier cette règle avant de pouvoir le supprimer.</target>
             </trans-unit>
-            <trans-unit id="1082">
+            <trans-unit id="1103">
                 <source>This datagroup is used in step #%id%. You must modify this step before you can delete this datagroup</source>
                 <target>Ce groupe de données est utilisé à l'étape %id%. Vous devez modifier cette étape avant de pouvoir le supprimer.</target>
             </trans-unit>
-            <trans-unit id="1083">
+            <trans-unit id="1104">
                 <source>This datagroup name already exists</source>
                 <target>Ce nom de groupe de données existe déjà</target>
             </trans-unit>
-            <trans-unit id="1084">
+            <trans-unit id="1105">
                 <source>This data is used in profile #%id%. You must modify this profile before you can delete this data</source>
                 <target>Cette donnée est utilisée dans le profil %id%. Vous devez modifier ce profil avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1085">
+            <trans-unit id="1106">
                 <source>This data is used in rule #%id%. You must modify this rule before you can delete this data</source>
                 <target>Cette donnée est utilisée dans la règle %id%. Vous devez modifier cette règle avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1086">
+            <trans-unit id="1107">
                 <source>This data is used in source #%id%. You must modify this source before you can delete this data</source>
                 <target>Cette donnée est utilisée en tant que paramètre de la source de donnée #%id%. Vous devez modifier cette source de données avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1087">
+            <trans-unit id="1108">
                 <source>This data is used in step #%id%. You must modify this step before you can delete this data</source>
                 <target>Cette donnée est utilisée à l'étape %id%. Vous devez modifier cette étape avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1088">
+            <trans-unit id="1109">
                 <source>This data name already exists</source>
                 <target>Ce nom de donnée existe déjà</target>
             </trans-unit>
-            <trans-unit id="1089">
+            <trans-unit id="1110">
                 <source>This email already exists !</source>
                 <target>Cet email existe déjà !</target>
             </trans-unit>
-            <trans-unit id="1090">
+            <trans-unit id="1111">
                 <source>This field is required</source>
                 <target>Ce champ est requis</target>
             </trans-unit>
-            <trans-unit id="1091">
+            <trans-unit id="1112">
                 <source>This field is used in rule #%id%. You must modify this rule before you can delete this field</source>
                 <target>Ce champ est utilisé dans la règle %id%. Vous devez modifier cette règle avant de pouvoir le supprimer.</target>
             </trans-unit>
-            <trans-unit id="1092">
+            <trans-unit id="1113">
                 <source>This fieldrow is used in rule #%id%. You must modify this rule before you can delete this fieldrow</source>
                 <target>Cette rangée est utilisée dans la règle %id%. Vous devez modifier cette règle avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1093">
+            <trans-unit id="1114">
                 <source>This fieldset is used in rule #%id%. You must modify this rule before you can delete this fieldset</source>
                 <target>Ce groupe de champs est utilisé dans la règle %id%. Vous devez modifier cette règle avant de pouvoir le supprimer.</target>
             </trans-unit>
-            <trans-unit id="1094">
+            <trans-unit id="1115">
                 <source>This footnote is used in rule #%id%. You must modify this rule before you can delete this footnote</source>
                 <target>Cette note de bas de page est utilisée dans la règle %id%. Vous devez modifier cette règle avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1095">
+            <trans-unit id="1116">
                 <source>This panel is used in rule #%id%. You must modify this rule before you can delete this panel</source>
                 <target>Ce panneau est utilisé dans la règle %id%. Vous devez modifier cette règle avant de pouvoir le supprimer.</target>
             </trans-unit>
-            <trans-unit id="1096">
+            <trans-unit id="1117">
                 <source>This panel name already exists</source>
                 <target>Ce nom de panneau existe déjà</target>
             </trans-unit>
-            <trans-unit id="1097">
+            <trans-unit id="1118">
                 <source>This profile name already exists</source>
                 <target>Ce nom de profil existe déjà</target>
             </trans-unit>
-            <trans-unit id="1098">
+            <trans-unit id="1119">
                 <source>This record already exists.</source>
                 <target>Cet enregistrement existe déjà.</target>
             </trans-unit>
-            <trans-unit id="1099">
+            <trans-unit id="1120">
                 <source>This section is used in rule #%id%. You must modify this rule before you can delete this section</source>
                 <target>Cette section est utilisée dans la règle %id%. Vous devez modifier cette règle avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1100">
+            <trans-unit id="1121">
                 <source>This section name already exists</source>
                 <target>Ce nom de section existe déjà</target>
             </trans-unit>
-            <trans-unit id="1101">
+            <trans-unit id="1122">
                 <source>This simulator does not exist</source>
                 <target>Ce simulateur n'existe pas</target>
             </trans-unit>
-            <trans-unit id="1102">
+            <trans-unit id="1123">
                 <source>This simulator does not exist or is not available</source>
                 <target>Ce simulateur n'existe pas ou n'est pas disponible</target>
             </trans-unit>
-            <trans-unit id="1103">
+            <trans-unit id="1124">
                 <source>This source is used in data #%id% : %label%. You must modify this data before you can delete this source</source>
                 <target>Cette source est utilisée dans la définition de la donnée #%id% : %label%. Vous devez modifier cette donnée avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1104">
+            <trans-unit id="1125">
                 <source>This step is used in rule #%id%. You must modify this rule before you can delete this step</source>
                 <target>Cette étape est utilisée dans la règle %id%. Vous devez modifier cette règle avant de pouvoir la supprimer.</target>
             </trans-unit>
-            <trans-unit id="1105">
+            <trans-unit id="1126">
                 <source>This step name already exists</source>
                 <target>Ce nom d'étape existe déjà</target>
             </trans-unit>
-            <trans-unit id="1106">
+            <trans-unit id="1127">
                 <source>This template does not exist</source>
                 <target>Ce template n'existe pas</target>
             </trans-unit>
-            <trans-unit id="1107">
+            <trans-unit id="1128">
                 <source>Thistle</source>
                 <target>Chardon</target>
             </trans-unit>
-            <trans-unit id="1108">
+            <trans-unit id="1129">
                 <source>This user doesn't  exists !</source>
                 <target>Cet utilisateur n'existe pas!</target>
             </trans-unit>
-            <trans-unit id="1109">
+            <trans-unit id="1130">
                 <source>This username already exists !</source>
                 <target>Cet identifiant existe déjà !</target>
             </trans-unit>
-            <trans-unit id="1110">
+            <trans-unit id="1131">
                 <source>This value can not be greater than %max%</source>
                 <target>Cette valeur ne peut être supérieure à %max%</target>
             </trans-unit>
-            <trans-unit id="1111">
+            <trans-unit id="1132">
                 <source>This value can not be less than %min%</source>
                 <target>Cette valeur ne peut être inférieure à %min%</target>
             </trans-unit>
-            <trans-unit id="1112">
+            <trans-unit id="1133">
                 <source>This value is not in the expected format</source>
                 <target>Cette valeur n'est pas au format attendu</target>
             </trans-unit>
-            <trans-unit id="1113">
+            <trans-unit id="1134">
                 <source>This value is not in the expected format (%format%)</source>
                 <target>Cette valeur n'est pas au format attendu (%format%)</target>
             </trans-unit>
-            <trans-unit id="1114">
+            <trans-unit id="1135">
                 <source>This view already exists</source>
                 <target>Cette vue existe déjà</target>
             </trans-unit>
-            <trans-unit id="1115">
+            <trans-unit id="1136">
                 <source>Timeout !</source>
                 <target>Temps imparti dépassé !</target>
             </trans-unit>
-            <trans-unit id="1116">
+            <trans-unit id="1137">
                 <source>Times New Roman</source>
                 <target>Times New Roman</target>
             </trans-unit>
-            <trans-unit id="1117">
+            <trans-unit id="1138">
                 <source>Title</source>
                 <target>Titre</target>
             </trans-unit>
-            <trans-unit id="1118">
+            <trans-unit id="1139">
                 <source>Title:</source>
                 <target>Titre:</target>
             </trans-unit>
-            <trans-unit id="1119">
+            <trans-unit id="1140">
                 <source>to</source>
                 <target>à</target>
             </trans-unit>
-            <trans-unit id="1120">
+            <trans-unit id="1141">
                 <source>To continue you must first correct your entry</source>
                 <target>Pour continuer vous devez au préalable corriger votre saisie</target>
             </trans-unit>
-            <trans-unit id="1121">
+            <trans-unit id="1142">
                 <source>Tomato</source>
                 <target>Tomate</target>
             </trans-unit>
-            <trans-unit id="1122">
+            <trans-unit id="1143">
                 <source>Trebuchet MS</source>
                 <target>Trebuchet MS</target>
             </trans-unit>
-            <trans-unit id="1123">
+            <trans-unit id="1144">
                 <source>true</source>
                 <target>vrai</target>
             </trans-unit>
-            <trans-unit id="1124">
+            <trans-unit id="1145">
                 <source>Try it</source>
                 <target>Tester</target>
             </trans-unit>
-            <trans-unit id="1125">
+            <trans-unit id="1146">
                 <source>Turquoise</source>
                 <target>Turquoise</target>
             </trans-unit>
-            <trans-unit id="1126">
+            <trans-unit id="1147">
                 <source>Tutorials</source>
                 <target>Tutoriels</target>
             </trans-unit>
-            <trans-unit id="1127">
+            <trans-unit id="1148">
                 <source>Type</source>
                 <target>Type</target>
             </trans-unit>
-            <trans-unit id="1128">
+            <trans-unit id="1149">
                 <source>underline</source>
                 <target>souligné</target>
             </trans-unit>
-            <trans-unit id="1129">
+            <trans-unit id="1150">
                 <source>Underline [CTRL+U]</source>
                 <target>Souligné [CTRL + U]</target>
             </trans-unit>
-            <trans-unit id="1130">
+            <trans-unit id="1151">
                 <source>Undo</source>
                 <target>Défaire</target>
             </trans-unit>
-            <trans-unit id="1131">
+            <trans-unit id="1152">
                 <source>Unit</source>
                 <target>Unité</target>
             </trans-unit>
-            <trans-unit id="1132">
+            <trans-unit id="1153">
                 <source>unit text</source>
                 <target>texte d'unité</target>
             </trans-unit>
-            <trans-unit id="1133">
+            <trans-unit id="1154">
                 <source>Unknown error</source>
                 <target>Erreur inconnue</target>
             </trans-unit>
-            <trans-unit id="1134">
+            <trans-unit id="1155">
                 <source>Unset</source>
                 <target>Effacer</target>
             </trans-unit>
-            <trans-unit id="1135">
+            <trans-unit id="1156">
                 <source>unset</source>
                 <target>effacer</target>
             </trans-unit>
-            <trans-unit id="1136">
+            <trans-unit id="1157">
                 <source>URI</source>
                 <target>URI</target>
             </trans-unit>
-            <trans-unit id="1137">
+            <trans-unit id="1158">
                 <source>URI / Step</source>
                 <target>URI / Etape</target>
             </trans-unit>
-            <trans-unit id="1138">
+            <trans-unit id="1159">
                 <source>Usage</source>
                 <target>Utilisation</target>
             </trans-unit>
-            <trans-unit id="1139">
+            <trans-unit id="1160">
                 <source>Used datasources</source>
                 <target>Sources de données utilisées</target>
             </trans-unit>
-            <trans-unit id="1140">
+            <trans-unit id="1161">
                 <source>user</source>
                 <target>utilisateur</target>
             </trans-unit>
-            <trans-unit id="1141">
+            <trans-unit id="1162">
                 <source>User Interface</source>
                 <target>Interface utilisateur</target>
             </trans-unit>
-            <trans-unit id="1142">
+            <trans-unit id="1163">
                 <source>User Interface for step %id%</source>
                 <target>Interface utilisateur pour l'étape %id%</target>
             </trans-unit>
-            <trans-unit id="1143">
+            <trans-unit id="1164">
                 <source>UserName</source>
                 <target>Identifiant</target>
             </trans-unit>
-            <trans-unit id="1144">
+            <trans-unit id="1165">
                 <source>Users</source>
                 <target>Utilisateurs</target>
             </trans-unit>
-            <trans-unit id="1145">
+            <trans-unit id="1166">
                 <source>Users list</source>
                 <target>Liste des utilisateurs</target>
             </trans-unit>
-            <trans-unit id="1146">
+            <trans-unit id="1167">
                 <source>Users management</source>
                 <target>Gestion des utilisateurs</target>
             </trans-unit>
-            <trans-unit id="1147">
+            <trans-unit id="1168">
                 <source>Validate</source>
                 <target>Valider</target>
             </trans-unit>
-            <trans-unit id="1148">
+            <trans-unit id="1169">
                 <source>Validation errors</source>
                 <target>Erreurs de validation</target>
             </trans-unit>
-            <trans-unit id="1149">
+            <trans-unit id="1170">
                 <source>Value</source>
                 <target>Valeur</target>
             </trans-unit>
-            <trans-unit id="1150">
+            <trans-unit id="1171">
                 <source>Value column</source>
                 <target>Colonne 'Valeur'</target>
             </trans-unit>
-            <trans-unit id="1151">
+            <trans-unit id="1172">
                 <source>Variables</source>
                 <target>Données</target>
             </trans-unit>
-            <trans-unit id="1152">
+            <trans-unit id="1173">
                 <source>Verdana</source>
                 <target>Verdana</target>
             </trans-unit>
-            <trans-unit id="1153">
+            <trans-unit id="1174">
                 <source>View files (compressed in zip format)</source>
                 <target>Fichiers de la vue (au format compressé zip)</target>
             </trans-unit>
-            <trans-unit id="1154">
+            <trans-unit id="1175">
                 <source>View name</source>
                 <target>Nom de la vue</target>
             </trans-unit>
-            <trans-unit id="1155">
+            <trans-unit id="1176">
                 <source>Views</source>
                 <target>Vues</target>
             </trans-unit>
-            <trans-unit id="1156">
+            <trans-unit id="1177">
                 <source>Views management</source>
                 <target>Gestion des vues</target>
             </trans-unit>
-            <trans-unit id="1157">
+            <trans-unit id="1178">
                 <source>View «%view%»</source>
                 <target>Vue «%view%»</target>
             </trans-unit>
-            <trans-unit id="1158">
+            <trans-unit id="1179">
                 <source>Violet</source>
                 <target>Violet</target>
             </trans-unit>
-            <trans-unit id="1159">
+            <trans-unit id="1180">
                 <source>Warning</source>
                 <target>Avertissement</target>
             </trans-unit>
-            <trans-unit id="1160">
+            <trans-unit id="1181">
                 <source>Webservice URI</source>
                 <target>URI du web service</target>
             </trans-unit>
-            <trans-unit id="1161">
+            <trans-unit id="1182">
                 <source>Welcome to G6K world!</source>
                 <target>Bienvenue dans le monde de G6K !</target>
             </trans-unit>
-            <trans-unit id="1162">
+            <trans-unit id="1183">
                 <source>What</source>
                 <target>Action</target>
             </trans-unit>
-            <trans-unit id="1163">
+            <trans-unit id="1184">
                 <source>Wheat</source>
                 <target>Blé</target>
             </trans-unit>
-            <trans-unit id="1164">
+            <trans-unit id="1185">
                 <source>When ...</source>
                 <target>Lorsque ...</target>
             </trans-unit>
-            <trans-unit id="1165">
+            <trans-unit id="1186">
                 <source>White</source>
                 <target>Blanc</target>
             </trans-unit>
-            <trans-unit id="1166">
+            <trans-unit id="1187">
                 <source>White Smoke</source>
                 <target>Fumée blanche</target>
             </trans-unit>
-            <trans-unit id="1167">
+            <trans-unit id="1188">
                 <source>whose label is</source>
                 <target>dont le libellé est</target>
             </trans-unit>
-            <trans-unit id="1168">
+            <trans-unit id="1189">
                 <source>workdays</source>
                 <target>jours ouvrés</target>
             </trans-unit>
-            <trans-unit id="1169">
+            <trans-unit id="1190">
                 <source>workdaysofmonth</source>
                 <target>jours ouvrés du mois</target>
             </trans-unit>
-            <trans-unit id="1170">
+            <trans-unit id="1191">
                 <source>working version only</source>
                 <target>la version de travail seulement</target>
             </trans-unit>
-            <trans-unit id="1171">
+            <trans-unit id="1192">
                 <source>x-large</source>
                 <target>très grand</target>
             </trans-unit>
-            <trans-unit id="1172">
+            <trans-unit id="1193">
                 <source>x-small</source>
                 <target>très petit</target>
             </trans-unit>
-            <trans-unit id="1173">
+            <trans-unit id="1194">
                 <source>XML Validation against schema fail</source>
                 <target>La validation XML par rapport au schéma a échoué</target>
             </trans-unit>
-            <trans-unit id="1174">
+            <trans-unit id="1195">
                 <source>XML Validation errors</source>
                 <target>Erreurs de validation XML</target>
             </trans-unit>
-            <trans-unit id="1175">
+            <trans-unit id="1196">
                 <source>xx-large</source>
                 <target>très, très grand</target>
             </trans-unit>
-            <trans-unit id="1176">
+            <trans-unit id="1197">
                 <source>xx-small</source>
                 <target>très, très petit</target>
             </trans-unit>
-            <trans-unit id="1177">
+            <trans-unit id="1198">
                 <source>Y</source>
                 <target>AAAA</target>
             </trans-unit>
-            <trans-unit id="1178">
+            <trans-unit id="1199">
                 <source>y</source>
                 <target>AA</target>
             </trans-unit>
-            <trans-unit id="1179">
+            <trans-unit id="1200">
                 <source>Y-m</source>
                 <target>AAAA-MM</target>
             </trans-unit>
-            <trans-unit id="1180">
+            <trans-unit id="1201">
                 <source>y-m</source>
                 <target>AA-MM</target>
             </trans-unit>
-            <trans-unit id="1181">
-                <source>Y-m-d</source>
-                <target>AAAA-MM-JJ</target>
-            </trans-unit>
-            <trans-unit id="1182">
+            <trans-unit id="1202">
                 <source>y-m-d</source>
                 <target>AA-MM-JJ</target>
             </trans-unit>
-            <trans-unit id="1183">
+            <trans-unit id="1203">
+                <source>Y-m-d</source>
+                <target>AAAA-MM-JJ</target>
+            </trans-unit>
+            <trans-unit id="1204">
                 <source>Year</source>
                 <target>Année</target>
             </trans-unit>
-            <trans-unit id="1184">
+            <trans-unit id="1205">
                 <source>year</source>
                 <target>année</target>
             </trans-unit>
-            <trans-unit id="1185">
+            <trans-unit id="1206">
                 <source>Yellow</source>
                 <target>Jaune</target>
             </trans-unit>
-            <trans-unit id="1186">
+            <trans-unit id="1207">
                 <source>Yellow Green</source>
                 <target>Vert jaunâtre</target>
             </trans-unit>
-            <trans-unit id="1187">
+            <trans-unit id="1208">
                 <source>Yes</source>
                 <target>Oui</target>
             </trans-unit>
-            <trans-unit id="1188">
+            <trans-unit id="1209">
                 <source>You can not change the content or the default value of a data when it is used in a condition</source>
                 <target>Vous ne pouvez pas modifier le contenu ou la valeur par défaut d'une donnée lorsqu'elle est utilisée dans une condition</target>
             </trans-unit>
-            <trans-unit id="1189">
+            <trans-unit id="1210">
                 <source>You cannot open a parenthesis right after a condition ID! You need to use a logical operator "and" or "or"</source>
                 <target>Vous ne pouvez pas ouvrir une parenthèse juste après un ID de condition! Vous devez utiliser un opérateur logique "et" ou "ou"</target>
             </trans-unit>
-            <trans-unit id="1190">
+            <trans-unit id="1211">
                 <source>You cannot use closing parenthesis ")" right after a logical operator</source>
                 <target>Vous ne pouvez pas mettre une parenthèse fermante ")" juste après un opérateur logique</target>
             </trans-unit>
-            <trans-unit id="1191">
+            <trans-unit id="1212">
                 <source>You cannot use closing parenthesis ")" right after an opening parenthesis "("</source>
                 <target>Vous ne pouvez pas mettre une parenthèse fermante ")" juste après une parenthèse ouvrante "("</target>
             </trans-unit>
-            <trans-unit id="1192">
+            <trans-unit id="1213">
                 <source>You cannot use condition ID right after closing a parenthesis! You need to use a logical operator "and" or "or"</source>
                 <target>Vous ne pouvez pas mettre un ID de condition juste après une parenthèse fermante! Vous devez utiliser un opérateur logique "et" ou "ou"</target>
             </trans-unit>
-            <trans-unit id="1193">
+            <trans-unit id="1214">
                 <source>You cannot use logical operator right after opening parenthesis</source>
                 <target>Vous ne pouvez pas mettre un opérateur logique juste après une parenthèse ouvrante</target>
             </trans-unit>
-            <trans-unit id="1194">
+            <trans-unit id="1215">
                 <source>You cannot use two condition ID's next to each other</source>
                 <target>Vous ne pouvez pas mettre deux ID de condition côte à côte</target>
             </trans-unit>
-            <trans-unit id="1195">
+            <trans-unit id="1216">
                 <source>You cannot use two logical operators next to each other</source>
                 <target>Vous ne pouvez pas mettre deux opérateurs logiques côte à côte</target>
             </trans-unit>
-            <trans-unit id="1196">
+            <trans-unit id="1217">
                 <source>You did not give permission</source>
                 <target>Vous n’avez pas donné la permission</target>
             </trans-unit>
-            <trans-unit id="1197">
+            <trans-unit id="1218">
                 <source>You have entered an invalid url!</source>
                 <target>Vous avez entré une URL invalide!</target>
             </trans-unit>
-            <trans-unit id="1198">
+            <trans-unit id="1219">
                 <source>You have not selected a file or it is invalid!</source>
                 <target>Vous n'avez pas sélectionné de fichier ou il est invalide!</target>
             </trans-unit>
-            <trans-unit id="1199">
+            <trans-unit id="1220">
                 <source>You have unsaved stuff. Are you sure to leave?</source>
                 <target>Vous avez des choses non enregistrées. Etes-vous sûr de vouloir quitter cette page ?</target>
             </trans-unit>
-            <trans-unit id="1200">
+            <trans-unit id="1221">
+                <source>You must remove this reference before you can remove this footnote.</source>
+                <target>Vous devez enlever ce renvoi avant d epouvoir supprimer cette note de bas de page.</target>
+            </trans-unit>
+            <trans-unit id="1222">
                 <source>Your update are not saved. Sure to leave?</source>
                 <target>Vos mises à jour ne sont pas enregistrées. Certain de quitter cette page ?</target>
             </trans-unit>
