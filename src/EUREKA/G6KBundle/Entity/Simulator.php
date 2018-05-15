@@ -1188,6 +1188,58 @@ class Simulator {
 	}
 
 	/**
+	 * Returns a HTML dfn tag with the elements of the given array.
+	 *
+	 * @access  private
+	 * @param   array $matches An array with the element of the footnote reference.
+	 * @return  string The HTML dfn tag
+	 *
+	 */
+	private function replaceByDfnTag($matches) {
+		$text = $matches[1];
+		$id = $matches[2];
+		$title = $matches[3];
+		return '<dfn class="foot-note-reference" data-footnote="' . $id . '" title="' . $title . '">« ' . $text . ' »</dfn>';
+	}
+
+	/**
+	 * Replaces, into the given text, the footnote reference pattern string by the HTML dfn tag.
+	 *
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\RichText|string $target The initial text
+	 * @return  \EUREKA\G6KBundle\Entity\RichText|string The replaced text with HTML dfn tag
+	 *
+	 */
+	public function replaceByFootnoteTag($target) {
+		$text = $target instanceof RichText ? $target->getContent() : $target;
+		$result = preg_replace_callback(
+			"/\[([^\^]+)\^(\d+)\(([^\)]+)\)\]/", 
+			array($this, 'replaceByDfnTag'),
+			$text
+		);
+		if ($target instanceof RichText) {
+			$target->setContent($result);
+			return $target;
+		} else {
+			return $result;
+		}
+	}
+
+	/**
+	 * Replaces all special patterns by the corresponding  html tag (data or dfn)
+	 *
+	 * @access  public
+	 * @param   string $target The target text
+	 * @return  string The result text
+	 *
+	 */
+	public function replaceBySpecialTags($target) {
+		$result = $this->replaceByDataLabel($target);
+		$result = $this->replaceByFootnoteTag($result);
+		return $result;
+	}
+
+	/**
 	 * Loads into a Data object, the data item extracted from the XML file of this simulator
 	 *
 	 * @access  protected

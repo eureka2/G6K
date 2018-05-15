@@ -445,7 +445,7 @@ class ControllersHelper {
 	 * @return  string The prefixed ID
 	 *
 	 */
-	protected function replaceVariableTag($matches)
+	protected function replaceDataTag($matches)
 	{
 		$variable = '#' . $matches[1];
 		if ($matches[2] == 'L') {
@@ -462,11 +462,11 @@ class ControllersHelper {
 	 * @return  string The result text
 	 *
 	 */
-	public function replaceVarTagByVariable($target) {
+	public function replaceDataTagByVariable($target) {
 		$text = $target instanceof RichText ? $target->getContent(): $target;
 		$result = preg_replace_callback(
 			'/\<data\s+[^\s]*\s*value="(\d+)(L?)"[^\>]*\>[^\<]+\<\/data\>/',
-			array($this, 'replaceVariableTag'),
+			array($this, 'replaceDataTag'),
 			$text
 		);
 		if ($target instanceof RichText) {
@@ -475,6 +475,59 @@ class ControllersHelper {
 		} else {
 			return $result;
 		}
+	}
+
+	/**
+	 * Composes a footnote reference string [text^ID(title)] with the elements of the given array.
+	 *
+	 * @access  protected
+	 * @param   array $matches The given array
+	 * @return  string The footnote reference string
+	 *
+	 */
+	protected function replaceDfnTag($matches)
+	{
+		$txt = preg_replace("/^« /", "", $matches[3]);
+		$txt = preg_replace("/ »$/", "", $txt);
+		$variable = '[' . $txt . '^' . $matches[1] . '(' . $matches[2] . ')]';
+		return $variable;
+	}
+
+	/**
+	 * Replaces all the html tag dfn containing the ID of a footnote by [text^ID(title)]
+	 *
+	 * @access  public
+	 * @param   string $target The target text
+	 * @return  string The result text
+	 *
+	 */
+	public function replaceDfnTagByFootnote($target) {
+		$text = $target instanceof RichText ? $target->getContent(): $target;
+		$result = preg_replace_callback(
+			'/\<dfn\s+[^\s]*\s*data-footnote="(\d+)"\s+title="([^"]+)"[^\>]*\>([^\<]+)\<\/dfn\>/',
+			array($this, 'replaceDfnTag'),
+			$text
+		);
+		if ($target instanceof RichText) {
+			$target->setContent($result);
+			return $target;
+		} else {
+			return $result;
+		}
+	}
+
+	/**
+	 * Replaces all the html tag dfn and data with their text equivalent
+	 *
+	 * @access  public
+	 * @param   string $target The target text
+	 * @return  string The result text
+	 *
+	 */
+	public function replaceSpecialTags($target) {
+		$result = $this->replaceDataTagByVariable($target);
+		$result = $this->replaceDfnTagByFootnote($result);
+		return $result;
 	}
 
 	/**

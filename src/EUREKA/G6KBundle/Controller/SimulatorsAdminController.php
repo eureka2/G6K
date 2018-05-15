@@ -543,13 +543,13 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->setMemo($simulatorData['memo'] == '1');
 		$this->simu->setDescription(
 			new RichText(
-				trim($this->helper->replaceVarTagByVariable($simulatorData['description']['content'])),
+				trim($this->helper->replaceSpecialTags($simulatorData['description']['content'])),
 				$simulatorData['description']['edition']
 			)
 		);
 		$this->simu->setRelatedInformations(
 			new RichText(
-				trim($this->helper->replaceVarTagByVariable($simulatorData['relatedInformations']['content'])),
+				trim($this->helper->replaceSpecialTags($simulatorData['relatedInformations']['content'])),
 				$simulatorData['relatedInformations']['edition']
 			)
 		);
@@ -735,7 +735,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$dataGroupObj->setLabel($datagroup['label']);
 		$dataGroupObj->setDescription(
 			new RichText(
-				trim($this->helper->replaceVarTagByVariable($datagroup['description']['content'])),
+				trim($this->helper->replaceSpecialTags($datagroup['description']['content'])),
 				$datagroup['description']['edition']
 			)
 		);
@@ -800,7 +800,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		if (isset($data['description'])) {
 			$dataObj->setDescription(
 				new RichText(
-					trim($this->helper->replaceVarTagByVariable($data['description']['content'])),
+					trim($this->helper->replaceSpecialTags($data['description']['content'])),
 					$data['description']['edition']
 				)
 			);
@@ -821,7 +821,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$stepObj->setOutput($step['output']);
 		$stepObj->setDescription(
 			new RichText(
-				trim($this->helper->replaceVarTagByVariable($step['description']['content'])),
+				trim($this->helper->replaceSpecialTags($step['description']['content'])),
 				$step['description']['edition']
 			)
 		);
@@ -843,7 +843,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
 					$footnoteObj->setText(
 						new RichText(
-							trim($this->helper->replaceVarTagByVariable($footnote['text']['content'])),
+							trim($this->helper->replaceSpecialTags($footnote['text']['content'])),
 							$footnote['text']['edition']
 						)
 					);
@@ -891,7 +891,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
 		$fieldsetObj->setLegend(
 			new RichText(
-				trim($this->helper->replaceVarTagByVariable($fieldset['legend']['content'])),
+				trim($this->helper->replaceSpecialTags($fieldset['legend']['content'])),
 				$fieldset['legend']['edition']
 			)
 		);
@@ -973,7 +973,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				$noteObj = new FieldNote($this);
 				$noteObj->setText(
 					new RichText(
-						trim($this->helper->replaceVarTagByVariable($note['text']['content'])),
+						trim($this->helper->replaceSpecialTags($note['text']['content'])),
 						$note['text']['edition']
 					)
 				);
@@ -982,7 +982,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				$noteObj = new FieldNote($this);
 				$noteObj->setText(
 					new RichText(
-						trim($this->helper->replaceVarTagByVariable($note['text']['content'])),
+						trim($this->helper->replaceSpecialTags($note['text']['content'])),
 						$note['text']['edition']
 					)
 				);
@@ -1047,14 +1047,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		$sectionObj->setLabel($section['label']);
 		$sectionObj->setContent(
 			new RichText(
-				trim($this->helper->replaceVarTagByVariable($section['content']['content'])),
+				trim($this->helper->replaceSpecialTags($section['content']['content'])),
 				$section['content']['edition']
 			)
 		);
 		if (isset($section['annotations'])) {
 			$sectionObj->setAnnotations(
 				new RichText(
-					trim($this->helper->replaceVarTagByVariable($section['annotations']['content'])),
+					trim($this->helper->replaceSpecialTags($section['annotations']['content'])),
 					$section['annotations']['edition']
 				)
 			);
@@ -1274,7 +1274,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$profileObj->setLabel($profile['label']);
 		$profileObj->setDescription(
 			new RichText(
-				trim($this->helper->replaceVarTagByVariable($profile['description']['content'])),
+				trim($this->helper->replaceSpecialTags($profile['description']['content'])),
 				$profile['description']['edition']
 			)
 		);

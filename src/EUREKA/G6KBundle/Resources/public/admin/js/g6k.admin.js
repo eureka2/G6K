@@ -62,7 +62,7 @@ THE SOFTWARE.
 			`<div>
 				<label class="control-label">
 					<span>Footnote:</span>
-					<input type="number" min="1" class="form-control input-sm" data-wysihtml-dialog-field="value" value="1">
+					<input type="number" min="1" class="form-control input-sm" data-wysihtml-dialog-field="data-footnote" value="1">
 				</label>
 				<label class="control-label">
 					<span>Title:</span>
@@ -125,6 +125,14 @@ THE SOFTWARE.
 						"title": "any",
 						"contenteditable": "any"
 					}
+				},
+				"dfn": {
+					"unwrap": 0,
+					"check_attributes": {
+						"data-footnote": "numbers",
+						"title": "any",
+						"contenteditable": "any"
+					}
 				}
 			}
 		},
@@ -184,9 +192,13 @@ THE SOFTWARE.
 					}
 				);
 				val = val.replace(
+					/\<dfn\s+([^\>]*)\>/g,
+					'<dfn contenteditable="false" $1>'
+				);
+				val = val.replace(
 					/\[([^\^]+)\^(\d+)\(([^\)]+)\)\]/g,
 					function (match, m1, m2, m3, offs, str) {
-						return '<data contenteditable="false" class="foot-note-reference" title="' + m3 + '" value="' + m2 + '">« ' + m1 + ' »</data>';
+						return '<dfn contenteditable="false" class="foot-note-reference" title="' + m3 + '" data-footnote="' + m2 + '">« ' + m1 + ' »</dfn>';
 					}
 				);
 				this.setValue(val);
@@ -261,15 +273,8 @@ THE SOFTWARE.
 		editable.wysihtml('cleanUp');
 		var div = $('<div>');
 		div.append(editable.wysihtml('getHTML', true)); // true = beautify
-		div.find("data[class=data-reference]").addClass('data').removeClass('data-reference');
-		div.find("data[class=foot-note-reference]").each(function(elt) {
-			var footnote = $(this).attr('value');
-			var title = $(this).attr('title');
-			var text = $(this).text();
-			text = text.replace(/^« /, '').replace(/ »$/, '');
-			$(this).replaceWith('[' + text + '^' + footnote + '(' + title + ')]');
-			
-		});
+		div.find("data[class=data-reference]").addClass('data').removeClass('data-reference').removeAttr('contenteditable');
+		div.find("dfn[class=foot-note-reference]").removeAttr('contenteditable');
 		return div.html();
 	}
 
@@ -301,7 +306,7 @@ THE SOFTWARE.
 
 wysihtml.commands.insertFootnoteReference = (function() {
 	var nodeOptions = {
-		nodeName: "DATA",
+		nodeName: "DFN",
 		className: "foot-note-reference",
 		classRegExp: /foot-note-reference/g,
 		toggle: true
@@ -313,16 +318,16 @@ wysihtml.commands.insertFootnoteReference = (function() {
 			if (node.nodeType == Node.TEXT_NODE) {
 				node = node.parentNode;
 			}
-			if (value && value.value && value.title) {
-				if (node.nodeName == "DATA") {
+			if (value && value['data-footnote'] && value.title) {
+				if (node.nodeName == "DFN") {
 					if (node.classList.contains("foot-note-reference")) {
-						var data = composer.doc.createElement("data");
-						data.className = "foot-note-reference";
-						data.setAttribute('value', value.value);
-						data.setAttribute('title', value.title);
-						data.setAttribute('contenteditable', 'false');
-						data.appendChild(composer.doc.createTextNode(node.textContent));
-						node.replaceWith(data);
+						var dfn = composer.doc.createElement("dfn");
+						dfn.className = "foot-note-reference";
+						dfn.setAttribute('data-footnote', value['data-footnote']);
+						dfn.setAttribute('title', value.title);
+						dfn.setAttribute('contenteditable', 'false');
+						dfn.appendChild(composer.doc.createTextNode(node.textContent));
+						node.replaceWith(dfn);
 					}
 				} else {
 					var text = composer.selection.getText();
@@ -331,13 +336,14 @@ wysihtml.commands.insertFootnoteReference = (function() {
 						text = text.replace(/\s+$/, '');
 						espace = ' ';
 					}
-					html = '<data contenteditable="false" class="foot-note-reference" value="';
-					html += value.value;
+					text = text.replace(/^« /, '').replace(/ »$/, '');
+					html = '<dfn contenteditable="false" class="foot-note-reference" data-footnote="';
+					html += value['data-footnote'];
 					html += '" title="';
 					html += value.title;
 					html += '">« ';
 					html += text;
-					html += ' »</data>';
+					html += ' »</dfn>';
 					html += espace;
 					composer.commands.exec('insertHTML', html);
 				}

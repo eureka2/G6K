@@ -130,7 +130,7 @@ THE SOFTWARE.
 									{{ 'Description'|trans }}
 								</div>
 								<div class="panel-body simulator-description rich-text" data-edition="{{ simulator.description.edition }}">
-									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.description))|nofilter }}
+									{{ page.paragraphs(simulator.replaceBySpecialTags(simulator.description))|nofilter }}
 								</div>
 							</div>
 							<div class="panel panel-default" id="simulator-related-informations-panel-holder">
@@ -138,7 +138,7 @@ THE SOFTWARE.
 									{{ 'Related informations'|trans }}
 								</div>
 								<div class="panel-body simulator-related-informations rich-text" data-edition="{{ simulator.relatedInformations.edition }}">
-									{{ page.paragraphs(simulator.replaceByDataLabel(simulator.relatedInformations))|nofilter }}
+									{{ page.paragraphs(simulator.replaceBySpecialTags(simulator.relatedInformations))|nofilter }}
 								</div>
 							</div>
 							<div class="panel panel-default" id="simulator-elements-panel">
@@ -227,7 +227,7 @@ THE SOFTWARE.
 			{{ 'Description'|trans }}
 		</div>
 		<div class="panel-body  datagroup-description rich-text" data-edition="{{ data.description.edition }}">
-			{{ page.paragraphs(simulator.replaceByDataLabel(data.description))|nofilter }}
+			{{ page.paragraphs(simulator.replaceBySpecialTags(data.description))|nofilter }}
 		</div>
 	</div>
 	<div class="panel panel-default datas-panel" id="datagroup-{{ data.id }}-datas-panel">
@@ -436,7 +436,7 @@ THE SOFTWARE.
 					{{ 'Description'|trans }}
 				</div>
 				<div class="panel-body step-description rich-text" data-edition="{{ step.description.edition }}">
-					{{ page.paragraphs(simulator.replaceByDataLabel(step.description))|nofilter }}
+					{{ page.paragraphs(simulator.replaceBySpecialTags(step.description))|nofilter }}
 				</div>
 			</div>
 		</div>
@@ -481,7 +481,7 @@ THE SOFTWARE.
 		</h4>
 	</div>
 	<div class="panel-body step-footnote rich-text" data-edition="{{ footnote.text.edition }}">
-	{{ page.paragraphs(step.simulator.replaceByDataLabel(footnote.text))|nofilter }}
+	{{ page.paragraphs(step.simulator.replaceBySpecialTags(footnote.text))|nofilter }}
 	</div>
 </div>
 {% endfor %}
@@ -706,7 +706,7 @@ THE SOFTWARE.
 			{{ 'Legend'|trans }}
 			</div>
 			<div class="panel-body fieldset-legend rich-text" data-edition="{{ fieldset.legend.edition }}">
-				{{ page.paragraphs(step.simulator.replaceByDataLabel(fieldset.legend))|nofilter }}
+				{{ page.paragraphs(step.simulator.replaceBySpecialTags(fieldset.legend))|nofilter }}
 			</div>
 		</div>
 	</div>
@@ -833,7 +833,7 @@ THE SOFTWARE.
 				{{ 'Note'|trans }}
 			</div>
 			<div class="panel-body field-note rich-text" data-edition="{{ field.preNote.text.edition }}">
-			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.preNote.text))|nofilter }}
+			{{ page.paragraphs(step.simulator.replaceBySpecialTags(field.preNote.text))|nofilter }}
 			</div>
 		</div>
 		{% elseif field.postNote %}
@@ -843,7 +843,7 @@ THE SOFTWARE.
 				{{ 'Note'|trans }}
 			</div>
 			<div class="panel-body field-note rich-text" data-edition="{{ field.postNote.text.edition }}">
-			{{ page.paragraphs(step.simulator.replaceByDataLabel(field.postNote.text))|nofilter }}
+			{{ page.paragraphs(step.simulator.replaceBySpecialTags(field.postNote.text))|nofilter }}
 			</div>
 		</div>
 		{% endif %}
@@ -919,7 +919,7 @@ THE SOFTWARE.
 		{{ 'Content'|trans }}
 	</div>
 	<div class="panel-body section-content rich-text" data-edition="{{ section.content.edition }}">
-		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.content))|nofilter }}
+		{{ page.paragraphs(step.simulator.replaceBySpecialTags(section.content))|nofilter }}
 	</div>
 </div>
 <div class="panel panel-default annotations-panel" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-annotations-panel">
@@ -927,7 +927,7 @@ THE SOFTWARE.
 		{{ 'Annotations'|trans }}
 	</div>
 	<div class="panel-body section-annotations rich-text" data-edition="{{ section.annotations.edition }}">
-		{{ page.paragraphs(step.simulator.replaceByDataLabel(section.annotations))|nofilter }}
+		{{ page.paragraphs(step.simulator.replaceBySpecialTags(section.annotations))|nofilter }}
 	</div>
 </div>
 {{ page.closeCollapsiblePanel() }}  
@@ -1044,7 +1044,7 @@ THE SOFTWARE.
 		{{ 'Description'|trans }}
 	</div>
 	<div class="panel-body data-description rich-text" data-edition="{{ data.description.edition }}">
-		{{ page.paragraphs(data.simulator.replaceByDataLabel(data.description))|nofilter }}
+		{{ page.paragraphs(data.simulator.replaceBySpecialTags(data.description))|nofilter }}
 	</div>
 </div>
 {% if data.choices is not empty or data.choiceSource is not empty %}
@@ -1165,7 +1165,7 @@ THE SOFTWARE.
 				{{ 'Description'|trans }}
 			</div>
 			<div class="panel-body profile-description rich-text" data-edition="{{ profile.description.edition }}">
-				{{ page.paragraphs(simulator.replaceByDataLabel(profile.description))|nofilter }}
+				{{ page.paragraphs(simulator.replaceBySpecialTags(profile.description))|nofilter }}
 			</div>
 		</div>
 	</div>

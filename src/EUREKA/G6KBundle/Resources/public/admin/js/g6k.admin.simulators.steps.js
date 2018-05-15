@@ -397,17 +397,17 @@ THE SOFTWARE.
 
 	Simulators.isFootnoteIdReferenced = function(stepId, id) {
 		var re1 = new RegExp("\\[[^\\^]+\\^" + id + '\\([^\\)]+\\)\\]', 'g');
-		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + id + '\\"', 'g');
+		var re2 = new RegExp('\\<dfn\\s+([^\\s]*\\s*)data-footnote=\\"' + id + '\\"', 'g');
 		var found = false;
 		$('#simulator-options-panel').find('[data-attribute=label]').each(function() {
-			if (re1.test($(this).text())) {
+			if (re1.test($(this).text()) || re2.test($(this).text())) {
 				found = Translator.trans("The label of the simulator contains a reference to this footnote");
 				return false;
 			}
 		});
 		if (found === false) {
 			$('#step-' + stepId).find('.step-container').find('[data-attribute=label]').each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.step-container');
 					found = Translator.trans("The label of the step #%id% contains a reference to this footnote", {
 						id: container.attr('data-id')
@@ -418,7 +418,7 @@ THE SOFTWARE.
 		}
 		if (found === false) {
 			$('#step-' + stepId).find('.panel-container').find('[data-attribute=label]').each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.panel-container');
 					found = Translator.trans("The label of the panel #%id% of step #%stepId% contains a reference to this footnote", {
 						id: container.attr('data-id'),
@@ -430,7 +430,7 @@ THE SOFTWARE.
 		}
 		if (found === false) {
 			$('#step-' + stepId).find('.field-container').find('[data-attribute=label]').each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.field-container');
 					if (container.attr('data-fieldrow')) {
 						found = Translator.trans("The label of the field #%id% of step #%stepId% / panel %panelId% / fieldset #%fieldsetId% / fieldrow #%fieldrowId% contains a reference to this footnote", {
@@ -454,7 +454,7 @@ THE SOFTWARE.
 		}
 		if (found === false) {
 			$('#step-' + stepId).find('.column-container').find('[data-attribute=label]').each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.column-container');
 					found = Translator.trans("The label of the column #%id% of step #%stepId% / panel %panelId% / fieldset #%fieldsetId% contains a reference to this footnote", {
 						id: container.attr('data-id'),
@@ -468,7 +468,7 @@ THE SOFTWARE.
 		}
 		if (found === false) {
 			$('#step-' + stepId).find('.block-container.blockinfo').find('[data-attribute=label]').each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.block-container.blockinfo');
 					found = Translator.trans("The label of the blockinfo #%id% of step #%stepId% / panel #%panelId% contains a reference to this footnote", {
 						id: container.attr('data-id'),
@@ -481,7 +481,7 @@ THE SOFTWARE.
 		}
 		if (found === false) {
 			$('#step-' + stepId).find('.chapter-container').find('[data-attribute=label]').each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.chapter-container');
 					found = Translator.trans("The label of the chapter #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% contains a reference to this footnote", {
 						id: container.attr('data-id'),
@@ -495,7 +495,7 @@ THE SOFTWARE.
 		}
 		if (found === false) {
 			$('#step-' + stepId).find('.section-container').find('[data-attribute=label]').each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.section-container');
 					found = Translator.trans("The label of the section #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% / chapter #%chapterId% contains a reference to this footnote", {
 						id: container.attr('data-id'),
@@ -511,7 +511,7 @@ THE SOFTWARE.
 		if (found === false) {
 			var richtexts = $('#simulator-description-panel-holder').find('.rich-text');
 			richtexts.each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					found = Translator.trans("The description of the simulator contains a reference to this footnote");
 					return false;
 				}
@@ -520,7 +520,7 @@ THE SOFTWARE.
 		if (found === false) {
 			var richtexts = $('#simulator-related-informations-panel-holder').find('.rich-text');
 			richtexts.each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					found = Translator.trans("The related informations of the simulator contains a reference to this footnote");
 					return false;
 				}
@@ -529,7 +529,7 @@ THE SOFTWARE.
 		if (found === false) {
 			var richtexts = $('#step-' + stepId).find('.step-description.rich-text');
 			richtexts.each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.step-container');
 					found = Translator.trans("The description of the step #%id% contains a reference to this footnote", {
 						id: container.attr('data-id')
@@ -541,7 +541,7 @@ THE SOFTWARE.
 		if (found === false) {
 			var richtexts = $('#step-' + stepId).find('.fieldset-legend.rich-text');
 			richtexts.each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.block-container.fieldset');
 					found = Translator.trans("The legend of the fieldset #%id% of step #%stepId% contains a reference to this footnote", {
 						id: container.attr('data-id'),
@@ -554,7 +554,7 @@ THE SOFTWARE.
 		if (found === false) {
 			var richtexts = $('#step-' + stepId).find('.field-note.rich-text');
 			richtexts.each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parents('.field-container');
 					if (container.attr('data-fieldrow')) {
 						found = Translator.trans("The note of the field #%id% of step #%stepId% / panel %panelId% / fieldset #%fieldsetId% / fieldrow #%fieldrowId% contains a reference to this footnote", {
@@ -579,7 +579,7 @@ THE SOFTWARE.
 		if (found === false) {
 			var richtexts = $('#step-' + stepId).find('.section-content.rich-text');
 			richtexts.each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parent().prev();
 					found = Translator.trans("The content of the section #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% / chapter #%chapterId% contains a reference to this footnote", {
 						id: container.attr('data-id'),
@@ -595,7 +595,7 @@ THE SOFTWARE.
 		if (found === false) {
 			var richtexts = $('#step-' + stepId).find('.section-annotations.rich-text');
 			richtexts.each(function() {
-				if (re1.test($(this).text())) {
+				if (re1.test($(this).text()) || re2.test($(this).text())) {
 					var container = $(this).parent().prev().prev();
 					found = Translator.trans("The annotations of the section #%id% of step #%stepId% / panel %panelId% / blockinfo #%blockinfoId% / chapter #%chapterId% contains a reference to this footnote", {
 						id: container.attr('data-id'),
