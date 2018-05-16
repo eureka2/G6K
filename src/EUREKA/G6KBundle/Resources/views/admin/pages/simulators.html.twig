@@ -688,9 +688,9 @@ THE SOFTWARE.
 {% macro showFieldSet(step, panel, fieldset, inClass) %}
 {% import _self as page %}
 {% if fieldset.disposition == "grid" %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~  fieldset.legend.content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~ step.simulator.replaceBySpecialTags(fieldset.legend).content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 {% else %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~  fieldset.legend.content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~ step.simulator.replaceBySpecialTags(fieldset.legend).content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 {% endif %}
 <div class="panel panel-default block-container fieldset" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-id="{{ fieldset.id }}">
 	<div class="panel-body">
