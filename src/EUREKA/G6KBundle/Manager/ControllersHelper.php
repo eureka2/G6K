@@ -232,7 +232,6 @@ class ControllersHelper {
 			case 'database':
 			case 'internal':
 				$args = array();
-				$args[] = $source->getRequest();
 				foreach ($params as $param) {
 					if ($param->getOrigin() == 'data') {
 						$value = $this->formatParamValue($param);
@@ -247,10 +246,45 @@ class ControllersHelper {
 					}
 					$args[] = $value;
 				}
-				$query = call_user_func_array('sprintf', $args);
+				$parameters = array();
+				$query = preg_replace_callback('/(\')?%(\d+)\$([sdf])\'?/', function ($m) use ($args, &$parameters) {
+					$num = $m[2];
+					if ($m[1] == "'") {
+						$parameters[$num] =  array(
+							'value' => $args[$num - 1],
+							'type' => 'text'
+						);
+					} else {
+						switch($m[3]) {
+							case 'd':
+								$parameters[$num] = array(
+									'value' => $args[$num - 1],
+									'type' => 'integer'
+								);
+								break;
+							case 'f':
+								$parameters[$num] = array(
+									'value' => $args[$num - 1],
+									'type' => 'number'
+								);
+
+								break;
+							default:
+								$parameters[$num] = array(
+									'value' => $args[$num - 1],
+									'type' => 'text'
+								);
+						}
+					}
+					return '?';
+				}, $source->getRequest());
 				$database = $this->controller->simu->getDatabaseById($datasource->getDatabase());
 				$database->connect();
-				$result = $database->query($query);
+				$stmt = $database->prepare($query);
+				foreach ($parameters as $parameter => $param) {
+					$database->bindValue($stmt, $parameter, $param['value'], $param['type']);
+				}
+				$result = $database->execute($stmt);
 				break;
 		}
 		switch ($source->getReturnType()) {
@@ -421,7 +455,7 @@ class ControllersHelper {
 		$text = $target instanceof RichText ? $target->getContent(): $target;
 		$result = preg_replace_callback(
 			'/\<data\s+[^\s]*\s*value="(\d+)(L?)"[^\>]*\>[^\<]+\<\/data\>/',
-			array($this, 'replaceVariableTag'),
+			array($this, 'replaceDataTag'),
 			$text
 		);
 		$result = preg_replace_callback(
