@@ -250,30 +250,30 @@ class ControllersHelper {
 				$query = preg_replace_callback('/(\')?%(\d+)\$([sdf])\'?/', function ($m) use ($args, &$parameters) {
 					$num = $m[2];
 					if ($m[1] == "'") {
-						$parameters[$num] =  array(
+						array_push($parameters, array(
 							'value' => $args[$num - 1],
 							'type' => 'text'
-						);
+						));
 					} else {
 						switch($m[3]) {
 							case 'd':
-								$parameters[$num] = array(
+								array_push($parameters, array(
 									'value' => $args[$num - 1],
 									'type' => 'integer'
-								);
+								));
 								break;
 							case 'f':
-								$parameters[$num] = array(
+								array_push($parameters, array(
 									'value' => $args[$num - 1],
 									'type' => 'number'
-								);
+								));
 
 								break;
 							default:
-								$parameters[$num] = array(
+								array_push($parameters, array(
 									'value' => $args[$num - 1],
 									'type' => 'text'
-								);
+								));
 						}
 					}
 					return '?';
@@ -282,7 +282,7 @@ class ControllersHelper {
 				$database->connect();
 				$stmt = $database->prepare($query);
 				foreach ($parameters as $parameter => $param) {
-					$database->bindValue($stmt, $parameter, $param['value'], $param['type']);
+					$database->bindValue($stmt, $parameter + 1, $param['value'], $param['type']);
 				}
 				$result = $database->execute($stmt);
 				break;
