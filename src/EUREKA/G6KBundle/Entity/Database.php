@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Entity;
 
+use EUREKA\G6KBundle\Manager\Splitter;
 use EUREKA\G6KBundle\Manager\Json\JsonSQL;
 use \PDO;
 
@@ -755,6 +756,14 @@ class Database {
 						return $pgformat[$m[1]];
 					}, $format);
 					return 'to_char('.trim(implode(', ', array_reverse ($args))).')';
+				}, $sql);
+				break;
+			case "sqlite":
+				$sql = preg_replace_callback("/\bconcat\s*\(((?>[^()]+)|(?R))*\)/i", function ($r) {
+					$args = Splitter::splitList($r[1]);
+					return implode(' || ', array_map(function ($a) {
+						return $a == "?" ? $a : "'" . $a . "'"; 
+					},  $args));
 				}, $sql);
 				break;
 		}

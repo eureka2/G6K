@@ -419,7 +419,7 @@ THE SOFTWARE.
 	{% set buttons = buttons|merge([{ 'class': 'add-panel', 'label': 'Add panel'|trans, 'icon': 'glyphicon-plus-sign' }]) %}
 	{% endif %}
 	{% set buttons = buttons|merge([{ 'class': 'edit-step', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' }]) %}
-	{{ page.openCollapsiblePanel('step-' ~ step.id, 'Step'|trans ~ ' #'~step.id~' : ' ~ step.label, 'info', loop.index == 1 ? 'in' : '', '', buttons ) }}
+	{{ page.openCollapsiblePanel('step-' ~ step.id, 'Step'|trans ~ ' #'~step.id~' : ' ~ step.simulator.replaceBySpecialTags(step.label)|striptags, 'info', loop.index == 1 ? 'in' : '', '', buttons ) }}
 	<div class="panel panel-default step-container" id="step-{{ step.id }}-attributes-panel" data-id="{{ step.id }}">
 		<div class="panel-body">
 			<div class="attributes-container">
@@ -660,7 +660,7 @@ THE SOFTWARE.
 
 {% macro showPanel(step, panel, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id , 'Panel'|trans ~ ' #' ~ panel.id ~ ' : ' ~ panel.label, 'success', inClass, '', [{ 'class': 'delete-panel', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign', 'dropdown': [{ 'class': 'add-fieldset', 'label': 'Add fieldset'|trans }, { 'class': 'add-blockinfo', 'label': 'Add blockinfo'|trans} ] }, { 'class': 'edit-panel', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id , 'Panel'|trans ~ ' #' ~ panel.id ~ ' : ' ~ step.simulator.replaceBySpecialTags(panel.label)|striptags, 'success', inClass, '', [{ 'class': 'delete-panel', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'label': 'Add'|trans, 'icon': 'glyphicon-plus-sign', 'dropdown': [{ 'class': 'add-fieldset', 'label': 'Add fieldset'|trans }, { 'class': 'add-blockinfo', 'label': 'Add blockinfo'|trans} ] }, { 'class': 'edit-panel', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 <div class="panel panel-default panel-container" id="step-{{ step.id }}-panel-{{ panel.id }}-attributes-panel" data-step="{{ step.id }}" data-id="{{ panel.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
@@ -751,7 +751,7 @@ THE SOFTWARE.
 
 {% macro showFieldSetColumn(step, panel, fieldset, column, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id , 'Column #%id% : %label%'|trans({ '%id%': column.id, '%label%': column.label }), 'warning', inClass, '', [{ 'class': 'delete-column', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-column', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id , 'Column #%id% : %label%'|trans({ '%id%': column.id, '%label%': step.simulator.replaceBySpecialTags(column.label)|striptags }), 'warning', inClass, '', [{ 'class': 'delete-column', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-column', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 <div class="panel panel-default column-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-column-{{ column.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-fieldset="{{ fieldset.id }}" data-id="{{ column.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
@@ -769,9 +769,9 @@ THE SOFTWARE.
 {% macro showFieldrow(step, panel, fieldset, fieldrow, inClass) %}
 {% import _self as page %}
 {% if fieldrow.fields|length < fieldset.columns|length %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id , 'Fieldrow #%id% : %label%'|trans({ '%id%': fieldrow.id, '%label%': fieldrow.label }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldrow', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id , 'Fieldrow #%id% : %label%'|trans({ '%id%': fieldrow.id, '%label%': step.simulator.replaceBySpecialTags(fieldrow.label)|striptags }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldrow', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 {% else %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id , 'Fieldrow #%id% : %label%'|trans({ '%id%': fieldrow.id, '%label%': fieldrow.label }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldrow', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id , 'Fieldrow #%id% : %label%'|trans({ '%id%': fieldrow.id, '%label%': step.simulator.replaceBySpecialTags(fieldrow.label)|striptags }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldrow', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 {% endif %}
 <div class="panel panel-default fieldrow-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-fieldrow-{{ fieldrow.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-fieldset="{{ fieldset.id }}" data-id="{{ fieldrow.id }}">
 	<div class="panel-body">
@@ -805,7 +805,7 @@ THE SOFTWARE.
 {% set elementId = 'step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position %}
 {% set fieldrowId = '' %}
 {% endif %}
-{{ page.openCollapsiblePanel(elementId , 'Field'|trans ~ ' #' ~ field.position ~ ' : ' ~ field.label, 'warning', inClass, '', [{ 'class': 'delete-field', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-field', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel(elementId , 'Field'|trans ~ ' #' ~ field.position ~ ' : ' ~ step.simulator.replaceBySpecialTags(field.label)|striptags, 'warning', inClass, '', [{ 'class': 'delete-field', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-field', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 <div class="panel panel-default field-container" id="{{ elementId }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-fieldset="{{ fieldset.id }}" data-fieldrow="{{ fieldrowId }}" data-id="{{ field.position }}">
 	<div class="panel-body">
 		<div class="attributes-container">
@@ -854,7 +854,7 @@ THE SOFTWARE.
 
 {% macro showBlockInfo(step, panel, blockinfo, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id , 'Blockinfo #%id% : %label%'|trans({'%id%': blockinfo.id, '%label%': blockinfo.label }), 'info', inClass, '', [{ 'class': 'delete-blockinfo', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-chapter', 'label': 'Add chapter'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-blockinfo', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id , 'Blockinfo #%id% : %label%'|trans({'%id%': blockinfo.id, '%label%': step.simulator.replaceBySpecialTags(blockinfo.label)|striptags }), 'info', inClass, '', [{ 'class': 'delete-blockinfo', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-chapter', 'label': 'Add chapter'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-blockinfo', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 <div class="panel panel-default block-container blockinfo" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-id="{{ blockinfo.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
@@ -877,7 +877,7 @@ THE SOFTWARE.
 
 {% macro showChapter(step, panel, blockinfo, chapter, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id , 'Chapter #%id% : %label%'|trans({'%id%': chapter.id, '%label%': chapter.label }), 'warning', inClass, '', [{ 'class': 'delete-chapter', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-section', 'label': 'Add section'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-chapter', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id , 'Chapter #%id% : %label%'|trans({'%id%': chapter.id, '%label%': step.simulator.replaceBySpecialTags(chapter.label)|striptags }), 'warning', inClass, '', [{ 'class': 'delete-chapter', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-section', 'label': 'Add section'|trans, 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-chapter', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 <div class="panel panel-default chapter-container" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-blockinfo="{{ blockinfo.id }}" data-id="{{ chapter.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">
@@ -903,7 +903,7 @@ THE SOFTWARE.
 
 {% macro showSection(step, panel, blockinfo, chapter, section, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id , 'Section #%id% : %label%'|trans({ '%id%': section.id, '%label%': section.label }), 'info', inClass, '', [{ 'class': 'delete-section', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-section', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id , 'Section #%id% : %label%'|trans({ '%id%': section.id, '%label%': step.simulator.replaceBySpecialTags(section.label)|striptags }), 'info', inClass, '', [{ 'class': 'delete-section', 'label': 'Delete'|trans, 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-section', 'label': 'Edit'|trans, 'icon': 'glyphicon-pencil' } ] ) }}
 <div class="panel panel-default section-container" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-blockinfo="{{ blockinfo.id }}" data-chapter="{{ chapter.id }}" data-id="{{ section.id }}">
 	<div class="panel-body">
 		<div class="attributes-container">

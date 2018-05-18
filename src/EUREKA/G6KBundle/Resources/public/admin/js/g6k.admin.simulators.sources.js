@@ -28,6 +28,7 @@ THE SOFTWARE.
 	Simulators.SQLFunctions = {
 		"sqlite" : {
 			"abs" : {arity: 1, args: ['number'], type: 'number'},
+			"concat" : {arity: -1, args: ['text'], type: 'text'},
 			"ifnull" : {arity: 2, args: ['text', 'text'], type: 'text'},
 			"instr" : {arity: 2, args: ['text', 'text'], type: 'number'},
 			"length" : {arity: 1, args: ['text'], type: 'number'},
@@ -49,6 +50,7 @@ THE SOFTWARE.
 		},
 		"mysqli" : {
 			"ascii": {arity: 1, args: ['text'], type: 'number'},
+			"concat" : {arity: -1, args: ['text'], type: 'text'},
 			"char": {arity: 1, args: ['number'], type: 'text'},
 			"char_length": {arity: 1, args: ['text'], type: 'number'},
 			"character_length": {arity: 1, args: ['text'], type: 'number'},
@@ -128,6 +130,7 @@ THE SOFTWARE.
 		},
 		"pgsql" : {
 			"ascii": {arity: 1, args: ['text'], type: 'number'},
+			"concat" : {arity: -1, args: ['text'], type: 'text'},
 			"char": {arity: 1, args: ['number'], type: 'text'},
 			"char_length": {arity: 1, args: ['text'], type: 'number'},
 			"character_length": {arity: 1, args: ['text'], type: 'number'},

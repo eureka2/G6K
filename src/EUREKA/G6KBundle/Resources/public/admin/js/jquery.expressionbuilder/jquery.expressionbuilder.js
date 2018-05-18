@@ -930,7 +930,7 @@ var ExpressionBuilder_I18N = {
 								result.push(prev = unarySign + findParameterName (num));
 							} else if (matches = value.match(/^¤(\d+)/)) {
 								var i = parseInt(matches[1]);
-								result.push(prev = text[i - 1]);
+								result.push(prev = "'" + text[i - 1] + "'");
 							} else if (matches = value.match(/^D(\d{1,2})\.(\d{1,2})\.(\d{4})/)) {
 								result.push(prev = unarySign + matches[1] + "/" + matches[2] + "/" + matches[3]);
 							} else if (value ==='+' || value === '-') {
@@ -1040,6 +1040,9 @@ var ExpressionBuilder_I18N = {
 							} else {
 								operandWrapper = createOperand();
 								var input = operandWrapper.children('input');
+								if (typeof value == 'string') {
+									value = value.replace(/^'(.+)'$/, '$1');
+								}
 								input.val(value).trigger('blur');
 								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
 							}
