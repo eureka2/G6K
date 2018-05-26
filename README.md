@@ -30,7 +30,7 @@ A calculation simulator is an online service made available to a user to enable 
 * serialize_precision = -1
 
 ## Installation
-1. Create a database using administration tool of your RDBMS.
+1. If you plan to use MySQL or PostgreSQL, create a user with "CREATE DATABASE" and "CREATE TABLE" privileges using the administration tool of your RDBMS.
 2. Be placed in the <DOCUMENT_ROOT> Web Server
 3. Download composer.phar (https://getcomposer.org/download/) in <DOCUMENT_ROOT>
 4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/`` 
@@ -38,7 +38,7 @@ A calculation simulator is an online service made available to a user to enable 
   * database_driver => pdo_pgsl, pdo_mysql or pdo_sqlite
   * database_host => name or IP address of your database server (simply &lt;Enter&gt; in case of SQLite)
   * database_port => port of the database server (simply &lt;Enter&gt; in case of SQLite)
-  * database_name => name of the database created 1. (simply &lt;Enter&gt; in case of SQLite)
+  * database_name => name of the database where the users of the administration interface will be installed 1. (simply &lt;Enter&gt; in case of SQLite)
   * database_user => User name for connecting to the database (simply &lt;Enter&gt; in case of SQLite)
   * database_password => this user's password (simply &lt;Enter&gt; in case of SQLite)
   * database_path => used in the case of SQLite and ignored in other cases, so make &lt;Enter&gt;
@@ -62,5 +62,5 @@ However, on some platforms, this message does not appear. If so, run the followi
 
 ## Copyright and license
 
-&copy; 2015-2017 Eureka2 - Jacques Archimède. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
+&copy; 2015-2018 Eureka2 - Jacques ArchimÃ¨de. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
 
