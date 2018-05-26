@@ -2050,6 +2050,7 @@ THE SOFTWARE.
 						incompleteColumn = true;
 						return false;
 					}
+					$(this).expressionbuilder('state');
 					if ($(this).next('span.column-alias').length > 0) {
 						var alias = $(this).next().next().attr('data-value');
 						if (alias == '' || ! /^\w+$/.test(alias)) {
@@ -2074,6 +2075,7 @@ THE SOFTWARE.
 						incompleteFilter = true;
 						return false;
 					}
+					$(this).expressionbuilder('state');
 				});
 				sourceContainer.find('.request-filter-condition-edition-container').find('span.editable-select.operator').each(function(k) {
 					if ($(this).attr('data-value') == '') {
@@ -2099,6 +2101,7 @@ THE SOFTWARE.
 							incompleteKey = true;
 							return false;
 						}
+						$(this).expressionbuilder('state');
 					});
 					if (incompleteKey) {
 						sourceContainer.find('.error-message').text(Translator.trans('Please complete the sort key entry'));

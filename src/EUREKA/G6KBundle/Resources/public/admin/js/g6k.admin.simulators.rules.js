@@ -4184,6 +4184,7 @@ THE SOFTWARE.
 				incompleteConditions = true;
 				return false;
 			}
+			$(this).expressionbuilder('state');
 		});
 		if (incompleteConditions) {
 			ruleContainer.find('.error-message').text(Translator.trans('Please, complete the input of the rule conditions'));
@@ -4208,6 +4209,7 @@ THE SOFTWARE.
 				incompleteActions = true;
 				return false;
 			}
+			$(this).expressionbuilder('state');
 		});
 		if (incompleteActions) {
 			ruleContainer.find('.error-message').text(Translator.trans('Please, complete the input of the rule actions'));

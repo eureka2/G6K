@@ -1323,6 +1323,7 @@ THE SOFTWARE.
 				dataPanelContainer.find('.alert').show();
 				return false;
 			}
+			deflt.expressionbuilder("state");
 			if (! Simulators.checkDataInExpression(dataId, deflt)) {
 				dataPanelContainer.find('.error-message').text(Translator.trans('The default value can not refer to the data itself'));
 				dataPanelContainer.find('.alert').show();
@@ -1336,6 +1337,7 @@ THE SOFTWARE.
 				dataPanelContainer.find('.alert').show();
 				return false;
 			}
+			min.expressionbuilder("state");
 			if (! Simulators.checkDataInExpression(dataId, min)) {
 				dataPanelContainer.find('.error-message').text(Translator.trans('min can not refer to the data itself'));
 				dataPanelContainer.find('.alert').show();
@@ -1349,6 +1351,7 @@ THE SOFTWARE.
 				dataPanelContainer.find('.alert').show();
 				return false;
 			}
+			max.expressionbuilder("state");
 			if (! Simulators.checkDataInExpression(dataId, max)) {
 				dataPanelContainer.find('.error-message').text(Translator.trans('max can not refer to the data itself'));
 				dataPanelContainer.find('.alert').show();
@@ -1362,6 +1365,7 @@ THE SOFTWARE.
 				dataPanelContainer.find('.alert').show();
 				return false;
 			}
+			content.expressionbuilder("state");
 			if (! Simulators.checkDataInExpression(dataId, content)) {
 				dataPanelContainer.find('.error-message').text(Translator.trans('Content can not refer to the data itself'));
 				dataPanelContainer.find('.alert').show();

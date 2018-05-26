@@ -242,8 +242,13 @@ var ExpressionBuilder_I18N = {
 									deleteOperand(wrapper);
 									break;
 								case 'add-argument':
-									var functionWrapper = wrapper.children('span.function-wrapper')
-									addFunctionArgument(functionWrapper);
+									var functionWrapper = wrapper.children('span.function-wrapper');
+									var funcName = wrapper.find("> button.operand-holder").text();
+									var argsCount = functionWrapper.find('.nested-expression').length;
+									var type = settings.functions[funcName].arity == -1 ? 
+												settings.functions[funcName].args[0] :
+												settings.functions[funcName].args[argsCount];
+									addFunctionArgument(functionWrapper, type);
 									break;
 							}
 						}
@@ -298,10 +303,15 @@ var ExpressionBuilder_I18N = {
 					});
 
 					holder.on('keydown', null, 'Ctrl+Shift+A', function (e) {
-						var wrapper = jQuery(this).parent('span');
+						var wrapper = jQuery(this).parents('span.function-operand-wrapper');
 						var functionWrapper = wrapper.children('span.function-wrapper')
 						setTimeout(function() {
-							addFunctionArgument(functionWrapper);
+							var funcName = wrapper.find("> button.operand-holder").text();
+							var argsCount = functionWrapper.find('.nested-expression').length;
+							var type = settings.functions[funcName].arity == -1 ? 
+										settings.functions[funcName].args[0] :
+										settings.functions[funcName].args[argsCount];
+							addFunctionArgument(functionWrapper, type);
 						}, 0);
 						return false;
 					});
@@ -366,6 +376,10 @@ var ExpressionBuilder_I18N = {
 								showHolder(jQuery(this).parent('span'), jQuery(this).val(), jQuery(this).val(), 'literal');
 							}
 							resizeOperand(jQuery(this).parent('span'));
+							var functionw = jQuery(this).parent('span').parents('.function-operand-wrapper');
+							if (functionw.length > 0) {
+								functionw.parent().expressionbuilder('state');
+							}
 							return false;
 						}
 					});
@@ -378,6 +392,10 @@ var ExpressionBuilder_I18N = {
 							showHolder(jQuery(this).parent('span'), jQuery(this).val(), jQuery(this).val(), 'literal');
 						}
 						resizeOperand(jQuery(this).parent('span'));
+						var functionw = jQuery(this).parent('span').parents('.function-operand-wrapper');
+						if (functionw.length > 0) {
+							functionw.parent().expressionbuilder('state');
+						}
 					});
 
 					holder.data('operand-type', 'none');
@@ -436,7 +454,9 @@ var ExpressionBuilder_I18N = {
 								} else if (nestedExpr.next().hasClass('comma-holder')) {
 									nestedExpr.next().remove();
 								}
-								nestedExpr.remove();
+								var functionExpr = nestedExpr.parents('.function-operand-wrapper').parent();
+								nestedExpr.expressionbuilder('destroy');
+								functionExpr.expressionbuilder('state');
 							} else {
 								var choices = showOperandChoices(wrapper);
 								choices.val('');
@@ -453,6 +473,8 @@ var ExpressionBuilder_I18N = {
 							wrapper.remove();
 						}
 					}
+					lastevent = 0;
+					checkState();
 				}
 
 				function createOperator() {
@@ -516,13 +538,20 @@ var ExpressionBuilder_I18N = {
 					input.hide();
 					choices.hide();
 					holder.data('operand-type', operandType);
-					holder.data('operand-value', val);
 					if (holder.data('right-operator')) {
 						holder.data('right-operator').css({"display":"inline"});
 					}
 					switch  (operandType) {
 						case 'literal':
-							holder.data('data-type', guessType(val));
+							var type = guessType(val);
+							var expr = holder.parents('.nested-expression');
+							if (expr.length > 0 && expr.eq(0).attr('data-type')) {
+								type = expr.eq(0).attr('data-type');
+							}
+							if (type === 'text' && ! /^'.*'$/.test(label)) {
+								label = "'" + label.replace(/'/g, "\\'") + "'";
+							}
+							holder.data('data-type', type);
 							break;
 						case 'constant':
 							holder.data('data-type', settings.constants[val].type);
@@ -541,6 +570,7 @@ var ExpressionBuilder_I18N = {
 						default:
 							holder.data('data-type', 'unknown');
 					}
+					holder.data('operand-value', val);
 					holder.text(label).css({"display":"inline-block"});
 					holder.data('operand-completed', true);
 					lastevent = 0;
@@ -667,7 +697,7 @@ var ExpressionBuilder_I18N = {
 					showHolder(wrapper, parameter, parameterLabel, 'parameter');
 				}
 
-				function addFunctionArgument(functionWrapper, initial) {
+				function addFunctionArgument(functionWrapper, type, initial) {
 					var rightParenthesis = functionWrapper.children('.right-parenthesis-holder');
 					var nesteds = functionWrapper.children('.nested-expression');
 					if (nesteds.length > 0) {
@@ -697,6 +727,7 @@ var ExpressionBuilder_I18N = {
 							initargs.push(op);
 						}
 					}
+					nested.attr('data-type', type);
 					nested.expressionbuilder(
 						jQuery.extend({}, settings, {
 							onCompleted: function(type, expression) { checkState(); },
@@ -704,6 +735,7 @@ var ExpressionBuilder_I18N = {
 							initial: initargs
 						})
 					);
+					return nested;
 				}
 
 				function functionExpression(wrapper, funcName, initial) {
@@ -737,7 +769,8 @@ var ExpressionBuilder_I18N = {
 					leftParenthesis.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
 					rightParenthesis.css(jQuery.extend( {}, holderCSS, { "cursor": "default", 'text-align': 'center' } ));
 					for (var i = 0; i < arity; i++) {
-						addFunctionArgument(functionWrapper, initial);
+						var type = (func.arity == -1) ? func.args[0] : func.args[i];
+						addFunctionArgument(functionWrapper, type, initial);
 					}
 					holder.data('operand-completed', false);
 					checkState();
@@ -841,16 +874,7 @@ var ExpressionBuilder_I18N = {
 					var completed = expression.expressionbuilder('completed');
 					if (completed) {
 						if (lastevent != 2) {
-							var type = '';
-							expression.children('span').each(function(o) {
-								if (! jQuery(this).hasClass('operator-wrapper')) {
-									var wrapper = jQuery(this);
-									var holder = wrapper.children('button.operand-holder');
-									var dataType = holder.data('data-type');
-									var op =  holder.data('left-operator') ? holder.data('left-operator').children('button.operator-holder').data('operator-value') : '';
-									type = combineTypes(type, op, dataType);
-								}
-							});
+							var type = expression.expressionbuilder('type');
 							settings.onCompleted(type, expression); 
 							lastevent = 2;
 						}
@@ -1018,6 +1042,13 @@ var ExpressionBuilder_I18N = {
 								choices.val(value);
 								showHolder(operandWrapper, value, settings.fields[value].label, 'field');
 								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
+							} else if (typeof value == 'string' && settings.fields[value.toLowerCase()]) {
+								value = value.toLowerCase();
+								operandWrapper = createOperand();
+								var choices = operandWrapper.children('select');
+								choices.val(value);
+								showHolder(operandWrapper, value, settings.fields[value].label, 'field');
+								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
 							} else if (settings.parameters[value]) {
 								operandWrapper = createOperand();
 								var choices = operandWrapper.children('select');
@@ -1150,7 +1181,7 @@ var ExpressionBuilder_I18N = {
 										param = "'" + param + "s'";
 								}
 								expression += param;
-							} else if (holder.data('operand-type') === 'literal' && ! jQuery.isNumeric(holder.data('operand-value'))) {
+							} else if (holder.data('operand-type') === 'literal' && (holder.data('data-type') === 'text' || ! jQuery.isNumeric(holder.data('operand-value')))) {
 								expression += "'" + operandValue.replace(/'/g, "\\'") + "'";
 							} else {
 								expression += operandValue;
@@ -1181,6 +1212,18 @@ var ExpressionBuilder_I18N = {
 					return expression;
 				};
 				return expr(jQuery(this));
+			}
+		},
+
+		state: function() {
+			var expression = jQuery(this);
+			var settings = expression.data('settings');
+			var completed = expression.expressionbuilder('completed');
+			if (completed) {
+				var type = expression.expressionbuilder('type');
+				settings.onCompleted(type, expression); 
+			} else {
+				settings.onEditing(expression);
 			}
 		},
 
