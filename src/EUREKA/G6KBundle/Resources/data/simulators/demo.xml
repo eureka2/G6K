@@ -62,7 +62,7 @@ The rate is established according to a table of reference published annually by 
 </ul>
 			]]></Description>
 		</Data>
-		<Data id="5" name="lumpAmountRSA" label="Lump amount of the French RSA" type="money" content="524.16">
+		<Data id="5" name="lumpAmountRSA" label="Lump amount of the French RSA" type="money" content="550.93">
 			<Description><![CDATA[
 Lump amount of the RSA for a household made up of a single person.
 
@@ -132,7 +132,7 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 		</Step>
 	</Steps>
 	<Sources>
-		<Source id="1" datasource="demo" request="SELECT rate FROM MARate WHERE AARight = %s AND nChildren &lt;= %s ORDER BY nChildren DESC LIMIT 1" returnType="assocArray" returnPath="0/rate">
+		<Source id="1" datasource="demo" request="SELECT rate FROM MARate WHERE AARight = '%1$s' AND nChildren &lt;= %2$f ORDER BY nChildren DESC LIMIT 1" returnType="assocArray" returnPath="0/rate">
 			<Parameter type="columnValue" name="AARight" data="2"></Parameter>
 			<Parameter type="columnValue" name="nChildren" data="3"></Parameter>
 		</Source>

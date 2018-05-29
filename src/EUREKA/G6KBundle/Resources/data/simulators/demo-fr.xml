@@ -64,7 +64,7 @@ Le taux est établi selon une table de référence publiée annuellement par le 
 </ul>
 			]]></Description>
 		</Data>
-		<Data id="5" name="montantForfaitaireRSA" label="Montant forfaitaire du RSA" type="money" content="524.16" />
+		<Data id="5" name="montantForfaitaireRSA" label="Montant forfaitaire du RSA" type="money" content="550.93" />
 		<Data id="6" name="mtEnfantPA" label="Montant par enfant" type="money" content="max(0, round((#1 - #5) * #4 /100))" round="0" />
 		<Data id="7" name="totalPA" label="Montant total" type="money" content="max(0, min(#1 - #5, #6 * #3))" round="0" />
 		<Data id="8" name="dateRSA" label="Date du montant forfaitaire du RSA" type="date" source="2" index="'debut'" />
@@ -124,11 +124,8 @@ Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pensi
 			</ActionList>
 		</Step>
 	</Steps>
-	<Sites>
-		<Site id="1" name="SP" home="http://www.service-public.fr" />
-	</Sites>
 	<Sources>
-		<Source id="1" datasource="demo" request="SELECT rate FROM MARate WHERE AARight = %s AND nChildren &lt;= %s ORDER BY nChildren DESC LIMIT 1" returnType="assocArray" returnPath="0/rate">
+		<Source id="1" datasource="demo" request="SELECT rate FROM MARate WHERE AARight = '%1$s' AND nChildren &lt;= %2$f ORDER BY nChildren DESC LIMIT 1" returnType="assocArray" returnPath="0/rate">
 			<Parameter type="columnValue" name="droitVH" data="2" />
 			<Parameter type="columnValue" name="nbEnfants" data="3" />
 		</Source>
