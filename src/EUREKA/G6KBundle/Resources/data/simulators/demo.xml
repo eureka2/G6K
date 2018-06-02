@@ -120,8 +120,8 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 						<Field position="2" label="Amplitude of the right of access and the accommodation" usage="input" required="1" expanded="0" underlabel="0" help="1" explanation="2" data="2"></Field>
 						<Field position="3" label="Number of children of the debtor parent" usage="input" required="1" help="1" explanation="3" data="3"></Field>
 						<Field position="4" label="Applicable rate by child" usage="output" required="0" help="1" explanation="4" data="4"></Field>
-						<Field position="5" label="Maintenance allowance by child" usage="output" required="0" help="0" emphasize="1" explanation="'5 = ((1) - 483) * (4) /100'" data="5"></Field>
-						<Field position="6" label="Total of the maintenance allowance" usage="output" required="0" help="0" emphasize="1" explanation="'6 = (5) * (3)'" data="6"></Field>
+						<Field position="5" label="Maintenance allowance by child" usage="output" required="0" help="0" emphasize="1" explanation="'6 = ((1) - 550.93) * (4) /100'" data="6"></Field>
+						<Field position="6" label="Total of the maintenance allowance" usage="output" required="0" help="0" emphasize="1" explanation="'7 = (6) * (3)'" data="7"></Field>
 					</FieldSet>
 				</Panel>
 			</Panels>

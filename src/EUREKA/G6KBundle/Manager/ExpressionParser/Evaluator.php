@@ -445,13 +445,14 @@ class Evaluator {
 					}
 					throw new \Exception("Illegal type for argument '".$arg."' : operand must be a ".$expected." for ".$func);
 				}
-				array_unshift($argslist, $arg->value); 
 			} else if ($arg->isVariable()) {
-				// return new Token(Token::T_UNDEFINED, array($arg));
-				unset($arg->value);
-			} else {
-				array_unshift($argslist, $arg->value); 
+				if ($func->value == 'sum' || $func->value == 'count' || $func->value == 'concat') {
+					unset($arg->value);
+				} else {
+					return new Token(Token::T_UNDEFINED, array($arg));
+				}
 			}
+			array_unshift($argslist, $arg->value); 
 		}
 		if ($variableArgsCount) {
 			$argslist = array($argslist);

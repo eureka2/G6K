@@ -2878,7 +2878,11 @@ THE SOFTWARE.
 						throw new Error("Illegal type for argument '" + arg + "' : operand must be a " + expected + " for " + func);
 					}
 				} else if (arg.isVariable()) {
-					arg.value = undefined;
+					if (func.value == 'sum' || func.value == 'count' || func.value == 'concat') {
+						arg.value = undefined;
+					} else {
+						return new Token(Token.TYPE.T_UNDEFINED, [arg]);
+					}
 				}
 				argv.unshift(arg.value); 
 			}

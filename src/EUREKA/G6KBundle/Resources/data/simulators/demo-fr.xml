@@ -113,8 +113,8 @@ Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pensi
 						<Field position="2" label="Amplitude du droit de visite et d'hébergement" usage="input" prompt="--- Sélectionnez l'amplitude ---" required="1" expanded="0" underlabel="0" help="1" explanation="2" data="2" />
 						<Field position="3" label="Nombre d'enfants du parent débiteur" usage="input" required="1" help="1" explanation="3" data="3" />
 						<Field position="4" label="Taux applicable par enfant" usage="output" required="0" help="1" explanation="4" data="4" />
-						<Field position="5" label="Pension alimentaire par enfant" usage="output" required="0" help="0" emphasize="1" explanation="'5 = ((1) - 483) * (4) /100'" data="6" />
-						<Field position="6" label="Total de la pension alimentaire" usage="output" required="0" help="0" emphasize="1" explanation="'6 = (5) * (3)'" data="7" />
+						<Field position="5" label="Pension alimentaire par enfant" usage="output" required="0" help="0" emphasize="1" explanation="'6 = ((1) - 550.93) * (4) /100'" data="6" />
+						<Field position="6" label="Total de la pension alimentaire" usage="output" required="0" help="0" emphasize="1" explanation="'7 = (6) * (3)'" data="7" />
 					</FieldSet>
 				</Panel>
 			</Panels>
