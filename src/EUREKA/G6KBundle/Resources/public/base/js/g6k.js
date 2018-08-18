@@ -3218,6 +3218,7 @@ THE SOFTWARE.
 		this.sourcesCaches = {};
 		this.urisCaches = {};
 		this.lastUserInputName = "";
+		this.lastSubmitBtn = null;
 		this.hasFatalError = false;
 		this.hasGlobalError = false;
 		this.hasError = false;
@@ -4818,8 +4819,17 @@ THE SOFTWARE.
 				}
 				$fieldset.find('label.choice').removeClass('checked-candidate');
 			});
-			$( "#g6k_form" ).submit(function( event ) {
-				var bname = event.originalEvent.explicitOriginalTarget.name;
+			$( "#g6k_form input[type=submit][name], #g6k_form button[type=submit][name]" ).click(function( event ) {
+				self.lastSubmitBtn = this.name;
+			});
+			$( "#g6k_form input[type=submit][name], #g6k_form button[type=submit][name]" ).keypress(function( event ) {
+				var key = event.which || event.keyCode;
+				if (key == 13) {
+					self.lastSubmitBtn = this.name;
+				}
+			});
+			$( "#g6k_form").submit(function( event ) {
+				var bname = self.lastSubmitBtn;
 				var bwhat = self.simu.step.actions[bname].what;
 				var bfor = self.simu.step.actions[bname].for;
 				if (bwhat == 'submit' && bfor == 'priorStep') {
