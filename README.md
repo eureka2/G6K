@@ -60,6 +60,10 @@ However, on some platforms, this message does not appear. If so, run the followi
 
 [Documentation of G6K classes](http://eureka2.github.io/g6k/documentation/classes/)
 
+## Innovation Award
+
+<script src="https://www.phpclasses.org/browse/package/10556/format/badge.js"> </script>
+
 ## Copyright and license
 
 &copy; 2015-2018 Eureka2 - Jacques ArchimÃ¨de. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
