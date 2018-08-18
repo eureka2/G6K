@@ -64,7 +64,7 @@ However, on some platforms, this message does not appear. If so, run the followi
 
 <table class="framed light" border>
   <tr>
-    <td>
+    <td style="width: 30%">
       <a href="https://www.phpclasses.org/" title="PHP Classes" alt="PHP Classes">
         <img src="https://files.phpclasses.org/graphics/phpclasses/logo-small-phpclasses.svg" width="75" height="24" alt="PHP Classes" style="vertical-align: top">
       </a>
