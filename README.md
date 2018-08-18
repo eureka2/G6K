@@ -64,22 +64,25 @@ However, on some platforms, this message does not appear. If so, run the followi
 
 <table class="framed light" border>
   <tr>
-    <td style="width: 30%">
+    <td>
       <a href="https://www.phpclasses.org/" title="PHP Classes" alt="PHP Classes">
         <img src="https://files.phpclasses.org/graphics/phpclasses/logo-small-phpclasses.svg" width="75" height="24" alt="PHP Classes" style="vertical-align: top">
       </a>
-      <br>
-      <hr>
-      <b><a href="https://www.phpclasses.org/package/10556-PHP-Generate-simulator-tools-to-perform-calculations.html">G6K</a><br>
-       By <a href="https://www.phpclasses.org/browse/author/549500.html">eureka2</a></b><br>
-       <a href="https://www.phpclasses.org/award/innovation/"><img src="https://www.phpclasses.org/award/innovation/nominee.gif" width="89" height="89" alt="PHP Programming Innovation award nominee" title="PHP Programming Innovation award nominee" border="0"></a><br><b><span style="font-size: large">April 2018<br>
-       Number 6</span></b>
-    </td>
+     </td>
     <td>
+     <b><a href="https://www.phpclasses.org/package/10556-PHP-Generate-simulator-tools-to-perform-calculations.html">G6K</a>
+       By <a href="https://www.phpclasses.org/browse/author/549500.html">eureka2</a></b>
+     </td>
+    <td>
+      <a href="https://www.phpclasses.org/award/innovation/"><img src="https://www.phpclasses.org/award/innovation/nominee.gif" width="89" height="89" alt="PHP Programming Innovation award nominee" title="PHP Programming Innovation award nominee" border="0"></a><br><b><span style="font-size: large">April 2018 Number 6</span></b>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="3">
       There are many sites that are useful because they provide means to let the users perform calculations of some kind from simple values entered in Web forms.
       <br>
       This package provides a Web interface to implement a generic system for designing and providing access to pages that provide several types of calculator tools.
-      </br>
+      <br>
       Manuel Lemos
 	</td>
   </tr>
@@ -87,5 +90,5 @@ However, on some platforms, this message does not appear. If so, run the followi
 
 ## Copyright and license
 
-&copy; 2015-2018 Eureka2 - Jacques ArchimÃ¨de. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
+&copy; 2015-2018 Eureka2 - Jacques Archimède. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
 
