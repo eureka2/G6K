@@ -459,7 +459,7 @@ class Database {
 						$dsn[] = 'port=' . $this->port;
 					}
 					if (isset($this->name) && $withDbName) {
-						$dsn[] = 'dbname=' . $this->name;
+						$dsn[] = 'dbname=' . str_replace('-', '_', $this->name);
 					}
 					$this->link = new \PDO('mysql:' . implode(';', $dsn), 
 						$this->user, 

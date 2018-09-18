@@ -63,7 +63,6 @@ class DatasourcesHelper {
 	 * Creates and returns a DOM XML document from json-schema.org compliant JSON data files and schemas
 	 *
 	 * @access  public
-	 * @param   string $name The name of the data source
 	 * @param   string $schemafile The path of the JSON schema file
 	 * @param   string $datafile The path of the JSON data file
 	 * @param   array $parameters The database parameters
@@ -72,9 +71,9 @@ class DatasourcesHelper {
 	 * @return  \DOMDocument The XML DOM document
 	 *
 	 */
-	public function makeDatasourceDom($name, $schemafile, $datafile, $parameters, $databasesDir, &$id) {
+	public function makeDatasourceDom($schemafile, $datafile, $parameters, $databasesDir, &$id) {
 		$converter = new JSONToSQLConverter($parameters, $databasesDir);
-		$form = $converter->convert($name, $schemafile, $datafile);
+		$form = $converter->convert($schemafile, $datafile);
 		$datasource = $this->doCreateDatasource($form);
 		$id = $datasource->getAttribute('id');
 		$dom = $datasource->ownerDocument;

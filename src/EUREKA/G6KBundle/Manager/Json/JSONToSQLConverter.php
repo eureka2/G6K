@@ -212,14 +212,13 @@ class JSONToSQLConverter {
 	 * Imports a JSON database to a SQL database and returns an array descriptor of the database for the update of DataSources.xml
 	 *
 	 * @access  public
-	 * @param   string $name The name of the database
 	 * @param   string $schemafile The JSON schema file
 	 * @param   string $datafile The JSON data file
 	 * @return  array The array descriptor of the SQL database
 	 * @throws \Exception
 	 *
 	 */
-	public function convert($name, $schemafile, $datafile) {
+	public function convert($schemafile, $datafile) {
 		$schema = file_get_contents($schemafile);
 		if ($schema === false) {
 			throw new \Exception("JSON schema file '$schemafile' schema doesn't exists");
@@ -232,6 +231,7 @@ class JSONToSQLConverter {
 		} else {
 			$data = json_decode($data);
 		}
+		$name = $schema->title;
 		$dbtype = '';
 		$dbschema = '';
 		switch($this->parameters['database_driver']) {

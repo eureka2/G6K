@@ -781,7 +781,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 			}
 			$helper = new DatasourcesHelper($this->datasources);
-			$dom = $helper->makeDatasourceDom($name, $schemafile, $datafile, $parameters, $this->databasesDir, $dsid);
+			$dom = $helper->makeDatasourceDom($schemafile, $datafile, $parameters, $this->databasesDir, $dsid);
 			$this->saveDatasources($dom);
 		}
 		if ($schemafile != '') {
@@ -1169,7 +1169,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				break;
 			case 'mysql':
 			case 'mysqli':
-				$dbname = $database->getName();
+				$dbname = str_replace('-', '_', $database->getName());
 				$tableslist = $database->query("SELECT 'table' as type, table_name as name, table_name as tbl_name FROM information_schema.tables where table_schema = '$dbname' and table_name != 'fos_user';");
 				break;
 			default:
