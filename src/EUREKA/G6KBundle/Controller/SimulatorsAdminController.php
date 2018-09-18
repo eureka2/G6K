@@ -1573,6 +1573,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				return $response;
 			}
 			$xpath = new \DOMXPath($dom);
+			$simu = $dom->documentElement->getAttribute('name');
 			$view = $dom->documentElement->getAttribute('defaultView');
 			if (! $fs->exists(array($this->viewsDir.'/'.$view, $this->publicDir.'/'.$view))) {
 				$view = 'Demo';
