@@ -7,7 +7,7 @@
 			</div>	 
 			<div style="padding-top:30px" class="panel-body" >
 				{% include "FOSUserBundle::fos.messages.html.twig" %}
-				<form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request form-horizontal" role="form">
+				<form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request form-horizontal" role="form" enctype="multipart/form-data">
 					<div>
 						{% if invalid_username is defined %}
 							<p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}) }}</p>

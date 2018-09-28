@@ -34,7 +34,7 @@ use Symfony\Component\Finder\Finder;
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
 use Silex\Application;
-use Binfo\Silex\MobileDetectServiceProvider;
+use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
 
 /**
  *
@@ -44,6 +44,8 @@ use Binfo\Silex\MobileDetectServiceProvider;
  *
  */
 class HomeAdminController extends BaseAdminController {
+
+	use ControllersHelper;
 
 	/**
 	 * @var \SimpleXMLElement $datasources content of Datasources.xml
@@ -63,7 +65,7 @@ class HomeAdminController extends BaseAdminController {
 	 */
 	public function indexAction(Request $request)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runIndex($request);
 	}
 

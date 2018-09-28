@@ -3,23 +3,22 @@ parameters:
 services:
     kernel.listener.g6k_exception_listener:
         class: EUREKA\G6KBundle\EventListener\G6KExceptionListener
-        arguments: [ @kernel ]
+        arguments: [ "@kernel" ]
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
     g6k.file_uploader:
         class: EUREKA\G6KBundle\Services\FileUploader
         arguments: ['%g6k_upload_directory%']
-    
+
     g6k.deployer:
         class: EUREKA\G6KBundle\Services\Deployer
-        arguments: [ @kernel, @translator ]
-            
+        arguments: [ "@kernel", "@translator" ]
 
     # TwigExtensions
     g6k.twig.filters_extension:
         class: EUREKA\G6KBundle\Twig\Extension\Filters
-        arguments: [@translator]
+        arguments: ["@translator"]
         tags:
             - { name: twig.extension }
 

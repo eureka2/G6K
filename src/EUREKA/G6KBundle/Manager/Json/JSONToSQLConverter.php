@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Manager\Json;
 
-use EUREKA\G6KBundle\Entity\Database;
+use EUREKA\G6KBundle\Model\Database;
 
 /**
  * This class allows the conversion of a json-schema.org compliant JSON database and exported from G6K to a SQL database
@@ -97,7 +97,7 @@ class JSONToSQLConverter {
 	private $databasesDir;
 
 	/**
-	 * @var \EUREKA\G6KBundle\Entity\Database      $database The Database object
+	 * @var \EUREKA\G6KBundle\Model\Database      $database The Database object
 	 *
 	 * @access  private
 	 *

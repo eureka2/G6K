@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Services;
 
-use EUREKA\G6KBundle\Entity\Simulator;
+use EUREKA\G6KBundle\Model\Simulator;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -346,7 +346,7 @@ class Deployer {
 	 * - localhost: cp -f {local.rootdir}/{local.file} /var/www/html/simulator/{remote.dir}/
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simu The simulator to deploy
+	 * @param   \EUREKA\G6KBundle\Model\Simulator $simu The simulator to deploy
 	 * @return  array The result of the deployment
 	 *
 	 */

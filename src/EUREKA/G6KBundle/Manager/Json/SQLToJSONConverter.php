@@ -27,7 +27,7 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Manager\Json;
 
 use EUREKA\G6KBundle\Manager\DatasourcesHelper;
-use EUREKA\G6KBundle\Entity\Database;
+use EUREKA\G6KBundle\Model\Database;
 
 /**
  *
@@ -306,7 +306,7 @@ class SQLToJSONConverter {
 	 * Returns the information on a table
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The unified access interface to the database
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The unified access interface to the database
 	 * @param   string $table The name of the table
 	 * @return  array|null The information on the table
 	 *
@@ -341,7 +341,7 @@ class SQLToJSONConverter {
 	 * Returns all the rows of a table of a SQL database
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The unified access interface to the database
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The unified access interface to the database
 	 * @param   string $table The name of the table
 	 * @param   array &$schema The list of columns in the table and their properties
 	 * @param   array &$required The list of required columns

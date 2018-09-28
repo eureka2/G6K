@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,16 +26,18 @@ THE SOFTWARE.
  
 namespace EUREKA\G6KBundle\Manager;
 
-use EUREKA\G6KBundle\Entity\Data;
-use EUREKA\G6KBundle\Entity\Source;
-use EUREKA\G6KBundle\Entity\Parameter;
-use EUREKA\G6KBundle\Entity\ChoiceGroup;
-use EUREKA\G6KBundle\Entity\Choice;
-use EUREKA\G6KBundle\Entity\ChoiceSource;
-use EUREKA\G6KBundle\Entity\RichText;
+use EUREKA\G6KBundle\Model\Data;
+use EUREKA\G6KBundle\Model\Source;
+use EUREKA\G6KBundle\Model\Parameter;
+use EUREKA\G6KBundle\Model\ChoiceGroup;
+use EUREKA\G6KBundle\Model\Choice;
+use EUREKA\G6KBundle\Model\ChoiceSource;
+use EUREKA\G6KBundle\Model\RichText;
 
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
+
+use Symfony\Component\Translation\DataCollectorTranslator;
 
 /**
  *
@@ -44,53 +46,55 @@ use EUREKA\G6KBundle\Manager\ResultFilter;
  * @copyright Jacques Archimède
  *
  */
-class ControllersHelper {
+trait ControllersHelper {
 
 	/**
-	 * @var \EUREKA\G6KBundle\Controller\BaseAdminController|\EUREKA\G6KBundle\Controller\BaseController     $controller The controller that uses this helper
-	 *
-	 * @access  private
-	 *
-	 */
-	private $controller;
-
-	/**
-	 * @var \Symfony\Component\DependencyInjection\ContainerInterface      $container The service container instance
-	 *
-	 * @access  private
-	 *
-	 */
-	private $container;
-
-	/**
-	 * Constructor of class ControllersHelper
+	 * Initialization of common directories
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Controller\BaseAdminController|\EUREKA\G6KBundle\Controller\BaseController $controller The controller that uses this helper
-	 * @param   \Symfony\Component\DependencyInjection\ContainerInterface $container The service container instance
 	 * @return  void
 	 *
 	 */
-	public function __construct($controller, $container) {
-		$this->controller = $controller;
-		$this->container = $container;
-		$resourcesDir = $this->controller->get('kernel')->locateResource('@EUREKAG6KBundle/Resources');
-		$this->controller->databasesDir = $resourcesDir . '/data/databases';
-		$this->controller->simulatorsDir = $resourcesDir . '/data/simulators';
-		$this->controller->publicDir = $resourcesDir . '/public';
-		$this->controller->viewsDir = $resourcesDir . '/views';
+	protected function initialize() {
+		$resourcesDir = $this->get('kernel')->locateResource('@EUREKAG6KBundle/Resources');
+		$this->databasesDir = $resourcesDir . '/data/databases';
+		$this->simulatorsDir = $resourcesDir . '/data/simulators';
+		$this->publicDir = $resourcesDir . '/public';
+		$this->viewsDir = $resourcesDir . '/views';
+	}
+
+	/**
+	 * Returns the translator interface
+	 *
+	 * @access  public
+	 * @return  \Symfony\Component\Translation\TranslatorInterface The translator interface
+	 *
+	 */
+	public function getTranslator() {
+		return $this->get('translator');
+	}
+
+	/**
+	 * Returns the Symfony kernel
+	 *
+	 * @access  public
+	 * @return   \Symfony\Component\HttpKernel\Kernel $kernel The Symfony kernel
+	 *
+	 */
+	public function getKernel() {
+		return $this->get('kernel');
 	}
 
 	/**
 	 * Formats a source parameter value
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Parameter The source parameter
+	 * @param   \EUREKA\G6KBundle\Model\Parameter The source parameter
 	 * @return  string|null The formatted value
 	 *
 	 */
 	protected function formatParamValue(Parameter $param) {
-		$data = $this->controller->simu->getDataById($param->getData());
+		$data = $this->simu->getDataById($param->getData());
 		$value = $data->getValue();
 		if (strlen($value) == 0) {
 			return null;
@@ -144,16 +148,16 @@ class ControllersHelper {
 	 * Returns the data source accessed by a source query
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Source $source The source
-	 * @return  \EUREKA\G6KBundle\Entity\DataSource The data source
+	 * @param   \EUREKA\G6KBundle\Model\Source $source The source
+	 * @return  \EUREKA\G6KBundle\Model\DataSource The data source
 	 *
 	 */
 	protected function getDatasource(Source $source) {
 		$datasource = $source->getDatasource();
 		if (is_numeric($datasource)) {
-			$datasource = $this->controller->simu->getDatasourceById((int)$datasource);
+			$datasource = $this->simu->getDatasourceById((int)$datasource);
 		} else {
-			$datasource = $this->controller->simu->getDatasourceByName($datasource);
+			$datasource = $this->simu->getDatasourceByName($datasource);
 		}
 		return $datasource;
 	}
@@ -162,7 +166,7 @@ class ControllersHelper {
 	 * Process a source query and returns the result of that query.
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Entity\Source $source The source
+	 * @param   \EUREKA\G6KBundle\Model\Source $source The source
 	 * @return  mixed The result of the query.
 	 *
 	 */
@@ -278,7 +282,7 @@ class ControllersHelper {
 					}
 					return '?';
 				}, $source->getRequest());
-				$database = $this->controller->simu->getDatabaseById($datasource->getDatabase());
+				$database = $this->simu->getDatabaseById($datasource->getDatabase());
 				$database->connect();
 				$stmt = $database->prepare($query);
 				foreach ($parameters as $parameter => $param) {
@@ -341,7 +345,7 @@ class ControllersHelper {
 	 * Populates the list of values of a data item of type choice from a data source.
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Entity\Data &$data The data item of type choice
+	 * @param   \EUREKA\G6KBundle\Model\Data &$data The data item of type choice
 	 * @return  void
 	 *
 	 */
@@ -364,15 +368,15 @@ class ControllersHelper {
 	 * Populates the list of values of a data item of type choice from a data source where columns are in the given ChoiceSource object.
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Data &$data The data item of type choice
-	 * @param   \EUREKA\G6KBundle\Entity\ChoiceSource $choiceSource The given ChoiceSource object
+	 * @param   \EUREKA\G6KBundle\Model\Data &$data The data item of type choice
+	 * @param   \EUREKA\G6KBundle\Model\ChoiceSource $choiceSource The given ChoiceSource object
 	 * @return  void
 	 *
 	 */
 	protected function populateChoice(Data &$data, ChoiceSource $choiceSource) {
 		$source = $choiceSource->getId();
 		if ($source != "") {
-			$source = $this->controller->simu->getSourceById($source);
+			$source = $this->simu->getSourceById($source);
 			if ($source !== null) {
 				$result = $this->processSource($source);
 				if ($result !== null) {
@@ -411,10 +415,10 @@ class ControllersHelper {
 	protected function replaceVariable($matches) {
 		if (preg_match("/^\d+$/", $matches[1])) {
 			$id = (int)$matches[1];
-			$data = $this->controller->simu->getDataById($id);
+			$data = $this->simu->getDataById($id);
 		} else {
 			$name = $matches[1];
-			$data = $this->controller->simu->getDataByName($name);
+			$data = $this->simu->getDataByName($name);
 		}
 		if ($data === null) {
 			return $matches[0];
@@ -447,8 +451,8 @@ class ControllersHelper {
 	 * Replaces all data ID by their corresponding value into the given text.
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Entity\RichText|string $target The target text
-	 * @return  \EUREKA\G6KBundle\Entity\RichText|string The result text
+	 * @param   \EUREKA\G6KBundle\Model\RichText|string $target The target text
+	 * @return  \EUREKA\G6KBundle\Model\RichText|string The result text
 	 *
 	 */
 	public function replaceVariables($target) {
@@ -575,7 +579,7 @@ class ControllersHelper {
 		$widgets = array();
 		if ($this->container->hasParameter('widgets')) {
 			foreach ($this->container->getParameter('widgets') as $name => $widget) {
-				$widgets[$name] = $this->controller->get('translator')->trans($widget['label']);
+				$widgets[$name] = $this->getTranslator()->trans($widget['label']);
 			}
 		}
 		return $widgets;
@@ -586,11 +590,11 @@ class ControllersHelper {
 	 *
 	 * @access  public
 	 * @param   int $id The ID of the data item.
-	 * @return  \EUREKA\G6KBundle\Entity\Data The Data object
+	 * @return  \EUREKA\G6KBundle\Model\Data The Data object
 	 *
 	 */
 	public function getDataById($id) {
-		return $this->controller->simu !== null ? $this->controller->simu->getDataById($id) : null;
+		return $this->simu !== null ? $this->simu->getDataById($id) : null;
 	}
 
 	/**
@@ -688,7 +692,7 @@ class ControllersHelper {
 	 *
 	 */
 	public function isDevelopmentEnvironment() {
-		return in_array($this->controller->get('kernel')->getEnvironment(), array('test', 'dev'));
+		return in_array($this->get('kernel')->getEnvironment(), array('test', 'dev'));
 	}
 
 }

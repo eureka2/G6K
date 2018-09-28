@@ -28,34 +28,34 @@ namespace EUREKA\G6KBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use EUREKA\G6KBundle\Entity\Simulator;
-use EUREKA\G6KBundle\Entity\Source;
-use EUREKA\G6KBundle\Entity\Parameter;
-use EUREKA\G6KBundle\Entity\ChoiceGroup;
-use EUREKA\G6KBundle\Entity\Choice;
-use EUREKA\G6KBundle\Entity\ChoiceSource;
-use EUREKA\G6KBundle\Entity\DataGroup;
-use EUREKA\G6KBundle\Entity\Data;
-use EUREKA\G6KBundle\Entity\Step;
-use EUREKA\G6KBundle\Entity\Action;
-use EUREKA\G6KBundle\Entity\FootNotes;
-use EUREKA\G6KBundle\Entity\FootNote;
-use EUREKA\G6KBundle\Entity\Panel;
-use EUREKA\G6KBundle\Entity\FieldSet;
-use EUREKA\G6KBundle\Entity\Column;
-use EUREKA\G6KBundle\Entity\FieldRow;
-use EUREKA\G6KBundle\Entity\Field;
-use EUREKA\G6KBundle\Entity\BlockInfo;
-use EUREKA\G6KBundle\Entity\FieldNote;
-use EUREKA\G6KBundle\Entity\Chapter;
-use EUREKA\G6KBundle\Entity\Section;
-use EUREKA\G6KBundle\Entity\BusinessRule;
-use EUREKA\G6KBundle\Entity\Connector;
-use EUREKA\G6KBundle\Entity\Condition;
-use EUREKA\G6KBundle\Entity\RuleAction;
-use EUREKA\G6KBundle\Entity\Profiles;
-use EUREKA\G6KBundle\Entity\Profile;
-use EUREKA\G6KBundle\Entity\RichText;
+use EUREKA\G6KBundle\Model\Simulator;
+use EUREKA\G6KBundle\Model\Source;
+use EUREKA\G6KBundle\Model\Parameter;
+use EUREKA\G6KBundle\Model\ChoiceGroup;
+use EUREKA\G6KBundle\Model\Choice;
+use EUREKA\G6KBundle\Model\ChoiceSource;
+use EUREKA\G6KBundle\Model\DataGroup;
+use EUREKA\G6KBundle\Model\Data;
+use EUREKA\G6KBundle\Model\Step;
+use EUREKA\G6KBundle\Model\Action;
+use EUREKA\G6KBundle\Model\FootNotes;
+use EUREKA\G6KBundle\Model\FootNote;
+use EUREKA\G6KBundle\Model\Panel;
+use EUREKA\G6KBundle\Model\FieldSet;
+use EUREKA\G6KBundle\Model\Column;
+use EUREKA\G6KBundle\Model\FieldRow;
+use EUREKA\G6KBundle\Model\Field;
+use EUREKA\G6KBundle\Model\BlockInfo;
+use EUREKA\G6KBundle\Model\FieldNote;
+use EUREKA\G6KBundle\Model\Chapter;
+use EUREKA\G6KBundle\Model\Section;
+use EUREKA\G6KBundle\Model\BusinessRule;
+use EUREKA\G6KBundle\Model\Connector;
+use EUREKA\G6KBundle\Model\Condition;
+use EUREKA\G6KBundle\Model\RuleAction;
+use EUREKA\G6KBundle\Model\Profiles;
+use EUREKA\G6KBundle\Model\Profile;
+use EUREKA\G6KBundle\Model\RichText;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 use EUREKA\G6KBundle\Manager\SQLSelectTokenizer;
@@ -68,10 +68,10 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
 
-use EUREKA\G6KBundle\Entity\Database;
+use EUREKA\G6KBundle\Model\Database;
 
 use Silex\Application;
-use Binfo\Silex\MobileDetectServiceProvider;
+use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
 
 /**
  *
@@ -89,6 +89,8 @@ use Binfo\Silex\MobileDetectServiceProvider;
  *
  */
 class SimulatorsAdminController extends BaseAdminController {
+
+	use ControllersHelper;
 
 	/**
 	 * @const string
@@ -116,7 +118,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	const SQL_LIMIT_KEYWORD = 'LIMIT ';
 
 	/**
-	 * @var \EUREKA\G6KBundle\Entity\Simulator $simu Instance of the Simulator class
+	 * @var \EUREKA\G6KBundle\Model\Simulator $simu Instance of the Simulator class
 	 *
 	 * @access  public
 	 *
@@ -181,7 +183,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 */
 	public function indexAction(Request $request, $simulator = null, $crud = null)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		$this->uricache = array();
 		return $this->runIndex($request, $simulator, $crud);
 	}
@@ -408,9 +410,9 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
-		$widgets = $this->helper->getWidgets();
+		$widgets = $this->getWidgets();
 		$deployment = 	$this->container->hasParameter('deployment') && 
-						$this->get('security.context')->isGranted('ROLE_MANAGER') && 
+						$this->get('security.authorization_checker')->isGranted('ROLE_MANAGER') && 
 						$simulator !== null && $simulator != 'new' && $valid &&
 						!file_exists($this->simulatorsDir . '/work/' . $simulator . '.xml');
 		try {
@@ -453,7 +455,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	public function validateAction(Request $request) {
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runValidation($request);
 	}
 
@@ -543,13 +545,13 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->setMemo($simulatorData['memo'] == '1');
 		$this->simu->setDescription(
 			new RichText(
-				trim($this->helper->replaceSpecialTags($simulatorData['description']['content'])),
+				trim($this->replaceSpecialTags($simulatorData['description']['content'])),
 				$simulatorData['description']['edition']
 			)
 		);
 		$this->simu->setRelatedInformations(
 			new RichText(
-				trim($this->helper->replaceSpecialTags($simulatorData['relatedInformations']['content'])),
+				trim($this->replaceSpecialTags($simulatorData['relatedInformations']['content'])),
 				$simulatorData['relatedInformations']['edition']
 			)
 		);
@@ -666,7 +668,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $source array of attributes
-	 * @return  \EUREKA\G6KBundle\Entity\Source the Source object
+	 * @return  \EUREKA\G6KBundle\Model\Source the Source object
 	 *
 	 */
 	protected function makeSource($source) {
@@ -704,8 +706,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $parameter array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\Source $sourceObj the Source object
-	 * @return  \EUREKA\G6KBundle\Entity\Parameter the Parameter object
+	 * @param   \EUREKA\G6KBundle\Model\Source $sourceObj the Source object
+	 * @return  \EUREKA\G6KBundle\Model\Parameter the Parameter object
 	 *
 	 */
 	protected function makeParameter($parameter, $sourceObj) {
@@ -727,7 +729,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $datagroup array of attributes
-	 * @return  \EUREKA\G6KBundle\Entity\DataGroup the DataGroup object
+	 * @return  \EUREKA\G6KBundle\Model\DataGroup the DataGroup object
 	 *
 	 */
 	protected function makeDataGroup($datagroup) {
@@ -735,7 +737,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$dataGroupObj->setLabel($datagroup['label']);
 		$dataGroupObj->setDescription(
 			new RichText(
-				trim($this->helper->replaceSpecialTags($datagroup['description']['content'])),
+				trim($this->replaceSpecialTags($datagroup['description']['content'])),
 				$datagroup['description']['edition']
 			)
 		);
@@ -750,7 +752,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $data array of attributes
-	 * @return  \EUREKA\G6KBundle\Entity\Data the Data object
+	 * @return  \EUREKA\G6KBundle\Model\Data the Data object
 	 *
 	 */
 	protected function makeData($data) {
@@ -800,7 +802,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		if (isset($data['description'])) {
 			$dataObj->setDescription(
 				new RichText(
-					trim($this->helper->replaceSpecialTags($data['description']['content'])),
+					trim($this->replaceSpecialTags($data['description']['content'])),
 					$data['description']['edition']
 				)
 			);
@@ -813,7 +815,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $step array of attributes
-	 * @return  \EUREKA\G6KBundle\Entity\Step the Step object
+	 * @return  \EUREKA\G6KBundle\Model\Step the Step object
 	 *
 	 */
 	protected function makeStep($step) {
@@ -821,7 +823,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$stepObj->setOutput($step['output']);
 		$stepObj->setDescription(
 			new RichText(
-				trim($this->helper->replaceSpecialTags($step['description']['content'])),
+				trim($this->replaceSpecialTags($step['description']['content'])),
 				$step['description']['edition']
 			)
 		);
@@ -843,7 +845,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					$footnoteObj = new FootNote($stepObj, (int)$footnote['id']);
 					$footnoteObj->setText(
 						new RichText(
-							trim($this->helper->replaceSpecialTags($footnote['text']['content'])),
+							trim($this->replaceSpecialTags($footnote['text']['content'])),
 							$footnote['text']['edition']
 						)
 					);
@@ -860,8 +862,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $panel array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\Step $stepObj the Step object
-	 * @return  \EUREKA\G6KBundle\Entity\Panel the Panel object
+	 * @param   \EUREKA\G6KBundle\Model\Step $stepObj the Step object
+	 * @return  \EUREKA\G6KBundle\Model\Panel the Panel object
 	 *
 	 */
 	protected function makePanel($panel, $stepObj) {
@@ -883,15 +885,15 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $fieldset array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\Panel $panelObj the Panel object
-	 * @return  \EUREKA\G6KBundle\Entity\FieldSet the FieldSet object
+	 * @param   \EUREKA\G6KBundle\Model\Panel $panelObj the Panel object
+	 * @return  \EUREKA\G6KBundle\Model\FieldSet the FieldSet object
 	 *
 	 */
 	protected function makeFieldSet($fieldset, $panelObj) {
 		$fieldsetObj = new FieldSet($panelObj, (int)$fieldset['id']);
 		$fieldsetObj->setLegend(
 			new RichText(
-				trim($this->helper->replaceSpecialTags($fieldset['legend']['content'])),
+				trim($this->replaceSpecialTags($fieldset['legend']['content'])),
 				$fieldset['legend']['edition']
 			)
 		);
@@ -928,8 +930,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $fieldrow array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\FieldSet $fieldsetObj the FieldSet object
-	 * @return  \EUREKA\G6KBundle\Entity\FieldRow the FieldRow object
+	 * @param   \EUREKA\G6KBundle\Model\FieldSet $fieldsetObj the FieldSet object
+	 * @return  \EUREKA\G6KBundle\Model\FieldRow the FieldRow object
 	 *
 	 */
 	protected function makeFieldRow($fieldrow, $fieldsetObj) {
@@ -949,8 +951,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $field array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\FieldSet $fieldsetObj the FieldSet object
-	 * @return  \EUREKA\G6KBundle\Entity\Field the Field object
+	 * @param   \EUREKA\G6KBundle\Model\FieldSet $fieldsetObj the FieldSet object
+	 * @return  \EUREKA\G6KBundle\Model\Field the Field object
 	 *
 	 */
 	protected function makeField($field, $fieldsetObj) {
@@ -973,7 +975,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				$noteObj = new FieldNote($this);
 				$noteObj->setText(
 					new RichText(
-						trim($this->helper->replaceSpecialTags($note['text']['content'])),
+						trim($this->replaceSpecialTags($note['text']['content'])),
 						$note['text']['edition']
 					)
 				);
@@ -982,7 +984,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				$noteObj = new FieldNote($this);
 				$noteObj->setText(
 					new RichText(
-						trim($this->helper->replaceSpecialTags($note['text']['content'])),
+						trim($this->replaceSpecialTags($note['text']['content'])),
 						$note['text']['edition']
 					)
 				);
@@ -997,8 +999,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $blockinfo array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\Panel $panelObj the Panel object
-	 * @return  \EUREKA\G6KBundle\Entity\BlockInfo the BlockInfo object
+	 * @param   \EUREKA\G6KBundle\Model\Panel $panelObj the Panel object
+	 * @return  \EUREKA\G6KBundle\Model\BlockInfo the BlockInfo object
 	 *
 	 */
 	protected function makeBlockInfo($blockinfo, $panelObj) {
@@ -1016,8 +1018,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $chapter array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\BlockInfo $blockinfoObj the BlockInfo object
-	 * @return  \EUREKA\G6KBundle\Entity\Chapter the Chapter object
+	 * @param   \EUREKA\G6KBundle\Model\BlockInfo $blockinfoObj the BlockInfo object
+	 * @return  \EUREKA\G6KBundle\Model\Chapter the Chapter object
 	 *
 	 */
 	protected function makeChapter($chapter, $blockinfoObj) {
@@ -1037,8 +1039,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $section array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\Chapter $chapterObj the Chapter object
-	 * @return  \EUREKA\G6KBundle\Entity\Section the Section object
+	 * @param   \EUREKA\G6KBundle\Model\Chapter $chapterObj the Chapter object
+	 * @return  \EUREKA\G6KBundle\Model\Section the Section object
 	 *
 	 */
 	protected function makeSection($section, $chapterObj) {
@@ -1047,14 +1049,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		$sectionObj->setLabel($section['label']);
 		$sectionObj->setContent(
 			new RichText(
-				trim($this->helper->replaceSpecialTags($section['content']['content'])),
+				trim($this->replaceSpecialTags($section['content']['content'])),
 				$section['content']['edition']
 			)
 		);
 		if (isset($section['annotations'])) {
 			$sectionObj->setAnnotations(
 				new RichText(
-					trim($this->helper->replaceSpecialTags($section['annotations']['content'])),
+					trim($this->replaceSpecialTags($section['annotations']['content'])),
 					$section['annotations']['edition']
 				)
 			);
@@ -1067,7 +1069,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $brule array of attributes
-	 * @return  \EUREKA\G6KBundle\Entity\BusinessRule the BusinessRule object
+	 * @return  \EUREKA\G6KBundle\Model\BusinessRule the BusinessRule object
 	 *
 	 */
 	protected function makeBusinessRule($brule) {
@@ -1096,7 +1098,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   int $id id of the latest rule action
 	 * @param   array $action array of attributes
-	 * @return  \EUREKA\G6KBundle\Entity\RuleAction the RuleAction object
+	 * @return  \EUREKA\G6KBundle\Model\RuleAction the RuleAction object
 	 *
 	 */
 	protected function makeRuleAction($id, $action) {
@@ -1249,7 +1251,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $profiles array of attributes
-	 * @return  \EUREKA\G6KBundle\Entity\Profiles the Profiles object
+	 * @return  \EUREKA\G6KBundle\Model\Profiles the Profiles object
 	 *
 	 */
 	protected function makeProfiles($profiles) {
@@ -1266,7 +1268,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $profile array of attributes
-	 * @return  \EUREKA\G6KBundle\Entity\Profile the Profile object
+	 * @return  \EUREKA\G6KBundle\Model\Profile the Profile object
 	 *
 	 */
 	protected function makeProfile($profile) {
@@ -1274,7 +1276,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$profileObj->setLabel($profile['label']);
 		$profileObj->setDescription(
 			new RichText(
-				trim($this->helper->replaceSpecialTags($profile['description']['content'])),
+				trim($this->replaceSpecialTags($profile['description']['content'])),
 				$profile['description']['edition']
 			)
 		);
@@ -1289,8 +1291,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $action array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\Step $stepObj the Step object
-	 * @return  \EUREKA\G6KBundle\Entity\Action the Action object
+	 * @param   \EUREKA\G6KBundle\Model\Step $stepObj the Step object
+	 * @return  \EUREKA\G6KBundle\Model\Action the Action object
 	 *
 	 */
 	protected function makeAction($action, $stepObj) {
@@ -1359,8 +1361,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 * @access  private
 	 * @param   array $connector array of attributes
-	 * @param   \EUREKA\G6KBundle\Entity\Connector $parentConnector (default: null) Parent connector
-	 * @return  \EUREKA\G6KBundle\Entity\Connector|\EUREKA\G6KBundle\Entity\Condition
+	 * @param   \EUREKA\G6KBundle\Model\Connector $parentConnector (default: null) Parent connector
+	 * @return  \EUREKA\G6KBundle\Model\Connector|\EUREKA\G6KBundle\Model\Condition
 	 *
 	 */
 	private function loadConnector($connector, $parentConnector = null) {
@@ -1491,7 +1493,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function doDeploySimulator(Request $request, $simu){
-		if (! $this->get('security.context')->isGranted('ROLE_MANAGER')) {
+		if (! $this->get('security.authorization_checker')->isGranted('ROLE_MANAGER')) {
 			$form = array();
 			return $this->errorResponse($form, $this->get('translator')->trans("Access denied!"));
 		}
@@ -1825,7 +1827,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'type' => $gdata->getType()
 					);
 					if ($gdata->getType() == 'choice' || $gdata->getType() == 'multichoice') {
-						$this->helper->populateChoiceWithSource($gdata);
+						$this->populateChoiceWithSource($gdata);
 						$options = array();
 						foreach ($gdata->getChoices() as $choice) {
 							if ($choice instanceof Choice) {
@@ -1886,7 +1888,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'type' => $data->getType()
 				);
 				if ($data->getType() == 'choice' || $data->getType() == 'multichoice') {
-					$this->helper->populateChoiceWithSource($data);
+					$this->populateChoiceWithSource($data);
 					$options = array();
 					foreach ($data->getChoices() as $choice) {
 						if ($choice instanceof Choice) {
@@ -3380,7 +3382,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * makes an array of attributes of the field from the field object
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Field $field The field object
+	 * @param   \EUREKA\G6KBundle\Model\Field $field The field object
 	 * @return  array Array of attributes of the field
 	 *
 	 */
@@ -3410,7 +3412,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * Builds a connector data array for the Javascript rule engine
 	 *
 	 * @access  private
-	 * @param   EUREKA\G6KBundle\Entity\Connector|EUREKA\G6KBundle\Entity\Condition $pconnector
+	 * @param   EUREKA\G6KBundle\Model\Connector|EUREKA\G6KBundle\Model\Condition $pconnector
 	 * @return  array The connector data array
 	 *
 	 */

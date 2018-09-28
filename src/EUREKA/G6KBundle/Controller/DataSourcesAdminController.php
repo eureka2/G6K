@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-use EUREKA\G6KBundle\Entity\Database;
+use EUREKA\G6KBundle\Model\Database;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 use EUREKA\G6KBundle\Manager\DatasourcesHelper;
@@ -44,7 +44,7 @@ use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
 
 use Silex\Application;
-use Binfo\Silex\MobileDetectServiceProvider;
+use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
 
 /**
  *
@@ -69,6 +69,8 @@ use Binfo\Silex\MobileDetectServiceProvider;
  *
  */
 class DataSourcesAdminController extends BaseAdminController {
+
+	use ControllersHelper;
 
 	/**
 	 * @const string
@@ -262,7 +264,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	public function indexAction(Request $request, $dsid = null, $table = null, $crud = null) {
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		$no_js = $request->query->get('no-js') || 0;
 		$this->script = $no_js == 1 ? 0 : 1;
 		return $this->runIndex($request, $dsid, $table, $crud);
@@ -289,11 +291,11 @@ class DataSourcesAdminController extends BaseAdminController {
 			$this->datasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd"><Databases></Databases></DataSources>', LIBXML_NOWARNING);
 		}
 		if ($crud !== null) {
-			if (! $this->get('security.context')->isGranted('ROLE_CONTRIBUTOR')) {
+			if (! $this->get('security.authorization_checker')->isGranted('ROLE_CONTRIBUTOR')) {
 				return $this->errorResponse($form, $this->get('translator')->trans("Access denied!"));
 			}
 			return $this->dispatch($request, $dsid, $table, $crud, $form);
-		} else if (! $this->get('security.context')->isGranted('ROLE_CONTRIBUTOR')) {
+		} else if (! $this->get('security.authorization_checker')->isGranted('ROLE_CONTRIBUTOR')) {
 			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 		} else {
 			return $this->showDatasources($dsid, $table);
@@ -558,14 +560,15 @@ class DataSourcesAdminController extends BaseAdminController {
 								}
 							}
 							if ($datasource['type'] == 'internal') {
+								$request = $this->container->get('request_stack')->getCurrentRequest();
 								$where = array();
 								foreach($tableinfos as &$infos) {
 									if ($infos['name'] != 'id') {
-										$filtertext = $this->get('request')->get($infos['name'] . '-filter', "");
+										$filtertext = $request->get($infos['name'] . '-filter', "");
 										$infos['filtertext'] = $filtertext;
 										if ($filtertext != '') {
 											if ($infos['g6k_type'] == 'date') {
-												$date = $this->helper->parseDate("j/m/Y", $filtertext);
+												$date = $this->parseDate("j/m/Y", $filtertext);
 												$filtertext = $date->format("Y-m-d");
 												$where[] = $infos['name'] . " = '" . $filtertext . "'";
 											} elseif ($infos['g6k_type'] == 'number' || $infos['g6k_type'] == 'integer' || $infos['g6k_type'] == 'money' || $infos['g6k_type'] == 'percent') {
@@ -595,7 +598,7 @@ class DataSourcesAdminController extends BaseAdminController {
 										$i = 0;
 										foreach ($row as $c => $cell) {
 											if ($tableinfos[$i]['g6k_type'] == 'date' && $cell !== null) {
-												$date = $this->helper->parseDate('Y-m-d', substr($cell, 0, 10));
+												$date = $this->parseDate('Y-m-d', substr($cell, 0, 10));
 												$tabledatas[$r][$c] = $date->format('d/m/Y');
 											} elseif ($tableinfos[$i]['g6k_type'] == 'money' || $tableinfos[$i]['g6k_type'] == 'percent') {
 												$tabledatas[$r][$c] = number_format ( (float) $cell, 2, ",", "" );
@@ -609,9 +612,9 @@ class DataSourcesAdminController extends BaseAdminController {
 									}
 									return $tabledatas;
 								});
-								$itemsPerPage = (int)$this->get('request')->get('itemsPerPage', 25);
+								$itemsPerPage = (int)$request->get('itemsPerPage', 25);
 								$paginator->setItemsPerPage($itemsPerPage)->setPagesInRange(10);
-								$pagination = $paginator->paginate((int)$this->get('request')->get('page', 1));
+								$pagination = $paginator->paginate((int)$request->get('page', 1));
 							}
 						}
 					}
@@ -802,7 +805,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @param   array $form The form fields
 	 * @param   int $dsid The datasource ID
 	 * @param   string|null $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The database object
 	 * @param   array $files The delimited text file
 	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse|mixed
 	 * @throws \Exception
@@ -1046,7 +1049,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   int $dsid The datasource ID
 	 * @param   bool $withDbName (default: true) if false, the name of the database will not be inserted in the dsn string.
-	 * @return  \EUREKA\G6KBundle\Entity\Database The Database object
+	 * @return  \EUREKA\G6KBundle\Model\Database The Database object
 	 *
 	 */
 	protected function getDatabase($dsid, $withDbName = true) {
@@ -1145,7 +1148,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Returns the list of tables of a database
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  array|null The list of tables
 	 *
 	 */
@@ -1182,7 +1185,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Returns informations about a table of a database
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @param   string $table The table name
 	 * @return  array|null Informations about a table
 	 *
@@ -1231,7 +1234,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Returns informations about the columns of a table
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @param   string $table The table name
 	 * @return  array Informations about the columns
 	 *
@@ -1343,7 +1346,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   int $dsid The datasource ID
 	 * @param   string $dbtype The target database type
-	 * @param   \EUREKA\G6KBundle\Entity\Database $fromDatabase The origin Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $fromDatabase The origin Database object
 	 * @return  string|true
 	 *
 	 */
@@ -1441,7 +1444,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $form The form fields
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  string|true
 	 *
 	 */
@@ -1516,7 +1519,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  string|true
 	 *
 	 */
@@ -1704,7 +1707,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   string $table The table name
 	 * @param   string $alterdefs Comma separated alter specifications
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database  The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database  The Database object
 	 * @return  bool Always true
 	 */
 	protected function alterSQLiteTable($table, $alterdefs, $database){
@@ -1821,7 +1824,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @param   bool $restore (default: false) true if the row is to be restored, false otherwise
 	 * @return  string|bool
 	 *
@@ -1840,7 +1843,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				if ($value === null || $value == '') {
 					$insertValues[] = "NULL";
 				} else if ($info['g6k_type'] == 'date') {
-					$insertValues[] = $database->quote($this->helper->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d'));
+					$insertValues[] = $database->quote($this->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d'));
 				} else if ($info['g6k_type'] == 'multichoice') {
 					$insertValues[] = $database->quote(json_encode($value));
 				} else if ( $info['g6k_type'] == 'text' || preg_match("/^(text|char|varchar)/i", $info['type'])) {
@@ -1865,7 +1868,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  bool
 	 *
 	 */
@@ -1881,7 +1884,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				if ($value === null || $value == '') {
 					$updateFields[] = $name . "=NULL";
 				} else if ($info['g6k_type'] == 'date') {
-					$updateFields[] = $name . "='" . $this->helper->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d') . "'";
+					$updateFields[] = $name . "='" . $this->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d') . "'";
 				} else if ($info['g6k_type'] == 'multichoice') {
 					$updateFields[] = $name . "='" . $database->quote(json_encode($value)) . "'";
 				} else if ( $info['g6k_type'] == 'text' || preg_match("/^(text|char|varchar)/i", $info['type'])) {
@@ -1907,7 +1910,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  string|true
 	 *
 	 */
@@ -1925,7 +1928,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  string|true
 	 *
 	 */
@@ -1945,7 +1948,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   array $form The form fields
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
 	 *
 	 */
@@ -2006,7 +2009,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
@@ -2032,7 +2035,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
@@ -2054,7 +2057,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
@@ -2079,7 +2082,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
@@ -2104,7 +2107,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
 	 *
 	 */
@@ -2222,7 +2225,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   string $table The table name
-	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
+	 * @param   \EUREKA\G6KBundle\Model\Database $database The Database object
 	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
 	 *
 	 */

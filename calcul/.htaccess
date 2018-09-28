@@ -5,6 +5,18 @@
 # to each configured DirectoryIndex file (e.g. index.php, index.html, index.pl).
 DirectoryIndex app.php
 
+# By default, Apache does not evaluate symbolic links if you did not enable this
+# feature in your server configuration. Uncomment the following line if you
+# install assets as symlinks or if you experience problems related to symlinks
+# when compiling LESS/Sass/CoffeScript assets.
+# Options FollowSymlinks
+
+# Disabling MultiViews prevents unwanted negotiation, e.g. "/app" should not resolve
+# to the front controller "/app.php" but be rewritten to "/app.php/app".
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
@@ -17,6 +29,10 @@ DirectoryIndex app.php
     # the following 2 lines to eliminate the overhead.
     RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
     RewriteRule ^(.*) - [E=BASE:%1]
+
+    # Sets the HTTP_AUTHORIZATION header removed by Apache
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule ^ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
     # Redirect to URI without front controller to prevent duplicate content
     # (with and without `/app.php`). Only do this redirect on the initial
@@ -36,8 +52,13 @@ DirectoryIndex app.php
     # We only want to let Apache serve files and not directories.
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule .? - [L]
-	
+
     RewriteRule ^admin %{ENV:BASE}/app_admin.php/admin [L]
+    RewriteRule ^login %{ENV:BASE}/app_admin.php/login [L]
+    RewriteRule ^logout %{ENV:BASE}/app_admin.php/logout [L]
+    RewriteRule ^register %{ENV:BASE}/app_admin.php/register [L]
+    RewriteRule ^resetting %{ENV:BASE}/app_admin.php/resetting [L]
+    RewriteRule ^profile %{ENV:BASE}/app_admin.php/profile [L]
 
     # Rewrite all other queries to the front controller.
     RewriteRule .? %{ENV:BASE}/app.php [L]

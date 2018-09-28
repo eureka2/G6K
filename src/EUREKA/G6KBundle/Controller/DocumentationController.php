@@ -34,7 +34,7 @@ use Symfony\Component\Finder\Finder;
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
 use Silex\Application;
-use Binfo\Silex\MobileDetectServiceProvider;
+use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
 
 /**
  *
@@ -44,6 +44,8 @@ use Binfo\Silex\MobileDetectServiceProvider;
  *
  */
 class DocumentationController extends BaseAdminController {
+
+	use ControllersHelper;
 
 	/**
 	 * Entry point for the route path /admin/doc/{document}
@@ -56,7 +58,7 @@ class DocumentationController extends BaseAdminController {
 	 */
 	public function indexAction(Request $request, $document = null)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runIndex($request, $document);
 	}
 
@@ -73,7 +75,7 @@ class DocumentationController extends BaseAdminController {
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
 
-		if (! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+		if (! $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
 			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 		}
 

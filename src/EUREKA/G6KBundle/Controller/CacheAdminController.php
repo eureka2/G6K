@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
 use Silex\Application;
-use Binfo\Silex\MobileDetectServiceProvider;
+use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
 
 /**
  *
@@ -53,6 +53,8 @@ use Binfo\Silex\MobileDetectServiceProvider;
  *
  */
 class CacheAdminController extends BaseAdminController {
+
+	use ControllersHelper;
 
 	/**
 	 * @var array      $log Cache cleaning log
@@ -78,7 +80,7 @@ class CacheAdminController extends BaseAdminController {
 	 */
 	public function clearAction(Request $request, $env = 'prod')
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runClear($request, $env);
 	}
 
@@ -96,7 +98,7 @@ class CacheAdminController extends BaseAdminController {
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
 		
-		if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+		if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
 			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 		}
 		$cache_dir = dirname($this->get('kernel')->getCacheDir());

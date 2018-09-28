@@ -7,3 +7,6 @@ eureka_g6k:
 
 _bazinga_jstranslation:
     resource: "@BazingaJsTranslationBundle/Resources/config/routing/routing.yml"
+
+logout:
+    path: /logout

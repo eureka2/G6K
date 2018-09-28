@@ -38,7 +38,7 @@ use Symfony\Component\Finder\Finder;
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
 use Silex\Application;
-use Binfo\Silex\MobileDetectServiceProvider;
+use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
 
 /**
  *
@@ -58,6 +58,8 @@ use Binfo\Silex\MobileDetectServiceProvider;
  *
  */
 class ViewsAdminController extends BaseAdminController {
+
+	use ControllersHelper;
 
 	/**
 	 * @var string      $root The root directory of the view that is either the view directory or the public assets directory
@@ -119,7 +121,7 @@ class ViewsAdminController extends BaseAdminController {
 	 */
 	public function indexAction(Request $request, $view = null, $node = 0, $crud = null)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		$this->node = $node;
 		$no_js = $request->query->get('no-js') || 0;
 		$this->script = $no_js == 1 ? 0 : 1;

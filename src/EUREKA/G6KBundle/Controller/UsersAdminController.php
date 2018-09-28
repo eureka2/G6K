@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
 use Silex\Application;
-use Binfo\Silex\MobileDetectServiceProvider;
+use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
 
 /**
  *
@@ -53,6 +53,8 @@ use Binfo\Silex\MobileDetectServiceProvider;
  */
 class UsersAdminController extends BaseAdminController {
 
+	use ControllersHelper;
+
 	/**
 	 * Entry point for the route paths begining by /admin/users
 	 *
@@ -69,7 +71,7 @@ class UsersAdminController extends BaseAdminController {
 	 */
 	public function indexAction(Request $request, $crud = null)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runIndex($request, $crud);
 	}
 
@@ -90,7 +92,7 @@ class UsersAdminController extends BaseAdminController {
 		$script = $no_js == 1 ? 0 : 1;
 		
 		if ($crud !== null) {
-			if (! $this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+			if (! $this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
 				return $this->errorResponse($form, "Access denied!");
 			}
 			switch ($crud) {
@@ -103,7 +105,7 @@ class UsersAdminController extends BaseAdminController {
 				case 'restore':
 					return $this->restoreUser ($form);
 			}
-		} else if (! $this->get('security.context')->isGranted('ROLE_SUPER_ADMIN')) {
+		} else if (! $this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
 			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 		} else {
 			$userManager = $this->get('fos_user.user_manager');

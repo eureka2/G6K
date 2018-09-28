@@ -28,13 +28,13 @@ namespace EUREKA\G6KBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use EUREKA\G6KBundle\Entity\Simulator;
-use EUREKA\G6KBundle\Entity\DataGroup;
-use EUREKA\G6KBundle\Entity\Data;
-use EUREKA\G6KBundle\Entity\FieldSet;
-use EUREKA\G6KBundle\Entity\FieldRow;
-use EUREKA\G6KBundle\Entity\Field;
-use EUREKA\G6KBundle\Entity\Step;
+use EUREKA\G6KBundle\Model\Simulator;
+use EUREKA\G6KBundle\Model\DataGroup;
+use EUREKA\G6KBundle\Model\Data;
+use EUREKA\G6KBundle\Model\FieldSet;
+use EUREKA\G6KBundle\Model\FieldRow;
+use EUREKA\G6KBundle\Model\Field;
+use EUREKA\G6KBundle\Model\Step;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
 use Silex\Application;
-use Binfo\Silex\MobileDetectServiceProvider;
+use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
 
 /**
  *
@@ -53,6 +53,8 @@ use Binfo\Silex\MobileDetectServiceProvider;
  *
  */
 class DefaultController extends BaseController {
+
+	use ControllersHelper;
 
 	/**
 	 * Entry point for the route paths begining by /{simu} excepted /admin
@@ -71,7 +73,7 @@ class DefaultController extends BaseController {
 	 */
 	public function calculAction(Request $request, $simu, $view = null)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runCalcul($request, $simu, $view);
 	}
 
@@ -87,7 +89,7 @@ class DefaultController extends BaseController {
 	 */
 	public function tryItAction(Request $request, $simu, $view = null)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runCalcul($request, $simu, $view, true);
 	}
 
@@ -102,7 +104,7 @@ class DefaultController extends BaseController {
 	 */
 	public function fieldsAction(Request $request, $simu)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runFields($request, $simu);
 	}
 
@@ -117,7 +119,7 @@ class DefaultController extends BaseController {
 	 */
 	public function fieldsTryItAction(Request $request, $simu)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runFields($request, $simu, true);
 	}
 
@@ -132,7 +134,7 @@ class DefaultController extends BaseController {
 	 */
 	public function sourceAction(Request $request, $simu)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runSource($request, $simu);
 	}
 
@@ -147,7 +149,7 @@ class DefaultController extends BaseController {
 	 */
 	public function sourceTryItAction(Request $request, $simu)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		return $this->runSource($request, $simu, true);
 	}
 
@@ -197,7 +199,7 @@ class DefaultController extends BaseController {
 	 *
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
-	 * @param   \EUREKA\G6KBundle\Entity\Step &$step <parameter description>
+	 * @param   \EUREKA\G6KBundle\Model\Step &$step <parameter description>
 	 * @param   array &$datas <parameter description>
 	 * @param   string $view The view name
 	 * @return \Symfony\Component\HttpFoundation\Response
@@ -249,7 +251,7 @@ class DefaultController extends BaseController {
 	 *
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
-	 * @param   \EUREKA\G6KBundle\Entity\Step $step <parameter description>
+	 * @param   \EUREKA\G6KBundle\Model\Step $step <parameter description>
 	 * @param   array $datas <parameter description>
 	 * @param   string $view (default: "Default") The view name
 	 * @return  bool Always false

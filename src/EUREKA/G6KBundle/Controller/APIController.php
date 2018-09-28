@@ -28,13 +28,13 @@ namespace EUREKA\G6KBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use EUREKA\G6KBundle\Entity\Simulator;
-use EUREKA\G6KBundle\Entity\DataGroup;
-use EUREKA\G6KBundle\Entity\Data;
-use EUREKA\G6KBundle\Entity\FieldSet;
-use EUREKA\G6KBundle\Entity\FieldRow;
-use EUREKA\G6KBundle\Entity\Field;
-use EUREKA\G6KBundle\Entity\Step;
+use EUREKA\G6KBundle\Model\Simulator;
+use EUREKA\G6KBundle\Model\DataGroup;
+use EUREKA\G6KBundle\Model\Data;
+use EUREKA\G6KBundle\Model\FieldSet;
+use EUREKA\G6KBundle\Model\FieldRow;
+use EUREKA\G6KBundle\Model\Field;
+use EUREKA\G6KBundle\Model\Step;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
@@ -61,6 +61,8 @@ use Symfony\Component\HttpFoundation\Cookie;
  *
  */
 class APIController extends BaseController {
+
+	use ControllersHelper;
 
 	/**
 	 * @var array      $datas API response datas
@@ -91,8 +93,8 @@ class APIController extends BaseController {
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
-	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simu The simulator object
-	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Entity\Step The simulation step object or the API response object in JSON format
+	 * @param   \EUREKA\G6KBundle\Model\Simulator $simu The simulator object
+	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Model\Step The simulation step object or the API response object in JSON format
 	 *
 	 */
 	public function calculAction(Request $request, $simu)
@@ -105,8 +107,8 @@ class APIController extends BaseController {
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
-	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simu The simulator object
-	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Entity\Step The simulation step object or the API response object in JSON format
+	 * @param   \EUREKA\G6KBundle\Model\Simulator $simu The simulator object
+	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Model\Step The simulation step object or the API response object in JSON format
 	 *
 	 */
 	public function tryItAction(Request $request, $simu)
@@ -119,14 +121,14 @@ class APIController extends BaseController {
 	 *
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
-	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simu The simulator object
+	 * @param   \EUREKA\G6KBundle\Model\Simulator $simu The simulator object
 	 * @param   bool $test (default: false) if true, we are in test mode
-	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Entity\Step The simulation step object or the API response object in JSON format
+	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Model\Step The simulation step object or the API response object in JSON format
 	 *
 	 */
 	protected function runCalcul(Request $request, $simu, $test = false)
 	{
-		$this->helper = new ControllersHelper($this, $this->container);
+		$this->initialize();
 		try {
 			$api = $this->container->getParameter('api');
 		} catch (\Exception $e) {
@@ -154,7 +156,7 @@ class APIController extends BaseController {
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
 	 * @param   array $form array of request parameters
-	 * @param   \EUREKA\G6KBundle\Entity\Step $step The simulation step object
+	 * @param   \EUREKA\G6KBundle\Model\Step $step The simulation step object
 	 * @return  \Symfony\Component\HttpFoundation\Response The API response object in JSON format
 	 *
 	 */
@@ -283,7 +285,7 @@ class APIController extends BaseController {
 	 *
 	 * @access  private
 	 * @param   array $form array of request parameters
-	 * @param   \EUREKA\G6KBundle\Entity\Field $field The field object
+	 * @param   \EUREKA\G6KBundle\Model\Field $field The field object
 	 * @return  void
 	 *
 	 */
@@ -309,7 +311,7 @@ class APIController extends BaseController {
 	 *
 	 * @access  private
 	 * @param   array $form array of request parameters
-	 * @param   \EUREKA\G6KBundle\Entity\Data $data The data object
+	 * @param   \EUREKA\G6KBundle\Model\Data $data The data object
 	 * @return  void
 	 *
 	 */
@@ -326,7 +328,7 @@ class APIController extends BaseController {
 	 *
 	 * @access  private
 	 * @param   array $form array of request parameters
-	 * @param   \EUREKA\G6KBundle\Entity\Data $data The data object
+	 * @param   \EUREKA\G6KBundle\Model\Data $data The data object
 	 * @return  void
 	 *
 	 */

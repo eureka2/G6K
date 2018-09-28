@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2017-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Twig\Extension;
 
 use Symfony\Component\Translation\TranslatorInterface;
-use EUREKA\G6KBundle\Entity\RichText;
+use EUREKA\G6KBundle\Model\RichText;
 
 /**
  * This class is a Twig extension custom filter that implements 'jscode' to replace the deprecated raw filter

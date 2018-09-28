@@ -28,19 +28,19 @@ namespace EUREKA\G6KBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use EUREKA\G6KBundle\Entity\Simulator;
-use EUREKA\G6KBundle\Entity\Source;
-use EUREKA\G6KBundle\Entity\ChoiceGroup;
-use EUREKA\G6KBundle\Entity\Choice;
-use EUREKA\G6KBundle\Entity\DataGroup;
-use EUREKA\G6KBundle\Entity\Data;
-use EUREKA\G6KBundle\Entity\FieldSet;
-use EUREKA\G6KBundle\Entity\FieldRow;
-use EUREKA\G6KBundle\Entity\Field;
-use EUREKA\G6KBundle\Entity\BlockInfo;
-use EUREKA\G6KBundle\Entity\Chapter;
-use EUREKA\G6KBundle\Entity\Section;
-use EUREKA\G6KBundle\Entity\Step;
+use EUREKA\G6KBundle\Model\Simulator;
+use EUREKA\G6KBundle\Model\Source;
+use EUREKA\G6KBundle\Model\ChoiceGroup;
+use EUREKA\G6KBundle\Model\Choice;
+use EUREKA\G6KBundle\Model\DataGroup;
+use EUREKA\G6KBundle\Model\Data;
+use EUREKA\G6KBundle\Model\FieldSet;
+use EUREKA\G6KBundle\Model\FieldRow;
+use EUREKA\G6KBundle\Model\Field;
+use EUREKA\G6KBundle\Model\BlockInfo;
+use EUREKA\G6KBundle\Model\Chapter;
+use EUREKA\G6KBundle\Model\Section;
+use EUREKA\G6KBundle\Model\Step;
 
 use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
@@ -61,15 +61,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 class BaseController extends Controller {
 
 	/**
-	 * @var \EUREKA\G6KBundle\Manager\ControllersHelper $helper helper instance used by this controller
-	 *
-	 * @access  public
-	 *
-	 */
-	public $helper;
-
-	/**
-	 * @var \EUREKA\G6KBundle\Entity\Simulator $simu Simulator instance used by this controller
+	 * @var \EUREKA\G6KBundle\Model\Simulator $simu Simulator instance used by this controller
 	 *
 	 * @access  public
 	 *
@@ -213,7 +205,7 @@ class BaseController extends Controller {
 	 * @param   string $simu The simulator name
 	 * @param   string &$view The view name
 	 * @param   bool $test true if it is a test from the administration module, false otherwise 
-	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Entity\Step|null
+	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Model\Step|null
 	 *
 	 */
 	protected function runStep(Request $request, $form, $simu, &$view, $test)
@@ -464,7 +456,7 @@ class BaseController extends Controller {
 								}
 							}
 						}
-						$fieldset->setLegend($this->helper->replaceVariables($fieldset->getLegend()));
+						$fieldset->setLegend($this->replaceVariables($fieldset->getLegend()));
 					} elseif ($block instanceof BlockInfo) {
 						$blocinfo = $block;
 						$blocinfo->setDisplayable($blocinfo->isDisplayable() && $panel->isDisplayable());
@@ -477,7 +469,7 @@ class BaseController extends Controller {
 								if ($section->isDisplayable()) {
 									$sectionDisplayables++;
 								}
-								$section->setContent($this->helper->replaceVariables($section->getContent()));
+								$section->setContent($this->replaceVariables($section->getContent()));
 							}
 							$chapter->setDisplayable($chapter->isDisplayable() && $sectionDisplayables > 0);
 							if ($chapter->isDisplayable()) {
@@ -493,7 +485,7 @@ class BaseController extends Controller {
 				$disp = false;
 				foreach ($footnotes->getFootNotes() as $footnote) {
 					if ($footnote->isDisplayable()) {
-						$footnote->setText($this->helper->replaceVariables($footnote->getText()));
+						$footnote->setText($this->replaceVariables($footnote->getText()));
 						$disp = true;
 					}
 				}
@@ -501,7 +493,7 @@ class BaseController extends Controller {
 			}
 			$istep += $direction;
 		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
-		$step->setDescription($this->helper->replaceVariables($step->getDescription()));
+		$step->setDescription($this->replaceVariables($step->getDescription()));
 		return $step;
 	}
 
@@ -591,7 +583,7 @@ class BaseController extends Controller {
 		if (isset($form['returnPath'])) {
 			$source->setReturnPath($form['returnPath']);
 		}
-		$result = $this->helper->processSource($source);
+		$result = $this->processSource($source);
 		if ($source->getReturnType() == 'xml') {
 			$result =  ResultFilter::xml2array($result);
 			if (count($result) == 1 && is_array($result[0])) {
@@ -599,7 +591,7 @@ class BaseController extends Controller {
 			}
 		}
 		$response = new Response();
-		if ($this->helper->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
+		if ($this->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
 			$response->setContent(json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES | JSON_HEX_APOS | JSON_HEX_QUOT));
 		} else {
 			$response->setContent(json_encode($result));
@@ -639,7 +631,7 @@ class BaseController extends Controller {
 	 * Checks the given field
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Field $field
+	 * @param   \EUREKA\G6KBundle\Model\Field $field
 	 * @param   array $form The form fields
 	 * @param   bool $skipValidation
 	 * @return  void
@@ -699,8 +691,8 @@ class BaseController extends Controller {
 	 * Processes the given field for the step
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Field $field
-	 * @param   \EUREKA\G6KBundle\Entity\Step $step
+	 * @param   \EUREKA\G6KBundle\Model\Field $field
+	 * @param   \EUREKA\G6KBundle\Model\Step $step
 	 * @param   bool &$displayable
 	 * @return  void
 	 *
@@ -729,7 +721,7 @@ class BaseController extends Controller {
 					$this->addWidget('abListbox');
 				}
 			}
-			$this->helper->populateChoiceWithSource($data);
+			$this->populateChoiceWithSource($data);
 			$this->replaceFieldNotes($field);
 		} elseif ($step->getId() == 0 || $step->isDynamic()) {
 			if ($field->getUsage() == 'input') {
@@ -742,7 +734,7 @@ class BaseController extends Controller {
 					$this->addWidget('abListbox');
 				}
 			}
-			$this->helper->populateChoiceWithSource($data);
+			$this->populateChoiceWithSource($data);
 			$this->replaceFieldNotes($field);
 		}
 	}
@@ -751,7 +743,7 @@ class BaseController extends Controller {
 	 * Replaces data values in the notes of a field
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Field $field
+	 * @param   \EUREKA\G6KBundle\Model\Field $field
 	 * @return  void
 	 *
 	 */
@@ -759,11 +751,11 @@ class BaseController extends Controller {
 	{
 		if ($field->getPreNote() !== null) {
 			$note = $field->getPreNote();
-			$note->setText($this->helper->replaceVariables($note->getText()));
+			$note->setText($this->replaceVariables($note->getText()));
 		}
 		if ($field->getPostNote() !== null) {
 			$note = $field->getPostNote();
-			$note->setText($this->helper->replaceVariables($note->getText()));
+			$note->setText($this->replaceVariables($note->getText()));
 		}
 	}
 
@@ -787,7 +779,7 @@ class BaseController extends Controller {
 	 * Evaluates the default value of the given data
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Data $data
+	 * @param   \EUREKA\G6KBundle\Model\Data $data
 	 * @return  void
 	 *
 	 */
@@ -828,7 +820,7 @@ class BaseController extends Controller {
 	 * Evaluates the minimum value of the given data
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Data $data
+	 * @param   \EUREKA\G6KBundle\Model\Data $data
 	 * @return  void
 	 *
 	 */
@@ -850,7 +842,7 @@ class BaseController extends Controller {
 	 * Evaluates the maximum value of the given data
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Data $data
+	 * @param   \EUREKA\G6KBundle\Model\Data $data
 	 * @return  void
 	 *
 	 */
@@ -894,7 +886,7 @@ class BaseController extends Controller {
 	 * Processes the given data for the step
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Data $data
+	 * @param   \EUREKA\G6KBundle\Model\Data $data
 	 * @param   int $istep The step number
 	 * @return  void
 	 *
@@ -993,7 +985,7 @@ class BaseController extends Controller {
 	 * Executes all the actions of a business rule of the step
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Action $actions Actions of the business rule
+	 * @param   \EUREKA\G6KBundle\Model\Action $actions Actions of the business rule
 	 * @param   int $istep The step number
 	 * @return  void
 	 *
@@ -1008,7 +1000,7 @@ class BaseController extends Controller {
 							$data =  $this->simu->getDataById($action->getData());
 							if ($istep == 0 || $data->getInputStepId() == $istep) {
 								$data->setError(true);
-								$data->addErrorMessage($this->helper->replaceVariables($action->getValue()));
+								$data->addErrorMessage($this->replaceVariables($action->getValue()));
 								$this->error = true;
 							}
 							break;
@@ -1022,13 +1014,13 @@ class BaseController extends Controller {
 							}
 							if ($istep == 0 || $inputStepId) {
 								$datagroup->setError(true);
-								$datagroup->addErrorMessage($this->helper->replaceVariables($action->getValue()));
+								$datagroup->addErrorMessage($this->replaceVariables($action->getValue()));
 								$this->error = true;
 							}
 							break;
 						case 'dataset':
-							$this->simu->setError(true);
-							$this->simu->addErrorMessage($this->helper->replaceVariables($action->getValue()));
+							$$this->simu->setError(true);
+							$$this->simu->addErrorMessage($this->replaceVariables($action->getValue()));
 							$this->error = true;
 							break;
 					}
@@ -1039,7 +1031,7 @@ class BaseController extends Controller {
 							$data =  $this->simu->getDataById($action->getData());
 							if ($istep == 0 || $data->getInputStepId() == $istep) {
 								$data->setWarning(true);
-								$data->addWarningMessage($this->helper->replaceVariables($action->getValue()));
+								$data->addWarningMessage($this->replaceVariables($action->getValue()));
 							}
 							break;
 						case 'datagroup':
@@ -1052,12 +1044,12 @@ class BaseController extends Controller {
 							}
 							if ($istep == 0 || $inputStepId) {
 								$datagroup->setWarning(true);
-								$datagroup->addWarningMessage($this->helper->replaceVariables($action->getValue()));
+								$datagroup->addWarningMessage($this->replaceVariables($action->getValue()));
 							}
 							break;
 						case 'dataset':
-							$this->simu->setWarning(true);
-							$this->simu->addWarningMessage($this->helper->replaceVariables($action->getValue()));
+							$$this->simu->setWarning(true);
+							$$this->simu->addWarningMessage($this->replaceVariables($action->getValue()));
 							break;
 					}
 					break;
@@ -1203,7 +1195,7 @@ class BaseController extends Controller {
 	 * Evaluates the conditions of a business rule an executes the suitable actions
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\BusinessRule $businessrule The rule to be processed
+	 * @param   \EUREKA\G6KBundle\Model\BusinessRule $businessrule The rule to be processed
 	 * @param   int $istep The step number
 	 * @return  void
 	 *
@@ -1260,7 +1252,7 @@ class BaseController extends Controller {
 			foreach ($this->simu->getSources() as $source) {
 				$id = (string)$source->getId();
 				if (isset($this->sources[$id])) {
-					$result = $this->helper->processSource($source);
+					$result = $this->processSource($source);
 					if ($result !== null) {
 						$datas = $this->sources[$id];
 						foreach ($datas as $d) {
@@ -1284,7 +1276,7 @@ class BaseController extends Controller {
 								$value = $result;
 							}
 							if ($d->getType() == "date" && preg_match("/^\d\d\d\d-\d{1,2}-\d{1,2}$/", $value)) {
-								$value = $this->helper->parseDate("Y-m-d", $value)->format("d/m/Y");
+								$value = $this->parseDate("Y-m-d", $value)->format("d/m/Y");
 							}
 							$oValue = $d->getValue();
 							$d->setValue($value);
