@@ -28,11 +28,13 @@ security:
                 path: /logout
                 target: /admin
             anonymous: true
+            logout_on_user_change: true
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         default:
             anonymous: ~
+            logout_on_user_change: true
 
     access_control:
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

@@ -8,7 +8,7 @@ namespace EUREKA\G6KBundle\Twig\Loader;
  * @copyright Jacques Archimède
  *
  */
-class StringTemplateLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface /*, \Twig_SourceContextLoaderInterface */{
+class StringTemplateLoader implements \Twig_LoaderInterface /*, \Twig_ExistsLoaderInterface, \Twig_SourceContextLoaderInterface */{
 
 	/**
 	 * Returns the source code for a given template name.

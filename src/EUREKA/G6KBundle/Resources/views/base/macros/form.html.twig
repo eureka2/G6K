@@ -173,6 +173,7 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro footnotes(context) %}
+{% import _self as form %}
 {% set step = context.step %}
 {%- if step.footNotes and (step.footNotes.displayable or (step.dynamic and context.script == 1) or (step.simulator.dynamic and step.id == 0)) %}
 {% set footnotes = step.footNotes %}
@@ -180,7 +181,7 @@ THE SOFTWARE.
 {%- for footnote in footnotes.footNotes -%}
 	{%- if footnote.displayable or (step.simulator.dynamic and step.id == 0) or (step.dynamic and context.script == 1) -%}
 	<div id="foot-note-{{ footnote.id }}" class="foot-note">
-	{{ _self.paragraphs(footnote.text) }}
+	{{ form.paragraphs(footnote.text) }}
 	</div>
 	{% endif %}
 {% endfor %}
