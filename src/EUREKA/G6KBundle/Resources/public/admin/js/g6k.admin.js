@@ -417,7 +417,7 @@ wysihtml.commands.insertDataReference = (function() {
 })();
 
 
-$(document).ready(function() {
+$(function(){
 	bootbox.setDefaults({
 		locale: Admin.lang
 	});

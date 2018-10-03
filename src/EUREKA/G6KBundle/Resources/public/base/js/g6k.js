@@ -3271,13 +3271,13 @@ THE SOFTWARE.
 			});
 			var collapseAllButton = $(".step-page .blockinfo-container .collapse-expand-all-tools button:first-child"),
 				expandAllButton = $(".step-page .blockinfo-container .collapse-expand-all-tools button:last-child");
-			collapseAllButton.bind("click", function(e) {
+			collapseAllButton.on("click", function(e) {
 				var scope = $(this).parents('.blockinfo-container');
 				scope.find(".chapter-label > h3 > button.btn-collapse[aria-expanded=true]").trigger("click");
 				e.stopPropagation();
 				return false;
 			});
-			expandAllButton.bind("click", function(e) {
+			expandAllButton.on("click", function(e) {
 				var scope = $(this).parents('.blockinfo-container');
 				scope.find(".chapter-label > h3 > button.btn-collapse[aria-expanded=false]").trigger("click");
 				e.stopPropagation();
@@ -4692,12 +4692,12 @@ THE SOFTWARE.
 				}
 			);
 
-			$(".simulator-profiles ul li").bind("click", function () {
+			$(".simulator-profiles ul li").on("click", function () {
 				self.setProfile($(this));
 				return true;
 			}); 
 
-			$(".simulator-profiles ul li").bind("keydown", function (event) {
+			$(".simulator-profiles ul li").on("keydown", function (event) {
 				if (event.keyCode == 13 || event.keyCode == 32) {
 					self.setProfile($(this));
 				}
@@ -4757,7 +4757,7 @@ THE SOFTWARE.
 					self.setError(name, Translator.trans("This value can not be greater than %max%",  { "max": max }, 'messages'));
 				}
 			});
-			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").bind("keypress", function(event) {
+			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").on("keypress", function(event) {
 				if (event.keyCode == 13) {
 					event.preventDefault();
 					self.getData($(this).attr('name')).modifiedByUser = true;
@@ -4766,7 +4766,7 @@ THE SOFTWARE.
 				}
 			});
 			var inputTimeoutId;
-			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").bind('input propertychange', function(event) {
+			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").on('input propertychange', function(event) {
 				var elt = this;
 				if (typeof inputTimeoutId !== "undefined") {
 					clearTimeout(inputTimeoutId);
@@ -4776,7 +4776,7 @@ THE SOFTWARE.
 					$(elt).trigger("change");
 				}, 500);
 			});
-			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name]").bind('paste', function(event) {
+			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name]").on('paste', function(event) {
 				var elt = this;
 				self.getData($(this).attr('name')).modifiedByUser = true;
 				setTimeout(function () {

@@ -53,7 +53,7 @@
             return this.filter((isInputSupported ? 'textarea' : ':input') + '[' + (debugMode ? 'placeholder-x' : 'placeholder') + ']')
                 .not('.'+settings.customClass)
                 .not(':radio, :checkbox, [type=hidden]')
-                .bind({
+                .on({
                     'focus.placeholder': clearPlaceholder,
                     'blur.placeholder': setPlaceholder
                 })
@@ -151,7 +151,7 @@
         });
 
         // Clear placeholder values upon page reload
-        $(window).bind('beforeunload.placeholder', function() {
+        $(window).on('beforeunload.placeholder', function() {
 
             var clearPlaceholders = true;
 
@@ -241,7 +241,7 @@
                             'placeholder-password': $input,
                             'placeholder-id': id
                         })
-                        .bind('focus.placeholder', clearPlaceholder);
+                        .on('focus.placeholder', clearPlaceholder);
 
                     $input
                         .data({

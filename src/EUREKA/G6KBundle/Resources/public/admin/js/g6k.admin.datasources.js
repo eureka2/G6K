@@ -113,7 +113,7 @@ THE SOFTWARE.
 				}
 				var field = { type: v[5], label: v[2], required: v[4] == 1};
 				if (v[6]) {
-					field.choices = jQuery.parseJSON(v[6]);
+					field.choices = JSON.parse(v[6]);
 				}
 				Datasources.fields[v[1]] = field;
 				cells +='<td class="' + v[5] + '">';
@@ -235,7 +235,7 @@ THE SOFTWARE.
 		} else if (type === 'checkbox') {
 			attribute    += '        <input type="checkbox" name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" value="1" checked="checked" />';
 		} else if (type === 'select') {
-			options = jQuery.parseJSON(options);
+			options = JSON.parse(options);
 			attribute    += '        <select name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" data-placeholder="' + placeholder + '">';
 			$.each(options, function(ovalue, olabel) {
 				if (ovalue == value) {
@@ -949,7 +949,7 @@ THE SOFTWARE.
 	global.Datasources = Datasources;
 }(this));
 
-$(document).ready(function() {
+$(function(){
 	if ( $( "#page-datasources" ).length ) {
 		$( "#datasource-creation-form, #datasource-edition-form" ).find('select').select2({
 			language: Admin.lang,

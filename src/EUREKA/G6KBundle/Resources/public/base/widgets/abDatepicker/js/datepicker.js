@@ -1105,7 +1105,7 @@
 		this.$grid.blur(function(e) {
 			return self.handleGridBlur(e);
 		});
-		this.$grid.delegate('td', 'click', function(e) {
+		this.$grid.on('click', 'td', function(e) {
 			return self.handleGridClick(this, e);
 		});
 	} // end bindHandlers();
@@ -2106,7 +2106,7 @@
 		$('.datepicker-calendar').trigger('ab.datepicker.opening', [self.id]);
 		if (this.options.modal == true) {
 			// Bind an event listener to the document to capture all mouse events to make dialog modal
-			$(document).bind('click mousedown mouseup', function(e) {
+			$(document).on('click mousedown mouseup', function(e) {
 				//ensure focus remains on the dialog
 				self.$grid.focus();
 				// Consume all mouse events and do nothing
@@ -2118,8 +2118,8 @@
 			this.$calendar.css('z-index', zIndex + 1);
 		} else {
 			// Bind an event listener to the document to capture only the mouse click event
-			$(document).bind('click',  $.proxy(this.handleDocumentClick, this));
-			this.$calendar.bind('ab.datepicker.opening', function(e, id) {
+			$(document).on('click',  $.proxy(this.handleDocumentClick, this));
+			this.$calendar.on('ab.datepicker.opening', function(e, id) {
 				if (id != self.id) {
 					self.hide();
 				} else {
@@ -2129,7 +2129,7 @@
 			});
 
 		}
-		this.$calendar.bind('ab.datepicker.opened', function(e, id) {
+		this.$calendar.on('ab.datepicker.opened', function(e, id) {
 			if (id == self.id) {
 				self.$grid.focus();
 			}
@@ -2149,14 +2149,14 @@
 			// show calendar above group
 			this.$calendar.addClass('above');
 			this.$calendar.css({
-				top: (groupOffsetTop - calendarHeight) + 'px',
+				top: (groupOffsetTop - calendarHeight + 21) + 'px',
 				left: (groupOffsetLeft + parentPaddingLeft) + 'px'
 			}); 
 		} else {
 			  // show calendar below group
 			this.$calendar.addClass('below');
 			this.$calendar.css({
-				top: (groupHeight + groupOffsetTop) + 'px',
+				top: (groupHeight + groupOffsetTop + 21) + 'px',
 				left: (groupOffsetLeft + parentPaddingLeft) + 'px'
 			});
 		}
@@ -2217,11 +2217,11 @@
 			var self = this;
 			// unbind the modal event sinks
 			if (this.options.modal == true) {
-				$(document).unbind('click mousedown mouseup');
+				$(document).off('click mousedown mouseup');
 				this.greyOut(false);
 			} else {
-				$(document).unbind('click', self.handleDocumentClick);
-				this.$calendar.unbind('ab.datepicker.opening');
+				$(document).off('click', self.handleDocumentClick);
+				this.$calendar.off('ab.datepicker.opening');
 			}
 			// hide the dialog
 			this.$calendar.removeClass('above below');

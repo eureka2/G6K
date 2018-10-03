@@ -270,7 +270,7 @@ THE SOFTWARE.
 			} else if (type === 'checkbox') {
 				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + (value == '1' || value == 1 ? 1 : 0) + '">' + (value == '1' || value == 1 ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
 			} else if (type === 'select') {
-				options = jQuery.parseJSON(options);
+				options = JSON.parse(options);
 				$.each(options, function(ovalue, olabel) {
 					if (ovalue == value) {
 						attribute    += '       <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + ovalue + '">' + olabel + '</p>';
@@ -308,7 +308,7 @@ THE SOFTWARE.
 			}
 			attribute    += ' />';
 		} else if (type === 'select') {
-			options = jQuery.parseJSON(options);
+			options = JSON.parse(options);
 			attribute    += '        <select name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" data-placeholder="' + placeholder + '">';
 			$.each(options, function(ovalue, olabel) {
 				if (ovalue == value) {
@@ -728,7 +728,7 @@ THE SOFTWARE.
 	global.Simulators = Simulators;
 }(this));
 
-$(document).ready(function() {
+$(function(){
 	if ( $( "#page-simulators" ).length ) {
 		$(Simulators.init);
 		$('button.edit-simulator').click(function(e) {

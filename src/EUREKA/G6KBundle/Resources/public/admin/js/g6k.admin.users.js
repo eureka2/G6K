@@ -114,7 +114,7 @@ THE SOFTWARE.
 	global.Users = Users;
 }(this));
 
-$(document).ready(function() {
+$(function(){
 	if ( $( "#page-users" ).length ) {
 		$('#page-users #btnAddNewRow').click(function(e) {
 			e.preventDefault();

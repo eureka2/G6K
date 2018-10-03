@@ -164,19 +164,19 @@ THE SOFTWARE.
 			rules.splice(r, 1);
 			renumberRules();
 		});
-		ruleContainer.find('.input-rule-name').bind("keypress", function(event) {
+		ruleContainer.find('.input-rule-name').on("keypress", function(event) {
 			if (event.keyCode == 13) {
 				event.preventDefault();
 				$(this).trigger("change");
 			}
 		});
-		ruleContainer.find('.input-rule-name').bind('input propertychange', function(event) {
+		ruleContainer.find('.input-rule-name').on('input propertychange', function(event) {
 			var elt = this;
 			setTimeout(function () {
 				$(elt).trigger("change");
 			}, 0);
 		});
-		ruleContainer.find('.input-rule-name').bind('paste', function(event) {
+		ruleContainer.find('.input-rule-name').on('paste', function(event) {
 			var elt = this;
 			setTimeout(function () {
 				$(elt).trigger("change");
@@ -187,19 +187,19 @@ THE SOFTWARE.
 			ruleContainer.find('.rule-name').text($(this).val());
 		});
 		
-		ruleContainer.find('.input-rule-label').bind("keypress", function(event) {
+		ruleContainer.find('.input-rule-label').on("keypress", function(event) {
 			if (event.keyCode == 13) {
 				event.preventDefault();
 				$(this).trigger("change");
 			}
 		});
-		ruleContainer.find('.input-rule-label').bind('input propertychange', function(event) {
+		ruleContainer.find('.input-rule-label').on('input propertychange', function(event) {
 			var elt = this;
 			setTimeout(function () {
 				$(elt).trigger("change");
 			}, 0);
 		});
-		ruleContainer.find('.input-rule-label').bind('paste', function(event) {
+		ruleContainer.find('.input-rule-label').on('paste', function(event) {
 			var elt = this;
 			setTimeout(function () {
 				$(elt).trigger("change");

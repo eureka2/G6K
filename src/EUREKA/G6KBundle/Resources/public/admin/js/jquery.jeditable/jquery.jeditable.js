@@ -71,7 +71,7 @@
         }
         if ('destroy' == target) {
             $(this)
-                .unbind($(this).data('event.editable'))
+                .off($(this).data('event.editable'))
                 .removeData('disabled.editable')
                 .removeData('event.editable');
             return;
@@ -122,7 +122,7 @@
                 $(this).html(settings.placeholder);
             }
             
-            $(this).bind(settings.event, function(e) {
+            $(this).on(settings.event, function(e) {
                 
                 /* Abort if element is disabled. */
                 if (true === $(this).data('disabled.editable')) {

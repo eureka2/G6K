@@ -1,6 +1,7 @@
 /**
  * Danish translation for bootstrap-datepicker
  * Christian Pedersen <http://github.com/chripede>
+ * Ivan Mylyanyk <https://github.com/imylyanyk>
  */
 ;(function($){
 	$.fn.datepicker.dates['da'] = {
@@ -10,6 +11,9 @@
 		months: ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"],
 		monthsShort: ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
 		today: "I Dag",
-		clear: "Nulstil"
+		weekStart: 1,
+		clear: "Nulstil",
+        format: "dd/mm/yyyy",
+        monthsTitle:"Måneder"
 	};
 }(jQuery));

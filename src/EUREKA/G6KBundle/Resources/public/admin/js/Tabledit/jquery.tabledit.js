@@ -130,7 +130,7 @@ if (typeof jQuery === 'undefined') {
 							var name = settings.columns.editable[i][1];
 
                             if (type === 'single' || type === 'multiple' || type === 'checkbox' ) {
-								var choices = jQuery.parseJSON(settings.columns.editable[i][3]);
+								var choices = JSON.parse(settings.columns.editable[i][3]);
 								if (type === 'single' || type === 'multiple' ) {
 									var multiple = type === 'multiple' ? ' multiple="multiple"' : '';
 									if (multiple) {

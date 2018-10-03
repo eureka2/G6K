@@ -198,7 +198,7 @@ THE SOFTWARE.
 {% endif %}
 <script type="text/javascript">
 {% if view is not empty and node > 0 and (file.mode == 'javascript' or file.mode == 'css' or file.mode == 'twig') %}
-$(document).ready(function() {
+$(function(){
 	Views.fileMode = '{{ file.mode }}';
 });
 {% endif %}

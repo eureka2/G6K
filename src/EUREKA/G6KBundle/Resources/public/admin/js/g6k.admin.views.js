@@ -67,7 +67,7 @@ THE SOFTWARE.
 	global.Views = Views;
 }(this));
 
-$(document).ready(function() {
+$(function(){
 	if ( $( "#page-views" ).length ) {
 		if ( $( ".tree" ).length ) {
 			$('.tree').treegrid({

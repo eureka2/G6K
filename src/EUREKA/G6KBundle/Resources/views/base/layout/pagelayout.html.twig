@@ -85,7 +85,8 @@ if (/no-js=/.test(window.location.search)) {
 <script src="{{ asset('bundles/eurekag6k/base/js/jquery-1.11.1.min.js') }}"></script>
 <![endif]-->
 <!--[if gte IE 9]><!-->
-<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-2.1.4.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-3.3.1.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery-migrate-3.0.0.js') }}"></script>
 <!--<![endif]-->
 {% endblock %}
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/jquery.toggleOption.js') }}"></script>
@@ -110,7 +111,7 @@ if (/no-js=/.test(window.location.search)) {
 {% endfor %}
 <script type="text/javascript" src="{{ asset('bundles/eurekag6k/base/js/g6k.js') }}"></script>
 <script type="text/javascript">
-jQuery(document).ready(function(){
+$(function(){
 	$('.disposition-classic input.date, .disposition-grid input.date').each(function() {
 		if (! this.hasAttribute('data-widget')) {
 			$(this).attr('data-widget', 'abDatepicker'); {# Temporarily #}

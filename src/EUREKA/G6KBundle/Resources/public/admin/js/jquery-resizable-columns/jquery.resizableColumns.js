@@ -42,13 +42,13 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         };
       })(this)));
       if (this.options.start) {
-        this.$table.bind('column:resize:start.rc', this.options.start);
+        this.$table.on('column:resize:start.rc', this.options.start);
       }
       if (this.options.resize) {
-        this.$table.bind('column:resize.rc', this.options.resize);
+        this.$table.on('column:resize.rc', this.options.resize);
       }
       if (this.options.stop) {
-        this.$table.bind('column:resize:stop.rc', this.options.stop);
+        this.$table.on('column:resize:stop.rc', this.options.stop);
       }
     }
 
