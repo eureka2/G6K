@@ -562,7 +562,7 @@ THE SOFTWARE.
 			});
 			div.append(addConditionLink);
 
-			var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove", "text": " ", "title": Translator.trans("Remove this Sub-Condition")});
+			var removeLink = $("<button>", {"class": "remove btn-danger fa fa-remove", "text": " ", "title": Translator.trans("Remove this Sub-Condition")});
 			removeLink.click(function(e) {
 				e.preventDefault();
 				div.remove();
@@ -657,7 +657,7 @@ THE SOFTWARE.
 	}
 
 	function removeLink() {
-		var removeLink = $("<button>", {"class": "remove btn-danger glyphicon glyphicon-remove", "text": " ", "title": Translator.trans("Remove this Condition")});
+		var removeLink = $("<button>", {"class": "remove btn-danger fa fa-remove", "text": " ", "title": Translator.trans("Remove this Condition")});
 		removeLink.click(onRemoveLinkClicked);
 		return removeLink;
 	}

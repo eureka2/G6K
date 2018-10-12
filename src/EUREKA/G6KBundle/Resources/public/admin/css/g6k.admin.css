@@ -3,16 +3,37 @@
 }
 #authentification  {
 	color : #ccc;
-	margin-top: 1em;
 }
 #page {
-	margin-top: 3em;
+	margin-top: 3.5rem;
 }
 #page .thumbnails {
 	text-align: center;
 }
 #page .thumbnails a{
 	text-decoration: none;
+}
+.thumbnail {
+	display: block;
+	padding: 4px;
+	margin-bottom: 20px;
+	line-height: 1.42857143;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	-webkit-transition: border .2s ease-in-out;
+	-o-transition: border .2s ease-in-out;
+	transition: border .2s ease-in-out;
+}
+.thumbnail, .img-thumbnail {
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .075);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .075);
+}
+a.thumbnail:hover, a.thumbnail:focus, a.thumbnail.active {
+	border-color: #337ab7;
+}
+.thumbnail .caption {
+	color: #333;
 }
 .datepicker {
 	margin-top: 3em !important;
@@ -36,8 +57,11 @@
 	border: 1px solid #ddd;
 	
 }
-.attributes-container label {
-	margin-top: 0.6em;
+.attributes-container .form-group.row {
+	margin: 0.5rem 0;
+}
+.attributes-container .form-group.row label {
+	font-weight: bold;
 }
 .optional-attributes  {
 	vertical-align: top;
@@ -52,7 +76,7 @@
 .elements-container {
 	margin-top: 0.6em;
 }
-.nav-pills li:first-child {
+.nav-pills li {
 	margin-left: 0.1em;
 }
 .expression-type .select2-choice {
@@ -71,6 +95,7 @@
 }
 .context-menu-holder {
 	display: inline-block;
+	cursor: pointer;
 }
 .context-menu-holder li {
 	min-width: 300px;
@@ -99,6 +124,10 @@ ul.rule-conditions > li {
 #page .rich-text table th,
 #page .rich-text table td {
 	border: 1px solid #ccc;
+}
+.pagination .page-item.disabled, 
+.pagination .page-item.disabled .page-link {
+	cursor: not-allowed;
 }
 /*==============================================
     MEDIA QUERIES     
@@ -138,7 +167,7 @@ ul.rule-conditions > li {
 	clear: both;
 }
 .navbar-side li {
-	margin-left: -2em;
+	margin-left: -1rem;
 }
 .content th  span {
 	vertical-align: middle;
@@ -158,9 +187,52 @@ ul.rule-conditions > li {
 .content td.date {
 	width: 6.5em;
 }
-#data-sources .panel-body > div {
+#data-sources.card,
+#data-source.card,
+#views.card,
+#simulators.card {
+	display: block;
+	margin-bottom: 1.25rem;
+}
+#data-sources .card-body > div,
+#views .card-body > div,
+#simulators .card-body > div {
 	width: 100%;
 	margin-bottom: 40px;
+}
+.panel-group {
+	margin-bottom: 20px;
+}
+.card-header {
+	padding: 0.55rem 1.25rem !important;
+}
+h3.card-title {
+	font-size: 1.5rem;
+}
+h4.card-title {
+	font-size: 1.15rem;
+	margin-bottom: 0;
+}
+.card.bg-primary > .card-header,
+.card.bg-primary > .card-header a:not(.dropdown-item),
+.card.bg-info > .card-header,
+.card.bg-info > .card-header a:not(.dropdown-item),
+.card.bg-success > .card-header,
+.card.bg-success > .card-header a:not(.dropdown-item) {
+	color: #fff;
+}
+.card.bg-warning > .card-header,
+.card.bg-warning > .card-header a {
+	color: #000;
+}
+.card.bg-light {
+	margin-top: 0.3125rem;
+}
+.card-body {
+	background: #fff;
+}
+.btn {
+	font-size: 0.875rem !important;
 }
 #btnAddNewRow, #btnAddNewTable {
 	float: right;

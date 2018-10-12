@@ -65,7 +65,7 @@
             pageRowCount: 10,
             arrowDown: 'fa-angle-down',
             arrowUp: 'fa-angle-up',
-            searchFormClass: 'pull-left search-form',
+            searchFormClass: 'float-left search-form',
             pageFieldText: 'Entries per Page:',
             searchFieldText: 'Search',
             showSearchForm: 1,
@@ -115,12 +115,12 @@
                     .addClass('form-horizontal')
                     .attr('id', 'page-rows-form')
                     .append($('<label/>')
-                        .addClass('pull-left control-label')
+                        .addClass('float-left col-form-label')
                         .text(pageFieldText)
                     )
                     .append(
                         $('<div/>')
-                            .addClass('pull-left')
+                            .addClass('float-left')
                             .append(
                                 $('<select/>')
                                     .addClass('form-control')
@@ -197,7 +197,7 @@
                     )
                     .append(
                         $('<div/>')
-                            .addClass('pull-left')
+                            .addClass('float-left')
                             .append(
                                 entriesPerPageField
                             )
@@ -212,7 +212,7 @@
                     .attr('id', 'table-footer')
                     .append(
                         $('<div/>')
-                            .addClass('pull-left table-info')
+                            .addClass('float-left table-info')
                             //.text('Showing 1 to 10 of 100 entries')
                     )
                     
@@ -362,11 +362,11 @@
                 .addClass('row')
                 .append(
                     $('<nav/>')
-                        .addClass('pull-right')
+                        .addClass('float-right')
                         .attr('id', 'table-nav')
                         .append(
                             pages
-                                .addClass('pagination pull-right')
+                                .addClass('pagination float-right')
                                 .prepend(
                                     $('<li/>')
                                         .addClass('disabled')

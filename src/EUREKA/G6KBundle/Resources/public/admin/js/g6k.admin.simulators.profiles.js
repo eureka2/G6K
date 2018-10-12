@@ -126,7 +126,7 @@ THE SOFTWARE.
 			if (id != oldId) {
 				$(this).attr('id', 'profile-' + id);
 				var re = new RegExp("profile-" + oldId + '\\b', 'g');
-				var a = $(this).find('> .panel > .panel-heading').find('> h4 > a');
+				var a = $(this).find('> .card > .card-header').find('> h4 > a');
 				var label = a.text();
 				label = label.replace("#" + oldId, "#" + id);
 				a.text(label);
@@ -204,37 +204,37 @@ THE SOFTWARE.
 	}
 
 	Simulators.drawProfilesForDisplay = function(profiles) {
-		var profilesContainer = $('<div class="panel panel-default profiles-container" id="profiles-attributes-panel"></div>');
-		var profilesContainerBody = $('<div class="panel-body"></div>');
+		var profilesContainer = $('<div class="card bg-light profiles-container" id="profiles-attributes-panel"></div>');
+		var profilesContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
-		var attribute = '<div class="form-group col-sm-12">';
-		attribute    += '    <label class="col-sm-2 control-label">' + Translator.trans('Title') + '</label>';
+		var attribute = '<div class="form-group row">';
+		attribute    += '    <label class="col-sm-2 col-form-label">' + Translator.trans('Title') + '</label>';
 		attribute    += '    <div class="col-sm-10">';
-		attribute    += '        <p data-attribute="label" data-value="' + profiles.label + '" class="form-control-static simple-value">' + profiles.label + '</p>';
+		attribute    += '        <p data-attribute="label" data-value="' + profiles.label + '" class="form-control-plaintext simple-value">' + profiles.label + '</p>';
 		attribute    += '    </div>';
 		attribute    += '</div>';
 		attributes.append(attribute);
 		attributesContainer.append(attributes);
-		attributesContainer.append('<button class="btn btn-default pull-right update-button edit-profiles-label" data-parent="#profiles-attributes-panel" title="' + profiles.label + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="glyphicon glyphicon-pencil"></span></button>');
+		attributesContainer.append('<button class="btn btn-secondary float-right update-button edit-profiles-label" data-parent="#profiles-attributes-panel" title="' + profiles.label + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fa fa-pencil"></span></button>');
 		profilesContainerBody.append(attributesContainer);
 		profilesContainer.append(profilesContainerBody);
 		return profilesContainer;
 	}
 
 	Simulators.drawProfilesForInput = function(profiles) {
-		var profilesContainer = $('<div class="panel panel-default profiles-container"></div>');
-		var profilesContainerBody = $('<div class="panel-body"></div>');
+		var profilesContainer = $('<div class="card bg-light profiles-container"></div>');
+		var profilesContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		attributes.append(Simulators.simpleAttributeForInput('profiles-label', 'text', 'label', Translator.trans('Title'), profiles.label, true, Translator.trans('Enter profiles title')));
 		attributesContainer.append(attributes);
 		profilesContainerBody.append(attributesContainer);
-		var profilesButtonsPanel = $('<div class="panel panel-default buttons-panel" id="profiles-buttons-panel"></div>');
-		var profilesButtonsBody = $('<div class="panel-body profiles-buttons"></div>');
-		profilesButtonsBody.append('<button class="btn btn-success pull-right validate-edit-profiles-label">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		profilesButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-profiles-label">' + Translator.trans('Cancel') + '</span></button>');
-		profilesButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var profilesButtonsPanel = $('<div class="card bg-light buttons-panel" id="profiles-buttons-panel"></div>');
+		var profilesButtonsBody = $('<div class="card-body profiles-buttons"></div>');
+		profilesButtonsBody.append('<button class="btn btn-success float-right validate-edit-profiles-label">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		profilesButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-profiles-label">' + Translator.trans('Cancel') + '</span></button>');
+		profilesButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		profilesButtonsPanel.append(profilesButtonsBody);
 		profilesContainerBody.append(profilesButtonsPanel);
 		profilesContainer.append(profilesContainerBody);
@@ -304,17 +304,17 @@ THE SOFTWARE.
 
 	Simulators.drawProfileForDisplay = function(profile) {
 		var profileElementId = 'profile-' + profile.id;
-		var profilePanelContainer = Simulators.openCollapsiblePanel(profileElementId, '#' + profile.id + ' : ' + profile.label, 'info', '', '', [{ 'class': 'delete-profile', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-profile', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
-		var profilePanelBody = profilePanelContainer.find('.panel-body');
-		var profileContainer = $('<div class="panel panel-default profile-container" id="' + profileElementId + '-attributes-panel" data-id="' + profile.id + '"></div>');
-		var profileContainerBody = $('<div class="panel-body"></div>');
+		var profilePanelContainer = Simulators.openCollapsiblePanel(profileElementId, '#' + profile.id + ' : ' + profile.label, 'info', '', '', [{ 'class': 'delete-profile', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-profile', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
+		var profilePanelBody = profilePanelContainer.find('.card-body');
+		var profileContainer = $('<div class="card bg-light profile-container" id="' + profileElementId + '-attributes-panel" data-id="' + profile.id + '"></div>');
+		var profileContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		attributes.append(Simulators.simpleAttributeForDisplay(profileElementId, 'text', 'name', Translator.trans('Name'), profile.name, profile.name, true, Translator.trans('Name')));
 		attributes.append(Simulators.simpleAttributeForDisplay(profileElementId, 'text', 'label', Translator.trans('Label'), profile.label, profile.label, true, Translator.trans('Label')));
 		attributesContainer.append(attributes);
 		profileContainerBody.append(attributesContainer);
-		profileContainerBody.append('<div class="panel panel-default description-panel" id="' + profileElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body profile-description rich-text" data-edition="' + profile.description.edition + '">' + profile.description.content + '</div></div>');
+		profileContainerBody.append('<div class="card bg-light description-panel" id="' + profileElementId + '-description-panel"><div class="card-header">' + Translator.trans('Description') + '</div><div class="card-body profile-description rich-text" data-edition="' + profile.description.edition + '">' + profile.description.content + '</div></div>');
 		profileContainer.append(profileContainerBody);
 		profilePanelBody.append(profileContainer);
 		return profilePanelContainer;
@@ -323,9 +323,9 @@ THE SOFTWARE.
 	Simulators.drawProfileForInput = function(profile) {
 		var profileElementId = 'profile-' + profile.id;
 		var profilePanelContainer = Simulators.openCollapsiblePanel(profileElementId, '#' + profile.id + ' : ' + profile.label, 'info', '', '', [] );
-		var profilePanelBody = profilePanelContainer.find('.panel-body');
-		var profileContainer = $('<div class="panel panel-default profile-container" id="' + profileElementId + '-attributes-panel" data-id="' + profile.id + '" data-name="' + profile.name + '"></div>');
-		var profileContainerBody = $('<div class="panel-body"></div>');
+		var profilePanelBody = profilePanelContainer.find('.card-body');
+		var profileContainer = $('<div class="card bg-light profile-container" id="' + profileElementId + '-attributes-panel" data-id="' + profile.id + '" data-name="' + profile.name + '"></div>');
+		var profileContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		var name = Simulators.simpleAttributeForInput(profileElementId + '-name', 'text', 'name', Translator.trans('Name'), profile.name, true, Translator.trans('Enter profile name'));
@@ -336,12 +336,12 @@ THE SOFTWARE.
 		profileContainerBody.append(attributesContainer);
 		profileContainer.append(profileContainerBody);
 		profilePanelBody.append(profileContainer);
-		profileContainerBody.append('<div class="panel panel-default description-panel elements-container" id="' + profileElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + profileElementId + '-description" id="' + profileElementId + '-description" wrap="hard" class="form-control profile-description">' + profile.description.content + '</textarea></div></div>');
-		var profileButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + profileElementId + '-buttons-panel"></div>');
-		var profileButtonsBody = $('<div class="panel-body profile-buttons"></div>');
-		profileButtonsBody.append('<button class="btn btn-success pull-right validate-edit-profile">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		profileButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-profile">' + Translator.trans('Cancel') + '</span></button>');
-		profileButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		profileContainerBody.append('<div class="card bg-light description-panel elements-container" id="' + profileElementId + '-description-panel"><div class="card-header">' + Translator.trans('Description') + '</div><div class="card-body"><textarea rows="5" name="' + profileElementId + '-description" id="' + profileElementId + '-description" wrap="hard" class="form-control profile-description">' + profile.description.content + '</textarea></div></div>');
+		var profileButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + profileElementId + '-buttons-panel"></div>');
+		var profileButtonsBody = $('<div class="card-body profile-buttons"></div>');
+		profileButtonsBody.append('<button class="btn btn-success float-right validate-edit-profile">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		profileButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-profile">' + Translator.trans('Cancel') + '</span></button>');
+		profileButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		profileButtonsPanel.append(profileButtonsBody);
 		profileContainerBody.append(profileButtonsPanel);
 		return profilePanelContainer;
@@ -414,13 +414,13 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-profile')) {
 				var oldLabel = Simulators.profileBackup.find("p[data-attribute='label']").attr('data-value');
 				if (profile.label != oldLabel) {
-					var title = profilePanelContainer.find('> .panel > .panel-heading').find('> h4 > a');
+					var title = profilePanelContainer.find('> .card > .card-header').find('> h4 > a');
 					title.text('#' + profile.id + ' : ' + profile.label);
 				}
 				profileContainer.replaceWith(newProfilePanel.find('.profile-container'));
 				newProfilePanel = profilePanelContainer;
 			} else {
-				var datasPanel = $('<div class="panel panel-success profile-datas-panel" id="profile-' + profile.id + '-profile-datas-panel"><div class="panel-heading"><button class="btn btn-success pull-right update-button add-profile-data" title="' + Translator.trans('Add') + '" data-parent="#profile-' + profile.id + '-profile-datas-panel"><span class="button-label">' + Translator.trans('Add') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><h4 class="panel-title">' + Translator.trans('Datas') + '</h4></div><div class="panel-body sortable"></div></div>');
+				var datasPanel = $('<div class="card bg-success profile-datas-panel" id="profile-' + profile.id + '-profile-datas-panel"><div class="card-header"><button class="btn btn-success float-right update-button add-profile-data" title="' + Translator.trans('Add') + '" data-parent="#profile-' + profile.id + '-profile-datas-panel"><span class="button-label">' + Translator.trans('Add') + '</span> <span class="fa fa-plus-circle"></span></button><h4 class="card-title">' + Translator.trans('Datas') + '</h4></div><div class="card-body sortable"></div></div>');
 				newProfilePanel.find('.profile-container').after(datasPanel);
 				profilePanelContainer.replaceWith(newProfilePanel);
 				Simulators.bindProfileButtons(newProfilePanel);
@@ -570,7 +570,7 @@ THE SOFTWARE.
 				dataContainer.attr('data-id', id);
 				$(this).attr('id', 'profile-' + profileId + '-profile-data-' + id);
 				var re = new RegExp("profile-data-" + oldId + '([^\\d])?', 'g');
-				var a = $(this).find('> .panel > .panel-heading').find('> h4 > a');
+				var a = $(this).find('> .card > .card-header').find('> h4 > a');
 				a.text(' ' + Translator.trans('Data %id%', { 'id': id }) + ' : ' + label);
 				var descendants = $(this).find('*');
 				descendants.each(function(d) {
@@ -633,10 +633,10 @@ THE SOFTWARE.
 
 	Simulators.drawProfileDataForDisplay = function(data) {
 		var profileDataElementId = 'profile-' + data.profileId + '-profile-data-' + data.id;
-		var dataPanelContainer = Simulators.openCollapsiblePanel(profileDataElementId, Translator.trans('Data %id%', { 'id': data.id }) + ' : ' + Simulators.findDataById(data.data).label, 'default', 'in', 'sortable', [{ 'class': 'delete-profile-data', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-profile-data', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-plus-sign' }] );
-		var dataPanelBody = dataPanelContainer.find('.panel-body');
-		var dataContainer = $('<div class="panel panel-default profile-data-container" id="' + profileDataElementId + '-attributes-panel" data-profile="' + data.profileId + '" data-id="' + data.id + '"></div>');
-		var dataContainerBody = $('<div class="panel-body"></div>');
+		var dataPanelContainer = Simulators.openCollapsiblePanel(profileDataElementId, Translator.trans('Data %id%', { 'id': data.id }) + ' : ' + Simulators.findDataById(data.data).label, 'light', 'in', 'sortable', [{ 'class': 'delete-profile-data', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-profile-data', 'label': Translator.trans('Edit'), 'icon': 'fa-plus-circle' }] );
+		var dataPanelBody = dataPanelContainer.find('.card-body');
+		var dataContainer = $('<div class="card bg-light profile-data-container" id="' + profileDataElementId + '-attributes-panel" data-profile="' + data.profileId + '" data-id="' + data.id + '"></div>');
+		var dataContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		var datasList = {};
@@ -664,10 +664,10 @@ THE SOFTWARE.
 
 	Simulators.drawProfileDataForInput = function(data) {
 		var profileDataElementId = 'profile-' + data.profileId + '-profile-data-' + data.id;
-		var dataPanelContainer = Simulators.openCollapsiblePanel(profileDataElementId, Translator.trans('Data %id%', { 'id': data.id }), 'default', 'in', 'sortable', [{ 'class': 'delete-profile-data', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-profile-data', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-plus-sign' }] );
-		var dataPanelBody = dataPanelContainer.find('.panel-body');
-		var dataContainer = $('<div class="panel panel-default profile-data-container" id="' + profileDataElementId + '-attributes-panel" data-profile="' + data.profileId + '" data-id="' + data.id + '"></div>');
-		var dataContainerBody = $('<div class="panel-body"></div>');
+		var dataPanelContainer = Simulators.openCollapsiblePanel(profileDataElementId, Translator.trans('Data %id%', { 'id': data.id }), 'light', 'in', 'sortable', [{ 'class': 'delete-profile-data', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-profile-data', 'label': Translator.trans('Edit'), 'icon': 'fa-plus-circle' }] );
+		var dataPanelBody = dataPanelContainer.find('.card-body');
+		var dataContainer = $('<div class="card bg-light profile-data-container" id="' + profileDataElementId + '-attributes-panel" data-profile="' + data.profileId + '" data-id="' + data.id + '"></div>');
+		var dataContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		var usedDatas = [];
@@ -701,11 +701,11 @@ THE SOFTWARE.
 		dataContainerBody.append(attributesContainer);
 		dataContainer.append(dataContainerBody);
 		dataPanelBody.append(dataContainer);
-		var dataButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + profileDataElementId + '-buttons-panel"></div>');
-		var dataButtonsBody = $('<div class="panel-body data-buttons"></div>');
-		dataButtonsBody.append('<button class="btn btn-success pull-right validate-edit-profile-data">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		dataButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-profile-data">' + Translator.trans('Cancel') + '</span></button>');
-		dataButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var dataButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + profileDataElementId + '-buttons-panel"></div>');
+		var dataButtonsBody = $('<div class="card-body data-buttons"></div>');
+		dataButtonsBody.append('<button class="btn btn-success float-right validate-edit-profile-data">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		dataButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-profile-data">' + Translator.trans('Cancel') + '</span></button>');
+		dataButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		dataButtonsPanel.append(dataButtonsBody);
 		dataContainer.append(dataButtonsPanel);
 		return dataPanelContainer;
@@ -861,7 +861,7 @@ THE SOFTWARE.
 		try {
 			var profileContainer = profileContainerGroup.parent().parent().find('.profile-container');
 			var profileId = profileContainer.attr('data-id');
-			var datasContainer = profileContainerGroup.find('> .panel-body > div');
+			var datasContainer = profileContainerGroup.find('> .card-body > div');
 			var data = {
 				id: datasContainer.length + 1,
 				profileId: profileId,

@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -626,7 +626,7 @@ THE SOFTWARE.
 				var attr = panelGroup.attr('id');
 				attr = attr.replace(re, "step-" + id);
 				panelGroup.attr('id', attr);
-				var a = panelGroup.find('> .panel > .panel-heading').find('> h4 > a');
+				var a = panelGroup.find('> .card > .card-header').find('> h4 > a');
 				a.text(' ' + Translator.trans('Step') + ' #' + id + ' : ' + step.label + ' ');
 				var container =  panelGroup.find('.step-container');
 				container.attr('data-id', id);
@@ -708,17 +708,17 @@ THE SOFTWARE.
 
 	Simulators.drawStepForDisplay = function(step, inClass) {
 		var stepElementId = 'step-' + step.id;
-		var buttons = [{ 'class': 'delete-step', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }];
+		var buttons = [{ 'class': 'delete-step', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }];
 		if (! step.footNotes || step.footNotes.length == 0) {
-			buttons.push({ 'label': Translator.trans('Add'), 'icon': 'glyphicon-plus-sign', 'dropdown': [{ 'class': 'add-panel', 'label': Translator.trans('Add panel') }, { 'class': 'add-footnotes', 'label': Translator.trans('Add footnotes') }] });
+			buttons.push({ 'label': Translator.trans('Add'), 'icon': 'fa-plus-circle', 'dropdown': [{ 'class': 'add-panel', 'label': Translator.trans('Add panel') }, { 'class': 'add-footnotes', 'label': Translator.trans('Add footnotes') }] });
 		} else {
-			buttons.push({ 'class': 'add-panel', 'label': Translator.trans('Add panel'), 'icon': 'glyphicon-plus-sign' });
+			buttons.push({ 'class': 'add-panel', 'label': Translator.trans('Add panel'), 'icon': 'fa-plus-circle' });
 		}
-		buttons.push({ 'class': 'edit-step', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' });
+		buttons.push({ 'class': 'edit-step', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' });
 		var stepPanelContainer = Simulators.openCollapsiblePanel(stepElementId, Translator.trans('Step') + ' #' + step.id + ' : ' + step.label, 'info', inClass, '', buttons );
-		var stepPanelBody = stepPanelContainer.find('.panel-body');
-		var stepContainer = $('<div class="panel panel-default step-container" id="' + stepElementId + '-attributes-panel" data-id="' + step.id + '"></div>');
-		var stepContainerBody = $('<div class="panel-body"></div>');
+		var stepPanelBody = stepPanelContainer.find('.card-body');
+		var stepContainer = $('<div class="card bg-light step-container" id="' + stepElementId + '-attributes-panel" data-id="' + step.id + '"></div>');
+		var stepContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'text', 'name', Translator.trans('Step Name'), step.name, step.name, true, Translator.trans('Step Name')));
@@ -728,7 +728,7 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'checkbox', 'dynamic', Translator.trans('Interactive UI'), step.dynamic, step.dynamic, false, Translator.trans('Interactive UI')));
 		attributesContainer.append(requiredAttributes);
 		stepContainerBody.append(attributesContainer);
-		stepContainerBody.append('<div class="panel panel-default description-panel" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body step-description rich-text" data-edition="' + step.description.edition + '">' + step.description.content + '</div></div>');
+		stepContainerBody.append('<div class="card bg-light description-panel" id="' + stepElementId + '-description-panel"><div class="card-header">' + Translator.trans('Description') + '</div><div class="card-body step-description rich-text" data-edition="' + step.description.edition + '">' + step.description.content + '</div></div>');
 		stepContainer.append(stepContainerBody);
 		stepPanelBody.append(stepContainer);
 		return stepPanelContainer;
@@ -736,25 +736,25 @@ THE SOFTWARE.
 
 	Simulators.drawStepForInput = function(step) {
 		var stepElementId = 'step-' + step.id;
-		var buttons = [{ 'class': 'delete-step', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }];
+		var buttons = [{ 'class': 'delete-step', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }];
 		if (! step.footNotes) {
-			buttons.push({ 'label': Translator.trans('Add'), 'icon': 'glyphicon-plus-sign', 'dropdown': [{ 'class': 'add-panel', 'label': Translator.trans('Add panel') }, { 'class': 'add-footnotes', 'label': Translator.trans('Add footnotes') }] });
+			buttons.push({ 'label': Translator.trans('Add'), 'icon': 'fa-plus-circle', 'dropdown': [{ 'class': 'add-panel', 'label': Translator.trans('Add panel') }, { 'class': 'add-footnotes', 'label': Translator.trans('Add footnotes') }] });
 		} else {
-			buttons.push({ 'class': 'add-panel', 'label': Translator.trans('Add panel'), 'icon': 'glyphicon-plus-sign' });
+			buttons.push({ 'class': 'add-panel', 'label': Translator.trans('Add panel'), 'icon': 'fa-plus-circle' });
 		}
-		buttons.push({ 'class': 'edit-step', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' });
+		buttons.push({ 'class': 'edit-step', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' });
 		var stepPanelContainer = Simulators.openCollapsiblePanel(stepElementId, Translator.trans('Step') + ' #' + step.id + ' : ' + step.label, 'info', '', '', buttons );
-		var stepPanelBody = stepPanelContainer.find('.panel-body');
-		var stepContainer = $('<div class="panel panel-default step-container" id="' + stepElementId + '-attributes-panel" data-id="' + step.id + '" data-name="' + step.name + '"></div>');
-		var stepContainerBody = $('<div class="panel-body"></div>');
+		var stepPanelBody = stepPanelContainer.find('.card-body');
+		var stepContainer = $('<div class="card bg-light step-container" id="' + stepElementId + '-attributes-panel" data-id="' + step.id + '" data-name="' + step.name + '"></div>');
+		var stepContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-name', 'text', 'name', Translator.trans('Step Name'), step.name, true, Translator.trans('Step Name')));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-label', 'text', 'label', Translator.trans('Step Label'), step.label, true, Translator.trans('Step Label')));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-template', 'text', 'template', Translator.trans('Step Template'), step.template, true, Translator.trans('Step Template')));
 		attributesContainer.append(requiredAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + stepElementId + '" data-type="select" data-name="output" data-placeholder="' + Translator.trans('Select an output') + '" data-options="' + encodeURI(JSON.stringify( Simulators.outputTypes )) + '">' + Translator.trans('Output') + '</li>');
 		optionalAttributes.append(optionalAttribute);
@@ -773,12 +773,12 @@ THE SOFTWARE.
 		stepContainerBody.append(attributesContainer);
 		stepContainer.append(stepContainerBody);
 		stepPanelBody.append(stepContainer);
-		stepContainerBody.append('<div class="panel panel-default description-panel elements-container" id="' + stepElementId + '-description-panel"><div class="panel-heading">' + Translator.trans('Description') + '</div><div class="panel-body"><textarea rows="5" name="' + stepElementId + '-description" id="' + stepElementId + '-description" wrap="hard" class="form-control step-description">' + Simulators.paragraphs(step.description).content + '</textarea></div></div>');
-		var stepButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + stepElementId + '-buttons-panel"></div>');
-		var stepButtonsBody = $('<div class="panel-body step-buttons"></div>');
-		stepButtonsBody.append('<button class="btn btn-success pull-right validate-edit-step">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		stepButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-step">' + Translator.trans('Cancel') + '</span></button>');
-		stepButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		stepContainerBody.append('<div class="card bg-light description-panel elements-container" id="' + stepElementId + '-description-panel"><div class="card-header">' + Translator.trans('Description') + '</div><div class="card-body"><textarea rows="5" name="' + stepElementId + '-description" id="' + stepElementId + '-description" wrap="hard" class="form-control step-description">' + Simulators.paragraphs(step.description).content + '</textarea></div></div>');
+		var stepButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + stepElementId + '-buttons-panel"></div>');
+		var stepButtonsBody = $('<div class="card-body step-buttons"></div>');
+		stepButtonsBody.append('<button class="btn btn-success float-right validate-edit-step">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		stepButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-step">' + Translator.trans('Cancel') + '</span></button>');
+		stepButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		stepButtonsPanel.append(stepButtonsBody);
 		stepContainerBody.append(stepButtonsPanel);
 		return stepPanelContainer;
@@ -876,14 +876,14 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-step')) {
 				stepContainer.replaceWith(newStepPanel.find('.step-container'));
 				if (step.label != oldLabel) {
-					var title = stepPanelContainer.find('> .panel > .panel-heading').find('> h4 > a');
+					var title = stepPanelContainer.find('> .card > .card-header').find('> h4 > a');
 					title.text(' ' + Translator.trans('Step') + ' #' + step.id + ' : ' + step.label);
 					Simulators.changeStepLabelInRules(id, step.label);
 				}
 				Simulators.updateInArray(steps, [{ key: 'id', val: id }], step);
 				newStepPanel = stepPanelContainer;
 			} else {
-				var panelsPanel = $('<div class="panel panel-default panels-panel" id="step-' + step.id + '-panels-panel"><div class="panel-body sortable"></div></div>');
+				var panelsPanel = $('<div class="card bg-light panels-panel" id="step-' + step.id + '-panels-panel"><div class="card-body sortable"></div></div>');
 				newStepPanel.find('.step-container').after(panelsPanel);
 				Simulators.bindSortablePanels(panelsPanel);
 				var actionButtonsPanel = $('<div class="actions-buttons-panel"></div>');
@@ -1075,7 +1075,7 @@ THE SOFTWARE.
 				var attr = footnoteGroup.attr('id');
 				attr = attr.replace(re, "-footnote-" + id);
 				footnoteGroup.attr('id', attr);
-				var h4 = footnoteGroup.find('> .panel-heading').find('> h4');
+				var h4 = footnoteGroup.find('> .card-header').find('> h4');
 				h4.text(' ' + Translator.trans('FootNote #%id%', {'id': id}));
 				footnoteGroup.attr('data-id', id);
 				var descendants = footnoteGroup.find('*');
@@ -1140,10 +1140,10 @@ THE SOFTWARE.
 
 	Simulators.drawFootNotesForDisplay = function(footnotes) {
 		var footnotesElementId = 'step-' + footnotes.stepId + '-footnotes';
-		var footnotesPanelContainer = Simulators.openCollapsiblePanel(footnotesElementId, Translator.trans('FootNotes'), 'success', 'in', '', [{ 'class': 'delete-footnotes', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-footnote', 'label': Translator.trans('Add footnote'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-footnotes', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' }] );
-		var footnotesPanelBody = footnotesPanelContainer.find('.panel-body');
-		var footnotesContainer = $('<div class="panel panel-default footnotes-container" id="' + footnotesElementId + '-attributes-panel" data-step="' + footnotes.stepId + '"></div>');
-		var footnotesContainerBody = $('<div class="panel-body"></div>');
+		var footnotesPanelContainer = Simulators.openCollapsiblePanel(footnotesElementId, Translator.trans('FootNotes'), 'success', 'in', '', [{ 'class': 'delete-footnotes', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'add-footnote', 'label': Translator.trans('Add footnote'), 'icon': 'fa-plus-circle' }, { 'class': 'edit-footnotes', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' }] );
+		var footnotesPanelBody = footnotesPanelContainer.find('.card-body');
+		var footnotesContainer = $('<div class="card bg-light footnotes-container" id="' + footnotesElementId + '-attributes-panel" data-step="' + footnotes.stepId + '"></div>');
+		var footnotesContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(footnotesElementId, 'select', 'position', Translator.trans('Position'), footnotes.position, footnotes.position, true, Translator.trans('Select a position'), JSON.stringify( { 'beforeActions': Translator.trans('before action buttons'), 'afterActions': Translator.trans('after action buttons') } )));
@@ -1163,12 +1163,12 @@ THE SOFTWARE.
 	Simulators.drawFootNotesForInput = function(footnotes) {
 		var footnotesElementId = 'step-' + footnotes.stepId + '-footnotes';
 		var footnotesPanelContainer = $('<div>', { 'class': 'panel-group', id: footnotesElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var footnotesPanel = $('<div>', { 'class': 'panel panel-success' });
-		footnotesPanel.append('<div class="panel-heading" role="tab" id="' + footnotesElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + footnotesElementId + '" href="#collapse' + footnotesElementId + '" aria-expanded="true" aria-controls="collapse' + footnotesElementId + '">' + Translator.trans('FootNotes') + '</a></h4></div>');
+		var footnotesPanel = $('<div>', { 'class': 'card bg-success' });
+		footnotesPanel.append('<div class="card-header" role="tab" id="' + footnotesElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + footnotesElementId + '" href="#collapse' + footnotesElementId + '" aria-expanded="true" aria-controls="collapse' + footnotesElementId + '">' + Translator.trans('FootNotes') + '</a></h4></div>');
 		var footnotesPanelCollapse = $('<div id="collapse' + footnotesElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + footnotesElementId + '-panel"></div>');
-		var footnotesPanelBody = $('<div class="panel-body"></div>');
-		var footnotesContainer = $('<div class="panel panel-default footnotes-container" id="' + footnotesElementId + '-attributes-panel" data-step="' + footnotes.stepId + '"></div>');
-		var footnotesContainerBody = $('<div class="panel-body"></div>');
+		var footnotesPanelBody = $('<div class="card-body"></div>');
+		var footnotesContainer = $('<div class="card bg-light footnotes-container" id="' + footnotesElementId + '-attributes-panel" data-step="' + footnotes.stepId + '"></div>');
+		var footnotesContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(footnotesElementId + '-position', 'select', 'position', Translator.trans('Position'), footnotes.position, true, Translator.trans('Select a position'), JSON.stringify( { 'beforeActions': Translator.trans('before action buttons'), 'afterActions': Translator.trans('after action buttons') } )));
@@ -1176,11 +1176,11 @@ THE SOFTWARE.
 		footnotesContainerBody.append(attributesContainer);
 		footnotesContainer.append(footnotesContainerBody);
 		footnotesPanelBody.append(footnotesContainer);
-		var footnotesButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + footnotesElementId + '-buttons-panel"></div>');
-		var footnotesButtonsBody = $('<div class="panel-body footnotes-buttons"></div>');
-		footnotesButtonsBody.append('<button class="btn btn-success pull-right validate-edit-footnotes">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		footnotesButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-footnotes">' + Translator.trans('Cancel') + '</span></button>');
-		footnotesButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var footnotesButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + footnotesElementId + '-buttons-panel"></div>');
+		var footnotesButtonsBody = $('<div class="card-body footnotes-buttons"></div>');
+		footnotesButtonsBody.append('<button class="btn btn-success float-right validate-edit-footnotes">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		footnotesButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-footnotes">' + Translator.trans('Cancel') + '</span></button>');
+		footnotesButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		footnotesButtonsPanel.append(footnotesButtonsBody);
 		footnotesContainerBody.append(footnotesButtonsPanel);
 		footnotesPanelCollapse.append(footnotesPanelBody);
@@ -1372,13 +1372,13 @@ THE SOFTWARE.
 
 	Simulators.drawFootNoteForDisplay = function(footnote) {
 		var footnoteElementId = 'step-' + footnote.stepId + '-footnotes-footnote' + footnote.id;
-		var footnoteContainer = $('<div class="panel panel-default footnote-container" id="' +  footnoteElementId + '-panel" data-step="' + footnote.stepId + '" data-id="' + footnote.id + '">');
-		var footnoteContainerHeading = $('<div class="panel-heading">');
-		footnoteContainerHeading.append('<button class="btn btn-default pull-right update-button delete-footnote" title="' + Translator.trans('Delete') + '" data-parent="#' +  footnoteElementId + '-panel"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button>');
-		footnoteContainerHeading.append('<button class="btn btn-default pull-right update-button edit-footnote" title="' + Translator.trans('Edit') + '" data-parent="#' +  footnoteElementId + '-panel"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="glyphicon glyphicon-pencil"></span></button>');
-		footnoteContainerHeading.append('<h4 class="panel-title">' + Translator.trans('FootNote #%id%', { 'id': footnote.id }) + '</h4>');
+		var footnoteContainer = $('<div class="card bg-light footnote-container" id="' +  footnoteElementId + '-panel" data-step="' + footnote.stepId + '" data-id="' + footnote.id + '">');
+		var footnoteContainerHeading = $('<div class="card-header">');
+		footnoteContainerHeading.append('<button class="btn btn-secondary float-right update-button delete-footnote" title="' + Translator.trans('Delete') + '" data-parent="#' +  footnoteElementId + '-panel"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button>');
+		footnoteContainerHeading.append('<button class="btn btn-secondary float-right update-button edit-footnote" title="' + Translator.trans('Edit') + '" data-parent="#' +  footnoteElementId + '-panel"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fa fa-pencil"></span></button>');
+		footnoteContainerHeading.append('<h4 class="card-title">' + Translator.trans('FootNote #%id%', { 'id': footnote.id }) + '</h4>');
 		footnoteContainer.append(footnoteContainerHeading);
-		var footnoteContainerBody = $('<div class="panel-body step-footnote rich-text"></div>');
+		var footnoteContainerBody = $('<div class="card-body step-footnote rich-text"></div>');
 		footnoteContainerBody.append(footnote.text.content);
 		footnoteContainer.append(footnoteContainerBody);
 		return footnoteContainer;
@@ -1386,17 +1386,17 @@ THE SOFTWARE.
 
 	Simulators.drawFootNoteForInput = function(footnote) {
 		var footnoteElementId = 'step-' + footnote.stepId + '-footnotes-footnote' + footnote.id;
-		var footnoteContainer = $('<div class="panel panel-default footnote-container" id="' + footnoteElementId + '-attributes-panel" data-step="' + footnote.stepId + '" data-id="' + footnote.id + '"></div>');
-		var footnoteContainerHeading = $('<div class="panel-heading">');
-		footnoteContainerHeading.append('<h4 class="panel-title">' + Translator.trans('FootNote #%id%', { 'id': footnote.id }) + '</h4>');
+		var footnoteContainer = $('<div class="card bg-light footnote-container" id="' + footnoteElementId + '-attributes-panel" data-step="' + footnote.stepId + '" data-id="' + footnote.id + '"></div>');
+		var footnoteContainerHeading = $('<div class="card-header">');
+		footnoteContainerHeading.append('<h4 class="card-title">' + Translator.trans('FootNote #%id%', { 'id': footnote.id }) + '</h4>');
 		footnoteContainer.append(footnoteContainerHeading);
-		var footnoteContainerBody = $('<div class="panel-body step-footnote"></div>');
+		var footnoteContainerBody = $('<div class="card-body step-footnote"></div>');
 		footnoteContainerBody.append('<textarea rows="5" name="' + footnoteElementId + '-text" id="' + footnoteElementId + '-text" wrap="hard" class="form-control footnote-text">' + Simulators.paragraphs(footnote.text).content + '</textarea>');
-		var footnoteButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + footnoteElementId + '-buttons-panel"></div>');
-		var footnoteButtonsBody = $('<div class="panel-body footnote-buttons"></div>');
-		footnoteButtonsBody.append('<button class="btn btn-success pull-right validate-edit-footnote">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		footnoteButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-footnote">' + Translator.trans('Cancel') + '</span></button>');
-		footnoteButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var footnoteButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + footnoteElementId + '-buttons-panel"></div>');
+		var footnoteButtonsBody = $('<div class="card-body footnote-buttons"></div>');
+		footnoteButtonsBody.append('<button class="btn btn-success float-right validate-edit-footnote">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		footnoteButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-footnote">' + Translator.trans('Cancel') + '</span></button>');
+		footnoteButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		footnoteButtonsPanel.append(footnoteButtonsBody);
 		footnoteContainerBody.append(footnoteButtonsPanel);
 		footnoteContainer.append(footnoteContainerBody);
@@ -1533,7 +1533,7 @@ THE SOFTWARE.
 			var footnotePanelContainer = Simulators.drawFootNoteForInput(footnote);
 			footnotePanelContainer.find('button.cancel-edit-footnote').addClass('cancel-add-footnote').removeClass('cancel-edit-footnote');
 			footnotePanelContainer.find('button.validate-edit-footnote').addClass('validate-add-footnote').removeClass('validate-edit-footnote');
-			var footnotesPanel = $("#collapsestep-" + stepId + '-footnotes').find('> .panel-body');
+			var footnotesPanel = $("#collapsestep-" + stepId + '-footnotes').find('> .card-body');
 			footnotesPanel.append(footnotePanelContainer);
 			Simulators.bindFootNote(footnotePanelContainer);
 			$("#collapsestep-" + stepId + '-footnotes').collapse('show');
@@ -1629,8 +1629,8 @@ THE SOFTWARE.
 
 	Simulators.drawActionButtonsForDisplay = function(step) {
 		var actionsElementId = 'step-' + step.id + '-action-buttons';
-		var actionsPanelContainer = Simulators.openCollapsiblePanel(actionsElementId, Translator.trans('Actions Buttons'), 'success', 'in', 'sortable', [{ 'class': 'add-action-button', 'label': Translator.trans('Add action button'), 'icon': 'glyphicon-plus-sign' }] );
-		var actionsPanelBody = actionsPanelContainer.find('.panel-body');
+		var actionsPanelContainer = Simulators.openCollapsiblePanel(actionsElementId, Translator.trans('Actions Buttons'), 'success', 'in', 'sortable', [{ 'class': 'add-action-button', 'label': Translator.trans('Add action button'), 'icon': 'fa-plus-circle' }] );
+		var actionsPanelBody = actionsPanelContainer.find('.card-body');
 		$.each(step.actions, function(f, action) {
 			action.stepId = step.id;
 			actionsPanelBody.append(Simulators.drawActionButtonForDisplay(action));
@@ -1640,10 +1640,10 @@ THE SOFTWARE.
 
 	Simulators.drawActionButtonForDisplay = function(action) {
 		var actionElementId = 'step-' + action.stepId + '-action-button-' + action.name;
-		var actionPanelContainer = Simulators.openCollapsiblePanel(actionElementId, Translator.trans('Action Button') + ' : ' + action.label, 'default', 'in', 'sortable', [{ 'class': 'delete-action-button', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-action-button', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-plus-sign' }] );
-		var actionPanelBody = actionPanelContainer.find('.panel-body');
-		var actionContainer = $('<div class="panel panel-default action-button-container" id="' + actionElementId + '-attributes-panel" data-step="' + action.stepId + '" data-id="' + action.name + '"></div>');
-		var actionContainerBody = $('<div class="panel-body"></div>');
+		var actionPanelContainer = Simulators.openCollapsiblePanel(actionElementId, Translator.trans('Action Button') + ' : ' + action.label, 'light', 'in', 'sortable', [{ 'class': 'delete-action-button', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-action-button', 'label': Translator.trans('Edit'), 'icon': 'fa-plus-circle' }] );
+		var actionPanelBody = actionPanelContainer.find('.card-body');
+		var actionContainer = $('<div class="card bg-light action-button-container" id="' + actionElementId + '-attributes-panel" data-step="' + action.stepId + '" data-id="' + action.name + '"></div>');
+		var actionContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'name', Translator.trans('Name'), action.name, action.name, true, Translator.trans('Button name')));
@@ -1651,7 +1651,7 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'what', Translator.trans('What'), action.what, action.what, true, Translator.trans('Select an action'), JSON.stringify( { 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset') } )));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'for', Translator.trans('For'), action.for, action.for, true, Translator.trans('Select a target step'), JSON.stringify( { 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'uri', Translator.trans('URI / Step'), action.uri, action.uri, false, Translator.trans('Button uri')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'class', Translator.trans('Class'), action.class, action.class, false, Translator.trans('Button class'), JSON.stringify({ 'btn-primary': Translator.trans('Primary'), 'btn-default': Translator.trans('Secondary') } )));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'class', Translator.trans('Class'), action.class, action.class, false, Translator.trans('Button class'), JSON.stringify({ 'btn-primary': Translator.trans('Primary'), 'btn-secondary': Translator.trans('Secondary') } )));
 		attributesContainer.append(requiredAttributes);
 		actionContainerBody.append(attributesContainer);
 		actionContainer.append(actionContainerBody);
@@ -1661,10 +1661,10 @@ THE SOFTWARE.
 
 	Simulators.drawActionButtonForInput = function(action) {
 		var actionElementId = 'step-' + action.stepId + '-action-button-' + action.name;
-		var actionPanelContainer = Simulators.openCollapsiblePanel(actionElementId, Translator.trans('Action Button') + ' : ' + action.label, 'default', 'in', 'sortable', [{ 'class': 'delete-action-button', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-action-button', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-plus-sign' }] );
-		var actionPanelBody = actionPanelContainer.find('.panel-body');
-		var actionContainer = $('<div class="panel panel-default action-button-container" id="' + actionElementId + '-attributes-panel" data-step="' + action.stepId + '" data-id="' + action.name + '"></div>');
-		var actionContainerBody = $('<div class="panel-body"></div>');
+		var actionPanelContainer = Simulators.openCollapsiblePanel(actionElementId, Translator.trans('Action Button') + ' : ' + action.label, 'light', 'in', 'sortable', [{ 'class': 'delete-action-button', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-action-button', 'label': Translator.trans('Edit'), 'icon': 'fa-plus-circle' }] );
+		var actionPanelBody = actionPanelContainer.find('.card-body');
+		var actionContainer = $('<div class="card bg-light action-button-container" id="' + actionElementId + '-attributes-panel" data-step="' + action.stepId + '" data-id="' + action.name + '"></div>');
+		var actionContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-name', 'text', 'name', Translator.trans('Name'), action.name, true, Translator.trans('Action button name without spaces or special characters')));
@@ -1672,8 +1672,8 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-what', 'select', 'what', Translator.trans('What'), action.what, true, Translator.trans('Select an action'), JSON.stringify({ 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset') })));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-for', 'select', 'for', Translator.trans('For'), action.for, true, Translator.trans('Select a target step'), JSON.stringify({ 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
 		attributesContainer.append(requiredAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="text" data-name="uri" data-placeholder="' + Translator.trans('Button uri') + '">' + Translator.trans('URI / Step') + '</li>');
 		optionalAttributes.append(optionalAttribute);
@@ -1682,10 +1682,10 @@ THE SOFTWARE.
 			requiredAttributes.append(attribute);
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="select" data-name="class" data-placeholder="' + Translator.trans('Button class') + '" data-options="' + encodeURI(JSON.stringify( { 'btn-primary': Translator.trans('Primary'), 'btn-default': Translator.trans('Secondary') } )) + '">' + Translator.trans('Class') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="select" data-name="class" data-placeholder="' + Translator.trans('Button class') + '" data-options="' + encodeURI(JSON.stringify( { 'btn-primary': Translator.trans('Primary'), 'btn-secondary': Translator.trans('Secondary') } )) + '">' + Translator.trans('Class') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (action.class) {
-			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-class', 'select', 'class', Translator.trans('Class'), action.class, false, Translator.trans('Button class'), JSON.stringify({ 'btn-primary': Translator.trans('Primary'), 'btn-default': Translator.trans('Secondary') } ) );
+			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-class', 'select', 'class', Translator.trans('Class'), action.class, false, Translator.trans('Button class'), JSON.stringify({ 'btn-primary': Translator.trans('Primary'), 'btn-secondary': Translator.trans('Secondary') } ) );
 			requiredAttributes.append(attribute);
 			optionalAttribute.hide();
 		} 
@@ -1694,11 +1694,11 @@ THE SOFTWARE.
 		actionContainerBody.append(attributesContainer);
 		actionContainer.append(actionContainerBody);
 		actionPanelBody.append(actionContainer);
-		var actionButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + actionElementId + '-buttons-panel"></div>');
-		var actionButtonsBody = $('<div class="panel-body action-buttons"></div>');
-		actionButtonsBody.append('<button class="btn btn-success pull-right validate-edit-action">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		actionButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-action">' + Translator.trans('Cancel') + '</span></button>');
-		actionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var actionButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + actionElementId + '-buttons-panel"></div>');
+		var actionButtonsBody = $('<div class="card-body action-buttons"></div>');
+		actionButtonsBody.append('<button class="btn btn-success float-right validate-edit-action">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		actionButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-action">' + Translator.trans('Cancel') + '</span></button>');
+		actionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		actionButtonsPanel.append(actionButtonsBody);
 		actionContainer.append(actionButtonsPanel);
 		return actionPanelContainer;
@@ -1779,7 +1779,7 @@ THE SOFTWARE.
 				}
 				var oldLabel = Simulators.actionButtonBackup.find("p[data-attribute='label']").attr('data-value');
 				if (action.label != oldLabel) {
-					var title = actionPanelContainer.find('> .panel > .panel-heading').find('> h4 > a');
+					var title = actionPanelContainer.find('> .card > .card-header').find('> h4 > a');
 					title.text('' + Translator.trans('Action Button') + ' : ' + action.label);
 				}
 				Simulators.changeActionButtonLabelInRules(stepId, action.name, action.label)
@@ -1966,7 +1966,7 @@ THE SOFTWARE.
 				var attr = panelGroup.attr('id');
 				attr = attr.replace(re, "-panel-" + id);
 				panelGroup.attr('id', attr);
-				var a = panelGroup.find('> .panel > .panel-heading').find('> h4 > a');
+				var a = panelGroup.find('> .card > .card-header').find('> h4 > a');
 				a.text(' ' + Translator.trans('Panel') + ' #' + id + ' : ' + panel.label + ' ');
 				var container =  panelGroup.find('.panel-container');
 				container.attr('data-id', id);
@@ -2034,10 +2034,10 @@ THE SOFTWARE.
 
 	Simulators.drawPanelForDisplay = function(panel, inClass) {
 		var panelElementId = 'step-' + panel.stepId + '-panel-' + panel.id;
-		var panelPanelContainer = Simulators.openCollapsiblePanel(panelElementId, Translator.trans('Panel') + ' #' + panel.id + ' : ' + panel.label, 'success', inClass, 'sortable', [{ 'class': 'delete-panel', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-fieldset', 'label': Translator.trans('Add fieldset'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'add-blockinfo', 'label': Translator.trans('Add blockinfo'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-panel', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
-		var panelPanelBody = panelPanelContainer.find('.panel-body');
-		var panelContainer = $('<div class="panel panel-default panel-container" id="' + panelElementId + '-attributes-panel" data-step="' + panel.stepId + '" data-id="' + panel.id + '"></div>');
-		var panelContainerBody = $('<div class="panel-body"></div>');
+		var panelPanelContainer = Simulators.openCollapsiblePanel(panelElementId, Translator.trans('Panel') + ' #' + panel.id + ' : ' + panel.label, 'success', inClass, 'sortable', [{ 'class': 'delete-panel', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'add-fieldset', 'label': Translator.trans('Add fieldset'), 'icon': 'fa-plus-circle' }, { 'class': 'add-blockinfo', 'label': Translator.trans('Add blockinfo'), 'icon': 'fa-plus-circle' }, { 'class': 'edit-panel', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
+		var panelPanelBody = panelPanelContainer.find('.card-body');
+		var panelContainer = $('<div class="card bg-light panel-container" id="' + panelElementId + '-attributes-panel" data-step="' + panel.stepId + '" data-id="' + panel.id + '"></div>');
+		var panelContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(panelElementId, 'text', 'name', Translator.trans('Name'), panel.name, panel.name, true, Translator.trans('Panel name')));
@@ -2046,25 +2046,25 @@ THE SOFTWARE.
 		panelContainerBody.append(attributesContainer);
 		panelContainer.append(panelContainerBody);
 		panelPanelBody.append(panelContainer);
-		panelPanelBody.append('<div class="panel panel-default blocks-panel" id="' + panelElementId + '-blocks-panel"><div class="panel-body sortable"></div></div>');
+		panelPanelBody.append('<div class="card bg-light blocks-panel" id="' + panelElementId + '-blocks-panel"><div class="card-body sortable"></div></div>');
 		return panelPanelContainer;
 	}
 
 	Simulators.drawPanelForInput = function(panel) {
 		var panelElementId = 'step-' + panel.stepId + '-panel-' + panel.id;
 		var panelPanelContainer = $('<div>', { 'class': 'panel-group', id: panelElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var panelPanel = $('<div>', { 'class': 'panel panel-success' });
-		panelPanel.append('<div class="panel-heading" role="tab" id="' + panelElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + panelElementId + '" href="#collapse' + panelElementId + '" aria-expanded="true" aria-controls="collapse' + panelElementId + '">' + Translator.trans('Panel') + ' #' + panel.id + ' : ' + panel.label + '</a></h4></div>');
+		var panelPanel = $('<div>', { 'class': 'card bg-success' });
+		panelPanel.append('<div class="card-header" role="tab" id="' + panelElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + panelElementId + '" href="#collapse' + panelElementId + '" aria-expanded="true" aria-controls="collapse' + panelElementId + '">' + Translator.trans('Panel') + ' #' + panel.id + ' : ' + panel.label + '</a></h4></div>');
 		var panelPanelCollapse = $('<div id="collapse' + panelElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + panelElementId + '-panel"></div>');
-		var panelPanelBody = $('<div class="panel-body"></div>');
-		var panelContainer = $('<div class="panel panel-default panel-container" id="' + panelElementId + '-attributes-panel" data-step="' + panel.stepId + '" data-id="' + panel.id + '" data-name="' + panel.name + '"></div>');
-		var panelContainerBody = $('<div class="panel-body"></div>');
+		var panelPanelBody = $('<div class="card-body"></div>');
+		var panelContainer = $('<div class="card bg-light panel-container" id="' + panelElementId + '-attributes-panel" data-step="' + panel.stepId + '" data-id="' + panel.id + '" data-name="' + panel.name + '"></div>');
+		var panelContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(panelElementId + '-name', 'text', 'name', Translator.trans('Name'), panel.name, false, Translator.trans('Panel name without spaces or special characters')));
 		attributesContainer.append(requiredAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + panelElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Panel label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
@@ -2077,11 +2077,11 @@ THE SOFTWARE.
 		panelContainerBody.append(attributesContainer);
 		panelContainer.append(panelContainerBody);
 		panelPanelBody.append(panelContainer);
-		var panelButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + panelElementId + '-buttons-panel"></div>');
-		var panelButtonsBody = $('<div class="panel-body panel-buttons"></div>');
-		panelButtonsBody.append('<button class="btn btn-success pull-right validate-edit-panel">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		panelButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-panel">' + Translator.trans('Cancel') + '</span></button>');
-		panelButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var panelButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + panelElementId + '-buttons-panel"></div>');
+		var panelButtonsBody = $('<div class="card-body panel-buttons"></div>');
+		panelButtonsBody.append('<button class="btn btn-success float-right validate-edit-panel">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		panelButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-panel">' + Translator.trans('Cancel') + '</span></button>');
+		panelButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		panelButtonsPanel.append(panelButtonsBody);
 		panelContainerBody.append(panelButtonsPanel);
 		panelPanelCollapse.append(panelPanelBody);
@@ -2171,7 +2171,7 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-panel')) {
 				panelContainer.replaceWith(newPanelPanel.find('.panel-container'));
 				if (panel.label != oldLabel) {
-					panelPanelContainer.find('> div > .panel-heading > h4 a').text(' ' + Translator.trans('Panel') + ' #' + panel.id + ' : ' + panel.label + ' ');
+					panelPanelContainer.find('> div > .card-header > h4 a').text(' ' + Translator.trans('Panel') + ' #' + panel.id + ' : ' + panel.label + ' ');
 					Simulators.changePanelLabelInRules(stepId, panel.id, panel.label);
 				}
 				delete panel['stepId'];
@@ -2361,7 +2361,7 @@ THE SOFTWARE.
 				var attr = panelGroup.attr('id');
 				attr = attr.replace(re, "-" + block.type + "-" + id);
 				panelGroup.attr('id', attr);
-				var a = panelGroup.find('> .panel > .panel-heading').find('> h4 > a');
+				var a = panelGroup.find('> .card > .card-header').find('> h4 > a');
 				if (block.type == 'fieldset') {
 					a.text(' ' + Translator.trans('FieldSet') + ' #' + id + ' : ' + block.legend.content + ' ');
 				} else {
@@ -2444,13 +2444,13 @@ THE SOFTWARE.
 		var fieldsetElementId = 'step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id;
 		var fieldsetPanelContainer;
 		if (fieldset.disposition == 'grid') {
-			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend.content + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
+			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend.content + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
 		} else {
-			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend.content + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': Translator.trans('Add field'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
+			fieldsetPanelContainer = Simulators.openCollapsiblePanel(fieldsetElementId, Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend.content + '</span>').text(), 'info',inClass, 'in', [{ 'class': 'delete-fieldset', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'add-field', 'label': Translator.trans('Add field'), 'icon': 'fa-plus-circle' }, { 'class': 'edit-fieldset', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
 		}
-		var fieldsetPanelBody = fieldsetPanelContainer.find('.panel-body');
-		var fieldsetContainer = $('<div class="panel panel-default block-container fieldset" id="' + fieldsetElementId + '-attributes-panel" data-step="' + fieldset.stepId + '" data-panel="' + fieldset.panelId + '" data-id="' + fieldset.id + '"></div>');
-		var fieldsetContainerBody = $('<div class="panel-body"></div>');
+		var fieldsetPanelBody = fieldsetPanelContainer.find('.card-body');
+		var fieldsetContainer = $('<div class="card bg-light block-container fieldset" id="' + fieldsetElementId + '-attributes-panel" data-step="' + fieldset.stepId + '" data-panel="' + fieldset.panelId + '" data-id="' + fieldset.id + '"></div>');
+		var fieldsetContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, fieldset.disposition, false, Translator.trans('Select a Disposition'), JSON.stringify({ 'classic':Translator.trans('Classic'), 'grid':Translator.trans('Grid'), 'inline':Translator.trans('Inline') })));
@@ -2460,12 +2460,12 @@ THE SOFTWARE.
 		fieldsetContainerBody.append(attributesContainer);
 		fieldsetContainer.append(fieldsetContainerBody);
 		fieldsetPanelBody.append(fieldsetContainer);
-		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body fieldset-legend rich-text" data-edition="' + fieldset.legend.edition + '">' + fieldset.legend.content + '</div></div>');
+		fieldsetContainerBody.append('<div class="card bg-light legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="card-header">' + Translator.trans('Legend') + '</div><div class="card-body fieldset-legend rich-text" data-edition="' + fieldset.legend.edition + '">' + fieldset.legend.content + '</div></div>');
 		if (fieldset.disposition == 'grid') {
-			fieldsetPanelBody.append('<div class="panel panel-default fieldset-grid-panel" id="fieldset-' + fieldset.id + '-fieldset-grid-panel"><div class="panel-heading"><button class="btn btn-default pull-right update-button add-column" data-parent="#fieldset-' + fieldset.id + '-fieldset-grid-panel" title="' + Translator.trans('Add column') + '"><span class="button-label">' + Translator.trans('Add column') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-fieldrow" data-parent="#fieldset-' + fieldset.id + '-fieldset-grid-panel" title="' + Translator.trans('Add fieldrow') + '"><span class="button-label">' + Translator.trans('Add fieldrow') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><h4 class="panel-title">' + Translator.trans('Grid') + '</h4></div><div class="panel-body"><div class="panel panel-default columns-panel" id="step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id + '-columns-panel"><div class="panel-body sortable"></div></div><div class="panel panel-default fieldrows-panel" id="step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id + '-fieldrows-panel"><div class="panel-body sortable"></div></div></div></div>');
+			fieldsetPanelBody.append('<div class="card bg-light fieldset-grid-panel" id="fieldset-' + fieldset.id + '-fieldset-grid-panel"><div class="card-header"><button class="btn btn-secondary float-right update-button add-column" data-parent="#fieldset-' + fieldset.id + '-fieldset-grid-panel" title="' + Translator.trans('Add column') + '"><span class="button-label">' + Translator.trans('Add column') + '</span> <span class="fa fa-plus-circle"></span></button><button class="btn btn-secondary float-right update-button add-fieldrow" data-parent="#fieldset-' + fieldset.id + '-fieldset-grid-panel" title="' + Translator.trans('Add fieldrow') + '"><span class="button-label">' + Translator.trans('Add fieldrow') + '</span> <span class="fa fa-plus-circle"></span></button><h4 class="card-title">' + Translator.trans('Grid') + '</h4></div><div class="card-body"><div class="card bg-light columns-panel" id="step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id + '-columns-panel"><div class="card-body sortable"></div></div><div class="card bg-light fieldrows-panel" id="step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id + '-fieldrows-panel"><div class="card-body sortable"></div></div></div></div>');
 		} else {
-			fieldsetPanelBody.append('<div class="panel panel-default columns-panel" id="' + fieldsetElementId + '-columns-panel"><div class="panel-body sortable"></div></div>');
-			fieldsetPanelBody.append('<div class="panel panel-default fields-panel" id="' + fieldsetElementId + '-fields-panel"><div class="panel-body sortable"></div></div>');
+			fieldsetPanelBody.append('<div class="card bg-light columns-panel" id="' + fieldsetElementId + '-columns-panel"><div class="card-body sortable"></div></div>');
+			fieldsetPanelBody.append('<div class="card bg-light fields-panel" id="' + fieldsetElementId + '-fields-panel"><div class="card-body sortable"></div></div>');
 		}
 		return fieldsetPanelContainer;
 	}
@@ -2473,17 +2473,17 @@ THE SOFTWARE.
 	Simulators.drawFieldSetForInput = function(fieldset) {
 		var fieldsetElementId = 'step-' + fieldset.stepId + '-panel-' + fieldset.panelId + '-fieldset-' + fieldset.id;
 		var fieldsetPanelContainer = $('<div>', { 'class': 'panel-group', id: fieldsetElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var fieldsetPanel = $('<div>', { 'class': 'panel panel-info' });
-		fieldsetPanel.append('<div class="panel-heading" role="tab" id="' + fieldsetElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + fieldsetElementId + '" href="#collapse' + fieldsetElementId + '" aria-expanded="true" aria-controls="collapse' + fieldsetElementId + '">#' + fieldset.id + ' : ' + fieldset.legend.content + '</a></h4></div>');
+		var fieldsetPanel = $('<div>', { 'class': 'card bg-info' });
+		fieldsetPanel.append('<div class="card-header" role="tab" id="' + fieldsetElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + fieldsetElementId + '" href="#collapse' + fieldsetElementId + '" aria-expanded="true" aria-controls="collapse' + fieldsetElementId + '">#' + fieldset.id + ' : ' + fieldset.legend.content + '</a></h4></div>');
 		var fieldsetPanelCollapse = $('<div id="collapse' + fieldsetElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + fieldsetElementId + '-panel"></div>');
-		var fieldsetPanelBody = $('<div class="panel-body"></div>');
-		var fieldsetContainer = $('<div class="panel panel-default block-container fieldset" id="' + fieldsetElementId + '-attributes-panel" data-step="' + fieldset.stepId + '" data-panel="' + fieldset.panelId + '" data-id="' + fieldset.id + '" data-name="' + fieldset.name + '"></div>');
-		var fieldsetContainerBody = $('<div class="panel-body"></div>');
+		var fieldsetPanelBody = $('<div class="card-body"></div>');
+		var fieldsetContainer = $('<div class="card bg-light block-container fieldset" id="' + fieldsetElementId + '-attributes-panel" data-step="' + fieldset.stepId + '" data-panel="' + fieldset.panelId + '" data-id="' + fieldset.id + '" data-name="' + fieldset.name + '"></div>');
+		var fieldsetContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		attributesContainer.append(requiredAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldsetElementId + '" data-type="select" data-name="disposition" data-placeholder="' + Translator.trans('FieldSet disposition') + '" data-options="' + encodeURI(JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid') } )) + '">' + Translator.trans('Disposition') + '</li>');
 		optionalAttributes.append(optionalAttribute);
@@ -2508,12 +2508,12 @@ THE SOFTWARE.
 		fieldsetContainerBody.append(attributesContainer);
 		fieldsetContainer.append(fieldsetContainerBody);
 		fieldsetPanelBody.append(fieldsetContainer);
-		fieldsetContainerBody.append('<div class="panel panel-default legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="panel-heading">' + Translator.trans('Legend') + '</div><div class="panel-body"><textarea rows="1" name="' + fieldsetElementId + '-legend" id="' + fieldsetElementId + '-legend" wrap="hard" class="form-control fieldset-legend">' + Simulators.paragraphs(fieldset.legend).content + '</textarea></div></div>');
-		var fieldsetButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + fieldsetElementId + '-buttons-panel"></div>');
-		var fieldsetButtonsBody = $('<div class="panel-body fieldset-buttons"></div>');
-		fieldsetButtonsBody.append('<button class="btn btn-success pull-right validate-edit-fieldset">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		fieldsetButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-fieldset">' + Translator.trans('Cancel') + '</span></button>');
-		fieldsetButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		fieldsetContainerBody.append('<div class="card bg-light legend-panel elements-container" id="' + fieldsetElementId + '-legend-panel"><div class="card-header">' + Translator.trans('Legend') + '</div><div class="card-body"><textarea rows="1" name="' + fieldsetElementId + '-legend" id="' + fieldsetElementId + '-legend" wrap="hard" class="form-control fieldset-legend">' + Simulators.paragraphs(fieldset.legend).content + '</textarea></div></div>');
+		var fieldsetButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + fieldsetElementId + '-buttons-panel"></div>');
+		var fieldsetButtonsBody = $('<div class="card-body fieldset-buttons"></div>');
+		fieldsetButtonsBody.append('<button class="btn btn-success float-right validate-edit-fieldset">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		fieldsetButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-fieldset">' + Translator.trans('Cancel') + '</span></button>');
+		fieldsetButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		fieldsetButtonsPanel.append(fieldsetButtonsBody);
 		fieldsetContainerBody.append(fieldsetButtonsPanel);
 		fieldsetPanelCollapse.append(fieldsetPanelBody);
@@ -2635,7 +2635,7 @@ THE SOFTWARE.
 				if (fieldset.disposition == oldFieldSet.disposition) {
 					fieldsetContainer.replaceWith(newFieldSetPanel.find('.block-container.fieldset'));
 					if (fieldset.legend.content != oldFieldSet.legend.content) {
-						fieldsetPanelContainer.find('> div > .panel-heading > h4 a').text(' ' + Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend.content + '</span>').text() + ' ');
+						fieldsetPanelContainer.find('> div > .card-header > h4 a').text(' ' + Translator.trans('FieldSet') + ' #' + fieldset.id + ' : ' +  $('<span>'+fieldset.legend.content + '</span>').text() + ' ');
 						Simulators.changeFieldSetLegendInRules(stepId, panelId, fieldset.id, fieldset.legend.content);
 					}
 					newFieldSetPanel = fieldsetPanelContainer;
@@ -2826,7 +2826,7 @@ THE SOFTWARE.
 				var attr = panelGroup.attr('id');
 				attr = attr.replace(re, "-column-" + id);
 				panelGroup.attr('id', attr);
-				var a = panelGroup.find('> .panel > .panel-heading').find('> h4 > a');
+				var a = panelGroup.find('> .card > .card-header').find('> h4 > a');
 				a.text(' ' + Translator.trans('Column #%id% : %label%', {'id': id, 'label': column.label }) + ' ');
 				var container =  panelGroup.find('.column-container');
 				container.attr('data-id', id);
@@ -2897,10 +2897,10 @@ THE SOFTWARE.
 	Simulators.drawFieldSetColumnForDisplay = function(column, inClass) {
 		var fieldset = Simulators.findInArray(steps, [{ key: 'id', val: column.stepId, list: 'panels' }, { key: 'id', val: column.panelId, list: 'blocks' }, { key: 'id', val: column.fieldsetId }]);
 		var columnElementId = 'step-' + column.stepId + '-panel-' + column.panelId + '-fieldset-' + column.fieldsetId + '-column-' + column.id;
-		var columnPanelContainer = Simulators.openCollapsiblePanel(columnElementId, Translator.trans('Column #%id% : %label%', {'id': column.id, 'label': column.label }), 'warning', inClass, '', [{ 'class': 'delete-column', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-column', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
-		var columnPanelBody = columnPanelContainer.find('.panel-body');
-		var columnContainer = $('<div class="panel panel-default column-container" id="' + columnElementId + '-attributes-panel" data-step="' + column.stepId + '" data-panel="' + column.panelId + '" data-fieldset="' + column.fieldsetId + '" data-id="' + column.id + '"></div>');
-		var columnContainerBody = $('<div class="panel-body"></div>');
+		var columnPanelContainer = Simulators.openCollapsiblePanel(columnElementId, Translator.trans('Column #%id% : %label%', {'id': column.id, 'label': column.label }), 'warning', inClass, '', [{ 'class': 'delete-column', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-column', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
+		var columnPanelBody = columnPanelContainer.find('.card-body');
+		var columnContainer = $('<div class="card bg-light column-container" id="' + columnElementId + '-attributes-panel" data-step="' + column.stepId + '" data-panel="' + column.panelId + '" data-fieldset="' + column.fieldsetId + '" data-id="' + column.id + '"></div>');
+		var columnContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(columnElementId, 'text', 'name', Translator.trans('Name'), column.name, column.name, true, Translator.trans('Column name')));
@@ -2916,26 +2916,26 @@ THE SOFTWARE.
 	Simulators.drawFieldSetColumnForInput = function(column) {
 		var columnElementId = 'step-' + column.stepId + '-panel-' + column.panelId + '-fieldset-' + column.fieldsetId + '-column-' + column.id;
 		var columnPanelContainer = $('<div>', { 'class': 'panel-group', id: columnElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var columnPanel = $('<div>', { 'class': 'panel panel-warning' });
-		columnPanel.append('<div class="panel-heading" role="tab" id="' + columnElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + columnElementId + '" href="#collapse' + columnElementId + '" aria-expanded="true" aria-controls="collapse' + columnElementId + '">' + Translator.trans('Column #%id% : %label%', {'id': column.id, 'label': column.label }) + '</a></h4></div>');
+		var columnPanel = $('<div>', { 'class': 'card bg-warning' });
+		columnPanel.append('<div class="card-header" role="tab" id="' + columnElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + columnElementId + '" href="#collapse' + columnElementId + '" aria-expanded="true" aria-controls="collapse' + columnElementId + '">' + Translator.trans('Column #%id% : %label%', {'id': column.id, 'label': column.label }) + '</a></h4></div>');
 		var columnPanelCollapse = $('<div id="collapse' + columnElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + columnElementId + '-panel"></div>');
-		var columnPanelBody = $('<div class="panel-body"></div>');
-		var columnContainer = $('<div class="panel panel-default column-container" id="' + columnElementId + '-attributes-panel" data-step="' + column.stepId + '" data-panel="' + column.panelId + '" data-fieldset="' + column.fieldsetId + '" data-id="' + column.id + '" data-name="' + column.name + '"></div>');
-		var columnContainerBody = $('<div class="panel-body"></div>');
+		var columnPanelBody = $('<div class="card-body"></div>');
+		var columnContainer = $('<div class="card bg-light column-container" id="' + columnElementId + '-attributes-panel" data-step="' + column.stepId + '" data-panel="' + column.panelId + '" data-fieldset="' + column.fieldsetId + '" data-id="' + column.id + '" data-name="' + column.name + '"></div>');
+		var columnContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + columnElementId + '-name" class="col-sm-4 control-label">' + Translator.trans('Name') + '</label><div class="col-sm-8"><input type="text" name="' + columnElementId + '-name" id="' + columnElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="' + Translator.trans('Column name without spaces or special characters') + '" value="' + column.name + '" /></div></div>');
-		requiredAttributes.append('<div class="form-group col-sm-12"><label for="' + columnElementId + '-label" class="col-sm-4 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-8"><input type="text" name="' + columnElementId + '-label" id="' + columnElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="' + Translator.trans('Column label') + '" value="' + column.label + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group row"><label for="' + columnElementId + '-name" class="col-sm-4 col-form-label">' + Translator.trans('Name') + '</label><div class="col-sm-8"><input type="text" name="' + columnElementId + '-name" id="' + columnElementId + '-name" data-attribute="name" class="form-control simple-value" placeholder="' + Translator.trans('Column name without spaces or special characters') + '" value="' + column.name + '" /></div></div>');
+		requiredAttributes.append('<div class="form-group row"><label for="' + columnElementId + '-label" class="col-sm-4 col-form-label">' + Translator.trans('Label') + '</label><div class="col-sm-8"><input type="text" name="' + columnElementId + '-label" id="' + columnElementId + '-label" data-attribute="label" class="form-control simple-value" placeholder="' + Translator.trans('Column label') + '" value="' + column.label + '" /></div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(columnElementId + '-type', 'select', 'type', 'Type', column.type, true, Translator.trans('Select a column type'), JSON.stringify(Admin.types)));
 		attributesContainer.append(requiredAttributes);
 		columnContainerBody.append(attributesContainer);
 		columnContainer.append(columnContainerBody);
 		columnPanelBody.append(columnContainer);
-		var columnButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + columnElementId + '-buttons-panel"></div>');
-		var columnButtonsBody = $('<div class="panel-body column-buttons"></div>');
-		columnButtonsBody.append('<button class="btn btn-success pull-right validate-edit-column">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		columnButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-column">' + Translator.trans('Cancel') + '</span></button>');
-		columnButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var columnButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + columnElementId + '-buttons-panel"></div>');
+		var columnButtonsBody = $('<div class="card-body column-buttons"></div>');
+		columnButtonsBody.append('<button class="btn btn-success float-right validate-edit-column">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		columnButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-column">' + Translator.trans('Cancel') + '</span></button>');
+		columnButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		columnButtonsPanel.append(columnButtonsBody);
 		columnContainerBody.append(columnButtonsPanel);
 		columnPanelCollapse.append(columnPanelBody);
@@ -3015,7 +3015,7 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-column')) {
 				columnContainer.replaceWith(newFieldSetColumnPanel.find('.column-container'));
 				if (column.label != oldLabel) {
-					columnPanelContainer.find('> div > .panel-heading > h4 a').text(Translator.trans('Column #%id% : %label%', {'id': column.id, 'label': column.label }));
+					columnPanelContainer.find('> div > .card-header > h4 a').text(Translator.trans('Column #%id% : %label%', {'id': column.id, 'label': column.label }));
 					Simulators.changeFieldSetColumnLabelInRules(stepId, panelId, fieldsetId, column.id, column.label);
 				}
 				delete column['stepId'];
@@ -3228,7 +3228,7 @@ THE SOFTWARE.
 				var attr = panelGroup.attr('id');
 				attr = attr.replace(re, "-fieldrow-" + id);
 				panelGroup.attr('id', attr);
-				var a = panelGroup.find('> .panel > .panel-heading').find('> h4 > a');
+				var a = panelGroup.find('> .card > .card-header').find('> h4 > a');
 				a.text(' ' + Translator.trans('Fieldrow #%id% : %label%', {'id': id, 'label': fieldrow.label }) + ' ');
 				var container =  panelGroup.find('.fieldrow-container');
 				container.attr('data-id', id);
@@ -3300,11 +3300,11 @@ THE SOFTWARE.
 		var fieldset = Simulators.findInArray(steps, [{ key: 'id', val: fieldrow.stepId, list: 'panels' }, { key: 'id', val: fieldrow.panelId, list: 'blocks' }, { key: 'id', val: fieldrow.fieldsetId }]);
 		var fieldrowElementId = 'step-' + fieldrow.stepId + '-panel-' + fieldrow.panelId + '-fieldset-' + fieldrow.fieldsetId + '-fieldrow-' + fieldrow.id;
 		var fieldrowPanelContainer = fieldrow.fields.length < fieldset.columns.length ?
-			Simulators.openCollapsiblePanel(fieldrowElementId, Translator.trans('Fieldrow #%id% : %label%', {'id': fieldrow.id, 'label': fieldrow.label }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-field', 'label': Translator.trans('Add field'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-fieldrow', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] ) :
-			Simulators.openCollapsiblePanel(fieldrowElementId, Translator.trans('Fieldrow #%id% : %label%', {'id': fieldrow.id, 'label': fieldrow.label }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-fieldrow', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
-		var fieldrowPanelBody = fieldrowPanelContainer.find('.panel-body');
-		var fieldrowContainer = $('<div class="panel panel-default fieldrow-container" id="' + fieldrowElementId + '-attributes-panel" data-step="' + fieldrow.stepId + '" data-panel="' + fieldrow.panelId + '" data-fieldset="' + fieldrow.fieldsetId + '" data-id="' + fieldrow.id + '"></div>');
-		var fieldrowContainerBody = $('<div class="panel-body"></div>');
+			Simulators.openCollapsiblePanel(fieldrowElementId, Translator.trans('Fieldrow #%id% : %label%', {'id': fieldrow.id, 'label': fieldrow.label }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'add-field', 'label': Translator.trans('Add field'), 'icon': 'fa-plus-circle' }, { 'class': 'edit-fieldrow', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] ) :
+			Simulators.openCollapsiblePanel(fieldrowElementId, Translator.trans('Fieldrow #%id% : %label%', {'id': fieldrow.id, 'label': fieldrow.label }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-fieldrow', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
+		var fieldrowPanelBody = fieldrowPanelContainer.find('.card-body');
+		var fieldrowContainer = $('<div class="card bg-light fieldrow-container" id="' + fieldrowElementId + '-attributes-panel" data-step="' + fieldrow.stepId + '" data-panel="' + fieldrow.panelId + '" data-fieldset="' + fieldrow.fieldsetId + '" data-id="' + fieldrow.id + '"></div>');
+		var fieldrowContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldrowElementId, 'text', 'label', Translator.trans('Label'), fieldrow.label, fieldrow.label, true, Translator.trans('Fieldrow label')));
@@ -3316,7 +3316,7 @@ THE SOFTWARE.
 		fieldrowContainerBody.append(attributesContainer);
 		fieldrowContainer.append(fieldrowContainerBody);
 		fieldrowPanelBody.append(fieldrowContainer);
-		fieldrowPanelBody.append('<div class="panel panel-default fields-panel" id="' + fieldrowElementId + '-fields-panel"><div class="panel-body sortable"></div></div>');
+		fieldrowPanelBody.append('<div class="card bg-light fields-panel" id="' + fieldrowElementId + '-fields-panel"><div class="card-body sortable"></div></div>');
 		return fieldrowPanelContainer;
 	}
 
@@ -3324,7 +3324,7 @@ THE SOFTWARE.
 		var deleteFieldrowButtons = fieldsetGridPanel.find('.delete-fieldrow');
 		deleteFieldrowButtons.each(function(index) {
 			if (! $(this).next().hasClass('add-field')) {
-				var button = $('<button class="btn btn-success pull-right update-button add-field" title="' + Translator.trans('Add field') + '" data-parent="' +  $(this).attr('data-parent') + '"><span class="button-label">' + Translator.trans('Add field') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button>');
+				var button = $('<button class="btn btn-success float-right update-button add-field" title="' + Translator.trans('Add field') + '" data-parent="' +  $(this).attr('data-parent') + '"><span class="button-label">' + Translator.trans('Add field') + '</span> <span class="fa fa-plus-circle"></span></button>');
 				$(this).after(button);
 				button.click(function(e) {
 					e.preventDefault();
@@ -3349,12 +3349,12 @@ THE SOFTWARE.
 	Simulators.drawFieldRowForInput = function(fieldrow) {
 		var fieldrowElementId = 'step-' + fieldrow.stepId + '-panel-' + fieldrow.panelId + '-fieldset-' + fieldrow.fieldsetId + '-fieldrow-' + fieldrow.id;
 		var fieldrowPanelContainer = $('<div>', { 'class': 'panel-group', id: fieldrowElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var fieldrowPanel = $('<div>', { 'class': 'panel panel-warning' });
-		fieldrowPanel.append('<div class="panel-heading" role="tab" id="' + fieldrowElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + fieldrowElementId + '" href="#collapse' + fieldrowElementId + '" aria-expanded="true" aria-controls="collapse' + fieldrowElementId + '">' + Translator.trans('Fieldrow #%id% : %label%', {'id': fieldrow.id, 'label': fieldrow.label }) + '</a></h4></div>');
+		var fieldrowPanel = $('<div>', { 'class': 'card bg-warning' });
+		fieldrowPanel.append('<div class="card-header" role="tab" id="' + fieldrowElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + fieldrowElementId + '" href="#collapse' + fieldrowElementId + '" aria-expanded="true" aria-controls="collapse' + fieldrowElementId + '">' + Translator.trans('Fieldrow #%id% : %label%', {'id': fieldrow.id, 'label': fieldrow.label }) + '</a></h4></div>');
 		var fieldrowPanelCollapse = $('<div id="collapse' + fieldrowElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + fieldrowElementId + '-panel"></div>');
-		var fieldrowPanelBody = $('<div class="panel-body"></div>');
-		var fieldrowContainer = $('<div class="panel panel-default fieldrow-container" id="' + fieldrowElementId + '-attributes-panel" data-step="' + fieldrow.stepId + '" data-panel="' + fieldrow.panelId + '" data-fieldset="' + fieldrow.fieldsetId + '" data-id="' + fieldrow.id + '"></div>');
-		var fieldrowContainerBody = $('<div class="panel-body"></div>');
+		var fieldrowPanelBody = $('<div class="card-body"></div>');
+		var fieldrowContainer = $('<div class="card bg-light fieldrow-container" id="' + fieldrowElementId + '-attributes-panel" data-step="' + fieldrow.stepId + '" data-panel="' + fieldrow.panelId + '" data-fieldset="' + fieldrow.fieldsetId + '" data-id="' + fieldrow.id + '"></div>');
+		var fieldrowContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		var datagroupsList = {
@@ -3365,8 +3365,8 @@ THE SOFTWARE.
 		});
 		requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-label', 'text', 'label', Translator.trans('Label'), fieldrow.label, true, Translator.trans('Fieldrow label')));
 		attributesContainer.append(requiredAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="colon" data-placeholder="' + Translator.trans('Show colon after field label ?') + '">' + Translator.trans('Show colon after field label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
@@ -3392,11 +3392,11 @@ THE SOFTWARE.
 		fieldrowContainerBody.append(attributesContainer);
 		fieldrowContainer.append(fieldrowContainerBody);
 		fieldrowPanelBody.append(fieldrowContainer);
-		var fieldrowButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + fieldrowElementId + '-buttons-panel"></div>');
-		var fieldrowButtonsBody = $('<div class="panel-body fieldrow-buttons"></div>');
-		fieldrowButtonsBody.append('<button class="btn btn-success pull-right validate-edit-fieldrow">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		fieldrowButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-fieldrow">' + Translator.trans('Cancel') + '</span></button>');
-		fieldrowButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var fieldrowButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + fieldrowElementId + '-buttons-panel"></div>');
+		var fieldrowButtonsBody = $('<div class="card-body fieldrow-buttons"></div>');
+		fieldrowButtonsBody.append('<button class="btn btn-success float-right validate-edit-fieldrow">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		fieldrowButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-fieldrow">' + Translator.trans('Cancel') + '</span></button>');
+		fieldrowButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		fieldrowButtonsPanel.append(fieldrowButtonsBody);
 		fieldrowContainerBody.append(fieldrowButtonsPanel);
 		fieldrowPanelCollapse.append(fieldrowPanelBody);
@@ -3486,7 +3486,7 @@ THE SOFTWARE.
 			if ($(this).hasClass('validate-edit-fieldrow')) {
 				fieldrowContainer.replaceWith(newFieldRowPanel.find('.fieldrow-container'));
 				if (fieldrow.label != oldLabel) {
-					fieldrowPanelContainer.find('> div > .panel-heading > h4 a').text(Translator.trans('Fieldrow #%id% : %label%', {'id': fieldrow.id, 'label': fieldrow.label }));
+					fieldrowPanelContainer.find('> div > .card-header > h4 a').text(Translator.trans('Fieldrow #%id% : %label%', {'id': fieldrow.id, 'label': fieldrow.label }));
 					Simulators.changeFieldRowLabelInRules(stepId, panelId, fieldsetId, fieldrow.id, fieldrow.label);
 				}
 				delete fieldrow['stepId'];
@@ -3680,7 +3680,7 @@ THE SOFTWARE.
 				var attr = panelGroup.attr('id');
 				attr = attr.replace(re, "-field-" + position);
 				panelGroup.attr('id', attr);
-				var a = panelGroup.find('> .panel > .panel-heading').find('> h4 > a');
+				var a = panelGroup.find('> .card > .card-header').find('> h4 > a');
 				a.text(' ' + Translator.trans('Field') + ' #' + position + ' : ' + field.label + ' ');
 				var container =  panelGroup.find('.field-container');
 				container.attr('data-id', position);
@@ -3757,10 +3757,10 @@ THE SOFTWARE.
 		var fieldElementId = field.fieldrowId == '' ? 
 			'step-' + field.stepId + '-panel-' + field.panelId + '-fieldset-' + field.fieldsetId + '-field-' + field.position :
 			'step-' + field.stepId + '-panel-' + field.panelId + '-fieldset-' + field.fieldsetId + '-fieldrow-' + field.fieldrowId + '-field-' + field.position;
-		var fieldPanelContainer = Simulators.openCollapsiblePanel(fieldElementId, Translator.trans('Field') + ' #' + field.position + ' : ' + field.label, 'warning', inClass, '', [{ 'class': 'delete-field', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-field', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
-		var fieldPanelBody = fieldPanelContainer.find('.panel-body');
-		var fieldContainer = $('<div class="panel panel-default field-container" id="' + fieldElementId + '-attributes-panel" data-step="' + field.stepId + '" data-panel="' + field.panelId + '" data-fieldset="' + field.fieldsetId + '" data-fieldrow="' + field.fieldrowId + '" data-id="' + field.position + '"></div>');
-		var fieldContainerBody = $('<div class="panel-body"></div>');
+		var fieldPanelContainer = Simulators.openCollapsiblePanel(fieldElementId, Translator.trans('Field') + ' #' + field.position + ' : ' + field.label, 'warning', inClass, '', [{ 'class': 'delete-field', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-field', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
+		var fieldPanelBody = fieldPanelContainer.find('.card-body');
+		var fieldContainer = $('<div class="card bg-light field-container" id="' + fieldElementId + '-attributes-panel" data-step="' + field.stepId + '" data-panel="' + field.panelId + '" data-fieldset="' + field.fieldsetId + '" data-fieldrow="' + field.fieldrowId + '" data-id="' + field.position + '"></div>');
+		var fieldContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'data', Translator.trans('Data'), Simulators.findDataById(field.data).label, Simulators.findDataById(field.data).label, true, Translator.trans('Field data')));
@@ -3783,7 +3783,7 @@ THE SOFTWARE.
 		fieldPanelBody.append(fieldContainer);
 		if (field.fieldrowId === '' && field.Note) {
 			var position = field.Note == 'beforeField' ? Translator.trans('placed before the field') : Translator.trans('placed after the field');
-			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right">' + Translator.trans('Note position') + ' : ' + position + '</span>' + Translator.trans('Note') + '</div><div class="panel-body field-note rich-text">' + field.Note.text.content + '</div></div>');
+			fieldContainerBody.append('<div class="card bg-light note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="card-header"><span class="note-position float-right">' + Translator.trans('Note position') + ' : ' + position + '</span>' + Translator.trans('Note') + '</div><div class="card-body field-note rich-text">' + field.Note.text.content + '</div></div>');
 		}
 		return fieldPanelContainer;
 	}
@@ -3793,12 +3793,12 @@ THE SOFTWARE.
 			'step-' + field.stepId + '-panel-' + field.panelId + '-fieldset-' + field.fieldsetId + '-field-' + field.position :
 			'step-' + field.stepId + '-panel-' + field.panelId + '-fieldset-' + field.fieldsetId + '-fieldrow-' + field.fieldrowId + '-field-' + field.position;
 		var fieldPanelContainer = $('<div>', { 'class': 'panel-group', id: fieldElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var fieldPanel = $('<div>', { 'class': 'panel panel-warning' });
-		fieldPanel.append('<div class="panel-heading" role="tab" id="' + fieldElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + fieldElementId + '" href="#collapse' + fieldElementId + '" aria-expanded="true" aria-controls="collapse' + fieldElementId + '">#' + field.position + ' : ' + field.label + '</a></h4></div>');
+		var fieldPanel = $('<div>', { 'class': 'card bg-warning' });
+		fieldPanel.append('<div class="card-header" role="tab" id="' + fieldElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + fieldElementId + '" href="#collapse' + fieldElementId + '" aria-expanded="true" aria-controls="collapse' + fieldElementId + '">#' + field.position + ' : ' + field.label + '</a></h4></div>');
 		var fieldPanelCollapse = $('<div id="collapse' + fieldElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + fieldElementId + '-panel"></div>');
-		var fieldPanelBody = $('<div class="panel-body"></div>');
-		var fieldContainer = $('<div class="panel panel-default field-container" id="' + fieldElementId + '-attributes-panel" data-step="' + field.stepId + '" data-panel="' + field.panelId + '" data-fieldset="' + field.fieldsetId + '" data-fieldrow="' + field.fieldrowId + '" data-id="' + field.position + '"></div>');
-		var fieldContainerBody = $('<div class="panel-body"></div>');
+		var fieldPanelBody = $('<div class="card-body"></div>');
+		var fieldContainer = $('<div class="card bg-light field-container" id="' + fieldElementId + '-attributes-panel" data-step="' + field.stepId + '" data-panel="' + field.panelId + '" data-fieldset="' + field.fieldsetId + '" data-fieldrow="' + field.fieldrowId + '" data-id="' + field.position + '"></div>');
+		var fieldContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		var datasList = {
@@ -3819,8 +3819,8 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-data', 'select', 'data', Translator.trans('Data'), field.data, true, Translator.trans('Select a data'), JSON.stringify(datasList)));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-type', 'select', 'usage', 'Usage', field.usage, true, Translator.trans('Select a data type'), JSON.stringify({'input': Translator.trans('input'), 'output': Translator.trans('output') })));
 		attributesContainer.append(requiredAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Field label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
@@ -3911,13 +3911,13 @@ THE SOFTWARE.
 					noteAfter = ' selected="selected"';
 				}
 			}
-			fieldContainerBody.append('<div class="panel panel-default note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="panel-heading"><span class="note-position pull-right"><label for="' + fieldElementId + '-note-position">' + Translator.trans('Note position') + '</label><select id="' + fieldElementId + '-note-position"><option value="beforeField"' + noteBefore + '>' + Translator.trans('placed before the field') + '</option><option value="afterField"' + noteAfter + '>' + Translator.trans('placed after the field') + '</option></select></span>' + Translator.trans('Note') + '</div><div class="panel-body"><textarea rows="5" name="' + fieldElementId + '-note" id="' + fieldElementId + '-note" wrap="hard" class="form-control field-note">' + Simulators.paragraphs(note).content + '</textarea></div></div>');
+			fieldContainerBody.append('<div class="card bg-light note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="card-header"><span class="note-position float-right"><label for="' + fieldElementId + '-note-position">' + Translator.trans('Note position') + '</label><select id="' + fieldElementId + '-note-position"><option value="beforeField"' + noteBefore + '>' + Translator.trans('placed before the field') + '</option><option value="afterField"' + noteAfter + '>' + Translator.trans('placed after the field') + '</option></select></span>' + Translator.trans('Note') + '</div><div class="card-body"><textarea rows="5" name="' + fieldElementId + '-note" id="' + fieldElementId + '-note" wrap="hard" class="form-control field-note">' + Simulators.paragraphs(note).content + '</textarea></div></div>');
 		}
-		var fieldButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + fieldElementId + '-buttons-panel"></div>');
-		var fieldButtonsBody = $('<div class="panel-body field-buttons"></div>');
-		fieldButtonsBody.append('<button class="btn btn-success pull-right validate-edit-field">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		fieldButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-field">' + Translator.trans('Cancel') + '</span></button>');
-		fieldButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var fieldButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + fieldElementId + '-buttons-panel"></div>');
+		var fieldButtonsBody = $('<div class="card-body field-buttons"></div>');
+		fieldButtonsBody.append('<button class="btn btn-success float-right validate-edit-field">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		fieldButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-field">' + Translator.trans('Cancel') + '</span></button>');
+		fieldButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		fieldButtonsPanel.append(fieldButtonsBody);
 		fieldPanelBody.append(fieldButtonsPanel);
 		fieldPanelCollapse.append(fieldPanelBody);
@@ -4264,10 +4264,10 @@ THE SOFTWARE.
 
 	Simulators.drawBlockInfoForDisplay = function(blockinfo, inClass) {
 		var blockinfoElementId = 'step-' + blockinfo.stepId + '-panel-' + blockinfo.panelId + '-blockinfo-' + blockinfo.id;
-		var blockinfoPanelContainer = Simulators.openCollapsiblePanel(blockinfoElementId, Translator.trans('Blockinfo #%id% : %label%', {'id': blockinfo.id, 'label': blockinfo.label}), 'info',inClass, '', [{ 'class': 'delete-blockinfo', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-chapter', 'label': Translator.trans('Add chapter'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-blockinfo', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
-		var blockinfoPanelBody = blockinfoPanelContainer.find('.panel-body');
-		var blockinfoContainer = $('<div class="panel panel-default block-container blockinfo" id="' + blockinfoElementId + '-attributes-panel" data-step="' + blockinfo.stepId + '" data-panel="' + blockinfo.panelId + '" data-id="' + blockinfo.id + '"></div>');
-		var blockinfoContainerBody = $('<div class="panel-body"></div>');
+		var blockinfoPanelContainer = Simulators.openCollapsiblePanel(blockinfoElementId, Translator.trans('Blockinfo #%id% : %label%', {'id': blockinfo.id, 'label': blockinfo.label}), 'info',inClass, '', [{ 'class': 'delete-blockinfo', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'add-chapter', 'label': Translator.trans('Add chapter'), 'icon': 'fa-plus-circle' }, { 'class': 'edit-blockinfo', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
+		var blockinfoPanelBody = blockinfoPanelContainer.find('.card-body');
+		var blockinfoContainer = $('<div class="card bg-light block-container blockinfo" id="' + blockinfoElementId + '-attributes-panel" data-step="' + blockinfo.stepId + '" data-panel="' + blockinfo.panelId + '" data-id="' + blockinfo.id + '"></div>');
+		var blockinfoContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(blockinfoElementId, 'text', 'name', Translator.trans('Name'), blockinfo.name, blockinfo.name, true, Translator.trans('Blockinfo name')));
@@ -4276,25 +4276,25 @@ THE SOFTWARE.
 		blockinfoContainerBody.append(attributesContainer);
 		blockinfoContainer.append(blockinfoContainerBody);
 		blockinfoPanelBody.append(blockinfoContainer);
-		blockinfoPanelBody.append('<div class="panel panel-default chapters-panel" id="' + blockinfoElementId + '-chapters-panel"><div class="panel-body sortable"></div></div>');
+		blockinfoPanelBody.append('<div class="card bg-light chapters-panel" id="' + blockinfoElementId + '-chapters-panel"><div class="card-body sortable"></div></div>');
 		return blockinfoPanelContainer;
 	}
 
 	Simulators.drawBlockInfoForInput = function(blockinfo) {
 		var blockinfoElementId = 'step-' + blockinfo.stepId + '-panel-' + blockinfo.panelId + '-blockinfo-' + blockinfo.id;
 		var blockinfoPanelContainer = $('<div>', { 'class': 'panel-group', id: blockinfoElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var blockinfoPanel = $('<div>', { 'class': 'panel panel-info' });
-		blockinfoPanel.append('<div class="panel-heading" role="tab" id="' + blockinfoElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + blockinfoElementId + '" href="#collapse' + blockinfoElementId + '" aria-expanded="true" aria-controls="collapse' + blockinfoElementId + '">#' + blockinfo.id + ' : ' + blockinfo.label + '</a></h4></div>');
+		var blockinfoPanel = $('<div>', { 'class': 'card bg-info' });
+		blockinfoPanel.append('<div class="card-header" role="tab" id="' + blockinfoElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + blockinfoElementId + '" href="#collapse' + blockinfoElementId + '" aria-expanded="true" aria-controls="collapse' + blockinfoElementId + '">#' + blockinfo.id + ' : ' + blockinfo.label + '</a></h4></div>');
 		var blockinfoPanelCollapse = $('<div id="collapse' + blockinfoElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + blockinfoElementId + '-panel"></div>');
-		var blockinfoPanelBody = $('<div class="panel-body"></div>');
-		var blockinfoContainer = $('<div class="panel panel-default block-container blockinfo" id="' + blockinfoElementId + '-attributes-panel" data-step="' + blockinfo.stepId + '" data-panel="' + blockinfo.panelId + '" data-id="' + blockinfo.id + '" data-name="' + blockinfo.name + '"></div>');
-		var blockinfoContainerBody = $('<div class="panel-body"></div>');
+		var blockinfoPanelBody = $('<div class="card-body"></div>');
+		var blockinfoContainer = $('<div class="card bg-light block-container blockinfo" id="' + blockinfoElementId + '-attributes-panel" data-step="' + blockinfo.stepId + '" data-panel="' + blockinfo.panelId + '" data-id="' + blockinfo.id + '" data-name="' + blockinfo.name + '"></div>');
+		var blockinfoContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(blockinfoElementId + '-name', 'text', 'name', Translator.trans('Name'), blockinfo.name, false, Translator.trans('BlockInfo name')));
 		attributesContainer.append(requiredAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + blockinfoElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('BlockInfo label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
@@ -4307,11 +4307,11 @@ THE SOFTWARE.
 		blockinfoContainerBody.append(attributesContainer);
 		blockinfoContainer.append(blockinfoContainerBody);
 		blockinfoPanelBody.append(blockinfoContainer);
-		var blockinfoButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + blockinfoElementId + '-buttons-panel"></div>');
-		var blockinfoButtonsBody = $('<div class="panel-body blockinfo-buttons"></div>');
-		blockinfoButtonsBody.append('<button class="btn btn-success pull-right validate-edit-blockinfo">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		blockinfoButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-blockinfo">' + Translator.trans('Cancel') + '</span></button>');
-		blockinfoButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var blockinfoButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + blockinfoElementId + '-buttons-panel"></div>');
+		var blockinfoButtonsBody = $('<div class="card-body blockinfo-buttons"></div>');
+		blockinfoButtonsBody.append('<button class="btn btn-success float-right validate-edit-blockinfo">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		blockinfoButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-blockinfo">' + Translator.trans('Cancel') + '</span></button>');
+		blockinfoButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		blockinfoButtonsPanel.append(blockinfoButtonsBody);
 		blockinfoContainerBody.append(blockinfoButtonsPanel);
 		blockinfoPanelCollapse.append(blockinfoPanelBody);
@@ -4597,7 +4597,7 @@ THE SOFTWARE.
 				var attr = panelGroup.attr('id');
 				attr = attr.replace(re, "-chapter-" + id);
 				panelGroup.attr('id', attr);
-				var a = panelGroup.find('> .panel > .panel-heading').find('> h4 > a');
+				var a = panelGroup.find('> .card > .card-header').find('> h4 > a');
 				a.text(' ' + Translator.trans('Chapter') + ' #' + id + ' : ' + chapter.label + ' ');
 				var container =  panelGroup.find('.chapter-container');
 				container.attr('data-id', id);
@@ -4667,10 +4667,10 @@ THE SOFTWARE.
 
 	Simulators.drawChapterForDisplay = function(chapter, inClass) {
 		var chapterElementId = 'step-' + chapter.stepId + '-panel-' + chapter.panelId + '-blockinfo-' + chapter.blockinfoId + '-chapter-' + chapter.id;
-		var chapterPanelContainer = Simulators.openCollapsiblePanel(chapterElementId, Translator.trans('Chapter #%id% : %label%', {'id': chapter.id, 'label': chapter.label }), 'warning', inClass, '', [{ 'class': 'delete-chapter', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'add-section', 'label': Translator.trans('Add section'), 'icon': 'glyphicon-plus-sign' }, { 'class': 'edit-chapter', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
-		var chapterPanelBody = chapterPanelContainer.find('.panel-body');
-		var chapterContainer = $('<div class="panel panel-default chapter-container" id="' + chapterElementId + '-attributes-panel" data-step="' + chapter.stepId + '" data-panel="' + chapter.panelId + '" data-blockinfo="' + chapter.blockinfoId + '" data-id="' + chapter.id + '"></div>');
-		var chapterContainerBody = $('<div class="panel-body"></div>');
+		var chapterPanelContainer = Simulators.openCollapsiblePanel(chapterElementId, Translator.trans('Chapter #%id% : %label%', {'id': chapter.id, 'label': chapter.label }), 'warning', inClass, '', [{ 'class': 'delete-chapter', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'add-section', 'label': Translator.trans('Add section'), 'icon': 'fa-plus-circle' }, { 'class': 'edit-chapter', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
+		var chapterPanelBody = chapterPanelContainer.find('.card-body');
+		var chapterContainer = $('<div class="card bg-light chapter-container" id="' + chapterElementId + '-attributes-panel" data-step="' + chapter.stepId + '" data-panel="' + chapter.panelId + '" data-blockinfo="' + chapter.blockinfoId + '" data-id="' + chapter.id + '"></div>');
+		var chapterContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(chapterElementId, 'text', 'name', Translator.trans('Chapter name'), chapter.name, chapter.name, true, Translator.trans('Chapter name')));
@@ -4681,25 +4681,25 @@ THE SOFTWARE.
 		chapterContainerBody.append(attributesContainer);
 		chapterContainer.append(chapterContainerBody);
 		chapterPanelBody.append(chapterContainer);
-		chapterPanelBody.append('<div class="panel panel-default sections-panel" id="' + chapterElementId + '-sections-panel"><div class="panel-body sortable"></div></div>');
+		chapterPanelBody.append('<div class="card bg-light sections-panel" id="' + chapterElementId + '-sections-panel"><div class="card-body sortable"></div></div>');
 		return chapterPanelContainer;
 	}
 
 	Simulators.drawChapterForInput = function(chapter) {
 		var chapterElementId = 'step-' + chapter.stepId + '-panel-' + chapter.panelId + '-blockinfo-' + chapter.blockinfoId + '-chapter-' + chapter.id;
 		var chapterPanelContainer = $('<div>', { 'class': 'panel-group', id: chapterElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var chapterPanel = $('<div>', { 'class': 'panel panel-warning' });
-		chapterPanel.append('<div class="panel-heading" role="tab" id="' + chapterElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + chapterElementId + '" href="#collapse' + chapterElementId + '" aria-expanded="true" aria-controls="collapse' + chapterElementId + '">#' + chapter.id + ' : ' + chapter.label + '</a></h4></div>');
+		var chapterPanel = $('<div>', { 'class': 'card bg-warning' });
+		chapterPanel.append('<div class="card-header" role="tab" id="' + chapterElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + chapterElementId + '" href="#collapse' + chapterElementId + '" aria-expanded="true" aria-controls="collapse' + chapterElementId + '">#' + chapter.id + ' : ' + chapter.label + '</a></h4></div>');
 		var chapterPanelCollapse = $('<div id="collapse' + chapterElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + chapterElementId + '-panel"></div>');
-		var chapterPanelBody = $('<div class="panel-body"></div>');
-		var chapterContainer = $('<div class="panel panel-default chapter-container" id="' + chapterElementId + '-attributes-panel" data-step="' + chapter.stepId + '" data-panel="' + chapter.panelId + '" data-blockinfo="' + chapter.blockinfoId + '" data-id="' + chapter.id + '" data-name="' + chapter.name + '"></div>');
-		var chapterContainerBody = $('<div class="panel-body"></div>');
+		var chapterPanelBody = $('<div class="card-body"></div>');
+		var chapterContainer = $('<div class="card bg-light chapter-container" id="' + chapterElementId + '-attributes-panel" data-step="' + chapter.stepId + '" data-panel="' + chapter.panelId + '" data-blockinfo="' + chapter.blockinfoId + '" data-id="' + chapter.id + '" data-name="' + chapter.name + '"></div>');
+		var chapterContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(chapterElementId + '-name', 'text', 'name', Translator.trans('Name'), chapter.name, false, Translator.trans('Chapter name')));
 		attributesContainer.append(requiredAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + chapterElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Chapter label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
@@ -4724,11 +4724,11 @@ THE SOFTWARE.
 		chapterContainerBody.append(attributesContainer);
 		chapterContainer.append(chapterContainerBody);
 		chapterPanelBody.append(chapterContainer);
-		var chapterButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + chapterElementId + '-buttons-panel"></div>');
-		var chapterButtonsBody = $('<div class="panel-body chapter-buttons"></div>');
-		chapterButtonsBody.append('<button class="btn btn-success pull-right validate-edit-chapter">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		chapterButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-chapter">' + Translator.trans('Cancel') + '</span></button>');
-		chapterButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var chapterButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + chapterElementId + '-buttons-panel"></div>');
+		var chapterButtonsBody = $('<div class="card-body chapter-buttons"></div>');
+		chapterButtonsBody.append('<button class="btn btn-success float-right validate-edit-chapter">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		chapterButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-chapter">' + Translator.trans('Cancel') + '</span></button>');
+		chapterButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		chapterButtonsPanel.append(chapterButtonsBody);
 		chapterContainerBody.append(chapterButtonsPanel);
 		chapterPanelCollapse.append(chapterPanelBody);
@@ -5024,7 +5024,7 @@ THE SOFTWARE.
 				var attr = panelGroup.attr('id');
 				attr = attr.replace(re, "-section-" + id);
 				panelGroup.attr('id', attr);
-				var a = panelGroup.find('> .panel > .panel-heading').find('> h4 > a');
+				var a = panelGroup.find('> .card > .card-header').find('> h4 > a');
 				a.text(' ' + Translator.trans('Section') + ' #' + id + ' : ' + section.label + ' ');
 				var container =  panelGroup.find('.section-container');
 				container.attr('data-id', id);
@@ -5092,10 +5092,10 @@ THE SOFTWARE.
 
 	Simulators.drawSectionForDisplay = function(section, inClass) {
 		var sectionElementId = 'step-' + section.stepId + '-panel-' + section.panelId + '-blockinfo-' + section.blockinfoId + '-chapter-' + section.chapterId + '-section-' + section.id;
-		var sectionPanelContainer = Simulators.openCollapsiblePanel(sectionElementId, Translator.trans('Section #%id% : %label%', { 'id': section.id,  'label': section.label }), 'info', inClass, '', [{ 'class': 'delete-section', 'label': Translator.trans('Delete'), 'icon': 'glyphicon-minus-sign' }, { 'class': 'edit-section', 'label': Translator.trans('Edit'), 'icon': 'glyphicon-pencil' } ] );
-		var sectionPanelBody = sectionPanelContainer.find('.panel-body');
-		var sectionContainer = $('<div class="panel panel-default section-container" id="' + sectionElementId + '-attributes-panel" data-step="' + section.stepId + '" data-panel="' + section.panelId + '" data-blockinfo="' + section.blockinfoId + '" data-chapter="' + section.chapterId + '" data-id="' + section.id + '"></div>');
-		var sectionContainerBody = $('<div class="panel-body"></div>');
+		var sectionPanelContainer = Simulators.openCollapsiblePanel(sectionElementId, Translator.trans('Section #%id% : %label%', { 'id': section.id,  'label': section.label }), 'info', inClass, '', [{ 'class': 'delete-section', 'label': Translator.trans('Delete'), 'icon': 'fa-minus-circle' }, { 'class': 'edit-section', 'label': Translator.trans('Edit'), 'icon': 'fa-pencil' } ] );
+		var sectionPanelBody = sectionPanelContainer.find('.card-body');
+		var sectionContainer = $('<div class="card bg-light section-container" id="' + sectionElementId + '-attributes-panel" data-step="' + section.stepId + '" data-panel="' + section.panelId + '" data-blockinfo="' + section.blockinfoId + '" data-chapter="' + section.chapterId + '" data-id="' + section.id + '"></div>');
+		var sectionContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(sectionElementId, 'text', 'name', Translator.trans('Name'), section.name, section.name, true, Translator.trans('Section name')));
@@ -5104,9 +5104,9 @@ THE SOFTWARE.
 		sectionContainerBody.append(attributesContainer);
 		sectionContainer.append(sectionContainerBody);
 		sectionPanelBody.append(sectionContainer);
-		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body section-content rich-text" data-edition="' + section.content.edition + '">' + section.content.content + '</div></div>');
+		sectionPanelBody.append('<div class="card bg-light content-panel" id="' + sectionElementId + '-content-panel"><div class="card-header">' + Translator.trans('Content') + '</div><div class="card-body section-content rich-text" data-edition="' + section.content.edition + '">' + section.content.content + '</div></div>');
 		if (section.annotations) {
-			sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body section-annotations rich-text" data-edition="' + section.annotations.edition + '">' + section.annotations.content + '</div></div>');
+			sectionPanelBody.append('<div class="card bg-light annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="card-header">' + Translator.trans('Annotations') + '</div><div class="card-body section-annotations rich-text" data-edition="' + section.annotations.edition + '">' + section.annotations.content + '</div></div>');
 		}
 		return sectionPanelContainer;
 	}
@@ -5114,18 +5114,18 @@ THE SOFTWARE.
 	Simulators.drawSectionForInput = function(section) {
 		var sectionElementId = 'step-' + section.stepId + '-panel-' + section.panelId + '-blockinfo-' + section.blockinfoId + '-chapter-' + section.chapterId + '-section-' + section.id;
 		var sectionPanelContainer = $('<div>', { 'class': 'panel-group', id: sectionElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var sectionPanel = $('<div>', { 'class': 'panel panel-info' });
-		sectionPanel.append('<div class="panel-heading" role="tab" id="' + sectionElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sectionElementId + '" href="#collapse' + sectionElementId + '" aria-expanded="true" aria-controls="collapse' + sectionElementId + '">#' + section.id + ' : ' + section.label + '</a></h4></div>');
+		var sectionPanel = $('<div>', { 'class': 'card bg-info' });
+		sectionPanel.append('<div class="card-header" role="tab" id="' + sectionElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + sectionElementId + '" href="#collapse' + sectionElementId + '" aria-expanded="true" aria-controls="collapse' + sectionElementId + '">#' + section.id + ' : ' + section.label + '</a></h4></div>');
 		var sectionPanelCollapse = $('<div id="collapse' + sectionElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sectionElementId + '-panel"></div>');
-		var sectionPanelBody = $('<div class="panel-body"></div>');
-		var sectionContainer = $('<div class="panel panel-default section-container" id="' + sectionElementId + '-attributes-panel" data-step="' + section.stepId + '" data-panel="' + section.panelId + '" data-blockinfo="' + section.blockinfoId + '" data-chapter="' + section.chapterId + '" data-id="' + section.id + '" data-name="' + section.name + '"></div>');
-		var sectionContainerBody = $('<div class="panel-body"></div>');
+		var sectionPanelBody = $('<div class="card-body"></div>');
+		var sectionContainer = $('<div class="card bg-light section-container" id="' + sectionElementId + '-attributes-panel" data-step="' + section.stepId + '" data-panel="' + section.panelId + '" data-blockinfo="' + section.blockinfoId + '" data-chapter="' + section.chapterId + '" data-id="' + section.id + '" data-name="' + section.name + '"></div>');
+		var sectionContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(sectionElementId + '-name', 'text', 'name', Translator.trans('Name'), section.name, false, Translator.trans('Section name')));
 		attributesContainer.append(requiredAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" data-element="' + sectionElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Section label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
@@ -5138,13 +5138,13 @@ THE SOFTWARE.
 		sectionContainerBody.append(attributesContainer);
 		sectionContainer.append(sectionContainerBody);
 		sectionPanelBody.append(sectionContainer);
-		sectionPanelBody.append('<div class="panel panel-default content-panel" id="' + sectionElementId + '-content-panel"><div class="panel-heading">' + Translator.trans('Content') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-content" id="' + sectionElementId + '-content" wrap="hard" class="form-control section-content">' + Simulators.paragraphs(section.content).content + '</textarea></div></div>');
-		sectionPanelBody.append('<div class="panel panel-default annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="panel-heading">' + Translator.trans('Annotations') + '</div><div class="panel-body"><textarea rows="5" name="' + sectionElementId + '-annotations" id="' + sectionElementId + '-annotations" wrap="hard" class="form-control section-annotations">' + Simulators.paragraphs(section.annotations).content + '</textarea></div></div>');
-		var sectionButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + sectionElementId + '-buttons-panel"></div>');
-		var sectionButtonsBody = $('<div class="panel-body section-buttons"></div>');
-		sectionButtonsBody.append('<button class="btn btn-success pull-right validate-edit-section">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		sectionButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-section">' + Translator.trans('Cancel') + '</span></button>');
-		sectionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		sectionPanelBody.append('<div class="card bg-light content-panel" id="' + sectionElementId + '-content-panel"><div class="card-header">' + Translator.trans('Content') + '</div><div class="card-body"><textarea rows="5" name="' + sectionElementId + '-content" id="' + sectionElementId + '-content" wrap="hard" class="form-control section-content">' + Simulators.paragraphs(section.content).content + '</textarea></div></div>');
+		sectionPanelBody.append('<div class="card bg-light annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="card-header">' + Translator.trans('Annotations') + '</div><div class="card-body"><textarea rows="5" name="' + sectionElementId + '-annotations" id="' + sectionElementId + '-annotations" wrap="hard" class="form-control section-annotations">' + Simulators.paragraphs(section.annotations).content + '</textarea></div></div>');
+		var sectionButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + sectionElementId + '-buttons-panel"></div>');
+		var sectionButtonsBody = $('<div class="card-body section-buttons"></div>');
+		sectionButtonsBody.append('<button class="btn btn-success float-right validate-edit-section">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		sectionButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-section">' + Translator.trans('Cancel') + '</span></button>');
+		sectionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		sectionButtonsPanel.append(sectionButtonsBody);
 		sectionPanelBody.append(sectionButtonsPanel);
 		sectionPanelCollapse.append(sectionPanelBody);

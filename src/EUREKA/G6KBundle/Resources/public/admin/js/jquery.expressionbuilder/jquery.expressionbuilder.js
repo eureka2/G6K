@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -108,14 +108,14 @@ var ExpressionBuilder_I18N = {
 					var contextMenu = jQuery('<div id="holder-menu' + expressionId + '" class="context-menu-holder"></div>');
 					var items = jQuery('<ul class="dropdown-menu" role="menu"></ul>');
 					contextMenu.append(items);
-					items.append('<li><a tabindex="-1" menu-action="change"><span class="pull-right">Ctrl+C</span>' + i18n['menu-action-change'] + '</a></li>');
-					items.append('<li class="divider"></li>');
-					items.append('<li><a tabindex="-1" menu-action="add"><span class="pull-right">Ctrl+Insert</span>' + i18n['menu-action-add'] + '</a></li>');
-					items.append('<li><a tabindex="-1" menu-action="insert"><span class="pull-right">Insert</span>' + i18n['menu-action-insert'] + '</a></li>');
-					items.append('<li class="divider"></li>');
-					items.append('<li><a tabindex="-1" menu-action="nested"><span class="pull-right">Ctrl+N</span>' + i18n['menu-action-nested'] + '</a></li>');
-					items.append('<li class="divider"></li>');
-					items.append('<li><a tabindex="-1" menu-action="delete"><span class="pull-right">del</span>' + i18n['menu-action-delete'] + '</a></li>');
+					items.append('<li><a class="dropdown-item" tabindex="-1" menu-action="change"><span class="float-right">Ctrl+C</span>' + i18n['menu-action-change'] + '</a></li>');
+					items.append('<li class="dropdown-divider"></li>');
+					items.append('<li><a class="dropdown-item" tabindex="-1" menu-action="add"><span class="float-right">Ctrl+Insert</span>' + i18n['menu-action-add'] + '</a></li>');
+					items.append('<li><a class="dropdown-item" tabindex="-1" menu-action="insert"><span class="float-right">Insert</span>' + i18n['menu-action-insert'] + '</a></li>');
+					items.append('<li class="dropdown-divider"></li>');
+					items.append('<li><a class="dropdown-item" tabindex="-1" menu-action="nested"><span class="float-right">Ctrl+N</span>' + i18n['menu-action-nested'] + '</a></li>');
+					items.append('<li class="dropdown-divider"></li>');
+					items.append('<li><a class="dropdown-item" tabindex="-1" menu-action="delete"><span class="float-right">del</span>' + i18n['menu-action-delete'] + '</a></li>');
 					return contextMenu;
 				}
 
@@ -211,8 +211,8 @@ var ExpressionBuilder_I18N = {
 							var name = context[0].firstChild.textContent;
 							if (settings.functions[name] && settings.functions[name].arity == -1) {
 								if (addarg.length == 0) {
-									items.append('<li class="divider"></li>');
-									items.append('<li><a tabindex="-1" menu-action="add-argument"><span class="pull-right">Ctrl+Shift+A</span>' + i18n['menu-action-add-argument'] + '</a></li>');
+									items.append('<li class="dropdown-divider"></li>');
+									items.append('<li><a class="dropdown-item" tabindex="-1" menu-action="add-argument"><span class="float-right">Ctrl+Shift+A</span>' + i18n['menu-action-add-argument'] + '</a></li>');
 								}
 							} else {
 								if (addarg.length) {

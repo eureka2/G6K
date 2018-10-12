@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -261,19 +261,19 @@ THE SOFTWARE.
 
 	Simulators.simpleAttributeForDisplay = function(element, type, name, label, value, display, required, placeholder, options) {
 		if (required || (value && value !== '')) {
-			var attribute = '<div class="form-group col-sm-12">';
-			attribute    += '    <label class="col-sm-4 control-label">' + label + '</label>';
+			var attribute = '<div class="form-group row">';
+			attribute    += '    <label class="col-sm-4 col-form-label">' + label + '</label>';
 			attribute    += '    <div class="col-sm-8">';
 			value = value || '';
 			if (type === 'text' || type === 'number') {
-				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + value + '">' + display + '</p>';
+				attribute    += '        <p class="form-control-plaintext simple-value" data-attribute="' + name + '" data-value="' + value + '">' + display + '</p>';
 			} else if (type === 'checkbox') {
-				attribute    += '        <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + (value == '1' || value == 1 ? 1 : 0) + '">' + (value == '1' || value == 1 ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
+				attribute    += '        <p class="form-control-plaintext simple-value" data-attribute="' + name + '" data-value="' + (value == '1' || value == 1 ? 1 : 0) + '">' + (value == '1' || value == 1 ? Translator.trans('Yes') : Translator.trans('No')) + '</p>';
 			} else if (type === 'select') {
 				options = JSON.parse(options);
 				$.each(options, function(ovalue, olabel) {
 					if (ovalue == value) {
-						attribute    += '       <p class="form-control-static simple-value" data-attribute="' + name + '" data-value="' + ovalue + '">' + olabel + '</p>';
+						attribute    += '       <p class="form-control-plaintext simple-value" data-attribute="' + name + '" data-value="' + ovalue + '">' + olabel + '</p>';
 					}
 				});
 			}
@@ -284,14 +284,14 @@ THE SOFTWARE.
 	}
 
 	Simulators.simpleAttributeForInput = function(id, type, name, label, value, required, placeholder, options) {
-		var attribute = '<div class="form-group col-sm-12">';
+		var attribute = '<div class="form-group row">';
 		if (type === 'checkbox') {
-			attribute    += '    <label for="' + id + '" class="col-sm-8 control-label">';
+			attribute    += '    <label for="' + id + '" class="col-sm-8 col-form-label">';
 		} else {
-			attribute    += '    <label for="' + id + '" class="col-sm-4 control-label">';
+			attribute    += '    <label for="' + id + '" class="col-sm-4 col-form-label">';
 		}
 		if (! required) {
-			attribute    += '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		if (type === 'checkbox') {
@@ -325,10 +325,10 @@ THE SOFTWARE.
 	}
 
 	Simulators.simpleToggleAttributeForInput = function(id, name, label, value, required, placeholder) {
-		var attribute = '<div class="form-group col-sm-12">';
-		attribute    += '    <label class="control-label">';
+		var attribute = '<div class="form-group row">';
+		attribute    += '    <label class="col-form-label">';
 		if (! required) {
-			attribute+= '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
+			attribute+= '    <span class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    <span class="col-sm-4">' + label + '</span>';
 		attribute    += '    <div style="display: inline-block;" class="col-sm-8 input-group checkbox-slider--b-flat checkbox-slider-primary">';
@@ -344,8 +344,8 @@ THE SOFTWARE.
 
 	Simulators.expressionAttributeForDisplay = function(element, name, label, value, plainvalue, required, placeholder) {
 		if (required || value !== '') {
-			var attribute = '<div class="form-group col-sm-12">';
-			attribute    += '    <label class="col-sm-4 control-label">' + label + '</label>';
+			var attribute = '<div class="form-group row">';
+			attribute    += '    <label class="col-sm-4 col-form-label">' + label + '</label>';
 			attribute    += '    <span data-attribute="' + name + '" class="attribute-expression" data-placeholder="' + placeholder + '" data-value="' + value + '">' + plainvalue + '</span>'; 
 			attribute    += '</div>';
 			return $(attribute);
@@ -353,10 +353,10 @@ THE SOFTWARE.
 	}
 
 	Simulators.expressionAttributeForInput = function(id, name, label, value, required, placeholder) {
-		var attribute = '<div class="form-group col-sm-12">';
-		attribute    += '    <label for="' + id + '" class="col-sm-4 control-label">';
+		var attribute = '<div class="form-group row">';
+		attribute    += '    <label for="' + id + '" class="col-sm-4 col-form-label">';
 		if (! required) {
-			attribute    += '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		attribute    += '    <span id="' + id + '" data-attribute="' + name + '" class="attribute-expression" data-placeholder="' + placeholder + '"  data-value="' + value + '" />'; 
@@ -365,7 +365,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.removeAttribute = function(attr) {
-		var id =  attr.parent('label.control-label').attr('for');
+		var id =  attr.parent('label.col-form-label').attr('for');
 		var input = $('#' + id);
 		var ids  = input.attr('id').split('-');
 		var name = ids.pop();
@@ -411,16 +411,17 @@ THE SOFTWARE.
 	Simulators.openCollapsiblePanel = function(id, header, style, inClass, sortable, buttons) {
 		inClass = ''; // ignore inClass for the moment
 		var collapsiblePanel = $('<div>', { id: id, class: 'panel-group', role:'tablist', 'aria-multiselectable': 'true' });
-		var panel = $('<div>', { class: 'panel panel-' + style });
-		var panelHeading = $('<div>', { id: id + '-panel', class: 'panel-heading', role:'tab', 'aria-multiselectable': 'true' });
+		var panel = $('<div>', { class: 'card bg-' + style });
+		var panelHeading = $('<div>', { id: id + '-panel', class: 'card-header', role:'tab', 'aria-multiselectable': 'true' });
+		var buttonstyle = style === 'light' ? 'secondary' : style;
 		$.each(buttons, function(b, butt) {
 			if (butt.dropdown) {
-				var btngroup = $('<div>', { class: 'btn-group pull-right update-button' });
-				var button = $('<button>', { class: 'btn btn-' + style + ' dropdown-toggle', title: butt.label, 'data-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false' });
+				var btngroup = $('<div>', { class: 'btn-group float-right update-button' });
+				var button = $('<button>', { class: 'btn btn-' + buttonstyle + ' dropdown-toggle', title: butt.label, 'data-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false' });
 				var span1 = $('<span>', { class: 'button-label' } );
 				span1.append(butt.label);
 				button.append(span1);
-				var span2 = $('<span>', { class: 'glyphicon ' + butt.icon } );
+				var span2 = $('<span>', { class: 'fa ' + butt.icon } );
 				button.append(' ');
 				button.append(span2);
 				var ul = $('<ul>', { class: 'dropdown-menu'});
@@ -435,29 +436,29 @@ THE SOFTWARE.
 				btngroup.append(button, ul);
 				panelHeading.append(btngroup);
 			} else {
-				var button = $('<button>', { class: 'btn btn-' + style + ' pull-right update-button ' + butt.class, title: butt.label });
+				var button = $('<button>', { class: 'btn btn-' + buttonstyle + ' float-right update-button ' + butt.class, title: butt.label });
 				button.attr('data-parent', '#' + id);
 				var span1 = $('<span>', { class: 'button-label' } );
 				span1.append(butt.label);
 				button.append(span1);
-				var span2 = $('<span>', { class: 'glyphicon ' + butt.icon } );
+				var span2 = $('<span>', { class: 'fa ' + butt.icon } );
 				button.append(' ');
 				button.append(span2);
 				panelHeading.append(button);
 			}
 		});
 		if (style === 'primary') {
-			var button2 = $('<button>', { class: 'btn btn-' + style + ' pull-right expand-all toggle-collapse-all', title: Translator.trans('Expand all') });
+			var button2 = $('<button>', { class: 'btn btn-' + style + ' float-right expand-all toggle-collapse-all', title: Translator.trans('Expand all') });
 			button2.attr('data-parent', '#' + id);
 			var span1 = $('<span>', { class: 'button-label' } );
 			span1.append(Translator.trans('Expand all'));
 			button2.append(span1);
-			var span2 = $('<span>', { class: 'glyphicon glyphicon-expand' } );
+			var span2 = $('<span>', { class: 'fa fa-caret-square-o-right' } );
 			button2.append(' ');
 			button2.append(span2);
 			panelHeading.append(button2);
 		}
-		var h4 = $('<h4>', { class: 'panel-title' } );
+		var h4 = $('<h4>', { class: 'card-title' } );
 		var a = $('<a>', { 'data-toggle': 'collapse', 'aria-expanded': 'true' } );
 		a.attr('data-parent', '#' + id);
 		a.attr('href', '#collapse' + id);
@@ -469,7 +470,7 @@ THE SOFTWARE.
 		var panelCollapse = $('<div>', { class: 'panel-collapse collapse ' + inClass, role: 'tabpanel' });
 		panelCollapse.attr('id', 'collapse' + id);
 		panelCollapse.attr('aria-labelledby', id + '-panel');
-		var panelBody = $('<div>', { class: 'panel-body ' + sortable });
+		var panelBody = $('<div>', { class: 'card-body ' + sortable });
 		panelCollapse.append(panelBody);
 		panel.append(panelCollapse);
 		collapsiblePanel.append(panel);
@@ -586,7 +587,7 @@ THE SOFTWARE.
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='referer']").text($('#simulator-referer').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").attr('data-value', $('#simulator-defaultView').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").text($('#simulator-defaultView').val());
-				$('#simulator-options-panel.panel-heading h4.panel-title').text($('#simulator-label').val());
+				$('#simulator-options-panel.card-header h4.card-title').text($('#simulator-label').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").attr('data-value', $('#simulator-dateFormat').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").text($('#simulator-dateFormat option:selected').text());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").attr('data-value', $('#simulator-decimalPoint').val());
@@ -664,8 +665,8 @@ THE SOFTWARE.
 	}
 
 	Simulators.drawSimulatorOptionsForInput = function(simulator) {
-		var simulatorAttributesPanel = $('<div class="panel panel-default" id="simulator-attributes-panel"></div>');
-		var simulatorAttributesPanelBody = $('<div class="panel-body"></div>');
+		var simulatorAttributesPanel = $('<div class="card bg-light" id="simulator-attributes-panel"></div>');
+		var simulatorAttributesPanelBody = $('<div class="card-body"></div>');
 		var simulatorAttributesContainer = $('<div class="attributes-container droppable"></div>');
 		var simulatorAttributes = $('<div></div>');
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-name', 'text', 'name', Translator.trans('Name'), simulator.name, true, Translator.trans('Simulator name without spaces or special characters')));
@@ -683,8 +684,8 @@ THE SOFTWARE.
 			simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-memo', 'checkbox', 'memo', Translator.trans('Data memo ?'), simulator.memo, false, 'memo'));
 		}
 		simulatorAttributesContainer.append(simulatorAttributes);
-		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
-		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
+		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
+		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		optionalAttributes.append('<li class="list-group-item" data-element="simulator" data-type="text" data-name="referer" data-placeholder="' + Translator.trans('Main referer value') + '">' + Translator.trans('Main referer') + '</li>');
 		var dynamicAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="dynamic" data-placeholder="">' + Translator.trans('Interactive UI') + '</li>');
@@ -701,23 +702,23 @@ THE SOFTWARE.
 		simulatorAttributesContainer.append(optionalAttributesPanel);
 		simulatorAttributesPanelBody.append(simulatorAttributesContainer);
 		simulatorAttributesPanel.append(simulatorAttributesPanelBody);
-		var simulatorDescriptionPanel = $('<div class="panel panel-default" id="simulator-description-panel"></div>');
-		simulatorDescriptionPanel.append('<div class="panel-heading">' + Translator.trans('Description') + '</div>');
-		var simulatorDescriptionBody = $('<div class="panel-body simulator-description rich-text"></div>');
+		var simulatorDescriptionPanel = $('<div class="card bg-light" id="simulator-description-panel"></div>');
+		simulatorDescriptionPanel.append('<div class="card-header">' + Translator.trans('Description') + '</div>');
+		var simulatorDescriptionBody = $('<div class="card-body simulator-description rich-text"></div>');
 		simulatorDescriptionBody.append('<textarea rows="10" name="simulator-description" id="simulator-description" wrap="hard" class="form-control">' + Simulators.paragraphs(simulator.description).content + '</textarea>');
 		simulatorDescriptionPanel.append(simulatorDescriptionBody);
-		var simulatorRelatedInformationsPanel = $('<div class="panel panel-default" id="simulator-related-informations-panel"></div>');
-		simulatorRelatedInformationsPanel.append('<div class="panel-heading">' + Translator.trans('Related informations') + '</div>');
-		var simulatorRelatedInformationsBody = $('<div class="panel-body simulator-related-informations"></div>');
+		var simulatorRelatedInformationsPanel = $('<div class="card bg-light" id="simulator-related-informations-panel"></div>');
+		simulatorRelatedInformationsPanel.append('<div class="card-header">' + Translator.trans('Related informations') + '</div>');
+		var simulatorRelatedInformationsBody = $('<div class="card-body simulator-related-informations"></div>');
 		simulatorRelatedInformationsBody.append('<textarea rows="10" name="simulator-related-informations" id="simulator-related-informations" wrap="hard" class="form-control">' + Simulators.paragraphs(simulator.relatedInformations).content + '</textarea>');
 		simulatorRelatedInformationsPanel.append(simulatorRelatedInformationsBody);
-		var simulatorButtonsPanel = $('<div class="panel panel-default" id="simulator-buttons-panel"></div>');
-		var simulatorButtonsBody = $('<div class="panel-body simulator-buttons"></div>');
-		simulatorButtonsBody.append('<button class="btn btn-success pull-right validate-edit-simulator">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		simulatorButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-simulator">' + Translator.trans('Cancel') + '</span></button>');
-		simulatorButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		var simulatorButtonsPanel = $('<div class="card bg-light" id="simulator-buttons-panel"></div>');
+		var simulatorButtonsBody = $('<div class="card-body simulator-buttons"></div>');
+		simulatorButtonsBody.append('<button class="btn btn-success float-right validate-edit-simulator">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		simulatorButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-simulator">' + Translator.trans('Cancel') + '</span></button>');
+		simulatorButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		simulatorButtonsPanel.append(simulatorButtonsBody);
-		var simulatorOptions = $('<div class="panel-body"></div>');
+		var simulatorOptions = $('<div class="card-body"></div>');
 		simulatorOptions.append(simulatorAttributesPanel);
 		simulatorOptions.append(simulatorDescriptionPanel);
 		simulatorOptions.append(simulatorRelatedInformationsPanel);
@@ -862,12 +863,12 @@ $(function(){
 		});
 		$('.panel-collapse').on('hidden.bs.collapse', function () {
 			var butt = $(this).parent().find('button.toggle-collapse-all');
-			butt.html(Translator.trans('Expand all') + ' <span class="glyphicon glyphicon-expand"></span>');
+			butt.html(Translator.trans('Expand all') + ' <span class="fa fa-caret-square-o-right"></span>');
 			butt.addClass('expand-all').removeClass('collapse-all');
 		});
 		$('.panel-collapse').on('shown.bs.collapse', function () {
 			var butt = $(this).parent().find('button.toggle-collapse-all');
-			butt.html(Translator.trans('Collapse all') + ' <span class="glyphicon glyphicon-collapse-up"></span>');
+			butt.html(Translator.trans('Collapse all') + ' <span class="fa fa-caret-square-o-up"></span>');
 			butt.addClass('collapse-all').removeClass('expand-all');
 		});
 		$('.panel-collapse').on('hide.bs.collapse show.bs.collapse', function () {
@@ -888,14 +889,14 @@ $(function(){
 						$(objectID).collapse('show');
 					}
 				});
-				$(this).html(Translator.trans('Collapse all') + ' <span class="glyphicon glyphicon-collapse-up"></span>');
+				$(this).html(Translator.trans('Collapse all') + ' <span class="fa fa-caret-square-o-up"></span>');
 				$(this).addClass('collapse-all').removeClass('expand-all');
 			} else if ($(this).hasClass('collapse-all')) {
 				$(this).parent().find('a[data-toggle="collapse"]').each(function(){
 					var objectID=$(this).attr('href');
 					$(objectID).collapse('hide');
 				});
-				$(this).html(Translator.trans('Expand all') + ' <span class="glyphicon glyphicon-expand"></span>');
+				$(this).html(Translator.trans('Expand all') + ' <span class="fa fa-caret-square-o-right"></span>');
 				$(this).addClass('expand-all').removeClass('collapse-all');
 			}
 		});

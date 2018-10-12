@@ -27,47 +27,47 @@ THE SOFTWARE.
 {% block content %}
 <h2>{{ 'Data sources management'|trans }}</h2>
 
-<div class="navbar-default navbar-side" role="navigation">
+<div class="navbar-light navbar-side" role="navigation">
 	<div class="sidebar-collapse">
 		{% if datasource is not empty and datasource.action != 'create' and datasource.action != 'import' and datasource.type != 'uri' %}
-		<div id="data-source" class="nav panel panel-primary">
-			<div class="panel-heading"><h3>{{ 'Data source'|trans }} : <br /> {{ dbname }}</h3></div>
-			<div class="panel-body">
+		<div id="data-source" class="nav card bg-primary rounded">
+			<div class="card-header rounded-top"><h3>{{ 'Data source'|trans }} : <br /> {{ dbname }}</h3></div>
+			<div class="card-body">
 				<form id="formAddNewTable" action="{{ path('eureka_g6k_admin_datasource_table', {'dsid': dsid, 'table': 'new'}) }}">
-				<button id="btnAddNewTable" class="btn btn-default" title="{{ 'Add table'|trans }}"><span class="button-label">{{ 'Add table'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
+				<button id="btnAddNewTable" class="btn btn-secondary" title="{{ 'Add table'|trans }}"><span class="button-label">{{ 'Add table'|trans }}</span> <span class="fa fa-plus-circle"></span></button>
 				</form>
 				<h4>{{ 'Tables'|trans }} :</h4>
-				<ul class="nav nav-pills nav-stacked">
+				<ul class="nav nav-pills flex-column">
 					{% for tbl in tables %}
 					{% if datasource.type == 'database' %}
-					<li><a href="{{ path('eureka_g6k_admin_datasources') }}/{{ dsid }}/{{ tbl.tbl_name }}/edit">{{ tbl.label }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_datasources') }}/{{ dsid }}/{{ tbl.tbl_name }}/edit">{{ tbl.label }}</a></li>
 					{% else %}
-					<li><a href="{{ path('eureka_g6k_admin_datasources') }}/{{ dsid }}/{{ tbl.tbl_name }}">{{ tbl.label }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_datasources') }}/{{ dsid }}/{{ tbl.tbl_name }}">{{ tbl.label }}</a></li>
 					{% endif %}
 					{% endfor %}
 				</ul>
 			</div>
 		</div>
 		{% endif %}
-		<div id="data-sources" class="nav panel panel-primary">
-			<div class="panel-heading"><h3>{{ 'Data sources'|trans }}</h3></div>
-			<div class="panel-body">
+		<div id="data-sources" class="nav card bg-primary rounded">
+			<div class="card-header rounded-top"><h3>{{ 'Data sources'|trans }}</h3></div>
+			<div class="card-body">
 				<div>
 					<form id="formAddNewDataSource" action="{{ path('eureka_g6k_admin_datasource', {'dsid': 0}) }}">
-					<button id="btnAddNewDataSource" class="btn btn-default pull-right">{{ 'Create Datasource'|trans }} <span class="glyphicon glyphicon-plus-sign"></span></button>
+					<button id="btnAddNewDataSource" class="btn btn-secondary float-right">{{ 'Create Datasource'|trans }} <span class="fa fa-plus-circle"></span></button>
 					</form>
 				</div>
 				<div>
 					<form id="formImportDataSource" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': 0, 'table': 'dummy', 'crud': 'import-datasource'}) }}">
-					<button id="btnImportDataSource" class="btn btn-default pull-right">{{ 'Import Datasource'|trans }} <span class="glyphicon glyphicon-import"></span></button>
+					<button id="btnImportDataSource" class="btn btn-secondary float-right">{{ 'Import Datasource'|trans }} <span class="fa fa-download"></span></button>
 					</form>
 				</div>
-				<ul class="nav nav-pills nav-stacked">
+				<ul class="nav nav-pills flex-column">
 					{% for dss in datasources %}
 					{% if dss.type == 'uri' %}
-					<li><a href="{{ path('eureka_g6k_admin_datasources') }}/{{ dss.id }}">{{ dss.name }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_datasources') }}/{{ dss.id }}">{{ dss.name }}</a></li>
 					{% else %}
-					<li><a href="{{ path('eureka_g6k_admin_datasources') }}/{{ dss.id }}">{{ dss.database.label }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_datasources') }}/{{ dss.id }}">{{ dss.database.label }}</a></li>
 					{% endif %}
 					{% endfor %}
 				</ul>
@@ -81,21 +81,21 @@ THE SOFTWARE.
 		<div class="row">
 			<div class="col-md-12">
 				{% if table is not empty %}
-				<div id="table" class="panel panel-primary">
-					<div class="panel-heading">
-					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'datasources-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span></a> 
+				<div id="table" class="card bg-primary">
+					<div class="card-header">
+					<a class="btn btn-primary float-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'datasources-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fa fa-book"></span></a> 
 					{% if table.action != 'create-table' and table.action != 'import-table' %}
-					<a class="btn btn-primary pull-right drop-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'drop'}) }}" title="{{ 'Drop table'|trans }}" data-confirm="{{ 'Are you sure you want to drop the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Drop table'|trans }}</span> <span class="glyphicon glyphicon-minus-sign"></span></a>
+					<a class="btn btn-primary float-right drop-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'drop'}) }}" title="{{ 'Drop table'|trans }}" data-confirm="{{ 'Are you sure you want to drop the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Drop table'|trans }}</span> <span class="fa fa-minus-circle"></span></a>
 					{% endif %}
 					{% if table.action != 'create-table' and table.action != 'edit-table' and table.action != 'import-table'  %}
-					<a class="btn btn-primary pull-right edit-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'edit'}) }}" title="{{ 'Edit table structure'|trans }}" data-confirm="{{ 'Are you sure you want to edit the structure of the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Edit table structure'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></a>
-					<a class="btn btn-primary pull-right import-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'import'}) }}" title="{{ 'Import to table from a delimited text file'|trans }}" data-confirm="{{ 'Are you sure you want to import data into the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Import data'|trans }}</span> <span class="glyphicon glyphicon-import"></span></a>
+					<a class="btn btn-primary float-right edit-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'edit'}) }}" title="{{ 'Edit table structure'|trans }}" data-confirm="{{ 'Are you sure you want to edit the structure of the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Edit table structure'|trans }}</span> <span class="fa fa-pencil"></span></a>
+					<a class="btn btn-primary float-right import-table-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'import'}) }}" title="{{ 'Import to table from a delimited text file'|trans }}" data-confirm="{{ 'Are you sure you want to import data into the table %table% ?'|trans({ '%table%' : table.label }) }}"><span class="button-label">{{ 'Import data'|trans }}</span> <span class="fa fa-download"></span></a>
 					{% endif %}
-					<h4 class="panel-title">{{ table.label }}</h4>
+					<h4 class="card-title">{{ table.label }}</h4>
 					</div>
-					<div class="panel-body">
+					<div class="card-body">
 						<div class="alert alert-danger" role="alert">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
 							<span class="sr-only">{{ 'Error'|trans }} :</span>
 							<span class="error-message"></span>
 							<ul></ul>
@@ -106,34 +106,34 @@ THE SOFTWARE.
 						{% else %}
 						<form id="edit-table-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'doedit'}) }}" enctype="multipart/form-data">
 						{% endif %}
-						<div class="panel-body">
+						<div class="card-body">
 							<div class="attributes-container">
 								<div>
-									<div class="form-group col-sm-12">
-										<label class="col-sm-2 control-label" for="table-name">{{ 'Name'|trans }}</label>    
-										<div class="col-sm-10">        
+									<div class="form-group row">
+										<label class="col-sm-2 col-form-label" for="table-name">{{ 'Name'|trans }}</label>    
+										<div class="col-sm-10">
 											<input type="text" value="{{ table.name }}" placeholder="name" class="form-control simple-value" data-attribute="name" id="table-name" name="table-name">    
 										</div>
 									</div>
-									<div class="form-group col-sm-12">    
-										<label class="col-sm-2 control-label" for="table-label">{{ 'Label'|trans }}</label>    
+									<div class="form-group row">    
+										<label class="col-sm-2 col-form-label" for="table-label">{{ 'Label'|trans }}</label>    
 										<div class="col-sm-10">        
 											<input type="text" value="{{ table.label }}" placeholder="label" class="form-control simple-value" data-attribute="label" id="table-label" name="table-label">    
 										</div>
 									</div>
 								</div>
 							</div>
-							<div id="table-description-panel" class="panel panel-default">
-								<div class="panel-heading">{{ 'Description'|trans }}</div>
-								<div class="panel-body table-description">
-									<textarea rows="1" name="table-description" class="richtext form-control input-sm">{{ table.description|nofilter }}</textarea>
+							<div id="table-description-panel" class="card bg-light">
+								<div class="card-header">{{ 'Description'|trans }}</div>
+								<div class="card-body table-description">
+									<textarea rows="1" name="table-description" class="richtext form-control form-control-sm">{{ table.description|nofilter }}</textarea>
 								</div>
 							</div>
 						</div>
 						<div class="table-responsive">
 							<span class="table-caption">{{ 'Fields'|trans }}</span>
-							<button id="btnAddNewColumn" class="btn btn-default pull-right" title="{{ 'Add field'|trans }}"><span class="button-label">{{ 'Add field'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
-							<table id="edition-table" class="table table-condensed table-striped table-bordered table-hover">
+							<button id="btnAddNewColumn" class="btn btn-secondary float-right" title="{{ 'Add field'|trans }}"><span class="button-label">{{ 'Add field'|trans }}</span> <span class="fa fa-plus-circle"></span></button>
+							<table id="edition-table" class="table table-sm table-striped table-bordered table-hover">
 								<thead>
 									<tr>
 										<th></th>
@@ -148,28 +148,28 @@ THE SOFTWARE.
 							</table>
 						</div>
 						{% if table.action == 'create-table' %}
-						<button id="btnSaveNewTable" type="submit" form="new-table-form" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+						<button id="btnSaveNewTable" type="submit" form="new-table-form" class="btn btn-primary float-right">{{ 'Save'|trans }}</button>
 						{% else %}
-						<button id="btnSaveEditedTable" type="submit" form="edit-table-form" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+						<button id="btnSaveEditedTable" type="submit" form="edit-table-form" class="btn btn-primary float-right">{{ 'Save'|trans }}</button>
 						{% endif %}
 						</form>
 						{% elseif table.action == 'import-table' %}
 						<form id="import-table-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': dsid, 'table': table.name, 'crud': 'doimport'}) }}" enctype="multipart/form-data">
-						<div class="panel panel-default" id="table-import-panel-holder">
-							<div class="panel-heading">
+						<div class="card bg-light" id="table-import-panel-holder">
+							<div class="card-header">
 								{{ 'Import to table from a delimited text file'|trans }}
 							</div>
-							<div class="panel-body table-file">
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-4 control-label" for="table-data-file">{{ 'Text file'|trans }}</label>    
+							<div class="card-body table-file">
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label" for="table-data-file">{{ 'Text file'|trans }}</label>    
 									<div class="col-sm-8">        
-										<input type="file" id="table-data-file" name="table-data-file" accept="text/csv, text/plain" class="form-control input-sm" />
+										<input type="file" id="table-data-file" name="table-data-file" accept="text/csv, text/plain" class="form-control form-control-sm" />
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-4 control-label" for="table-data-separator">{{ 'Separator'|trans }}</label>    
+								<div class="form-group row">    
+									<label class="col-sm-4 col-form-label" for="table-data-separator">{{ 'Separator'|trans }}</label>    
 									<div class="col-sm-8">        
-										<select type="text" id="table-data-separator" name="table-data-separator" class="form-control input-sm" />
+										<select type="text" id="table-data-separator" name="table-data-separator" class="form-control form-control-sm" />
 										<option value=";">{{ 'Semicolon'|trans }}</option>
 										<option value=",">{{ 'Comma'|trans }}</option>
 										<option value="t">{{ 'Tabulation'|trans }}</option>
@@ -177,30 +177,30 @@ THE SOFTWARE.
 										</select>
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-4 control-label" for="table-data-delimiter">{{ 'Delimiter'|trans }}</label>    
+								<div class="form-group row">    
+									<label class="col-sm-4 col-form-label" for="table-data-delimiter">{{ 'Delimiter'|trans }}</label>    
 									<div class="col-sm-8">        
-										<input type="text" id="table-data-delimiter" name="table-data-delimiter" value='"' class="form-control input-sm" />
+										<input type="text" id="table-data-delimiter" name="table-data-delimiter" value='"' class="form-control form-control-sm" />
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-4 control-label" for="table-data-has-header">{{ 'Column names in first line ?'|trans }}</label>    
+								<div class="form-group row">    
+									<label class="col-sm-4 col-form-label" for="table-data-has-header">{{ 'Column names in first line ?'|trans }}</label>    
 									<div class="col-sm-8">        
-										<input type="checkbox" id="table-data-has-header" name="table-data-has-header" value="1" class="form-control input-sm" checked="checked" />
+										<input type="checkbox" id="table-data-has-header" name="table-data-has-header" value="1" class="form-control form-control-sm" checked="checked" />
 									</div>
 								</div>
 							</div>
 						</div>
-						<button id="btnImportTable" type="submit" form="import-table-form" class="btn btn-primary pull-right">{{ 'Import'|trans }}</button>
+						<button id="btnImportTable" type="submit" form="import-table-form" class="btn btn-primary float-right">{{ 'Import'|trans }}</button>
 						</form>
 						{% else %}
 						<form id="edit-table-rows-form" method="post" action="{{ path('eureka_g6k_admin_datasource_table', {'dsid': dsid, 'table': table.name}) }}" enctype="multipart/form-data">
 						<input type="hidden" name="page" value="{{ pagination.currentPageNumber }}">
 						<div class="table-responsive">
 							<div>{{ table.description|nofilter }}</div>
-							<button id="btnAddNewRow" class="btn btn-default" title="{{ 'Add record'|trans }}"><span class="button-label">{{ 'Add record'|trans }}</span> <span class="glyphicon glyphicon-plus-sign"></span></button>
+							<button id="btnAddNewRow" class="btn btn-secondary" title="{{ 'Add record'|trans }}"><span class="button-label">{{ 'Add record'|trans }}</span> <span class="fa fa-plus-circle"></span></button>
 							<div class="pull-left">
-								<label class="pull-left control-label">{{ 'Lines per page'|trans }}</label>
+								<label class="pull-left col-form-label">{{ 'Lines per page'|trans }}</label>
 								<div class="pull-left">
 								<select name="itemsPerPage" class="form-control">
 								<option value="5"{% if pagination.itemsPerPage == 5 %} selected="selected"{% endif %}>5</option>
@@ -216,7 +216,7 @@ THE SOFTWARE.
 								</select>
 								</div>
 							</div>
-							<table id="{{ table.name }}" class="table table-condensed table-striped table-bordered table-hover">
+							<table id="{{ table.name }}" class="table table-sm table-striped table-bordered table-hover">
 								<thead>
 									<tr>
 										{% for info in tableinfos %}
@@ -227,14 +227,14 @@ THE SOFTWARE.
 										{% for info in tableinfos %}
 										<th class="{{ info.g6k_type }}">
 											{% if info.g6k_type == 'choice' or info.g6k_type == 'multichoice' %}
-											<select name="{{ info.name }}-filter" class="form-control input-sm" style="width: 100%; font-weight: normal;">
+											<select name="{{ info.name }}-filter" class="form-control form-control-sm" style="width: 100%; font-weight: normal;">
 											<option value=""></option>
 											{% for choice, label in info.choices %}
 											<option value="{{ choice }}"{% if choice == info.filtertext %} selected="selected"{% endif %}>{{ label }}</option>
 											{% endfor %}
 											</select>
 											{% else %}
-											<input type="text" name="{{ info.name }}-filter" class="form-control input-sm" style="width: 100%; font-weight: normal;" value="{{ info.filtertext }}">
+											<input type="text" name="{{ info.name }}-filter" class="form-control form-control-sm" style="width: 100%; font-weight: normal;" value="{{ info.filtertext }}">
 											{% endif %}
 										</th>
 										{% endfor %}
@@ -257,53 +257,53 @@ THE SOFTWARE.
 								</tbody>
 							</table>
 							{% if pagination.lastPageNumber > 1 %}
-							<nav class="pull-right" id="table-nav">
-								<ul class="pagination pull-right">
+							<nav id="table-nav">
+								<ul class="pagination justify-content-end">
 									{% if pagination.firstPageNumber and pagination.firstPageNumber != pagination.currentPageNumber %}
-									<li>
-										<a data-page="{{ pagination.firstPageNumber }}" href="#">&laquo;</a>
+									<li class="page-item">
+										<a class="page-link" data-page="{{ pagination.firstPageNumber }}" href="#">&laquo;</a>
 									</li>
 									{% else %}
-									<li class="disabled">
-										<a data-page="0">&laquo;</a>
+									<li class="page-item disabled">
+										<a class="page-link" data-page="0">&laquo;</a>
 									</li>
 									{% endif %}
 									{% if pagination.previousPageNumber %}
-									<li>
-										<a data-page="{{ pagination.previousPageNumber }}" href="#"><span aria-hidden="true">&lsaquo;</span><span class="sr-only">{{ 'Previous'|trans }}</span></a>
+									<li class="page-item">
+										<a class="page-link" data-page="{{ pagination.previousPageNumber }}" href="#"><span aria-hidden="true">&lsaquo;</span><span class="sr-only">{{ 'Previous'|trans }}</span></a>
 									</li>
 									{% else %}
-									<li class="disabled">
-										<a href="#"><span aria-hidden="true">&lsaquo;</span><span class="sr-only">{{ 'Previous'|trans }}</span></a>
+									<li class="page-item disabled">
+										<a class="page-link" href="#"><span aria-hidden="true">&lsaquo;</span><span class="sr-only">{{ 'Previous'|trans }}</span></a>
 									</li>
 									{% endif %}
 									{% for page in pagination.pages %}
 									{% if page == pagination.currentPageNumber %}
-									<li class="active">
-										<a data-page="0">{{ page }}</a>
+									<li class="page-item active">
+										<a class="page-link" data-page="0">{{ page }}</a>
 									</li>
 									{% else %}
-									<li>
-										<a data-page="{{ page }}" href="#">{{ page }}</a>
+									<li class="page-item">
+										<a class="page-link" data-page="{{ page }}" href="#">{{ page }}</a>
 									</li>
 									{% endif %}
 									{% endfor %}
 									{% if pagination.nextPageNumber %}
-									<li>
-										<a data-page="{{ pagination.nextPageNumber }}" href="#"><span aria-hidden="true">&rsaquo;</span><span class="sr-only">{{ 'Next'|trans }}</span></a>
+									<li class="page-item">
+										<a class="page-link" data-page="{{ pagination.nextPageNumber }}" href="#"><span aria-hidden="true">&rsaquo;</span><span class="sr-only">{{ 'Next'|trans }}</span></a>
 									</li>
 									{% else %}
-									<li class="disabled">
-										<a data-page="0" href="#"><span aria-hidden="true">&rsaquo;</span><span class="sr-only">{{ 'Next'|trans }}</span></a>
+									<li class="page-item disabled">
+										<a class="page-link" data-page="0" href="#"><span aria-hidden="true">&rsaquo;</span><span class="sr-only">{{ 'Next'|trans }}</span></a>
 									</li>
 									{% endif %}
 									{% if pagination.lastPageNumber and pagination.lastPageNumber != pagination.currentPageNumber %}
-									<li>
-										<a data-page="{{ pagination.lastPageNumber }}" href="#">&raquo;</a>
+									<li class="page-item">
+										<a class="page-link" data-page="{{ pagination.lastPageNumber }}" href="#">&raquo;</a>
 									</li>
 									{% else %}
-									<li class="disabled">
-										<a data-page="0">&raquo;</a>
+									<li class="page-item disabled">
+										<a class="page-link" data-page="0">&raquo;</a>
 									</li>
 									{% endif %}
 								</ul>
@@ -315,38 +315,38 @@ THE SOFTWARE.
 					</div>
 				</div>
 				{% elseif datasource is not empty %}
-				<div id="datasource" class="panel panel-primary">
-					<div class="panel-heading">
-					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'datasources-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span></a> 
+				<div id="datasource" class="card bg-primary">
+					<div class="card-header">
+					<a class="btn btn-primary float-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'datasources-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fa fa-book"></span></a> 
 					{% if datasource.action == 'show' %}
-					<a class="btn btn-primary pull-right drop-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'drop-datasource'}) }}" title="{{ 'Drop datasource'|trans }}" data-confirm="{{ 'Are you sure you want to drop the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'"><span class="button-label">{{ 'Drop datasource'|trans }}</span> <span class="glyphicon glyphicon-minus-sign"></span></a>
-					<a class="btn btn-primary pull-right edit-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'edit-datasource'}) }}" title="{{ 'Edit datasource'|trans }}" data-confirm="{{ 'Are you sure you want to edit the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'"><span class="button-label">{{ 'Edit datasource'|trans }}</span> <span class="glyphicon glyphicon-pencil"></span></a>
+					<a class="btn btn-primary float-right drop-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'drop-datasource'}) }}" title="{{ 'Drop datasource'|trans }}" data-confirm="{{ 'Are you sure you want to drop the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'"><span class="button-label">{{ 'Drop datasource'|trans }}</span> <span class="fa fa-minus-circle"></span></a>
+					<a class="btn btn-primary float-right edit-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'edit-datasource'}) }}" title="{{ 'Edit datasource'|trans }}" data-confirm="{{ 'Are you sure you want to edit the datasource %datasource% ?'|trans({ '%datasource%': datasource.name }) }}'"><span class="button-label">{{ 'Edit datasource'|trans }}</span> <span class="fa fa-pencil"></span></a>
 					{% if datasource.type == 'internal' %}
-					<a class="btn btn-primary pull-right export-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'export-datasource'}) }}" title="{{ 'Export datasource'|trans }}"><span class="button-label">{{ 'Export datasource'|trans }}</span> <span class="glyphicon glyphicon-export"></span></a>
+					<a class="btn btn-primary float-right export-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'export-datasource'}) }}" title="{{ 'Export datasource'|trans }}"><span class="button-label">{{ 'Export datasource'|trans }}</span> <span class="fa fa-upload"></span></a>
 					{% endif %}
 					{% endif %}
-					<h4 class="panel-title">{{ datasource.label }}</h4>
+					<h4 class="card-title">{{ datasource.label }}</h4>
 					</div>
-					<div class="panel-body">
+					<div class="card-body">
 						<div class="alert alert-danger" role="alert">
-							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
 							<span class="sr-only">{{ 'Error'|trans }}:</span>
 							<span class="error-message"></span>
 							<ul></ul>
 						</div>
 						{% if datasource.action == 'show' %}
-						<div class="panel panel-default">
-							<div class="panel-body">
+						<div class="card bg-light">
+							<div class="card-body">
 								<div class="attributes-container">
 									<div>
-										<div class="form-group col-sm-12">
-											<label class="col-sm-2 control-label">{{ 'Name'|trans }}</label>    
+										<div class="form-group row">
+											<label class="col-sm-2 col-form-label">{{ 'Name'|trans }}</label>    
 											<div class="col-sm-10">
-												<p data-attribute="name" data-value="{{ datasource.name }}" class="form-control-static simple-value">{{ datasource.name }}</p>
+												<p data-attribute="name" data-value="{{ datasource.name }}" class="form-control-plaintext simple-value">{{ datasource.name }}</p>
 											</div>
 										</div>
-										<div class="form-group col-sm-12">    
-											<label class="col-sm-2 control-label">{{ 'Type'|trans }}</label>    
+										<div class="form-group row">    
+											<label class="col-sm-2 col-form-label">{{ 'Type'|trans }}</label>    
 											<div class="col-sm-10">
 												{% if datasource.type == "internal" %}
 													{% set option = 'Internal'|trans  %}
@@ -355,29 +355,29 @@ THE SOFTWARE.
 												{% else %}
 													{% set option = 'External webservice (Rest API)'|trans %}
 												{% endif %}
-												<p data-attribute="type" data-value="{{ option }}" class="form-control-static simple-value">{{ option }}</p>
+												<p data-attribute="type" data-value="{{ option }}" class="form-control-plaintext simple-value">{{ option }}</p>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="panel panel-default" id="datasource-description-panel-holder">
-							<div class="panel-heading">
+						<div class="card bg-light" id="datasource-description-panel-holder">
+							<div class="card-header">
 								{{ 'Description'|trans }}
 							</div>
-							<div class="panel-body datasource-description">
+							<div class="card-body datasource-description">
 								{{ datasource.description|nofilter }}
 							</div>
 						</div>
 						{% if datasource.type == "internal" or datasource.type == "database" %}
-						<div class="panel panel-default" id="datasource-database-panel-holder">
-							<div class="panel-heading">
+						<div class="card bg-light" id="datasource-database-panel-holder">
+							<div class="card-header">
 								{{ 'Database'|trans }}
 							</div>
-							<div class="panel-body datasource-database">
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label">{{ 'Type'|trans }}</label>    
+							<div class="card-body datasource-database">
+								<div class="form-group row">    
+									<label class="col-sm-2 col-form-label">{{ 'Type'|trans }}</label>    
 									<div class="col-sm-10">
 										{% if datasource.database.type == "jsonsql" %}
 											{% set option = 'JsonSQL' %}
@@ -388,44 +388,44 @@ THE SOFTWARE.
 										{% else %}
 											{% set option = 'PostgreSQL' %}
 										{% endif %}
-										<p data-attribute="database.type" data-value="{{ option }}" class="form-control-static simple-value">{{ option }}</p>
+										<p data-attribute="database.type" data-value="{{ option }}" class="form-control-plaintext simple-value">{{ option }}</p>
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label">{{ 'Database name'|trans }}</label>    
-									<div class="col-sm-10">        
-										<p data-attribute="database.name" data-value="{{ datasource.database.name }}" class="form-control-static simple-value">{{ datasource.database.name }}</p>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">{{ 'Database name'|trans }}</label>    
+									<div class="col-sm-10">
+										<p data-attribute="database.name" data-value="{{ datasource.database.name }}" class="form-control-plaintext simple-value">{{ datasource.database.name }}</p>
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label">{{ 'Database label'|trans }}</label>    
-									<div class="col-sm-10">        
-										<p data-attribute="database.label" data-value="{{ datasource.database.label }}" class="form-control-static simple-value">{{ datasource.database.label }}</p>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">{{ 'Database label'|trans }}</label>    
+									<div class="col-sm-10">
+										<p data-attribute="database.label" data-value="{{ datasource.database.label }}" class="form-control-plaintext simple-value">{{ datasource.database.label }}</p>
 									</div>
 								</div>
 								{% if datasource.database.type == "mysqli" or datasource.database.type == "pgsql" %}
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label">{{ 'Database host'|trans }}</label>    
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">{{ 'Database host'|trans }}</label>    
 									<div class="col-sm-10">        
-										<p data-attribute="database.host" data-value="{{ datasource.database.host }}" class="form-control-static simple-value">{{ datasource.database.host }}</p>
+										<p data-attribute="database.host" data-value="{{ datasource.database.host }}" class="form-control-plaintext simple-value">{{ datasource.database.host }}</p>
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label">{{ 'Database port'|trans }}</label>    
-									<div class="col-sm-10">        
-										<p data-attribute="database.port" data-value="{{ datasource.database.port }}" class="form-control-static simple-value">{{ datasource.database.port }}</p>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">{{ 'Database port'|trans }}</label>    
+									<div class="col-sm-10">
+										<p data-attribute="database.port" data-value="{{ datasource.database.port }}" class="form-control-plaintext simple-value">{{ datasource.database.port }}</p>
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label">{{ 'Database user'|trans }}</label>    
-									<div class="col-sm-10">        
-										<p data-attribute="database.user" data-value="{{ datasource.database.user }}" class="form-control-static simple-value">{{ datasource.database.user }}</p>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">{{ 'Database user'|trans }}</label>    
+									<div class="col-sm-10">
+										<p data-attribute="database.user" data-value="{{ datasource.database.user }}" class="form-control-plaintext simple-value">{{ datasource.database.user }}</p>
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label">{{ 'Database password'|trans }}</label>    
-									<div class="col-sm-10">        
-										<p data-attribute="database.password" data-value="{{ datasource.database.password }}" class="form-control-static simple-value">**********</p>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">{{ 'Database password'|trans }}</label>    
+									<div class="col-sm-10">
+										<p data-attribute="database.password" data-value="{{ datasource.database.password }}" class="form-control-plaintext simple-value">**********</p>
 									</div>
 								</div>
 								{% endif %}
@@ -433,21 +433,21 @@ THE SOFTWARE.
 						</div>
 						{% endif %}
 						{% if datasource.type == "uri" %}
-						<div class="panel panel-default" id="datasource-uri-panel-holder">
-							<div class="panel-heading">
+						<div class="card bg-light" id="datasource-uri-panel-holder">
+							<div class="card-header">
 								{{ 'RESTful Web Service'|trans }}
 							</div>
-							<div class="panel-body datasource-uri">
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-uri">{{ 'URI'|trans }}</label>    
-									<div class="col-sm-10">        
-										<p data-attribute="uri" data-value="{{ datasource.uri }}" class="form-control-static simple-value">{{ datasource.uri }}</p>
+							<div class="card-body datasource-uri">
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-uri">{{ 'URI'|trans }}</label>    
+									<div class="col-sm-10">
+										<p data-attribute="uri" data-value="{{ datasource.uri }}" class="form-control-plaintext simple-value">{{ datasource.uri }}</p>
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-method">{{ 'Method'|trans }}</label>    
-									<div class="col-sm-10">        
-										<p data-attribute="uri" data-value="{{ datasource.method }}" class="form-control-static simple-value">{% if datasource.method is not empty -%}{{ datasource.method|upper }}{%- else -%}GET{%- endif -%}</p>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-method">{{ 'Method'|trans }}</label>    
+									<div class="col-sm-10">
+										<p data-attribute="uri" data-value="{{ datasource.method }}" class="form-control-plaintext simple-value">{% if datasource.method is not empty -%}{{ datasource.method|upper }}{%- else -%}GET{%- endif -%}</p>
 									</div>
 								</div>
 							</div>
@@ -460,18 +460,18 @@ THE SOFTWARE.
 						{% else %}
 						<form id="datasource-edition-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'doedit-datasource'}) }}" enctype="multipart/form-data">
 						{% endif %}
-						<div class="panel panel-default">
-							<div class="panel-body">
+						<div class="card bg-light">
+							<div class="card-body">
 								<div class="attributes-container">
 									<div>
-										<div class="form-group col-sm-12">
-											<label class="col-sm-2 control-label" for="datasource-name">{{ 'Name'|trans }}</label>    
-											<div class="col-sm-10">        
+										<div class="form-group row">
+											<label class="col-sm-2 col-form-label" for="datasource-name">{{ 'Name'|trans }}</label>    
+											<div class="col-sm-10">
 												<input type="text" value="{{ datasource.name }}" placeholder="name" class="form-control simple-value" data-attribute="name" id="datasource-name" name="datasource-name">    
 											</div>
 										</div>
-										<div class="form-group col-sm-12">    
-											<label class="col-sm-2 control-label" for="datasource-type">{{ 'Type'|trans }}</label>    
+										<div class="form-group row">
+											<label class="col-sm-2 col-form-label" for="datasource-type">{{ 'Type'|trans }}</label>    
 											<div class="col-sm-10">
 												<select name="datasource-type" id="datasource-type" class="form-control" data-attribute="type">
 												<option value="internal"{% if datasource.type == 'internal' %} selected="selected"{% endif %}>{{ 'Internal'|trans }}</option>
@@ -484,21 +484,21 @@ THE SOFTWARE.
 								</div>
 							</div>
 						</div>
-						<div class="panel panel-default" id="datasource-description-panel-holder">
-							<div class="panel-heading">
+						<div class="card bg-light" id="datasource-description-panel-holder">
+							<div class="card-header">
 								{{ 'Description'|trans }}
 							</div>
-							<div class="panel-body datasource-description">
-								<textarea rows="1" name="datasource-description" class="richtext form-control input-sm">{{ datasource.description|nofilter }}</textarea>
+							<div class="card-body datasource-description">
+								<textarea rows="1" name="datasource-description" class="richtext form-control form-control-sm">{{ datasource.description|nofilter }}</textarea>
 							</div>
 						</div>
-						<div class="panel panel-default" id="datasource-database-panel-holder">
-							<div class="panel-heading">
+						<div class="card bg-light" id="datasource-database-panel-holder">
+							<div class="card-header">
 								{{ 'Database'|trans }}
 							</div>
-							<div class="panel-body datasource-database">
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-database-type">{{ 'Type'|trans }}</label>    
+							<div class="card-body datasource-database">
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-database-type">{{ 'Type'|trans }}</label>    
 									<div class="col-sm-10">
 										<select name="datasource-database-type" id="datasource-database-type" class="form-control" data-attribute="database.type">
 										<option value="jsonsql"{% if datasource.database.type == 'jsonsql' %} selected="selected"{% endif %}>JsonSQL</option>
@@ -508,63 +508,63 @@ THE SOFTWARE.
 										</select>
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-database-name">{{ 'Database name'|trans }}</label>    
-									<div class="col-sm-10">        
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-database-name">{{ 'Database name'|trans }}</label>    
+									<div class="col-sm-10">
 										<input type="text" value="{{ datasource.database.name }}" placeholder="{{ 'Database name'|trans }}" class="form-control simple-value" data-attribute="database.name" id="datasource-database-name" name="datasource-database-name">    
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-database-label">{{ 'Database label'|trans }}</label>    
-									<div class="col-sm-10">        
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-database-label">{{ 'Database label'|trans }}</label>    
+									<div class="col-sm-10">
 										<input type="text" value="{{ datasource.database.label }}" placeholder="{{ 'Database label'|trans }}" class="form-control simple-value" data-attribute="database.label" id="datasource-database-label" name="datasource-database-label">    
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-database-host">{{ 'Database host'|trans }}</label>    
-									<div class="col-sm-10">        
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-database-host">{{ 'Database host'|trans }}</label>    
+									<div class="col-sm-10">
 										<input type="text" value="{{ datasource.database.host }}" placeholder="{{ 'Database host'|trans }}" class="form-control simple-value" data-attribute="database.host" id="datasource-database-host" name="datasource-database-host">    
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-database-port">{{ 'Database port'|trans }}</label>    
-									<div class="col-sm-10">        
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-database-port">{{ 'Database port'|trans }}</label>    
+									<div class="col-sm-10">
 										<input type="number" value="{{ datasource.database.port }}" placeholder="{{ 'Database port'|trans }}" class="form-control simple-value" data-attribute="database.port" id="datasource-database-port" name="datasource-database-port">    
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-database-user">{{ 'Database user'|trans }}</label>    
-									<div class="col-sm-10">        
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-database-user">{{ 'Database user'|trans }}</label>    
+									<div class="col-sm-10">
 										<input type="text" value="{{ datasource.database.user }}" placeholder="{{ 'Database user'|trans }}" class="form-control simple-value" data-attribute="database.user" id="datasource-database-user" name="datasource-database-user">    
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-database-password">{{ 'Database password'|trans }}</label>    
-									<div class="col-sm-10">        
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-database-password">{{ 'Database password'|trans }}</label>    
+									<div class="col-sm-10">
 										<input type="password" value="" placeholder="{{ 'Database password'|trans }}" class="form-control simple-value" data-attribute="database.password" id="datasource-database-password" name="datasource-database-password">    
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-database-confirm-password"></label>    
-									<div class="col-sm-10">        
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-database-confirm-password"></label>    
+									<div class="col-sm-10">
 										<input type="password" value="" placeholder="{{ 'Confirm Database password'|trans }}" class="form-control simple-value" id="datasource-database-confirm-password" name="datasource-database-confirm-password">    
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="panel panel-default" id="datasource-uri-panel-holder">
-							<div class="panel-heading">
+						<div class="card bg-light" id="datasource-uri-panel-holder">
+							<div class="card-header">
 								{{ 'RESTful Web Service'|trans }}
 							</div>
-							<div class="panel-body datasource-uri">
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-uri">{{ 'URI'|trans }}</label>    
-									<div class="col-sm-10">        
+							<div class="card-body datasource-uri">
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-uri">{{ 'URI'|trans }}</label>    
+									<div class="col-sm-10">
 										<input type="text" value="{{ datasource.uri }}" placeholder="{{ 'Webservice URI'|trans }}" class="form-control simple-value" data-attribute="uri" id="datasource-uri" name="datasource-uri">    
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-method">{{ 'Method'|trans }}</label>    
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-method">{{ 'Method'|trans }}</label>    
 									<div class="col-sm-10">
 										<select name="datasource-method" id="datasource-method" class="form-control" data-attribute="method">
 										<option value="get"{% if datasource.method == 'get' %} selected="selected"{% endif %}>GET</option>
@@ -575,35 +575,35 @@ THE SOFTWARE.
 							</div>
 						</div>
 						{% if datasource.action == 'create' %}
-						<button id="btnSaveDatasource" type="submit" form="datasource-creation-form" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+						<button id="btnSaveDatasource" type="submit" form="datasource-creation-form" class="btn btn-primary float-right">{{ 'Save'|trans }}</button>
 						{% else %}
-						<button id="btnSaveDatasource" type="submit" form="datasource-edition-form" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+						<button id="btnSaveDatasource" type="submit" form="datasource-edition-form" class="btn btn-primary float-right">{{ 'Save'|trans }}</button>
 						{% endif %}
 						</form>
 						{% endif %}
 						{% endif %}
 						{% if datasource.action == 'import' %}
 						<form id="datasource-import-form" method="post" action="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'doimport-datasource'}) }}" enctype="multipart/form-data">
-						<div class="panel panel-default" id="datasource-import-panel-holder">
-							<div class="panel-heading">
+						<div class="card bg-light" id="datasource-import-panel-holder">
+							<div class="card-header">
 								{{ 'Import datasource from JSON data'|trans }}
 							</div>
-							<div class="panel-body datasource-files">
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-schema-file">{{ 'JSON Schema'|trans }}</label>    
-									<div class="col-sm-10">        
-										<input type="file" id="datasource-schema-file" name="datasource-schema-file" accept=".schema.json" class="form-control input-sm" />
+							<div class="card-body datasource-files">
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-schema-file">{{ 'JSON Schema'|trans }}</label>    
+									<div class="col-sm-10">
+										<input type="file" id="datasource-schema-file" name="datasource-schema-file" accept=".schema.json" class="form-control form-control-sm" />
 									</div>
 								</div>
-								<div class="form-group col-sm-12">    
-									<label class="col-sm-2 control-label" for="datasource-data-file">{{ 'JSON Data'|trans }}</label>    
-									<div class="col-sm-10">        
-										<input type="file" id="datasource-data-file" name="datasource-data-file" accept=".json" class="form-control input-sm" />
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="datasource-data-file">{{ 'JSON Data'|trans }}</label>    
+									<div class="col-sm-10">
+										<input type="file" id="datasource-data-file" name="datasource-data-file" accept=".json" class="form-control form-control-sm" />
 									</div>
 								</div>
 							</div>
 						</div>
-						<button id="btnDoImportDatasource" type="submit" form="datasource-import-form" class="btn btn-primary pull-right">{{ 'Import'|trans }}</button>
+						<button id="btnDoImportDatasource" type="submit" form="datasource-import-form" class="btn btn-primary float-right">{{ 'Import'|trans }}</button>
 						</form>
 						{% endif %}
 					</div>

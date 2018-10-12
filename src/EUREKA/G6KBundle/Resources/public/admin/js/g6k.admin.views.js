@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -71,8 +71,8 @@ $(function(){
 	if ( $( "#page-views" ).length ) {
 		if ( $( ".tree" ).length ) {
 			$('.tree').treegrid({
-				expanderExpandedClass: 'glyphicon glyphicon-folder-open',
-				expanderCollapsedClass: 'glyphicon glyphicon-folder-close'
+				expanderExpandedClass: 'fa fa-folder-open',
+				expanderCollapsedClass: 'fa fa-folder'
 			});
 		}
 		if ( $( "#view-create-form" ).length ) {
@@ -129,8 +129,8 @@ $(function(){
 						break;
 					case 'file':
 						var formgroup = $('<div>', {'class': 'form-group file'});
-						var label = $('<label>', {'class': 'control-label', 'text' : Translator.trans('File')});
-						var input = $('<input>', {'type': 'file', 'name': 'add-node-file', 'class': 'form-control input-sm'});
+						var label = $('<label>', {'class': 'col-form-label', 'text' : Translator.trans('File')});
+						var input = $('<input>', {'type': 'file', 'name': 'add-node-file', 'class': 'form-control form-control-sm'});
 						if (nodeType === 'template') {
 							input.attr('accept', '.twig');
 						}

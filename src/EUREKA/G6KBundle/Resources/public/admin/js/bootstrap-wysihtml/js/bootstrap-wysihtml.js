@@ -306,43 +306,43 @@
 	var toolbar = {
 		'emphasis':
 			`<div class="btn-group">
-				<a class="btn btn-default" data-wysihtml-command="bold" title="Bold [CTRL+B]">bold</a>
-				<a class="btn btn-default" data-wysihtml-command="italic" title="Italic [CTRL+I]">italic</a>
-				<a class="btn btn-default" data-wysihtml-command="underline" title="Underline [CTRL+U]">underline</a>
-				<a class="btn btn-default" data-wysihtml-command="superscript" title="Superscript"><span class="fa fa-superscript">
-				<a class="btn btn-default" data-wysihtml-command="subscript" title="Subscript"><span class="fa fa-subscript">
+				<a class="btn btn-light" data-wysihtml-command="bold" title="Bold [CTRL+B]">bold</a>
+				<a class="btn btn-light" data-wysihtml-command="italic" title="Italic [CTRL+I]">italic</a>
+				<a class="btn btn-light" data-wysihtml-command="underline" title="Underline [CTRL+U]">underline</a>
+				<a class="btn btn-light" data-wysihtml-command="superscript" title="Superscript"><span class="fa fa-superscript">
+				<a class="btn btn-light" data-wysihtml-command="subscript" title="Subscript"><span class="fa fa-subscript">
 			</div>`,
 
 		'link':
 			`<div class="btn-group">
-				<a class="btn btn-default" data-wysihtml-command="createLink" title="Add a hyperlink"><span class="fa fa-link"></span></a>
-				<a class="btn btn-default" data-wysihtml-command="removeLink" title="Delete hyperlink"><span class="fa fa-unlink"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="createLink" title="Add a hyperlink"><span class="fa fa-link"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="removeLink" title="Delete hyperlink"><span class="fa fa-unlink"></span></a>
 			</div>`,
 
 		'image':
-			`<a class="btn btn-default" data-wysihtml-command="insertImage" title="Add an image"><span class="fa fa-image"></span></a>`,
+			`<a class="btn btn-light" data-wysihtml-command="insertImage" title="Add an image"><span class="fa fa-image"></span></a>`,
 
 		'lists':
 			`<div class="btn-group">
-				<a class="btn btn-default" data-wysihtml-command="insertUnorderedList" title="Create / delete a bulleted list"><span class="fa fa-list-ul"></span></a>
-				<a class="btn btn-default" data-wysihtml-command="insertOrderedList" title="Create / delete a numbered list"><span class="fa fa-list-ol"></span></a>
-				<a class="btn btn-default" data-wysihtml-command="indent" title="Indent"><span class="fa fa-indent"></span></a>
-				<a class="btn btn-default" data-wysihtml-command="outdent" title="Deindent"><span class="fa fa-outdent"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="insertUnorderedList" title="Create / delete a bulleted list"><span class="fa fa-list-ul"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="insertOrderedList" title="Create / delete a numbered list"><span class="fa fa-list-ol"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="indent" title="Indent"><span class="fa fa-indent"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="outdent" title="Deindent"><span class="fa fa-outdent"></span></a>
 			</div>`,
 
 		'align':
 			`<div class="btn-group">
-				<a class="btn btn-default" data-wysihtml-command="alignLeftStyle" title="Align to the left"><span class="fa fa-align-left"></span></a>
-				<a class="btn btn-default" data-wysihtml-command="alignCenterStyle" title="Center the content"><span class="fa fa-align-center"></span></a>
-				<a class="btn btn-default" data-wysihtml-command="alignRightStyle" title="Align to the right"><span class="fa fa-align-right"></span></a>
-				<a class="btn btn-default" data-wysihtml-command="justifyFull" title="Justify"><span class="fa fa-align-justify"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="alignLeftStyle" title="Align to the left"><span class="fa fa-align-left"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="alignCenterStyle" title="Center the content"><span class="fa fa-align-center"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="alignRightStyle" title="Align to the right"><span class="fa fa-align-right"></span></a>
+				<a class="btn btn-light" data-wysihtml-command="justifyFull" title="Justify"><span class="fa fa-align-justify"></span></a>
 			</div>`,
 
 		'hilite':
-			`<button style="padding: 4px 6px 4px 6px" type="button" class="btn btn-default" aria-haspopup="true" aria-expanded="false">
+			`<button style="padding: 4px 6px 4px 6px" type="button" class="btn btn-light" aria-haspopup="true" aria-expanded="false">
 				<span style="display: inline-table; margin: 0; padding: 0; height: 20px;">
 					<span style="display: table-row; margin: 0; padding: 0;">
-						<span class="fa fa-font" style="display: table-cell; color: black;"></span>
+						<span class="fa fa-font" style="display: table-cell; color: white; background: black;"></span>
 						<b style="display: table-cell; vertical-align: middle; float:right; margin: 0" class="caret"></b>
 					</span>
 					<span style="display: table-row; margin: 0; padding: 0; margin-top: -2px">
@@ -363,7 +363,7 @@
 			</div>`,
 
 		'color':
-			`<button style="padding: 4px 6px 4px 6px" type="button" class="btn btn-default" aria-haspopup="true" aria-expanded="false">
+			`<button style="padding: 4px 6px 4px 6px" type="button" class="btn btn-light" aria-haspopup="true" aria-expanded="false">
 				<span style="display: inline-table; margin: 0; padding: 0; height: 20px;">
 					<span style="display: table-row; margin: 0; padding: 0;">
 						<span class="fa fa-font" style="display: table-cell; color: black;"></span>
@@ -387,46 +387,43 @@
 			</div>`,
 
 		'blocks':
-			`<button title="Styles" id="wysiwyg-font-style" type="button" data-wysihtml-command-group="formatBlock" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+			`<button title="Styles" id="wysiwyg-font-style" type="button" data-wysihtml-command-group="formatBlock" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
 				<span class="fa fa-font"></span>
 				<span class="current-block">Normal text</span>
-				<b class="caret"></b>
 			</button>
 			<ul class="dropdown-menu" aria-labelledby="wysiwyg-font-style" style="display: none;">
-				<li><a data-wysihtml-command="formatBlock" data-wysihtml-command-blank-value="true">Normal text</a></li>
-				<li><a data-wysihtml-command="formatBlock" data-wysihtml-command-value="h1">Heading 1</a></li>
-				<li><a data-wysihtml-command="formatBlock" data-wysihtml-command-value="h2">Heading 2</a></li>
-				<li><a data-wysihtml-command="formatBlock" data-wysihtml-command-value="h3">Heading 3</a></li>
-				<li><a data-wysihtml-command="formatBlock" data-wysihtml-command-value="h4">Heading 4</a></li>
-				<li><a data-wysihtml-command="formatBlock" data-wysihtml-command-value="h5">Heading 5</a></li>
-				<li><a data-wysihtml-command="formatBlock" data-wysihtml-command-value="h6">Heading 6</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="formatBlock" data-wysihtml-command-blank-value="true">Normal text</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="formatBlock" data-wysihtml-command-value="h1">Heading 1</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="formatBlock" data-wysihtml-command-value="h2">Heading 2</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="formatBlock" data-wysihtml-command-value="h3">Heading 3</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="formatBlock" data-wysihtml-command-value="h4">Heading 4</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="formatBlock" data-wysihtml-command-value="h5">Heading 5</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="formatBlock" data-wysihtml-command-value="h6">Heading 6</a></li>
 			</ul>`,
 
 		'font-named-sizes':
-			`<button title="Font size" id="wysiwyg-font-size" type="button" data-wysihtml-command-group="fontSize" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-				<span class="glyphicon glyphicon-text-size"></span>
+			`<button title="Font size" id="wysiwyg-font-size" type="button" data-wysihtml-command-group="fontSize" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+				<span class="fa fa-text-height"></span>
 				<span class="current-font-named-size">Normal</span>
-				<b class="caret"></b>
 			</button>
 			<ul class="dropdown-menu" aria-labelledby="wysiwyg-font-size" style="display: none;">
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-blank-value="true">Normal</a></li>
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-value="smaller">smaller</a></li>
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-value="larger">larger</a></li>
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-value="small">small</a></li>
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-value="x-small">x-small</a></li>
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-value="xx-small">xx-small</a></li>
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-value="medium">medium</a></li>
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-value="large">large</a></li>
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-value="x-large">x-large</a></li>
-				<li><a data-wysihtml-command="fontSize" data-wysihtml-command-value="xx-large">xx-large</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-blank-value="true">Normal</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-value="smaller">smaller</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-value="larger">larger</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-value="small">small</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-value="x-small">x-small</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-value="xx-small">xx-small</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-value="medium">medium</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-value="large">large</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-value="x-large">x-large</a></li>
+				<li><a class="dropdown-item" data-wysihtml-command="fontSize" data-wysihtml-command-value="xx-large">xx-large</a></li>
 			</ul>`,
 
 		'font-names':
 			`<div class="btn-group">
 				<div>
-					<button title="Fonts" id="wysiwyg-font-name" type="button" data-wysihtml-command-group="fontNameStyle" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+					<button title="Fonts" id="wysiwyg-font-name" type="button" data-wysihtml-command-group="fontNameStyle" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
 						<span class="current-font-name">Font...</span>
-						<b class="caret"></b>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="wysiwyg-font-name" style="display: none;">
 						<li><a class="sr-only" data-wysihtml-command="fontNameStyle" data-wysihtml-command-blank-value="true">Font...</a></li>
@@ -437,7 +434,7 @@
 		'font-fixed-sizes':
 			`<div class="btn-group">
 				<div>
-					<input title="Font size" type="text" list="wysihtml-size-list" class="wysihtml-size-input form-control input-sm value="10.5">
+					<input title="Font size" type="text" list="wysihtml-size-list" class="wysihtml-size-input form-control form-control-sm value="10.5">
 					<datalist id="wysihtml-size-list">
 						<option value="8">
 						<option value="9">
@@ -460,81 +457,81 @@
 			</div>`,
 
 		'code':
-			`<a title="Add a piece of computer code" class="btn btn-default" data-wysihtml-command="formatCode" data-wysihtml-command-value="language-html"><span class="fa fa-code"></span></a>`,
+			`<a title="Add a piece of computer code" class="btn btn-light" data-wysihtml-command="formatCode" data-wysihtml-command-value="language-html"><span class="fa fa-code"></span></a>`,
 
 		'table':
-			`<a title="Create table" class="btn btn-default" data-wysihtml-command="createTable"><span class="fa fa-table"></span></a>`,
+			`<a title="Create table" class="btn btn-light" data-wysihtml-command="createTable"><span class="fa fa-table"></span></a>`,
 
 		'undo':
 			`<div class="btn-group">
-				<a title="Undo" class="btn btn-default" data-wysihtml-command="undo"><span class="fa fa-undo"></span></a>
-				<a title="Redo" class="btn btn-default" data-wysihtml-command="redo"><span class="fa fa-repeat"></span></a>
+				<a title="Undo" class="btn btn-light" data-wysihtml-command="undo"><span class="fa fa-undo"></span></a>
+				<a title="Redo" class="btn btn-light" data-wysihtml-command="redo"><span class="fa fa-repeat"></span></a>
 			</div>`,
 
 		'html':
-			`<a title="HTML view" class="btn btn-default" data-wysihtml-action="change_view"><span class="fa fa-chevron-left"></span><span class="fa fa-chevron-right"></span></a>`
+			`<a title="HTML view" class="btn btn-light" data-wysihtml-action="change_view"><span class="fa fa-chevron-left"></span><span class="fa fa-chevron-right"></span></a>`
 	};
 
 	var dialogs = {
 		'createLink':
 			`<div class="row" data-wysihtml-dialog="createLink" style="display: none;">
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Link:</span>
-					<input type="url" class="form-control input-sm" data-wysihtml-dialog-field="href" value="http://">
+					<input type="url" class="form-control form-control-sm" data-wysihtml-dialog-field="href" value="http://">
 				</label>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Open in:</span>
-					<select class="form-control input-sm" data-wysihtml-dialog-field="target">
+					<select class="form-control form-control-sm" data-wysihtml-dialog-field="target">
 						<option value="">the same window</option>
 						<option value="_blank">a new window</option>
 					</select>
 				</label>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Title:</span>
-					<input class="form-control input-sm" data-wysihtml-dialog-field="title" value="">
+					<input class="form-control form-control-sm" data-wysihtml-dialog-field="title" value="">
 				</label>
-				<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-default btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>
+				<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>
 				<div class="alert" role="alert" style="display: none;"></div>
 				</div>`,
 
 		'insertImage':
 			`<div class="row" data-wysihtml-dialog="insertImage" style="display: none;">
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Local ?</span>
-					<input type="checkbox" class="form-control input-sm" data-wysihtml-dialog-field="data-local" style="display: inline; margin-top: -1px" value="false">
+					<input type="checkbox" class="form-control form-control-sm" data-wysihtml-dialog-field="data-local" style="display: inline; margin-top: -1px" value="false">
 				</label>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Image:</span>
-					<span class="local-image-name form-control btn btn-default input-sm" tabindex="0"></span>
-					<input type="text" class="form-control input-sm" data-wysihtml-dialog-field="src" value="http://">
+					<span class="local-image-name form-control btn btn-light form-control-sm" tabindex="0"></span>
+					<input type="text" class="form-control form-control-sm" data-wysihtml-dialog-field="src" value="http://">
 				</label>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Alignment:</span>
-					<select class="form-control input-sm" data-wysihtml-dialog-field="className">
+					<select class="form-control form-control-sm" data-wysihtml-dialog-field="className">
 						<option value="">default</option>
 						<option value="wysiwyg-float-left">left</option>
 						<option value="wysiwyg-float-right">right</option>
 					</select>
 				</label>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Alt:</span>
-					<input class="form-control input-sm" data-wysihtml-dialog-field="alt" value="">
+					<input class="form-control form-control-sm" data-wysihtml-dialog-field="alt" value="">
 				</label>
-				<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-default btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>
+				<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>
 				<div class="alert" role="alert" style="display: none;"></div>
 			</div>`,
 
 		'createTable':
 			`<div class="row" data-wysihtml-dialog="createTable" style="display: none;">
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Rows:</span>
-					<input class="form-control input-sm" data-wysihtml-dialog-field="rows" value="2">
+					<input class="form-control form-control-sm" data-wysihtml-dialog-field="rows" value="2">
 				</label>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Cols:</span>
-					<input class="form-control input-sm" data-wysihtml-dialog-field="cols" value="2">
+					<input class="form-control form-control-sm" data-wysihtml-dialog-field="cols" value="2">
 				</label>
-				<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-default btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>
+				<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>
 				<div class="alert" role="alert" style="display: none;"></div>
 			</div>`,
 
@@ -556,21 +553,21 @@
 
 		'tableProperties':
 			`<div class="row" data-wysihtml-dialog="tableProperties" style="display: none;">
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Caption</span>
-					<input name="caption" type="checkbox" class="form-control input-sm">
+					<input name="caption" type="checkbox" class="form-control form-control-sm">
 				</label>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Header</span>
-					<input name="thead" type="checkbox" class="form-control input-sm">
+					<input name="thead" type="checkbox" class="form-control form-control-sm">
 				</label>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Full width</span>
-					<input name="full-width" type="checkbox" class="form-control input-sm">
+					<input name="full-width" type="checkbox" class="form-control form-control-sm">
 				</label>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Alignment</span>
-					<select name="align" class="form-control input-sm">
+					<select name="align" class="form-control form-control-sm">
 						<option value=''>None</option>
 						<option value='left'>Left</option>
 						<option value='center'>Center</option>
@@ -594,7 +591,7 @@
 							<div class="alert" role="alert" style="display: none;"></div>
 						</div>
 						<div class="modal-footer">
-							<button class="btn btn-default modal-cancel" data-dismiss="modal" aria-hidden="true">Cancel</button>
+							<button class="btn btn-secondary modal-cancel" data-dismiss="modal" aria-hidden="true">Cancel</button>
 							<button class="btn btn-primary modal-ok">OK</button>
 						</div>
 					</div>
@@ -954,7 +951,7 @@
 		li.find('button').attr('title', title).attr('data-wysihtml-command-group', command);
 		if (/^(hiliteColor|bgColor)/.test(command)) {
 			li.attr('data-wysihtml-option', 'hilite');
-			li.find('button span.fa-font').attr('class', 'glyphicon glyphicon-text-background');
+			li.find('button span.fa-font').attr('class', 'fa fa-font');
 		} else {
 			li.attr('data-wysihtml-option', 'color');
 		}
@@ -1001,6 +998,7 @@
 		li.find('button').attr('data-wysihtml-command-group', command);
 		var menu = li.find('ul.dropdown-menu');
 		var a = $('<a>', {
+			'class': 'dropdown-item',
 			'data-wysihtml-command': command,
 			'data-wysihtml-command-blank-value': 'true',
 			'text':  self.options.translate('Current font')
@@ -1012,6 +1010,7 @@
 			var name = font[0];
 			var item = $('<li>');
 			var a = $('<a>', {
+				'class': 'dropdown-item',
 				'data-wysihtml-command': command,
 				'data-wysihtml-command-value': name
 			});
@@ -1265,7 +1264,7 @@
 					$(this).attr('title', self.options.translate(title));
 				}
 			});
-			self.toolbar.find('label.control-label > span').each(function() {
+			self.toolbar.find('label.col-form-label > span').each(function() {
 				var label = $(this).text();
 				$(this).text(self.options.translate(label));
 			});
@@ -1280,11 +1279,16 @@
 	}
 
 	var getElementPosition = function(self, element) {
+		var rect = element[0].getBoundingClientRect(); 
+		var scroll = {
+			left: self.iframe[0].offsetLeft + self.iframe[0].scrollLeft,
+			top: self.iframe[0].offsetTop + self.iframe[0].scrollTop
+		};
 		return {
-			top: element.offset().top + self.options.tableToolsOffset.top + self.iframe.offset().top /* - $(window).scrollTop() */ - self.iwindow.scrollTop(),
-			left: element.offset().left + self.options.tableToolsOffset.left + self.iframe.offset().left /* - $(window).scrollLeft() */ - self.iwindow.scrollLeft(),
-			width: element.outerWidth(true),
-			height: element.outerHeight(true)
+			left: rect.left + scroll.left,
+			top: rect.top + scroll.top,
+			width: rect.right - rect.left,
+			height: rect.bottom - rect.top
 		};
 	}
 
@@ -1346,12 +1350,6 @@
 					placement = 'left';
 				}
 			}
-			// var clipPath = 'inset('
-				// + Math.floor(self.iframe.offset().top) + 'px '
-				// + Math.floor(self.iframe.offset().left + self.iframe.outerWidth()) + 'px '
-				// + Math.floor(self.iframe.offset().top + self.iframe.outerHeight()) + 'px '
-				// + Math.floor(self.iframe.offset().left)  + 'px'
-				// + ')';
 			switch(placement) {
 				case 'right': 
 					self.tableTools.css({ 
@@ -1633,7 +1631,7 @@
 					var input = $('<input>', {
 						"type": "file",
 						"accept": "image/*",
-						"class": "form-control input-sm",
+						"class": "form-control form-control-sm",
 						"value": "" 
 					});
 					src.before(input);
@@ -1931,7 +1929,7 @@
 		});
 		$.each(self.options.customDialogs, function(key, dialog) {
 			dialog  = '<div class="row" data-wysihtml-dialog="' + key + '" style="display: none;">' + dialog;
-			dialog += '<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-default btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>';
+			dialog += '<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>';
 			dialog += '<div class="alert" role="alert" style="display: none;"></div>';
 			wysitoolbar.append(dialog);
 		});

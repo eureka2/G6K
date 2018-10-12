@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -403,11 +403,11 @@ THE SOFTWARE.
 	Simulators.drawSourceForDisplay = function(source) {
 		var sourceElementId = 'source-' + source.id;
 		var sourcePanelContainer = $('<div>', { 'class': 'panel-group', id: sourceElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var sourcePanel = $('<div>', { 'class': 'panel panel-info' });
-		sourcePanel.append('<div class="panel-heading" role="tab" id="' + sourceElementId + '-panel"><button class="btn btn-info pull-right update-button delete-source" title="' + Translator.trans('Delete') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-source" title="' + Translator.trans('Edit') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + ' ' + source.label + '</a></h4></div>');
+		var sourcePanel = $('<div>', { 'class': 'card bg-info' });
+		sourcePanel.append('<div class="panel-heading" role="tab" id="' + sourceElementId + '-panel"><button class="btn btn-info float-right update-button delete-source" title="' + Translator.trans('Delete') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button><button class="btn btn-info float-right update-button edit-source" title="' + Translator.trans('Edit') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fa fa-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + ' ' + source.label + '</a></h4></div>');
 		var sourcePanelCollapse = $('<div id="collapse' + sourceElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sourceElementId + '-panel"></div>');
 		var sourcePanelBody = $('<div class="panel-body"></div>');
-		var sourceContainer = $('<div class="panel panel-default source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
+		var sourceContainer = $('<div class="card bg-light source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
 		var sourceContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
@@ -492,7 +492,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.drawSourceParametersForDisplay  = function(sourceId) {
-		var parametersPanel = $('<div>', { 'class': 'panel panel-default source-parameters-panel', id: 'source-' + sourceId + '-source--parameters-panel' });
+		var parametersPanel = $('<div>', { 'class': 'card bg-light source-parameters-panel', id: 'source-' + sourceId + '-source--parameters-panel' });
 		parametersPanel.append('<div class="panel-heading">' + Translator.trans('Parameters') + '</div>');
 		var parametersPanelBody = $('<div class="panel-body"></div>');
 		parametersPanel.append(parametersPanelBody);
@@ -500,7 +500,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.drawSourceParameterForDisplay = function(datasource, parameter) {
-		var parameterPanel = $('<div>', { 'class': 'panel panel-default source-parameter-container',  'data-id': parameter.id });
+		var parameterPanel = $('<div>', { 'class': 'card bg-light source-parameter-container',  'data-id': parameter.id });
 		parameterPanel.append('<div class="panel-heading">' + Translator.trans('Parameter %id%', { 'id': parameter.id }) + '</div>');
 		var parameterPanelBody = $('<div>', { 'class': 'panel-body', id: 'source-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
@@ -549,8 +549,8 @@ THE SOFTWARE.
 	}
 
 	Simulators.requestColumnsAttributeForInput = function(id, sourceId, label, datasource, dbtype, table) {
-		var attribute = '<div class="form-group col-sm-12">';
-		attribute    += '    <label for="' + id + '" class="col-sm-4 control-label">';
+		var attribute = '<div class="form-group row">';
+		attribute    += '    <label for="' + id + '" class="col-sm-4 col-form-label">';
 		attribute    += '    ' + label + '</label>';
 		attribute    += '    <div id="' + id + '" class="col-sm-8 input-group">';
 		attribute    += '        <ul class="request-columns-container form-control" tabindex="0" title="' + Translator.trans('Click the + button on the right to add a column') + '" data-source="' + sourceId + '" data-database-type="' + dbtype + '" data-datasource="' + datasource + '" data-table="' + table + '">';
@@ -574,8 +574,8 @@ THE SOFTWARE.
 	}
 
 	Simulators.requestFilterAttributeForInput = function(id, sourceId, connector, datasource, dbtype, table) {
-		var attribute = '<div class="request-filter-tools-container form-group col-sm-12">';
-		attribute    += '    <label for="' + id + '-tools" class="col-sm-4 control-label"></label>';
+		var attribute = '<div class="request-filter-tools-container form-group row">';
+		attribute    += '    <label for="' + id + '-tools" class="col-sm-4 col-form-label"></label>';
 		attribute    += '    <div id="' + id + '-tools" class="col-sm-8">';
 		attribute    += '        <div class="request-filter-connector-container">';
 		attribute    += '            <span class="editable-select connector" data-value="' + connector + '">' + Translator.trans(connector == 'all'? 'All of the following' : (connector == 'any' ? 'Any of the following' : 'Advanced')) + '</span>';
@@ -585,16 +585,16 @@ THE SOFTWARE.
 		attribute    += '        </div>';
 		attribute    += '    </div>';
 		attribute    += '</div>';
-		attribute    += '<div class="request-filter-conditions-container form-group col-sm-12">';
-		attribute    += '    <label for="' + id + '-conditions" class="col-sm-4 control-label">' + Translator.trans('Filter') + '</label>';
+		attribute    += '<div class="request-filter-conditions-container form-group row">';
+		attribute    += '    <label for="' + id + '-conditions" class="col-sm-4 col-form-label">' + Translator.trans('Filter') + '</label>';
 		attribute    += '    <div id="' + id + '-conditions" class="col-sm-8 input-group">';
 		attribute    += '        <ul class="request-filter-conditions form-control" tabindex="0" title="' + Translator.trans('Click the + button on the right to add a condition') + '" data-source="' + sourceId + '" data-database-type="' + dbtype + '" data-datasource="' + datasource + '" data-table="' + table + '">';
 		attribute    += '        </ul>';
 		attribute    += '        <span class="input-group-addon"><a href="#" class="add-request-condition">+</a></span>';
 		attribute    += '    </div>';
 		attribute    += '</div>';
-		attribute    += '<div class="request-filter-expression-container form-group col-sm-12">';
-		attribute    += '    <label for="' + id + '-expression" class="col-sm-4 control-label"></label>';
+		attribute    += '<div class="request-filter-expression-container form-group row">';
+		attribute    += '    <label for="' + id + '-expression" class="col-sm-4 col-form-label"></label>';
 		attribute    += '    <div id="' + id + '-expression" class="col-sm-8 input-group">';
 		attribute    += '        <ul class="form-control request-filter-expression" data-source="' + sourceId + '" data-database-type="' + dbtype + '" data-datasource="' + datasource + '" data-table="' + table + '">';
 		attribute    += '        </ul>';
@@ -629,7 +629,7 @@ THE SOFTWARE.
 		var bracket = parenthesis == '(' ? '[' : ']';
 		var attribute = '<li class="request-expression-token-wrap request-parenthesis-container">';
 		attribute    += '    <div href="#" class="request-expression-token request-bracket" data-value="' + parenthesis + '">';
-		attribute    += '    ' + bracket + '<a href="#" class="glyphicon glyphicon-remove request-expression-delete-token"></a>';
+		attribute    += '    ' + bracket + '<a href="#" class="fa fa-remove request-expression-delete-token"></a>';
 		attribute    += '    </div>';
 		attribute    += '</li>';
 		return $(attribute);
@@ -671,8 +671,8 @@ THE SOFTWARE.
 	}
 
 	Simulators.requestOrderByKeysAttributeForInput = function(id, sourceId, label, datasource, dbtype, table) {
-		var attribute = '<div class="form-group col-sm-12">';
-		attribute    += '    <label for="' + id + '" class="col-sm-4 control-label">';
+		var attribute = '<div class="form-group row">';
+		attribute    += '    <label for="' + id + '" class="col-sm-4 col-form-label">';
 		attribute    += '    ' + label + '</label>';
 		attribute    += '    <div id="' + id + '" class="col-sm-8 input-group">';
 		attribute    += '        <ul class="request-orderbykeys-container form-control" tabindex="0" title="' + Translator.trans('Click the + button on the right to add a sort key') + '" data-source="' + sourceId + '" data-database-type="' + dbtype + '" data-datasource="' + datasource + '" data-table="' + table + '">';
@@ -695,11 +695,11 @@ THE SOFTWARE.
 	Simulators.drawSourceForInput = function(source) {
 		var sourceElementId = 'source-' + source.id;
 		var sourcePanelContainer = $('<div>', { 'class': 'panel-group', id: sourceElementId, role: 'tablist', 'aria-multiselectable': 'true' });
-		var sourcePanel = $('<div>', { 'class': 'panel panel-info' });
+		var sourcePanel = $('<div>', { 'class': 'card bg-info' });
 		sourcePanel.append('<div class="panel-heading" role="tab" id="' + sourceElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + '</a></h4></div>');
 		var sourcePanelCollapse = $('<div id="collapse' + sourceElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sourceElementId + '-panel"></div>');
 		var sourcePanelBody = $('<div class="panel-body"></div>');
-		var sourceContainer = $('<div class="panel panel-default source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
+		var sourceContainer = $('<div class="card bg-light source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
 		var sourceContainerBody = $('<div class="panel-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
@@ -835,11 +835,11 @@ THE SOFTWARE.
 		sourceContainerBody.append(attributesContainer);
 		sourceContainer.append(sourceContainerBody);
 		sourcePanelBody.append(sourceContainer);
-		var sourceButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + sourceElementId + '-buttons-panel"></div>');
+		var sourceButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + sourceElementId + '-buttons-panel"></div>');
 		var sourceButtonsBody = $('<div class="panel-body source-buttons"></div>');
-		sourceButtonsBody.append('<button class="btn btn-success pull-right validate-edit-source">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		sourceButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-source">' + Translator.trans('Cancel') + '</span></button>');
-		sourceButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		sourceButtonsBody.append('<button class="btn btn-success float-right validate-edit-source">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		sourceButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-source">' + Translator.trans('Cancel') + '</span></button>');
+		sourceButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		sourceButtonsPanel.append(sourceButtonsBody);
 		sourcePanelBody.append(sourceButtonsPanel);
 		sourcePanelCollapse.append(sourcePanelBody);
@@ -1820,16 +1820,16 @@ THE SOFTWARE.
 	}
 
 	Simulators.drawSourceParametersForInput = function(sourceId) {
-		var parametersPanel = $('<div>', { 'class': 'panel panel-default source-parameters-panel', id: 'source-' + sourceId + '-source-parameters-panel' });
-		parametersPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button add-source-parameter" title="' + Translator.trans('Add parameter') + '"><span class="button-label">' + Translator.trans('Add parameter') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button>' + Translator.trans('Parameters') + '</div>');
+		var parametersPanel = $('<div>', { 'class': 'card bg-light source-parameters-panel', id: 'source-' + sourceId + '-source-parameters-panel' });
+		parametersPanel.append('<div class="panel-heading"><button class="btn btn-secondary float-right update-button add-source-parameter" title="' + Translator.trans('Add parameter') + '"><span class="button-label">' + Translator.trans('Add parameter') + '</span> <span class="fa fa-plus-circle"></span></button>' + Translator.trans('Parameters') + '</div>');
 		var parametersPanelBody = $('<div class="panel-body"></div>');
 		parametersPanel.append(parametersPanelBody);
 		return parametersPanel;
 	}
 
 	Simulators.drawSourceParameterForInput = function(datasource, parameter) {
-		var parameterPanel = $('<div>', { 'class': 'panel panel-default source-parameter-panel',  'data-id': parameter.id,  'data-name': parameter.name  });
-		parameterPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-source-parameter" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
+		var parameterPanel = $('<div>', { 'class': 'card bg-light source-parameter-panel',  'data-id': parameter.id,  'data-name': parameter.name  });
+		parameterPanel.append('<div class="panel-heading"><button class="btn btn-secondary float-right update-button delete-source-parameter" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
 		var parameterPanelBody = $('<div>', { 'class': 'panel-body', id: 'data-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');

@@ -223,10 +223,10 @@ THE SOFTWARE.
 	}
 
 	Datasources.simpleAttributeForInput = function(id, type, name, label, value, required, placeholder, options) {
-		var attribute = '<div class="form-group col-sm-12" data-attribute="' + name + '">';
-		attribute    += '	<label for="' + id + '" class="col-sm-2 control-label">';
+		var attribute = '<div class="form-group row" data-attribute="' + name + '">';
+		attribute    += '	<label for="' + id + '" class="col-sm-2 col-form-label">';
 		if (! required) {
-			attribute    += '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		attribute    += '    <div class="col-sm-10">';
@@ -252,7 +252,7 @@ THE SOFTWARE.
 	}
 
 	Datasources.removeAttribute = function(attr) {
-		var id =  attr.parent('label.control-label').attr('for');
+		var id =  attr.parent('label.col-form-label').attr('for');
 		var input = $('#' + id);
 		var ids  = input.attr('id').split('-');
 		var name = ids.pop();
@@ -282,9 +282,9 @@ THE SOFTWARE.
 	}
 
 	Datasources.drawChoicesForInput = function(fieldId) {
-		var choicesPanel = $('<div>', { 'class': 'panel panel-default choices-panel', id: 'field-' + fieldId + '-choices-panel' });
-		choicesPanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice-source" title="' + Translator.trans('Delete source') + '"><span class="button-label">' + Translator.trans('Delete source') + '</span><span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice-source" title="' + Translator.trans('Add source') + '"><span class="button-label">' + Translator.trans('Add source') + '</span><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-default pull-right update-button add-choice" title="' + Translator.trans('Add choice') + '"><span class="button-label">' + Translator.trans('Add choice') + '</span><span class="glyphicon glyphicon-plus-sign"></span></button>' + Translator.trans('Choices') + '</div>');
-		var choicesPanelBody = $('<div class="panel-body"></div>');
+		var choicesPanel = $('<div>', { 'class': 'card bg-light choices-panel', id: 'field-' + fieldId + '-choices-panel' });
+		choicesPanel.append('<div class="card-header"><button class="btn btn-secondary pull-right update-button delete-choice-source" title="' + Translator.trans('Delete source') + '"><span class="button-label">' + Translator.trans('Delete source') + '</span><span class="fa fa-minus-circle"></span></button><button class="btn btn-secondary pull-right update-button add-choice-source" title="' + Translator.trans('Add source') + '"><span class="button-label">' + Translator.trans('Add source') + '</span><span class="fa fa-plus-circle"></span></button><button class="btn btn-secondary pull-right update-button add-choice" title="' + Translator.trans('Add choice') + '"><span class="button-label">' + Translator.trans('Add choice') + '</span><span class="fa fa-plus-circle"></span></button>' + Translator.trans('Choices') + '</div>');
+		var choicesPanelBody = $('<div class="card-body"></div>');
 		choicesPanel.append(choicesPanelBody);
 		return choicesPanel;
 	}
@@ -292,8 +292,8 @@ THE SOFTWARE.
 	Datasources.bindChoices = function(choicesPanel) {
 		choicesPanel.find('button.add-choice').click(function(e) {
 			e.preventDefault();
-			var choicesContainer = choicesPanel.find('> .panel-body');
-			var id = choicesContainer.children('div.panel').length + 1;
+			var choicesContainer = choicesPanel.find('> .card-body');
+			var id = choicesContainer.children('div.card').length + 1;
 			var fieldId = choicesPanel.attr('id').match(/^field-(\d+)/)[1];
 			var choice = {
 				id: id,
@@ -308,7 +308,7 @@ THE SOFTWARE.
 		});
 		choicesPanel.find('button.add-choice-source').click(function(e) {
 			e.preventDefault();
-			var choicesContainer = choicesPanel.find('> .panel-body');
+			var choicesContainer = choicesPanel.find('> .card-body');
 			var fieldId = choicesPanel.attr('id').match(/^field-(\d+)/)[1];
 			var choiceSource = {
 				id: 1,
@@ -331,7 +331,7 @@ THE SOFTWARE.
 		});
 		choicesPanel.find('button.delete-choice-source').click(function(e) {
 			e.preventDefault();
-			var choicesContainer = choicesPanel.find('> .panel-body');
+			var choicesContainer = choicesPanel.find('> .card-body');
 			choicesContainer.find('.attributes-container').remove();
 			choicesPanel.find('button.add-choice').addClass('update-button').show();
 			choicesPanel.find('button.add-choice-source').addClass('update-button').show();
@@ -340,13 +340,13 @@ THE SOFTWARE.
 	}
 
 	Datasources.drawChoiceForInput = function(choice) {
-		var choicePanel = $('<div>', { 'class': 'panel panel-default choice-panel',  'data-id': choice.id  });
-		choicePanel.append('<div class="panel-heading"><button class="btn btn-default pull-right update-button delete-choice" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span><span class="glyphicon glyphicon-minus-sign"></span></button>' + Translator.trans('Choice %id%', { 'id' : choice.id }) + '</div>');
-		var choicePanelBody = $('<div>', { 'class': 'panel-body', id: 'field-' + choice.fieldId + '-choice-' + choice.id + '-panel' });
+		var choicePanel = $('<div>', { 'class': 'card bg-light choice-panel',  'data-id': choice.id  });
+		choicePanel.append('<div class="card-header"><button class="btn btn-secondary pull-right update-button delete-choice" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span><span class="fa fa-minus-circle"></span></button>' + Translator.trans('Choice %id%', { 'id' : choice.id }) + '</div>');
+		var choicePanelBody = $('<div>', { 'class': 'card-body', id: 'field-' + choice.fieldId + '-choice-' + choice.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
-		attributes.append('<div class="form-group col-sm-12"><label for="field-' + choice.fieldId + '-choice-' + choice.id + '-value" class="col-sm-4 control-label">' + Translator.trans('Value') + '</label><div class="col-sm-8"><input type="text" name="field-' + choice.fieldId + '-choice-value[]" id="field-' + choice.fieldId + '-choice-' + choice.id + '-value" class="form-control simple-value" placeholder="Choice value"  value="' + choice.value + '" /></div></div>');
-		attributes.append('<div class="form-group col-sm-12"><label for="field-' + choice.fieldId + '-choice-' + choice.id + '-label" class="col-sm-4 control-label">' + Translator.trans('Label') + '</label><div class="col-sm-8"><input type="text" name="field-' + choice.fieldId + '-choice-label[]" id="field-' + choice.fieldId + '-choice-' + choice.id + '-label" class="form-control simple-value" placeholder="Choice label"  value="' + choice.label + '" /></div></div>');
+		attributes.append('<div class="form-group row"><label for="field-' + choice.fieldId + '-choice-' + choice.id + '-value" class="col-sm-4 col-form-label">' + Translator.trans('Value') + '</label><div class="col-sm-8"><input type="text" name="field-' + choice.fieldId + '-choice-value[]" id="field-' + choice.fieldId + '-choice-' + choice.id + '-value" class="form-control simple-value" placeholder="Choice value"  value="' + choice.value + '" /></div></div>');
+		attributes.append('<div class="form-group row"><label for="field-' + choice.fieldId + '-choice-' + choice.id + '-label" class="col-sm-4 col-form-label">' + Translator.trans('Label') + '</label><div class="col-sm-8"><input type="text" name="field-' + choice.fieldId + '-choice-label[]" id="field-' + choice.fieldId + '-choice-' + choice.id + '-label" class="form-control simple-value" placeholder="Choice label"  value="' + choice.label + '" /></div></div>');
 		attributesContainer.append(attributes);
 		choicePanelBody.append(attributesContainer);
 		choicePanel.append(choicePanelBody);
@@ -358,8 +358,8 @@ THE SOFTWARE.
 			e.preventDefault();
 			var choicesPanel = choicePanel.parents('.choices-panel');
 			choicePanel.remove();
-			if (choicesPanel.find('> .panel-body').children().length == 0) {
-				var choicesPanelHeading = choicesPanel.find('> .panel-heading');
+			if (choicesPanel.find('> .card-body').children().length == 0) {
+				var choicesPanelHeading = choicesPanel.find('> .card-header');
 				choicesPanelHeading.find('button.add-choice-source').addClass('update-button').show();
 			}
 		});
@@ -484,10 +484,10 @@ THE SOFTWARE.
 		var column = '<tr>' +
 			'<td class="new-field-id" rowspan="3">' + num + '</td>' +
 			'<td class="new-field-name">' +
-			'<input name="field[]" class="form-control input-sm" value="' + field[1] + '">' +
+			'<input name="field[]" class="form-control form-control-sm" value="' + field[1] + '">' +
 			'</td>' +
 			'<td class="new-type">' +
-			'<select name="type[]" class="form-control input-sm">';
+			'<select name="type[]" class="form-control form-control-sm">';
 		$.each(Admin.types, function(index, value) {
 			if (index != 'today' && index != 'table' && index != 'array') {
 				column += '<option value="' + index + '"';
@@ -501,7 +501,7 @@ THE SOFTWARE.
 			'</select>' +
 			'</td>' +
 			'<td class="new-notnull">' +
-			'<select name="notnull[]" class="form-control input-sm"';
+			'<select name="notnull[]" class="form-control form-control-sm"';
 		if (field[4] == '-1') {
 			column += ' disabled="disabled"';
 			field[4] = '0';
@@ -523,12 +523,12 @@ THE SOFTWARE.
 			'</select>' +
 			'</td>' +
 			'<td class="new-field-label">' +
-			'<input name="label[]" class="form-control input-sm" value="' + field[2] + '">' +
+			'<input name="label[]" class="form-control form-control-sm" value="' + field[2] + '">' +
 			'</td>' +
 			'</tr>' +
 			'<tr>' +
 			'<td class="new-field-description" colspan="5">' +
-			'<textarea rows="1" name="description[]" class="richtext form-control input-sm" placeholder="' + Translator.trans('Field description') + '">' + field[3] + '</textarea>' +
+			'<textarea rows="1" name="description[]" class="richtext form-control form-control-sm" placeholder="' + Translator.trans('Field description') + '">' + field[3] + '</textarea>' +
 			'</td>' +
 			'</tr>' +
 			'<tr>' +
@@ -551,7 +551,7 @@ THE SOFTWARE.
 			$column.next().next().find("td.new-field-choices").append(choicesPanel).show();
 			if (field[7]) {
 				var choiceSource = JSON.parse(field[7]);
-				var choicesContainer = choicesPanel.find('> .panel-body');
+				var choicesContainer = choicesPanel.find('> .card-body');
 				var fieldId = choicesPanel.attr('id').match(/^field-(\d+)/)[1];
 				choiceSource['fieldId'] = fieldId - 1;
 				var choicePanel = Datasources.drawChoiceSourceForInput(choiceSource);
@@ -562,10 +562,10 @@ THE SOFTWARE.
 				Datasources.bindChoiceSource(choicePanel);
 			} else if (field[6]) {
 				var choices = JSON.parse(field[6]);
-				var choicesContainer = choicesPanel.find('> .panel-body');
+				var choicesContainer = choicesPanel.find('> .card-body');
 				var fieldId = choicesPanel.attr('id').match(/^field-(\d+)/)[1];
 				$.each(choices, function(value, label) {
-					var id = choicesContainer.children('div.panel').length + 1;
+					var id = choicesContainer.children('div.card').length + 1;
 					var choice = {
 						id: id,
 						fieldId: fieldId - 1,
@@ -735,7 +735,7 @@ THE SOFTWARE.
 				return; 
 			},
 		});
-		$('#page-datasources #' + tablename).find('thead tr:eq(1)').append('<th class="tabledit-toolbar-column"><button name="btnFilter" class="btn btn-default" style="white-space: nowrap; margin:0;padding:0.3em;width:100%"><span class="button-label" style="font-size: 0.8em;">' + Translator.trans('Filtrate') + '</span> <span style="float:none;" class="glyphicon glyphicon-filter"></span></button></th>');
+		$('#page-datasources #' + tablename).find('thead tr:eq(1)').append('<th class="tabledit-toolbar-column"><button name="btnFilter" class="btn btn-secondary" style="white-space: nowrap; margin:0;padding:0.3em;width:100%"><span class="button-label" style="font-size: 0.8em;">' + Translator.trans('Filtrate') + '</span> <span style="float:none;" class="fa fa-filter"></span></button></th>');
 
 	}
 

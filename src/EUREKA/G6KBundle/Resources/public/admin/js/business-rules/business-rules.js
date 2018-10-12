@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -99,9 +99,9 @@ THE SOFTWARE.
 		},
 		onError: function(error) { console.log('error : ' + error); },
 		language: 'en',
-		operandHolder: { classes: ['button', 'button-default'] },
-		operatorHolder: { classes: ['button', 'button-default'] },
-		nestedExpression: { classes: ['button', 'button-default'] }
+		operandHolder: { classes: ['button', 'button-secondary'] },
+		operatorHolder: { classes: ['button', 'button-secondary'] },
+		nestedExpression: { classes: ['button', 'button-secondary'] }
 	};
 	
 	function findRuleIndexByName(name) {
@@ -214,14 +214,14 @@ THE SOFTWARE.
 	function drawRule(rule) {
 		var businessRules = $("#business-rules");
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
-		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
-		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right delete-rule">' + Translator.trans('Delete') + ' <span class="glyphicon glyphicon-minus-sign"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> ' + Translator.trans('Rule') + ' <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
-		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse', role: 'tabpanel' });
+		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'card card-info sortable rule-container' });
+		ruleContainer.append('<div class="card-header" role="tab"><button class="btn btn-info float-right delete-rule">' + Translator.trans('Delete') + ' <span class="fa fa-minus-circle"></span></button><h4 class="card-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> ' + Translator.trans('Rule') + ' <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
+		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'card-body panel-collapse collapse', role: 'tabpanel' });
 		ruleContainer.append(ruleBody);
-		ruleBody.append('<div class="panel panel-default"><div class="panel-body form-inline"><div class="form-group"><label>' + Translator.trans('Name') + '</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>' + Translator.trans('Label') + '</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div><div class="panel-body"><div class="conditions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('then do ...') + '</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('else do ...') + '</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');		
+		ruleBody.append('<div class="card bg-light"><div class="card-body text-white form-inline"><div class="form-group"><label>' + Translator.trans('Name') + '</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>' + Translator.trans('Label') + '</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
+		ruleBody.append('<div class="card bg-light"><div class="card-header"><h4>' + Translator.trans('When ...') + '</h4></div><div class="card-body text-white"><div class="conditions"></div></div></div>');
+		ruleBody.append('<div class="card bg-light"><div class="card-header"><h4>' + Translator.trans('then do ...') + '</h4></div><div class="card-body text-white"><div class="if-actions"></div></div></div>');
+		ruleBody.append('<div class="card bg-light"><div class="card-header"><h4>' + Translator.trans('else do ...') + '</h4></div><div class="card-body text-white"><div class="else-actions"></div></div></div>');		
 		businessRules.append(ruleContainer);
 		return ruleContainer;
 	}
@@ -245,7 +245,7 @@ THE SOFTWARE.
 			var ruleContainer = drawRule(rule);
 			rule.elementId = ruleContainer.attr('id');
 			bindRule(rule);
-			ruleContainer.find('> .panel-heading a').click();
+			ruleContainer.find('> .card-header a').click();
 			// ruleContainer[0].scrollIntoView(true);
 			$("html, body").animate({ scrollTop: ruleContainer.offset().top }, 500);
 		});

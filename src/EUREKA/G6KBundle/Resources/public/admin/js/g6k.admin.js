@@ -38,10 +38,10 @@ THE SOFTWARE.
 			var options = context.options;
 			var datas = [];
 			$.each(Simulators.dataset, function(name, d) {
-				datas.push('<li><a data-wysihtml-command="insertDataReference" data-wysihtml-command-value="' + d.id + '|' + d.label + '">' + d.label + '</a></li>');
+				datas.push('<li><a class="dropdown-item" data-wysihtml-command="insertDataReference" data-wysihtml-command-value="' + d.id + '|' + d.label + '">' + d.label + '</a></li>');
 			});
 			return 	'<li class="dropdown">' +
-						'<button title="Insert a data" type="button" data-wysihtml-command-group="insertDataReference" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">' + 
+						'<button title="Insert a data" type="button" data-wysihtml-command-group="insertDataReference" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">' + 
 							'<span class="current-font">Datas </span>' +
 							'<b class="caret"></b>' + 
 						'</button>' +
@@ -53,20 +53,20 @@ THE SOFTWARE.
 		insertFootnoteReference: function(context) {
 			var locale = context.locale;
 			var options = context.options;
-			return '<li class="foot-note-reference"><a title="Insert a reference to a footnote" class="btn btn-default" data-wysihtml-command="insertFootnoteReference"><img width="16" height="16" alt="!" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAcCAYAAACOGPReAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gQeDg4P1ryLUAAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAABWklEQVRIx+2WMUvDUBDH/xeCq5MRpKAfwA6FuKhT45ZN51bi4urYQUjBqVBHhy4KXYNQv4CL4FBBRTcHwdFufoK/Q3jh+ZqkNU3AwYODR97d713ucvciJCEiRElCUgRAaUAltn7CojD1xhYqEGveCJSaUaXVI8kpSdENiqRD+dtm5dKM748k2LnCKgCgEQKb75ccDiczC5UnSys4AOADANbWgebGNYDJQjmtpFD/0GJtmjVUsj6zvCFkldHzZhB20e7J86muUPrAEBG22+Ic18QXifX2EcuJx9cL0O9vxXs1X85u6lMDh4znia6tFpzoEA/m8yl1u0Q09lL24gVJ6DoaoT7Yw0c28IQYPPm6z0yoAl808TkFdPaJ3ltg2s8FJYm7IXZPGxrY8YjwuZNmmwo118p4HMHruiDgEp3X0IT8OtIEfA4P270gz0axflwnf/o2reRnopKB8g3K/kUKbv6tqAAAAABJRU5ErkJggg=="></a></li>';
+			return '<li class="foot-note-reference"><a title="Insert a reference to a footnote" class="btn btn-light" data-wysihtml-command="insertFootnoteReference"><img width="16" height="16" alt="!" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAcCAYAAACOGPReAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gQeDg4P1ryLUAAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAABWklEQVRIx+2WMUvDUBDH/xeCq5MRpKAfwA6FuKhT45ZN51bi4urYQUjBqVBHhy4KXYNQv4CL4FBBRTcHwdFufoK/Q3jh+ZqkNU3AwYODR97d713ucvciJCEiRElCUgRAaUAltn7CojD1xhYqEGveCJSaUaXVI8kpSdENiqRD+dtm5dKM748k2LnCKgCgEQKb75ccDiczC5UnSys4AOADANbWgebGNYDJQjmtpFD/0GJtmjVUsj6zvCFkldHzZhB20e7J86muUPrAEBG22+Ic18QXifX2EcuJx9cL0O9vxXs1X85u6lMDh4znia6tFpzoEA/m8yl1u0Q09lL24gVJ6DoaoT7Yw0c28IQYPPm6z0yoAl808TkFdPaJ3ltg2s8FJYm7IXZPGxrY8YjwuZNmmwo118p4HMHruiDgEp3X0IT8OtIEfA4P270gz0axflwnf/o2reRnopKB8g3K/kUKbv6tqAAAAABJRU5ErkJggg=="></a></li>';
 		}
 	};
 
 	Admin.wysihtml5CustomDialog = {
 		insertFootnoteReference:
 			`<div>
-				<label class="control-label">
+				<label class="col-form-label">
 					<span>Footnote:</span>
-					<input type="number" min="1" class="form-control input-sm" data-wysihtml-dialog-field="data-footnote" value="1">
+					<input type="number" min="1" class="form-control form-control-sm" data-wysihtml-dialog-field="data-footnote" value="1">
 				</label>
 				<label class="control-label">
 					<span>Title:</span>
-					<input class="form-control input-sm" data-wysihtml-dialog-field="title" value="">
+					<input class="form-control form-control-sm" data-wysihtml-dialog-field="title" value="">
 				</label>
 			</div>`,
 	};
@@ -139,10 +139,6 @@ THE SOFTWARE.
 		pasteParserRulesets: window.wysihtmlParserPasteRulesets,
 		translate: function(term, locale) {
 			return Translator.trans(term);
-		},
-		tableToolsOffset: {
-			top: -102,
-			left: 0
 		},
 		events: {
 			'beforecommand:composer': function(e) {
@@ -442,7 +438,7 @@ $(function(){
 	$('a[data-confirm], button[data-confirm]').click(function(ev) {
 		var href = $(this).attr('href');
 		if (!$('#dataConfirmModal').length) {
-			$('body').append('<div id="dataConfirmModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="' + Translator.trans('Close') + '"><span aria-hidden="true">&times;</span></button><h4 id="dataConfirmLabel" class="modal-title">' + Translator.trans('Please Confirm') + '</h4></div><div class="modal-body"></div><div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" aria-hidden="true">' + Translator.trans('Cancel') + '</button><a class="btn btn-primary" id="dataConfirmOK">' + Translator.trans('OK') + '</a></div></div></div></div>');
+			$('body').append('<div id="dataConfirmModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h4 id="dataConfirmLabel" class="modal-title">' + Translator.trans('Please Confirm') + '</h4><button type="button" class="close" data-dismiss="modal" aria-label="' + Translator.trans('Close') + '"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"></div><div class="modal-footer"><button class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">' + Translator.trans('Cancel') + '</button><a class="btn btn-primary" id="dataConfirmOK">' + Translator.trans('OK') + '</a></div></div></div></div>');
 		} 
 		$('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
 		$('#dataConfirmOK').attr('href', href);
@@ -452,7 +448,7 @@ $(function(){
 	$(window).on("resize", function () {
 		$('.modal:visible').each(centerModal);
 	});
-	$('body').append('<div id="toTop" class="btn btn-default"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
+	$('body').append('<div id="toTop" class="btn btn-light"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
 	$(window).scroll(function () {
 		if ($(this).scrollTop() != 0) {
 			$('#toTop').fadeIn();

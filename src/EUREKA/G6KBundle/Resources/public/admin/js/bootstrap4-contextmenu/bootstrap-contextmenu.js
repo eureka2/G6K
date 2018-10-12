@@ -9,8 +9,15 @@
  * Licensed under MIT
  * ========================================================= */
 
-;(function($) {
-
+(function (root, factory) {
+	if (typeof define === 'function' && define.amd) {
+		define(['jquery'], factory);
+	} else if (typeof exports === 'object') {
+		module.exports = factory(require('jquery'));
+	} else {
+		factory(root.jQuery);
+	}
+}(this, function ($) {
 	'use strict';
 
 	/* CONTEXTMENU CLASS DEFINITION
@@ -52,13 +59,13 @@
 			$menu.trigger(evt = $.Event('show.bs.context', relatedTarget));
 
 			tp = this.getPosition(e, $menu);
-			items = 'li:not(.divider)';
+			items = 'li:not(.dropdown-divider, dropdown-header)';
 			$menu.attr('style', '')
 				.css(tp)
 				.addClass('open')
 				.on('click.context.data-api', items, $.proxy(this.onItem, this, $(e.currentTarget)))
 				.trigger('shown.bs.context', relatedTarget);
-
+			$menu.find('.dropdown-menu').addClass('show');
 			// Delegating the `closemenu` only on the currently opened menu.
 			// This prevents other opened menus from closing.
 			$('html')
@@ -80,7 +87,8 @@
 			relatedTarget = { relatedTarget: this };
 			$menu.trigger(evt = $.Event('hide.bs.context', relatedTarget));
 
-			items = 'li:not(.divider)';
+			items = 'li:not(.dropdown-divider, .dropdown-header)';
+			$menu.find('.dropdown-menu').removeClass('show');
 			$menu.removeClass('open')
 				.off('click.context.data-api', items)
 				.trigger('hidden.bs.context', relatedTarget);
@@ -176,7 +184,6 @@
 			var $this = $(this)
 				, data = $this.data('context')
 				, options = (typeof option == 'object') && option;
-
 			if (!data) $this.data('context', (data = new ContextMenu($this, options)));
 			if (typeof option == 'string') data[option].call(data, e);
 		});
@@ -197,9 +204,8 @@
 		})
 		.on('contextmenu.context.data-api', toggle, function(e) {
 			$(this).contextmenu('show', e);
-
 			e.preventDefault();
 			e.stopPropagation();
 		});
 		
-}(jQuery));
+}));

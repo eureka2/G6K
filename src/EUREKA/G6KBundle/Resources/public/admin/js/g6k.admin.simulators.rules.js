@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -3662,21 +3662,21 @@ THE SOFTWARE.
 
 	Simulators.drawRuleForDisplay = function(rule) {
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
-		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
-		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule" title="' + Translator.trans('Delete') + '" data-parent="#' + ruleElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button><button class="btn btn-info pull-right update-button edit-rule" title="' + Translator.trans('Edit') + '" data-parent="#' + ruleElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="glyphicon glyphicon-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">' + Translator.trans('Rule') + ' #<span class="rule-id">' + rule.id + '</span> <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
-		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse in', role: 'tabpanel' });
-		var conditionsPanel = $('<div class="panel panel-default conditions-panel"></div>');
-		conditionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div>');
-		var conditionsPanelBody = $('<div class="panel-body"></div>');
+		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'card bg-info sortable rule-container' });
+		ruleContainer.append('<div class="card-header" role="tab"><button class="btn btn-info float-right update-button delete-rule" title="' + Translator.trans('Delete') + '" data-parent="#' + ruleElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button><button class="btn btn-info float-right update-button edit-rule" title="' + Translator.trans('Edit') + '" data-parent="#' + ruleElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fa fa-pencil"></span></button><h4 class="card-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">' + Translator.trans('Rule') + ' #<span class="rule-id">' + rule.id + '</span> <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
+		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'card-body panel-collapse collapse in', role: 'tabpanel' });
+		var conditionsPanel = $('<div class="card bg-light conditions-panel"></div>');
+		conditionsPanel.append('<div class="card-header"><h4>' + Translator.trans('When ...') + '</h4></div>');
+		var conditionsPanelBody = $('<div class="card-body"></div>');
 		var conditions = jQuery.extend(true, {}, rule.connector)
 		Simulators.plainConditions(conditions);
 		conditionsPanelBody.append('<ul class="rule-conditions" data-value="' + conditions + '" data-rule-element-id="' + ruleElementId + '" data-rule-id="' + rule.id + '">' + Simulators.drawConditionForDisplay(conditions) + '</ul>');
 		conditionsPanel.append(conditionsPanelBody);
 		ruleBody.append(conditionsPanel);
 		if (rule.ifdata.length > 0) {
-			var actionsPanel = $('<div class="panel panel-default if-actions-panel"></div>');
-			actionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('then do ...') + '</h4></div>');
-			var actionsPanelBody = $('<div class="panel-body"></div>');
+			var actionsPanel = $('<div class="card bg-light if-actions-panel"></div>');
+			actionsPanel.append('<div class="card-header"><h4>' + Translator.trans('then do ...') + '</h4></div>');
+			var actionsPanelBody = $('<div class="card-body"></div>');
 			$.each(rule.ifdata, function(a, action) {
 				var actionContainer = Simulators.drawRuleActionForDisplay(a + 1, action);
 				actionsPanelBody.append(actionContainer);
@@ -3685,9 +3685,9 @@ THE SOFTWARE.
 			ruleBody.append(actionsPanel);
 		}
 		if (rule.elsedata.length > 0) {
-			var actionsPanel = $('<div class="panel panel-default else-actions-panel"></div>');
-			actionsPanel.append('<div class="panel-heading"><h4>' + Translator.trans('else do ...') + '</h4></div>');
-			var actionsPanelBody = $('<div class="panel-body"></div>');
+			var actionsPanel = $('<div class="card bg-light else-actions-panel"></div>');
+			actionsPanel.append('<div class="card-header"><h4>' + Translator.trans('else do ...') + '</h4></div>');
+			var actionsPanelBody = $('<div class="card-body"></div>');
 			$.each(rule.elsedata, function(a, action) {
 				var actionContainer = Simulators.drawRuleActionForDisplay(a + 1, action);
 				actionsPanelBody.append(actionContainer);
@@ -4130,19 +4130,19 @@ THE SOFTWARE.
 
 	Simulators.drawRuleForInput = function(rule) {
 		var ruleElementId = 'rule-' + Math.floor(Math.random() * 100000);
-		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'panel panel-info sortable rule-container' });
-		ruleContainer.append('<div class="panel-heading" role="tab"><button class="btn btn-info pull-right update-button delete-rule" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="glyphicon glyphicon-minus-sign"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> ' + Translator.trans('Rule') + ' <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
-		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'panel-body panel-collapse collapse', role: 'tabpanel' });
+		var ruleContainer = $('<div>', { id: ruleElementId,  'class': 'card bg-info sortable rule-container' });
+		ruleContainer.append('<div class="card-header" role="tab"><button class="btn btn-info float-right update-button delete-rule" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button><h4 class="card-title"><a data-toggle="collapse" data-parent="#business-rules" href="#collapse' + ruleElementId + '" aria-expanded="true" aria-controls="collapse' + ruleElementId + '">#<span class="rule-id">' + rule.id + '</span> ' + Translator.trans('Rule') + ' <span class="rule-name">' + rule.name + '</span> : <span class="rule-label">' + rule.label + '</span></a></h4></div>');
+		var ruleBody = $('<div>', {id: 'collapse' + ruleElementId, 'class': 'card-body panel-collapse collapse', role: 'tabpanel' });
 		ruleContainer.append(ruleBody);
-		ruleBody.append('<div class="panel panel-default"><div class="panel-body form-inline"><div class="form-group"><label>' + Translator.trans('Name') + '</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>' + Translator.trans('Label') + '</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><h4>' + Translator.trans('When ...') + '</h4></div><div class="panel-body"><div class="conditions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><button class="btn btn-info pull-right update-button add-if-action" title="' + Translator.trans('Add Action') + '"><span class="button-label">' + Translator.trans('Add Action') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><h4>' + Translator.trans('then do ...') + '</h4></div><div class="panel-body"><div class="if-actions"></div></div></div>');
-		ruleBody.append('<div class="panel panel-default"><div class="panel-heading"><button class="btn btn-info pull-right update-button add-else-action" title="' + Translator.trans('Add Action') + '"><span class="button-label">' + Translator.trans('Add Action') + '</span> <span class="glyphicon glyphicon-plus-sign"></span></button><h4>' + Translator.trans('else do ...') + '</h4></div><div class="panel-body"><div class="else-actions"></div></div></div>');
-		var ruleButtonsPanel = $('<div class="panel panel-default buttons-panel" id="' + ruleElementId + '-buttons-panel"></div>');
-		var ruleButtonsBody = $('<div class="panel-body rule-buttons"></div>');
-		ruleButtonsBody.append('<button class="btn btn-success pull-right validate-edit-rule">' + Translator.trans('Validate') + ' <span class="glyphicon glyphicon-ok"></span></button>');
-		ruleButtonsBody.append('<button class="btn btn-default pull-right cancel-edit-rule">' + Translator.trans('Cancel') + '</span></button>');
-		ruleButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		ruleBody.append('<div class="card bg-light"><div class="card-body form-inline"><div class="form-group"><label>' + Translator.trans('Name') + '</label><input type="text" class="input-rule-name" value="' + rule.name + '" /></div><div class="form-group"><label>' + Translator.trans('Label') + '</label><input type="text" class="input-rule-label" value="' + rule.label + '" /></div></div></div>');
+		ruleBody.append('<div class="card bg-light"><div class="card-header"><h4>' + Translator.trans('When ...') + '</h4></div><div class="card-body"><div class="conditions"></div></div></div>');
+		ruleBody.append('<div class="card bg-light"><div class="card-header"><button class="btn btn-info float-right update-button add-if-action" title="' + Translator.trans('Add Action') + '"><span class="button-label">' + Translator.trans('Add Action') + '</span> <span class="fa fa-plus-circle"></span></button><h4>' + Translator.trans('then do ...') + '</h4></div><div class="card-body"><div class="if-actions"></div></div></div>');
+		ruleBody.append('<div class="card bg-light"><div class="card-header"><button class="btn btn-info float-right update-button add-else-action" title="' + Translator.trans('Add Action') + '"><span class="button-label">' + Translator.trans('Add Action') + '</span> <span class="fa fa-plus-circle"></span></button><h4>' + Translator.trans('else do ...') + '</h4></div><div class="card-body"><div class="else-actions"></div></div></div>');
+		var ruleButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + ruleElementId + '-buttons-panel"></div>');
+		var ruleButtonsBody = $('<div class="card-body rule-buttons"></div>');
+		ruleButtonsBody.append('<button class="btn btn-success float-right validate-edit-rule">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		ruleButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-rule">' + Translator.trans('Cancel') + '</span></button>');
+		ruleButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		ruleButtonsPanel.append(ruleButtonsBody);
 		ruleBody.append(ruleButtonsPanel);
 		return ruleContainer;

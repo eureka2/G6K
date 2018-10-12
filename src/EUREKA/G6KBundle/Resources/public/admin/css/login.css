@@ -8,8 +8,6 @@ body > h1 {
 .flash-messages-text {
 	margin-bottom: 0.5em;
 }
-#loginbox .panel-heading a,
-#profilebox .panel-heading a,
-#changepasswordbox .panel-heading a {
-	color: #fff;
+.mainbox label {
+	font-weight: bold;
 }
