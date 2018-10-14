@@ -111,7 +111,7 @@ class UsersAdminController extends BaseAdminController {
 			$userManager = $this->get('fos_user.user_manager');
 			$users = $userManager->findUsers();
 
-			$paginator = $this->get('ashley_dawson_simple_pagination.paginator');
+			$paginator = new \AshleyDawson\SimplePagination\Paginator();
 			$paginator->setItemTotalCallback(function () use ($users) {
 				return count($users);
 			});
