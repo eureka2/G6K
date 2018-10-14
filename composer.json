@@ -21,7 +21,7 @@
     },
     "require": {
         "php": ">=5.5.9",
-        "ashleydawson/simple-pagination-bundle": "^1.1",
+        "ashleydawson/simple-pagination": "1.0.*",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
         "flow/jsonpath": "^0.3.4",

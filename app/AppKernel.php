@@ -19,7 +19,6 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
             new TFox\MpdfPortBundle\TFoxMpdfPortBundle(),
-            new AshleyDawson\SimplePaginationBundle\AshleyDawsonSimplePaginationBundle(),
             new EUREKA\G6KBundle\EUREKAG6KBundle(),
         ];
 

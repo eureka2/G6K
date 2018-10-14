@@ -587,7 +587,7 @@ class DataSourcesAdminController extends BaseAdminController {
 									}
 								}
 								$where = count($where) > 0? " " . self::SQL_WHERE_KEYWORD . implode(" AND ", $where) : "";
-								$paginator = $this->get('ashley_dawson_simple_pagination.paginator');
+								$paginator = new \AshleyDawson\SimplePagination\Paginator();
 								$paginator->setItemTotalCallback(function () use ($database, $table, $where) {
 									$rowCount = $database->query(self::SQL_SELECT_KEYWORD . "count(*) as c " . self::SQL_FROM_KEYWORD . $table . $where);
 									return $rowCount[0]['c'];
