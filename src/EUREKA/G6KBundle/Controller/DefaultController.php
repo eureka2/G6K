@@ -273,13 +273,12 @@ class DefaultController extends BaseController {
 			)
 		);
 
-		$mpdfService = $this->get('tfox.mpdfport');
-		$mpdf = $mpdfService->getMpdf();
+		$mpdf = new \Mpdf\Mpdf();
 		$mpdf->PDFA = true;
 		$mpdf->PDFAauto = true;
 		$mpdf->ignore_invalid_utf8 = true;
   
-		$mpdf->SetDisplayMode('fullpage');
+		$mpdf->SetDisplayMode('fullwidth');
 		$footer = '<table class="pdf-footer"><tr><td>';
 		$footer .= $this->get('translator')->trans("Simulation performed on %host% on %date%", array('%host%' => $request->getHttpHost(), '%date%' => '{DATE j-m-Y}'));
 		$footer .= '</td><td>';

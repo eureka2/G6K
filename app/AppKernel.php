@@ -18,7 +18,6 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
-            new TFox\MpdfPortBundle\TFoxMpdfPortBundle(),
             new EUREKA\G6KBundle\EUREKAG6KBundle(),
         ];
 
