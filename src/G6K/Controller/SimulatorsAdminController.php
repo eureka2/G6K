@@ -277,7 +277,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$views = array();
 		$dirs = scandir($this->viewsDir);
 		foreach ($dirs as $dir) {
-			if ($dir != "." && $dir != ".." && $dir != "admin" && $dir != "base" && $dir != "Theme") {
+			if ($dir != "." && $dir != ".." && $dir != "admin" && $dir != "base" && $dir != "bundles" && $dir != "Theme") {
 				$o = $this->viewsDir . "/" . $dir;
 				if (filetype($o) == "dir") {
 					$views[$dir] = $dir;
