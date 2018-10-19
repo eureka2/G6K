@@ -1,0 +1,27 @@
+{% trans_default_domain 'FOSUserBundle' %}
+<div class="container">	
+	<div id="requestbox" class="mainbox col-md-6 col-sm-8 mx-auto mt-5">
+		<div class="card" >
+			<div class="card-header bg-primary">
+				<div class="card-title mb-0 font-weight-bold text-white">{{ 'resetting.email.subject'|trans }}</div>
+			</div>	 
+			<div style="padding-top:30px" class="card-body" >
+				{% include "@FOSUser/fos.messages.html.twig" %}
+				<form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request form-horizontal" role="form" enctype="multipart/form-data">
+					<div>
+						{% if invalid_username is defined %}
+							<p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}) }}</p>
+						{% endif %}
+						<label class="col-form-label" for="username">{{ 'resetting.request.username'|trans }}</label>
+						<input type="text" class="form-control" id="username" name="username" required="required" />
+					</div>
+					<div style="margin-top:10px" class="form-group">
+						<div class="col-sm-12 controls">
+							<input type="submit" class="btn btn-primary btn-lg btn-block" style="height: auto;" value="{{ 'resetting.request.submit'|trans }}" />
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>  
+	</div>
+</div>

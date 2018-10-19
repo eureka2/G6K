@@ -1,0 +1,13 @@
+body {
+	background:url(../images/login.jpeg) center center fixed no-repeat;
+	background-size: cover;
+}
+body > h1 {
+	margin-top: 70px;
+}
+.flash-messages-text {
+	margin-bottom: 0.5em;
+}
+.mainbox label {
+	font-weight: bold;
+}

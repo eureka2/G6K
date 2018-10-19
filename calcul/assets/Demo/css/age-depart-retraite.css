@@ -1,0 +1,6 @@
+@import "common.css";
+
+/* specific */
+#step2 p.mention-asterisk {
+	display: none;
+}

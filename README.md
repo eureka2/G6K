@@ -6,8 +6,8 @@ A calculation simulator is an online service made available to a user to enable 
 
 [Learn more](http://eureka2.github.io/g6k/documentation/en/learn-more.html)
 
-## Prerequisites for Symfony 2
-* PHP Version 5.3.3 + (recommended 5.5.9+)
+## Prerequisites for Symfony
+* PHP Version 7.1.3+
 * JSON enabled
 * ctype
 * date.timezone in php.ini
@@ -32,8 +32,8 @@ A calculation simulator is an online service made available to a user to enable 
 ## Installation
 1. If you plan to use MySQL or PostgreSQL, create a user with "CREATE DATABASE" and "CREATE TABLE" privileges using the administration tool of your RDBMS.
 2. Be placed in the <DOCUMENT_ROOT> Web Server
-3. Download composer.phar (https://getcomposer.org/download/) in <DOCUMENT_ROOT>
-4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/`` 
+3. Download composer.phar (https://getcomposer.org/download/) in <DOCUMENT_ROOT>. composer 1.7.2+ is required.
+4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/ 3.4.*`` 
 5. Enter the parameter values required by the installer, including:
   * database_driver => pdo_pgsl, pdo_mysql or pdo_sqlite
   * database_host => name or IP address of your database server (simply &lt;Enter&gt; in case of SQLite)

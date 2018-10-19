@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>jQuery ExpressionBuilder Plugin</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel='stylesheet' type='text/css' href="../bootstrap/css/bootstrap.min.css" />
+	<link rel='stylesheet' type='text/css' href="../bootstrap/css/bootstrap-theme.min.css" />
+	<style>
+	#expression * {
+		display: inline;
+	}
+	</style>
+</head>
+<body>
+<h1>jQuery ExpressionBuilder Plugin Demo</h1>
+<div id="error" class="text-danger"></div>
+<form class="form-inline" onsubmit="return false;">
+<div id="expression"></div>
+<br />
+<button class="form-control" id="getResult">Get Expression</button>
+<div id="result"></div>
+<form>
+<script type="text/javascript" src="../jquery.js"></script>
+<script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../bootstrap-contextmenu/bootstrap-contextmenu.js"></script>
+<script type="text/javascript" src="../jQuery-autoGrowInput/jquery.auto-grow-input.js"></script>
+<script type="text/javascript" src="../jquery.hotkeys/jquery.hotkeys.js"></script>
+<script type="text/javascript" src="jquery.expressionbuilder.js"></script>
+<script type="text/javascript" src="lang/fr.js"></script>
+<script type="text/javascript">// <![CDATA[
+$(function(){
+	var occupationOptions = [
+		{label: "", name: ""},
+		{label: "Software Engineer", name: "software-engineer"},
+		{label: "Biz Dev", name: "biz-dev"},
+		{label: "Marketing", name: "marketing"}
+	];
+	var fields = {
+		"nameField" : {id: 1, label: "Name", type: 'text'},
+		"ageField": {id: 2, label: "Age", type: 'integer'},
+		"marriedField": {id: 3, label: "Married", type: 'boolean'},
+		"occupationField": {id: 4, label: "Occupation", type: 'choice', options: occupationOptions}
+	};
+	var functions = {
+		"abs" : {arity: 1, args: ['number'], type: 'number'},
+		"acos" : {arity: 1, args: ['number'], type: 'number'},
+		"acosh" : {arity: 1, args: ['number'], type: 'number'},
+		"asin" : {arity: 1, args: ['number'], type: 'number'},
+		"asinh" : {arity: 1, args: ['number'], type: 'number'},
+		"atan" : {arity: 1, args: ['number'], type: 'number'},
+		"atan2" : {arity: 2, args: ['number', 'number'], type: 'number'},
+		"atanh" : {arity: 1, args: ['number'], type: 'number'},
+		"ceil" : {arity: 1, args: ['number'], type: 'number'},
+		"cos" : {arity: 1, args: ['number'], type: 'number'},
+		"cosh" : {arity: 1, args: ['number'], type: 'number'},
+		"day" : {arity: 1, args: ['date'], type: 'number'},
+		"exp" : {arity: 1, args: ['number'], type: 'number'},
+		"floor" : {arity: 1, args: ['number'], type: 'number'},
+		"fullmonth" : {arity: 1, args: ['date'], type: 'text'},
+		"lastday" : {arity: 2, args: ['number', 'number'], type: 'number'},
+		"log" : {arity: 1, args: ['number'], type: 'number'},
+		"log10" : {arity: 1, args: ['number'], type: 'number'},
+		"max" : {arity: 2, args: ['number', 'number'], type: 'number'},
+		"min" : {arity: 2, args: ['number', 'number'], type: 'number'},
+		"month" : {arity: 1, args: ['date'], type: 'number'},
+		"pow" : {arity: 2, args: ['number', 'number'], type: 'number'},
+		"rand" : {arity: 0, args: [], type: 'number'},
+		"round" : {arity: 1, args: ['number'], type: 'number'},
+		"sin" : {arity: 1, args: ['number'], type: 'number'},
+		"sinh" : {arity: 1, args: ['number'], type: 'number'},
+		"sqrt" : {arity: 1, args: ['number'], type: 'number'},
+		"tan" : {arity: 1, args: ['number'], type: 'number'},
+		"tanh" : {arity: 1, args: ['number'], type: 'number'},
+		"workdays" : {arity: 2, args: ['date', 'date'], type: 'number'},
+		"year" : {arity: 1, args: ['date'], type: 'number'}
+	};
+	
+	var constants = { 
+		pi: {type : 'number'}, 
+		now: {type: 'date'}, 
+		today: {type: 'date'}, 
+		'true': {type: 'boolean'}, 
+		'false': {type: 'boolean'}
+	};
+ 
+	$("#expression").expressionbuilder({
+		fields: fields,
+		constants: constants,
+		functions: functions,
+		operators: ['+', '-', '*', '%', '/', '&', '|'],
+		initial: "#2 + (45745 - 48) + 'jacques archimède' + workdays(27/12/2005, now)",
+		onCompleted: function(type, expression) { $('#error').html('');console.log('Expression complete, type = ' + type); },
+		onEditing: function(expression) { $('#error').html('');console.log('Expression being changed'); },
+		onError: function(error) { $('#error').html(error);console.log('error : ' + error); },
+		language: 'fr',
+		operandHolder: { classes: ['button', 'button-default'] },
+		operatorHolder: { classes: ['button', 'button-default'] },
+		nestedExpression: { classes: ['button', 'button-default'] }
+	});
+	$("#getResult").on('click', function() {
+		$("#result").html($("#expression").expressionbuilder('val'));
+	});
+});
+// ]]></script>
+</body>
+</html>

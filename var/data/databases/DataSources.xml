@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd">
+	<DataSource id="1" type="internal" name="bareme-indemnites-prudhomales" database="1">
+		<Description><![CDATA[Données de référence pour le calcul des indemnités prud'homales]]></Description>
+		<Table id="1" name="bareme" label="Barème">
+			<Description><![CDATA[Données de référence pour le calcul des indemnités prud'homales]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="ancienneteSalarie" type="integer" label="Ancienneté du salarié dans l'entreprise">
+				<Description><![CDATA[Ancienneté du salarié dans l'entreprise]]></Description>
+			</Column>
+			<Column id="3" name="indemniteminimalemoinsde11" type="text" label="Indemnité minimale entreprise &lt; 11 salariés (en mois de salaire brut)">
+				<Description><![CDATA[Indemnité minimale entreprise < 11 salariés (en mois de salaire brut)]]></Description>
+			</Column>
+			<Column id="4" name="indemniteminimale11etplus" type="text" label="Indemnité minimale entreprise &gt;= 11 salariés (en mois de salaire brut)">
+				<Description><![CDATA[Indemnité minimale entreprise >= 11 salariés (en mois de salaire brut)]]></Description>
+			</Column>
+			<Column id="5" name="indemnitemaximale" type="text" label="Indemnités maxi (en mois de salaire brut)">
+				<Description><![CDATA[Indemnités maxi (en mois de salaire brut)]]></Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<DataSource id="2" type="internal" name="cout-certificat-immatriculation" database="2">
+		<Description><![CDATA[Données de références pour le calcul du coût du cerficat d'immatriculation]]></Description>
+		<Table id="1" name="baremeDemarche" label="Barème par nature de démarche">
+			<Description><![CDATA[Barème applicable selon la nature de la démarche]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="demarche" type="text" label="Démarche">
+				<Description><![CDATA[Libellé de la démarche]]></Description>
+			</Column>
+			<Column id="3" name="baremeMotoMoins125" type="number" label="Barème moto (2 ou 3 roues) de moins de 125cm3">
+				<Description><![CDATA[Barème applicable à une moto (2 ou 3 roues) de moins de 125cm3 pour cette démarche]]></Description>
+			</Column>
+			<Column id="4" name="baremeAutre" type="number" label="Barème autre véhicule">
+				<Description><![CDATA[Barème applicable aux autres types de véhicule pour cette démarche]]></Description>
+			</Column>
+		</Table>
+		<Table id="2" name="baremeVehicule" label="Barème par type de véhicule">
+			<Description><![CDATA[Barème applicable selon le type de véhicule]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="typeVehicule" type="text" label="Type de véhicule">
+				<Description><![CDATA[Type de véhicule]]></Description>
+			</Column>
+			<Column id="3" name="baremeMoins10" type="number" label="Barème véhicule neuf ou moins de 10 ans">
+				<Description><![CDATA[Barème applicable à un véhicule neuf ou de moins de 10 ans]]></Description>
+			</Column>
+			<Column id="4" name="baremePlus10" type="number" label="Barème véhicule de plus de 10 ans">
+				<Description><![CDATA[Barème applicable à un véhicule de plus de 10 ans]]></Description>
+			</Column>
+			<Column id="5" name="taxeFPTransport" type="money" label="Taxe formation professionnelle dans les transports">
+				<Description><![CDATA[Y2 - Taxe en euros sur la formation professionnelle dans les transports en fonction du PTAC]]></Description>
+			</Column>
+		</Table>
+		<Table id="3" name="malusCV" label="Montants du malus selon la puissance fiscale">
+			<Description><![CDATA[Montants du malus selon la puissance fiscale du véhicule et l'année d'achat]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="annee" type="year" label="Année d'achat du véhicule">
+				<Description><![CDATA[Année d'achat du véhicule]]></Description>
+			</Column>
+			<Column id="3" name="minCV" type="integer" label="Borne inférieure du nombre de CV">
+				<Description><![CDATA[Borne inférieure du nombre de CV fiscaux]]></Description>
+			</Column>
+			<Column id="4" name="maxCV" type="integer" label="Borne supérieure du nombre de CV">
+				<Description><![CDATA[Borne supérieure du nombre de CV fiscaux]]></Description>
+			</Column>
+			<Column id="5" name="malus" type="money" label="Montant du malus">
+				<Description><![CDATA[Montant du malus en euros]]></Description>
+			</Column>
+		</Table>
+		<Table id="4" name="malusCO2" label="Montants du malus selon le taux d'émission de CO2 par kilomètre">
+			<Description><![CDATA[Montants du malus en fonction du nombre de grammes de CO2 émis par kilomètre et l'année d'achat]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="annee" type="year" label="Année d'achat du véhicule">
+				<Description><![CDATA[Année d'achat du véhicule]]></Description>
+			</Column>
+			<Column id="3" name="minCO2" type="integer" label="Borne inférieure du taux d'émission de CO2">
+				<Description><![CDATA[Borne inférieure du nombre de grammes de CO2 émis par kilomètre]]></Description>
+			</Column>
+			<Column id="4" name="maxCO2" type="integer" label="Borne supérieure du taux d'émission de CO2">
+				<Description><![CDATA[Borne supérieure du nombre de grammes de CO2 émis par kilomètre]]></Description>
+			</Column>
+			<Column id="5" name="malus" type="money" label="Montant du malus">
+				<Description><![CDATA[Montant du malus en euros]]></Description>
+			</Column>
+		</Table>
+		<Table id="5" name="taxeAdditionnelleCO2" label="Taxe additionnelle CO2">
+			<Description><![CDATA[Taxe additionnelle CO2 en fonction du nombre de grammes de CO2 émis par kilomètre et l'année d'achat pour les véhicules ayant fait l'objet d'une réception communautaire]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="annee" type="year" label="Année d'achat du véhicule">
+				<Description><![CDATA[Année d'achat du véhicule]]></Description>
+			</Column>
+			<Column id="3" name="tranche" type="integer" label="Tranche du barême taxe additionnelle CO2">
+				<Description><![CDATA[Tranche du barême taxe additionnelle CO2]]></Description>
+			</Column>
+			<Column id="4" name="minCO2" type="integer" label="Borne inférieure du taux d'émission de CO2">
+				<Description><![CDATA[Borne inférieure du nombre de grammes de CO2 émis par kilomètre]]></Description>
+			</Column>
+			<Column id="5" name="maxCO2" type="integer" label="Borne supérieure du taux d'émission de CO2">
+				<Description><![CDATA[Borne supérieure du nombre de grammes de CO2 émis par kilomètre]]></Description>
+			</Column>
+			<Column id="6" name="taxeParGramme" type="money" label="Montant en euros de la taxe par gramme de CO2">
+				<Description><![CDATA[Montant en euros de la taxe par gramme de CO2 émis par kilomètre]]></Description>
+			</Column>
+		</Table>
+		<Table id="6" name="taxeAdditionnelleCV" label="Taxe additionnelle selon la puissance fiscale">
+			<Description><![CDATA[Taxe additionnelle en fonction de la puissance fiscale et l'année d'achat pour les véhicules n'ayant pas fait l'objet d'une réception communautaire]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="annee" type="year" label="Année d'achat du véhicule">
+				<Description><![CDATA[Année d'achat du véhicule]]></Description>
+			</Column>
+			<Column id="3" name="minCV" type="integer" label="Borne inférieure du nombre de CV">
+				<Description><![CDATA[Borne inférieure du nombre de CV fiscaux]]></Description>
+			</Column>
+			<Column id="4" name="maxCV" type="integer" label="Borne supérieure du nombre de CV">
+				<Description><![CDATA[Borne supérieure du nombre de CV fiscaux]]></Description>
+			</Column>
+			<Column id="5" name="taxe" type="money" label="Montant en euros de la taxe">
+				<Description><![CDATA[Montant en euros de la taxe]]></Description>
+			</Column>
+		</Table>
+		<Table id="7" name="taxeRegionale" label="Taxe régionale">
+			<Description><![CDATA[Y1 - Taxe régionale pour 1 CV fiscal]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="regionId" type="choice" label="Région">
+				<Description><![CDATA[Identifiant de la région dans la table des régions]]></Description>
+				<Choices>
+					<Source id="1" datasource="cout-certificat-immatriculation" request="select * from regions order by name" returnType="assocArray" valueColumn="codeRegion" labelColumn="name"></Source>
+				</Choices>
+			</Column>
+			<Column id="3" name="taxe" type="money" label="Montant en euros de la taxe régionale">
+				<Description><![CDATA[Montant en euros de la taxe pour 1 CV fiscal]]></Description>
+			</Column>
+			<Column id="4" name="exoVehiculePropre" type="percent" label="Pourcentage exonération véhicules propres">
+				<Description><![CDATA[Pourcentage d’exonération de la taxe régionale pour les véhicules propres]]></Description>
+			</Column>
+		</Table>
+		<Table id="8" name="regions" label="Régions">
+			<Description><![CDATA[Régions]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="codeRegion" type="integer" label="Code région">
+				<Description><![CDATA[Code de la région]]></Description>
+			</Column>
+			<Column id="3" name="name" type="text" label="Nom de la région">
+				<Description><![CDATA[Nom de la région]]></Description>
+			</Column>
+		</Table>
+		<Table id="9" name="departements" label="Départements">
+			<Description><![CDATA[Départements]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="codeDep" type="department" label="Code du département">
+				<Description><![CDATA[Code du département]]></Description>
+			</Column>
+			<Column id="3" name="name" type="text" label="Nom du département">
+				<Description><![CDATA[Nom du département]]></Description>
+			</Column>
+			<Column id="4" name="regionId" type="choice" label="Région">
+				<Description><![CDATA[Identifiant de la région d'appartenance dans la table des régions]]></Description>
+				<Choices>
+					<Source id="1" datasource="cout-certificat-immatriculation" request="select * from regions order by name" returnType="assocArray" valueColumn="codeRegion" labelColumn="name"></Source>
+				</Choices>
+			</Column>
+		</Table>
+		<Table id="10" name="energies" label="Catégories énergétiques">
+			<Description><![CDATA[Catégories énergétiques]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="energie" type="text" label="Energie">
+				<Description><![CDATA[Libellé énergie]]></Description>
+			</Column>
+			<Column id="3" name="pourcentMalusCO2" type="percent" label="Pourcentage sur le taux CO2">
+				<Description><![CDATA[Pourcentage sur le taux CO2]]></Description>
+			</Column>
+			<Column id="4" name="pourcentTaxeAdditionnelle" type="percent" label="Pourcentage de la taxe additionnelle">
+				<Description><![CDATA[Pourcentage de la taxe additionnelle]]></Description>
+			</Column>
+			<Column id="5" name="energiePropre" type="boolean" label="Energie propre ?">
+				<Description><![CDATA[Energie propre permettant une exonération totale ou partielle de la taxe régionale]]></Description>
+			</Column>
+		</Table>
+		<Table id="11" name="prelevementadditionnel" label="prelevementadditionnel">
+			<Description><![CDATA[<p>Prélèvement additionnel grosse cylindrée</p>]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="annee" type="year" label="Année de la démarche">
+				<Description><![CDATA[]]></Description>
+			</Column>
+			<Column id="3" name="borneinf" type="integer" label="borne inférieure">
+				<Description><![CDATA[]]></Description>
+			</Column>
+			<Column id="4" name="bornesup" type="integer" label="borne supérieure">
+				<Description><![CDATA[]]></Description>
+			</Column>
+			<Column id="5" name="montantCV" type="money" label="montant par CV">
+				<Description><![CDATA[]]></Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<DataSource id="3" type="internal" name="droits-succession" database="3">
+		<Description><![CDATA[<p>Éléments de calcul des droits de succession</p>]]></Description>
+		<Table id="1" name="lien_parente" label="Liens de parenté">
+			<Description><![CDATA[<p>Liens de parenté</p>]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="lien_parente" type="text" label="Lien de parenté">
+				<Description><![CDATA[<p>Lien de parenté</p>]]></Description>
+			</Column>
+			<Column id="3" name="degre_parente" type="integer" label="Degré de parenté">
+				<Description><![CDATA[<p>Degré de parenté</p>]]></Description>
+			</Column>
+			<Column id="4" name="ligne_familiale" type="integer" label="Ligne familiale">
+				<Description><![CDATA[<p>Ligne familiale (0 = collatérale, 1 = directe)</p>]]></Description>
+			</Column>
+			<Column id="5" name="abattement" type="money" label="Abattement">
+				<Description><![CDATA[<p>Abattement</p>]]></Description>
+			</Column>
+		</Table>
+		<Table id="2" name="bareme" label="Barème des droits de succession">
+			<Description><![CDATA[<p>Barème des droits de succession</p>]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="ligne_familiale" type="integer" label="Ligne familiale">
+				<Description><![CDATA[<p>Ligne familiale</p>]]></Description>
+			</Column>
+			<Column id="3" name="debut_degre" type="integer" label="Borne inférieure du degré de parenté">
+				<Description><![CDATA[<p>Borne inférieure du degré de parenté (incluse)</p>]]></Description>
+			</Column>
+			<Column id="4" name="fin_degre" type="integer" label="Borne supérieure du degré de parenté">
+				<Description><![CDATA[<p>Borne supérieure du degré de parenté (incluse)</p>]]></Description>
+			</Column>
+			<Column id="5" name="debut_tranche" type="money" label="Borne inférieure de la tranche">
+				<Description><![CDATA[<p>Borne inférieure de la tranche sur l'actif net (incluse)</p>]]></Description>
+			</Column>
+			<Column id="6" name="fin_tranche" type="money" label="Borne supérieure de la tranche">
+				<Description><![CDATA[<p>Borne supérieure de la tranche sur l'actif net (incluse)</p>]]></Description>
+			</Column>
+			<Column id="7" name="bareme" type="percent" label="Barème">
+				<Description><![CDATA[<p>Barème</p>]]></Description>
+			</Column>
+		</Table>
+		<Table id="3" name="bareme2" label="Barème progressif des droits de succession">
+			<Description><![CDATA[<p>Barème progressif des droits de succession</p>]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="ligne_familiale" type="integer" label="Ligne familiale">
+				<Description><![CDATA[<p>Ligne familiale : 1 = ligne directe, 0 = ligne collatérale</p>]]></Description>
+			</Column>
+			<Column id="3" name="debut_degre" type="integer" label="Borne inférieure du degré de parenté">
+				<Description><![CDATA[<p>Borne inférieure du degré de parenté (incluse)</p>]]></Description>
+			</Column>
+			<Column id="4" name="fin_degre" type="integer" label="Borne supérieure du degré de parenté">
+				<Description><![CDATA[<p>Borne supérieure du degré de parenté (incluse)</p>]]></Description>
+			</Column>
+			<Column id="5" name="tranche" type="integer" label="Numéro de la tranche">
+				<Description><![CDATA[<p>Numéro de la tranche</p>]]></Description>
+			</Column>
+			<Column id="6" name="part_taxable" type="money" label="Part taxable">
+				<Description><![CDATA[<p>Part taxable</p>]]></Description>
+			</Column>
+			<Column id="7" name="bareme" type="percent" label="Pourcentage des droits de succession">
+				<Description><![CDATA[<p>Pourcentage des droits de succession</p>]]></Description>
+			</Column>
+		</Table>
+		<Table id="4" name="abattementsDonationParente" label="Abattements donation selon parenté">
+			<Description><![CDATA[]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="lienParente" type="text" label="Lien de parenté">
+				<Description><![CDATA[<p>Lien de parenté</p>]]></Description>
+			</Column>
+			<Column id="3" name="degreParente" type="integer" label="Degré de parenté">
+				<Description><![CDATA[<p>Degré de parenté</p>]]></Description>
+			</Column>
+			<Column id="4" name="ligneFamiliale" type="integer" label="Ligne familiale">
+				<Description><![CDATA[<p>Ligne familiale</p>]]></Description>
+			</Column>
+			<Column id="5" name="abattement" type="money" label="Abattement">
+				<Description><![CDATA[<p>Abattement</p>]]></Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<DataSource id="4" type="internal" name="federation" database="4">
+		<Description><![CDATA[<p>federation</p>]]></Description>
+		<Table id="1" name="annuaire" label="annuaire">
+			<Description><![CDATA[]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="nom" type="text" label="nom">
+				<Description><![CDATA[]]></Description>
+			</Column>
+			<Column id="3" name="telephone" type="text" label="telephone">
+				<Description><![CDATA[]]></Description>
+			</Column>
+			<Column id="4" name="Freqyence" type="text" label="Freqyence">
+				<Description><![CDATA[]]></Description>
+			</Column>
+			<Column id="5" name="siteweb" type="text" label="siteweb">
+				<Description><![CDATA[]]></Description>
+			</Column>
+			<Column id="6" name="email" type="text" label="email">
+				<Description><![CDATA[]]></Description>
+			</Column>
+			<Column id="7" name="maj" type="text" label="maj">
+				<Description><![CDATA[]]></Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<DataSource id="5" type="internal" name="gratification-stagiaire" database="5">
+		<Description><![CDATA[Données de références pour le calcul de la gratification minimale d'un stagiaire]]></Description>
+		<Table id="1" name="plafondHoraire" label="Plafond horaire de la sécurité sociale">
+			<Description><![CDATA[Plafond horaire de la sécurité sociale selon la période]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="debutPeriode" type="date" label="Début de la période">
+				<Description><![CDATA[Début de la période de référence du plafond horaire]]></Description>
+			</Column>
+			<Column id="3" name="finPeriode" type="date" label="Fin de la période">
+				<Description><![CDATA[Fin de la période de référence du plafond horaire]]></Description>
+			</Column>
+			<Column id="4" name="plafond" type="money" label="Plafond horaire">
+				<Description><![CDATA[Plafond horaire en euros]]></Description>
+			</Column>
+			<Column id="5" name="source" type="text" label="Texte de référence">
+				<Description><![CDATA[Texte de référence (JO)]]></Description>
+			</Column>
+		</Table>
+		<Table id="2" name="TauxMinimal" label="Taux minimal de la gratification">
+			<Description><![CDATA[Taux minimal de la gratification selon la période]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="debutPeriode" type="date" label="Début de la période">
+				<Description><![CDATA[Début de la période de référence du taux minimal]]></Description>
+			</Column>
+			<Column id="3" name="finPeriode" type="date" label="Fin de la période">
+				<Description><![CDATA[Fin de la période de référence du taux minimal]]></Description>
+			</Column>
+			<Column id="4" name="taux" type="percent" label="Taux minimal">
+				<Description><![CDATA[Taux minimal]]></Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<DataSource id="6" type="internal" name="interets-moratoires" database="6">
+		<Description><![CDATA[Données de références pour le calcul des intérêts moratoires]]></Description>
+		<Table id="1" name="acheteurPublic" label="Types d'acheteur public">
+			<Description><![CDATA[Délai de paiement et type de taux (légal ou BCE) par acheteur public]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="name" type="text" label="Libellé du type d'acheteur public">
+				<Description><![CDATA[Libellé du type d'acheteur public]]></Description>
+			</Column>
+			<Column id="3" name="delaiPaiement" type="integer" label="Délai de paiement">
+				<Description><![CDATA[Délai de paiement]]></Description>
+			</Column>
+			<Column id="4" name="typeTaux" type="choice" label="Type de taux">
+				<Description><![CDATA[Type de taux applicable pour l'acheteur public (1 : taux légal, 2 : taux BCE)]]></Description>
+				<Choices>
+					<Choice id="1" value="1" label="Taux légal"></Choice>
+					<Choice id="2" value="2" label="Taux BCE"></Choice>
+				</Choices>
+			</Column>
+		</Table>
+		<Table id="2" name="taux" label="Taux applicable par période">
+			<Description><![CDATA[Taux légal ou taux directeur de la BCE applicable selon la période]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="dateIM" type="date" label="Date d'application">
+				<Description><![CDATA[Date d'application du taux (mise à jour semestrielle)]]></Description>
+			</Column>
+			<Column id="3" name="tauxLegal" type="percent" label="Taux légal">
+				<Description><![CDATA[Taux légal]]></Description>
+			</Column>
+			<Column id="4" name="tauxBCE" type="percent" label="Taux BCE">
+				<Description><![CDATA[Taux directeur de la BCE]]></Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<DataSource id="7" type="internal" name="pension-alimentaire" database="7">
+		<Description><![CDATA[Données de références pour le calcul de la pension alimentaire]]></Description>
+		<Table id="1" name="tauxPA" label="Taux pension alimentaire">
+			<Description><![CDATA[Taux de la pension alimentaire en fonction du droit de visite et d'hébergement et du nombre d'enfants]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="droitVH" type="choice" label="Droit de visite et d'hébergement">
+				<Description><![CDATA[Droit de visite et d'hébergement (1: réduit, 2: classique, 3: alterné)]]></Description>
+				<Choices>
+					<Choice id="1" value="1" label="réduit"></Choice>
+					<Choice id="2" value="2" label="classique"></Choice>
+					<Choice id="3" value="3" label="alterné"></Choice>
+				</Choices>
+			</Column>
+			<Column id="3" name="nbEnfant" type="integer" label="Nombre d'enfants">
+				<Description><![CDATA[Nombre d'enfants]]></Description>
+			</Column>
+			<Column id="4" name="taux" type="percent" label="Taux">
+				<Description><![CDATA[Taux de la pension alimentaire]]></Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<DataSource id="8" type="internal" name="PourcentUsufruit" database="8">
+		<Description><![CDATA[<p>barème du pourcentage de valeur du bien en fonction de l'age usufruitier</p>]]></Description>
+		<Table id="1" name="BaremeUsufruit" label="barème du pourcentage de valeur du bien en fonction de l'age usufruitier">
+			<Description><![CDATA[]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="DebutTranche" type="integer" label="Début de la tranche">
+				<Description><![CDATA[<p>Début de la tranche</p>]]></Description>
+			</Column>
+			<Column id="3" name="FinTranche" type="integer" label="Fin de la tranche">
+				<Description><![CDATA[<p>Fin de la tranche</p>]]></Description>
+			</Column>
+			<Column id="4" name="PourcentUsufruit" type="percent" label="Pourcentage usufruit">
+				<Description><![CDATA[<p>Pourcentage usufruit</p>]]></Description>
+			</Column>
+			<Column id="5" name="Pourcentnuepropriete" type="percent" label="Pourcentage nue propriété">
+				<Description><![CDATA[<p>Pourcentage nue propriété</p>]]></Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<DataSource id="9" type="internal" name="quotite-saisissable" database="9">
+		<Description><![CDATA[<div>Données de références pour le calcul de la quotite saisissable sur salaire</div><div>Table "RSA forfaitaire pour une personne vivant seule" est utilisée par le simulateur Pension alimentaire. Mises à jour le 1er avril et 1er septembre.<br></div>]]></Description>
+		<Table id="1" name="RSASocle" label="RSA forfaitaire pour une personne vivant seule">
+			<Description><![CDATA[RSA forfaitaire pour une personne vivant seule]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="montant" type="money" label="Montant">
+				<Description><![CDATA[Montant du RSA Socle]]></Description>
+			</Column>
+			<Column id="3" name="debut" type="date" label="Début de la période de validité du montant">
+				<Description><![CDATA[Début de la période de validité du montant du RSA Socle]]></Description>
+			</Column>
+			<Column id="4" name="fin" type="date" label="Fin de la période de validité du montant">
+				<Description><![CDATA[Début de la période de validité du montant du RSA Socle]]></Description>
+			</Column>
+		</Table>
+		<Table id="2" name="baremeSaisie" label="Barème des saisies sur rémunérations">
+			<Description><![CDATA[Barème des saisies sur rémunérations]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="fractionSaisissableMult" type="integer" label="Numérateur fraction saisissable">
+				<Description><![CDATA[Numérateur de la fraction saisissable]]></Description>
+			</Column>
+			<Column id="3" name="fractionSaisissableDiv" type="integer" label="Dénominateur fraction saisissable">
+				<Description><![CDATA[Dénominateur de la fraction saisissable]]></Description>
+			</Column>
+			<Column id="4" name="remuneration" type="money" label="Rémunération annuelle">
+				<Description><![CDATA[Rémunération annuelle]]></Description>
+			</Column>
+		</Table>
+		<Table id="3" name="correctifPersonneACharge" label="Correctifs annuels du barème de saisies sur salaire">
+			<Description><![CDATA[Correctifs annuels du barème de saisies sur salaire par personne à charge]]></Description>
+			<Column id="1" name="id" type="integer" label="id">
+				<Description><![CDATA[Identifiant interne]]></Description>
+			</Column>
+			<Column id="2" name="montant" type="money" label="Montant">
+				<Description><![CDATA[Montant du correctif]]></Description>
+			</Column>
+			<Column id="3" name="debut" type="date" label="Début de la période de validité du montant">
+				<Description><![CDATA[Début de la période de validité du montant du correctif]]></Description>
+			</Column>
+			<Column id="4" name="fin" type="date" label="Fin de la période de validité du montant">
+				<Description><![CDATA[Début de la période de validité du montant du correctif]]></Description>
+			</Column>
+		</Table>
+	</DataSource>
+	<Databases>
+		<Database id="1" type="sqlite" name="bareme-indemnites-prudhomales.db" label="Données de référence pour le calcul des indemnités prud'homales"></Database>
+		<Database id="2" type="sqlite" name="cout-certificat-immatriculation.db" label="Données de références pour le calcul du coût du cerficat d'immatriculation"></Database>
+		<Database id="3" type="sqlite" name="droits-succession.db" label="&lt;p&gt;Éléments de calcul des droits de succession&lt;/p&gt;"></Database>
+		<Database id="4" type="sqlite" name="federation.db" label="&lt;p&gt;federation&lt;/p&gt;"></Database>
+		<Database id="5" type="sqlite" name="gratification-stagiaire.db" label="Données de références pour le calcul de la gratification minimale d'un stagiaire"></Database>
+		<Database id="6" type="sqlite" name="interets-moratoires.db" label="Données de références pour le calcul des intérêts moratoires"></Database>
+		<Database id="7" type="sqlite" name="pension-alimentaire.db" label="Données de références pour le calcul de la pension alimentaire"></Database>
+		<Database id="8" type="sqlite" name="PourcentUsufruit.db" label="&lt;p&gt;barème du pourcentage de valeur du bien en fonction de l'age usufruitier&lt;/p&gt;"></Database>
+		<Database id="9" type="sqlite" name="quotite-saisissable.db" label="&lt;div&gt;Données de références pour le calcul de la quotite saisissable sur salaire&lt;/div&gt;&lt;div&gt;Table &quot;RSA forfaitaire pour une personne vivant seule&quot; est utilisée par le simulateur Pension alimentaire. Mises à jour le 1er avril et 1er septembre.&lt;br&gt;&lt;/div&gt;"></Database>
+	</Databases>
+</DataSources>

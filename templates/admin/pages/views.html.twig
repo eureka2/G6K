@@ -1,0 +1,284 @@
+{#
+The MIT License (MIT)
+
+Copyright (c) 2015-2018 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+#}
+
+{% extends "admin/layout/pagelayout.html.twig" %}
+
+{% import _self as page %}
+
+{% block content %}
+<h2>{{ 'Views management'|trans }}</h2>
+<div class="navbar-light navbar-side" role="navigation">
+	<div class="sidebar-collapse">
+		<div id="views" class="nav card bg-primary rounded">
+			<div class="card-header rounded-top"><h3>{{ 'Views'|trans }}</h3></div>
+			<div class="card-body">
+				<div>
+					<form action="{{ path('eureka_g6k_admin_view_node_crud', {'view': 'new', 'node': 'dummy', 'crud': 'create'}) }}">
+					<button id="btnAddNewView" class="btn btn-secondary pull-right">{{ 'Create view'|trans }} <span class="fa fa-plus-circle"></span></button>
+					</form>
+				</div>
+				<ul class="nav nav-pills flex-column">
+					{% for view in views %}
+					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_views') }}/{{ view.name }}">{{ view.name }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div id="trigger"></div>
+</div>
+
+<div id="page-wrapper" class="content">
+	<div id="page-views">
+		<div class="row">
+			<div class="col-md-12">
+				{% if file is not empty %}
+				<div id="table" class="card bg-primary">
+					<div class="card-header">
+						<h4 class="card-title"><span>{{ 'View «%view%»'|trans({ '%view%': view.name }) }}</span> <span class="pull-right">{{ 'File «%file%»'|trans( { '%file%':  file.name }) }}</span></h4>
+					</div>
+					<div class="card-body">
+						{% if hiddens.action == 'edit' %}
+						<div class="alert alert-danger" role="alert">
+							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="sr-only">{{ 'Error'|trans }} :</span>
+							<span class="error-message"></span>
+							<ul></ul>
+						</div>
+						{% endif %}
+						<div id="view-editor-container">
+							<form method="post" enctype="multipart/form-data" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': file.num, 'crud': 'doedit-node'}) }}">
+							<input type="hidden" name="file" value="{{ file.name}}">
+							<textarea id="file-{%- if hiddens.action == 'edit' -%}editor{%- else -%}viewer{%- endif -%}" name="file-content">{{file.content}}</textarea>
+							{% if hiddens.action == 'edit' %}
+							<button id="save-file" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+							{% else %}
+							<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': file.num, 'crud': 'edit-node'}) }}" id="edit-file" class="btn btn-primary pull-right">{{ 'Edit'|trans }}</a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				{% elseif view is not empty %}
+				<div id="table" class="card bg-primary">
+					<div class="card-header">
+						<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fa fa-book"></span></a> 
+						<a class="btn btn-primary pull-right drop-view-button" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': 'dummy', 'crud': 'drop-view'}) }}" data-confirm="{{ 'Are you sure you want to drop the view %view% ?'|trans({ '%view%': view.name }) }}'">{{ 'Drop view'|trans }} <span class="fa fa-minus-circle"></span></a>
+						<h4 class="card-title">{{ 'View «%view%»'|trans({ '%view%': view.name }) }}</h4>
+					</div>
+					<div class="card-body">
+						<div class="alert alert-danger" role="alert">
+							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="sr-only">{{ 'Error'|trans }} :</span>
+							<span class="error-message"></span>
+							<ul></ul>
+						</div>
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation" class="nav-item"><a class="nav-link active" aria-controls="templates" role="tab" data-toggle="tab" href="#templates">{{ 'Templates'|trans }}</a></li>
+							<li role="presentation" class="nav-item"><a class="nav-link" aria-controls="assets" role="tab" data-toggle="tab" href="#assets">{{ 'Assets'|trans }}</a></li>
+						</ul>
+						<div class="tab-content">
+							<div role="tabpanel" id="templates" class="tab-pane fade show active">
+								<a class="btn btn-secondary pull-right" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': view.templates[0].num, 'crud': 'export'}) }}">{{ 'Export'|trans }}</a>
+								<h3>{{ 'Templates'|trans }}</h3>
+								<div id="templates-tree-container">
+									<table id="templates-tree" class="table tree table-bordered table-striped table-sm">
+									{% for node in view.templates %}
+									{{ page.makeRow(view.name, "templates-tree", node, 0) }}
+									{% endfor %}
+									</table>
+								</div>
+							</div>
+							<div role="tabpanel" id="assets" class="tab-pane fade">
+								<a class="btn btn-secondary pull-right" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': view.assets[0].num, 'crud': 'export'}) }}">{{ 'Export'|trans }}</a>
+								<h3>{{ 'Assets'|trans }}</h3>
+								<div id="assets-tree-container">
+									<table id="assets-tree" class="table tree table-bordered table-striped table-sm">
+									{% for node in view.assets %}
+									{{ page.makeRow(view.name, "assets-tree", node, 0) }}
+									{% endfor %}
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% elseif hiddens.action == 'create' %}
+				<div id="view" class="card bg-primary">
+					<div class="card-header">
+					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fa fa-book"></span></a> 
+					<h4 class="card-title">{{ 'New view'|trans }}</h4>
+					</div>
+					<div class="card-body">
+						<div class="alert alert-danger" role="alert">
+							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="sr-only">{{ 'Error'|trans }} :</span>
+							<span class="error-message"></span>
+							<ul></ul>
+						</div>
+						<form id="view-create-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': 'new', 'node': 'dummy', 'crud': 'docreate-view'}) }}" enctype="multipart/form-data">
+						<div class="card bg-light">
+							<div class="card-body">
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="new-view-name">{{ 'View name'|trans }} *</label> 
+									<input id="new-view-name" name="view-name" value="" required="required" class="form-control" placeholder="{{ 'Enter the view name without spaces or special characters'|trans }}" />
+								</div>
+							</div>
+						</div>
+						<div class="card bg-light" id="view-create-panel-holder">
+							<div class="card-header">
+								{{ 'View files (compressed in zip format)'|trans }}
+							</div>
+							<div class="card-body view-files">
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="view-templates-file">{{ 'Templates'|trans }}</label>    
+									<div class="col-sm-10">
+										<input type="file" name="view-templates-file" accept="application/zip" class="form-control form-control-sm" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="view-assets-file">{{ 'Assets'|trans }}</label>    
+									<div class="col-sm-10">        
+										<input type="file" name="view-assets-file" accept="application/zip" class="form-control form-control-sm" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<button id="btnDoCreateView" class="btn btn-primary pull-right">{{ 'Create'|trans }}</button>
+						</form>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ parent() }}<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.views.js') }}"></script>
+{% if view is not empty %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/jquery.treegrid/js/jquery.treegrid.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/jquery.treegrid/js/jquery.treegrid.bootstrap4.js') }}"></script>
+{% if node > 0 and (file.mode == 'javascript' or file.mode == 'css' or file.mode == 'twig') %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/js/codemirror.js') }}"></script>
+{% if file.mode == 'javascript' %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/mode/javascript/javascript.js') }}"></script>
+{% endif %}
+{% if file.mode == 'css' %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/mode/css/css.js') }}"></script>
+{% endif %}
+{% if file.mode == 'twig' %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/mode/twig/twig.js') }}"></script>
+{% endif %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/addon/selection/active-line.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/addon/edit/matchbrackets.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/addon/display/fullscreen.js') }}"></script>
+{% endif %}
+{% endif %}
+<script type="text/javascript">
+{% if view is not empty and node > 0 and (file.mode == 'javascript' or file.mode == 'css' or file.mode == 'twig') %}
+$(function(){
+	Views.fileMode = '{{ file.mode }}';
+});
+{% endif %}
+var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%}, {% endif -%}{%- endfor -%}];
+</script>   
+{% endblock %}
+
+{% macro makeRow(viewname, tableId, node, parent) %}
+{% import _self as page %}
+<tr id="{{ tableId }}-node-{{ node.num }}" class="treegrid-{{ node.num }}{% if ( parent > 0 ) %} treegrid-parent-{{ parent }}{% endif %}"> 
+	<td>
+		{% if not node.isdir and (node.mode == 'javascript' or node.mode == 'css' or node.mode == 'twig') %}
+		<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'show'}) }}" title="{{ 'Show this file'|trans }}">{{ node.name }}</a>
+		{% else %}
+		{{ node.name }}
+		{% endif %}
+	</td>
+	<td class="view-tree-buttons">
+		{% if not node.isdir and (node.mode == 'javascript' or node.mode == 'css' or node.mode == 'twig') %}
+		<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'edit-node'}) }}" class="btn btn-sm btn-secondary edit-tree-node" alt="{{ 'Edit this file'|trans }}" title="{{ 'Edit this file'|trans }}"> <span class="fa fa-pencil"></span></a>
+		{% endif %}
+		{% if node.isdir %}
+		<form class="add-folder-or-file-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'add-node'}) }}" enctype="multipart/form-data">
+		{{ page.popinheader(viewname ~ node.num, 'popin-add-tree-node', 'Add a sub-folder or a file into «%folder%»'|trans({'%folder%': node.name}), '<span class="fa fa-download"></span>'|nofilter, 'btn btn-sm btn-secondary add-tree-node' ) }}
+		<div class="add-node-container" data-node-type="{{ node.type }}">
+			<fieldset id="add-folder-or-file-{{ node.num }}">
+				<div class="form-group radio"><label class="col-form-label"><input type="radio" id="add-folder-{{ node.num }}" name="add-folder-or-file" value="folder" />{{ 'sub-folder'|trans }}</label></div>
+				<div class="form-group radio"><label class="col-form-label"><input type="radio" id="add-file-{{ node.num }}" name="add-folder-or-file" value="file" />{{ 'file'|trans }}</label></div>
+			</fieldset>
+			<div class="form-group"><label class="col-form-label">{{ 'Name'|trans }}<input type="text" id="add-node-name-{{ node.num }}" name="add-node-name" value="" class="form-control form-control-sm" required="required"/></label></div>
+		</div>
+		{{ page.popinfooter() }}
+		</form>
+		{% endif %}
+		<form class="rename-node-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'rename-node'}) }}" enctype="multipart/form-data">
+		<input type="hidden" name="node-name" value="{{ node.name }}" />
+		{{ page.popinheader('rename-' ~ viewname ~ node.num, 'popin-rename-tree-node', 'Rename «%node%»'|trans({'%node%': node.name}), '<span class="fa fa-edit"></span>'|nofilter, 'btn btn-sm btn-secondary rename-tree-node' ) }}
+		<div class="rename-node-container" data-node-type="{% if node.isdir -%}folder{% else %}file{% endif %}">
+			<div class="form-group"><label class="col-form-label">{{ 'New name'|trans }}<input type="text" id="rename-node-name-{{ node.num }}" name="rename-node-name" value="{{ node.name }}" class="form-control form-control-sm" required="required"/></label></div>
+		</div>
+		{{ page.popinfooter() }}
+		</form>
+		{% if parent > 0 %}
+		<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'remove-node'}) }}" class="btn btn-sm btn-secondary remove-tree-node" alt="{{ 'Remove this element'|trans }}" title="{{ 'Remove this element'|trans }}" data-confirm="{{ 'Are you sure you want to drop this element ?'|trans }}"> <span class="fa fa-trash"></span></a>
+		{% endif %}
+		</td>
+</tr>
+{% if node.children is not empty %}
+{% for child in node.children %}
+{{ page.makeRow(viewname, tableId, child, node.num) }}
+{% endfor %}
+{% endif %}
+{% endmacro %}
+
+{% macro popinheader(popinId, popinClass, popinTitle, popinButtonLabel, popinButtonClass) %}
+<a href="#" data-toggle="modal" data-target="#popin-{{ popinId }}" class="{{ popinButtonClass }}" alt="{{ popinTitle }}" title="{{ popinTitle }}">{{ popinButtonLabel|nofilter }}</a>
+<div class="modal fade {{ popinClass }}" id="popin-{{ popinId }}" tabindex="-1" role="dialog" aria-labelledby="popin-{{ popinId }}-label">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'Close'|trans }}"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="popin-{{ popinId }}-label">{{ popinTitle }}</h4>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger" role="alert">
+					<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+					<span class="sr-only">{{ 'Error'|trans }} :</span>
+					<span class="error-message"></span>
+					<ul></ul>
+				</div>
+{% endmacro %}
+
+{% macro popinfooter() %}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'Cancel'|trans }}</button>
+				<button type="submit" class="btn btn-primary submit">{{ 'Submit'|trans }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+{% endmacro %}
+

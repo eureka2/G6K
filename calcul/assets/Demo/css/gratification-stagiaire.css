@@ -1,0 +1,34 @@
+@import "common.css";
+
+/* specific */
+#step0 .step-description {
+	display: none;
+}
+.step-page .fieldset-container legend {
+	border-bottom: 3px solid;
+	width: 100%;
+}
+.step-page .form-group[data-type=month]  .input-group ,
+.step-page .form-group[data-type=year]  .input-group 
+{
+    border: 1px solid #ccc;
+    border-radius: 4px;
+	line-height: 2em;
+}
+.step-page .form-group[data-type=month]  .input-group > div,
+.step-page .form-group[data-type=year]  .input-group > div{
+    border: none;
+}
+.step-page .form-group[data-type=month]  .input-group .form-control,
+.step-page .form-group[data-type=year]  .input-group .form-control {
+    height: 100%;
+}
+.step-page tbody .form-group {
+	margin: 0;
+}
+.step-page .grid-header th:nth-child(2) {
+    min-width: 13.5em;
+}
+.step-page .grid-header th:nth-child(3) {
+    min-width: 9em;
+}

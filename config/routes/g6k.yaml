@@ -1,0 +1,144 @@
+eureka_g6k_admin:
+    path:     /admin
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\HomeAdminController::indexAction }
+
+eureka_g6k_admin_documentation:
+    path:     /admin/doc/{document}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\DocumentationController::indexAction }
+
+eureka_g6k_admin_clear_cache:
+    path:     /admin/cache/clear
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\CacheAdminController::clearAction }
+
+eureka_g6k_admin_clear_cache_env:
+    path:     /admin/cache/clear/{env}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\CacheAdminController::clearAction }
+
+eureka_g6k_admin_datasources:
+    path:     /admin/datasources
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\DataSourcesAdminController::indexAction }
+
+eureka_g6k_admin_datasource:
+    path:     /admin/datasources/{dsid}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\DataSourcesAdminController::indexAction }
+
+eureka_g6k_admin_datasource_table:
+    path:     /admin/datasources/{dsid}/{table}
+    defaults: { _controller: App\G6K\Controller\DataSourcesAdminController::indexAction }
+
+eureka_g6k_admin_datasource_crud:
+    path:     /admin/datasources/{dsid}/{table}/{crud}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\DataSourcesAdminController::indexAction }
+
+eureka_g6k_admin_users:
+    path:     /admin/users
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\UsersAdminController::indexAction }
+
+eureka_g6k_admin_user_crud:
+    path:     /admin/users/{crud}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\UsersAdminController::indexAction }
+
+eureka_g6k_admin_simulators:
+    path:     /admin/simulators
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\SimulatorsAdminController::indexAction }
+
+eureka_g6k_admin_simulator:
+    path:     /admin/simulators/{simulator}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\SimulatorsAdminController::indexAction }
+
+eureka_g6k_admin_simulator_crud:
+    path:     /admin/simulators/{simulator}/{crud}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\SimulatorsAdminController::indexAction }
+
+eureka_g6k_admin_views:
+    path:     /admin/views
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\ViewsAdminController::indexAction }
+
+eureka_g6k_admin_view:
+    path:     /admin/views/{view}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\ViewsAdminController::indexAction }
+
+eureka_g6k_admin_view_node:
+    path:     /admin/views/{view}/{node}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\ViewsAdminController::indexAction }
+
+eureka_g6k_admin_view_node_crud:
+    path:     /admin/views/{view}/{node}/{crud}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\ViewsAdminController::indexAction }
+
+eureka_g6k_admin_simulator_calcul:
+    path:     /{simu}/{view}/tryIt
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\DefaultController::tryItAction }
+
+eureka_g6k_admin_simulator_validate:
+    path:     /admin/validate
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\SimulatorsAdminController::validateAction }
+
+eureka_g6k_index:
+    path:     /
+    methods: [ get ]
+    defaults: { _controller: App\G6K\Controller\IndexController::indexAction }
+
+eureka_g6k_fields:
+    path:     /{simu}/Default/fields
+    methods: [ post ]
+    defaults: { _controller: App\G6K\Controller\DefaultController::fieldsAction }
+
+eureka_g6k_fields_try:
+    path:     /{simu}/tryIt/Default/fields
+    methods: [ post ]
+    defaults: { _controller: App\G6K\Controller\DefaultController::fieldsTryItAction }
+
+eureka_g6k_source:
+    path:     /{simu}/Default/source
+    methods: [ post ]
+    defaults: { _controller: App\G6K\Controller\DefaultController::sourceAction }
+
+eureka_g6k_source_try:
+    path:     /{simu}/tryIt/Default/source
+    methods: [ post ]
+    defaults: { _controller: App\G6K\Controller\DefaultController::sourceTryItAction }
+
+eureka_g6k_calcul:
+    path:     /{simu}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\DefaultController::calculAction }
+
+eureka_g6k_api:
+    path:     /{simu}/api
+    methods: [ get ]
+    defaults: { _controller: App\G6K\Controller\APIController::calculAction }
+
+eureka_g6k_calcul_view:
+    path:     /{simu}/{view}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\DefaultController::calculAction }
+
+eureka_g6k_calcul_api_try:
+    path:     /{simu}/api/tryIt
+    methods: [ get ]
+    defaults: { _controller: App\G6K\Controller\APIController::tryItAction }
+
+eureka_g6k_calcul_view_try:
+    path:     /{simu}/{view}/tryIt
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\DefaultController::tryItAction }
+

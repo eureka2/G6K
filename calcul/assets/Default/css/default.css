@@ -1,0 +1,278 @@
+.step-page .step-description p {
+	margin: 0;
+	padding: 0;
+}
+.step-page input[type=money]  {
+	max-width: 8em;
+	width: 8em;
+}
+.step-page fieldset {
+	margin-top : 0;
+	border: 1px solid #e2f1ff;
+	margin-bottom: 25px;
+	padding: 10px 14px;
+	font-size: 1em;
+}
+.step-page .form-group  .input-group {
+	display: inline-table;
+}
+.step-page .form-group[data-type=date]  .input-group {
+	max-width: 5.5em;
+}
+
+.step-page input[type=number]  {
+	max-width: 3em;
+}
+.step-page input[type=submit], .step-page input[type=reset] {
+	height:auto;
+}
+.step-page input[disabled=disabled]  {
+	border: 0;
+}
+.step-page .field-container .input-group + .unit {
+	margin-top: -1.7em;
+	padding: 0;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.step-page label , .step-page .label , .step-page input{
+	display: block;
+	float: left;
+	margin-bottom: 2px;
+}
+.step-page label, .step-page .label {
+	text-align: right;
+	padding-right: 10px;
+	min-width: 25em;
+	width: 25em;
+	color: #000;
+}
+.step-page label.choice {
+	text-align: left;
+	min-width: initial;
+	width: auto;
+}
+.step-page .select2-hidden-accessible {
+  display: none !important; 
+}
+
+.step-page .select2-container--default .select2-selection__rendered,
+.select2-container--default .select2-results__option,
+.step-page .emphasized,
+.step-page .explanation {
+  color: #3074AF; 
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+   background-color: #3074AF;
+    color: #fff;
+}
+
+/*********************************************************
+ * Bouton aide                                           *
+ *********************************************************/
+.step-page .btn-help {
+  width: 20px;
+  height: 20px;
+  font-size: 1.4em;
+  border: none; 
+}
+.step-page .input-group ~ .btn-help {
+  margin: -1.5em 0.5em 0;
+}
+.step-page .output ~ .btn-help {
+  margin: -0.5em 0.5em 0;
+}
+
+.step-page .help-panel {
+  clear: both; }
+  .step-page .help-panel:before, .step-page .help-panel:after {
+    display: none; }
+
+
+.step-page input.has-error {
+  font-weight: normal;
+  border: 1px solid #c60000;
+  background-color: #f5dedb; }
+
+.step-page br  {
+	clear: both;
+}
+.step-page .error {
+	color: red;
+	font-weight: bold;
+}
+.step-page .emphasized {
+	color: blue;
+	font-weight: bold;
+}
+.step-page .explanation {
+	color: blue;
+	font-weight: bold;
+	width: 25em;
+	float:right;
+}
+
+.action_buttons  input {
+	margin-right: 1em;
+}
+.simulator-breadcrumb {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 0; }
+
+.simulator-breadcrumb ol {
+  display: table;
+  padding: 0;
+  width: 100%; }
+
+.simulator-breadcrumb li {
+  display: block; }
+
+.simulator-breadcrumb li p {
+  position: relative;
+  display: block;
+  margin: 0 0 0.1em;
+  padding: 1em 0.3em 1em 3em;
+  height: 50px;
+  text-decoration: none;
+  color: #000;
+  background: #ececec; 
+}
+.simulator-breadcrumb li p span {
+  display: inline-block;
+  vertical-align: middle; 
+}
+.simulator-breadcrumb li p span:first-child {
+  font-size: 1.2em; 
+}
+.simulator-breadcrumb li.current.current p {
+  color: #fff;
+  background: #3074AF; 
+}
+
+.simulator-breadcrumb li.current p:before {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
+  border-left: 25px solid #fff; 
+}
+.simulator-breadcrumb li:last-child p {
+  margin: 0;
+}
+@media (min-width: 37em) {
+  .simulator-breadcrumb li p {
+    margin: 0 10px 0 0;
+    padding: 15px 5px;
+    height: 50px;
+    text-align: center; 
+  }
+  .simulator-breadcrumb li {
+    display: table-cell; 
+  }
+  .simulator-breadcrumb li:first-child p:before {
+    display: none; 
+  }
+  .simulator-breadcrumb li:last-child p:after {
+    height: 100%;
+    border: 0;
+    background: #3074AF; 
+  }
+  .simulator-breadcrumb li.current:last-child p:after {
+    background: #fff; 
+  }
+  .simulator-breadcrumb li p:after {
+    position: absolute;
+    content: '';
+    top: 0;
+    right: -24px;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid #ececec;
+    z-index: 1; }
+  .simulator-breadcrumb li.current p:after {
+    border-left-color: #3074AF; 
+  }
+  .simulator-breadcrumb li p:before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid #fff; 
+  } 
+}
+/*********************************************************
+ * Grid                                                  *
+ *********************************************************/
+.step-page div.grid {
+  display: table;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse; 
+}
+.step-page .grid-header {
+  color: #fff;
+  background: #3074AF; 
+}
+
+.step-page div.grid .grid-header > div {
+  border-right-color: #fff;
+  border-left-color: #fff; }
+
+.step-page div.grid > div {
+  display: table-row; }
+
+.step-page div.grid > div:nth-child(2n) {
+  background: #fff; }
+
+.step-page div.grid div[role=gridcell], .step-page div.grid div[role=columnheader] {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #cccccc; }
+
+.step-page div.grid > div:first-child div:not(:first-child) {
+  font-weight: bold;
+  text-align: center; }
+
+.step-page div.grid > div:first-child div:nth-child(2) {
+  width: 110px; }
+
+.step-page div.grid > div:first-child div:nth-child(3) {
+  margin-right: 50px;
+  width: 72px; }
+
+.step-page div.grid > div:first-child div:nth-child(4) {
+  width: 50px; }
+
+.step-page div.grid > div:first-child div:nth-child(5),
+.step-page div.grid > div:first-child div:nth-child(6) {
+  width: 60px; }
+
+.step-page div.grid > div:not(:first-child) div {
+  font-weight: normal; }
+
+.step-page div.grid > div:not(:first-child) div > span.output {
+  padding-bottom: 9px; }
+
+.step-page div.grid > div:not(:first-child) div:nth-child(5),
+.step-page div.grid > div:not(:first-child) div:nth-child(6) {
+  padding-bottom: 2px;
+  padding-left: 8px; }
+
+.clearer {
+    clear: both;
+    float: none;
+	padding:0;
+	margin:0;
+}
+
+.help-panel { margin-top: -3px; }
+.help-panel p { margin-bottom:0.5em; width:534px}

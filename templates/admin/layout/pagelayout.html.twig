@@ -1,0 +1,74 @@
+{#
+The MIT License (MIT)
+
+Copyright (c) 2015-2018 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+#}
+
+{% extends 'base/layout/pagelayout.html.twig' %}
+
+{% block title %}{{ 'G6K Admin'|trans }}{% endblock %}
+
+{% block metas %}
+{{ parent() }}<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+
+{% block bodyclass %}{% endblock %}
+
+{% block styles %}
+{% include 'admin/sections/styles.html.twig' %}
+{% endblock %}
+
+{% block body %}
+	<div id="wrapper">
+		{% include 'admin/sections/header.html.twig' %}
+		<div id="page" class="container-fluid">
+		{% block content %}{% endblock %}
+		</div>
+		{% include 'admin/sections/footer.html.twig' %}
+	</div>
+{% block scripts %}
+{% if exception is not defined and simulator is not empty %}
+<script type="text/javascript">
+var dataset = {{ dataset|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var steps = {{ steps|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var actions = {{ actions|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var rules = {{ rules|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var views = {{ views|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var datasources = {{ datasources|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var widgets = {{ widgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+</script>
+{% endif %}				
+<script type="text/javascript" src="{{ asset('assets/base/js/jquery-3.3.1.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/base/js/jquery-migrate-3.0.0.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
+{% include 'admin/sections/scripts.html.twig' %}
+<script type="text/javascript" src="{{ asset('assets/base/js/g6k.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.js') }}"></script>
+<script type="text/javascript">
+Admin.lang = '{{ app.request.locale }}';
+Admin.locale = '{{ app.request.locale }}-{{ app.request.locale|upper }}';
+Admin.editorCSS = "{{ asset('assets/admin/css/wysiwyg-editor.css') }}";
+</script>
+  {% endblock %}
+{% endblock %}
+

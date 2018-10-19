@@ -1,0 +1,89 @@
+{% import "base/macros/form.html.twig" as form %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr-FR">
+ <head>
+  <title>Références du marché</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style> 
+body {
+    font-family: Arial;
+}
+#references  div {
+	height: 200px; 
+	width: 100%; 
+	border: 1px solid black;
+	margin-bottom: 30px;
+	padding: 5px;
+}
+
+#references div p {
+	margin: 0;
+}
+
+#titre {
+	text-align: center;
+	width: 47%;
+	font-size: 1em;
+}
+h1 {
+	font-size: 1.2em;
+}
+</style>
+</head>
+<body>
+	<table>
+		<tr>
+			<!--td>
+				<img src="{{ asset('assets/particuliers/images/logo.png') }}" />
+			</td-->
+			<td id="titre">
+				<p>Résultat du calcul des intérêts moratoires</p>
+				<p>(calcul réalisé en fonction des données saisies)</p>
+			</td>
+		</tr>
+	</table>
+	<div id="references">
+		<h1>Références</h1>
+		<div>
+		{% if data.references %}
+		{{ form.paragraphs(data.references) }}
+		{% endif %}
+		</div>
+	</div>
+	<div id="recapitulatif">
+		<h1>Récapitulatif des données saisies</h1> 
+		<p><span>Date de conclusion du marché : </span><span>{{ data.dateMarche }}</span></p>
+		<p><span>Date de service fait : </span><span>{{ data.dateExecutionPrestations }}</span></p>
+		<p><span>Date de réception de la facture : </span><span>{{ data.dateReceptionFacture }}</span></p>
+		<p><span>Type de personne publique : </span><span>{% spaceless %}
+		{% if data.typeAcheteurPublic == 1 %}État (ministères, services territoriaux)
+		{% elseif data.typeAcheteurPublic == 2 %}Établissement public administratif (EPA) national
+		{% elseif data.typeAcheteurPublic == 3 %}Collectivité territoriale
+		{% elseif data.typeAcheteurPublic == 4 %}Établissement public local
+		{% elseif data.typeAcheteurPublic == 6 %}Établissement public de santé
+		{% elseif data.typeAcheteurPublic == 7 %}Établissement de santé des armées
+		{% elseif data.typeAcheteurPublic == 8 %}Entreprise publique
+		{% endif %}
+		{% endspaceless %}</span></p>
+		<p><span>Délai de paiement : </span><span>{{ data.delaiPaiement }} jours</span></p>
+		<p><span>La facture a-t-elle été payée ? : </span><span>{% if data.facturePayee == 1 %}Oui{% else %}Non{% endif %}</span></p>
+		{% if data.facturePayee == 1 %}
+		<p><span>Date de paiement de la facture : </span><span>{{ data.datePaiementPrinc }}</span></p>
+		{% endif %}
+		<p><span>Montant de la facture TTC : </span><span>{{ data.montantPrincipalTTC|number_format(2, ',', ' ') }} €</span></p>
+	</div>
+	<div id="resultats">
+		<h1>Résultats de la simulation (calcul réalisé en fonction des données saisies)</h1> 
+		<p><span>Point de départ du délai de paiement : </span><span>{{ data.dateInitiale }}</span></p>
+		<p><span>Date limite de paiement : </span><span>{{ data.dateLimitePaiement }}</span></p>
+		<p><span>Nombre de jours de retard à ce jour : </span><span>{{ data.retardIm }} jours</span></p>
+		<p><span>Taux des intérêts moratoires : </span><span>{{ data.tauxIm|number_format(2, ',', ' ') }} %</span></p> 
+		<p><span>Montant des intérêts moratoires : </span><span>{{ data.montantIm|number_format(2, ',', ' ') }} €</span></p>
+		{% if data.anciensCalculs == 'false' and data.retardIm > 0 %}
+		<p><span>Indemnité forfaitaire pour frais de recouvrement : </span><span>{{ data.indemniteForfaitaire|number_format(2, ',', ' ') }} €</span></p>
+		<p><span>Cumul des intérêts moratoires : </span><span>{{ data.cumul|number_format(2, ',', ' ') }} €</span></p>
+		{% endif %}
+</div>
+</body>
+</html>
+

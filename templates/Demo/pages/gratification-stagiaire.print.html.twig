@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr-FR">
+ <head>
+  <title>Références du marché</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style> 
+body {
+    font-family: Arial;
+}
+#references  div {
+	height: 150px; 
+	width: 100%; 
+	border: 1px solid black;
+	margin-bottom: 30px;
+}
+#recapitulatif  {
+	margin-top: 1em;
+	text-align: center;
+	border-radius: 4px;
+	border: 1px solid #000;
+	font-weight: bold;
+	font-size: 1em;
+}
+#gratification {
+	border-collapse: collapse;
+}
+#gratification th, #gratification td {
+	border: 1px solid #000;
+}
+#gratification .joursPresence,
+#gratification .nbheures,
+#gratification .plafondHoraire,
+#gratification .gratification {
+	text-align: right;
+}
+#titre {
+	text-align: center;
+	width: 47%;
+	font-size: 1em;
+}
+h1 {
+	font-size: 1.2em;
+	width: 100%;
+}
+#convention h1 {
+	border-bottom: 2px solid #000;
+}
+</style>
+</head>
+<body>
+	<table>
+		<tr>
+			<!--td>
+				<img src="{{ asset('assets/particuliers/images/logo.png') }}" />
+			</td-->
+			<td id="titre">
+				<p>Résultat du calcul de la gratification minimale d'un stagiaire</p>
+				<p>(calcul réalisé en fonction des données saisies)</p>
+			</td>
+		</tr>
+	</table>
+	<div id="references">
+		<h1>Références</h1>
+		<div>
+		</div>
+	</div>
+	<div id="convention">
+		<h1>Convention de stage</h1> 
+		<p><span>Date de signature de la convention : </span><span>{{ data.dateSignatureConvention }}</span></p>
+		<p><span>L’employeur est-il un organisme public ? : </span><span>{% if data.organismePublic == 1 %}Oui{% else %}Non{% endif %}</span></p>
+		{% if data.organismePublic == 2 %}<p><span>Taux horaire de la gratification figurant dans la convention : </span><span>{{ data.tauxMinimalConvention|number_format(2, ',', ' ') }} %</span></p>{% endif %}
+		<p><span>Nombre d'heures de présence par jour : </span><span>{{ data.heuresPresenceJour }}</span></p>
+		{% if data.organismePublic == 1 %}<p><span>Taux horaire de la gratification : </span><span>{{ data.tauxMinimalRetenu|number_format(2, ',', ' ') }} %</span></p>{% endif %}
+	</div>
+	<div id="resultats">
+		<h1>Gratification mensuelle due en fonction de la présence effective du stagiaire</h1> 
+		<table id="gratification">
+			<thead>
+				<tr>
+					<th>&nbsp;</th>
+					<th>Mois</th>
+					<th>Année</th>
+					<th>Nombre de jours de présence</th>
+					<th>Nombre d'heures</th>
+					<th>Plafond horaire séc. soc.</th>
+					<th>Gratification mensuelle</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if data.mois1 is not empty and data.an1 is not empty %}
+				<tr>
+					<th>1er mois</th>
+					<td class="mois">{{ _self.monthname(data.mois1) }}</td>
+					<td class="an">{{ data.an1 }}</td>
+					<td class="joursPresence">{{ data.joursPresence1 }}</td>
+					<td class="nbheures">{{ data.nbheures1 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire1|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification1|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois2 is not empty and data.an2 is not empty %}
+				<tr>
+					<th>2e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois2) }}</td>
+					<td class="an">{{ data.an2 }}</td>
+					<td class="joursPresence">{{ data.joursPresence2 }}</td>
+					<td class="nbheures">{{ data.nbheures2 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire2|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification2|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois3 is not empty and data.an3 is not empty %}
+				<tr>
+					<th>3e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois3) }}</td>
+					<td class="an">{{ data.an3 }}</td>
+					<td class="joursPresence">{{ data.joursPresence3 }}</td>
+					<td class="nbheures">{{ data.nbheures3 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire3|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification3|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois4 is not empty and data.an4 is not empty %}
+				<tr>
+					<th>4e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois4) }}</td>
+					<td class="an">{{ data.an4 }}</td>
+					<td class="joursPresence">{{ data.joursPresence4 }}</td>
+					<td class="nbheures">{{ data.nbheures4 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire4|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification4|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois5 is not empty and data.an5 is not empty %}
+				<tr>
+					<th>5e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois5) }}</td>
+					<td class="an">{{ data.an5 }}</td>
+					<td class="joursPresence">{{ data.joursPresence5 }}</td>
+					<td class="nbheures">{{ data.nbheures5 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire5|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification5|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois6 is not empty and data.an6 is not empty %}
+				<tr>
+					<th>6e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois6) }}</td>
+					<td class="an">{{ data.an6 }}</td>
+					<td class="joursPresence">{{ data.joursPresence6 }}</td>
+					<td class="nbheures">{{ data.nbheures6 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire6|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification6|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois7 is not empty and data.an7 is not empty %}
+				<tr>
+					<th>7e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois7) }}</td>
+					<td class="an">{{ data.an7 }}</td>
+					<td class="joursPresence">{{ data.joursPresence7 }}</td>
+					<td class="nbheures">{{ data.nbheures7 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire7|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification7|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois8 is not empty and data.an8 is not empty %}
+				<tr>
+					<th>8e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois8) }}</td>
+					<td class="an">{{ data.an8 }}</td>
+					<td class="joursPresence">{{ data.joursPresence8 }}</td>
+					<td class="nbheures">{{ data.nbheures8 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire8|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification8|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois9 is not empty and data.an9 is not empty %}
+				<tr>
+					<th>9e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois9) }}</td>
+					<td class="an">{{ data.an9 }}</td>
+					<td class="joursPresence">{{ data.joursPresence9 }}</td>
+					<td class="nbheures">{{ data.nbheures9 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire9|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification9|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois10 is not empty and data.an10 is not empty %}
+				<tr>
+					<th>10e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois10) }}</td>
+					<td class="an">{{ data.an10 }}</td>
+					<td class="joursPresence">{{ data.joursPresence10 }}</td>
+					<td class="nbheures">{{ data.nbheures10 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire10|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification10|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois11 is not empty and data.an11 is not empty %}
+				<tr>
+					<th>11e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois11) }}</td>
+					<td class="an">{{ data.an11 }}</td>
+					<td class="joursPresence">{{ data.joursPresence11 }}</td>
+					<td class="nbheures">{{ data.nbheures11 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire11|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification11|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+				{% if data.mois12 is not empty and data.an12 is not empty %}
+				<tr>
+					<th>12e mois</th>
+					<td class="mois">{{ _self.monthname(data.mois12) }}</td>
+					<td class="an">{{ data.an12 }}</td>
+					<td class="joursPresence">{{ data.joursPresence12 }}</td>
+					<td class="nbheures">{{ data.nbheures12 }}</td>
+					<td class="plafondHoraire">{{ data.plafondHoraire12|number_format(2, ',', ' ') }} € </td>
+					<td class="gratification">{{ data.gratification12|number_format(2, ',', ' ') }} €</td>
+				</tr>
+				{% endif %}
+			</tbody>
+		</table>
+	</div>
+	<div id="recapitulatif">
+	<p>Gratification totale due pour {{ data.totaljours }} jours ({{ data.totalheures }} heures) : {{ data.gratificationTotale }} €</p>
+	<p>Gratification mensuelle lissée sur la totalité de la durée de stage ({{ data.nbMois }} mois) : {{ data.gratificationLissee }} €</p>
+	</div>
+</body>
+</html>
+
+
+{% macro monthname(m) %}
+{% set months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Decembre"] %}
+{% if m > 0 %}{{ months[m - 1] }}{% endif %}
+{% endmacro %}
