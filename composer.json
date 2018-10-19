@@ -87,15 +87,13 @@
             "bazinga:js-translation:dump %PUBLIC_DIR%/assets/bundles/bazingajstranslation/js": "symfony-cmd"
         },
         "post-install-cmd": [
-            "@symfony-scripts",
-            "@auto-scripts"
+            "@symfony-scripts"
         ],
         "post-update-cmd": [
             "@symfony-scripts",
             "@auto-scripts"
         ],
         "post-create-project-cmd": [
-            "@symfony-scripts",
             "@g6k-scripts",
             "@auto-scripts"
         ]
