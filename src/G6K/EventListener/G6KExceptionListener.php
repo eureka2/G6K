@@ -193,7 +193,7 @@ class G6KExceptionListener
 	 * @return  string The HTML trace
 	 *
 	 */
-	protected function trace(\Exception $e, $seen = null) {
+	protected function trace($e, $seen = null) {
 		$starter = $seen ? 'Caused by: ' : '';
 		$result = array();
 		if (!$seen) $seen = array();
