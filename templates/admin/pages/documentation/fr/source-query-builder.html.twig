@@ -43,7 +43,7 @@
 			<p>Ce composant est utilisé dans le volet « Simulateurs » du module d'administration. Cf. la section <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulators-management' }) }}#sources-de-donnees-utilisees">Sources de données utilisées</a> du guide de gestion des simulateurs.</p>
 			<p>Dans le formulaire de définition de la source de données que vous aurez ouvert, seule la partie concernant les requêtes simples ci-dessous est traitée dans ce document :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-form-empty.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-form-empty.png') }}" alt="" />
 			</p>
 			<h2 id="selection-de-la-table">
 				Sélection de la table
@@ -62,18 +62,18 @@
 			</p>
 			<p>Pour définir une colonne ou une pseudo-colonne, cliquez dans le champ « Colonnes sélectionnées » ou sur le signe « + » à droite du champ :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-column-add.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-column-add.png') }}" alt="" />
 			</p>
 			<p>Devant la boite à liste qui s'est affichée, le « X » permet de supprimer la colonne.</p>
 			<p>Cliquez sur la boite à liste :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-expression-listbox.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-expression-listbox.png') }}" alt="" />
 			</p>
 			<p>puis sélectionner le champ de la table ou reportez-vous à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition des expressions</a> pour composer une pseudo-colonne.</p>
 			<p>Les fonctions sont spécifiques à la base de données de la source, elles sont définies <a href="#fonctions">ci-après</a>.</p>
 			<p>Si vous avez simplement sélectionné un champ sans composer d'expression, la saisie de la colonne est terminée sinon vous devez entrer un alias :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-column-alias-ask.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-column-alias-ask.png') }}" alt="" />
 			</p>
 			<p>Cliquez sur « Cliquez pour entrer l'alias de la colonne », saisissez l'alias (sans espaces ni caractères spéciaux ou accentués) dans la boite de saisie puis appuyez sur la touche « Entrée ».</p>
 			<p>Pour définir une nouvelle colonne ou une pseudo-colonne, cliquez dans l'espace vide du champ ou sur le signe « + ».</p>
@@ -99,11 +99,11 @@
 			<p>Se reporter <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'business-rules' }) }}#operateurs">ici</a> pour la liste des opérateurs de comparaison et <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}#operateurs">ici</a> pour la liste des opérateurs numériques.</p>
 			<p>Pour composer le filtre, cliquez dans le champ « Filtre » ou sur le signe « + » à droite du champ :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-add.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-add.png') }}" alt="" />
 			</p>
 			<p>Cliquez sur la boite à liste :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-expression-listbox.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-expression-listbox.png') }}" alt="" />
 			</p>
 			<p>
 				Dans cet exemple, il y a deux paramètres : « droitVH » et « nbEnfants ». Les paramètres contiennent des constantes, des valeurs des données saisies par l'utilisateurs, des données calculées ou des données provenant d'autres sources.
@@ -115,21 +115,21 @@
 			<p>Pour composer une expression depuis cette liste, reportez-vous à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition des expressions</a>.</p>
 			<p>Après saisie de l'expression, « Cliquez pour sélectionner l'opérateur » s'affiche :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-operator-ask.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-operator-ask.png') }}" alt="" />
 			</p>
 			<p>Cliquez pour choisir l'opérateur de comparaison :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-operators-list.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-operators-list.png') }}" alt="" />
 			</p>
 			<p>Une fois choisi l'opérateur, vous pouvez composer la deuxième expression :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-right-expression.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-right-expression.png') }}" alt="" />
 			</p>
 			<p>Vous avez terminé la saisie d'une première condition, vous pouvez en saisir d'autres en cliquant dans l'espace vide du champ ou sur le signe « + »</p>
 			<p>A partir de la deuxième condition, les conditions sont numérotées et un bouton s'affiche au-dessus du champ pour vous permettre de combiner les conditions :</p>
 			<p>En cliquant sur ce bouton, vous obtenez trois possibilités de combinaison :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-all.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-all.png') }}" alt="" />
 			</p>
 			<table class="table table-condensed table-striped table-bordered">
 				<thead>
@@ -155,32 +155,32 @@
 			</table>
 			<p>Le mode « Avancée » affiche une barre en dessous des conditions permettant de combiner les conditions par leurs numéros :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-advanced.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-advanced.png') }}" alt="" />
 			</p>
 			<p>
 				Cliquer sur un connecteur 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-and.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-and.png') }}" alt="" />
 				le change en 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-or.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-or.png') }}" alt="" />
 				, cliquer sur un connecteur 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-or.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-or.png') }}" alt="" />
 				le change en 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-and.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-and.png') }}" alt="" />
 				.
 			</p>
 			<p>
 				Cliquez sur le bouton 
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/query-builder-filter-combined-brackets-button.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/query-builder-filter-combined-brackets-button.png') }}" alt="" />
 				pour ajouter une paire de parenthèses ouvrante et fermante.
 			</p>
 			<p>La parenthèse ouvrante se place en début de condition, la fermante en fin de condition.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-brackets.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-brackets.png') }}" alt="" />
 			</p>
 			<p>Vous pouvez supprimer une paire de parenthèse en cliquant sur la croix rouge au-dessus d'une des deux parenthèses.</p>
 			<p>Vous pouvez déplacer chacun des éléments (chiffre, connecteur ou parenthèse) de la condition en les faisant glisser d'une position à l'autre.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-filter-combined-condition.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-condition.png') }}" alt="" />
 			</p>
 			<h2 id="tri-des-lignes-de-resultat">
 				Tri des lignes de résultat
@@ -189,12 +189,12 @@
 			<p>Les critères peuvent être de noms de colonnes ou des expressions.</p>
 			<p>Pour ajouter un critère, cliquez dans le champ « Trié par » ou sur le signe « + » à droite du champ :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-orderby-add.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-orderby-add.png') }}" alt="" />
 			</p>
 			<p>Cliquez sur la boite à liste pour choisir un champ ou composer une expression.</p>
 			<p>Pour changer l'ordre de tri sur ce critère, cliquez sur « en ordre croissant ».</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-orderby-asc-desc.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-orderby-asc-desc.png') }}" alt="" />
 			</p>
 			<p>Vous avez terminé la saisie d'un critère, vous pouvez en saisir d'autres en cliquant dans l'espace vide du champ ou sur le signe « + »</p>
 			<p>Pour supprimer un critère, cliquez sur le « X » à gauche du critère.</p>
@@ -218,16 +218,16 @@
 			<p>Les contenus des paramètres sont soit des constantes, soit des données saisies par l'utilisateur, des données calculées ou des données provenant d'autres sources</p>
 			<p>Pour accéder au panneau des paramètres d'une source, cliquez sur le bouton « Modifier » de la barre de titre du panneau de la source.</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-parameter-empty.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-parameter-empty.png') }}" alt="" />
 			</p>
 			<p>Pour ajouter un paramètre, cliquez sur le bouton « Ajouter un paramètre » :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-parameter-data.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-parameter-data.png') }}" alt="" />
 			</p>
 			<p>Le champ « Provenance » est positionné par défaut sur « Donnée » et le champ « Donnée » est affiché en dessous pour vous permettre de choisir la donnée.</p>
 			<p>Si vous sélectionnez « Constante » dans le champ « Provenance », le champ du dessous est remplacé par « Constante » avec un champ de saisie de texte :</p>
 			<p>
-				<img src="{{ asset('bundles/eurekag6k/admin/images/documentation/fr/query-builder-parameter-contant.png') }}" alt="" />
+				<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-parameter-contant.png') }}" alt="" />
 			</p>
 			<p><strong>Attributs :</strong></p>
 			<ul>
