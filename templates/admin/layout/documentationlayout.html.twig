@@ -45,7 +45,7 @@ THE SOFTWARE.
 {% endblock %} {# metas #}
 
 {% block styles %}
-<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/bootstrap4/css/bootstrap2.min.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/bootstrap4/css/bootstrap.min.css') }}" />
 <link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/bootstrap-datepicker/css/bootstrap-datepicker.css') }}" />
 <link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/css/font-awesome/css/font-awesome.min.css') }}" />
 <link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/bootstrap4/css/docs.css') }}" />
@@ -61,7 +61,7 @@ THE SOFTWARE.
 <![endif]-->
 {% endblock %} {# hscripts #}
 </head>
-<body class="{% block bodyclass %}{% endblock %}"{% block bodyattr %} data-spy="scroll" data-target=".bs-docs-sidebar"{% endblock %}>
+<body class="{% block bodyclass %}{% endblock %}"{% block bodyattr %} data-spy="scroll" data-target="#document-toc" data-offset="0"{% endblock %}>
 
 {% block body %}
 {% block content %}{% endblock %}
@@ -81,12 +81,15 @@ THE SOFTWARE.
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/bootstrap4/js/google-code-prettify/prettify.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/bootstrap4/js/bootstrap2.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/bootstrap4/js/google-code-prettify/run_prettify.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/bootstrap4/js/bootstrap.bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/bootstrap4/js/affix.js') }}"></script>
 <script type="text/javascript">
 $(function(){
-	prettyPrint();
-	$('body').append('<div id="toTop" class="btn btn-default"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
+	$('[data-spy="affix"]').on('affixed.bs.affix', function () {
+	$(".affix").css("width",$(".affix").parent().css("width").replace('px','') - 30);
+			})
+	$('body').append('<div id="toTop" class="btn btn-light"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
 	$(window).scroll(function () {
 		if ($(this).scrollTop() != 0) {
 			$('#toTop').fadeIn();

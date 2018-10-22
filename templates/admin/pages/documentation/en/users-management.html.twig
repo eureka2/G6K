@@ -6,145 +6,152 @@
 		<p class="lead">Users management</p>
 	</div>
 </header>
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
-		<div class="span3 bs-docs-sidebar">
-			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
-				<li data-level="1"><a href="#user-accounts">User accounts</a></li>
-				<li data-level="1"><a href="#user-management-interface">User management interface</a></li>
-				<li data-level="2"><a href="#adding-a-user">Adding a user</a></li>
-				<li data-level="2"><a href="#editing-a-user">Editing a user</a></li>
-				<li data-level="2"><a href="#deleting-a-user">Deleting a user</a></li>
-			</ul>
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+					<a class="nav-link ml-1" href="#user-accounts">1. User accounts</a>
+<a class="nav-link ml-1" href="#user-management-interface">2. User management interface</a>
+
+					<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-2" href="#adding-a-user">2.1. Adding a user</a>
+<a class="nav-link ml-2" href="#editing-a-user">2.2. Editing a user</a>
+<a class="nav-link ml-2" href="#deleting-a-user">2.3. Deleting a user</a>
+</nav>
+				</nav>
+			</nav>
 		</div>
-		<div class="span9">
-			<h1 id="user-accounts">
-				User accounts
-			</h1>
-			<p>This interface allows you to manage the user accounts that are authorized to access either the G6K administration module or the protected access simulators.</p>
-			<p><strong>Note that the administration module does not allow to protect access to a simulator, it is necessary to ask the system administrator who will modify the configuration of G6K accordingly.</strong></p>
-			<p>Not all user accounts have access to the same administrative functions.</p>
-			<p>Access to the functions is done according to « roles » which respect the following hierarchy:</p>
-			<ul>
-				<li>« User » : access to protected simulators requiring authentication.</li>
-				<li>« Contributor » : function of the role « user » + access to tutorials, update of data and therefore access to the menu « Data Sources".</li>
-				<li>« Manager » : role functions « contributor » + management (creation / modification) of the simulators.</li>
-				<li>« Admin » : functions of the role « manager » + management of views and cache.</li>
-				<li>« Super admin » : functions of the role « admin » + management of the users.</li>
-			</ul>
-			<p>So every manager is a contributor, every admin is manager and so on ...</p>
-			<h1 id="user-management-interface">
-				User management interface
-			</h1>
-			<p>If you have access to this interface, then you are one of the « Super admins"</p>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-users-buttonbar.png') }}" alt="" />
-			</p>
-			<p>Click « Users » from the menu bar to access it.</p>
-			<p>The list of user accounts is displayed as a table:</p>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-list.png') }}" alt="" />
-			</p>
-			<p>Several attributes concern users, they are defined below:</p>
-			<p><strong>Attributes :</strong></p>
-			<ul>
-				<li>« UserName : user identifier. <em>Specification :</em> <strong>Minimum 3 characters</strong></li>
-				<li>« Email » : user's email. <em>Specification:</em> <strong>Different from other emails already registered</strong></li>
-				<li>« Password » : password of the user who will be encrypted. <em>Specification:</em> <strong>Minimum 6 characters</strong></li>
-				<li>« Enabled » : determines whether the account is enabled or not.</li>
-				<li>« Roles » : User, Contributor, Manager, Admin and Super admin.</li>
-				<li>« Last Login » : The date the user last logged in.</li>
-			</ul>
-			<p>
-				You can adjust the size of the list with 
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-list-size.png') }}" alt="" />
-				, sort the list by clicking on the column name you want to make it easier to read and search the long list.
-				<br />
-				So if you click on "UserName", the list will be sorted by usernames in ascending order. If you click a second time, it will be sorted in decreasing order. The same is true for the other columns of the table.
-			</p>
-			<p>However above all, you can add, edit or delete a user account.</p>
-			<h2 id="adding-a-user">
-				Adding a user
-			</h2>
-			<p>
-				To create a user account, click the 
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-create-button.png') }}" alt="" />
-				button at the top right of the list.
-			</p>
-			<p>A blank line will appear at the top of the list, so you can enter the account attributes according to their specifications.</p>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-create.png') }}" alt="" />
-			</p>
-			<p>
-				To save the account, click the 
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-edit-save-button.png') }}" alt="" />
-				button, it will be immediately recorded in the database.
-			</p>
-			<p><em>If the user enters a bad username when logged in, the following message will be displayed: ‘’Invalid credentials.’’</em></p>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-login-invalid.png') }}" alt="" />
-			</p>
-			<p>When an account is disabled, it can no longer log in to access its role functions.</p>
-			<p>For example, if the account of "Guest" is disabled, he will be notified by the message ‘’Account is disabled.’’. when he tries to connect*</p>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-login-disabled.png') }}" alt="" />
-			</p>
-			<h2 id="editing-a-user">
-				Editing a user
-			</h2>
-			<p>
-				To change a user account, click the button:
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-edit-button.png') }}" alt="" />
-				<br />
-				The account line becomes editable, so you can make your changes:
-			</p>
-			<ul>
-				<li>Enable/disable account;</li>
-				<li>Change the username, email, password;</li>
-				<li>Add or remove roles.</li>
-			</ul>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-edit.png') }}" alt="" />
-			</p>
-			<p>To remove a role, click the cross to the left of the role name.</p>
-			<p>When you click in the "Roles" field, a drop-down list opens to select a role.</p>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-create-roles.png') }}" alt="" />
-			</p>
-			<p>
-				To save your changes, click the 
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-edit-save-button.png') }}" alt="" />
-				button.
-			</p>
-			<h2 id="deleting-a-user">
-				Deleting a user
-			</h2>
-			<p>
-				To delete a user click the button : 
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-delete-button.png') }}" alt="" />
-			</p>
-			<p>
-				A confirmation button will appear, click on it ( 
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-confirm-button.png') }}" alt="" />
-				) to delete the account.
-			</p>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-delete.png') }}" alt="" />
-			</p>
-			<p>
-				Once confirmed, the user's account will be deleted from the user database, but the account line will still be displayed with a "Restore" button if you have made a mistake or changed your mind.
-				<br />
-				Note that if you restore the account, the user will not be able to log in with his old password. Indeed, for security reasons, the old password could not be registered because it was coded according to the day of its creation.
-				<br />
-				You must enter a new password and communicate it to the user.
-			</p>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-delete-restore.png') }}" alt="" />
-			</p>
-			<p>At the next re-display of the page, the account will no longer appear in the list.</p>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/users-management-list.png') }}" alt="" />
-			</p>
+		<div class="col-9">
+			<div class="document-content">
+				<h1 id="user-accounts">
+					1. User accounts
+				</h1>
+				<p>This interface allows you to manage the user accounts that are authorized to access either the G6K administration module or the protected access simulators.</p>
+				<p><strong>Note that the administration module does not allow to protect access to a simulator, it is necessary to ask the system administrator who will modify the configuration of G6K accordingly.</strong></p>
+				<p>Not all user accounts have access to the same administrative functions.</p>
+				<p>Access to the functions is done according to « roles » which respect the following hierarchy:</p>
+				<ul>
+					<li>« User » : access to protected simulators requiring authentication.</li>
+					<li>« Contributor » : function of the role « user » + access to tutorials, update of data and therefore access to the menu « Data Sources".</li>
+					<li>« Manager » : role functions « contributor » + management (creation / modification) of the simulators.</li>
+					<li>« Admin » : functions of the role « manager » + management of views and cache.</li>
+					<li>« Super admin » : functions of the role « admin » + management of the users.</li>
+				</ul>
+				<p>So every manager is a contributor, every admin is manager and so on ...</p>
+				<h1 id="user-management-interface">
+					2. User management interface
+				</h1>
+				<p>If you have access to this interface, then you are one of the « Super admins"</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-users-buttonbar.png') }}" alt="" />
+				</p>
+				<p>Click « Users » from the menu bar to access it.</p>
+				<p>The list of user accounts is displayed as a table:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-list.png') }}" alt="" />
+				</p>
+				<p>Several attributes concern users, they are defined below:</p>
+				<p><strong>Attributes :</strong></p>
+				<ul>
+					<li>« UserName : user identifier. <em>Specification :</em> <strong>Minimum 3 characters</strong></li>
+					<li>« Email » : user's email. <em>Specification:</em> <strong>Different from other emails already registered</strong></li>
+					<li>« Password » : password of the user who will be encrypted. <em>Specification:</em> <strong>Minimum 6 characters</strong></li>
+					<li>« Enabled » : determines whether the account is enabled or not.</li>
+					<li>« Roles » : User, Contributor, Manager, Admin and Super admin.</li>
+					<li>« Last Login » : The date the user last logged in.</li>
+				</ul>
+				<p>
+					You can adjust the size of the list with 
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-list-size.png') }}" alt="" />
+					, sort the list by clicking on the column name you want to make it easier to read and search the long list.
+					<br />
+					So if you click on "UserName", the list will be sorted by usernames in ascending order. If you click a second time, it will be sorted in decreasing order. The same is true for the other columns of the table.
+				</p>
+				<p>However above all, you can add, edit or delete a user account.</p>
+				<h2 id="adding-a-user">
+					2.1. Adding a user
+				</h2>
+				<p>
+					To create a user account, click the 
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-create-button.png') }}" alt="" />
+					button at the top right of the list.
+				</p>
+				<p>A blank line will appear at the top of the list, so you can enter the account attributes according to their specifications.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-create.png') }}" alt="" />
+				</p>
+				<p>
+					To save the account, click the 
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-edit-save-button.png') }}" alt="" />
+					button, it will be immediately recorded in the database.
+				</p>
+				<p><em>If the user enters a bad username when logged in, the following message will be displayed: ‘’Invalid credentials.’’</em></p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-login-invalid.png') }}" alt="" />
+				</p>
+				<p>When an account is disabled, it can no longer log in to access its role functions.</p>
+				<p>For example, if the account of "Guest" is disabled, he will be notified by the message ‘’Account is disabled.’’. when he tries to connect*</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-login-disabled.png') }}" alt="" />
+				</p>
+				<h2 id="editing-a-user">
+					2.2. Editing a user
+				</h2>
+				<p>
+					To change a user account, click the button:
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-edit-button.png') }}" alt="" />
+					<br />
+					The account line becomes editable, so you can make your changes:
+				</p>
+				<ul>
+					<li>Enable/disable account;</li>
+					<li>Change the username, email, password;</li>
+					<li>Add or remove roles.</li>
+				</ul>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-edit.png') }}" alt="" />
+				</p>
+				<p>To remove a role, click the cross to the left of the role name.</p>
+				<p>When you click in the "Roles" field, a drop-down list opens to select a role.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-create-roles.png') }}" alt="" />
+				</p>
+				<p>
+					To save your changes, click the 
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-edit-save-button.png') }}" alt="" />
+					button.
+				</p>
+				<h2 id="deleting-a-user">
+					2.3. Deleting a user
+				</h2>
+				<p>
+					To delete a user click the button : 
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-delete-button.png') }}" alt="" />
+				</p>
+				<p>
+					A confirmation button will appear, click on it ( 
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-confirm-button.png') }}" alt="" />
+					) to delete the account.
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-delete.png') }}" alt="" />
+				</p>
+				<p>
+					Once confirmed, the user's account will be deleted from the user database, but the account line will still be displayed with a "Restore" button if you have made a mistake or changed your mind.
+					<br />
+					Note that if you restore the account, the user will not be able to log in with his old password. Indeed, for security reasons, the old password could not be registered because it was coded according to the day of its creation.
+					<br />
+					You must enter a new password and communicate it to the user.
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-user-delete-restore.png') }}" alt="" />
+				</p>
+				<p>At the next re-display of the page, the account will no longer appear in the list.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-list.png') }}" alt="" />
+				</p>
+			</div>
 		</div>
 	</div>
 </div>

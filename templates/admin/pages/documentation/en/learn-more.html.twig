@@ -6,71 +6,75 @@
 		<p class="lead">Learn more ...</p>
 	</div>
 </header>
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
-		<div class="span3 bs-docs-sidebar">
-			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
-				<li data-level="1"><a href="#what-is-it-?">What is it ?</a></li>
-				<li data-level="1"><a href="#how-does-it-work-?">How does it work ?</a></li>
-				<li data-level="1"><a href="#features-of-the-simulation-engine">Features of the simulation engine</a></li>
-				<li data-level="1"><a href="#main-functions-of-the-administration-module">Main functions of the administration module</a></li>
-			</ul>
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-1" href="#what-is-it-?">1. What is it ?</a>
+<a class="nav-link ml-1" href="#how-does-it-work-?">2. How does it work ?</a>
+<a class="nav-link ml-1" href="#features-of-the-simulation-engine">3. Features of the simulation engine</a>
+<a class="nav-link ml-1" href="#main-functions-of-the-administration-module">4. Main functions of the administration module</a>
+</nav>
+			</nav>
 		</div>
-		<div class="span9">
-			<h1 id="what-is-it-?">
-				What is it ?
-			</h1>
-			<p>G6K is a tool that enables the creation and online publishing of calculation simulators without coding. It has a simulation engine and an administration module.</p>
-			<p>A calculation simulator is an online service made available to a user to enable them to calculate the results (taxes, social benefits, etc.) corresponding to their particular situation. The results are calculated on the basis of data supplied by the user, reference data (eg amount of a tax) and business rules reflecting the current legislation in the field of simulation.</p>
-			<h1 id="how-does-it-work-?">
-				How does it work ?
-			</h1>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/en/g6k-schema.png') }}" alt="" />
-			</p>
-			<p>An administrator or a contributor defines the data to be requested to the user via forms and the results to be returned (possibly via intermediate calculation data).</p>
-			<p>The administrator stages the simulation by defining simulation steps. Each step consists of a form allowing the input or output of the previously defined data.</p>
-			<p>The administrator defines reference data sources that can be:</p>
-			<ul>
-				<li>external and accessible via web services or sql requests;</li>
-				<li>or internal, stored in a G6K database.</li>
-			</ul>
-			<p>The administrator or contributor defines rules (called "business rules in G6K) and calculations to be applied in the domain of simulation.</p>
-			<p>Data, data sources, steps, and business rules are saved in an XML file.</p>
-			<p>G6K has a simulation engine to "run" the simulation using the definitions contained in the XML file and data sources.</p>
-			<h1 id="features-of-the-simulation-engine">
-				Features of the simulation engine
-			</h1>
-			<ul>
-				<li>Analysis of the Definition XML file</li>
-				<li>Loading and feeding templates</li>
-				<li>Displaying Input Forms</li>
-				<li>Control of data entered</li>
-				<li>Access to baseline data</li>
-				<li>Evaluation of calculation formulas</li>
-				<li>Implementation of business rules</li>
-				<li>Management of the simulation stages (information acquisition steps, the results restitution step)</li>
-			</ul>
-			<h1 id="main-functions-of-the-administration-module">
-				Main functions of the administration module
-			</h1>
-			<ul>
-				<li>
-					Data definition: 
-					<ul>
-						<li>entered by the user</li>
-						<li>intermediate</li>
-						<li>in data source</li>
-						<li>result</li>
-					</ul>
-				</li>
-				<li>Definition of calculations</li>
-				<li>Definition of business rules</li>
-				<li>Definition of texts (fields, help, notes ...)</li>
-				<li>Definition of internal and external data sources</li>
-				<li>Definition of simulation steps</li>
-				<li>Update of internal "reference data"</li>
-			</ul>
+		<div class="col-9">
+			<div class="document-content">
+				<h1 id="what-is-it-?">
+					1. What is it ?
+				</h1>
+				<p>G6K is a tool that enables the creation and online publishing of calculation simulators without coding. It has a simulation engine and an administration module.</p>
+				<p>A calculation simulator is an online service made available to a user to enable them to calculate the results (taxes, social benefits, etc.) corresponding to their particular situation. The results are calculated on the basis of data supplied by the user, reference data (eg amount of a tax) and business rules reflecting the current legislation in the field of simulation.</p>
+				<h1 id="how-does-it-work-?">
+					2. How does it work ?
+				</h1>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/g6k-schema.png') }}" alt="" />
+				</p>
+				<p>An administrator or a contributor defines the data to be requested to the user via forms and the results to be returned (possibly via intermediate calculation data).</p>
+				<p>The administrator stages the simulation by defining simulation steps. Each step consists of a form allowing the input or output of the previously defined data.</p>
+				<p>The administrator defines reference data sources that can be:</p>
+				<ul>
+					<li>external and accessible via web services or sql requests;</li>
+					<li>or internal, stored in a G6K database.</li>
+				</ul>
+				<p>The administrator or contributor defines rules (called "business rules in G6K) and calculations to be applied in the domain of simulation.</p>
+				<p>Data, data sources, steps, and business rules are saved in an XML file.</p>
+				<p>G6K has a simulation engine to "run" the simulation using the definitions contained in the XML file and data sources.</p>
+				<h1 id="features-of-the-simulation-engine">
+					3. Features of the simulation engine
+				</h1>
+				<ul>
+					<li>Analysis of the Definition XML file</li>
+					<li>Loading and feeding templates</li>
+					<li>Displaying Input Forms</li>
+					<li>Control of data entered</li>
+					<li>Access to baseline data</li>
+					<li>Evaluation of calculation formulas</li>
+					<li>Implementation of business rules</li>
+					<li>Management of the simulation stages (information acquisition steps, the results restitution step)</li>
+				</ul>
+				<h1 id="main-functions-of-the-administration-module">
+					4. Main functions of the administration module
+				</h1>
+				<ul>
+					<li>
+						Data definition: 
+						<ul>
+							<li>entered by the user</li>
+							<li>intermediate</li>
+							<li>in data source</li>
+							<li>result</li>
+						</ul>
+					</li>
+					<li>Definition of calculations</li>
+					<li>Definition of business rules</li>
+					<li>Definition of texts (fields, help, notes ...)</li>
+					<li>Definition of internal and external data sources</li>
+					<li>Definition of simulation steps</li>
+					<li>Update of internal "reference data"</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>

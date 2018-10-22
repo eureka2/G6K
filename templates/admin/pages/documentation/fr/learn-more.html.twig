@@ -6,72 +6,76 @@
 		<p class="lead">En savoir plus ...</p>
 	</div>
 </header>
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
-		<div class="span3 bs-docs-sidebar">
-			<ul class="nav nav-list bs-docs-sidenav" data-spy="affix">
-				<li data-level="1"><a href="#c’est-quoi-?">C’est quoi ?</a></li>
-				<li data-level="1"><a href="#comment-ca-marche-?">Comment ça marche ?</a></li>
-				<li data-level="1"><a href="#fonctions-du-moteur-de-simulation">Fonctions du moteur de simulation</a></li>
-				<li data-level="1"><a href="#fonctions-principales-d’administration">Fonctions principales d’administration</a></li>
-			</ul>
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-1" href="#c’est-quoi-?">1. C’est quoi ?</a>
+<a class="nav-link ml-1" href="#comment-ca-marche-?">2. Comment ça marche ?</a>
+<a class="nav-link ml-1" href="#fonctions-du-moteur-de-simulation">3. Fonctions du moteur de simulation</a>
+<a class="nav-link ml-1" href="#fonctions-principales-d’administration">4. Fonctions principales d’administration</a>
+</nav>
+			</nav>
 		</div>
-		<div class="span9">
-			<h1 id="c’est-quoi-?">
-				C’est quoi ?
-			</h1>
-			<p>G6K est un outil qui permet de créer des simulateurs de calcul sans codage informatique et de les mettre en ligne. Il dispose pour cela d’un moteur de simulation et d’un module d’administration.</p>
-			<p>Un simulateur de calcul est un service en ligne mis à la disposition d’un utilisateur pour lui permettre de calculer des résultats (taxes, prestations sociales, …) correspondant à sa situation particulière. Les résultats sont calculés en fonction des données fournies par l’utilisateur, de données de références (ex : montant d’une taxe) et de règles « métier » qui traduisent la législation en vigueur dans le domaine de la simulation.</p>
-			<h1 id="comment-ca-marche-?">
-				Comment ça marche ?
-			</h1>
-			<p>
-				<img src="{{ asset('assets/admin/images/documentation/fr/g6k-schema.png') }}" alt="" />
-			</p>
-			<p>Un administrateur ou un contributeur définit les données à demander à l’utilisateur via des formulaires et les résultats à restituer (éventuellement en passant par des données intermédiaires de calcul).</p>
-			<p>L’administrateur met en scène la simulation en définissant des étapes de simulation. Chaque étape est composée d’un formulaire permettant la saisie ou la restitution des données préalablement définies.</p>
-			<p>L’administrateur définit des sources de données de référence qui peuvent être :</p>
-			<ul>
-				<li>externes et accessibles via des web services ou des requêtes sql;</li>
-				<li>ou interne, enregistrés dans une base de données G6K.</li>
-			</ul>
-			<p>L’administrateur ou le contributeur définit des règles (appelées règles « métier » ou business rules – dans G6K) et des calculs à appliquer dans le domaine de la simulation.</p>
-			<p>Les données, sources de données, étapes et règles de gestion sont enregistrés dans un fichier XML.</p>
-			<p>G6K possède un moteur de simulation permettant de « jouer » la simulation à l’aide des définitions contenues dans le fichier XML et des sources de données.</p>
-			<h1 id="fonctions-du-moteur-de-simulation">
-				Fonctions du moteur de simulation
-			</h1>
-			<ul>
-				<li>Analyse du fichier XML de définition</li>
-				<li>Chargement et alimentation des gabarits (templates)</li>
-				<li>Affichage des formulaires de saisie</li>
-				<li>Contrôle des données saisies</li>
-				<li>Accès aux données de référence</li>
-				<li>Évaluation des formules de calcul</li>
-				<li>Mise en œuvre des règles « métier »</li>
-				<li>Gestion des étapes de simulation (étapes d’acquisition des informations, étape de restitution des résultats)</li>
-			</ul>
-			<h1 id="fonctions-principales-d’administration">
-				Fonctions principales d’administration
-			</h1>
-			<ul>
-				<li>
-					Définition des données: 
-					<ul>
-						<li>saisies par l’utilisateur</li>
-						<li>intermédiaires</li>
-						<li>dans source de données</li>
-						<li>de résultat</li>
-					</ul>
-				</li>
-				<li>Définition des calculs</li>
-				<li>Définition des règles de gestion (business rules)</li>
-				<li>Définition des étapes de calcul</li>
-				<li>Définition des textes (champs, aide, notes, …)</li>
-				<li>Définition des sources de données internes et externes</li>
-				<li>Définition des étapes de simulation</li>
-				<li>Mise à jour des « données de référence » internes</li>
-			</ul>
+		<div class="col-9">
+			<div class="document-content">
+				<h1 id="c’est-quoi-?">
+					1. C’est quoi ?
+				</h1>
+				<p>G6K est un outil qui permet de créer des simulateurs de calcul sans codage informatique et de les mettre en ligne. Il dispose pour cela d’un moteur de simulation et d’un module d’administration.</p>
+				<p>Un simulateur de calcul est un service en ligne mis à la disposition d’un utilisateur pour lui permettre de calculer des résultats (taxes, prestations sociales, …) correspondant à sa situation particulière. Les résultats sont calculés en fonction des données fournies par l’utilisateur, de données de références (ex : montant d’une taxe) et de règles « métier » qui traduisent la législation en vigueur dans le domaine de la simulation.</p>
+				<h1 id="comment-ca-marche-?">
+					2. Comment ça marche ?
+				</h1>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/g6k-schema.png') }}" alt="" />
+				</p>
+				<p>Un administrateur ou un contributeur définit les données à demander à l’utilisateur via des formulaires et les résultats à restituer (éventuellement en passant par des données intermédiaires de calcul).</p>
+				<p>L’administrateur met en scène la simulation en définissant des étapes de simulation. Chaque étape est composée d’un formulaire permettant la saisie ou la restitution des données préalablement définies.</p>
+				<p>L’administrateur définit des sources de données de référence qui peuvent être :</p>
+				<ul>
+					<li>externes et accessibles via des web services ou des requêtes sql;</li>
+					<li>ou interne, enregistrés dans une base de données G6K.</li>
+				</ul>
+				<p>L’administrateur ou le contributeur définit des règles (appelées règles « métier » ou business rules – dans G6K) et des calculs à appliquer dans le domaine de la simulation.</p>
+				<p>Les données, sources de données, étapes et règles de gestion sont enregistrés dans un fichier XML.</p>
+				<p>G6K possède un moteur de simulation permettant de « jouer » la simulation à l’aide des définitions contenues dans le fichier XML et des sources de données.</p>
+				<h1 id="fonctions-du-moteur-de-simulation">
+					3. Fonctions du moteur de simulation
+				</h1>
+				<ul>
+					<li>Analyse du fichier XML de définition</li>
+					<li>Chargement et alimentation des gabarits (templates)</li>
+					<li>Affichage des formulaires de saisie</li>
+					<li>Contrôle des données saisies</li>
+					<li>Accès aux données de référence</li>
+					<li>Évaluation des formules de calcul</li>
+					<li>Mise en œuvre des règles « métier »</li>
+					<li>Gestion des étapes de simulation (étapes d’acquisition des informations, étape de restitution des résultats)</li>
+				</ul>
+				<h1 id="fonctions-principales-d’administration">
+					4. Fonctions principales d’administration
+				</h1>
+				<ul>
+					<li>
+						Définition des données: 
+						<ul>
+							<li>saisies par l’utilisateur</li>
+							<li>intermédiaires</li>
+							<li>dans source de données</li>
+							<li>de résultat</li>
+						</ul>
+					</li>
+					<li>Définition des calculs</li>
+					<li>Définition des règles de gestion (business rules)</li>
+					<li>Définition des étapes de calcul</li>
+					<li>Définition des textes (champs, aide, notes, …)</li>
+					<li>Définition des sources de données internes et externes</li>
+					<li>Définition des étapes de simulation</li>
+					<li>Mise à jour des « données de référence » internes</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>
