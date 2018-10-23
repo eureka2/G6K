@@ -6,6 +6,9 @@ framework:
 
     templating:
         engines: ['twig', 'php']
+    assets:
+        version: '4.0.0'
+        version_format: '%%s?version=%%s'
 
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
