@@ -1073,7 +1073,9 @@ THE SOFTWARE.
 		{% set void = data.choiceSource.setCaseInsensitive(false) %}
 		<div class="attributes-container choice-source-container" data-id="{{ data.choiceSource.id }}">
 			<div>
-			{{ page.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'select', 'id', 'Source'|trans, data.choiceSource.id, data.choiceSource.id, true, 'Source'|trans, { (data.choiceSource.id): data.simulator.sourceById(data.choiceSource.id).label }) }}
+			{% set sourceLabel = data.simulator.sourceById(data.choiceSource.id).label %}
+			{% if sourceLabel is empty %} {% set sourceLabel = 'Source'|trans ~ ' ' ~ data.choiceSource.id %}{% endif %}
+			{{ page.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'select', 'id', 'Source'|trans, data.choiceSource.id, data.choiceSource.id, true, 'Source'|trans, { (data.choiceSource.id): sourceLabel }) }}
 			{{ page.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'idColumn', 'Source column id'|trans, data.choiceSource.idColumn, data.choiceSource.idColumn, false, 'Source column id'|trans) }}
 			{{ page.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'valueColumn', 'Source column value'|trans, data.choiceSource.valueColumn, data.choiceSource.valueColumn, true, 'Source column value'|trans) }}
 			{{ page.showAttribute('data-'~data.id~'-choicesource-'~data.choiceSource.id, 'text', 'labelColumn', 'Source column label'|trans, data.choiceSource.labelColumn, data.choiceSource.labelColumn, true, 'Source column label'|trans) }}
