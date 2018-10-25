@@ -326,7 +326,7 @@ THE SOFTWARE.
 			if (id != oldId) {
 				$(this).attr('id', 'source-' + id);
 				var re = new RegExp("source-" + oldId + '([^\\d])?', 'g');
-				var a = $(this).find('> .panel > .panel-heading').find('> h4 > a');
+				var a = $(this).find('> .card > .card-header').find('> h4 > a');
 				a.text(' #' + id + ' ');
 				var descendants = $(this).find('*');
 				descendants.each(function(d) {
@@ -404,11 +404,11 @@ THE SOFTWARE.
 		var sourceElementId = 'source-' + source.id;
 		var sourcePanelContainer = $('<div>', { 'class': 'panel-group', id: sourceElementId, role: 'tablist', 'aria-multiselectable': 'true' });
 		var sourcePanel = $('<div>', { 'class': 'card bg-info' });
-		sourcePanel.append('<div class="panel-heading" role="tab" id="' + sourceElementId + '-panel"><button class="btn btn-info float-right update-button delete-source" title="' + Translator.trans('Delete') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button><button class="btn btn-info float-right update-button edit-source" title="' + Translator.trans('Edit') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fa fa-pencil"></span></button><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + ' ' + source.label + '</a></h4></div>');
+		sourcePanel.append('<div class="card-header" role="tab" id="' + sourceElementId + '-panel"><button class="btn btn-info float-right update-button delete-source" title="' + Translator.trans('Delete') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button><button class="btn btn-info float-right update-button edit-source" title="' + Translator.trans('Edit') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fa fa-pencil"></span></button><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + ' ' + source.label + '</a></h4></div>');
 		var sourcePanelCollapse = $('<div id="collapse' + sourceElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sourceElementId + '-panel"></div>');
-		var sourcePanelBody = $('<div class="panel-body"></div>');
+		var sourcePanelBody = $('<div class="card-body"></div>');
 		var sourceContainer = $('<div class="card bg-light source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
-		var sourceContainerBody = $('<div class="panel-body"></div>');
+		var sourceContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		attributes.append(Simulators.simpleAttributeForDisplay(sourceElementId, 'text', 'label', Translator.trans('Label'), source.label, source.label, false, Translator.trans('Label')));
@@ -493,16 +493,16 @@ THE SOFTWARE.
 
 	Simulators.drawSourceParametersForDisplay  = function(sourceId) {
 		var parametersPanel = $('<div>', { 'class': 'card bg-light source-parameters-panel', id: 'source-' + sourceId + '-source--parameters-panel' });
-		parametersPanel.append('<div class="panel-heading">' + Translator.trans('Parameters') + '</div>');
-		var parametersPanelBody = $('<div class="panel-body"></div>');
+		parametersPanel.append('<div class="card-header">' + Translator.trans('Parameters') + '</div>');
+		var parametersPanelBody = $('<div class="card-body"></div>');
 		parametersPanel.append(parametersPanelBody);
 		return parametersPanel;
 	}
 
 	Simulators.drawSourceParameterForDisplay = function(datasource, parameter) {
 		var parameterPanel = $('<div>', { 'class': 'card bg-light source-parameter-container',  'data-id': parameter.id });
-		parameterPanel.append('<div class="panel-heading">' + Translator.trans('Parameter %id%', { 'id': parameter.id }) + '</div>');
-		var parameterPanelBody = $('<div>', { 'class': 'panel-body', id: 'source-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
+		parameterPanel.append('<div class="card-header">' + Translator.trans('Parameter %id%', { 'id': parameter.id }) + '</div>');
+		var parameterPanelBody = $('<div>', { 'class': 'card-body', id: 'source-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		var datasList = {};
@@ -614,7 +614,7 @@ THE SOFTWARE.
 			expressionContainer.hide();
 		} else {
 			toolsContainer.show();
-			conditionsContainer.css('margin-top', '-17px');
+			conditionsContainer.css('margin-top', '-10px');
 			conditionsContainer.find('.request-filter-condition-num').show();
 			if (toolsContainer.find('.connector').attr('data-value') == 'advanced') {
 				toolsContainer.find('.request-filter-parenthesis-container').show();
@@ -696,11 +696,11 @@ THE SOFTWARE.
 		var sourceElementId = 'source-' + source.id;
 		var sourcePanelContainer = $('<div>', { 'class': 'panel-group', id: sourceElementId, role: 'tablist', 'aria-multiselectable': 'true' });
 		var sourcePanel = $('<div>', { 'class': 'card bg-info' });
-		sourcePanel.append('<div class="panel-heading" role="tab" id="' + sourceElementId + '-panel"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + '</a></h4></div>');
+		sourcePanel.append('<div class="card-header" role="tab" id="' + sourceElementId + '-panel"><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + '</a></h4></div>');
 		var sourcePanelCollapse = $('<div id="collapse' + sourceElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sourceElementId + '-panel"></div>');
-		var sourcePanelBody = $('<div class="panel-body"></div>');
+		var sourcePanelBody = $('<div class="card-body"></div>');
 		var sourceContainer = $('<div class="card bg-light source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
-		var sourceContainerBody = $('<div class="panel-body"></div>');
+		var sourceContainerBody = $('<div class="card-body"></div>');
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		var datasourcesList = {};
@@ -836,7 +836,7 @@ THE SOFTWARE.
 		sourceContainer.append(sourceContainerBody);
 		sourcePanelBody.append(sourceContainer);
 		var sourceButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + sourceElementId + '-buttons-panel"></div>');
-		var sourceButtonsBody = $('<div class="panel-body source-buttons"></div>');
+		var sourceButtonsBody = $('<div class="card-body source-buttons"></div>');
 		sourceButtonsBody.append('<button class="btn btn-success float-right validate-edit-source">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
 		sourceButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-source">' + Translator.trans('Cancel') + '</span></button>');
 		sourceButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
@@ -1513,7 +1513,7 @@ THE SOFTWARE.
 			var newSourcePanel = Simulators.drawSourceForDisplay(source);
 			if (sourcePanelContainer.find('.source-parameter-panel').length) {
 				var parametersPanel = Simulators.drawSourceParametersForDisplay(source.id);
-				var parametersContainer = parametersPanel.find('> .panel-body');
+				var parametersContainer = parametersPanel.find('> .card-body');
 				sourcePanelContainer.find('.source-parameter-panel').each(function (index) {
 					var parameterPanel = $(this);
 					var parameter = { id: parameterPanel.attr('data-id') };
@@ -1530,7 +1530,7 @@ THE SOFTWARE.
 					});
 					parametersContainer.append(Simulators.drawSourceParameterForDisplay(source.datasource, parameter));
 				});
-				newSourcePanel.find('.collapse').find('> .panel-body').append(parametersPanel);
+				newSourcePanel.find('.collapse').find('> .card-body').append(parametersPanel);
 			}
 			sourcePanelContainer.replaceWith(newSourcePanel);
 			newSourcePanel.find('button.edit-source').click(function(e) {
@@ -1821,16 +1821,16 @@ THE SOFTWARE.
 
 	Simulators.drawSourceParametersForInput = function(sourceId) {
 		var parametersPanel = $('<div>', { 'class': 'card bg-light source-parameters-panel', id: 'source-' + sourceId + '-source-parameters-panel' });
-		parametersPanel.append('<div class="panel-heading"><button class="btn btn-secondary float-right update-button add-source-parameter" title="' + Translator.trans('Add parameter') + '"><span class="button-label">' + Translator.trans('Add parameter') + '</span> <span class="fa fa-plus-circle"></span></button>' + Translator.trans('Parameters') + '</div>');
-		var parametersPanelBody = $('<div class="panel-body"></div>');
+		parametersPanel.append('<div class="card-header"><button class="btn btn-secondary float-right update-button add-source-parameter" title="' + Translator.trans('Add parameter') + '"><span class="button-label">' + Translator.trans('Add parameter') + '</span> <span class="fa fa-plus-circle"></span></button>' + Translator.trans('Parameters') + '</div>');
+		var parametersPanelBody = $('<div class="card-body"></div>');
 		parametersPanel.append(parametersPanelBody);
 		return parametersPanel;
 	}
 
 	Simulators.drawSourceParameterForInput = function(datasource, parameter) {
 		var parameterPanel = $('<div>', { 'class': 'card bg-light source-parameter-panel',  'data-id': parameter.id,  'data-name': parameter.name  });
-		parameterPanel.append('<div class="panel-heading"><button class="btn btn-secondary float-right update-button delete-source-parameter" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
-		var parameterPanelBody = $('<div>', { 'class': 'panel-body', id: 'data-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
+		parameterPanel.append('<div class="card-header"><button class="btn btn-secondary float-right update-button delete-source-parameter" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
+		var parameterPanelBody = $('<div>', { 'class': 'card-body', id: 'data-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
 		var datasList = {};
@@ -1886,8 +1886,8 @@ THE SOFTWARE.
 	Simulators.bindParameters = function(parametersPanel) {
 		parametersPanel.find('button.add-source-parameter').click(function(e) {
 			var datasource = parametersPanel.parent().parent().find('.source-container').find("select[data-attribute=datasource]").val();
-			var parametersContainer = parametersPanel.find('> .panel-body');
-			var id = parametersContainer.children('div.panel').length + 1;
+			var parametersContainer = parametersPanel.find('> .card-body');
+			var id = parametersContainer.children('div.card').length + 1;
 			var sourceId = parametersPanel.attr('id').match(/^source-(\d+)/)[1];
 			var parameter = {
 				id: id,
@@ -2304,7 +2304,7 @@ THE SOFTWARE.
 					type: parameter.origin === 'data' ? Simulators.dataset[$(this).find("p[data-attribute='data']").attr('data-value')].type : 'text'
 				};
 				var parameterPanel = Simulators.drawSourceParameterForInput(source.datasource, parameter);
-				parametersPanel.find('> .panel-body').append(parameterPanel);
+				parametersPanel.find('> .card-body').append(parameterPanel);
 				Simulators.bindParameter(parameterPanel);
 				parameterPanel.find('select[data-attribute=data]').trigger('change');
 			});

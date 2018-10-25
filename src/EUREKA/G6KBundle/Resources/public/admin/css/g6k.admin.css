@@ -116,6 +116,7 @@ ul.rule-conditions > li {
 	text-align: center;
 	color: #000;
 	font-weight: bold;
+	caption-side: top;
 }
 #page .rich-text table th {
 	text-align: center;
@@ -152,7 +153,9 @@ ul.rule-conditions > li {
 		border-radius: 0px; 
 	}
 }
-
+.navbar-side ul.nav.nav-pills {
+	clear: both;
+}
 .navbar-side > div {
 	margin-bottom: 1em;
 }
@@ -162,6 +165,7 @@ ul.rule-conditions > li {
 }
 .navbar-side > div  h4 {
 	font-style: italic;
+	font-size: 1.3rem;
 }
 .content table {
 	clear: both;
@@ -433,9 +437,6 @@ a.add-blockinfo, a.add-fieldset {
 .request-filter-expression-container {
 	margin-top: -12px;
 }
-.request-filter-tools-container > div {
-	padding-left: 0;
-}
 .request-filter-condition-container {
 	display: block;
 	margin: 0 4px;
@@ -457,13 +458,13 @@ a.add-blockinfo, a.add-fieldset {
 	color: #888;
 	font-size: 2em;
 	font-weight: bold;
-	height: 32px;
+	height: 36px;
 	line-height: 32px;
 	list-style-type: none;
 	padding: 0;
 	position: relative;
 	text-align: center;
-	width: 32px;
+	width: 36px;
 }
 .request-filter-expression .request-expression-token {
 	display: block;

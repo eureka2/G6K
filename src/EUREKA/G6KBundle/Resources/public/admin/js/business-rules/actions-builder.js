@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,36 +24,36 @@ THE SOFTWARE.
 
 (function($) {
 	"use strict";
-	
+
 	$.fn.actionsBuilder = function(options) {
-	    if (options == "actions") {
+		if (options == "actions") {
 			var builder = $(this).eq(0).data("actionsBuilder");
 			return builder.collectData();
-	    } else {
+		} else {
 			return $(this).each(function() {
 				var builder = new ActionsBuilder(this, options);
 				$(this).data("actionsBuilder", builder);
 			});
-	    }
+		}
 	};
-	
+
 	function ActionsBuilder(element, options) {
-	    this.element = $(element);
-	    this.options = options || {};
-	    this.init();
+		this.element = $(element);
+		this.options = options || {};
+		this.init();
 	}
-	
+
 	ActionsBuilder.prototype = {
-	    init: function() {
+		init: function() {
 			this.actions = this.options.actions;
 			this.fields = this.options.fields;
 			this.expressionOptions = this.options.expressionOptions;
 			this.addButton = this.options.addButton || null;
 			this.data = this.options.data || [];
 			this.element.html(this.buildActions(this.data));
-	    },
-	
-	    buildActions: function(data) {
+		},
+
+		buildActions: function(data) {
 			var self = this;
 			var container = $("<div>", {"class": "actions"});
 			if (this.addButton == null) {
@@ -64,7 +64,9 @@ THE SOFTWARE.
 			}
 			this.addButton.click(function(e) {
 				e.preventDefault();
-				container.append(self.buildAction({}));
+				var actionDiv = self.buildAction({});
+				actionDiv.find('> .end-action-mark').remove();
+				container.append(actionDiv);
 			});
 			for (var i = 0; i < data.length; i++) {
 				var actionObj = data[i];
@@ -82,7 +84,7 @@ THE SOFTWARE.
 						var newField = this.findField(field.value);
 						if (newField && field.fields) {
 							for (var j = 0; j < field.fields.length; j++) {
-								actionDiv.find('> button').before(this.buildSubfields(field.fields[j], newField.fields[j]));
+								actionDiv.find('> .end-action-mark').before(this.buildSubfields(field.fields[j], newField.fields[j]));
 							}
 						}
 					} else if (input.is(':checkbox')) {
@@ -94,11 +96,12 @@ THE SOFTWARE.
 						fields = fields.concat(field.fields);
 					}
 				}
+				actionDiv.find('> .end-action-mark').remove();
 				container.append(actionDiv);
 			}
 			return container;
-	    },
-	
+		},
+
 		buildSubfields: function(field, fieldaction) {
 			var fieldsDiv = $("<div>", {"class": "subfields"});
 			var fieldDiv = this.buildField(fieldaction);
@@ -121,8 +124,8 @@ THE SOFTWARE.
 			fieldsDiv.append(fieldDiv);
 			return fieldsDiv;
 		},
-		
-	    buildAction: function(actionObj) {
+
+		buildAction: function(actionObj) {
 			var actionDiv = $("<div>", {"class": "action"});
 			var data = {'': ''};
 			$.each(this.actions, function(i, action) {
@@ -164,7 +167,7 @@ THE SOFTWARE.
 					style: "inherit"
 				}
 			);
-			var removeLink = $("<button>", {"class": "remove fa fa-remove pull-left", "text": " ", "title": Translator.trans("Remove this Action")});
+			var removeLink = $("<button>", {"class": "remove fa fa-remove float-left", "text": " ", "title": Translator.trans("Remove this Action")});
 			removeLink.click(function(e) {
 				e.preventDefault();
 				actionDiv.remove();
@@ -174,15 +177,17 @@ THE SOFTWARE.
 			if (! actionObj.name) {
 				actionDiv.append($("<div>", {"class": "subfields"}));
 			}
-			actionDiv.append(removeLink);
+			actionDiv.prepend(removeLink);
+			var mark = $("<div>", { 'class': 'end-action-mark' });
+			actionDiv.append(mark);
 			return actionDiv;
-	    },
-	
-	    buildField: function(field) {
+		},
+
+		buildField: function(field) {
 			var fieldDiv = $("<div>", {"class": "field"});
 			var subfields = $("<div>", {"class": "subfields"});
 			var self = this;
-	
+
 			var label = $("<label>", {"text": field.label});
 			fieldDiv.append(label);
 	
@@ -301,18 +306,17 @@ THE SOFTWARE.
 			if (field.hint) {
 				fieldDiv.append($("<p>", {"class": "hint", "text": field.hint}));
 			}
-	
+
 			fieldDiv.append(subfields);
 			return fieldDiv;
-	    },
-	                        
-	
-	    collectData: function(fields) {
+		},
+
+		collectData: function(fields) {
 			var self = this;
 			fields = fields || this.element.find(".action");
 			var out = [];
 			fields.each(function() {
-				var input = $(this).find("> :input, > .editable-select, > .editable-textarea, > .expression, > .jstEditor > :input");
+				var input = $(this).find("> :input:not(button), > .editable-select, > .editable-textarea, > .expression, > .jstEditor > :input");
 				var val;
 				if (input.hasClass('expression')) {
 					val = input.expressionbuilder('val');
@@ -335,16 +339,16 @@ THE SOFTWARE.
 				out.push(action);
 			});
 			return out;
-	    },
-	
-	    findField: function(fieldName) {
+		},
+
+		findField: function(fieldName) {
 			for (var i=0; i < this.actions.length; i++) {
 				var field = this.actions[i];
 				if (field.name == fieldName) {
 					return field;
 				}
 			}
-	    }
+		}
 	};
 
 })(jQuery);
