@@ -58,7 +58,7 @@
 }
 
 #business-rules .action .subfields, #business-rules .action .subfields .field {
-	display: inline-block;
+	display: inline;
 }
 
 #business-rules .action select, #business-rules .action input, #business-rules .action textarea {

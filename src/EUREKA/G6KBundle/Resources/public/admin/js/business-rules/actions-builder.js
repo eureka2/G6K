@@ -64,7 +64,9 @@ THE SOFTWARE.
 			}
 			this.addButton.click(function(e) {
 				e.preventDefault();
-				container.append(self.buildAction({}));
+				var actionDiv = self.buildAction({});
+				actionDiv.find('> .end-action-mark').remove();
+				container.append(actionDiv);
 			});
 			for (var i = 0; i < data.length; i++) {
 				var actionObj = data[i];
@@ -82,7 +84,7 @@ THE SOFTWARE.
 						var newField = this.findField(field.value);
 						if (newField && field.fields) {
 							for (var j = 0; j < field.fields.length; j++) {
-								actionDiv.find('> button').before(this.buildSubfields(field.fields[j], newField.fields[j]));
+								actionDiv.find('> .end-action-mark').before(this.buildSubfields(field.fields[j], newField.fields[j]));
 							}
 						}
 					} else if (input.is(':checkbox')) {
@@ -94,6 +96,7 @@ THE SOFTWARE.
 						fields = fields.concat(field.fields);
 					}
 				}
+				actionDiv.find('> .end-action-mark').remove();
 				container.append(actionDiv);
 			}
 			return container;
@@ -174,7 +177,9 @@ THE SOFTWARE.
 			if (! actionObj.name) {
 				actionDiv.append($("<div>", {"class": "subfields"}));
 			}
-			actionDiv.append(removeLink);
+			actionDiv.prepend(removeLink);
+			var mark = $("<div>", { 'class': 'end-action-mark' });
+			actionDiv.append(mark);
 			return actionDiv;
 	    },
 	
@@ -312,7 +317,7 @@ THE SOFTWARE.
 			fields = fields || this.element.find(".action");
 			var out = [];
 			fields.each(function() {
-				var input = $(this).find("> :input, > .editable-select, > .editable-textarea, > .expression, > .jstEditor > :input");
+				var input = $(this).find("> :input:not(button), > .editable-select, > .editable-textarea, > .expression, > .jstEditor > :input");
 				var val;
 				if (input.hasClass('expression')) {
 					val = input.expressionbuilder('val');
