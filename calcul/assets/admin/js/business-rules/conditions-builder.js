@@ -543,7 +543,7 @@ THE SOFTWARE.
 						$(this).next().text("  " + Translator.trans("of the following conditions is met") +" :");  
 				}
 			});
-			var addRuleLink = $("<button>", {"class": "add-condition btn-primary fa fa-plus-square", "text": " ", "title": Translator.trans("Add Condition")});
+			var addRuleLink = $("<button>", {"class": "add-condition btn btn-primary fa fa-plus-square", "text": " ", "title": Translator.trans("Add Condition")});
 			var self = this;
 			addRuleLink.click(function(e) {
 				e.preventDefault();
@@ -553,7 +553,7 @@ THE SOFTWARE.
 			});
 			div.append(addRuleLink);
 
-			var addConditionLink = $("<button>", {"class": "add-sub-condition btn-info fa fa-plus-circle", "text": " ", "title": Translator.trans("Add Sub-Condition")});
+			var addConditionLink = $("<button>", {"class": "add-sub-condition btn btn-info fa fa-plus-circle", "text": " ", "title": Translator.trans("Add Sub-Condition")});
 			addConditionLink.click(function(e) {
 				e.preventDefault();
 				var f = self.fields[Object.keys(self.fields)[0]];
@@ -562,7 +562,7 @@ THE SOFTWARE.
 			});
 			div.append(addConditionLink);
 
-			var removeLink = $("<button>", {"class": "remove btn-danger fa fa-remove", "text": " ", "title": Translator.trans("Remove this Sub-Condition")});
+			var removeLink = $("<button>", {"class": "remove btn btn-danger fa fa-remove", "text": " ", "title": Translator.trans("Remove this Sub-Condition")});
 			removeLink.click(function(e) {
 				e.preventDefault();
 				div.remove();
@@ -657,7 +657,7 @@ THE SOFTWARE.
 	}
 
 	function removeLink() {
-		var removeLink = $("<button>", {"class": "remove btn-danger fa fa-remove", "text": " ", "title": Translator.trans("Remove this Condition")});
+		var removeLink = $("<button>", {"class": "remove btn btn-danger fa fa-remove", "text": " ", "title": Translator.trans("Remove this Condition")});
 		removeLink.click(onRemoveLinkClicked);
 		return removeLink;
 	}
