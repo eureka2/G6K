@@ -78,6 +78,7 @@
 #business-rules .remove, #business-rules .add, #business-rules .add-condition, #business-rules .add-sub-condition {
 	height: 24px;
 	margin: auto 5px;
+	padding: 4px 5px;
 }
 
 
