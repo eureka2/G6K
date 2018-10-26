@@ -106,6 +106,9 @@
             "allow-contrib": false,
             "require": "4.1.*"
         },
+        "branch-alias": {
+            "dev-master": "4.x-dev"
+        },
         "public-dir": "calcul"
     }
 }
