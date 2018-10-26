@@ -219,6 +219,17 @@ THE SOFTWARE.
 		return result;
 	}
 
+	Simulators.replaceByValueLabel = function(data, value) {
+		if (/#\d+/.test(value)) {
+			return Simulators.replaceByDataLabel(value);
+		} else if (data.type === 'choice') {
+			var label = Simulators.getChoiceLabel(data, value);
+			return label !== '' ? '« ' + label + ' »' : value;
+		} else {
+			return value;
+		}
+	}
+
 	Simulators.maxDatasetId = function() {
 		var maxId = 0;
 		$.each(Simulators.dataset, function(name, data) {
