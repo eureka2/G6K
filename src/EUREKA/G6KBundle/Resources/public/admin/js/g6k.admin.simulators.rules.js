@@ -4082,7 +4082,7 @@ THE SOFTWARE.
 					break;
 			}
 		} else if (name === 'setAttribute') {
-			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans('the ' + target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByDataLabel(value)) + '</span>');
+			actionContainer.append('<span class="action-name">' + Translator.trans('set') + '</span> <span class="action-target">' + Translator.trans('the ' + target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span> <span class="action-value"> ' + Translator.trans('to') + ' ' + Translator.trans(Simulators.replaceByValueLabel(dataObj, value)) + '</span>');
 		} else if (name === 'unsetAttribute') {
 			actionContainer.append('<span class="action-name">' + Translator.trans('unset') + '</span> <span class="action-target">' + Translator.trans('the ' + target) + '</span> <span class="action-data"> '+ Translator.trans('of «%label%»', {'label': dataObj.label }) + '</span>');
 		}
