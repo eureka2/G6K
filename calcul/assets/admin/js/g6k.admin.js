@@ -242,7 +242,7 @@ THE SOFTWARE.
 			'load': function(e) {
 				var editor = this;
 				wysihtml.dom.observe(editor.composer.doc.body, 'keydown', function(e) {
-					var key = e.which || e.keyCode;
+					var key = e.keyCode || e.which || e.key;;
 					if (key == 13) {
 						e.preventDefault();
 					}

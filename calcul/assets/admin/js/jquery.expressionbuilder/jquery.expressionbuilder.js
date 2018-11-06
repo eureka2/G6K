@@ -53,7 +53,7 @@ var ExpressionBuilder_I18N = {
 
 (function( jQuery ){
 	"use strict";
-  
+
 	var methods = {
 		init : function( options ) {
 
@@ -126,20 +126,21 @@ var ExpressionBuilder_I18N = {
 					return operandWrapper;
 				}
 
-				function addOperand(operandWrapper) {
-					var choices = jQuery('<select></select>');
-					choices.append('<option operand-type="none" value=""></option>');
+				function makeOperandChoices(operandWrapper) {
+
+					var select = jQuery('<select></select>');
+					select.append('<option operand-type="none" value=""></option>');
 					var gMiscellaneous = jQuery('<optgroup label="' + i18n['miscellaneous-label'] + '"></optgroup>');
 					gMiscellaneous.append('<option operand-type="literal" value="' + i18n['literal-label'] + '">' + i18n['literal-label'] + '</option>');
 					gMiscellaneous.append('<option operand-type="nested" value="nested">' + i18n['nested-expression-label'] + '</option>');
-					choices.append(gMiscellaneous);
+					select.append(gMiscellaneous);
 
 					if (Object.keys(settings.fields).length > 0) {
 						var gfields = jQuery('<optgroup label="' + i18n['fields-label'] + '">');
 						jQuery.each(settings.fields, function(name, field) {
 							gfields.append('<option operand-type="field" value="' + name + '">' + field.label + '</option>');
 						});
-						choices.append(gfields);
+						select.append(gfields);
 					}
 
 					if (Object.keys(settings.constants).length > 0) {
@@ -147,7 +148,7 @@ var ExpressionBuilder_I18N = {
 						jQuery.each(settings.constants, function(name, funct) {
 							gconstants.append('<option operand-type="constant" value="' + name + '">' + name + '</option>');
 						});
-						choices.append(gconstants);
+						select.append(gconstants);
 					}
 
 					if (Object.keys(settings.parameters).length > 0) {
@@ -155,7 +156,7 @@ var ExpressionBuilder_I18N = {
 						jQuery.each(settings.parameters, function(name, parameter) {
 							gparameters.append('<option operand-type="parameter" value="' + name + '">' + parameter.name + '</option>');
 						});
-						choices.append(gparameters);
+						select.append(gparameters);
 					}
 
 					if (Object.keys(settings.functions).length > 0) {
@@ -163,38 +164,89 @@ var ExpressionBuilder_I18N = {
 						jQuery.each(settings.functions, function(name, funct) {
 							gfunctions.append('<option operand-type="function" value="' + name + '">' + name + '</option>');
 						});
-						choices.append(gfunctions);
+						select.append(gfunctions);
 					}
 
-					// Create Input Element
-					var input = jQuery('<input></input>');
+					var choices = new Choices({
+						source: select,
+						onChoose: chooseOperandChoice, 
+						attributes: {
+							type: 'operand-type',
+							value: 'operand-value'
+						},
+						classes: {
+							container: 'expression-operand-choices-container',
+							button: 'expression-operand-choices-button',
+							buttonText: 'expression-operand-choice',
+							buttonIcon: 'fa fa-angle-down',
+							choices: 'expression-operand-choices',
+							itemGroup: 'expression-operand-choices-group'
+						}
+					});
+
+					operandWrapper.append(choices.get());
+					operandWrapper.data('operand-choices', choices);
+				}
+
+				function chooseOperandChoice(choices, item) {
+					var chosen = item.attr('operand-value');
+					var text = item.text();
+					var type = item.attr('operand-type');
+					var literal = choices.getList().find("li[operand-type='literal']").text();
+					var val = literal != i18n['literal-label'] ? literal : '';
+					if (type === 'literal'){
+						literalOperand(choices.get().parent('span'), val);
+					} else if (type === 'constant') {
+						constantOperand(choices.get().parent('span'), chosen);
+					} else if (type === 'function') {
+						functionExpression(choices.get().parent('span'), chosen);
+					} else if (type === 'nested') {
+						nestedExpression(choices.get().parent('span'));
+					} else if (type === 'field') {
+						fieldOperand(choices.get().parent('span'), chosen, text);
+					} else if (type === 'parameter') {
+						parameterOperand(choices.get().parent('span'), chosen, text);
+					} else if (type === 'none') {
+						noneOperand(choices.get().parent('span'));
+					}
+				}
+
+				function addOperand(operandWrapper) {
 
 					// Create operand holder Element
 					var holder = jQuery('<button class="operand-holder"></button>');
 					jQuery.each(settings.operandHolder.classes, function(c, clazz) {
 						holder.addClass(clazz);
 					});
+					// put holder in wrapper element
+					operandWrapper.append(holder);
 
-					// put holder, input and select element in wrapper element
-					operandWrapper.append(holder).append(input).append(choices);
+					// Create Input Element
+					var inputContainer = jQuery('<div>', { 'class': 'expression-input-container' } );
+					var input = jQuery('<input>', { 'class': 'expression-input-field' } );
+					inputContainer.append(input);
 
-					input.css({
-						position : "relative",
-						display : "none"
-					}).attr('placeholder', i18n['literal-placeholder']);
+					var inputOk = jQuery('<button>', { 'class': 'expression-input-ok btn text-success'});
+					inputOk.append(jQuery('<span>', { 'class': 'fa fa-check'}));
+					inputContainer.append(inputOk);
+					// put inputContainer in wrapper element
+					operandWrapper.append(inputContainer);
 
-					choices.css({
-					});
+					makeOperandChoices(operandWrapper);
+
+					inputContainer.attr('placeholder', i18n['literal-placeholder']);
+					input.attr('placeholder', i18n['literal-placeholder']);
+
 					if (! holderCSS) {
 						holderCSS = {
 							"border": "none",
 							"border-bottom": "thin dotted",
-							position : "relative",
-							cursor: "pointer",
+							"position" : "relative",
+							"cursor": "pointer",
 							"border-radius": 0,
-							margin: 0,
-							padding: 0,
-							background: "#fff",
+							"margin": 0,
+							"padding": 0,
+							"background": "#fff",
 							"min-width": "20px"
 						};
 					}
@@ -258,7 +310,7 @@ var ExpressionBuilder_I18N = {
 
 					holder.on ('click', function(e) {
 						e.preventDefault();
-						showOperandChoices(jQuery(this).parent('span'));
+						showOperandList(jQuery(this).parent('span'));
 						resizeOperand(jQuery(this).parent('span'));
 					});
 
@@ -316,67 +368,21 @@ var ExpressionBuilder_I18N = {
 						return false;
 					});
 
-					choices.on ('keydown', function(e){
-						if (e.keyCode >= 37 && e.keyCode <=40) // arrow buttons
-							return ;
-						if (e.keyCode == 13) { // arrow buttons or enter button
-							setTimeout(function() {
-								jQuery(this).trigger('blur');
-							}, 0);
-							return;
-						}
+					input.autoGrowInput({ maxWidth: 500, minWidth: operandWrapper.data('operand-choices').width(), comfortZone: 1 });
 
-						var chosen = jQuery(this).val();
-						if ( chosen == i18n['literal-label'] ) {
-							var text = jQuery(this).find("option[operand-type='literal']").text();
-							var val = text != i18n['literal-label'] ? text : '';
-							literalOperand(jQuery(this).parent('span'), val);
-						}
-					});
-
-					choices.on ('change blur', function(e){
-						var chosen = jQuery(this).val();
-						var text = jQuery(this).find('option:selected').text();
-						var type = jQuery(this).find('option:selected').attr('operand-type');
-						var literal = jQuery(this).find("option[operand-type='literal']").text();
-						var val = literal != i18n['literal-label'] ? literal : '';
-						if (type === 'literal'){
-							literalOperand(jQuery(this).parent('span'), val);
-						} else if (type === 'constant') {
-							constantOperand(jQuery(this).parent('span'), chosen);
-						} else if (type === 'function') {
-							functionExpression(jQuery(this).parent('span'), chosen);
-						} else if (type === 'nested') {
-							nestedExpression(jQuery(this).parent('span'));
-						} else if (type === 'field') {
-							fieldOperand(jQuery(this).parent('span'), chosen, text);
-						} else if (type === 'parameter') {
-							parameterOperand(jQuery(this).parent('span'), chosen, text);
-						} else if (type === 'none') {
-							noneOperand(jQuery(this).parent('span'));
-						}
-					});
-
-					choices.find('option').on('click', function(e){
-						if (jQuery(this).val() == jQuery(this).parent().parent().val()) {
-							jQuery(this).parent().parent().trigger('change');
-						}
-					});
-
-					input.autoGrowInput({ maxWidth: 500, minWidth: choices.width(), comfortZone: 1 });
-
-					input.on ('keyup', function(e){
-						if (e.keyCode == 13) { //enter
+					input.on ('keydown', function(e){
+						var key = e.keyCode || e.which || e.key;;
+						if (key == 13) { //enter
 							e.preventDefault();
-							e.stopImmediatePropagation();
+							e.stopPropagation();
 							if (jQuery(this).val() === '') {
-								showOperandChoices(jQuery(this).parent('span'));
-								jQuery(this).parent('span').find('select option:eq(0)').prop('selected', true);
+								showOperandList(jQuery(this).parent('span'));
+								jQuery(this).parent().parent('span').find('select option:eq(0)').prop('selected', true);
 							} else {
-								showHolder(jQuery(this).parent('span'), jQuery(this).val(), jQuery(this).val(), 'literal');
+								showHolder(jQuery(this).parent().parent('span'), jQuery(this).val(), jQuery(this).val(), 'literal');
 							}
-							resizeOperand(jQuery(this).parent('span'));
-							var functionw = jQuery(this).parent('span').parents('.function-operand-wrapper');
+							resizeOperand(jQuery(this).parent().parent('span'));
+							var functionw = jQuery(this).parent().parent('span').parents('.function-operand-wrapper');
 							if (functionw.length > 0) {
 								functionw.parent().expressionbuilder('state');
 							}
@@ -386,22 +392,32 @@ var ExpressionBuilder_I18N = {
 
 					input.on ('blur', function(e){
 						if (jQuery(this).val() === '') {
-							showOperandChoices(jQuery(this).parent('span'));
+							showOperandList(jQuery(this).parent('span'));
 							jQuery(this).parent('span').find('select option:eq(0)').prop('selected', true);
 						} else {
-							showHolder(jQuery(this).parent('span'), jQuery(this).val(), jQuery(this).val(), 'literal');
+							showHolder(jQuery(this).parent().parent('span'), jQuery(this).val(), jQuery(this).val(), 'literal');
 						}
-						resizeOperand(jQuery(this).parent('span'));
-						var functionw = jQuery(this).parent('span').parents('.function-operand-wrapper');
+						resizeOperand(jQuery(this).parent().parent('span'));
+						var functionw = jQuery(this).parent().parent('span').parents('.function-operand-wrapper');
 						if (functionw.length > 0) {
 							functionw.parent().expressionbuilder('state');
 						}
 					});
-
 					holder.data('operand-type', 'none');
 					holder.data('operand-value', '');
 					holder.data('operand-completed', false);
 					checkState();
+
+					// test click outside
+					$(document).on('click', function(e) {
+						if (e.target !== input[0] && input.is(':visible') && $(e.target).parents('.action').length == 0) {
+							setTimeout(function() {
+								input.trigger('blur');
+							},0);
+						}
+					});
+					operandWrapper.data('operand-choices').focus();
+
 					return holder;
 				}
 
@@ -428,7 +444,7 @@ var ExpressionBuilder_I18N = {
 					var operandWrapper = jQuery('<span class="operand-wrapper"></span>');
 					operator.before(operandWrapper);
 					addOperand(operandWrapper);
-					operandWrapper.children('select').focus();
+					operandWrapper.data('operand-choices').focus();
 				}
 
 				function deleteOperand(wrapper) {
@@ -458,8 +474,8 @@ var ExpressionBuilder_I18N = {
 								nestedExpr.expressionbuilder('destroy');
 								functionExpr.expressionbuilder('state');
 							} else {
-								var choices = showOperandChoices(wrapper);
-								choices.val('');
+								showOperandList(wrapper);
+								wrapper.data('operand-choices').val('');
 							}
 						} else {
 							if (holder.data('right-operator')) {
@@ -507,7 +523,7 @@ var ExpressionBuilder_I18N = {
 
 					holder.on ('click', function(e) {
 						e.preventDefault();
-						showOperatorChoices(jQuery(this).parent('span'));
+						showOperatorList(jQuery(this).parent('span'));
 					});
 					choices.on ('change blur', function(e){
 						if (jQuery(this).val() !== '') {
@@ -533,10 +549,9 @@ var ExpressionBuilder_I18N = {
 
 				function showHolder(wrapper, val, label, operandType) {
 					var holder = wrapper.children('button.operand-holder');
-					var choices = wrapper.children('select');
-					var input = wrapper.children('input');
-					input.hide();
-					choices.hide();
+					var inputContainer = wrapper.children('.expression-input-container');
+					inputContainer.hide();
+					wrapper.data('operand-choices').hide();
 					holder.data('operand-type', operandType);
 					if (holder.data('right-operator')) {
 						holder.data('right-operator').css({"display":"inline"});
@@ -584,39 +599,40 @@ var ExpressionBuilder_I18N = {
 						wrapper.children('span.function-wrapper').remove();
 					}
 					var holder = wrapper.children('button.operand-holder');
-					var choices = wrapper.children('select');
-					var input = wrapper.children('input');
+					var inputContainer = wrapper.children('.expression-input-container');
+					var input = inputContainer.children('input');
 					holder.hide();
-					choices.hide();
-					input.val(val).css({"display":"inline"}).focus();
+					wrapper.data('operand-choices').hide();
+					inputContainer.css({"display":"inline-block"});
+					input.val(val).focus();
 					return input;
 				}
 
-				function showOperandChoices(wrapper) {
-					var choices = wrapper.children('select');
-					var input = wrapper.children('input');
+				function showOperandList(wrapper) {
+					var choices = wrapper.data('operand-choices');
+					var inputContainer = wrapper.children('.expression-input-container');
+					var input = inputContainer.children('input');
 					var holder = wrapper.children('button.operand-holder');
 					var chosen = choices.val();
-					if (chosen == i18n['literal-label'] ){
+					if (chosen == i18n['literal-label'] ) {
 						if ( input.val() !== "" ){
-							choices.find("option[operand-type='literal']").text(jQuery.trim(input.val())).prop('selected', true);
-							choices.val(chosen);
+							choices.getList().find("li[operand-type='literal']").text(jQuery.trim(input.val()));
+							wrapper.data('operand-choices').val(chosen);
 						}
 					} else {
 						if ( input.val() === "" ) {
-							choices.find("option[operand-type='literal']").text(i18n['literal-label']).prop('selected', false);
+							choices.getList().find("li[operand-type='literal']").text(i18n['literal-label']);
 						} else {
-							choices.find("option[operand-type='literal']").text(input.val()).prop('selected', true);
+							choices.getList().find("li[operand-type='literal']").text(input.val());
 						}
 					}
 					input.val("");
 					holder.hide();
-					input.hide();
-					choices.css({"display":"inline"}).focus();
-					return choices;
+					inputContainer.hide();
+					choices.show();
 				}
 
-				function showOperatorChoices(wrapper) {
+				function showOperatorList(wrapper) {
 					var choices = wrapper.children('select');
 					var holder = wrapper.children('button.operator-holder');
 					holder.hide();
@@ -633,21 +649,15 @@ var ExpressionBuilder_I18N = {
 					if (wrapper.is(':last-child')) {
 						var operand = createOperand();
 						operand.children('button.operand-holder').data('left-operator', wrapper);
-						operand.children('select').focus();
+						operand.data('operand-choices').focus();
 					}
 				}
 
 				function resizeOperand(wrapper){
-					var width = wrapper.children('select').outerWidth();
-					var input = wrapper.children('input');
-					var holder = wrapper.children('button.operand-holder');
+					var width = wrapper.data('operand-choices').outerWidth();
 					wrapper.css({
 						"width" : width
 					});
-					input.css({
-						"width" : width
-					});
-
 				}
 
 				function noneOperand(wrapper) {
@@ -1038,21 +1048,18 @@ var ExpressionBuilder_I18N = {
 								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
 							} else if (settings.fields[value]) {
 								operandWrapper = createOperand();
-								var choices = operandWrapper.children('select');
-								choices.val(value);
+								operandWrapper.data('operand-choices').val(value);
 								showHolder(operandWrapper, value, settings.fields[value].label, 'field');
 								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
 							} else if (typeof value == 'string' && settings.fields[value.toLowerCase()]) {
 								value = value.toLowerCase();
 								operandWrapper = createOperand();
-								var choices = operandWrapper.children('select');
-								choices.val(value);
+								operandWrapper.data('operand-choices').val(value);
 								showHolder(operandWrapper, value, settings.fields[value].label, 'field');
 								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
 							} else if (settings.parameters[value]) {
 								operandWrapper = createOperand();
-								var choices = operandWrapper.children('select');
-								choices.val(value);
+								operandWrapper.data('operand-choices').val(value);
 								showHolder(operandWrapper, value, settings.parameters[value].name, 'parameter');
 								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
 							} else if (settings.functions[value]) {
@@ -1064,13 +1071,13 @@ var ExpressionBuilder_I18N = {
 								var initial = [];
 								i = getInitialSubExpression(i, initial);
 								operandWrapper = createOperand();
-								var choices = operandWrapper.children('select');
-								choices.val(funcName);
+								operandWrapper.data('operand-choices').val(funcName);
 								functionExpression(operandWrapper, funcName, initial);
 								operandWrapper.children('button.operand-holder').data('left-operator', operatorWrapper);
 							} else {
 								operandWrapper = createOperand();
-								var input = operandWrapper.children('input');
+								var inputContainer = operandWrapper.children('.expression-input-container');
+								var input = inputContainer.children('input');
 								if (typeof value == 'string') {
 									value = value.replace(/^'(.+)'$/, '$1');
 								}
@@ -1081,7 +1088,7 @@ var ExpressionBuilder_I18N = {
 						}
 					} else {
 						operandWrapper = createOperand();
-						operandWrapper.children('select').focus();
+						operandWrapper.data('operand-choices').focus();
 					}
 				}
 

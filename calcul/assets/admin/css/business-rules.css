@@ -87,6 +87,9 @@
 	padding-bottom: 2px;
 	border-bottom: thin dotted;
 }
+.editable-select:focus {
+	outline: thin dotted;
+}
 .editable-textarea textarea {
 	min-width: 20em;
 	min-height: 5em;
@@ -136,4 +139,110 @@
 
 .operand-holder, .operator-holder, .right-parenthesis-holder  {
 	border: none;
+}
+
+div.expression-operand-choices-container,
+div.field-choices-container {
+	display: inline-block;
+	position: relative;
+}
+button.expression-operand-choices-button,
+button.field-choices-button {
+	width: 100%;
+	text-align: left;
+	background: #fff;
+	border: 1px solid #ccc;
+	min-width: 20em;
+	font-size: 0.9em;
+}
+button.expression-operand-choices-button:focus,
+button.field-choices-button:focus {
+	outline: thin dotted !important;
+}
+button.expression-operand-choices-button > span:last-child,
+button.field-choices-button > span:last-child {
+	height: 100%;
+	padding: 4px 3px;
+	margin-right: -8px;
+	background: #fff;
+	border: none;
+}
+button.expression-operand-choices-button:hover > span:last-child,
+button.field-choices-button:hover > span:last-child {
+	background: #e5f1fb;
+	padding: 3px 2px;
+	border: 1px solid #0078d7;
+}
+ul.expression-operand-choices,
+ul.field-choices {
+	list-style-type: none;
+	display: none;
+	position: absolute;
+	max-height: 15em;
+	max-width: 20em;
+	background: #fff;
+	padding-left: 0;
+	z-index: 2;
+	border: 1px solid #ccc;
+	overflow-y: scroll;
+}
+ul.expression-operand-choices li,
+ul.field-choices li {
+	position: relative;
+	min-height: 1em;
+}
+ul.expression-operand-choices li[operand-type],
+ul.field-choices li[field-name] {
+	cursor: default;
+	font-size: 0.9em;
+	font-weight: normal;
+	background: #fff;
+	color: #000;
+}
+ul.field-choices li[field-name]:nth-child(even) {
+	background: #eee;
+	color: #000;
+}
+ul.expression-operand-choices li[operand-type] {
+	padding-left: 1.5em;
+}
+ul.field-choices li[field-name] {
+	padding-left: 0.5em;
+}
+ul.expression-operand-choices li[operand-type][aria-selected=true],
+ul.expression-operand-choices li[operand-type]:hover,
+ul.field-choices li[field-name][aria-selected=true],
+ul.field-choices li[field-name]:hover {
+	background: #0078d7;
+	color: #fff;
+}
+li.expression-operand-choices-group > span,
+li.field-choices-group > span {
+	margin: 0;
+	padding-left: 0.5em;
+	font-size: 0.9em;
+	font-weight: bold;
+}
+div.expression-input-container {
+	position: relative;
+	padding: 0;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	display: none;
+}
+div.expression-input-container input {
+	border: none;
+	margin: 0;
+	padding: 0;
+	width: 10em;
+	min-width: 10em;
+}
+div.expression-input-container button {
+	border : none;
+	background : transparent;
+	margin-right: 0.5em;
+	padding-left: 0.3em;
+	overflow: hidden;
+	outline-style: hidden;
+	width: 1em;
 }

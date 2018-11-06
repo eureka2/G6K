@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,12 +36,12 @@ THE SOFTWARE.
 			});
 		}
 	};
-  
+
 	var baseOperators = [
 		{label: Translator.trans("is present"), name: "present", fieldType: "none"},
 		{label: Translator.trans("is not present"), name: "blank", fieldType: "none"},
 	];
-   
+
 	var textOperators = baseOperators.concat([
 		{label: Translator.trans("is equal to"), name: "=", fieldType: "expression"},
 		{label: Translator.trans("is not equal to"), name: "!=", fieldType: "expression"},
@@ -49,7 +49,7 @@ THE SOFTWARE.
 		{label: Translator.trans("not contains"), name: "!~", fieldType: "text"},
 		{label: Translator.trans("matches"), name: "matches", fieldType: "text"}
 	]);
-   
+
 	var numericOperators = baseOperators.concat([
 		{label: Translator.trans("is equal to"), name: "=", fieldType: "expression"},
 		{label: Translator.trans("is not equal to"), name: "!=", fieldType: "expression"},
@@ -60,7 +60,7 @@ THE SOFTWARE.
 		{label: Translator.trans("contains"), name: "~", fieldType: "expression"},
 		{label: Translator.trans("not contains"), name: "!~", fieldType: "expression"},
 	]);
-   
+
 	var dateOperators = baseOperators.concat([
 		{label: Translator.trans("corresponds to"), name: "=", fieldType: "expression"},
 		{label: Translator.trans("does not corresponds to"), name: "!=", fieldType: "expression"},
@@ -69,17 +69,17 @@ THE SOFTWARE.
 		{label: Translator.trans("is before"), name: "<", fieldType: "expression"},
 		{label: Translator.trans("is not after"), name: "<=", fieldType: "expression"},
 	]);
-   
+
 	var choiceOperators = baseOperators.concat([
 		{label: Translator.trans("is equal to"), name: "=", fieldType: "select"},
 		{label: Translator.trans("is not equal to"), name: "!=", fieldType: "select"},
 	]);
-   
+
 	var booleanOperators = baseOperators.concat([
 		{label: Translator.trans("is true"), name: "isTrue", fieldType: "checkbox"},
 		{label: Translator.trans("is false"), name: "isFalse", fieldType: "checkbox"},
 	]);
-	
+
 	var inverseOperators = {
 		"present": "blank",
 		"blank": "present",
@@ -269,7 +269,7 @@ THE SOFTWARE.
 			}
 			return stack[0].name ? {"all": [stack[0]]} : stack[0];
 		},
-		
+
 		negate: function(ruleData) {
 			var self = this;
 			if ($.isPlainObject(ruleData)) {
@@ -292,7 +292,7 @@ THE SOFTWARE.
 				});
 			}
 		},
-		
+
 		optimize: function(ruleData) {
 			do {
 				var optimized = false;
@@ -396,31 +396,31 @@ THE SOFTWARE.
 				};
 			}
 		},
-		
+
 		makeCond:function(val) {
 			var id = "#" + this.fields[val.name].id;
-		    var cond = "";
-		    switch (val.operator) {
+			var cond = "";
+			switch (val.operator) {
 				case 'present':
-		    		cond = 'defined(' + id + ')';
-		    		break;
-		    	case 'blank':
-		    		cond = '!defined(' + id + ')';
-		    		break;
-		    	case 'isTrue':
-		    		cond = id;
-		    		break;
-		    	case 'isFalse':
-		    		cond = '!' + id;
-		    		break;
-		    	default:
-		    		cond = id + val.operator + val.value;
-	    	}
-	    	return cond;
+					cond = 'defined(' + id + ')';
+					break;
+				case 'blank':
+					cond = '!defined(' + id + ')';
+					break;
+				case 'isTrue':
+					cond = id;
+					break;
+				case 'isFalse':
+					cond = '!' + id;
+					break;
+				default:
+					cond = id + val.operator + val.value;
+			}
+			return cond;
 		},
-	  
-	   conjonct: function(conds) {
-		    var self = this;
+
+		conjonct: function(conds) {
+			var self = this;
 			var et = "";
 			var parenthesis = conds.length > 1;
 			$.each(conds, function (key, val) {
@@ -443,9 +443,9 @@ THE SOFTWARE.
 			});
 			return et.replace(/^ \&\& /, "");;
 		},
-	
+
 		disjonct: function(conds) {
-		    var self = this;
+			var self = this;
 			var ou = "";
 			var parenthesis = conds.length > 1;
 			$.each(conds, function (key, val) {
@@ -468,9 +468,9 @@ THE SOFTWARE.
 			});
 			return ou.replace(/^ \|\| /, "");
 		},
-	  
+
 		infix: function(cond) {
-		    var self = this;
+			var self = this;
 			var infixed = "";
 			$.each(cond, function (key, val) {
 				switch (key) {
@@ -513,11 +513,18 @@ THE SOFTWARE.
 				none: Translator.trans("None"),
 				selected: kind
 			};
-			var select = $("<span>", { "name": "action-select", "class": "editable-select all-any-none", "data-value": kind, "text": data[kind] });
+			var select = $("<span>", {
+				"name": "action-select",
+				"class": "editable-select all-any-none",
+				"tabindex": "0",
+				"data-value": kind,
+				"text": data[kind]
+			});
 			select.editable(
 				function (val, settings) {
 					$(this).attr("data-value", val);
 					settings.data.selected = val;
+					$(this).focus();
 					return settings.data[val];
 				},
 				{
@@ -531,6 +538,14 @@ THE SOFTWARE.
 					style: "inherit"
 				}
 			);
+			select.on("keydown", function(e) {
+				var key = e.keyCode || e.which || e.key;
+				if (key == 13) {
+					select.trigger('click');
+				} else if (key == 32) {
+					e.preventDefault();
+				}
+			});
 			selectWrapper.append(select);
 			selectWrapper.append($("<span>", {text: text}));
 			div.append(selectWrapper);
@@ -543,7 +558,11 @@ THE SOFTWARE.
 						$(this).next().text("  " + Translator.trans("of the following conditions is met") +" :");  
 				}
 			});
-			var addRuleLink = $("<button>", {"class": "add-condition btn btn-primary fa fa-plus-square", "text": " ", "title": Translator.trans("Add Condition")});
+			var addRuleLink = $("<button>", {
+				"class": "add-condition btn btn-primary fa fa-plus-square",
+				"text": " ",
+				"title": Translator.trans("Add Condition")
+			});
 			var self = this;
 			addRuleLink.click(function(e) {
 				e.preventDefault();
@@ -553,7 +572,11 @@ THE SOFTWARE.
 			});
 			div.append(addRuleLink);
 
-			var addConditionLink = $("<button>", {"class": "add-sub-condition btn btn-info fa fa-plus-circle", "text": " ", "title": Translator.trans("Add Sub-Condition")});
+			var addConditionLink = $("<button>", {
+				"class": "add-sub-condition btn btn-info fa fa-plus-circle",
+				"text": " ",
+				"title": Translator.trans("Add Sub-Condition")
+			});
 			addConditionLink.click(function(e) {
 				e.preventDefault();
 				var f = self.fields[Object.keys(self.fields)[0]];
@@ -562,7 +585,11 @@ THE SOFTWARE.
 			});
 			div.append(addConditionLink);
 
-			var removeLink = $("<button>", {"class": "remove btn btn-danger fa fa-remove", "text": " ", "title": Translator.trans("Remove this Sub-Condition")});
+			var removeLink = $("<button>", {
+				"class": "remove btn btn-danger fa fa-remove",
+				"text": " ",
+				"title": Translator.trans("Remove this Sub-Condition")
+			});
 			removeLink.click(function(e) {
 				e.preventDefault();
 				div.remove();
@@ -586,7 +613,7 @@ THE SOFTWARE.
 			ruleDiv.append(fieldSelect);
 			ruleDiv.append(operatorSelect);
 			ruleDiv.append(removeLink());
-	
+
 			fieldSelect.change();
 			var currentValue = ruleDiv.find("> .value");
 			if (currentValue.hasClass('expression')) {
@@ -607,17 +634,21 @@ THE SOFTWARE.
 				currentValue.val(ruleData.value);
 			}
 			return ruleDiv;
-	    },
-	
-	    operatorsFor: function(fieldName) {
+		},
+
+		operatorsFor: function(fieldName) {
 			return this.fields[fieldName].operators;
-	    }
+		}
 	};
 
 	function getFieldSelect(fields, ruleData) {
 		var data = {};
 		var options = {};
-		var select = $("<span>", { "class": "editable-select field", "data-value": ""});
+		var select = $("<span>", {
+			"class": "editable-select field",
+			"tabindex": "0",
+			"data-value": ""
+		});
 		$.each(fields, function(name, field) {
 			data[name] = field.label;
 			if (ruleData.name == name || ! data['selected']) {
@@ -631,13 +662,15 @@ THE SOFTWARE.
 			function (val, settings) {
 				$(this).attr("data-value", val);
 				settings.data.selected = val;
+				$(this).focus();
+				select.trigger('change');
 				return settings.data[val];
 			},
 			{
 				data: data,
 				options: options,
 				name: "action-select",
-				type: "select",
+				type: "choices",
 				select: true,
 				placeholder: Translator.trans("click to select a field ..."),
 				tooltip: Translator.trans("click to change the field ..."),
@@ -647,17 +680,33 @@ THE SOFTWARE.
 				style: "inherit"
 			}
 		);
+		select.on("keydown", function(e) {
+			var key = e.keyCode || e.which || e.key;
+			if (key == 13) {
+				select.trigger('click');
+			} else if (key == 32) {
+				e.preventDefault();
+			}
+		});
 		return select;
 	}
-	
+
 	function getOperatorSelect(builder) {
-		var select = $("<span>", {"class": "editable-select operator", "data-value": ""});
+		var select = $("<span>", {
+			"class": "editable-select operator",
+			"tabindex": "0", 
+			"data-value": ""
+		});
 		select.change(builder, onOperatorSelectChange);
 		return select;
 	}
 
 	function removeLink() {
-		var removeLink = $("<button>", {"class": "remove btn btn-danger fa fa-remove", "text": " ", "title": Translator.trans("Remove this Condition")});
+		var removeLink = $("<button>", {
+			"class": "remove btn btn-danger fa fa-remove",
+			"text": " ",
+			"title": Translator.trans("Remove this Condition")
+		});
 		removeLink.click(onRemoveLinkClicked);
 		return removeLink;
 	}
@@ -675,7 +724,11 @@ THE SOFTWARE.
 			var operatorSelect = container.find(".operator");
 			var operators = builder.operatorsFor($this.attr("data-value"));
 			var data = {};
-			var select = $("<span>", {"class": "editable-select operator", "data-value": ""});
+			var select = $("<span>", {
+				"class": "editable-select operator",
+				"tabindex": "0",
+				"data-value": ""
+			});
 			$.each(operators, function(o, operator) {
 				data[operator.name] = operator.label || operator.name;
 				if (ruleData.operator == operator.name || ! data['selected']) {
@@ -688,6 +741,7 @@ THE SOFTWARE.
 				function (val, settings) {
 					$(this).attr("data-value", val);
 					settings.data.selected = val;
+					$(this).focus();
 					return settings.data[val];
 				},
 				{
@@ -703,6 +757,14 @@ THE SOFTWARE.
 					style: "inherit"
 				}
 			);
+			select.on("keydown", function(e) {
+				var key = e.keyCode || e.which || e.key;
+				if (key == 13) {
+					select.trigger('click');
+				} else if (key == 32) {
+					e.preventDefault();
+				}
+			});
 			operatorSelect.after(select);
 			operatorSelect.remove();
 			select.change(builder, onOperatorSelectChange);
@@ -710,13 +772,13 @@ THE SOFTWARE.
 			select.change();
 		}
 	}
-	
+
 	function onOperatorSelectChange(e) {
 		var builder = e.data;
 		var $this = $(this);
 		var container = $this.parents(".rule");
 		var fieldSelect = container.find(".field");
-	    var val, currentValue = container.find(".value");
+		var val, currentValue = container.find(".value");
 		if (currentValue.hasClass('expression')) {
 			val = currentValue.expressionbuilder('val');
 		} else if (currentValue.hasClass('editable-select') || currentValue.hasClass('editable-textarea')) {
@@ -751,7 +813,11 @@ THE SOFTWARE.
 						return false;
 					}
 				});
-				var select = $("<span>", { "class": "editable-select value", "data-value": ""});
+				var select = $("<span>", {
+					"class": "editable-select value",
+					"tabindex": "0",
+					"data-value": ""
+				});
 				var data = {};
 				$.each(options, function(o, option) {
 					data[option.name] = option.label || option.name;
@@ -765,12 +831,14 @@ THE SOFTWARE.
 					function (val, settings) {
 						$(this).attr("data-value", val);
 						settings.data.selected = val;
+						$(this).focus();
+						select.trigger('change');
 						return settings.data[val];
 					},
 					{
 						data: data,
 						name: "action-select",
-						type: "select",
+						type: "choices",
 						select: true,
 						placeholder: Translator.trans("click to select a value ..."),
 						tooltip: Translator.trans("click to change this value ..."),
@@ -780,9 +848,17 @@ THE SOFTWARE.
 						style: "inherit"
 					}
 				);
-		        $this.after(select);
-		        break;
-		    case "expression":
+				select.on("keydown", function(e) {
+					var key = e.keyCode || e.which || e.key;
+					if (key == 13) {
+						select.trigger('click');
+					} else if (key == 32) {
+						e.preventDefault();
+					}
+				});
+				$this.after(select);
+				break;
+			case "expression":
 				var expression = $("<span>", {"class": "value expression"}); 
 				expression.expressionbuilder({
 					fields: builder.fields,
@@ -799,9 +875,9 @@ THE SOFTWARE.
 					nestedExpression: builder.expressionOptions.nestedExpression
 				});
 				$this.after(expression);
-		        break;
-	    }
-	    currentValue.remove();
+				break;
+		}
+		currentValue.remove();
 	}
-	
+
 })(jQuery);

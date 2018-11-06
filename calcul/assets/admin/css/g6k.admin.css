@@ -85,10 +85,6 @@ a.thumbnail:hover, a.thumbnail:focus, a.thumbnail.active {
 .attribute-expression {
 	margin-left: 15px;
 }
-.attribute-expression, .attribute-expression .form-control {
-	max-width: 250px !important;
-	overflow-x: hidden;
-}
 .alert {
 	display: none;
 	width: 80%;

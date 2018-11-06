@@ -58,7 +58,10 @@ THE SOFTWARE.
 			var container = $("<div>", {"class": "actions"});
 			if (this.addButton == null) {
 				var buttons = $("<div>", {"class": "action-buttons"});
-				this.addButton = $("<button>", {"class": "add btn-primary fa fa-plus-square", "text": "  " + Translator.trans("Add Action")});
+				this.addButton = $("<button>", {
+					"class": "add btn-primary fa fa-plus-square", 
+					"text": "  " + Translator.trans("Add Action")
+				});
 				buttons.append(this.addButton);
 				container.append(buttons);
 			}
@@ -67,6 +70,18 @@ THE SOFTWARE.
 				var actionDiv = self.buildAction({});
 				actionDiv.find('> .end-action-mark').remove();
 				container.append(actionDiv);
+				container[0].scrollIntoView({ behavior: 'smooth' });
+				actionDiv.find('.action-select')
+					.css('background', '#f7bb07')
+					.animate({
+						'opacity': '0.5'
+					}, 1000, function () {
+						actionDiv.find('.action-select').css({
+							'backgroundColor': '#fff',
+							'opacity': '1'
+						});
+					})
+					.focus();
 			});
 			for (var i = 0; i < data.length; i++) {
 				var actionObj = data[i];
@@ -132,7 +147,12 @@ THE SOFTWARE.
 				data[action.name] = action.label;
 			});
 			var self = this;
-			var $editable = $("<span>", { "name": "action-select", "class": "editable-select action-select", "data-value": ""});
+			var $editable = $("<span>", { 
+				"name": "action-select", 
+				"class": "editable-select action-select", 
+				"tabindex": "0", 
+				"data-value": ""
+			});
 			if (actionObj.value) {
 				$editable.attr("data-value", actionObj.value);
 				$editable.text(data[actionObj.value]);
@@ -152,6 +172,7 @@ THE SOFTWARE.
 					actionDiv.attr("class", "action " + val);
 					$(this).attr("data-value", val);
 					settings.data.selected = val;
+					$(this).focus();
 					return settings.data[val];
 				},
 				{
@@ -167,7 +188,19 @@ THE SOFTWARE.
 					style: "inherit"
 				}
 			);
-			var removeLink = $("<button>", {"class": "btn btn-light remove fa fa-remove float-left", "text": " ", "title": Translator.trans("Remove this Action")});
+			$editable.on("keydown", function(e) {
+				var key = e.keyCode || e.which || e.key;
+				if (key == 13) {
+					$editable.trigger('click');
+				} else if (key == 32) {
+					e.preventDefault();
+				}
+			});
+			var removeLink = $("<button>", {
+				"class": "btn btn-light remove fa fa-remove float-left", 
+				"text": " ",
+				"title": Translator.trans("Remove this Action")
+			});
 			removeLink.click(function(e) {
 				e.preventDefault();
 				actionDiv.remove();
@@ -190,7 +223,7 @@ THE SOFTWARE.
 
 			var label = $("<label>", {"text": field.label});
 			fieldDiv.append(label);
-	
+
 			if (field.fieldType == "field") {
 				field.options = [];
 				$.each(self.options.fields, function(name, fieldOptions) {
@@ -217,9 +250,9 @@ THE SOFTWARE.
 						});
 					}
 				});
-				field.fieldType = "select";
+				field.fieldType = "choices";
 			}
-			if (field.fieldType == "select") {
+			if (field.fieldType == "select" || field.fieldType == "choices") {
 				var data = {'': ''};
 				var options = {};
 				$.each(field.options, function(i, optionData) {
@@ -227,7 +260,12 @@ THE SOFTWARE.
 					options[optionData.name] = optionData;
 				});
 				data['selected'] = '';
-				var $editable = $("<span>", { "name": field.name, "class": "editable-select", "data-value": ""});
+				var $editable = $("<span>", {
+					"name": field.name,
+					"class": "editable-select",
+					"tabindex": "0", 
+					"data-value": ""
+				});
 				$editable.editable(
 					function (val, settings) {
 						var option = $editable.find('select').find("> :selected");
@@ -242,6 +280,8 @@ THE SOFTWARE.
 						}
 						$(this).attr("data-value", val);
 						settings.data.selected = val;
+						$(this).focus();
+						$editable.trigger('change');
 						return settings.data[val];
 					},
 					{
@@ -249,7 +289,7 @@ THE SOFTWARE.
 						options: options,
 						container : fieldDiv,
 						name: "action-select",
-						type: "select",
+						type: field.fieldType,
 						select: true,
 						placeholder: Translator.trans("click to select ..."),
 						tooltip: Translator.trans("click to change ..."),
@@ -259,16 +299,37 @@ THE SOFTWARE.
 						style: "inherit"
 					}
 				);
+				$editable.on("keydown", function(e) {
+					var key = e.keyCode || e.which || e.key;
+					if (key == 13) {
+						$editable.trigger('click');
+					} else if (key == 32) {
+						e.preventDefault();
+					}
+				});
 				$editable.change();
 				fieldDiv.append($editable);
 			} else if (field.fieldType == "text") {
-				var input = $("<input>", {"type": "text", "name": field.name, "class": "form-control"});
+				var input = $("<input>", {
+					"type": "text",
+					"name": field.name,
+					"class": "form-control"
+				});
 				fieldDiv.append(input);
 			} else if (field.fieldType == "number" || field.fieldType == "integer") {
-				var input = $("<input>", {"type": "number", "name": field.name, "class": "form-control"});
+				var input = $("<input>", {
+					"type": "number", 
+					"name": field.name, 
+					"class": "form-control"
+				});
 				fieldDiv.append(input);
 			} else if (field.fieldType == "textarea") {
-				var $editable = $("<span>", { "name": field.name, "class": "editable-textarea", "data-value": ""});
+				var $editable = $("<span>", {
+					"name": field.name,
+					"class": "editable-textarea",
+					"tabindex": "0",
+					"data-value": ""
+				});
 				$editable.editable(
 					function (val, settings) {
 						$(this).attr("data-value", val);
@@ -285,6 +346,14 @@ THE SOFTWARE.
 						style: "inherit"
 					}
 				);
+				$editable.on("keydown", function(e) {
+					var key = e.keyCode || e.which || e.key;
+					if (key == 13) {
+						$editable.trigger('click');
+					} else if (key == 32) {
+						e.preventDefault();
+					}
+				});
 				fieldDiv.append($editable);
 			} else if (field.fieldType == "expression") {
 				var expression = $('<span>', {"name": field.name, "class": "expression"}); 
