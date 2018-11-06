@@ -494,6 +494,7 @@ class BusinessRule {
 					$ruleData["operator"] =  $ruleData["value"] == 1 ? $this->translator->trans('is') : $this->translator->trans('is not');
 					$ruleData["value"] = $this->translator->trans('interactive');
 				} elseif (preg_match("/step(\d+)\.dynamic$/", $ruleData["name"], $matches)) {
+					$ruleData["id"] = 0;
 					$ruleData["name"] = $this->translator->trans('User Interface for step %id%', array('%id%' => $matches[1]));
 					$ruleData["operator"] =  $ruleData["value"] == 1 ? $this->translator->trans('is') : $this->translator->trans('is not');
 					$ruleData["value"] = $this->translator->trans('interactive');
