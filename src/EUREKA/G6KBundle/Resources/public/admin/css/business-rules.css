@@ -86,6 +86,10 @@
 	padding-bottom: 2px;
 	border-bottom: thin dotted;
 }
+.editable-select:focus,
+.expression button:focus {
+	outline: thin dotted;
+}
 .editable-textarea textarea {
 	min-width: 20em;
 	min-height: 5em;

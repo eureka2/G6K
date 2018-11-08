@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -491,9 +491,6 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		dataPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
 		dataPanelContainer.find('.cancel-edit-data').click(function() {
 			dataPanelContainer.replaceWith(Simulators.dataBackup);
 			Simulators.dataBackup.find('button.edit-data').click(function(e) {
@@ -642,30 +639,9 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: newDataPanel.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = false;
 		});
-		dataPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		dataPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-			if ($(this).attr('data-name') == 'source') {
+		Simulators.bindOptionalAttributes(dataPanelContainer, function(attribute) {
+			if (attribute.attr('data-name') == 'source') {
 				Simulators.bindOptionalDataSource(dataPanelContainer);
-			}
-		});
-		dataPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-				if (ui.draggable.attr('data-name') == 'source') {
-					Simulators.bindOptionalDataSource(dataPanelContainer);
-				}
 			}
 		});
 		dataPanelContainer.find('select[data-attribute=type]').change(function(e) {
@@ -1035,29 +1011,7 @@ THE SOFTWARE.
 				idColumn.removeAttr('data-options');
 			}
 		});
-		choiceSourceContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		choiceSourceContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		choiceSourceContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		choiceSourceContainer.find('> div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(choiceSourceContainer);
 	}
 
 	Simulators.drawChoiceSourceForDisplay = function(choiceSource) {
@@ -1098,7 +1052,7 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '" data-type="select" data-name="idColumn" data-placeholder="' + Translator.trans('Source column id value') + '" data-options="' + encodeURI(JSON.stringify( sourceFieldsList )) + '">' + Translator.trans('Source column id') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '" data-type="select" data-name="idColumn" data-placeholder="' + Translator.trans('Source column id value') + '" data-options="' + encodeURI(JSON.stringify( sourceFieldsList )) + '">' + Translator.trans('Source column id') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		optionalAttributesPanel.append(optionalAttributes);
 		if (choiceSource.idColumn) {
@@ -1191,13 +1145,13 @@ THE SOFTWARE.
 		$.each(Simulators.optionalAttributes, function (name, attr) {
 			var optionalAttribute;
 			if (name === 'source') {
-				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( sourcesList )) + '">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( sourcesList )) + '">' + attr.label + '</li>');
 			} else if (name === 'index') {
-				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
 			} else if (attr.type === 'expression') {
-				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
 			} else {
-				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
 			}
 			optionalAttributes.append(optionalAttribute);
 			if (data[name]) {
