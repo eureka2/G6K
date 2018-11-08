@@ -36,14 +36,12 @@ if (typeof jQuery === 'undefined') {
 
 		var id = self.options.classes.choices + '-' + (new Date()).getTime();
 		this.container = jQuery('<div>', {
-			'class': self.options.classes.container,
-			'tabindex': '0'
+			'class': self.options.classes.container
 		});
 		this.button = jQuery('<button >', {
 			'class': self.options.classes.button,
 			'aria-haspopup': 'listbox',
-			'aria-controls': id,
-			'tabindex': '-1'
+			'aria-controls': id
 		});
 		this.button.append(jQuery('<span>', {
 			'class': self.options.classes.buttonText

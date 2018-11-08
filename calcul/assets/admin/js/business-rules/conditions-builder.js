@@ -549,7 +549,7 @@ THE SOFTWARE.
 			selectWrapper.append(select);
 			selectWrapper.append($("<span>", {text: text}));
 			div.append(selectWrapper);
-			select.change(function() {
+			select.on('change', function() {
 				switch($(this).attr("data-value")) {
 					case "all":
 						$(this).next().text("  " + Translator.trans("of the following conditions are met") + " :");  
@@ -564,7 +564,7 @@ THE SOFTWARE.
 				"title": Translator.trans("Add Condition")
 			});
 			var self = this;
-			addRuleLink.click(function(e) {
+			addRuleLink.on('click', function(e) {
 				e.preventDefault();
 				var f = self.fields[Object.keys(self.fields)[0]];
 				var newField = {name: f.value, operator: f.operators[0], value: null};
@@ -577,7 +577,7 @@ THE SOFTWARE.
 				"text": " ",
 				"title": Translator.trans("Add Sub-Condition")
 			});
-			addConditionLink.click(function(e) {
+			addConditionLink.on('click', function(e) {
 				e.preventDefault();
 				var f = self.fields[Object.keys(self.fields)[0]];
 				var newField = {"all": [{name: f.value, operator: f.operators[0], value: null}]};
@@ -590,7 +590,7 @@ THE SOFTWARE.
 				"text": " ",
 				"title": Translator.trans("Remove this Sub-Condition")
 			});
-			removeLink.click(function(e) {
+			removeLink.on('click', function(e) {
 				e.preventDefault();
 				div.remove();
 			});
@@ -608,7 +608,7 @@ THE SOFTWARE.
 			var fieldSelect = getFieldSelect(this.fields, ruleData);
 			var operatorSelect = getOperatorSelect(this);
 
-			fieldSelect.change(onFieldSelectChanged.call(this, ruleData));
+			fieldSelect.on('change', onFieldSelectChanged.call(this, ruleData));
 
 			ruleDiv.append(fieldSelect);
 			ruleDiv.append(operatorSelect);
@@ -697,7 +697,7 @@ THE SOFTWARE.
 			"tabindex": "0", 
 			"data-value": ""
 		});
-		select.change(builder, onOperatorSelectChange);
+		select.on('change', builder, onOperatorSelectChange);
 		return select;
 	}
 
@@ -707,7 +707,7 @@ THE SOFTWARE.
 			"text": " ",
 			"title": Translator.trans("Remove this Condition")
 		});
-		removeLink.click(onRemoveLinkClicked);
+		removeLink.on('click', onRemoveLinkClicked);
 		return removeLink;
 	}
 
@@ -767,8 +767,8 @@ THE SOFTWARE.
 			});
 			operatorSelect.after(select);
 			operatorSelect.remove();
-			select.change(builder, onOperatorSelectChange);
-			$this.change(onFieldSelectChanged.call(builder, ruleData));
+			select.on('change', builder, onOperatorSelectChange);
+			$this.on('change', onFieldSelectChanged.call(builder, ruleData));
 			select.change();
 		}
 	}

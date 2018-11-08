@@ -43,7 +43,7 @@ THE SOFTWARE.
 		Datasources.datasourcesSelect = JSON.stringify(datasourcesSelect);
 		if (action === 'create-table') {
 			$("#page-datasources textarea[name='table-description']").wysihtml(Admin.wysihtml5InlineOnlyOptions);
-			$('#btnAddNewColumn').click(function(e) {
+			$('#btnAddNewColumn').on('click', function(e) {
 				Datasources.addNewColumn([0, '', '', '', '', '']);
 				e.preventDefault();
 				return false;
@@ -60,7 +60,7 @@ THE SOFTWARE.
 				return true;
 			});
 			Datasources.addNewColumn([0, '', '', '', '', '']);
-			$('#btnSaveEditedTable').click(function (e) {
+			$('#btnSaveEditedTable').on('click', function (e) {
 				$('textarea.richtext').each(function() {
 					$(this).val(Admin.clearHTML($(this)));
 				});
@@ -69,7 +69,7 @@ THE SOFTWARE.
 			});
 		} else if (action === 'edit-table') {
 			$("#page-datasources textarea[name='table-description']").wysihtml(Admin.wysihtml5InlineOnlyOptions);
-			$('#btnAddNewColumn').click(function(e) {
+			$('#btnAddNewColumn').on('click', function(e) {
 				Datasources.addNewColumn([0, '', '', '', '-1', '']);
 				e.preventDefault();
 				return false;
@@ -88,7 +88,7 @@ THE SOFTWARE.
 			$.each(fields, function(index, field) {
 				Datasources.addNewColumn(field);
 			});
-			$('#btnSaveEditedTable').click(function (e) {
+			$('#btnSaveEditedTable').on('click', function (e) {
 				$('textarea.richtext').each(function() {
 					$(this).val(Admin.clearHTML($(this)));
 				});
@@ -124,7 +124,7 @@ THE SOFTWARE.
 			});
 			Datasources.emptyRow = '<tr>' + cells + '</tr>';
 	
-			$('#page-datasources #btnAddNewRow').click(function(e) {
+			$('#page-datasources #btnAddNewRow').on('click', function(e) {
 				e.preventDefault();
 				$('#page-datasources .tabledit-toolbar-column').remove();
 				$('#page-datasources #' + tablename + ' tbody td').each(function() {
@@ -148,7 +148,7 @@ THE SOFTWARE.
 				autoclose: true,
 				language: locale
 			});
-			$('#page-datasources #edit-table-rows-form ul.pagination li a').click(function(e) {
+			$('#page-datasources #edit-table-rows-form ul.pagination li a').on('click', function(e) {
 				e.preventDefault();
 				var form = $('#page-datasources #edit-table-rows-form').find("input[name='page']")
 				var pagenum = $(this).attr('data-page');
@@ -157,12 +157,12 @@ THE SOFTWARE.
 					$('#page-datasources #edit-table-rows-form').submit();
 				}
 			});
-			$('#page-datasources #edit-table-rows-form').find("select[name='itemsPerPage']").change(function(e) {
+			$('#page-datasources #edit-table-rows-form').find("select[name='itemsPerPage']").on('change', function(e) {
 				e.preventDefault();
 				$('#page-datasources #edit-table-rows-form').find("input[name='page']").val(1);
 				$('#page-datasources #edit-table-rows-form').submit();
 			});
-			$('#page-datasources #edit-table-rows-form').find("button[name='btnFilter']").click(function(e) {
+			$('#page-datasources #edit-table-rows-form').find("button[name='btnFilter']").on('click', function(e) {
 				e.preventDefault();
 				$('#page-datasources #edit-table-rows-form').find("input[name='page']").val(1);
 				$('#page-datasources #edit-table-rows-form').submit();
@@ -185,7 +185,7 @@ THE SOFTWARE.
 				var thIndex = th.index();
 				var inverse = false;
 				var addOrRemove = true;
-				th.click(function () {
+				th.on('click', function () {
 					if(!$(this).hasClass('disable-sorting')) {
 						if($(this).find('.sort-icon').hasClass(arrowDown)) {
 							$(this)
@@ -275,7 +275,7 @@ THE SOFTWARE.
 			language: Admin.lang,
 			minimumResultsForSearch: 50
 		});
-		attribute.find('span.delete-attribute').click(function() {
+		attribute.find('span.delete-attribute').on('click', function() {
 			Datasources.removeAttribute($(this));
 		});
 		ui.hide();
@@ -290,7 +290,7 @@ THE SOFTWARE.
 	}
 
 	Datasources.bindChoices = function(choicesPanel) {
-		choicesPanel.find('button.add-choice').click(function(e) {
+		choicesPanel.find('button.add-choice').on('click', function(e) {
 			e.preventDefault();
 			var choicesContainer = choicesPanel.find('> .card-body');
 			var id = choicesContainer.children('div.card').length + 1;
@@ -306,7 +306,7 @@ THE SOFTWARE.
 			choicesContainer.append(choicePanel);
 			Datasources.bindChoice(choicePanel);
 		});
-		choicesPanel.find('button.add-choice-source').click(function(e) {
+		choicesPanel.find('button.add-choice-source').on('click', function(e) {
 			e.preventDefault();
 			var choicesContainer = choicesPanel.find('> .card-body');
 			var fieldId = choicesPanel.attr('id').match(/^field-(\d+)/)[1];
@@ -329,7 +329,7 @@ THE SOFTWARE.
 			choicesContainer.append(choicePanel);
 			Datasources.bindChoiceSource(choicePanel);
 		});
-		choicesPanel.find('button.delete-choice-source').click(function(e) {
+		choicesPanel.find('button.delete-choice-source').on('click', function(e) {
 			e.preventDefault();
 			var choicesContainer = choicesPanel.find('> .card-body');
 			choicesContainer.find('.attributes-container').remove();
@@ -354,7 +354,7 @@ THE SOFTWARE.
 	}
 
 	Datasources.bindChoice = function(choicePanel) {
-		choicePanel.find('button.delete-choice').click(function(e) {
+		choicePanel.find('button.delete-choice').on('click', function(e) {
 			e.preventDefault();
 			var choicesPanel = choicePanel.parents('.choices-panel');
 			choicePanel.remove();
@@ -366,7 +366,7 @@ THE SOFTWARE.
 	}
 
 	Datasources.bindChoiceSource = function(choiceSourceContainer) {
-		choiceSourceContainer.find('.delete-attribute').click(function() {
+		choiceSourceContainer.find('.delete-attribute').on('click', function() {
 			Datasources.removeAttribute($(this));
 		});
 		choiceSourceContainer.find('.optional-attributes li' ).each(function(){
@@ -389,7 +389,7 @@ THE SOFTWARE.
 				Datasources.dropAttribute(ui.draggable, target);
 			}
 		});
-		choiceSourceContainer.find('div[data-attribute=datasource], div[data-attribute=returnType]').find('select').change(function (e) {
+		choiceSourceContainer.find('div[data-attribute=datasource], div[data-attribute=returnType]').find('select').on('change', function (e) {
 			Datasources.fixShowingChoiceSourceForInput(choiceSourceContainer);
 		});
 	}
@@ -581,7 +581,7 @@ THE SOFTWARE.
 		}
 		var type = $column.find("td.new-type").find("select");
 		type.data('previous', type.val());
-		type.change(function (e) {
+		type.on('change', function (e) {
 			var prev = $(this).data('previous');
 			var curr = $(this).val();
 			if (prev === 'choice' || prev === 'multichoice') {
@@ -988,7 +988,7 @@ $(function(){
 				Admin.updated = false;
 				return true;
 			});
-			$('#btnSaveDatasource').click(function(e) {
+			$('#btnSaveDatasource').on('click', function(e) {
 				$('textarea.richtext').each(function() {
 					$(this).val(Admin.clearHTML($(this)));
 				});
@@ -1000,7 +1000,7 @@ $(function(){
 			if (Admin.lang == 'de' || Admin.lang == 'es' || Admin.lang == 'fr') { 
 				tv4.language(Admin.lang);
 			}
-			$("#datasource-import-form input[name='datasource-schema-file'], #datasource-import-form input[name='datasource-data-file']").change(function (e) {
+			$("#datasource-import-form input[name='datasource-schema-file'], #datasource-import-form input[name='datasource-data-file']").on('change', function (e) {
 			Datasources.hideErrors();
 			var files = e.target.files;
 				var $file = $(this);
@@ -1087,7 +1087,7 @@ $(function(){
 			});
 		}
 		if ( $("#import-table-form" ).length) {
-			$("#import-table-form input[name='table-data-file']").change(function (e) {
+			$("#import-table-form input[name='table-data-file']").on('change', function (e) {
 				Datasources.hideErrors();
 				var files = e.target.files;
 				var $file = $(this);

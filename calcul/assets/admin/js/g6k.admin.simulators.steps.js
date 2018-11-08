@@ -756,13 +756,13 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + stepElementId + '" data-type="select" data-name="output" data-placeholder="' + Translator.trans('Select an output') + '" data-options="' + encodeURI(JSON.stringify( Simulators.outputTypes )) + '">' + Translator.trans('Output') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + stepElementId + '" data-type="select" data-name="output" data-placeholder="' + Translator.trans('Select an output') + '" data-options="' + encodeURI(JSON.stringify( Simulators.outputTypes )) + '">' + Translator.trans('Output') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (step.output) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-output', 'select', 'output', Translator.trans('Output'), step.output, false, Translator.trans('Select an output'), JSON.stringify( Simulators.outputTypes )));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + stepElementId + '" data-type="checkbox" data-name="dynamic" data-placeholder="' + Translator.trans('Interactive UI') + '">' + Translator.trans('Interactive UI') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + stepElementId + '" data-type="checkbox" data-name="dynamic" data-placeholder="' + Translator.trans('Interactive UI') + '">' + Translator.trans('Interactive UI') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (step.dynamic) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-dynamic', 'checkbox', 'dynamic', Translator.trans('Interactive UI'), step.dynamic, false, Translator.trans('Interactive UI')));
@@ -788,23 +788,23 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#collapsesteps");
 		}
-		container.find('button.edit-step').click(function(e) {
+		container.find('button.edit-step').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editStep($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-step').click(function(e) {
+		container.find('button.delete-step').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteStep($($(this).attr('data-parent')));
 		});
-		container.find('button.add-action-button').click(function(e) {
+		container.find('button.add-action-button').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addActionButton($($(this).attr('data-parent')));
 		});
-		container.find('button.add-footnotes, a.add-footnotes').click(function(e) {
+		container.find('button.add-footnotes, a.add-footnotes').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addFootNotes($($(this).attr('data-parent')));
 		});
-		container.find('button.add-panel, a.add-panel').click(function(e) {
+		container.find('button.add-panel, a.add-panel').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addPanel($($(this).attr('data-parent')));
 		});
@@ -812,10 +812,7 @@ THE SOFTWARE.
 
 	Simulators.bindStep = function(stepPanelContainer) {
 		stepPanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
-		stepPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		stepPanelContainer.find('.cancel-edit-step').click(function() {
+		stepPanelContainer.find('.cancel-edit-step').on('click', function() {
 			stepPanelContainer.find('.step-container').replaceWith(Simulators.stepBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -824,7 +821,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		stepPanelContainer.find('.cancel-add-step').click(function() {
+		stepPanelContainer.find('.cancel-add-step').on('click', function() {
 			stepPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -833,7 +830,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		stepPanelContainer.find('.validate-edit-step, .validate-add-step').click(function() {
+		stepPanelContainer.find('.validate-edit-step, .validate-add-step').on('click', function() {
 			var stepContainerGroup = stepPanelContainer.parent();
 			var stepContainer = stepPanelContainer.find('.step-container');
 			if (! Simulators.checkStep(stepPanelContainer)) {
@@ -906,26 +903,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newStepPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		stepPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		stepPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		stepPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(stepPanelContainer);
 	}
 
 	Simulators.checkStep = function(stepContainer) {
@@ -1193,25 +1171,22 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps");
 		}
-		container.find('button.edit-footnotes').click(function(e) {
+		container.find('button.edit-footnotes').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editFootNotes($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-footnotes').click(function(e) {
+		container.find('button.delete-footnotes').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteFootNotes($($(this).attr('data-parent')));
 		});
-		container.find('button.add-footnote').click(function(e) {
+		container.find('button.add-footnote').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addFootNote($($(this).attr('data-parent')));
 		});
 	}
 
 	Simulators.bindFootNotes = function(footnotesPanelContainer) {
-		footnotesPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		footnotesPanelContainer.find('.cancel-edit-footnotes').click(function() {
+		footnotesPanelContainer.find('.cancel-edit-footnotes').on('click', function() {
 			footnotesPanelContainer.find('.footnotes-container').replaceWith(Simulators.footnotesBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -1220,7 +1195,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		footnotesPanelContainer.find('.cancel-add-footnotes').click(function() {
+		footnotesPanelContainer.find('.cancel-add-footnotes').on('click', function() {
 			footnotesPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -1229,7 +1204,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		footnotesPanelContainer.find('.validate-edit-footnotes, .validate-add-footnotes').click(function() {
+		footnotesPanelContainer.find('.validate-edit-footnotes, .validate-add-footnotes').on('click', function() {
 			var footnotesContainerGroup = footnotesPanelContainer.parent();
 			var footnotesContainer = footnotesPanelContainer.find('.footnotes-container');
 			if (! Simulators.checkFootNotes(footnotesPanelContainer)) {
@@ -1269,26 +1244,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newFootNotesPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		footnotesPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		footnotesPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		footnotesPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(footnotesPanelContainer);
 	}
 
 	Simulators.checkFootNotes = function(footnotesContainer) {
@@ -1407,11 +1363,11 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps");
 		}
-		container.find('button.edit-footnote').click(function(e) {
+		container.find('button.edit-footnote').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editFootNote($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-footnote').click(function(e) {
+		container.find('button.delete-footnote').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteFootNote($($(this).attr('data-parent')));
 		});
@@ -1423,7 +1379,7 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		footnotePanelContainer.find('.cancel-edit-footnote').click(function() {
+		footnotePanelContainer.find('.cancel-edit-footnote').on('click', function() {
 			footnotePanelContainer.replaceWith(Simulators.footnoteBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -1432,7 +1388,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		footnotePanelContainer.find('.cancel-add-footnote').click(function() {
+		footnotePanelContainer.find('.cancel-add-footnote').on('click', function() {
 			footnotePanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -1441,7 +1397,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		footnotePanelContainer.find('.validate-edit-footnote').click(function() {
+		footnotePanelContainer.find('.validate-edit-footnote').on('click', function() {
 			var footnoteContainerGroup = footnotePanelContainer.parent();
 			if (! Simulators.checkFootNote(footnotePanelContainer)) {
 				return false;
@@ -1469,7 +1425,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: footnoteContainerGroup.offset().top - $('#navbar').height() }, 500);
 		});
-		footnotePanelContainer.find('.validate-add-footnote').click(function() {
+		footnotePanelContainer.find('.validate-add-footnote').on('click', function() {
 			if (! Simulators.checkFootNote(footnotePanelContainer)) {
 				return false;
 			}
@@ -1675,14 +1631,14 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="text" data-name="uri" data-placeholder="' + Translator.trans('Button uri') + '">' + Translator.trans('URI / Step') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + actionElementId + '" data-type="text" data-name="uri" data-placeholder="' + Translator.trans('Button uri') + '">' + Translator.trans('URI / Step') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (action.uri) {
 			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-uri', 'text', 'uri', Translator.trans('URI / Step'), action.uri, false, Translator.trans('Button uri'));
 			requiredAttributes.append(attribute);
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="select" data-name="class" data-placeholder="' + Translator.trans('Button class') + '" data-options="' + encodeURI(JSON.stringify( { 'btn-primary': Translator.trans('Primary'), 'btn-secondary': Translator.trans('Secondary') } )) + '">' + Translator.trans('Class') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + actionElementId + '" data-type="select" data-name="class" data-placeholder="' + Translator.trans('Button class') + '" data-options="' + encodeURI(JSON.stringify( { 'btn-primary': Translator.trans('Primary'), 'btn-secondary': Translator.trans('Secondary') } )) + '">' + Translator.trans('Class') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (action.class) {
 			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-class', 'select', 'class', Translator.trans('Class'), action.class, false, Translator.trans('Button class'), JSON.stringify({ 'btn-primary': Translator.trans('Primary'), 'btn-secondary': Translator.trans('Secondary') } ) );
@@ -1708,11 +1664,11 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps");
 		}
-		container.find('button.edit-action-button').click(function(e) {
+		container.find('button.edit-action-button').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editActionButton($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-action-button').click(function(e) {
+		container.find('button.delete-action-button').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteActionButton($($(this).attr('data-parent')));
 		});
@@ -1723,16 +1679,13 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		actionPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		actionPanelContainer.find('.cancel-edit-action').click(function() {
+		actionPanelContainer.find('.cancel-edit-action').on('click', function() {
 			actionPanelContainer.find('.action-button-container').replaceWith(Simulators.actionButtonBackup);
-			Simulators.actionButtonBackup.find('button.edit-action-button').click(function(e) {
+			Simulators.actionButtonBackup.find('button.edit-action-button').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editActionButton($($(this).attr('data-parent')));
 			});
-			Simulators.actionButtonBackup.find('button.delete-action-button').click(function(e) {
+			Simulators.actionButtonBackup.find('button.delete-action-button').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteActionButton($($(this).attr('data-parent')));
 			});
@@ -1743,7 +1696,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		actionPanelContainer.find('.cancel-add-action').click(function() {
+		actionPanelContainer.find('.cancel-add-action').on('click', function() {
 			actionPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -1752,7 +1705,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		actionPanelContainer.find('.validate-edit-action, .validate-add-action').click(function() {
+		actionPanelContainer.find('.validate-edit-action, .validate-add-action').on('click', function() {
 			var actionContainer = actionPanelContainer.find('.action-button-container');
 			if (! Simulators.checkActionButton(actionPanelContainer)) {
 				return false;
@@ -1803,26 +1756,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newActionButtonPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		actionPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		actionPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		actionPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(actionPanelContainer);
 	}
 
 	Simulators.checkActionButton = function(actionContainer) {
@@ -2066,7 +2000,7 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + panelElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Panel label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + panelElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Panel label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (panel.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(panelElementId + '-label', 'text', 'label', Translator.trans('Label'), panel.label, false, Translator.trans('Panel label')));
@@ -2094,19 +2028,19 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps .panels-panel");
 		}
-		container.find('button.edit-panel').click(function(e) {
+		container.find('button.edit-panel').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editPanel($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-panel').click(function(e) {
+		container.find('button.delete-panel').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deletePanel($($(this).attr('data-parent')));
 		});
-		container.find('button.add-fieldset, a.add-fieldset').click(function(e) {
+		container.find('button.add-fieldset, a.add-fieldset').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addFieldSet($($(this).attr('data-parent')));
 		});
-		container.find('button.add-blockinfo, a.add-blockinfo').click(function(e) {
+		container.find('button.add-blockinfo, a.add-blockinfo').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addBlockInfo($($(this).attr('data-parent')));
 		});
@@ -2117,10 +2051,7 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		panelPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		panelPanelContainer.find('.cancel-edit-panel').click(function() {
+		panelPanelContainer.find('.cancel-edit-panel').on('click', function() {
 			panelPanelContainer.find('.panel-container').replaceWith(Simulators.panelBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -2129,7 +2060,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		panelPanelContainer.find('.cancel-add-panel').click(function() {
+		panelPanelContainer.find('.cancel-add-panel').on('click', function() {
 			panelPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -2138,7 +2069,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		panelPanelContainer.find('.validate-edit-panel, .validate-add-panel').click(function() {
+		panelPanelContainer.find('.validate-edit-panel, .validate-add-panel').on('click', function() {
 			var panelContainerGroup = panelPanelContainer.parent();
 			var panelContainer = panelPanelContainer.find('.panel-container');
 			if (! Simulators.checkPanel(panelPanelContainer)) {
@@ -2195,26 +2126,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newPanelPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		panelPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		panelPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		panelPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(panelPanelContainer);
 	}
 
 	Simulators.checkPanel = function(panelContainer) {
@@ -2485,19 +2397,19 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldsetElementId + '" data-type="select" data-name="disposition" data-placeholder="' + Translator.trans('FieldSet disposition') + '" data-options="' + encodeURI(JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid') } )) + '">' + Translator.trans('Disposition') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldsetElementId + '" data-type="select" data-name="disposition" data-placeholder="' + Translator.trans('FieldSet disposition') + '" data-options="' + encodeURI(JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid') } )) + '">' + Translator.trans('Disposition') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldset.disposition) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-disposition', 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, false, Translator.trans('FieldSet disposition'), JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid'), 'inline': Translator.trans('Inline') } )));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldsetElementId + '" data-type="select" data-name="display" data-placeholder="' + Translator.trans('FieldSet display') + '" data-options="' + encodeURI(JSON.stringify( {'inline': Translator.trans('Inline'), 'pop-in': Translator.trans('Pop-in') } )) + '">' + Translator.trans('Display') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldsetElementId + '" data-type="select" data-name="display" data-placeholder="' + Translator.trans('FieldSet display') + '" data-options="' + encodeURI(JSON.stringify( {'inline': Translator.trans('Inline'), 'pop-in': Translator.trans('Pop-in') } )) + '">' + Translator.trans('Display') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldset.display) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-display', 'select', 'display', Translator.trans('Display'), fieldset.display, false, Translator.trans('FieldSet display'), JSON.stringify( {'inline': Translator.trans('Inline'), 'pop-in': Translator.trans('Pop-in') } )));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldsetElementId + '" data-type="text" data-name="popinLink" data-placeholder="' + Translator.trans('Pop-in Link') + '">' + Translator.trans('Pop-in Link') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldsetElementId + '" data-type="text" data-name="popinLink" data-placeholder="' + Translator.trans('Pop-in Link') + '">' + Translator.trans('Pop-in Link') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldset.popinLink) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-display', 'text', 'popinLink', Translator.trans('Pop-in Link'), fieldset.popinLink, false, Translator.trans('Pop-in Link')));
@@ -2526,26 +2438,26 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps .blocks-panel");
 		}
-		container.find('button.edit-fieldset').click(function(e) {
+		container.find('button.edit-fieldset').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editFieldSet($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-fieldset').click(function(e) {
+		container.find('button.delete-fieldset').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteFieldSet($($(this).attr('data-parent')));
 		});
-		container.find('button.add-field').click(function(e) {
+		container.find('button.add-field').on('click', function(e) {
 			e.preventDefault();
 			var fieldrowContainer = $($(this).attr('data-parent')).find('.fieldrow-container');
 			if (fieldrowContainer.length == 0) {
 				Simulators.addField($($(this).attr('data-parent')));
 			}
 		});
-		container.find('button.add-fieldrow').click(function(e) {
+		container.find('button.add-fieldrow').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addFieldRow($($(this).attr('data-parent')));
 		});
-		container.find('button.add-column').click(function(e) {
+		container.find('button.add-column').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addFieldSetColumn($($(this).attr('data-parent')));
 		});
@@ -2563,10 +2475,7 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		fieldsetPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		fieldsetPanelContainer.find('.cancel-edit-fieldset').click(function() {
+		fieldsetPanelContainer.find('.cancel-edit-fieldset').on('click', function() {
 			fieldsetPanelContainer.find('.block-container.fieldset').replaceWith(Simulators.fieldsetBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -2575,7 +2484,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		fieldsetPanelContainer.find('.cancel-add-fieldset').click(function() {
+		fieldsetPanelContainer.find('.cancel-add-fieldset').on('click', function() {
 			fieldsetPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -2584,7 +2493,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		fieldsetPanelContainer.find('.validate-edit-fieldset, .validate-add-fieldset').click(function() {
+		fieldsetPanelContainer.find('.validate-edit-fieldset, .validate-add-fieldset').on('click', function() {
 			var fieldsetContainerGroup = fieldsetPanelContainer.parent();
 			var fieldsetContainer = fieldsetPanelContainer.find('.block-container.fieldset');
 			if (! Simulators.checkFieldSet(fieldsetPanelContainer)) {
@@ -2668,26 +2577,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newFieldSetPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		fieldsetPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		fieldsetPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		fieldsetPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(fieldsetPanelContainer);
 	}
 
 	Simulators.checkFieldSet = function(fieldsetContainer) {
@@ -2948,11 +2838,11 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps .columns-panel");
 		}
-		container.find('button.edit-column').click(function(e) {
+		container.find('button.edit-column').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editFieldSetColumn($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-column').click(function(e) {
+		container.find('button.delete-column').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteFieldSetColumn($($(this).attr('data-parent')));
 		});
@@ -2963,7 +2853,7 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		columnPanelContainer.find('.cancel-edit-column').click(function() {
+		columnPanelContainer.find('.cancel-edit-column').on('click', function() {
 			columnPanelContainer.find('.column-container').replaceWith(Simulators.columnBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -2972,7 +2862,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		columnPanelContainer.find('.cancel-add-column').click(function() {
+		columnPanelContainer.find('.cancel-add-column').on('click', function() {
 			columnPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -2981,7 +2871,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		columnPanelContainer.find('.validate-edit-column, .validate-add-column').click(function() {
+		columnPanelContainer.find('.validate-edit-column, .validate-add-column').on('click', function() {
 			var columnContainerGroup = columnPanelContainer.parent();
 			var columnContainer = columnPanelContainer.find('.column-container');
 			if (! Simulators.checkFieldSetColumn(columnPanelContainer)) {
@@ -3326,7 +3216,7 @@ THE SOFTWARE.
 			if (! $(this).next().hasClass('add-field')) {
 				var button = $('<button class="btn btn-success float-right update-button add-field" title="' + Translator.trans('Add field') + '" data-parent="' +  $(this).attr('data-parent') + '"><span class="button-label">' + Translator.trans('Add field') + '</span> <span class="fa fa-plus-circle"></span></button>');
 				$(this).after(button);
-				button.click(function(e) {
+				button.on('click', function(e) {
 					e.preventDefault();
 					Simulators.addField($($(this).attr('data-parent')));
 				});
@@ -3368,19 +3258,19 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="colon" data-placeholder="' + Translator.trans('Show colon after field label ?') + '">' + Translator.trans('Show colon after field label ?') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="colon" data-placeholder="' + Translator.trans('Show colon after field label ?') + '">' + Translator.trans('Show colon after field label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldrow.colon) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-colon', 'checkbox', 'colon', Translator.trans('Show colon after field label ?'), fieldrow.colon, false, Translator.trans('Show colon after field label ?')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="help" data-placeholder="' + Translator.trans('Show data description as help ?') + '">' + Translator.trans('Show data description as help ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="help" data-placeholder="' + Translator.trans('Show data description as help ?') + '">' + Translator.trans('Show data description as help ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldrow.help) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-help', 'checkbox', 'help', Translator.trans('Show data description as help ?'), fieldrow.help, false, Translator.trans('Show data description as help ?')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="emphasize" data-placeholder="' + Translator.trans('Emphasize the text label ?') + '">' + Translator.trans('Emphasize the text label ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="emphasize" data-placeholder="' + Translator.trans('Emphasize the text label ?') + '">' + Translator.trans('Emphasize the text label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldrow.emphasize) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-emphasize', 'checkbox', 'help', Translator.trans('Emphasize the text label ?'), fieldrow.emphasize, false, Translator.trans('Emphasize the text label ?')));
@@ -3409,15 +3299,15 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps .fieldrows-panel");
 		}
-		container.find('button.edit-fieldrow').click(function(e) {
+		container.find('button.edit-fieldrow').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editFieldRow($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-fieldrow').click(function(e) {
+		container.find('button.delete-fieldrow').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteFieldRow($($(this).attr('data-parent')));
 		});
-		container.find('button.add-field').click(function(e) {
+		container.find('button.add-field').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addField($($(this).attr('data-parent')));
 		});
@@ -3428,10 +3318,7 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		fieldrowPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		fieldrowPanelContainer.find('.cancel-edit-fieldrow').click(function() {
+		fieldrowPanelContainer.find('.cancel-edit-fieldrow').on('click', function() {
 			fieldrowPanelContainer.find('.fieldrow-container').replaceWith(Simulators.fieldrowBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -3440,7 +3327,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		fieldrowPanelContainer.find('.cancel-add-fieldrow').click(function() {
+		fieldrowPanelContainer.find('.cancel-add-fieldrow').on('click', function() {
 			fieldrowPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -3449,7 +3336,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		fieldrowPanelContainer.find('.validate-edit-fieldrow, .validate-add-fieldrow').click(function() {
+		fieldrowPanelContainer.find('.validate-edit-fieldrow, .validate-add-fieldrow').on('click', function() {
 			var fieldrowContainerGroup = fieldrowPanelContainer.parent();
 			var fieldrowContainer = fieldrowPanelContainer.find('.fieldrow-container');
 			if (! Simulators.checkFieldRow(fieldrowPanelContainer)) {
@@ -3514,26 +3401,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newFieldRowPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		fieldrowPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		fieldrowPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		fieldrowPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(fieldrowPanelContainer);
 	}
 
 	Simulators.checkFieldRow = function(fieldrowContainer) {
@@ -3822,73 +3690,73 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Field label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Field label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-label', 'text', 'label', Translator.trans('Label'), field.label, false, Translator.trans('Field label')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="text" data-name="prompt" data-placeholder="' + Translator.trans('Field prompt') + '">' + Translator.trans('Prompt') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="text" data-name="prompt" data-placeholder="' + Translator.trans('Field prompt') + '">' + Translator.trans('Prompt') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.prompt) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-prompt', 'text', 'prompt', Translator.trans('Prompt'), field.prompt, false, Translator.trans('Field prompt')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="newline" data-placeholder="">' + Translator.trans('Newline before field ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="newline" data-placeholder="">' + Translator.trans('Newline before field ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.newline == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-newline', 'checkbox', 'newline', Translator.trans('Newline before field ?'), field.newline, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="required" data-placeholder="">' + Translator.trans('Required') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="required" data-placeholder="">' + Translator.trans('Required') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.required == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-required', 'checkbox', 'required', Translator.trans('Required'), field.required, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="visibleRequired" data-placeholder="">' + Translator.trans('Required if visible') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="visibleRequired" data-placeholder="">' + Translator.trans('Required if visible') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.visibleRequired == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-visibleRequired', 'checkbox', 'visibleRequired', Translator.trans('Required if visible'), field.visibleRequired, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="colon" data-placeholder="">' + Translator.trans('Show colon after field label ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="colon" data-placeholder="">' + Translator.trans('Show colon after field label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.colon == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-colon', 'checkbox', 'colon', Translator.trans('Show colon after field label ?'), field.colon, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="underlabel" data-placeholder="">' + Translator.trans('Place the field under the label ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="underlabel" data-placeholder="">' + Translator.trans('Place the field under the label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.underlabel == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-underlabel', 'checkbox', 'underlabel', Translator.trans('Place the field under the label ?'), field.underlabel, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="help" data-placeholder="">' + Translator.trans('Show data description as help ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="help" data-placeholder="">' + Translator.trans('Show data description as help ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.help == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-help', 'checkbox', 'help', Translator.trans('Show data description as help ?'), field.help, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="emphasize" data-placeholder="">' + Translator.trans('Emphasize the text label ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="emphasize" data-placeholder="">' + Translator.trans('Emphasize the text label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.emphasize == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-emphasize', 'checkbox', 'emphasize', Translator.trans('Emphasize the text label ?'), field.emphasize, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="expanded" data-placeholder="">' + Translator.trans('Show choices as radio buttons ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="expanded" data-placeholder="">' + Translator.trans('Show choices as radio buttons ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.expanded == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-expanded', 'checkbox', 'expanded', Translator.trans('Show choices as radio buttons ?'), field.expanded, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="text" data-name="explanation" data-placeholder="' + Translator.trans('Explanation') + '">' + Translator.trans('Explanation') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="text" data-name="explanation" data-placeholder="' + Translator.trans('Explanation') + '">' + Translator.trans('Explanation') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.explanation) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-explanation', 'text', 'explanation', Translator.trans('Explanation'), field.explanation, false, Translator.trans('Explanation')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="select" data-name="widget" data-placeholder="' + Translator.trans('Select a widget') + '" data-options="' + encodeURI(JSON.stringify(widgets)) + '">' + Translator.trans('Widget') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="select" data-name="widget" data-placeholder="' + Translator.trans('Select a widget') + '" data-options="' + encodeURI(JSON.stringify(widgets)) + '">' + Translator.trans('Widget') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.widget) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-widget', 'select', 'widget', Translator.trans('Widget'), field.widget, false, Translator.trans('Select a widget'), JSON.stringify(widgets)));
@@ -3930,11 +3798,11 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps .fields-panel");
 		}
-		container.find('button.edit-field').click(function(e) {
+		container.find('button.edit-field').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editField($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-field').click(function(e) {
+		container.find('button.delete-field').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteField($($(this).attr('data-parent')));
 		});
@@ -3946,16 +3814,13 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		fieldPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		fieldPanelContainer.find('.cancel-edit-field').click(function() {
+		fieldPanelContainer.find('.cancel-edit-field').on('click', function() {
 			fieldPanelContainer.replaceWith(Simulators.fieldBackup);
-			Simulators.fieldBackup.find('button.edit-field').click(function(e) {
+			Simulators.fieldBackup.find('button.edit-field').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editField($($(this).attr('data-parent')));
 			});
-			Simulators.fieldBackup.find('button.delete-field').click(function(e) {
+			Simulators.fieldBackup.find('button.delete-field').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteField($($(this).attr('data-parent')));
 			});
@@ -3966,7 +3831,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		fieldPanelContainer.find('.cancel-add-field').click(function() {
+		fieldPanelContainer.find('.cancel-add-field').on('click', function() {
 			fieldPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -3975,7 +3840,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		fieldPanelContainer.find('.validate-edit-field, .validate-add-field').click(function() {
+		fieldPanelContainer.find('.validate-edit-field, .validate-add-field').on('click', function() {
 			var fieldContainerGroup = fieldPanelContainer.parent();
 			var fieldContainer = fieldPanelContainer.find('.field-container');
 			if (! Simulators.checkField(fieldPanelContainer)) {
@@ -4073,26 +3938,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newFieldPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		fieldPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		fieldPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		fieldPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(fieldPanelContainer);
 	}
 
 	Simulators.checkField = function(fieldContainer) {
@@ -4296,7 +4142,7 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + blockinfoElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('BlockInfo label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + blockinfoElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('BlockInfo label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (blockinfo.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(blockinfoElementId + '-label', 'text', 'label', Translator.trans('Label'), blockinfo.label, false, Translator.trans('BlockInfo label')));
@@ -4324,15 +4170,15 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps .blocks-panel");
 		}
-		container.find('button.edit-blockinfo').click(function(e) {
+		container.find('button.edit-blockinfo').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editBlockInfo($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-blockinfo').click(function(e) {
+		container.find('button.delete-blockinfo').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteBlockInfo($($(this).attr('data-parent')));
 		});
-		container.find('button.add-chapter').click(function(e) {
+		container.find('button.add-chapter').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addChapter($($(this).attr('data-parent')));
 		});
@@ -4343,10 +4189,7 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		blockinfoPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		blockinfoPanelContainer.find('.cancel-edit-blockinfo').click(function() {
+		blockinfoPanelContainer.find('.cancel-edit-blockinfo').on('click', function() {
 			blockinfoPanelContainer.find('.block-container.blockinfo').replaceWith(Simulators.blockinfoBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -4355,7 +4198,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		blockinfoPanelContainer.find('.cancel-add-blockinfo').click(function() {
+		blockinfoPanelContainer.find('.cancel-add-blockinfo').on('click', function() {
 			blockinfoPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -4364,7 +4207,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		blockinfoPanelContainer.find('.validate-edit-blockinfo, .validate-add-blockinfo').click(function() {
+		blockinfoPanelContainer.find('.validate-edit-blockinfo, .validate-add-blockinfo').on('click', function() {
 			var blockinfoContainerGroup = blockinfoPanelContainer.parent();
 			var blockinfoContainer = blockinfoPanelContainer.find('.block-container.blockinfo');
 			if (! Simulators.checkBlockInfo(blockinfoPanelContainer)) {
@@ -4424,26 +4267,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newBlockInfoPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		blockinfoPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		blockinfoPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		blockinfoPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(blockinfoPanelContainer);
 	}
 
 	Simulators.checkBlockInfo = function(blockinfoPanelContainer) {
@@ -4701,19 +4525,19 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + chapterElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Chapter label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + chapterElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Chapter label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (chapter.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(chapterElementId + '-label', 'text', 'label', Translator.trans('Label'), chapter.label, false, Translator.trans('Chapter label')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + chapterElementId + '" data-type="text" data-name="icon" data-placeholder="' + Translator.trans('Chapter icon') + '">' + Translator.trans('Icon') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + chapterElementId + '" data-type="text" data-name="icon" data-placeholder="' + Translator.trans('Chapter icon') + '">' + Translator.trans('Icon') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (chapter.icon) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(chapterElementId + '-icon', 'text', 'icon', Translator.trans('Icon'), chapter.icon, false, Translator.trans('Chapter icon')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + chapterElementId + '" data-type="checkbox" data-name="collapsible" data-placeholder="">' + Translator.trans('Allow collapse/expand ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + chapterElementId + '" data-type="checkbox" data-name="collapsible" data-placeholder="">' + Translator.trans('Allow collapse/expand ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (chapter.collapsible == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(chapterElementId + '-collapsible', 'checkbox', 'collapsible', Translator.trans('Allow collapse/expand ?'), chapter.collapsible, false, ''));
@@ -4741,15 +4565,15 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps .chapters-panel");
 		}
-		container.find('button.edit-chapter').click(function(e) {
+		container.find('button.edit-chapter').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editChapter($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-chapter').click(function(e) {
+		container.find('button.delete-chapter').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteChapter($($(this).attr('data-parent')));
 		});
-		container.find('button.add-section').click(function(e) {
+		container.find('button.add-section').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addSection($($(this).attr('data-parent')));
 		});
@@ -4760,10 +4584,7 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		chapterPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		chapterPanelContainer.find('.cancel-edit-chapter').click(function() {
+		chapterPanelContainer.find('.cancel-edit-chapter').on('click', function() {
 			chapterPanelContainer.find('.chapter-container').replaceWith(Simulators.chapterBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -4772,7 +4593,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		chapterPanelContainer.find('.cancel-add-chapter').click(function() {
+		chapterPanelContainer.find('.cancel-add-chapter').on('click', function() {
 			chapterPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -4781,7 +4602,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		chapterPanelContainer.find('.validate-edit-chapter, .validate-add-chapter').click(function() {
+		chapterPanelContainer.find('.validate-edit-chapter, .validate-add-chapter').on('click', function() {
 			var chapterContainerGroup = chapterPanelContainer.parent();
 			var chapterContainer = chapterPanelContainer.find('.chapter-container');
 			if (! Simulators.checkChapter(chapterPanelContainer)) {
@@ -4846,26 +4667,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newChapterPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		chapterPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		chapterPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		chapterPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(chapterPanelContainer);
 	}
 
 	Simulators.checkChapter = function(chapterPanelContainer) {
@@ -5127,7 +4929,7 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + sectionElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Section label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + sectionElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Section label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (section.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(sectionElementId + '-label', 'text', 'label', Translator.trans('Label'), section.label, false, Translator.trans('Section label')));
@@ -5157,11 +4959,11 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#steps .sections-panel");
 		}
-		container.find('button.edit-section').click(function(e) {
+		container.find('button.edit-section').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editSection($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-section').click(function(e) {
+		container.find('button.delete-section').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteSection($($(this).attr('data-parent')));
 		});
@@ -5173,16 +4975,13 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		sectionPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		sectionPanelContainer.find('.cancel-edit-section').click(function() {
+		sectionPanelContainer.find('.cancel-edit-section').on('click', function() {
 			sectionPanelContainer.replaceWith(Simulators.sectionBackup);
-			Simulators.sectionBackup.find('button.edit-section').click(function(e) {
+			Simulators.sectionBackup.find('button.edit-section').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editSection($($(this).attr('data-parent')));
 			});
-			Simulators.sectionBackup.find('button.delete-section').click(function(e) {
+			Simulators.sectionBackup.find('button.delete-section').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteSection($($(this).attr('data-parent')));
 			});
@@ -5193,7 +4992,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		sectionPanelContainer.find('.cancel-add-section').click(function() {
+		sectionPanelContainer.find('.cancel-add-section').on('click', function() {
 			sectionPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -5202,7 +5001,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		sectionPanelContainer.find('.validate-edit-section, .validate-add-section').click(function() {
+		sectionPanelContainer.find('.validate-edit-section, .validate-add-section').on('click', function() {
 			var sectionContainerGroup = sectionPanelContainer.parent();
 			var sectionContainer = sectionPanelContainer.find('.section-container');
 			if (! Simulators.checkSection(sectionPanelContainer)) {
@@ -5275,26 +5074,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newSectionPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		sectionPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		sectionPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		sectionPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(sectionPanelContainer);
 	}
 
 	Simulators.checkSection = function(sectionPanelContainer) {

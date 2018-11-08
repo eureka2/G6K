@@ -852,11 +852,11 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#collapsesources");
 		}
-		container.find('button.edit-source').click(function(e) {
+		container.find('button.edit-source').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.editSource($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-source').click(function(e) {
+		container.find('button.delete-source').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.deleteSource($($(this).attr('data-parent')));
 		});
@@ -947,7 +947,7 @@ THE SOFTWARE.
 				}
 			);
 		});
-		columnContainer.find('.delete-request-column').click(function( e ) {
+		columnContainer.find('.delete-request-column').on('click', function( e ) {
 			e.preventDefault();
 			$(this).parent().remove();
 		});
@@ -1007,7 +1007,7 @@ THE SOFTWARE.
 				}
 			);
 		});
-		orderByKeyContainer.find('.delete-request-orderbykey').click(function( e ) {
+		orderByKeyContainer.find('.delete-request-orderbykey').on('click', function( e ) {
 			e.preventDefault();
 			$(this).parent().remove();
 		});
@@ -1017,7 +1017,7 @@ THE SOFTWARE.
 		var container = connectorContainer.hasClass('request-connector-container') ? 
 			connectorContainer : 
 			connectorContainer.find('.request-connector-container');
-		container.find('.request-connector').click(function (e) {
+		container.find('.request-connector').on('click', function (e) {
 			e.preventDefault();
 			if ($(this).attr('data-value') == 'and') {
 				$(this).attr('data-value', 'or');
@@ -1033,7 +1033,7 @@ THE SOFTWARE.
 		var container = parenthesisContainer.hasClass('request-parenthesis-container') ? 
 			parenthesisContainer : 
 			parenthesisContainer.find('.request-parenthesis-container');
-		container.find('.request-expression-delete-token').click(function (e) {
+		container.find('.request-expression-delete-token').on('click', function (e) {
 			e.preventDefault();
 			var li = $(this).parent().parent();
 			var bracket = li.find('.request-bracket').attr('data-value');
@@ -1117,7 +1117,7 @@ THE SOFTWARE.
 				container.parent().find('.request-filter-expression-container').hide();
 			}
 		});
-		container.find('.parenthesis').click(function( e ) {
+		container.find('.parenthesis').on('click', function( e ) {
 			e.preventDefault();
 			var requestExpression = container.parent().find('.request-filter-expression');
 			if (requestExpression.children().length > 0) {
@@ -1183,7 +1183,7 @@ THE SOFTWARE.
 		container.find('.attribute-expression.value').each(function( index ) {
 			Simulators.bindRequestFilterConditionValue($( this ));
 		});
-		columnContainer.find('.delete-request-filter-condition').click(function( e ) {
+		columnContainer.find('.delete-request-filter-condition').on('click', function( e ) {
 			e.preventDefault();
 			var conditionsContainer = $(this).parents('.request-filter-conditions-container');
 			var expressionContainer = conditionsContainer.next();
@@ -1406,13 +1406,13 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		sourcePanelContainer.find('.cancel-edit-source').click(function() {
+		sourcePanelContainer.find('.cancel-edit-source').on('click', function() {
 			sourcePanelContainer.replaceWith(Simulators.sourceBackup);
-			Simulators.sourceBackup.find('button.edit-source').click(function(e) {
+			Simulators.sourceBackup.find('button.edit-source').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editSource($($(this).attr('data-parent')));
 			});
-			Simulators.sourceBackup.find('button.delete-source').click(function(e) {
+			Simulators.sourceBackup.find('button.delete-source').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteSource($($(this).attr('data-parent')));
 			});
@@ -1424,7 +1424,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		sourcePanelContainer.find('.cancel-add-source').click(function() {
+		sourcePanelContainer.find('.cancel-add-source').on('click', function() {
 			sourcePanelContainer.remove();
 			Simulators.sourceParametersBackup = null;
 			$('.update-button').show();
@@ -1434,7 +1434,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		sourcePanelContainer.find('.validate-edit-source, .validate-add-source').click(function() {
+		sourcePanelContainer.find('.validate-edit-source, .validate-add-source').on('click', function() {
 			if (! Simulators.checkSource(sourcePanelContainer)) {
 				return false;
 			}
@@ -1533,11 +1533,11 @@ THE SOFTWARE.
 				newSourcePanel.find('.collapse').find('> .card-body').append(parametersPanel);
 			}
 			sourcePanelContainer.replaceWith(newSourcePanel);
-			newSourcePanel.find('button.edit-source').click(function(e) {
+			newSourcePanel.find('button.edit-source').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editSource($($(this).attr('data-parent')));
 			});
-			newSourcePanel.find('button.delete-source').click(function(e) {
+			newSourcePanel.find('button.delete-source').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteSource($($(this).attr('data-parent')));
 			});
@@ -1548,7 +1548,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: newSourcePanel.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = false;
 		});
-		sourcePanelContainer.find('select[data-attribute=datasource]').change(function(e) {
+		sourcePanelContainer.find('select[data-attribute=datasource]').on('change', function(e) {
 			var datasource = $(this).val();
 			if (datasources[datasource]) {
 				sourcePanelContainer.find(".request-columns-container").attr('data-datasource', datasource);
@@ -1594,7 +1594,7 @@ THE SOFTWARE.
 				}
 			}
 		});
-		sourcePanelContainer.find('select[data-attribute=requestType]').change(function(e) {
+		sourcePanelContainer.find('select[data-attribute=requestType]').on('change', function(e) {
 			var requestType = $(this).val();
 			var datasource = sourcePanelContainer.find('select[data-attribute=datasource]').val();
 			var dbtype = datasources[datasource].dbtype;
@@ -1693,7 +1693,7 @@ THE SOFTWARE.
 				sourcePanelContainer.find('input[data-attribute=from]').parent().parent().hide();
 			}
 		});
-		sourcePanelContainer.find('select[data-attribute=table]').change(function(e) {
+		sourcePanelContainer.find('select[data-attribute=table]').on('change', function(e) {
 			var table = $(this).val();
 			var datasource = sourcePanelContainer.find('select[data-attribute=datasource]').val();
 			Simulators.columnset = {};
@@ -1709,7 +1709,7 @@ THE SOFTWARE.
 			sourcePanelContainer.find('input[data-attribute=nbresult]').val('');
 			sourcePanelContainer.find('input[data-attribute=from]').val('');
 		});
-		sourcePanelContainer.find('select[data-attribute=returnType]').change(function(e) {
+		sourcePanelContainer.find('select[data-attribute=returnType]').on('change', function(e) {
 			var returnType = $(this).val();
 			if (returnType === 'singleValue') {
 				sourcePanelContainer.find('input[data-attribute=returnPath]').parent().parent().hide();
@@ -1731,7 +1731,7 @@ THE SOFTWARE.
 			cursor: "move",
 			containment: "parent",
 		});
-		sourcePanelContainer.find('.add-request-column').click(function( e ) {
+		sourcePanelContainer.find('.add-request-column').on('click', function( e ) {
 			e.preventDefault();
 			var columnsContainer = $(this).parent().parent().find('.request-columns-container');
 			var columContainer = Simulators.requestColumnAttributeForInput('', Translator.trans('Select a column'), '');
@@ -1740,7 +1740,7 @@ THE SOFTWARE.
 		});
 		Simulators.bindRequestColumnAttribute(sourcePanelContainer);
 
-		sourcePanelContainer.find('.request-columns-container').click(function( e ) {
+		sourcePanelContainer.find('.request-columns-container').on('click', function( e ) {
 			if (e.target && $(e.target).hasClass('request-columns-container')) {
 				e.preventDefault();
 				sourcePanelContainer.find('.add-request-column').trigger('click');
@@ -1754,7 +1754,7 @@ THE SOFTWARE.
 			}
 		});
 
-		sourcePanelContainer.find('.add-request-condition').click(function( e ) {
+		sourcePanelContainer.find('.add-request-condition').on('click', function( e ) {
 			e.preventDefault();
 			var conditionsContainer = sourcePanelContainer.find('.request-filter-conditions');
 			var num = conditionsContainer.children().length + 1;
@@ -1781,7 +1781,7 @@ THE SOFTWARE.
 		Simulators.bindRequestFilterConditionAttribute(sourcePanelContainer);
 		Simulators.bindRequestFilterParenthesisAttribute(sourcePanelContainer);
 
-		sourcePanelContainer.find('.request-filter-conditions').click(function( e ) {
+		sourcePanelContainer.find('.request-filter-conditions').on('click', function( e ) {
 			if (e.target && $(e.target).hasClass('request-filter-conditions')) {
 				e.preventDefault();
 				sourcePanelContainer.find('.add-request-condition').trigger('click');
@@ -1795,7 +1795,7 @@ THE SOFTWARE.
 			}
 		});
 
-		sourcePanelContainer.find('.add-request-orderbykey').click(function( e ) {
+		sourcePanelContainer.find('.add-request-orderbykey').on('click', function( e ) {
 			e.preventDefault();
 			var orderByKeysContainer = $(this).parent().parent().find('.request-orderbykeys-container');
 			var orderByKeyContainer = Simulators.requestOrderByKeyAttributeForInput('', Translator.trans('Select a column'), '');
@@ -1804,7 +1804,7 @@ THE SOFTWARE.
 		});
 		Simulators.bindRequestOrderByKeyAttribute(sourcePanelContainer);
 
-		sourcePanelContainer.find('.request-orderbykeys-container').click(function( e ) {
+		sourcePanelContainer.find('.request-orderbykeys-container').on('click', function( e ) {
 			if (e.target && $(e.target).hasClass('request-orderbykeys-container')) {
 				e.preventDefault();
 				sourcePanelContainer.find('.add-request-orderbykey').trigger('click');
@@ -1884,7 +1884,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindParameters = function(parametersPanel) {
-		parametersPanel.find('button.add-source-parameter').click(function(e) {
+		parametersPanel.find('button.add-source-parameter').on('click', function(e) {
 			var datasource = parametersPanel.parent().parent().find('.source-container').find("select[data-attribute=datasource]").val();
 			var parametersContainer = parametersPanel.find('> .card-body');
 			var id = parametersContainer.children('div.card').length + 1;
@@ -1914,13 +1914,13 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindParameter = function(parameterPanel) {
-		parameterPanel.find('button.delete-source-parameter').click(function(e) {
+		parameterPanel.find('button.delete-source-parameter').on('click', function(e) {
 			var num = $(this).parents('.source-parameter-panel').attr('data-id');
 			delete Simulators.parameterset[num];
 			var parametersPanel = parameterPanel.parents('.source-parameters-panel');
 			parameterPanel.remove();
 		});
-		parameterPanel.find('select[data-attribute=origin]').change(function(e) {
+		parameterPanel.find('select[data-attribute=origin]').on('change', function(e) {
 			var origin = $(this).val();
 			var num = $(this).parents('.source-parameter-panel').attr('data-id');
 			if (origin === 'data') {
@@ -1936,7 +1936,7 @@ THE SOFTWARE.
 				Simulators.parameterset[num].type = 'text';
 			}
 		});
-		parameterPanel.find('select[data-attribute=data]').change(function(e) {
+		parameterPanel.find('select[data-attribute=data]').on('change', function(e) {
 			var data = $(this).val();
 			var num = $(this).parents('.source-parameter-panel').attr('data-id');
 			if (Simulators.dataset[data]) {
@@ -1955,7 +1955,7 @@ THE SOFTWARE.
 				Simulators.parameterset[num].type = type;
 			}
 		});
-		parameterPanel.find('input[data-attribute=name]').change(function(e) {
+		parameterPanel.find('input[data-attribute=name]').on('change', function(e) {
 			var num = $(this).parents('.source-parameter-panel').attr('data-id');
 			Simulators.parameterset[num].name = $(this).val();
 		});

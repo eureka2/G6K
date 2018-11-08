@@ -3500,11 +3500,11 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#businessrules");
 		}
-		container.find('button.edit-rule').click(function(e) {
+		container.find('button.edit-rule').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.editRule($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-rule').click(function(e) {
+		container.find('button.delete-rule').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.deleteRule($($(this).attr('data-parent')));
 		});
@@ -3534,7 +3534,7 @@ THE SOFTWARE.
 			actions: actions,
 		    data: rule.elsedata
 		});
-		ruleContainer.find("> div > button.delete-rule").click(function(e) {
+		ruleContainer.find("> div > button.delete-rule").on('click', function(e) {
 		    e.preventDefault();
 			var r = Simulators.findRuleIndexByName(rule.name);
 			$(this).parents('div.rule-container').remove();
@@ -3560,7 +3560,7 @@ THE SOFTWARE.
 				$(this).focusNextInputField();
 			}, 0);
 		});
-		ruleContainer.find('.input-rule-name').change(function () {
+		ruleContainer.find('.input-rule-name').on('change', function () {
 			ruleContainer.find('.rule-name').text($(this).val());
 		});
 
@@ -3583,16 +3583,16 @@ THE SOFTWARE.
 				$(this).focusNextInputField();
 			}, 0);
 		});
-		ruleContainer.find('.input-rule-label').change(function () {
+		ruleContainer.find('.input-rule-label').on('change', function () {
 			ruleContainer.find('.rule-label').text($(this).val());
 		});
-		ruleContainer.find('.cancel-edit-rule').click(function() {
+		ruleContainer.find('.cancel-edit-rule').on('click', function() {
 			ruleContainer.replaceWith(Simulators.ruleBackup);
-			Simulators.ruleBackup.find('button.edit-rule').click(function(e) {
+			Simulators.ruleBackup.find('button.edit-rule').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editRule($($(this).attr('data-parent')));
 			});
-			Simulators.ruleBackup.find('button.delete-rule').click(function(e) {
+			Simulators.ruleBackup.find('button.delete-rule').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteRule($($(this).attr('data-parent')));
 			});
@@ -3603,7 +3603,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		ruleContainer.find('.cancel-add-rule').click(function() {
+		ruleContainer.find('.cancel-add-rule').on('click', function() {
 			ruleContainer.remove();
 			rules.pop();
 			$('.update-button').show();
@@ -3613,7 +3613,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		ruleContainer.find('.validate-add-rule, .validate-edit-rule').click(function() {
+		ruleContainer.find('.validate-add-rule, .validate-edit-rule').on('click', function() {
 			if (! Simulators.checkRule(ruleContainer)) {
 				return false;
 			}
