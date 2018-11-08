@@ -291,7 +291,7 @@ THE SOFTWARE.
 			attribute    += '    <label for="' + id + '" class="col-sm-4 col-form-label">';
 		}
 		if (! required) {
-			attribute    += '    <span class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span tabindex="0" class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		if (type === 'checkbox') {
@@ -328,7 +328,7 @@ THE SOFTWARE.
 		var attribute = '<div class="form-group row">';
 		attribute    += '    <label class="col-form-label">';
 		if (! required) {
-			attribute+= '    <span class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
+			attribute+= '    <span tabindex="0" class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    <span class="col-sm-4">' + label + '</span>';
 		attribute    += '    <div style="display: inline-block;" class="col-sm-8 input-group checkbox-slider--b-flat checkbox-slider-primary">';
@@ -356,7 +356,7 @@ THE SOFTWARE.
 		var attribute = '<div class="form-group row">';
 		attribute    += '    <label for="' + id + '" class="col-sm-4 col-form-label">';
 		if (! required) {
-			attribute    += '    <span class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span tabindex="0" class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		attribute    += '    <span id="' + id + '" data-attribute="' + name + '" class="attribute-expression" data-placeholder="' + placeholder + '"  data-value="' + value + '" />'; 
@@ -371,7 +371,7 @@ THE SOFTWARE.
 		var name = ids.pop();
 		var element = ids.join('-');
 		var li = attr.parents('div.attributes-container').children('div.optional-attributes').children('ul').children("li[data-element='" + element +"'][data-name='" + name +"']");
-		li.show();
+		li.show().focus();
 		attr.parent('label').parent('div.form-group').remove();
 	}
 
@@ -401,10 +401,25 @@ THE SOFTWARE.
 				operatorHolder: Simulators.expressionOptions.operatorHolder,
 				nestedExpression: Simulators.expressionOptions.nestedExpression
 			});
-			attribute.find('span.delete-attribute').click(function() {
-				Simulators.removeAttribute($(this));
-			});
+			attribute.find('span.delete-attribute')
+				.on('click', function() {
+					Simulators.removeAttribute($(this));
+				})
+				.on('keydown', function(e) {
+					var key = e.keyCode || e.which || e.key;
+					if (key == 13) {
+						e.preventDefault();
+						Simulators.removeAttribute($(this));
+					} else if (key == 32) {
+						e.preventDefault();
+					}
+				});
 			ui.hide();
+			if (expression) {
+				attribute.find('.attribute-expression').focus();
+			} else {
+				attribute.find(':input').focus();
+			}
 		}
 	}
 	
@@ -541,27 +556,27 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindSimulatorButtons = function() {
-		$('#sources-panel').find('> button.add-source').click(function(e) {
+		$('#sources-panel').find('> button.add-source').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.addSource($($(this).attr('data-parent')));
 		});
-		$('#datas-panel').find('> button.add-datagroup, > div > ul li a.add-datagroup').click(function(e) {
+		$('#datas-panel').find('> button.add-datagroup, > div > ul li a.add-datagroup').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.addDatagroup($($(this).attr('data-parent')));
 		});
-		$('#datas-panel').find('> button.add-data, > div > ul li a.add-data').click(function(e) {
+		$('#datas-panel').find('> button.add-data, > div > ul li a.add-data').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.addData($($(this).attr('data-parent')));
 		});
-		$('#steps-panel').find('> button.add-step').click(function(e) {
+		$('#steps-panel').find('> button.add-step').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.addStep($($(this).attr('data-parent')));
 		});
-		$('#businessrules-panel').find('> button.add-rule').click(function(e) {
+		$('#businessrules-panel').find('> button.add-rule').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.addRule($($(this).attr('data-parent')));
 		});
-		$('#profiles-panel').find('> button.add-profile').click(function(e) {
+		$('#profiles-panel').find('> button.add-profile').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.addProfile($($(this).attr('data-parent')));
 		});
@@ -573,10 +588,7 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		simulatorContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		simulatorContainer.find('.validate-edit-simulator').click(function() {
+		simulatorContainer.find('.validate-edit-simulator').on('click', function() {
 			if (Simulators.checkSimulatorOptions(simulatorContainer)) {
 				simulatorContainer.find('.alert').hide();
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='name']").attr('data-value', $('#simulator-name').val());
@@ -627,7 +639,7 @@ THE SOFTWARE.
 				Simulators.updating = false;
 			}
 		});
-		simulatorContainer.find('.cancel-edit-simulator').click(function() {
+		simulatorContainer.find('.cancel-edit-simulator').on('click', function() {
 			$('#simulator-attributes-panel').remove();
 			$('#simulator-description-panel').remove();
 			$('#simulator-related-informations-panel').remove();
@@ -642,7 +654,23 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		simulatorContainer.find('.optional-attributes li' ).each(function(){
+		Simulators.bindOptionalAttributes(simulatorContainer);
+	}
+
+	Simulators.bindOptionalAttributes = function(container, onSelect) {
+		container.find('.delete-attribute')
+			.on('click', function() {
+				Simulators.removeAttribute($(this));
+			}).on('keydown', function(e) {
+				var key = e.keyCode || e.which || e.key;
+				if (key == 13) {
+					e.preventDefault();
+					Simulators.removeAttribute($(this));
+				} else if (key == 32) {
+					e.preventDefault();
+				}
+			});
+		container.find('.optional-attributes li' ).each(function(){
 			var self = $(this);
 			self.draggable({
 				cursor: "move",
@@ -652,14 +680,53 @@ THE SOFTWARE.
 				stop: function( event, ui ) { ui.helper.css('border', 'none') }
 			});
 		});
-		simulatorContainer.find('.optional-attributes li' ).dblclick(function() {
+		container.find('.optional-attributes li' ).on("dblclick", function() {
 			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
+			onSelect && onSelect($(this));
 		});
-		simulatorContainer.find('.attributes-container > div:first-child' ).droppable({
+		container.find('.optional-attributes li' ).on("keydown", function(e) {
+			var key = e.keyCode || e.which || e.key;
+			switch (key) {
+				case 13:
+					e.preventDefault();
+					e.stopPropagation();
+					Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
+					onSelect && onSelect($(this));
+					break;
+				case 35: // end
+					e.preventDefault();
+					$(this).parent().children(':visible').last().focus();
+					break;
+				case 36: // home
+					e.preventDefault();
+					$(this).parent().children(':visible').first().focus();
+					break;
+				case 38: // arrow up
+					e.preventDefault();
+					var prev = $(this).prev(); 
+					while (prev.length > 0 && !prev.is(':visible')) prev = prev.prev();
+					if (prev.length == 0) {
+						prev = $(this).parent().children(':visible').last();
+					}
+					prev.focus();
+					break;
+				case 40: // arrow down
+					e.preventDefault();
+					var next = $(this).next(); 
+					while (next.length > 0 && !next.is(':visible')) next = next.next();
+					if (next.length == 0) {
+						next = $(this).parent().children(':visible').first();
+					}
+					next.focus();
+					break;
+			}
+		});
+		container.find('.attributes-container > div:first-child' ).droppable({
 			accept: ".optional-attributes li",
 			drop: function( event, ui ) {
 				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
 				Simulators.dropAttribute(ui.draggable, target);
+				onSelect && onSelect(ui.draggable);
 			}
 		});
 	}
@@ -687,13 +754,13 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		optionalAttributes.append('<li class="list-group-item" data-element="simulator" data-type="text" data-name="referer" data-placeholder="' + Translator.trans('Main referer value') + '">' + Translator.trans('Main referer') + '</li>');
-		var dynamicAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="dynamic" data-placeholder="">' + Translator.trans('Interactive UI') + '</li>');
+		optionalAttributes.append('<li class="list-group-item" tabindex="0" data-element="simulator" data-type="text" data-name="referer" data-placeholder="' + Translator.trans('Main referer value') + '">' + Translator.trans('Main referer') + '</li>');
+		var dynamicAttribute = $('<li class="list-group-item" tabindex="0" data-element="simulator" data-type="checkbox" data-name="dynamic" data-placeholder="">' + Translator.trans('Interactive UI') + '</li>');
 		optionalAttributes.append(dynamicAttribute);
 		if (simulator.dynamic == 1) {
 			dynamicAttribute.hide();
 		}
-		var memoAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="memo" data-placeholder="">' + Translator.trans('Data memo ?') + '</li>');
+		var memoAttribute = $('<li class="list-group-item" tabindex="0" data-element="simulator" data-type="checkbox" data-name="memo" data-placeholder="">' + Translator.trans('Data memo ?') + '</li>');
 		optionalAttributes.append(memoAttribute);
 		if (simulator.memo == 1) {
 			memoAttribute.hide();
@@ -732,7 +799,7 @@ THE SOFTWARE.
 $(function(){
 	if ( $( "#page-simulators" ).length ) {
 		$(Simulators.init);
-		$('button.edit-simulator').click(function(e) {
+		$('button.edit-simulator').on('click', function(e) {
 			var attributesPanel = $('#simulator-attributes-panel-holder');
 			var descriptionPanel = $('#simulator-description-panel-holder');
 			var relatedInformationsPanel = $('#simulator-related-informations-panel-holder');
@@ -801,37 +868,14 @@ $(function(){
 		Simulators.bindSortableProfileDatas();
 		Simulators.bindSortableProfiles();
 		$('#page-simulators textarea').wysihtml(Admin.wysihtml5Options);
-		$('#page-simulators .delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-
-		$( "#page-simulators .optional-attributes li" ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
 		$('#collapsedatas .choices-panel').each(function(k) {
 			if ($(this).find('.choice-source-container').length > 0) {
 				$(this).find('.choice-container').hide();
 			}
 		});
 
-		$( "#page-simulators .optional-attributes li" ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		$( "#page-simulators .attributes-container > div:first-child" ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
-		$('#page button.save-simulator').click(function(e) {
+		Simulators.bindOptionalAttributes($('#page-simulators'));
+		$('#page button.save-simulator').on('click', function(e) {
 			var simulator = {
 				name: $('#simulator-attributes-panel-holder').find("p[data-attribute='name']").attr('data-value'),
 				label: $('#simulator-attributes-panel-holder').find("p[data-attribute='label']").attr('data-value'),
@@ -908,7 +952,7 @@ $(function(){
 			$( "#simulator-import-form" ).find('input, textarea').on("change propertychange", function (e) {
 				Admin.updated = true;
 			});
-			$("#simulator-import-form input[name='simulator-file'], #simulator-import-form input[name='simulator-stylesheet']").change(function (e) {
+			$("#simulator-import-form input[name='simulator-file'], #simulator-import-form input[name='simulator-stylesheet']").on('change', function (e) {
 				Simulators.hideErrors();
 				var files = e.target.files;
 				var $file = $(this);
@@ -921,7 +965,7 @@ $(function(){
 				};
 				reader.readAsText(files[0], "UTF-8");
 			});
-			$("#btnDoImportSimulator").click(function (e) {
+			$("#btnDoImportSimulator").on('click', function (e) {
 				e.preventDefault();
 				var errors = [];
 				var simulatorinput = $("#simulator-import-form input[name='simulator-file']");

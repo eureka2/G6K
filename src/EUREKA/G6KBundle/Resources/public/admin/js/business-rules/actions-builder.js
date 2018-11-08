@@ -65,7 +65,7 @@ THE SOFTWARE.
 				buttons.append(this.addButton);
 				container.append(buttons);
 			}
-			this.addButton.click(function(e) {
+			this.addButton.on('click', function(e) {
 				e.preventDefault();
 				var actionDiv = self.buildAction({});
 				actionDiv.find('> .end-action-mark').remove();
@@ -201,7 +201,7 @@ THE SOFTWARE.
 				"text": " ",
 				"title": Translator.trans("Remove this Action")
 			});
-			removeLink.click(function(e) {
+			removeLink.on('click', function(e) {
 				e.preventDefault();
 				actionDiv.remove();
 			});

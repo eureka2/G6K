@@ -164,6 +164,7 @@ button.field-choices-button > span:last-child {
 	height: 100%;
 	padding: 4px 3px;
 	margin-right: -8px;
+	margin-left: 1px;
 	background: #fff;
 	border: none;
 }

@@ -435,7 +435,7 @@ $(function(){
 		});
 	}
 	$('body').on('shown.bs.modal', centerModal);
-	$('a[data-confirm], button[data-confirm]').click(function(ev) {
+	$('a[data-confirm], button[data-confirm]').on('click', function(ev) {
 		var href = $(this).attr('href');
 		if (!$('#dataConfirmModal').length) {
 			$('body').append('<div id="dataConfirmModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h4 id="dataConfirmLabel" class="modal-title">' + Translator.trans('Please Confirm') + '</h4><button type="button" class="close" data-dismiss="modal" aria-label="' + Translator.trans('Close') + '"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"></div><div class="modal-footer"><button class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">' + Translator.trans('Cancel') + '</button><a class="btn btn-primary" id="dataConfirmOK">' + Translator.trans('OK') + '</a></div></div></div></div>');
@@ -470,7 +470,7 @@ $(function(){
 			e.message = Translator.trans('Your update are not saved. Sure to leave?');
 		}
 	});
-	$('#toTop').click(function(){
+	$('#toTop').on('click', function(){
 		$("html, body").animate({ scrollTop: 0 }, 600);
 		return false;
 	});

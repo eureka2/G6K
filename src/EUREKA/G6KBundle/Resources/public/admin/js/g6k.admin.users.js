@@ -116,7 +116,7 @@ THE SOFTWARE.
 
 $(function(){
 	if ( $( "#page-users" ).length ) {
-		$('#page-users #btnAddNewRow').click(function(e) {
+		$('#page-users #btnAddNewRow').on('click', function(e) {
 			e.preventDefault();
 			$('#page-users .tabledit-toolbar-column').remove();
 			$('#users tbody td').each(function() {
@@ -129,13 +129,13 @@ $(function(){
 			$('#users tbody tr:first-child').find('.tabledit-edit-button').trigger( "click" );
 		});
 		Users.doeditable();
-		$('#page-users #users-table-form').find("select[name='itemsPerPage']").change(function(e) {
+		$('#page-users #users-table-form').find("select[name='itemsPerPage']").on('change', function(e) {
 			e.preventDefault();
 			$('#page-users #users-table-form').find("input[name='page']").val(1);
 			$('#page-users #users-table-form').find('input[type=password]').val('******').attr('autocomplete', 'off').attr('type', 'text');
 			$('#page-users #users-table-form').submit();
 		});
-		$('#page-users #users-table-form ul.pagination li a').click(function(e) {
+		$('#page-users #users-table-form ul.pagination li a').on('click', function(e) {
 			e.preventDefault();
 			var pagenum = $(this).attr('data-page');
 			if (pagenum > 0) {

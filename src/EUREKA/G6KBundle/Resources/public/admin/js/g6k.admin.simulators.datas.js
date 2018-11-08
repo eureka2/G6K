@@ -450,18 +450,18 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#collapsedatas");
 		}
-		container.find('button.edit-data').click(function(e) {
+		container.find('button.edit-data').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.editData($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-data').click(function(e) {
+		container.find('button.delete-data').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.deleteData($($(this).attr('data-parent')));
 		});
 	}
 
 	Simulators.bindOptionalDataSource = function(dataPanelContainer) {
-		dataPanelContainer.find('select[data-attribute=source]').change(function(e) {
+		dataPanelContainer.find('select[data-attribute=source]').on('change', function(e) {
 			var source = $(this).val();
 			var index = dataPanelContainer.find('select[data-attribute=index]');
 			var columns = $('#collapsesources').find('.source-container[data-id=' + source + ']').find('span[data-attribute=column]');
@@ -491,16 +491,13 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		dataPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		dataPanelContainer.find('.cancel-edit-data').click(function() {
+		dataPanelContainer.find('.cancel-edit-data').on('click', function() {
 			dataPanelContainer.replaceWith(Simulators.dataBackup);
-			Simulators.dataBackup.find('button.edit-data').click(function(e) {
+			Simulators.dataBackup.find('button.edit-data').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editData($($(this).attr('data-parent')));
 			});
-			Simulators.dataBackup.find('button.delete-data').click(function(e) {
+			Simulators.dataBackup.find('button.delete-data').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteData($($(this).attr('data-parent')));
 			});
@@ -512,7 +509,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		dataPanelContainer.find('.cancel-add-data').click(function() {
+		dataPanelContainer.find('.cancel-add-data').on('click', function() {
 			dataPanelContainer.remove();
 			Simulators.dataChoicesBackup = null;
 			$('.update-button').show();
@@ -522,7 +519,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		dataPanelContainer.find('.validate-edit-data, .validate-add-data').click(function() {
+		dataPanelContainer.find('.validate-edit-data, .validate-add-data').on('click', function() {
 			if (! Simulators.checkData(dataPanelContainer)) {
 				return false;
 			}
@@ -585,11 +582,11 @@ THE SOFTWARE.
 				newDataPanel.find('.collapse').find('> .card-body').append(choicesPanel);
 			}
 			dataPanelContainer.replaceWith(newDataPanel);
-			newDataPanel.find('button.edit-data').click(function(e) {
+			newDataPanel.find('button.edit-data').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editData($($(this).attr('data-parent')));
 			});
-			newDataPanel.find('button.delete-data').click(function(e) {
+			newDataPanel.find('button.delete-data').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteData($($(this).attr('data-parent')));
 			});
@@ -642,33 +639,12 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: newDataPanel.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = false;
 		});
-		dataPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		dataPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-			if ($(this).attr('data-name') == 'source') {
+		Simulators.bindOptionalAttributes(dataPanelContainer, function(attribute) {
+			if (attribute.attr('data-name') == 'source') {
 				Simulators.bindOptionalDataSource(dataPanelContainer);
 			}
 		});
-		dataPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-				if (ui.draggable.attr('data-name') == 'source') {
-					Simulators.bindOptionalDataSource(dataPanelContainer);
-				}
-			}
-		});
-		dataPanelContainer.find('select[data-attribute=type]').change(function(e) {
+		dataPanelContainer.find('select[data-attribute=type]').on('change', function(e) {
 			var type = $(this).val();
 			if (type === 'choice') {
 				var choicesPanel;
@@ -711,15 +687,15 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#collapsedatas");
 		}
-		container.find('button.edit-datagroup').click(function(e) {
+		container.find('button.edit-datagroup').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.editDatagroup($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-datagroup').click(function(e) {
+		container.find('button.delete-datagroup').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.deleteDatagroup($($(this).attr('data-parent')));
 		});
-		container.find('button.add-data').click(function(e) {
+		container.find('button.add-data').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.addData($($(this).attr('data-parent')));
 		});
@@ -736,17 +712,17 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		dataPanelContainer.find('.cancel-edit-datagroup').click(function() {
+		dataPanelContainer.find('.cancel-edit-datagroup').on('click', function() {
 			dataPanelContainer.replaceWith(Simulators.datagroupBackup);
-			Simulators.datagroupBackup.find('button.edit-datagroup').click(function(e) {
+			Simulators.datagroupBackup.find('button.edit-datagroup').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editDatagroup($($(this).attr('data-parent')));
 			});
-			Simulators.datagroupBackup.find('button.add-data').click(function(e) {
+			Simulators.datagroupBackup.find('button.add-data').on('click', function(e) {
 				e.preventDefault();
 				Simulators.addData($($(this).attr('data-parent')));
 			});
-			Simulators.datagroupBackup.find('button.delete-datagroup').click(function(e) {
+			Simulators.datagroupBackup.find('button.delete-datagroup').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteDatagroup($($(this).attr('data-parent')));
 			});
@@ -758,7 +734,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		dataPanelContainer.find('.cancel-add-datagroup').click(function() {
+		dataPanelContainer.find('.cancel-add-datagroup').on('click', function() {
 			dataPanelContainer.remove();
 			Simulators.dataChoicesBackup = null;
 			$('.update-button').show();
@@ -768,7 +744,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		dataPanelContainer.find('.validate-edit-datagroup, .validate-add-datagroup').click(function() {
+		dataPanelContainer.find('.validate-edit-datagroup, .validate-add-datagroup').on('click', function() {
 			var dataContainerGroup = dataPanelContainer.parent();
 			var dataContainer = dataPanelContainer.find('.data-container');
 			if (! Simulators.checkDatagroup(dataPanelContainer)) {
@@ -814,15 +790,15 @@ THE SOFTWARE.
 					edition: datagroup.description.edition
 				}
 			}
-			newDataPanel.find('button.edit-datagroup').click(function(e) {
+			newDataPanel.find('button.edit-datagroup').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editDatagroup($($(this).attr('data-parent')));
 			});
-			newDataPanel.find('button.add-data').click(function(e) {
+			newDataPanel.find('button.add-data').on('click', function(e) {
 				e.preventDefault();
 				Simulators.addData($($(this).attr('data-parent')));
 			});
-			newDataPanel.find('button.delete-datagroup').click(function(e) {
+			newDataPanel.find('button.delete-datagroup').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteDatagroup($($(this).attr('data-parent')));
 			});
@@ -834,7 +810,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindChoices = function(choicesPanel) {
-		choicesPanel.find('button.add-choice').click(function(e) {
+		choicesPanel.find('button.add-choice').on('click', function(e) {
 			var choicesContainer = choicesPanel.find('> .card-body');
 			var id = choicesContainer.children('div.card').length + 1;
 			var dataId = choicesPanel.attr('id').match(/^data-(\d+)/)[1];
@@ -849,7 +825,7 @@ THE SOFTWARE.
 			choicesContainer.append(choicePanel);
 			Simulators.bindChoice(choicePanel);
 		});
-		choicesPanel.find('button.add-choice-source').click(function(e) {
+		choicesPanel.find('button.add-choice-source').on('click', function(e) {
 			var choicesContainer = choicesPanel.find('> .card-body');
 			var dataId = choicesPanel.attr('id').match(/^data-(\d+)/)[1];
 			var choiceSource = {
@@ -866,7 +842,7 @@ THE SOFTWARE.
 			choicesContainer.append(choicePanel);
 			Simulators.bindChoiceSource(choicePanel);
 		});
-		choicesPanel.find('button.delete-choice-source').click(function(e) {
+		choicesPanel.find('button.delete-choice-source').on('click', function(e) {
 			var choicesContainer = choicesPanel.find('> .card-body');
 			choicesContainer.find('.attributes-container').remove();
 			choicesPanel.find('button.add-choice').addClass('update-button').show();
@@ -892,7 +868,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindChoice = function(choicePanel) {
-		choicePanel.find('button.delete-choice').click(function(e) {
+		choicePanel.find('button.delete-choice').on('click', function(e) {
 			var choicesPanel = choicePanel.parents('.choices-panel');
 			choicePanel.remove();
 			if (choicesPanel.find('> .card-body').children().length == 0) {
@@ -931,7 +907,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindChoiceSource = function(choiceSourceContainer) {
-		choiceSourceContainer.find('select[data-attribute=id]').change(function(e) {
+		choiceSourceContainer.find('select[data-attribute=id]').on('change', function(e) {
 			var source = $(this).val();
 			var columns = $('#collapsesources').find('.source-container[data-id=' + source + ']').find('span[data-attribute=column]');
 			if (columns.length > 0) {
@@ -1035,29 +1011,7 @@ THE SOFTWARE.
 				idColumn.removeAttr('data-options');
 			}
 		});
-		choiceSourceContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-		choiceSourceContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		choiceSourceContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		choiceSourceContainer.find('> div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(choiceSourceContainer);
 	}
 
 	Simulators.drawChoiceSourceForDisplay = function(choiceSource) {
@@ -1098,7 +1052,7 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '" data-type="select" data-name="idColumn" data-placeholder="' + Translator.trans('Source column id value') + '" data-options="' + encodeURI(JSON.stringify( sourceFieldsList )) + '">' + Translator.trans('Source column id') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="data-' + choiceSource.dataId + '-choicesource-' + choiceSource.id + '" data-type="select" data-name="idColumn" data-placeholder="' + Translator.trans('Source column id value') + '" data-options="' + encodeURI(JSON.stringify( sourceFieldsList )) + '">' + Translator.trans('Source column id') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		optionalAttributesPanel.append(optionalAttributes);
 		if (choiceSource.idColumn) {
@@ -1191,13 +1145,13 @@ THE SOFTWARE.
 		$.each(Simulators.optionalAttributes, function (name, attr) {
 			var optionalAttribute;
 			if (name === 'source') {
-				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( sourcesList )) + '">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( sourcesList )) + '">' + attr.label + '</li>');
 			} else if (name === 'index') {
-				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
 			} else if (attr.type === 'expression') {
-				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
 			} else {
-				optionalAttribute = $('<li class="list-group-item" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
 			}
 			optionalAttributes.append(optionalAttribute);
 			if (data[name]) {

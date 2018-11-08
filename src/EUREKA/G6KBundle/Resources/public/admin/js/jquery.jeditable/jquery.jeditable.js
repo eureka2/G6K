@@ -412,7 +412,7 @@
                     if (settings.submit) {
                         /* If given html string use that. */
                         if (settings.submit.match(/>$/)) {
-                            var submit = $(settings.submit).click(function() {
+                            var submit = $(settings.submit).on('click', function() {
                                 if (submit.attr("type") != "submit") {
                                     form.submit();
                                 }
@@ -435,7 +435,7 @@
                         }
                         $(this).append(cancel);
 
-                        $(cancel).click(function(event) {
+                        $(cancel).on('click', function(event) {
                             if ($.isFunction($.editable.types[settings.type].reset)) {
                                 var reset = $.editable.types[settings.type].reset;                                                                
                             } else {
@@ -510,7 +510,7 @@
                     /* Submit on change if no submit button defined. */
                     if (!settings.submit) {
                         var form = this;
-                        $('select', this).change(function() {
+                        $('select', this).on('change', function() {
                             form.submit();
                         });
                     }

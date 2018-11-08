@@ -76,7 +76,7 @@ $(function(){
 			});
 		}
 		if ( $( "#view-create-form" ).length ) {
-			$("#view-create-form input[name='view-templates-file'], #view-create-form input[name='view-assets-file']").change(function (e) {
+			$("#view-create-form input[name='view-templates-file'], #view-create-form input[name='view-assets-file']").on('change', function (e) {
 				Views.hideErrors();
 				var files = e.target.files;
 				var $file = $(this);
@@ -120,7 +120,7 @@ $(function(){
 			});
 		}
 		if ( $( ".add-folder-or-file-form" ).length ) {
-			$("input[name='add-folder-or-file']").change(function(e) {
+			$("input[name='add-folder-or-file']").on('change', function(e) {
 				var container = $(this).parents('.add-node-container');
 				var nodeType = container.attr('data-node-type');
 				switch($(this).val()) {
@@ -137,7 +137,7 @@ $(function(){
 						label.append(input);
 						formgroup.append(label);
 						container.append(formgroup);
-						input.change(function (e) {
+						input.on('change', function (e) {
 							var file = e.target.files[0];
 							if (file.name != '') {
 								var nodeName = container.find("input[name='add-node-name']");
@@ -154,7 +154,7 @@ $(function(){
 				$(this).find("input[name='add-node-name']").val('');
 				$(this).find(".form-group.file").remove();
 			});
-			$(".modal-footer button.submit").click(function(e) {
+			$(".modal-footer button.submit").on('click', function(e) {
 				$(this).parents('form').submit();
 			});
 			$(".add-folder-or-file-form").submit(function(e) {
