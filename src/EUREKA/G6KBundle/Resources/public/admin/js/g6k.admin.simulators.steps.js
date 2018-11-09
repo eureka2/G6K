@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -756,13 +756,13 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + stepElementId + '" data-type="select" data-name="output" data-placeholder="' + Translator.trans('Select an output') + '" data-options="' + encodeURI(JSON.stringify( Simulators.outputTypes )) + '">' + Translator.trans('Output') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + stepElementId + '" data-type="select" data-name="output" data-placeholder="' + Translator.trans('Select an output') + '" data-options="' + encodeURI(JSON.stringify( Simulators.outputTypes )) + '">' + Translator.trans('Output') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (step.output) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-output', 'select', 'output', Translator.trans('Output'), step.output, false, Translator.trans('Select an output'), JSON.stringify( Simulators.outputTypes )));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + stepElementId + '" data-type="checkbox" data-name="dynamic" data-placeholder="' + Translator.trans('Interactive UI') + '">' + Translator.trans('Interactive UI') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + stepElementId + '" data-type="checkbox" data-name="dynamic" data-placeholder="' + Translator.trans('Interactive UI') + '">' + Translator.trans('Interactive UI') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (step.dynamic) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-dynamic', 'checkbox', 'dynamic', Translator.trans('Interactive UI'), step.dynamic, false, Translator.trans('Interactive UI')));
@@ -812,9 +812,6 @@ THE SOFTWARE.
 
 	Simulators.bindStep = function(stepPanelContainer) {
 		stepPanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
-		stepPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
 		stepPanelContainer.find('.cancel-edit-step').click(function() {
 			stepPanelContainer.find('.step-container').replaceWith(Simulators.stepBackup);
 			$('.update-button').show();
@@ -906,26 +903,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newStepPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		stepPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		stepPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		stepPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(stepPanelContainer);
 	}
 
 	Simulators.checkStep = function(stepContainer) {
@@ -1208,9 +1186,6 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindFootNotes = function(footnotesPanelContainer) {
-		footnotesPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
 		footnotesPanelContainer.find('.cancel-edit-footnotes').click(function() {
 			footnotesPanelContainer.find('.footnotes-container').replaceWith(Simulators.footnotesBackup);
 			$('.update-button').show();
@@ -1269,26 +1244,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newFootNotesPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		footnotesPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		footnotesPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		footnotesPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(footnotesPanelContainer);
 	}
 
 	Simulators.checkFootNotes = function(footnotesContainer) {
@@ -1675,14 +1631,14 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="text" data-name="uri" data-placeholder="' + Translator.trans('Button uri') + '">' + Translator.trans('URI / Step') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + actionElementId + '" data-type="text" data-name="uri" data-placeholder="' + Translator.trans('Button uri') + '">' + Translator.trans('URI / Step') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (action.uri) {
 			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-uri', 'text', 'uri', Translator.trans('URI / Step'), action.uri, false, Translator.trans('Button uri'));
 			requiredAttributes.append(attribute);
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + actionElementId + '" data-type="select" data-name="class" data-placeholder="' + Translator.trans('Button class') + '" data-options="' + encodeURI(JSON.stringify( { 'btn-primary': Translator.trans('Primary'), 'btn-default': Translator.trans('Secondary') } )) + '">' + Translator.trans('Class') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + actionElementId + '" data-type="select" data-name="class" data-placeholder="' + Translator.trans('Button class') + '" data-options="' + encodeURI(JSON.stringify( { 'btn-primary': Translator.trans('Primary'), 'btn-default': Translator.trans('Secondary') } )) + '">' + Translator.trans('Class') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (action.class) {
 			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-class', 'select', 'class', Translator.trans('Class'), action.class, false, Translator.trans('Button class'), JSON.stringify({ 'btn-primary': Translator.trans('Primary'), 'btn-default': Translator.trans('Secondary') } ) );
@@ -1722,9 +1678,6 @@ THE SOFTWARE.
 		actionPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
-		});
-		actionPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
 		});
 		actionPanelContainer.find('.cancel-edit-action').click(function() {
 			actionPanelContainer.find('.action-button-container').replaceWith(Simulators.actionButtonBackup);
@@ -1803,26 +1756,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newActionButtonPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		actionPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		actionPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		actionPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(actionPanelContainer);
 	}
 
 	Simulators.checkActionButton = function(actionContainer) {
@@ -2066,7 +2000,7 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + panelElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Panel label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + panelElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Panel label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (panel.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(panelElementId + '-label', 'text', 'label', Translator.trans('Label'), panel.label, false, Translator.trans('Panel label')));
@@ -2116,9 +2050,6 @@ THE SOFTWARE.
 		panelPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
-		});
-		panelPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
 		});
 		panelPanelContainer.find('.cancel-edit-panel').click(function() {
 			panelPanelContainer.find('.panel-container').replaceWith(Simulators.panelBackup);
@@ -2195,26 +2126,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newPanelPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		panelPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		panelPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		panelPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(panelPanelContainer);
 	}
 
 	Simulators.checkPanel = function(panelContainer) {
@@ -2485,19 +2397,19 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldsetElementId + '" data-type="select" data-name="disposition" data-placeholder="' + Translator.trans('FieldSet disposition') + '" data-options="' + encodeURI(JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid') } )) + '">' + Translator.trans('Disposition') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldsetElementId + '" data-type="select" data-name="disposition" data-placeholder="' + Translator.trans('FieldSet disposition') + '" data-options="' + encodeURI(JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid') } )) + '">' + Translator.trans('Disposition') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldset.disposition) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-disposition', 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, false, Translator.trans('FieldSet disposition'), JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid'), 'inline': Translator.trans('Inline') } )));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldsetElementId + '" data-type="select" data-name="display" data-placeholder="' + Translator.trans('FieldSet display') + '" data-options="' + encodeURI(JSON.stringify( {'inline': Translator.trans('Inline'), 'pop-in': Translator.trans('Pop-in') } )) + '">' + Translator.trans('Display') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldsetElementId + '" data-type="select" data-name="display" data-placeholder="' + Translator.trans('FieldSet display') + '" data-options="' + encodeURI(JSON.stringify( {'inline': Translator.trans('Inline'), 'pop-in': Translator.trans('Pop-in') } )) + '">' + Translator.trans('Display') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldset.display) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-display', 'select', 'display', Translator.trans('Display'), fieldset.display, false, Translator.trans('FieldSet display'), JSON.stringify( {'inline': Translator.trans('Inline'), 'pop-in': Translator.trans('Pop-in') } )));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldsetElementId + '" data-type="text" data-name="popinLink" data-placeholder="' + Translator.trans('Pop-in Link') + '">' + Translator.trans('Pop-in Link') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldsetElementId + '" data-type="text" data-name="popinLink" data-placeholder="' + Translator.trans('Pop-in Link') + '">' + Translator.trans('Pop-in Link') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldset.popinLink) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-display', 'text', 'popinLink', Translator.trans('Pop-in Link'), fieldset.popinLink, false, Translator.trans('Pop-in Link')));
@@ -2562,9 +2474,6 @@ THE SOFTWARE.
 		fieldsetPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
-		});
-		fieldsetPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
 		});
 		fieldsetPanelContainer.find('.cancel-edit-fieldset').click(function() {
 			fieldsetPanelContainer.find('.block-container.fieldset').replaceWith(Simulators.fieldsetBackup);
@@ -2668,26 +2577,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newFieldSetPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		fieldsetPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		fieldsetPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		fieldsetPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(fieldsetPanelContainer);
 	}
 
 	Simulators.checkFieldSet = function(fieldsetContainer) {
@@ -3368,19 +3258,19 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="colon" data-placeholder="' + Translator.trans('Show colon after field label ?') + '">' + Translator.trans('Show colon after field label ?') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="colon" data-placeholder="' + Translator.trans('Show colon after field label ?') + '">' + Translator.trans('Show colon after field label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldrow.colon) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-colon', 'checkbox', 'colon', Translator.trans('Show colon after field label ?'), fieldrow.colon, false, Translator.trans('Show colon after field label ?')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="help" data-placeholder="' + Translator.trans('Show data description as help ?') + '">' + Translator.trans('Show data description as help ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="help" data-placeholder="' + Translator.trans('Show data description as help ?') + '">' + Translator.trans('Show data description as help ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldrow.help) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-help', 'checkbox', 'help', Translator.trans('Show data description as help ?'), fieldrow.help, false, Translator.trans('Show data description as help ?')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="emphasize" data-placeholder="' + Translator.trans('Emphasize the text label ?') + '">' + Translator.trans('Emphasize the text label ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="emphasize" data-placeholder="' + Translator.trans('Emphasize the text label ?') + '">' + Translator.trans('Emphasize the text label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldrow.emphasize) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-emphasize', 'checkbox', 'help', Translator.trans('Emphasize the text label ?'), fieldrow.emphasize, false, Translator.trans('Emphasize the text label ?')));
@@ -3427,9 +3317,6 @@ THE SOFTWARE.
 		fieldrowPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
-		});
-		fieldrowPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
 		});
 		fieldrowPanelContainer.find('.cancel-edit-fieldrow').click(function() {
 			fieldrowPanelContainer.find('.fieldrow-container').replaceWith(Simulators.fieldrowBackup);
@@ -3514,26 +3401,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newFieldRowPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		fieldrowPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		fieldrowPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		fieldrowPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(fieldrowPanelContainer);
 	}
 
 	Simulators.checkFieldRow = function(fieldrowContainer) {
@@ -3822,73 +3690,73 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Field label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Field label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-label', 'text', 'label', Translator.trans('Label'), field.label, false, Translator.trans('Field label')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="text" data-name="prompt" data-placeholder="' + Translator.trans('Field prompt') + '">' + Translator.trans('Prompt') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="text" data-name="prompt" data-placeholder="' + Translator.trans('Field prompt') + '">' + Translator.trans('Prompt') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.prompt) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-prompt', 'text', 'prompt', Translator.trans('Prompt'), field.prompt, false, Translator.trans('Field prompt')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="newline" data-placeholder="">' + Translator.trans('Newline before field ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="newline" data-placeholder="">' + Translator.trans('Newline before field ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.newline == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-newline', 'checkbox', 'newline', Translator.trans('Newline before field ?'), field.newline, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="required" data-placeholder="">' + Translator.trans('Required') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="required" data-placeholder="">' + Translator.trans('Required') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.required == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-required', 'checkbox', 'required', Translator.trans('Required'), field.required, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="visibleRequired" data-placeholder="">' + Translator.trans('Required if visible') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="visibleRequired" data-placeholder="">' + Translator.trans('Required if visible') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.visibleRequired == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-visibleRequired', 'checkbox', 'visibleRequired', Translator.trans('Required if visible'), field.visibleRequired, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="colon" data-placeholder="">' + Translator.trans('Show colon after field label ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="colon" data-placeholder="">' + Translator.trans('Show colon after field label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.colon == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-colon', 'checkbox', 'colon', Translator.trans('Show colon after field label ?'), field.colon, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="underlabel" data-placeholder="">' + Translator.trans('Place the field under the label ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="underlabel" data-placeholder="">' + Translator.trans('Place the field under the label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.underlabel == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-underlabel', 'checkbox', 'underlabel', Translator.trans('Place the field under the label ?'), field.underlabel, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="help" data-placeholder="">' + Translator.trans('Show data description as help ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="help" data-placeholder="">' + Translator.trans('Show data description as help ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.help == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-help', 'checkbox', 'help', Translator.trans('Show data description as help ?'), field.help, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="emphasize" data-placeholder="">' + Translator.trans('Emphasize the text label ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="emphasize" data-placeholder="">' + Translator.trans('Emphasize the text label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.emphasize == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-emphasize', 'checkbox', 'emphasize', Translator.trans('Emphasize the text label ?'), field.emphasize, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="checkbox" data-name="expanded" data-placeholder="">' + Translator.trans('Show choices as radio buttons ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="checkbox" data-name="expanded" data-placeholder="">' + Translator.trans('Show choices as radio buttons ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.expanded == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-expanded', 'checkbox', 'expanded', Translator.trans('Show choices as radio buttons ?'), field.expanded, false, ''));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="text" data-name="explanation" data-placeholder="' + Translator.trans('Explanation') + '">' + Translator.trans('Explanation') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="text" data-name="explanation" data-placeholder="' + Translator.trans('Explanation') + '">' + Translator.trans('Explanation') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.explanation) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-explanation', 'text', 'explanation', Translator.trans('Explanation'), field.explanation, false, Translator.trans('Explanation')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + fieldElementId + '" data-type="select" data-name="widget" data-placeholder="' + Translator.trans('Select a widget') + '" data-options="' + encodeURI(JSON.stringify(widgets)) + '">' + Translator.trans('Widget') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="select" data-name="widget" data-placeholder="' + Translator.trans('Select a widget') + '" data-options="' + encodeURI(JSON.stringify(widgets)) + '">' + Translator.trans('Widget') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.widget) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-widget', 'select', 'widget', Translator.trans('Widget'), field.widget, false, Translator.trans('Select a widget'), JSON.stringify(widgets)));
@@ -3945,9 +3813,6 @@ THE SOFTWARE.
 		fieldPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
-		});
-		fieldPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
 		});
 		fieldPanelContainer.find('.cancel-edit-field').click(function() {
 			fieldPanelContainer.replaceWith(Simulators.fieldBackup);
@@ -4073,26 +3938,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newFieldPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		fieldPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		fieldPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		fieldPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(fieldPanelContainer);
 	}
 
 	Simulators.checkField = function(fieldContainer) {
@@ -4296,7 +4142,7 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + blockinfoElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('BlockInfo label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + blockinfoElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('BlockInfo label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (blockinfo.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(blockinfoElementId + '-label', 'text', 'label', Translator.trans('Label'), blockinfo.label, false, Translator.trans('BlockInfo label')));
@@ -4342,9 +4188,6 @@ THE SOFTWARE.
 		blockinfoPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
-		});
-		blockinfoPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
 		});
 		blockinfoPanelContainer.find('.cancel-edit-blockinfo').click(function() {
 			blockinfoPanelContainer.find('.block-container.blockinfo').replaceWith(Simulators.blockinfoBackup);
@@ -4424,26 +4267,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newBlockInfoPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		blockinfoPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		blockinfoPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		blockinfoPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(blockinfoPanelContainer);
 	}
 
 	Simulators.checkBlockInfo = function(blockinfoPanelContainer) {
@@ -4701,19 +4525,19 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + chapterElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Chapter label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + chapterElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Chapter label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (chapter.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(chapterElementId + '-label', 'text', 'label', Translator.trans('Label'), chapter.label, false, Translator.trans('Chapter label')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + chapterElementId + '" data-type="text" data-name="icon" data-placeholder="' + Translator.trans('Chapter icon') + '">' + Translator.trans('Icon') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + chapterElementId + '" data-type="text" data-name="icon" data-placeholder="' + Translator.trans('Chapter icon') + '">' + Translator.trans('Icon') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (chapter.icon) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(chapterElementId + '-icon', 'text', 'icon', Translator.trans('Icon'), chapter.icon, false, Translator.trans('Chapter icon')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" data-element="' + chapterElementId + '" data-type="checkbox" data-name="collapsible" data-placeholder="">' + Translator.trans('Allow collapse/expand ?') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + chapterElementId + '" data-type="checkbox" data-name="collapsible" data-placeholder="">' + Translator.trans('Allow collapse/expand ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (chapter.collapsible == "1") {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(chapterElementId + '-collapsible', 'checkbox', 'collapsible', Translator.trans('Allow collapse/expand ?'), chapter.collapsible, false, ''));
@@ -4759,9 +4583,6 @@ THE SOFTWARE.
 		chapterPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
-		});
-		chapterPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
 		});
 		chapterPanelContainer.find('.cancel-edit-chapter').click(function() {
 			chapterPanelContainer.find('.chapter-container').replaceWith(Simulators.chapterBackup);
@@ -4846,26 +4667,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newChapterPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		chapterPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		chapterPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		chapterPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(chapterPanelContainer);
 	}
 
 	Simulators.checkChapter = function(chapterPanelContainer) {
@@ -5127,7 +4929,7 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		var optionalAttribute = $('<li class="list-group-item" data-element="' + sectionElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Section label') + '">' + Translator.trans('Label') + '</li>');
+		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + sectionElementId + '" data-type="text" data-name="label" data-placeholder="' + Translator.trans('Section label') + '">' + Translator.trans('Label') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (section.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(sectionElementId + '-label', 'text', 'label', Translator.trans('Label'), section.label, false, Translator.trans('Section label')));
@@ -5172,9 +4974,6 @@ THE SOFTWARE.
 		sectionPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
-		});
-		sectionPanelContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
 		});
 		sectionPanelContainer.find('.cancel-edit-section').click(function() {
 			sectionPanelContainer.replaceWith(Simulators.sectionBackup);
@@ -5275,26 +5074,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newSectionPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		sectionPanelContainer.find('.optional-attributes li' ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
-		sectionPanelContainer.find('.optional-attributes li' ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		sectionPanelContainer.find('.attributes-container > div:first-child' ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes(sectionPanelContainer);
 	}
 
 	Simulators.checkSection = function(sectionPanelContainer) {

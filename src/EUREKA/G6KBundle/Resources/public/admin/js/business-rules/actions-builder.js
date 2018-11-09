@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,41 +24,44 @@ THE SOFTWARE.
 
 (function($) {
 	"use strict";
-	
+
 	$.fn.actionsBuilder = function(options) {
-	    if (options == "actions") {
+		if (options == "actions") {
 			var builder = $(this).eq(0).data("actionsBuilder");
 			return builder.collectData();
-	    } else {
+		} else {
 			return $(this).each(function() {
 				var builder = new ActionsBuilder(this, options);
 				$(this).data("actionsBuilder", builder);
 			});
-	    }
+		}
 	};
-	
+
 	function ActionsBuilder(element, options) {
-	    this.element = $(element);
-	    this.options = options || {};
-	    this.init();
+		this.element = $(element);
+		this.options = options || {};
+		this.init();
 	}
-	
+
 	ActionsBuilder.prototype = {
-	    init: function() {
+		init: function() {
 			this.actions = this.options.actions;
 			this.fields = this.options.fields;
 			this.expressionOptions = this.options.expressionOptions;
 			this.addButton = this.options.addButton || null;
 			this.data = this.options.data || [];
 			this.element.html(this.buildActions(this.data));
-	    },
-	
-	    buildActions: function(data) {
+		},
+
+		buildActions: function(data) {
 			var self = this;
 			var container = $("<div>", {"class": "actions"});
 			if (this.addButton == null) {
 				var buttons = $("<div>", {"class": "action-buttons"});
-				this.addButton = $("<button>", {"class": "add btn-primary fa fa-plus-square", "text": "  " + Translator.trans("Add Action")});
+				this.addButton = $("<button>", {
+					"class": "add btn-primary fa fa-plus-square",
+					"text": "  " + Translator.trans("Add Action")
+				});
 				buttons.append(this.addButton);
 				container.append(buttons);
 			}
@@ -67,6 +70,18 @@ THE SOFTWARE.
 				var actionDiv = self.buildAction({});
 				actionDiv.find('> .end-action-mark').remove();
 				container.append(actionDiv);
+				container[0].scrollIntoView({ behavior: 'smooth' });
+				actionDiv.find('.action-select')
+					.css('background', '#f7bb07')
+					.animate({
+						'opacity': '0.5'
+					}, 1000, function () {
+						actionDiv.find('.action-select').css({
+							'backgroundColor': '#fff',
+							'opacity': '1'
+						});
+					})
+					.focus();
 			});
 			for (var i = 0; i < data.length; i++) {
 				var actionObj = data[i];
@@ -100,8 +115,8 @@ THE SOFTWARE.
 				container.append(actionDiv);
 			}
 			return container;
-	    },
-	
+		},
+
 		buildSubfields: function(field, fieldaction) {
 			var fieldsDiv = $("<div>", {"class": "subfields"});
 			var fieldDiv = this.buildField(fieldaction);
@@ -124,15 +139,20 @@ THE SOFTWARE.
 			fieldsDiv.append(fieldDiv);
 			return fieldsDiv;
 		},
-		
-	    buildAction: function(actionObj) {
+
+		buildAction: function(actionObj) {
 			var actionDiv = $("<div>", {"class": "action"});
 			var data = {'': ''};
 			$.each(this.actions, function(i, action) {
 				data[action.name] = action.label;
 			});
 			var self = this;
-			var $editable = $("<span>", { "name": "action-select", "class": "editable-select action-select", "data-value": ""});
+			var $editable = $("<span>", {
+				"name": "action-select",
+				"class": "editable-select action-select",
+				"tabindex": "0",
+				"data-value": ""
+			});
 			if (actionObj.value) {
 				$editable.attr("data-value", actionObj.value);
 				$editable.text(data[actionObj.value]);
@@ -152,6 +172,7 @@ THE SOFTWARE.
 					actionDiv.attr("class", "action " + val);
 					$(this).attr("data-value", val);
 					settings.data.selected = val;
+					$(this).focus();
 					return settings.data[val];
 				},
 				{
@@ -167,7 +188,19 @@ THE SOFTWARE.
 					style: "inherit"
 				}
 			);
-			var removeLink = $("<button>", {"class": "remove glyphicon glyphicon-remove pull-left", "text": " ", "title": Translator.trans("Remove this Action")});
+			$editable.on("keydown", function(e) {
+				var key = e.keyCode || e.which || e.key;
+				if (key == 13) {
+					$editable.trigger('click');
+				} else if (key == 32) {
+					e.preventDefault();
+				}
+			});
+			var removeLink = $("<button>", {
+				"class": "remove glyphicon glyphicon-remove pull-left",
+				"text": " ",
+				"title": Translator.trans("Remove this Action")
+			});
 			removeLink.click(function(e) {
 				e.preventDefault();
 				actionDiv.remove();
@@ -181,16 +214,16 @@ THE SOFTWARE.
 			var mark = $("<div>", { 'class': 'end-action-mark' });
 			actionDiv.append(mark);
 			return actionDiv;
-	    },
-	
-	    buildField: function(field) {
+		},
+
+		buildField: function(field) {
 			var fieldDiv = $("<div>", {"class": "field"});
 			var subfields = $("<div>", {"class": "subfields"});
 			var self = this;
-	
+
 			var label = $("<label>", {"text": field.label});
 			fieldDiv.append(label);
-	
+
 			if (field.fieldType == "field") {
 				field.options = [];
 				$.each(self.options.fields, function(name, fieldOptions) {
@@ -227,7 +260,12 @@ THE SOFTWARE.
 					options[optionData.name] = optionData;
 				});
 				data['selected'] = '';
-				var $editable = $("<span>", { "name": field.name, "class": "editable-select", "data-value": ""});
+				var $editable = $("<span>", {
+					"name": field.name,
+					"class": "editable-select",
+					"tabindex": "0", 
+					"data-value": ""
+				});
 				$editable.editable(
 					function (val, settings) {
 						var option = $editable.find('select').find("> :selected");
@@ -242,6 +280,8 @@ THE SOFTWARE.
 						}
 						$(this).attr("data-value", val);
 						settings.data.selected = val;
+						$(this).focus();
+						$editable.trigger('change');
 						return settings.data[val];
 					},
 					{
@@ -259,16 +299,37 @@ THE SOFTWARE.
 						style: "inherit"
 					}
 				);
+				$editable.on("keydown", function(e) {
+					var key = e.keyCode || e.which || e.key;
+					if (key == 13) {
+						$editable.trigger('click');
+					} else if (key == 32) {
+						e.preventDefault();
+					}
+				});
 				$editable.change();
 				fieldDiv.append($editable);
 			} else if (field.fieldType == "text") {
-				var input = $("<input>", {"type": "text", "name": field.name, "class": "form-control"});
+				var input = $("<input>", {
+					"type": "text",
+					"name": field.name,
+					"class": "form-control"
+				});
 				fieldDiv.append(input);
 			} else if (field.fieldType == "number" || field.fieldType == "integer") {
-				var input = $("<input>", {"type": "number", "name": field.name, "class": "form-control"});
+				var input = $("<input>", {
+					"type": "number",
+					"name": field.name,
+					"class": "form-control"
+				});
 				fieldDiv.append(input);
 			} else if (field.fieldType == "textarea") {
-				var $editable = $("<span>", { "name": field.name, "class": "editable-textarea", "data-value": ""});
+				var $editable = $("<span>", {
+					"name": field.name,
+					"class": "editable-textarea",
+					"tabindex": "0",
+					"data-value": ""
+				});
 				$editable.editable(
 					function (val, settings) {
 						$(this).attr("data-value", val);
@@ -285,6 +346,14 @@ THE SOFTWARE.
 						style: "inherit"
 					}
 				);
+				$editable.on("keydown", function(e) {
+					var key = e.keyCode || e.which || e.key;
+					if (key == 13) {
+						$editable.trigger('click');
+					} else if (key == 32) {
+						e.preventDefault();
+					}
+				});
 				fieldDiv.append($editable);
 			} else if (field.fieldType == "expression") {
 				var expression = $('<span>', {"name": field.name, "class": "expression"}); 
@@ -306,13 +375,12 @@ THE SOFTWARE.
 			if (field.hint) {
 				fieldDiv.append($("<p>", {"class": "hint", "text": field.hint}));
 			}
-	
+
 			fieldDiv.append(subfields);
 			return fieldDiv;
-	    },
-	                        
-	
-	    collectData: function(fields) {
+		},
+
+		collectData: function(fields) {
 			var self = this;
 			fields = fields || this.element.find(".action");
 			var out = [];
@@ -340,16 +408,16 @@ THE SOFTWARE.
 				out.push(action);
 			});
 			return out;
-	    },
-	
-	    findField: function(fieldName) {
+		},
+
+		findField: function(fieldName) {
 			for (var i=0; i < this.actions.length; i++) {
 				var field = this.actions[i];
 				if (field.name == fieldName) {
 					return field;
 				}
 			}
-	    }
+		}
 	};
 
 })(jQuery);

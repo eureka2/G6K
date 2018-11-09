@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 
 if (typeof jQuery === 'undefined') {
-  throw new Error('jquery.expressionbuilder requires jQuery library.');
+	throw new Error('jquery.expressionbuilder requires jQuery library.');
 }
 
 var ExpressionBuilder_I18N = {
@@ -53,7 +53,7 @@ var ExpressionBuilder_I18N = {
 
 (function( jQuery ){
 	"use strict";
-  
+
 	var methods = {
 		init : function( options ) {
 
@@ -189,12 +189,12 @@ var ExpressionBuilder_I18N = {
 						holderCSS = {
 							"border": "none",
 							"border-bottom": "thin dotted",
-							position : "relative",
-							cursor: "pointer",
+							"position": "relative",
+							"cursor": "pointer",
 							"border-radius": 0,
-							margin: 0,
-							padding: 0,
-							background: "#fff",
+							"margin": 0,
+							"padding": 0,
+							"background": "#fff",
 							"min-width": "20px"
 						};
 					}
@@ -365,7 +365,7 @@ var ExpressionBuilder_I18N = {
 
 					input.autoGrowInput({ maxWidth: 500, minWidth: choices.width(), comfortZone: 1 });
 
-					input.on ('keyup', function(e){
+					input.on ('keydown', function(e){
 						if (e.keyCode == 13) { //enter
 							e.preventDefault();
 							e.stopImmediatePropagation();

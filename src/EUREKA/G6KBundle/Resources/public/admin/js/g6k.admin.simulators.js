@@ -1,7 +1,7 @@
 /**
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -291,7 +291,7 @@ THE SOFTWARE.
 			attribute    += '    <label for="' + id + '" class="col-sm-4 control-label">';
 		}
 		if (! required) {
-			attribute    += '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span tabindex="0" class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		if (type === 'checkbox') {
@@ -328,7 +328,7 @@ THE SOFTWARE.
 		var attribute = '<div class="form-group col-sm-12">';
 		attribute    += '    <label class="control-label">';
 		if (! required) {
-			attribute+= '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
+			attribute+= '    <span tabindex="0" class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    <span class="col-sm-4">' + label + '</span>';
 		attribute    += '    <div style="display: inline-block;" class="col-sm-8 input-group checkbox-slider--b-flat checkbox-slider-primary">';
@@ -356,7 +356,7 @@ THE SOFTWARE.
 		var attribute = '<div class="form-group col-sm-12">';
 		attribute    += '    <label for="' + id + '" class="col-sm-4 control-label">';
 		if (! required) {
-			attribute    += '    <span class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span tabindex="0" class="delete-attribute glyphicon glyphicon-remove text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		attribute    += '    <span id="' + id + '" data-attribute="' + name + '" class="attribute-expression" data-placeholder="' + placeholder + '"  data-value="' + value + '" />'; 
@@ -371,7 +371,7 @@ THE SOFTWARE.
 		var name = ids.pop();
 		var element = ids.join('-');
 		var li = attr.parents('div.attributes-container').children('div.optional-attributes').children('ul').children("li[data-element='" + element +"'][data-name='" + name +"']");
-		li.show();
+		li.show().focus();
 		attr.parent('label').parent('div.form-group').remove();
 	}
 
@@ -403,8 +403,21 @@ THE SOFTWARE.
 			});
 			attribute.find('span.delete-attribute').click(function() {
 				Simulators.removeAttribute($(this));
+			}).keydown(function(e) {
+				var key = e.keyCode || e.which || e.key;
+				if (key == 13) {
+					e.preventDefault();
+					Simulators.removeAttribute($(this));
+				} else if (key == 32) {
+					e.preventDefault();
+				}
 			});
 			ui.hide();
+			if (expression) {
+				attribute.find('.attribute-expression').focus();
+			} else {
+				attribute.find(':input').focus();
+			}
 		}
 	}
 	
@@ -572,9 +585,6 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		simulatorContainer.find('.delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
 		simulatorContainer.find('.validate-edit-simulator').click(function() {
 			if (Simulators.checkSimulatorOptions(simulatorContainer)) {
 				simulatorContainer.find('.alert').hide();
@@ -641,7 +651,22 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		simulatorContainer.find('.optional-attributes li' ).each(function(){
+		Simulators.bindOptionalAttributes(simulatorContainer);
+	}
+
+	Simulators.bindOptionalAttributes = function(container, onSelect) {
+		container.find('.delete-attribute').click(function() {
+			Simulators.removeAttribute($(this));
+		}).keydown(function(e) {
+			var key = e.keyCode || e.which || e.key;
+			if (key == 13) {
+				e.preventDefault();
+				Simulators.removeAttribute($(this));
+			} else if (key == 32) {
+				e.preventDefault();
+			}
+		});
+		container.find('.optional-attributes li' ).each(function(){
 			var self = $(this);
 			self.draggable({
 				cursor: "move",
@@ -651,14 +676,53 @@ THE SOFTWARE.
 				stop: function( event, ui ) { ui.helper.css('border', 'none') }
 			});
 		});
-		simulatorContainer.find('.optional-attributes li' ).dblclick(function() {
+		container.find('.optional-attributes li' ).dblclick(function() {
 			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
+			onSelect && onSelect($(this));
 		});
-		simulatorContainer.find('.attributes-container > div:first-child' ).droppable({
+		container.find('.optional-attributes li' ).keydown(function(e) {
+			var key = e.keyCode || e.which || e.key;
+			switch (key) {
+				case 13:
+					e.preventDefault();
+					e.stopPropagation();
+					Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
+					onSelect && onSelect($(this));
+					break;
+				case 35: // end
+					e.preventDefault();
+					$(this).parent().children(':visible').last().focus();
+					break;
+				case 36: // home
+					e.preventDefault();
+					$(this).parent().children(':visible').first().focus();
+					break;
+				case 38: // arrow up
+					e.preventDefault();
+					var prev = $(this).prev(); 
+					while (prev.length > 0 && !prev.is(':visible')) prev = prev.prev();
+					if (prev.length == 0) {
+						prev = $(this).parent().children(':visible').last();
+					}
+					prev.focus();
+					break;
+				case 40: // arrow down
+					e.preventDefault();
+					var next = $(this).next(); 
+					while (next.length > 0 && !next.is(':visible')) next = next.next();
+					if (next.length == 0) {
+						next = $(this).parent().children(':visible').first();
+					}
+					next.focus();
+					break;
+			}
+		});
+		container.find('.attributes-container > div:first-child' ).droppable({
 			accept: ".optional-attributes li",
 			drop: function( event, ui ) {
 				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
 				Simulators.dropAttribute(ui.draggable, target);
+				onSelect && onSelect(ui.draggable);
 			}
 		});
 	}
@@ -686,13 +750,13 @@ THE SOFTWARE.
 		var optionalAttributesPanel = $('<div class="optional-attributes panel panel-default"></div>');
 		optionalAttributesPanel.append('<div class="panel-heading"><h4 class="panel-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
-		optionalAttributes.append('<li class="list-group-item" data-element="simulator" data-type="text" data-name="referer" data-placeholder="' + Translator.trans('Main referer value') + '">' + Translator.trans('Main referer') + '</li>');
-		var dynamicAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="dynamic" data-placeholder="">' + Translator.trans('Interactive UI') + '</li>');
+		optionalAttributes.append('<li class="list-group-item" tabindex="0" data-element="simulator" data-type="text" data-name="referer" data-placeholder="' + Translator.trans('Main referer value') + '">' + Translator.trans('Main referer') + '</li>');
+		var dynamicAttribute = $('<li class="list-group-item" tabindex="0" data-element="simulator" data-type="checkbox" data-name="dynamic" data-placeholder="">' + Translator.trans('Interactive UI') + '</li>');
 		optionalAttributes.append(dynamicAttribute);
 		if (simulator.dynamic == 1) {
 			dynamicAttribute.hide();
 		}
-		var memoAttribute = $('<li class="list-group-item" data-element="simulator" data-type="checkbox" data-name="memo" data-placeholder="">' + Translator.trans('Data memo ?') + '</li>');
+		var memoAttribute = $('<li class="list-group-item" tabindex="0" data-element="simulator" data-type="checkbox" data-name="memo" data-placeholder="">' + Translator.trans('Data memo ?') + '</li>');
 		optionalAttributes.append(memoAttribute);
 		if (simulator.memo == 1) {
 			memoAttribute.hide();
@@ -800,36 +864,13 @@ $(document).ready(function() {
 		Simulators.bindSortableProfileDatas();
 		Simulators.bindSortableProfiles();
 		$('#page-simulators textarea').wysihtml(Admin.wysihtml5Options);
-		$('#page-simulators .delete-attribute').click(function() {
-			Simulators.removeAttribute($(this));
-		});
-
-		$( "#page-simulators .optional-attributes li" ).each(function(){
-			var self = $(this);
-			self.draggable({
-				cursor: "move",
-				revert: true,
-				containment: self.closest('.attributes-container'),
-				drag: function( event, ui ) { ui.helper.css('border', '1px solid lightblue'); },
-				stop: function( event, ui ) { ui.helper.css('border', 'none') }
-			});
-		});
 		$('#collapsedatas .choices-panel').each(function(k) {
 			if ($(this).find('.choice-source-container').length > 0) {
 				$(this).find('.choice-container').hide();
 			}
 		});
 
-		$( "#page-simulators .optional-attributes li" ).dblclick(function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
-		});
-		$( "#page-simulators .attributes-container > div:first-child" ).droppable({
-			accept: ".optional-attributes li",
-			drop: function( event, ui ) {
-				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
-			}
-		});
+		Simulators.bindOptionalAttributes($('#page-simulators'));
 		$('#page button.save-simulator').click(function(e) {
 			var simulator = {
 				name: $('#simulator-attributes-panel-holder').find("p[data-attribute='name']").attr('data-value'),
