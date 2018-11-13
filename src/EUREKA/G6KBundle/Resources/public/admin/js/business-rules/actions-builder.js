@@ -59,7 +59,7 @@ THE SOFTWARE.
 			if (this.addButton == null) {
 				var buttons = $("<div>", {"class": "action-buttons"});
 				this.addButton = $("<button>", {
-					"class": "add btn-primary fa fa-plus-square", 
+					"class": "add btn-primary fa fa-plus-square",
 					"text": "  " + Translator.trans("Add Action")
 				});
 				buttons.append(this.addButton);
@@ -147,10 +147,10 @@ THE SOFTWARE.
 				data[action.name] = action.label;
 			});
 			var self = this;
-			var $editable = $("<span>", { 
-				"name": "action-select", 
-				"class": "editable-select action-select", 
-				"tabindex": "0", 
+			var $editable = $("<span>", {
+				"name": "action-select",
+				"class": "editable-select action-select",
+				"tabindex": "0",
 				"data-value": ""
 			});
 			if (actionObj.value) {
@@ -318,8 +318,8 @@ THE SOFTWARE.
 				fieldDiv.append(input);
 			} else if (field.fieldType == "number" || field.fieldType == "integer") {
 				var input = $("<input>", {
-					"type": "number", 
-					"name": field.name, 
+					"type": "number",
+					"name": field.name,
 					"class": "form-control"
 				});
 				fieldDiv.append(input);

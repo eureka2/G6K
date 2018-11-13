@@ -341,7 +341,7 @@ THE SOFTWARE.
 				}
 			} while (optimized);
 		},
-		
+
 		getFieldName: function(id) {
 			var fieldName = null;
 			$.each(this.fields, function(name, field) {
@@ -352,7 +352,7 @@ THE SOFTWARE.
 			});
 			return fieldName;
 		},
-		
+
 		collectData: function() {
 			return this.collectDataFromNode(this.element.find("> .conditional"));
 		},

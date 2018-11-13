@@ -20100,7 +20100,7 @@ var wysihtmlParserRules = {
 			</div>`,
 
 		'hilite':
-			`<button style="padding: 4px 6px 4px 6px" type="button" class="btn btn-light" aria-haspopup="true" aria-expanded="false">
+			`<button style="padding: 4px 6px 4px 6px" type="button" class="btn btn-light" tabindex="-1" aria-haspopup="true" aria-expanded="false">
 				<span style="display: inline-table; margin: 0; padding: 0; height: 20px;">
 					<span style="display: table-row; margin: 0; padding: 0;">
 						<span class="fa fa-font" style="display: table-cell; color: white; background: black;"></span>
@@ -20124,7 +20124,7 @@ var wysihtmlParserRules = {
 			</div>`,
 
 		'color':
-			`<button style="padding: 4px 6px 4px 6px" type="button" class="btn btn-light" aria-haspopup="true" aria-expanded="false">
+			`<button style="padding: 4px 6px 4px 6px" type="button" class="btn btn-light" tabindex="-1" aria-haspopup="true" aria-expanded="false">
 				<span style="display: inline-table; margin: 0; padding: 0; height: 20px;">
 					<span style="display: table-row; margin: 0; padding: 0;">
 						<span class="fa fa-font" style="display: table-cell; color: black;"></span>
@@ -20148,7 +20148,7 @@ var wysihtmlParserRules = {
 			</div>`,
 
 		'blocks':
-			`<button title="Styles" id="wysiwyg-font-style" type="button" data-wysihtml-command-group="formatBlock" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+			`<button title="Styles" id="wysiwyg-font-style" type="button" tabindex="-1" data-wysihtml-command-group="formatBlock" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
 				<span class="fa fa-font"></span>
 				<span class="current-block">Normal text</span>
 			</button>
@@ -20163,7 +20163,7 @@ var wysihtmlParserRules = {
 			</ul>`,
 
 		'font-named-sizes':
-			`<button title="Font size" id="wysiwyg-font-size" type="button" data-wysihtml-command-group="fontSize" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+			`<button title="Font size" id="wysiwyg-font-size" type="button" tabindex="-1" data-wysihtml-command-group="fontSize" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
 				<span class="fa fa-text-height"></span>
 				<span class="current-font-named-size">Normal</span>
 			</button>
@@ -20183,7 +20183,7 @@ var wysihtmlParserRules = {
 		'font-names':
 			`<div class="btn-group">
 				<div>
-					<button title="Fonts" id="wysiwyg-font-name" type="button" data-wysihtml-command-group="fontNameStyle" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+					<button title="Fonts" id="wysiwyg-font-name" type="button" tabindex="-1" data-wysihtml-command-group="fontNameStyle" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
 						<span class="current-font-name">Font...</span>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="wysiwyg-font-name" style="display: none;">
@@ -20251,7 +20251,7 @@ var wysihtmlParserRules = {
 					<span>Title:</span>
 					<input class="form-control form-control-sm" data-wysihtml-dialog-field="title" value="">
 				</label>
-				<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>
+				<a class="btn btn-primary btn-sm" tabindex="0" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" tabindex="0" data-wysihtml-dialog-action="cancel">Cancel</a>
 				<div class="alert" role="alert" style="display: none;"></div>
 				</div>`,
 
@@ -20278,7 +20278,7 @@ var wysihtmlParserRules = {
 					<span>Alt:</span>
 					<input class="form-control form-control-sm" data-wysihtml-dialog-field="alt" value="">
 				</label>
-				<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>
+				<a class="btn btn-primary btn-sm" tabindex="0" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" tabindex="0" data-wysihtml-dialog-action="cancel">Cancel</a>
 				<div class="alert" role="alert" style="display: none;"></div>
 			</div>`,
 
@@ -20292,7 +20292,7 @@ var wysihtmlParserRules = {
 					<span>Cols:</span>
 					<input class="form-control form-control-sm" data-wysihtml-dialog-field="cols" value="2">
 				</label>
-				<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>
+				<a class="btn btn-primary btn-sm" tabindex="0" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" tabindex="0" data-wysihtml-dialog-action="cancel">Cancel</a>
 				<div class="alert" role="alert" style="display: none;"></div>
 			</div>`,
 
@@ -20698,7 +20698,8 @@ var wysihtmlParserRules = {
 		var style = /Style$/.test(command);
 		var colors = self.palette.getColors(), ncols, n = 0;
 		var li = $('<li>', {
-			'class': 'color-picker dropdown'
+			'class': 'color-picker dropdown',
+			'tabindex': '0'
 		});
 		if (self.palette.isBase()) {
 			li.attr('data-wysihtml-template', 'hilite');
@@ -20752,6 +20753,7 @@ var wysihtmlParserRules = {
 		var fonts = self.fonts.getFonts();
 		var li = $('<li>', {
 			'class': 'font-names',
+			'tabindex': '0',
 			'data-wysihtml-template': 'font-names',
 			'data-wysihtml-option': 'font-names'
 		});
@@ -20928,9 +20930,10 @@ var wysihtmlParserRules = {
 			var templateObj = $('<li>', {
 				'class': template,
 				'data-wysihtml-template': template,
-				'data-wysihtml-option': template,
-				'html': toolbar[template]
+				'data-wysihtml-option': template
 			});
+			templateObj.append("\n\t\t\t");
+			templateObj.append(toolbar[template]);
 			return templateObj;
 		} else {
 			return template;
@@ -20943,6 +20946,7 @@ var wysihtmlParserRules = {
 		if (self.options.toolbar[option]) {
 			var li = getTemplateObj(tools);
 			var commands = li.find('a[data-wysihtml-command], a[data-wysihtml-action]');
+			commands.attr('tabindex', '0');
 			var ncommands = commands.length;
 			if ($.isArray(self.options.toolbar[option])) {
 				commands.each(function(c) {
@@ -20965,6 +20969,7 @@ var wysihtmlParserRules = {
 		var option = getOption(tools);
 		if (self.options.toolbar[option]) {
 			var li = getTemplateObj(tools);
+			li.attr('tabindex', '0');
 			li.addClass('dropdown');
 			var values = li.find('a[data-wysihtml-command-value]');
 			var nvalues = values.length;
@@ -20972,12 +20977,13 @@ var wysihtmlParserRules = {
 				values.each(function(v) {
 					var value = $(this).attr('data-wysihtml-command-value');
 					if ($.inArray(value, self.options.toolbar[option]) < 0) {
-						$(this).remove();
+						$(this).parent().remove();
 						nvalues--;
 					}
 				});
 			}
 			if (nvalues > 0) {
+				container.append("\n\t\t\t\t");
 				container.append(li);
 				li.find('button[id]').each(function() {
 					var id = $(this).attr('id');
@@ -20993,6 +20999,7 @@ var wysihtmlParserRules = {
 		var option = getOption(tools);
 		if (self.options.toolbar[option]) {
 			var li = getTemplateObj(tools);
+			li.addClass('custom');
 			container.append(li);
 		}
 	}
@@ -21002,6 +21009,8 @@ var wysihtmlParserRules = {
 		var option = getOption(tools);
 		if (self.options.toolbar[option]) {
 			var li = getTemplateObj(tools);
+			li.attr('tabindex', '0');
+			li.addClass('custom');
 			li.addClass('dropdown');
 			container.append(li);
 		}
@@ -21154,7 +21163,7 @@ var wysihtmlParserRules = {
 	}
 
 	var bindTableToolsEvents = function(self) {
-		self.tableTools.find('[data-wysihtml-extra-command]').attr('href', 'javascript:;').click(function(e) {
+		self.tableTools.find('[data-wysihtml-extra-command]').attr('href', 'javascript:;').on('click', function(e) {
 			e.preventDefault();
 			var table = self.tableTools.data('table');
 			var command = $(this).attr('data-wysihtml-extra-command');
@@ -21296,12 +21305,12 @@ var wysihtmlParserRules = {
 	var bindToolbarEvents = function(self) {
 		// font size actions  
 		var selBookmark = null;
-		self.toolbar.find('.wysihtml-size-input').focus(function() {
+		self.toolbar.find('.wysihtml-size-input').on('focus', function() {
 			if (selBookmark == null) {
 				selBookmark = self.editor.composer.selection.getBookmark();
 			}
 		});
-		self.toolbar.find('.wysihtml-size-input').change(function(){
+		self.toolbar.find('.wysihtml-size-input').on('change', function(){
 			if (selBookmark) {
 				var input = this;
 				setTimeout(function() {
@@ -21315,15 +21324,83 @@ var wysihtmlParserRules = {
 				},0);
 			}
 		});
-		self.toolbar.find('.wysihtml-size-input').keydown(function(e) {
-			if (e.which == 13) {
+		self.toolbar.find('.wysihtml-size-input').on('keydown', function(e) {
+			var key = e.keyCode || e.which || e.key;
+			if (key == 13) {
 				e.preventDefault();
 				$(this).trigger('blur');
 			}
 		});
-		self.toolbar.find('span.local-image-name').keydown(function(e) {
-			var code = e.which || e.keyCode;
-			if (code == 13) {
+		self.toolbar.find('li[data-wysihtml-option]:not(.dropdown)').on('keydown', function(e) {
+			var key = e.keyCode || e.which || e.key;
+			switch(key) {
+				case 13:
+					if (! e.target.hasAttribute('data-wysihtml-command')) {
+						e.stopPropagation();
+						e.preventDefault();
+						$(this).find('button').trigger('click');
+					}
+					break;
+				case 32:
+					e.preventDefault();
+					break;
+			}
+		});
+		self.toolbar.find('li.dropdown[data-wysihtml-option], li.custom.dropdown').on('keydown', function(e) {
+			var key = e.keyCode || e.which || e.key;
+			switch(key) {
+				case 13:
+					if ($(e.target).hasClass('dropdown')) {
+						e.stopPropagation();
+						e.preventDefault();
+						$(this).find('button').trigger('click');
+					}
+					break;
+				case 32:
+					if ($(e.target).hasClass('dropdown')) {
+						e.preventDefault();
+						$(this).find('button').trigger('click');
+					}
+					break;
+				case 35: // end
+					e.preventDefault();
+					break;
+				case 36: // home
+					e.preventDefault();
+					break;
+				case 38: // arrow up
+					e.preventDefault();
+					break;
+				case 40: // arrow down
+					e.preventDefault();
+					break;
+			}
+		});
+		self.toolbar.find('a[data-wysihtml-command]').on('keydown', function(e) {
+			var key = e.keyCode || e.which || e.key;
+			switch(key) {
+				case 13:
+					$(this).trigger('click');
+					break;
+				case 32:
+					e.preventDefault();
+					break;
+			} 
+		});
+		self.toolbar.find('a[data-wysihtml-action]').on('keydown', function(e) {
+			var key = e.keyCode || e.which || e.key;
+			switch(key) {
+				case 13:
+					self.editor.toolbar.execAction(this.getAttribute('data-wysihtml-action'));
+					break;
+				case 32:
+					e.preventDefault();
+					break;
+			} 
+		});
+		self.toolbar.find('span.local-image-name').on('keydown', function(e) {
+			var key = e.keyCode || e.which || e.key;
+			if (key == 13) {
 				e.stopPropagation();
 				e.preventDefault();
 				$(this).trigger('click');
@@ -21334,6 +21411,11 @@ var wysihtmlParserRules = {
 				if ($(this).attr('aria-expanded') === 'false') {
 					$(this).parent().find('.dropdown-menu').show();
 					$(this).attr('aria-expanded', true);
+					var active = $(this).parent().find('a.wysihtml-command-active');
+					if (active.length == 0) {
+						active = $(this).parent().find('.dropdown-menu').children().first().find('a');
+					}
+					active.eq(0).focus();
 				} else {
 					$(this).parent().find('.dropdown-menu').hide();
 					$(this).attr('aria-expanded', false);
@@ -21346,10 +21428,45 @@ var wysihtmlParserRules = {
 				$(this).attr('aria-expanded', false);
 			});
 		});
-		self.toolbar.find('li.dropdown .dropdown-menu a').on('click', function(e) {
+		self.toolbar.find('li.dropdown:not(.color-picker) .dropdown-menu a').on('click', function(e) {
 			var dropdownMenu = $(this).parents('.dropdown-menu');
 			dropdownMenu.hide();
 			dropdownMenu.parents('li.dropdown').find('button').attr('aria-expanded', false);
+		}).on('keydown', function(e) {
+			var key = e.keyCode || e.which || e.key;
+			switch (key) {
+				case 13: // enter
+					$(this).trigger('click');
+					break;
+				case 35: // end
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).parent().parent().children().last().find('a').focus();
+					break;
+				case 36: // home
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).parent().parent().children().first().find('a').focus();
+					break;
+				case 38: // arrow up
+					e.preventDefault();
+					e.stopPropagation();
+					var prev = $(this).parent().prev();
+					if (prev.length == 0) {
+						prev = $(this).parent().parent().children().last();
+					}
+					prev.find('a').focus();
+					break;
+				case 40: // arrow down
+					e.preventDefault();
+					e.stopPropagation();
+					var next = $(this).parent().next();
+					if (next.length == 0) {
+						next = $(this).parent().parent().children().first();
+					}
+					next.find('a').focus();
+					break;
+			}
 		});
 		self.toolbar.find('li.color-picker .dropdown-menu tbody tr td a').on('click', function(e) {
 			var dropdownMenu = $(this).parents('.dropdown-menu');
@@ -21358,11 +21475,82 @@ var wysihtmlParserRules = {
 			} else {
 				dropdownMenu.parents('li.color-picker').find('button span.current-color').css('background', $(this).attr('data-wysihtml-command-value'));
 			}
+		}).on('keydown', function(e) {
+			var key = e.keyCode || e.which || e.key;
+			switch (key) {
+				case 13: // enter
+					$(this).trigger('click');
+					break;
+				case 35: // end
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).parent().parent().parent().children().last().children().last().find('a').focus();
+					break;
+				case 36: // home
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).parent().parent().parent().children().first().children().first().find('a').focus();
+					break;
+				case 37: // arrow left
+					e.preventDefault();
+					e.stopPropagation();
+					var prev = $(this).parent().prev();
+					if (prev.length == 0) {
+						prev = $(this).parent().parent().children().last();
+					}
+					prev.find('a').focus();
+					break;
+				case 38: // arrow up
+					e.preventDefault();
+					e.stopPropagation();
+					var td = $(this).parent();
+					var tr = td.parent();
+					var index = td.index();
+					if (tr.is(':last-child') && index == 1) {
+						index = parseInt(td.prev().attr('colspan'), 10);
+					}
+					var prev = tr.prev();
+					if (prev.length == 0) {
+						prev = tr.parent().children().last();
+						index = index >= parseInt(prev.children().first().attr('colspan'), 10) ? 1 : 0;
+					}
+					prev = prev.children().eq(index);
+					prev.find('a').focus();
+					break;
+				case 39: // arrow right
+					e.preventDefault();
+					e.stopPropagation();
+					var next = $(this).parent().next();
+					if (next.length == 0) {
+						next = $(this).parent().parent().children().first();
+					}
+					next.find('a').focus();
+					break;
+				case 40: // arrow down
+					e.preventDefault();
+					e.stopPropagation();
+					var td = $(this).parent();
+					var tr = td.parent();
+					var index = td.index();
+					var next = tr.next();
+					if (next.length == 0) {
+						next = tr.parent().children().first();
+						if (index == 1) {
+							index = parseInt(td.prev().attr('colspan'), 10);
+						}
+					}
+					if (next.is(':last-child')) {
+						index = index >= parseInt(next.children().first().attr('colspan'), 10) ? 1 : 0;
+					}
+					next = next.children().eq(index);
+					next.find('a').focus();
+					break;
+			}
 		});
 	}
 
 	var bindFileInput = function(self, input) {
-		input.change(function(e) {
+		input.on('change', function(e) {
 			var dialog = $(this).parent().parent();
 			var src = dialog.find('input[data-wysihtml-dialog-field=src]');
 			var local = dialog.find('input[data-wysihtml-dialog-field=data-local]');
@@ -21382,7 +21570,7 @@ var wysihtmlParserRules = {
 	}
 
 	var bindDialogsEvents = function(self) {
-		self.toolbar.find('div[data-wysihtml-dialog=insertImage] input[type=checkbox]').change(function(e) {
+		self.toolbar.find('div[data-wysihtml-dialog=insertImage] input[type=checkbox]').on('change', function(e) {
 			var dialog = $(this).parent().parent();
 			var src = dialog.find('input[data-wysihtml-dialog-field=src]');
 			var alt = dialog.find('input[data-wysihtml-dialog-field=alt]');
@@ -21417,7 +21605,7 @@ var wysihtmlParserRules = {
 				src.show();
 			}
 		});
-		self.toolbar.find('div[data-wysihtml-dialog=insertImage] a[data-wysihtml-dialog-action=save]').click(function(e) {
+		self.toolbar.find('div[data-wysihtml-dialog=insertImage] a[data-wysihtml-dialog-action=save]').on('click', function(e) {
 			var dialog = $(this).parent();
 			var src = dialog.find('input[data-wysihtml-dialog-field=src]');
 			if (checkImgSrc(src.val())) {
@@ -21441,13 +21629,20 @@ var wysihtmlParserRules = {
 				e.stopPropagation();
 			}
 		});
-		self.toolbar.find('div[data-wysihtml-dialog=insertImage] a[data-wysihtml-dialog-action=cancel]').click(function(e) {
-			var dialog = $(this).parent();
-			dialog.find('input[type=file]').remove();
-			dialog.find('span.local-image-name').hide();
-			dialog.find('div.alert').removeClass('alert-danger').text("").hide();
+		self.toolbar.find('div[data-wysihtml-dialog=insertImage] a[data-wysihtml-dialog-action=cancel]').on('click keydown', function(e) {
+			if (e.type == 'click' || (e.keyCode || e.which || e.key) == 13) {
+				e.preventDefault();
+				e.stopPropagation();
+				var dialog = $(this).parent();
+				dialog.find('input[type=file]').remove();
+				dialog.find('span.local-image-name').hide();
+				dialog.find('div.alert').removeClass('alert-danger').text("").hide();
+				dialog.hide();
+			} else if (e.type == 'keydown' && (e.keyCode || e.which || e.key) == 32) {
+				e.preventDefault();
+			}
 		});
-		self.toolbar.find('div[data-wysihtml-dialog=createLink] a[data-wysihtml-dialog-action=save]').click(function(e) {
+		self.toolbar.find('div[data-wysihtml-dialog=createLink] a[data-wysihtml-dialog-action=save]').on('click', function(e) {
 			var dialog = $(this).parent();
 			var url = dialog.find('input[data-wysihtml-dialog-field=href]').val();
 			if (checkUrl(url)) {
@@ -21474,10 +21669,29 @@ var wysihtmlParserRules = {
 				e.stopPropagation();
 			}
 		});
-		self.toolbar.find('div[data-wysihtml-dialog=tableProperties] a[data-wysihtml-dialog-action=save]').click(function(e) {
+		self.toolbar.find('div[data-wysihtml-dialog=createLink] a[data-wysihtml-dialog-action=cancel], div[data-wysihtml-dialog=createTable] a[data-wysihtml-dialog-action=cancel] ').on('click keydown', function(e) {
+			if (e.type == 'click') {
+				e.preventDefault();
+				e.stopPropagation();
+				$(this).parent().hide();
+			} else {
+				var key = e.keyCode || e.which || e.key;
+				switch(key) {
+					case 13:
+						e.preventDefault();
+						e.stopPropagation();
+						$(this).parent().hide();
+						break;
+					case 32:
+						e.preventDefault();
+						break;
+				} 
+			}
+		});
+		self.toolbar.find('div[data-wysihtml-dialog=tableProperties] a[data-wysihtml-dialog-action=save]').on('click', function(e) {
 			$(this).parent().hide();
 		});
-		self.toolbar.find('div[data-wysihtml-dialog=tableProperties] a[data-wysihtml-dialog-action=cancel]').click(function(e) {
+		self.toolbar.find('div[data-wysihtml-dialog=tableProperties] a[data-wysihtml-dialog-action=cancel]').on('click', function(e) {
 			$(this).parent().hide();
 		});
 	}
@@ -21690,7 +21904,7 @@ var wysihtmlParserRules = {
 		});
 		$.each(self.options.customDialogs, function(key, dialog) {
 			dialog  = '<div class="row" data-wysihtml-dialog="' + key + '" style="display: none;">' + dialog;
-			dialog += '<a class="btn btn-primary btn-sm" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" data-wysihtml-dialog-action="cancel">Cancel</a>';
+			dialog += '<a class="btn btn-primary btn-sm" tabindex="0" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" tabindex="0" data-wysihtml-dialog-action="cancel">Cancel</a>';
 			dialog += '<div class="alert" role="alert" style="display: none;"></div>';
 			wysitoolbar.append(dialog);
 		});

@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 
 if (typeof jQuery === 'undefined') {
-  throw new Error('jquery.expressionbuilder requires jQuery library.');
+	throw new Error('jquery.expressionbuilder requires jQuery library.');
 }
 
 var ExpressionBuilder_I18N = {
@@ -241,7 +241,7 @@ var ExpressionBuilder_I18N = {
 						holderCSS = {
 							"border": "none",
 							"border-bottom": "thin dotted",
-							"position" : "relative",
+							"position": "relative",
 							"cursor": "pointer",
 							"border-radius": 0,
 							"margin": 0,
