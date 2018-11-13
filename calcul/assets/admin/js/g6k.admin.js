@@ -38,17 +38,18 @@ THE SOFTWARE.
 			var options = context.options;
 			var datas = [];
 			$.each(Simulators.dataset, function(name, d) {
-				datas.push('<li><a class="dropdown-item" data-wysihtml-command="insertDataReference" data-wysihtml-command-value="' + d.id + '|' + d.label + '">' + d.label + '</a></li>');
+				datas.push("\n\t\t\t\t" + '<li><a class="dropdown-item" data-wysihtml-command="insertDataReference" data-wysihtml-command-value="' + d.id + '|' + d.label + '">' + d.label + '</a></li>');
 			});
-			return 	'<li class="dropdown">' +
-						'<button title="Insert a data" type="button" data-wysihtml-command-group="insertDataReference" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">' + 
-							'<span class="current-font">Datas </span>' +
-							'<b class="caret"></b>' + 
-						'</button>' +
-						'<ul class="wysihtml-custom-data-list dropdown-menu" style="display: none;">' + 
-						datas.join("")  +
-						'</ul>' + 
-					'</li>';
+			return `
+		<li class="custom dropdown" tabindex="0">
+			<button title="Insert a data" type="button" tabindex="-1" data-wysihtml-command-group="insertDataReference" class="btn btn-light dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+				<span class="current-font">Datas </span>
+				<b class="caret"></b>
+			</button>
+			<ul class="wysihtml-custom-data-list dropdown-menu" style="display: none;">` + 
+			datas.join("") + `
+			</ul> 
+		</li>`;
 		},
 		insertFootnoteReference: function(context) {
 			var locale = context.locale;
