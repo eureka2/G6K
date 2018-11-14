@@ -165,7 +165,7 @@ THE SOFTWARE.
 						var selecteds = editor.toolbar.container.querySelectorAll('ul.wysihtml-custom-data-list a.wysihtml-command-active');
 						for (var i = 0; i < selecteds.length; i++) {
 							if (selecteds[i].getAttribute('data-wysihtml-command-value') !== value) {
-								selecteds[i].className = '';
+								selecteds[i].classList.remove('wysihtml-command-active');
 							}
 						}
 					}, 0);
