@@ -27,9 +27,6 @@ THE SOFTWARE.
 namespace App\G6K\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Finder\Finder;
 
 use App\G6K\Manager\ControllersHelper;
 
@@ -53,7 +50,7 @@ class DocumentationController extends BaseAdminController {
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
 	 * @param   string $document (default: null) The document name
-	 * @return  \Symfony\Component\HttpFoundation\Response; The rendered document
+	 * @return  \Symfony\Component\HttpFoundation\Response The rendered document
 	 *
 	 */
 	public function indexAction(Request $request, $document = null)
@@ -68,7 +65,7 @@ class DocumentationController extends BaseAdminController {
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
 	 * @param   string $document (default: null) The document name
-	 * @return  \Symfony\Component\HttpFoundation\Response; The rendered document
+	 * @return  \Symfony\Component\HttpFoundation\Response The rendered document
 	 *
 	 */
 	protected function runIndex(Request $request, $document) {

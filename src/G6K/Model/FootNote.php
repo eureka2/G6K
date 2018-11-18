@@ -61,7 +61,7 @@ class FootNote {
 	private $displayable = true;
 
 	/**
-	 * @var string     $text The text of this footnote
+	 * @var \App\G6K\Model\RichText|null     $text The text of this footnote
 	 *
 	 * @access  private
 	 *
@@ -154,7 +154,7 @@ class FootNote {
 	 * Returns the text of this footnote
 	 *
 	 * @access  public
-	 * @return  string the The text of this footnote
+	 * @return  \App\G6K\Model\RichText|null the The text of this footnote
 	 *
 	 */
 	public function getText() {
@@ -165,7 +165,7 @@ class FootNote {
 	 * Sets the text of this footnote
 	 *
 	 * @access  public
-	 * @param   string $text The text of this footnote
+	 * @param   \App\G6K\Model\RichText $text The text of this footnote
 	 * @return  void
 	 *
 	 */

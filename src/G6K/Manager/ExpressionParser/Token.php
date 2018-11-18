@@ -90,7 +90,7 @@ class Token {
 	public $type;
 
 	/**
-	 * @var string      $value String representation of the value of this token
+	 * @var mixed      $value String representation of the value of this token
 	 *
 	 * @access  public
 	 *
@@ -98,7 +98,7 @@ class Token {
 	public $value;
 
 	/**
-	 * @var string      $arity Number of parsed arguments if this token is a funcion
+	 * @var int      $arity Number of parsed arguments if this token is a funcion
 	 *
 	 * @access  public
 	 *
@@ -110,7 +110,7 @@ class Token {
 	 *
 	 * @access  public
 	 * @param   int $type The type of this token
-	 * @param   string $value The value of this token
+	 * @param   mixed $value The value of this token
 	 * @return  void
 	 *
 	 */

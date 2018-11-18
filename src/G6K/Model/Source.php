@@ -90,7 +90,7 @@ class Source {
 	 * @access  private
 	 *
 	 */
-	private $parsed = ""; 
+	private $parsed = array(); 
 
 	/**
 	 * @var string     $returnType  The type (format) or the result returned by the request: json, xml, html, csv, assocArray or singleValue
@@ -136,7 +136,7 @@ class Source {
 	 * Constructor of class Source
 	 *
 	 * @access  public
-	 * @param   \App\G6K\Model\Simulator $simulator The Simulator object that uses this source
+	 * @param   \App\G6K\Model\Simulator|null $simulator The Simulator object that uses this source
 	 * @param   int        $id The ID of this source
 	 * @param   string     $datasource The name of the data source accessed by this source
 	 * @param   string     $returnType  The type (format) or the result returned by the request

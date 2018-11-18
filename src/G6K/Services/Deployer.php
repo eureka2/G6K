@@ -29,13 +29,12 @@ namespace App\G6K\Services;
 use App\G6K\Model\Simulator;
 
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Filesystem\LockHandler;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Store\SemaphoreStore;
 
 /**
  * This class implements a service that performs the deployment of files from a new simulator or modified simulator to all front-end servers described in the entry 'deployment of parameters.yml.
@@ -62,12 +61,12 @@ class Deployer {
 	private $translator;
 
 	/**
-	 * @var \Symfony\Component\Filesystem\LockHandler	  $lockHandler  A lock handler to prevent multiple deployments at a time.
+	 * @var \Symfony\Component\Lock\Lock	$lock  A lock to prevent multiple deployments at a time.
 	 *
 	 * @access  private
 	 *
 	 */
-	private $lockHandler;
+	private $lock;
 
 	/**
 	 * @var array  $deployed The already deployed datasources
@@ -141,7 +140,7 @@ class Deployer {
 	 * Transforms a Windows path in a Unix path for a 'rsync' command
 	 *
 	 * @access  private
-	 * @param   string $localRootDir The transformed path
+	 * @param   string $rootDir The transformed path
 	 * @return  string
 	 *
 	 */
@@ -254,7 +253,7 @@ class Deployer {
 		$localxpath = new \DOMXPath($localDom);
 		$deployedDatasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd"></DataSources>', LIBXML_NOWARNING);
 		$deployedDom = dom_import_simplexml($deployedDatasources)->ownerDocument;
-		$deployedDatasources = $deployedDom->getElementsByTagName("DataSources")->item(0);
+		$deployedDatasources = $this->getDOMElementItem($deployedDom->getElementsByTagName("DataSources"), 0);
 		$databases = array();
 		$dsnum = 0;
 		foreach($this->deployed as $datasource => $deployment) {
@@ -266,7 +265,7 @@ class Deployer {
 				}
 			}
 			if ($found) {
-				$localDatasource = $localxpath->query("//DataSource[@name='".$datasource."']")->item(0);
+				$localDatasource = $this->getDOMElementItem($localxpath->query("//DataSource[@name='".$datasource."']"), 0);
 				$deployedDatasource = $deployedDom->importNode($localDatasource, true);
 				$deployedDatasource->setAttribute('id', ++$dsnum);
 				if ($localDatasource->hasAttribute('database')) {
@@ -278,7 +277,7 @@ class Deployer {
 		}
 		$deployedDatabases = $deployedDatasources->appendChild($deployedDom->createElement('Databases'));
 		foreach ($databases as $id => $database) {
-			$localDatabase = $localxpath->query("//Databases/Database[@id='".$database."']")->item(0);
+			$localDatabase = $this->getDOMElementItem($localxpath->query("//Databases/Database[@id='".$database."']"), 0);
 			$deployedDatabase = $deployedDom->importNode($localDatabase, true);
 			$deployedDatabase->setAttribute('id', $id + 1);
 			$deployedDatabases->appendChild($deployedDatabase);
@@ -293,6 +292,23 @@ class Deployer {
 			$fs->mkdir($databasesDir."/deployment/".$server);
 		}
 		$fs->dumpFile($databasesDir."/deployment/".$server."/DataSources.xml", $formatted);
+	}
+
+	/**
+	 * Retuns the DOMElement at position $index of the DOMNodeList
+	 *
+	 * @access  private
+	 * @param   \DOMNodeList $nodes The DOMNodeList
+	 * @param   int $index The position in the DOMNodeList
+	 * @return  \DOMElement|null The DOMElement.
+	 *
+	 */
+	private function getDOMElementItem($nodes, $index) {
+		$node = $nodes->item($index);
+		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
+			return $node;
+		}
+		return null;
 	}
 
 	/**
@@ -353,8 +369,10 @@ class Deployer {
 	public function deploy(Simulator $simu){
 		$this->output = array();
 		$this->importedCSS = array();
-		$this->lockHandler = new LockHandler('g6k.deployment.lock');
-		if (!$this->lockHandler->lock()) {
+		$store = new SemaphoreStore();
+		$factory = new Factory($store);
+		$this->lock = $factory->createLock('g6k.deployment.lock');
+		if (!$this->lock->acquire()) {
 			$this->output[] = $this->translator->trans('A deployment is in progress');
 			$this->output[] = '&nbsp;';
 			$this->output[] = $this->translator->trans('Please, try later ...');
@@ -417,7 +435,7 @@ class Deployer {
 			}
 		}
 		$this->saveDeployed($databasesDir . "/deployment/deployed-datasources.txt");
-		$this->lockHandler->release();
+		$this->lock->release();
 		return $this->output;
 	}
 }

@@ -30,7 +30,6 @@ use Composer\Script\Event;
 use Symfony\Component\Dotenv\Dotenv;
 
 use App\G6K\Model\Database;
-use App\G6K\Manager\Json\JSONToSQLConverter;
 use App\G6K\Manager\DatasourcesHelper;
 
 /**
@@ -43,6 +42,16 @@ use App\G6K\Manager\DatasourcesHelper;
 class ScriptHandler
 {
 
+
+	/**
+	 * Builds environment variables
+	 *
+	 * @access  public
+	 * @static 
+	 * @param   \Composer\Script\Event $event The script event class
+	 * @return  void
+	 *
+	 */
 	public static function buildDotenv(Event $event) {
 		$extras = $event->getComposer()->getPackage()->getExtra();
 		$installationManager = $event->getComposer()->getInstallationManager();
@@ -118,11 +127,9 @@ class ScriptHandler
 				$default = str_replace('%PUBLIC_DIR%', getenv('PUBLIC_DIR'), $default);
 				switch ($variable) {
 					case 'APP_ENV':
-						// $value = $event->getIO()->select(sprintf('<question>%s</question> (<comment>%s</comment>): ', $variable, $default), array('prod' => 'production', 'dev' => 'development'), $default);
 						$value = $event->getIO()->ask(sprintf('<question>%s</question> (<comment>%s</comment>): ', $variable, $default), $default);
 						break;
 					case 'DB_ENGINE':
-						// $value = $event->getIO()->select(sprintf('<question>%s</question> (<comment>%s</comment>): ', $variable, $default), array('sqlite' => 'Sqlite engine', 'mysql' => 'MySQL or MariaDB', 'pgsql' => 'PostgreSQL'), $default);
 						$value = $event->getIO()->ask(sprintf('<question>%s</question> (<comment>%s</comment>): ', $variable, $default), $default);
 						break;
 					default:
@@ -148,7 +155,6 @@ class ScriptHandler
 	 */
 	public static function installUsers(Event $event) {
 		$event->getIO()->write("Installing the users of the administration interface");
-		$extras = $event->getComposer()->getPackage()->getExtra();
 		$installationManager = $event->getComposer()->getInstallationManager();
 		$package = $event->getComposer()->getPackage();
 		$installPath = $installationManager->getInstallPath($package);
@@ -270,7 +276,6 @@ class ScriptHandler
 			return;
 		}
 		$event->getIO()->write("Installing the demo simulator");
-		$extras = $event->getComposer()->getPackage()->getExtra();
 		$installationManager = $event->getComposer()->getInstallationManager();
 		$package = $event->getComposer()->getPackage();
 		$installPath = $installationManager->getInstallPath($package);
@@ -331,7 +336,7 @@ class ScriptHandler
 			$parameters['locale'] = self::getParameterValue($symfonyDir, 'G6K_LOCALE');
 			return $parameters;
 			 
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$event->getIO()->write(sprintf("Unable to get database parameters: %s", $e->getMessage()));
 			return false;
 		}

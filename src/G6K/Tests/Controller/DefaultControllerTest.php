@@ -30,7 +30,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Field\ChoiceFormField;
 use Symfony\Component\DomCrawler\Field\InputFormField;
 use Symfony\Component\DomCrawler\Field\TextareaFormField;
-use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Finder\Finder;
@@ -282,9 +281,7 @@ EOS;
 		$file .= ".js";
         // @codeCoverageIgnoreEnd
 		file_put_contents($file, $testscript);
-		$processbuilder = new ProcessBuilder(array(self::$jsEngine));
-		$processbuilder->add($file);
-		$process = $processbuilder->getProcess();
+		$process = new Process(array(self::$jsEngine, $file));
 		$process->run(function ($type, $buffer) {
 			$lines = explode("\n", $buffer);
 			foreach ($lines as $line) {

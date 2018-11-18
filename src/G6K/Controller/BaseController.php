@@ -29,18 +29,15 @@ namespace App\G6K\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use App\G6K\Model\Simulator;
-use App\G6K\Model\Source;
-use App\G6K\Model\ChoiceGroup;
-use App\G6K\Model\Choice;
 use App\G6K\Model\DataGroup;
 use App\G6K\Model\Data;
 use App\G6K\Model\FieldSet;
 use App\G6K\Model\FieldRow;
 use App\G6K\Model\Field;
 use App\G6K\Model\BlockInfo;
-use App\G6K\Model\Chapter;
-use App\G6K\Model\Section;
 use App\G6K\Model\Step;
+
+use App\G6K\Manager\ControllersHelper;
 
 use App\G6K\Manager\ExpressionParser\Parser;
 use App\G6K\Manager\DOMClient as Client;
@@ -48,8 +45,6 @@ use App\G6K\Manager\ResultFilter;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  *
@@ -59,6 +54,8 @@ use Symfony\Component\HttpFoundation\Cookie;
  *
  */
 class BaseController extends Controller {
+
+	use ControllersHelper;
 
 	/**
 	 * @var \App\G6K\Model\Simulator $simu Simulator instance used by this controller
@@ -292,7 +289,7 @@ class BaseController extends Controller {
 		}
 		$dynamic = $this->simu->isDynamic() && 
 					($no_js == 0) &&
-					($istep < 0 || $this->script = 1);
+					($istep < 0 || $this->script == 1);
 		$this->simu->setDynamic($dynamic);
 		$this->variables['script'] = $this->script;
 		$this->variables['dynamic'] = $dynamic;
@@ -697,7 +694,7 @@ class BaseController extends Controller {
 	 * @return  void
 	 *
 	 */
-	protected function processField($field, $step, &$displayable) 
+	protected function processField(Field $field, Step $step, &$displayable) 
 	{
 		$id = $field->getData();
 		$data = $this->simu->getDataById($id);
@@ -985,7 +982,7 @@ class BaseController extends Controller {
 	 * Executes all the actions of a business rule of the step
 	 *
 	 * @access  protected
-	 * @param   \App\G6K\Model\Action $actions Actions of the business rule
+	 * @param   array $actions Actions of the business rule
 	 * @param   int $istep The step number
 	 * @return  void
 	 *
@@ -1019,8 +1016,8 @@ class BaseController extends Controller {
 							}
 							break;
 						case 'dataset':
-							$$this->simu->setError(true);
-							$$this->simu->addErrorMessage($this->replaceVariables($action->getValue()));
+							$this->simu->setError(true);
+							$this->simu->addErrorMessage($this->replaceVariables($action->getValue()));
 							$this->error = true;
 							break;
 					}
@@ -1048,8 +1045,8 @@ class BaseController extends Controller {
 							}
 							break;
 						case 'dataset':
-							$$this->simu->setWarning(true);
-							$$this->simu->addWarningMessage($this->replaceVariables($action->getValue()));
+							$this->simu->setWarning(true);
+							$this->simu->addWarningMessage($this->replaceVariables($action->getValue()));
 							break;
 					}
 					break;

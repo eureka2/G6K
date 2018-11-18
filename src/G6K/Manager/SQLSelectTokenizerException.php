@@ -40,7 +40,7 @@ class SQLSelectTokenizerException extends \Exception {
 	 * @access public
 	 * @param string $message the Exception message to throw. 
 	 * @param int $code the Exception code
-	 * @param Exception $previous the previous exception used for the exception chaining.
+	 * @param \Exception|null $previous the previous exception used for the exception chaining.
 	 */
 	public function __construct($message, $code = 0, \Exception $previous = null) {
 		parent::__construct($message, $code, $previous);

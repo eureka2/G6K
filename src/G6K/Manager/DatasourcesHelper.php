@@ -80,7 +80,7 @@ class DatasourcesHelper {
 		$tableid = 1;
 		foreach ($form['datasource-tables'] as $tbl) {
 			$table = $dom->createElement("Table");
-			$table->setAttribute('id', $tableid++);
+			$table->setAttribute('id', (string)$tableid++);
 			$table->setAttribute('name', $tbl['name']);
 			$table->setAttribute('label', $tbl['label']);
 			$descr = $dom->createElement("Description");
@@ -89,7 +89,7 @@ class DatasourcesHelper {
 			$columnid = 1;
 			foreach ($tbl['columns'] as $col) {
 				$column = $dom->createElement("Column");
-				$column->setAttribute('id', $columnid++);
+				$column->setAttribute('id', (string)$columnid++);
 				$column->setAttribute('name', $col['name']);
 				$column->setAttribute('type', $col['type']);
 				$column->setAttribute('label', $col['label']);
@@ -101,7 +101,7 @@ class DatasourcesHelper {
 					$choiceid = 1;
 					foreach ($col['choices'] as $ch) {
 						$choice = $dom->createElement("Choice");
-						$choice->setAttribute('id', $choiceid++);
+						$choice->setAttribute('id', (string)$choiceid++);
 						$choice->setAttribute('value', $ch['value']);
 						$choice->setAttribute('label', $ch['label']);
 						$choices->appendChild($choice);
@@ -110,7 +110,7 @@ class DatasourcesHelper {
 				} elseif (isset($col['source'])) {
 					$choices = $dom->createElement("Choices");
 					$source = $dom->createElement("Source");
-					$source->setAttribute('id', 1);
+					$source->setAttribute('id', '1');
 					$source->setAttribute('datasource', $col['source']['datasource']);
 					if (isset($col['source']['request'])) {
 						$source->setAttribute('request', $col['source']['request']);
@@ -145,17 +145,17 @@ class DatasourcesHelper {
 		$dss = $xpath->query("/DataSources");
 		$dbs = $xpath->query("/DataSources/Databases");
 		$type = $form['datasource-type'];
-		$ds = $dss->item(0)->getElementsByTagName('DataSource');
+		$ds = $this->DOMNodeToDOMElement($dss->item(0))->getElementsByTagName('DataSource');
 		$len = $ds->length;
 		$maxId = 0;
 		for($i = 0; $i < $len; $i++) {
-			$id = (int)$ds->item($i)->getAttribute('id');
+			$id = (int)$this->DOMNodeToDOMElement($ds->item($i))->getAttribute('id');
 			if ($id > $maxId) {
 				$maxId = $id;
 			}
 		}
 		$datasource = $dom->createElement("DataSource");
-		$datasource->setAttribute('id', $maxId + 1);
+		$datasource->setAttribute('id', (string)($maxId + 1));
 		$datasource->setAttribute('type', $type);
 		$datasource->setAttribute('name', $form['datasource-name']);
 		$descr = $dom->createElement("Description");
@@ -164,11 +164,11 @@ class DatasourcesHelper {
 		switch($type) {
 			case 'internal':
 			case 'database':
-				$db = $dbs->item(0)->getElementsByTagName('Database');
+				$db = $this->DOMNodeToDOMElement($dbs->item(0))->getElementsByTagName('Database');
 				$len = $db->length;
 				$maxId = 0;
 				for($i = 0; $i < $len; $i++) {
-					$id = (int)$db->item($i)->getAttribute('id');
+					$id = (int)$this->DOMNodeToDOMElement($db->item($i))->getAttribute('id');
 					if ($id > $maxId) {
 						$maxId = $id;
 					}
@@ -179,7 +179,7 @@ class DatasourcesHelper {
 					$dbname .= '.db';
 				}
 				$database = $dom->createElement("Database");
-				$database->setAttribute('id', $maxId + 1);
+				$database->setAttribute('id', (string)($maxId + 1));
 				$database->setAttribute('type', $dbtype);
 				$database->setAttribute('name', $dbname);
 				$database->setAttribute('label', $form['datasource-database-label']);
@@ -246,6 +246,21 @@ class DatasourcesHelper {
 		}
 		$database->connect($withDbName);
 		return $database;
+	}
+
+	/**
+	 * Converts a DOMNode to a DOMElement
+	 *
+	 * @access  public
+	 * @param   \DOMNode $node The DOMNode
+	 * @return  \DOMElement|null The DOMElement.
+	 *
+	 */
+	public function DOMNodeToDOMElement($node) {
+		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
+			return $node;
+		}
+		return null;
 	}
 
 }

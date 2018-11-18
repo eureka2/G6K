@@ -71,7 +71,7 @@ class Section {
 	private $label = "";
 
 	/**
-	 * @var string     $content The textual content of this section
+	 * @var \App\G6K\Model\RichText|null     $content The textual content of this section
 	 *
 	 * @access  private
 	 *
@@ -79,7 +79,7 @@ class Section {
 	private $content = null;
 
 	/**
-	 * @var string     $annotations The annotations on the text of this section
+	 * @var \App\G6K\Model\RichText|null     $annotations The annotations on the text of this section
 	 *
 	 * @access  private
 	 *
@@ -192,7 +192,7 @@ class Section {
 	 * Returns the textual content of this section
 	 *
 	 * @access  public
-	 * @return  string The textual content of this section.
+	 * @return  \App\G6K\Model\RichText|null The textual content of this section.
 	 *
 	 */
 	public function getContent() {
@@ -203,7 +203,7 @@ class Section {
 	 * Sets the textual content of this section
 	 *
 	 * @access  public
-	 * @param   string     $content The textual content of this section.
+	 * @param   \App\G6K\Model\RichText     $content The textual content of this section.
 	 * @return  void
 	 *
 	 */
@@ -215,7 +215,7 @@ class Section {
 	 * Returns the annotations on the text of this section
 	 *
 	 * @access  public
-	 * @return  string The annotations on the text of this section
+	 * @return  \App\G6K\Model\RichText|null The annotations on the text of this section
 	 *
 	 */
 	public function getAnnotations() {
@@ -226,7 +226,7 @@ class Section {
 	 * Sets the annotations on the text of this section
 	 *
 	 * @access  public
-	 * @param   string     $annotations The annotations on the text of this section
+	 * @param   \App\G6K\Model\RichText     $annotations The annotations on the text of this section
 	 * @return  void
 	 *
 	 */

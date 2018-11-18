@@ -83,7 +83,7 @@ class Step {
 	private $output = "";
 
 	/**
-	 * @var string     $description The description of this step 
+	 * @var \App\G6K\Model\RichText|null     $description The description of this step 
 	 *
 	 * @access  private
 	 *
@@ -294,7 +294,7 @@ class Step {
 	 * Returns the description of this step
 	 *
 	 * @access  public
-	 * @return  string the The description of this step
+	 * @return  \App\G6K\Model\RichText|null the The description of this step
 	 *
 	 */
 	public function getDescription() {
@@ -305,7 +305,7 @@ class Step {
 	 * Sets the description of this step
 	 *
 	 * @access  public
-	 * @param   string     $description The description of this step
+	 * @param   \App\G6K\Model\RichText     $description The description of this step
 	 * @return  void
 	 *
 	 */

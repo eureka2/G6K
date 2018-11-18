@@ -198,7 +198,7 @@ class Data extends DatasetChild {
 	private $table = null; 
 
 	/**
-	 * @var string     $value The current value of this data item
+	 * @var mixed     $value The current value of this data item
 	 *
 	 * @access  private
 	 *
@@ -225,7 +225,7 @@ class Data extends DatasetChild {
 	 * Constructor of class Data
 	 *
 	 * @access  public
-	 * @param   \App\G6K\Model\Simulator $simulator The Simulator object that uses this data item
+	 * @param   \App\G6K\Model\Simulator|null $simulator The Simulator object that uses this data item
 	 * @param   int $id The id of this data item
 	 * @param   string $name The name of this data item
 	 * @return  void
@@ -691,7 +691,7 @@ class Data extends DatasetChild {
 	 * Retrieves the label of a choice by its value from the list of choices associated with that data item.
 	 *
 	 * @access  public
-	 * @param   string $avalue The value of the choice
+	 * @param   mixed $avalue The value of the choice
 	 * @return  string The label of the choice
 	 *
 	 */
@@ -700,7 +700,7 @@ class Data extends DatasetChild {
 		if ($this->type == "choice" && $avalue != "") {
 			foreach ($this->choices as $choice) {
 				if ($choice instanceof ChoiceGroup) {
-					foreach ($choice as $gchoice) {
+					foreach ($choice->getChoices() as $gchoice) {
 						if ($gchoice->getValue() == $avalue) {
 							$label = $gchoice->getLabel();
 							break;
@@ -721,7 +721,7 @@ class Data extends DatasetChild {
 				foreach ($this->choices as $choice) {
 					if ($choice instanceof ChoiceGroup) {
 						$found = false;
-						foreach ($choice as $gchoice) {
+						foreach ($choice->getChoices() as $gchoice) {
 							if ($gchoice->getValue() == $value) {
 								array_push($label, $gchoice->getLabel());
 								$found = true;
@@ -759,7 +759,7 @@ class Data extends DatasetChild {
 	 * Adds a Choice object in the list of choices of this data item.
 	 *
 	 * @access  public
-	 * @param   \App\G6K\Model\Choice $choice The Choice object 
+	 * @param   \App\G6K\Model\ChoiceGroup|\App\G6K\Model\Choice $choice The Choice object 
 	 * @return  void
 	 *
 	 */
@@ -778,7 +778,7 @@ class Data extends DatasetChild {
 	public function getChoiceById($id) {
 		foreach ($this->choices as $choice) {
 			if ($choice instanceof ChoiceGroup) {
-				foreach ($choice as $gchoice) {
+				foreach ($choice->getChoices() as $gchoice) {
 					if ($gchoice->getId() == $id) {
 						return $gchoice;
 					}
@@ -874,7 +874,7 @@ class Data extends DatasetChild {
 	 * Sets the current value of this data item
 	 *
 	 * @access  public
-	 * @param   string     $value The current value
+	 * @param   mixed     $value The current value
 	 * @return  void
 	 *
 	 */
@@ -883,7 +883,7 @@ class Data extends DatasetChild {
 			case 'money': 
 			case 'percent':
 				$value = str_replace(',', '.', $value);
-				$value = is_numeric($value) ? ''.round($value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
+				$value = is_numeric($value) ? ''.round((float)$value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
 				break;
 			case 'number': 
 				$value = str_replace(',', '.', $value);
@@ -1028,7 +1028,7 @@ class Data extends DatasetChild {
 						if ($choice->getChoiceSource() !== null) {
 							return true;
 						}
-						foreach ($choice as $gchoice) {
+						foreach ($choice->getChoices() as $gchoice) {
 							if ($gchoice->getValue() == $this->value) {
 								return true;
 							}
@@ -1050,7 +1050,7 @@ class Data extends DatasetChild {
 							if ($choice->getChoiceSource() !== null) {
 								return true;
 							}
-							foreach ($choice as $gchoice) {
+							foreach ($choice->getChoices() as $gchoice) {
 								if ($gchoice->getValue() == $value) {
 									$found = true;
 									break;

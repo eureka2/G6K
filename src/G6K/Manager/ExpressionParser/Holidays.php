@@ -56,7 +56,7 @@ class Holidays {
 		$days = $startDate->diff($endDate)->days + 1;  // days between datetime objects
 		// Subtract two weekend days for every week in between
 		$weeks = floor($days / 7);
-		$days = $days - ($weeks * 2);
+		$days = (int)($days - ($weeks * 2));
 
 		// Handle special cases
 		$startDay = ((int)$startDate->format('N')) % 7;
@@ -94,7 +94,7 @@ class Holidays {
 	 * @access  public
 	 * @static 
 	 * @param   \DateTime $date The given date
-	 * @return  The next working day
+	 * @return  \DateTime The next working day
 	 *
 	 */
 	public static function nextWorkingDay(\DateTime $date) {

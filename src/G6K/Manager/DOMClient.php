@@ -27,7 +27,6 @@ THE SOFTWARE.
 namespace App\G6K\Manager;
 
 use Symfony\Component\BrowserKit\Client as BaseClient;
-use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\BrowserKit\Response;
 
 /**
@@ -120,7 +119,11 @@ class DOMClient extends BaseClient {
 	 * @access  public
 	 * @param   string $method The HTTP request method (GET or POST)
 	 * @param   string $uri The URI to fetch
-	 * @param   array $parameters (default: array() The Request parameters
+	 * @param   array $parameters (default: array()) The Request parameters
+	 * @param   array $files (default: array()) An array of uploaded files
+	 * @param   array $server (default: array()) An array of server parameters
+	 * @param   string|null $content (default: null) The raw body data
+	 * @param   bool $changeHistory (default: true) Whether to update the history or not (only used internally for back(), forward(), and reload())
 	 * @return  \Symfony\Component\DomCrawler\Crawler The Crawler object
 	 *
 	 */
@@ -157,8 +160,8 @@ class DOMClient extends BaseClient {
 	 * @return  \Symfony\Component\DomCrawler\Crawler The Crawler object
 	 *
 	 */
-	public function post($uri, $headers, $data) {
-		return $this->request("POST", $uri, array(), array(), $headers, $data);
+	public function post($uri, $headers = array(), $data = array()) {
+		return $this->request("POST", $uri, array(), array(), $headers, http_build_query($data));
 	}
 
 	/**
@@ -251,7 +254,7 @@ class DOMClient extends BaseClient {
 				$content = gzinflate($content);
 			}
 		}
-		return new Response($content, $status, $headers);
+		return new Response($content, (int)$status, $headers);
 	}
 
 	/**
@@ -274,9 +277,9 @@ class DOMClient extends BaseClient {
 				'Access-Control-Allow-Origin' => '*',
 				'Cache-Control' => 'max-age=86400'
 			);
-			return new Response($content, '200', $headers);
+			return new Response($content, 200, $headers);
 		} catch (\Exception $e) {
-			return new Response($e->getMessage(), '500', array());
+			return new Response($e->getMessage(), 500, array());
 		}
 	}
 

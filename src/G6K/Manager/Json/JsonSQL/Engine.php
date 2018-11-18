@@ -46,7 +46,7 @@ class Engine  {
 	/**
 	 * A pointer on the JsonSQL owner.
 	 *
-	 * @var \App\G6K\Manager\Json\JsonSQL The JsonSQL instance
+	 * @var \App\G6K\Manager\Json\JsonSQL|null The JsonSQL instance
 	 * @access private
 	 */
 	private $jsonsql = null;
@@ -54,7 +54,7 @@ class Engine  {
 	/**
 	 * Name of the JSON database managed by that engine 
 	 *
-	 * @var string
+	 * @var string|null
 	 * @access private
 	 */
 	private $name = null;
@@ -62,7 +62,7 @@ class Engine  {
 	/**
 	 * The committed content of the JSON database managed by that engine 
 	 *
-	 * @var \stdClass
+	 * @var object|null
 	 * @access private
 	 */
 	 private $json = null;
@@ -87,7 +87,7 @@ class Engine  {
 	/**
 	 * Content being updated during a transaction 
 	 *
-	 * @var \stdClass
+	 * @var object|null
 	 * @access private
 	 */
 	private $backup = null;
@@ -114,7 +114,7 @@ class Engine  {
 	 * 
 	 * Stores the ID of the last inserted row.
 	 *
-	 * @var string 
+	 * @var string|false 
 	 * @access private
 	 */
 	private $lastInsertId = false;
@@ -124,7 +124,7 @@ class Engine  {
 	 * if a transaction is currently active for this instance, point to the non-commited content ($this->backup)
 	 * otherwise point to the commited content ($this->json)
 	 *
-	 * @var \stdClass
+	 * @var object
 	 * @access private
 	 */
 	private $db = null;
@@ -155,7 +155,7 @@ class Engine  {
 	 * Returns the pointer on the content of the JSON database
 	 *
 	 * @access  public
-	 * @return  \stdClass The pointer on the content of the JSON database
+	 * @return  object The pointer on the content of the JSON database
 	 *
 	 */
 	public function getDb() {
@@ -204,7 +204,7 @@ class Engine  {
 	 * @param bool $compact if true, the content of the database will be compact
 	 * @throws JsonSQLException
 	 */
-	public function create($name, $compact) {
+	public function create($name, $compact = false) {
 		$pretty = $compact ? 0 : JSON_PRETTY_PRINT;
 		if (file_exists($name.'.json')) {
 			throw new JsonSQLException("database '$name' already exists");
@@ -227,7 +227,7 @@ class Engine  {
 	 * Returns a pointer to the json schema object
 	 *
 	 * @access public
-	 * @return \stdClass The json schema object
+	 * @return object The json schema object
 	 */
 	public function schema() {
 		return $this->db->schema;
@@ -238,7 +238,7 @@ class Engine  {
 	 *
 	 * @access public
 	 * @param string $name The table name
-	 * @return ArrayIterator The ArrayIterator
+	 * @return \ArrayIterator The ArrayIterator
 	 */
 	public function table($name) {
 		return new \ArrayIterator($this->db->data->{$name});
@@ -270,7 +270,7 @@ class Engine  {
 	 * Returns the ID of the last inserted row.
 	 *
 	 * @access public
-	 * @return string a string representing the row ID of the last row that was inserted into the database
+	 * @return string|false  a string representing the row ID of the last row that was inserted into the database
 	 */
 	public function lastInsertId() {
 		return $this->lastInsertId;
@@ -552,7 +552,7 @@ class Engine  {
 	 * @access public
 	 * @param string $table The table name
 	 * @param int $index The position of the row in the table
-	 * @param array $row The new row
+	 * @param \stdClass $row The new row
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -602,7 +602,7 @@ class Engine  {
 	 *
 	 * @access public
 	 * @param string $table The table name
-	 * @param object $columns The columns definition 
+	 * @param \stdClass $columns The columns definition 
 	 * @param array $required The list of required columns
 	 * @param array $foreignkeys The list of foreign keys definition
 	 * @param bool $ifnotexists if true, don't throw an error if the table already exists
@@ -663,7 +663,7 @@ class Engine  {
 	 * @access public
 	 * @param string $table The table name
 	 * @param string $column The name of the new column
-	 * @param object $columnDef The column definition 
+	 * @param \stdClass $columnDef The column definition 
 	 * @param array $required an array with the column name if required
 	 * @return void
 	 * @throws JsonSQLException
@@ -706,7 +706,9 @@ class Engine  {
 	 * @access public
 	 * @param string $table The table name
 	 * @param string $column The actual column name
-	 * @param bool $ifexists if true, don't throw an error if the table or the column doesn't exists
+	 * @param string $type The type of the column
+	 * @param string $format The format of the column
+	 * @param string $datatype The datatype of the column
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -858,7 +860,7 @@ class Engine  {
 	 * @access public
 	 * @param string $type The json data type (string, integer, number or boolean)
 	 * @param string $value The value to convert
-	 * @return string|float|bool|int The converted value
+	 * @return string|float|bool|int|null The converted value
 	 */
 	public function normalizeValue($type, $value) {
 		if ($value == 'null') {
@@ -883,8 +885,8 @@ class Engine  {
 	 * Actually, only 'primarykey' and 'autoincrement' are used.
 	 *
 	 * @access public
-	 * @param string $list The list of comma separated properties
-	 * @return \stdClass The properties object.
+	 * @param string $arg The list of comma separated properties
+	 * @return object The properties object.
 	 */
 	public function properties($arg) {
 		$props = array();

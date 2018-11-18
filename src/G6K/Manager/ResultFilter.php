@@ -583,7 +583,7 @@ class ResultFilter {
 	 *
 	 * @access  public
 	 * @static 
-	 * @param   array $xml The array of SimpleXMLElement
+	 * @param   array|object $xml The array of SimpleXMLElement
 	 * @return  array|string The associative array
 	 *
 	 */
@@ -598,9 +598,9 @@ class ResultFilter {
 				if (is_object($value) && strpos(get_class($value),"SimpleXML")!==false) {
 						$result[$key] = self::xml2array($value);
 				} elseif ($key == '@attributes') {
-					$keys = array_keys($item);
+					$keys = array_keys($value);
 					$key = $keys[0];
-					$item = $item[$key];
+					$item = $value[$key];
 					$result[$key] = $item;
 				} else {
 					$result[$key] = self::xml2array($value);

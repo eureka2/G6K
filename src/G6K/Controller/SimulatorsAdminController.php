@@ -26,8 +26,6 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use App\G6K\Model\Simulator;
 use App\G6K\Model\Source;
 use App\G6K\Model\Parameter;
@@ -67,8 +65,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
-
-use App\G6K\Model\Database;
 
 use Silex\Application;
 use App\G6K\Silex\MobileDetectServiceProvider;
@@ -118,7 +114,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	const SQL_LIMIT_KEYWORD = 'LIMIT ';
 
 	/**
-	 * @var \App\G6K\Model\Simulator $simu Instance of the Simulator class
+	 * @var \App\G6K\Model\Simulator|null $simu Instance of the Simulator class
 	 *
 	 * @access  public
 	 *
@@ -528,7 +524,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * $form['update'] isset
 	 *
 	 * @access  protected
-	 * @param   mixed $simulator simulator name
+	 * @param   string $simulator simulator name
 	 * @param   mixed $form The form fields
 	 * @return  void
 	 *
@@ -671,7 +667,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function makeSource($source) {
-		$sourceObj = new Source($this, (int)$source['id'], $source['datasource'], $source['returnType']);
+		$sourceObj = new Source($this->simu, (int)$source['id'], $source['datasource'], $source['returnType']);
 		if (isset($source['label'])) {
 			$sourceObj->setLabel($source['label']);
 		}
@@ -755,7 +751,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function makeData($data) {
-		$dataObj = new Data($this, (int)$data['id'], $data['name']);
+		$dataObj = new Data($this->simu, (int)$data['id'], $data['name']);
 		$dataObj->setLabel($data['label']);
 		$dataObj->setType($data['type']);
 		if (isset($data['min'])) {
@@ -818,7 +814,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function makeStep($step) {
-		$stepObj = new Step($this, (int)$step['id'], $step['name'], $step['label'], $step['template']);
+		$stepObj = new Step($this->simu, (int)$step['id'], $step['name'], $step['label'], $step['template']);
 		$stepObj->setOutput($step['output']);
 		$stepObj->setDescription(
 			new RichText(
@@ -971,7 +967,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		if ($fieldsetObj->getDisposition() != 'grid' && isset($field['Note'])) {
 			$note = $field['Note'];
 			if ($note['position'] == 'beforeField') {
-				$noteObj = new FieldNote($this);
+				$noteObj = new FieldNote($fieldObj);
 				$noteObj->setText(
 					new RichText(
 						trim($this->replaceSpecialTags($note['text']['content'])),
@@ -980,7 +976,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				);
 				$fieldObj->setPreNote($noteObj);
 			} elseif ($note['position'] == 'afterField') {
-				$noteObj = new FieldNote($this);
+				$noteObj = new FieldNote($fieldObj);
 				$noteObj->setText(
 					new RichText(
 						trim($this->replaceSpecialTags($note['text']['content'])),
@@ -1423,7 +1419,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$response->headers->set('Cache-Control', 'private');
 		$response->headers->set('Content-type', 'application/octet-stream');
 		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', (string)$simulator['name'] . ".zip"));
-		$response->headers->set('Content-length', strlen($zipcontent));
+		$response->headers->set('Content-length', (string)strlen($zipcontent));
 		$response->sendHeaders();
 		$response->setContent($zipcontent);
 		return $response;
@@ -1582,9 +1578,10 @@ class SimulatorsAdminController extends BaseAdminController {
 			$sources = $xpath->query("/Simulator/Sources/Source");
 			$len = $sources->length;
 			for($i = 0; $i < $len; $i++) {
-				$datasource = $sources->item($i)->getAttribute('datasource');
+				$source = $this->getDOMElementItem($sources, $i);
+				$datasource = $source->getAttribute('datasource');
 				if (is_numeric($datasource)) {
-					$sources->item($i)->setAttribute('datasource', $simu);
+					$source->setAttribute('datasource', $simu);
 				}
 			}
 			$formatted = preg_replace_callback('/^( +)</m', function($a) { 
@@ -1617,6 +1614,23 @@ class SimulatorsAdminController extends BaseAdminController {
 		} catch (IOExceptionInterface $e) {
 		}
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
+	}
+
+	/**
+	 * Retuns the DOMElement at position $index of the DOMNodeList
+	 *
+	 * @access  private
+	 * @param   \DOMNodeList $nodes The DOMNodeList
+	 * @param   int $index The position in the DOMNodeList
+	 * @return  \DOMElement|null The DOMElement.
+	 *
+	 */
+	private function getDOMElementItem($nodes, $index) {
+		$node = $nodes->item($index);
+		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
+			return $node;
+		}
+		return null;
 	}
 
 	/**
@@ -1809,7 +1823,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		$postnotes = array();
 		$footnotes = array();
 		$actionbuttons = array();
-		$choices = array();
 		$fchoices = array();
 		foreach ($this->simu->getDatas() as $data) {
 			if ($data instanceof DataGroup) {
@@ -3410,13 +3423,13 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * Builds a connector data array for the Javascript rule engine
 	 *
 	 * @access  private
-	 * @param   App\G6K\Model\Connector|App\G6K\Model\Condition $pconnector
+	 * @param   \App\G6K\Model\Connector|\App\G6K\Model\Condition $pconnector
 	 * @return  array The connector data array
 	 *
 	 */
 	private function ruleConnector($pconnector) {
 		if ($pconnector instanceof Condition) {
-			$data = $this->simu->getDataById($pconnector->getOperand());
+			$data = $this->simu->getDataById((int)$pconnector->getOperand());
 			return array(
 				'name' => $data === null ? $pconnector->getOperand() : $data->getName(),
 				'operator' => $pconnector->getOperator(),
@@ -3737,10 +3750,10 @@ class SimulatorsAdminController extends BaseAdminController {
 					if (preg_match_all("/#(\d+)/", $action->getValue(), $matches)) {
 						foreach($matches[1] as $id) {
 							$name = $this->findDataNameById($id);
-							if (! isset($dataset[$name]['rulesActionsDependency'])) {
-								$dataset[$name]['rulesActionsDependency'] = array();
+							if (! isset($this->dataset[$name]['rulesActionsDependency'])) {
+								$this->dataset[$name]['rulesActionsDependency'] = array();
 							}
-							$dataset[$name]['rulesActionsDependency'][] = $ruleID;
+							$this->dataset[$name]['rulesActionsDependency'][] = $ruleID;
 						}
 					}
 					break;
@@ -3763,8 +3776,8 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * Transforms the lines of a text into html paragraphs
 	 *
 	 * @access  private
-	 * @param   string $string
-	 * @return  string
+	 * @param   \App\G6K\Model\RichText|string $string
+	 * @return  \App\G6K\Model\RichText|string
 	 *
 	 */
 	private function paragraphs ($string) {

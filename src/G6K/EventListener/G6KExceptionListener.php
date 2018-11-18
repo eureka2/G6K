@@ -5,7 +5,7 @@ namespace App\G6K\EventListener;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -30,11 +30,11 @@ class G6KExceptionListener
 	 * Constructor of class G6KExceptionListener
 	 *
 	 * @access  public
-	 * @param   \Symfony\Component\HttpKernel\Kernel $kernel The Symfony kernel
+	 * @param   \Symfony\Component\HttpKernel\KernelInterface $kernel The Symfony kernel
 	 * @return  void
 	 *
 	 */
-	public function __construct(Kernel $kernel) {
+	public function __construct(KernelInterface $kernel) {
 		$this->kernel = $kernel;
 	}
 
@@ -50,7 +50,6 @@ class G6KExceptionListener
 		$request = $event->getRequest();
 		$exception = $event->getException();
 		$route = $request->get("_route");
-		$env = $this->kernel->getEnvironment();
 		if ($route == 'eureka_g6k_api') {
 			$response = $this->jsonResponse($request, $exception);
 		} elseif (preg_match("/^eureka_g6k_admin/", $route)) {
@@ -89,25 +88,39 @@ class G6KExceptionListener
 		$message = $exception instanceof HttpExceptionInterface && $exception->getStatusCode() == 404 ? 'This simulator does not exist or is not available' : 'The simulation engine is currently under maintenance';
 		$twig = $this->kernel->getContainer()->get('templating');
 		$response = new Response();
-		$response->setContent(
-			$twig->render(
-				'base\pages\exception.html.twig', 
-				array(
-					'adminmessage' => $this->trace($exception),
-					'message' => $message,
-					'stacktrace' => str_replace("\n", "<br>", $exception->getTraceAsString()),
-					'code' => $exception->getCode(),
-					'view' => $view, 
-					'step' => $step, 
-					'exception' => true
-				)
-			)
-		);
 
 		if ($exception instanceof HttpExceptionInterface) {
+			$response->setContent(
+				$twig->render(
+					'base\pages\exception.html.twig', 
+					array(
+						'adminmessage' => "status : " . $exception->getStatusCode(),
+						'message' => $exception->getStatusCode(),
+						'stacktrace' => "",
+						'code' => $exception->getStatusCode(),
+						'view' => $view, 
+						'step' => $step, 
+						'exception' => true
+					)
+				)
+			);
 			$response->setStatusCode($exception->getStatusCode());
 			$response->headers->replace($exception->getHeaders());
 		} else {
+			$response->setContent(
+				$twig->render(
+					'base\pages\exception.html.twig', 
+					array(
+						'adminmessage' => $this->trace($exception),
+						'message' => $message,
+						'stacktrace' => str_replace("\n", "<br>", $exception->getTraceAsString()),
+						'code' => $exception->getCode(),
+						'view' => $view, 
+						'step' => $step, 
+						'exception' => true
+					)
+				)
+			);
 			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
 		}
 		return $response;
@@ -125,24 +138,37 @@ class G6KExceptionListener
 		$twig = $this->kernel->getContainer()->get('templating');
 		$step = (object)array('simulator' => array('label' => 'Exception'));
 		$response = new Response();
-		$response->setContent(
-			$twig->render(
-				'admin/pages/exception.html.twig',
-				array(
-					'message' => $this->trace($exception),
-					'stacktrace' => str_replace("\n", "<br>", $exception->getTraceAsString()),
-					'code' => $exception->getCode(),
-					'nav' => 'exception',
-					'step' => $step, 
-					'exception' => true
-				)
-			)
-		);
 
 		if ($exception instanceof HttpExceptionInterface) {
+			$response->setContent(
+				$twig->render(
+					'admin/pages/exception.html.twig',
+					array(
+						'message' => "status : " . $exception->getStatusCode(),
+						'stacktrace' => "",
+						'code' => $exception->getStatusCode(),
+						'nav' => 'exception',
+						'step' => $step, 
+						'exception' => true
+					)
+				)
+			);
 			$response->setStatusCode($exception->getStatusCode());
 			$response->headers->replace($exception->getHeaders());
 		} else {
+			$response->setContent(
+				$twig->render(
+					'admin/pages/exception.html.twig',
+					array(
+						'message' => $this->trace($exception),
+						'stacktrace' => str_replace("\n", "<br>", $exception->getTraceAsString()),
+						'code' => $exception->getCode(),
+						'nav' => 'exception',
+						'step' => $step, 
+						'exception' => true
+					)
+				)
+			);
 			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
 		}
 		return $response;
@@ -193,7 +219,7 @@ class G6KExceptionListener
 	 * @return  string The HTML trace
 	 *
 	 */
-	protected function trace($e, $seen = null) {
+	protected function trace(\Exception $e, $seen = null) {
 		$starter = $seen ? 'Caused by: ' : '';
 		$result = array();
 		if (!$seen) $seen = array();

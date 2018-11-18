@@ -52,7 +52,7 @@ class FieldNote {
 	private $displayable = true;
 
 	/**
-	 * @var string $text The text of this note
+	 * @var \App\G6K\Model\RichText $text The text of this note
 	 *
 	 * @access  private
 	 *
@@ -120,7 +120,7 @@ class FieldNote {
 	 * Returns the text of this note
 	 *
 	 * @access  public
-	 * @return  string The text of this note
+	 * @return  \App\G6K\Model\RichText The text of this note
 	 *
 	 */
 	public function getText() {
@@ -131,7 +131,7 @@ class FieldNote {
 	 * Sets the text of this note
 	 *
 	 * @access  public
-	 * @param   string $text  The text of this note
+	 * @param   \App\G6K\Model\RichText $text  The text of this note
 	 * @return  void
 	 *
 	 */

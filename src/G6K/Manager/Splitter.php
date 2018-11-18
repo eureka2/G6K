@@ -51,7 +51,7 @@ class Splitter  {
 	 * @param string $stmt statement
 	 * @param array $keywords the list of keywords
 	 * @return array the list of keywords associated with their clauses.
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public static function splitKeywords($stmt, $keywords) {
 		$clauses = array();

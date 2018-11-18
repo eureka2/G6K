@@ -59,7 +59,7 @@ class FieldSet {
 	private $id = 0;
 
 	/**
-	 * @var string     $legend The legend of this field set.
+	 * @var \App\G6K\Model\RichText     $legend The legend of this field set.
 	 *
 	 * @access  private
 	 *
@@ -182,7 +182,7 @@ class FieldSet {
 	 * Returns the legend of this field set
 	 *
 	 * @access  public
-	 * @return  string The legend of this field set
+	 * @return  \App\G6K\Model\RichText The legend of this field set
 	 *
 	 */
 	public function getLegend() {
@@ -193,7 +193,7 @@ class FieldSet {
 	 * Sets the legend of this field set
 	 *
 	 * @access  public
-	 * @param   string     $legend The legend of this field set
+	 * @param   \App\G6K\Model\RichText     $legend The legend of this field set
 	 * @return  void
 	 *
 	 */

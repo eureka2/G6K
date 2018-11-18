@@ -39,7 +39,7 @@ class DDLStatement extends Statement {
 	 *
 	 * @access public
 	 * @param JsonSQL $jsonsql the JsonSQL instance
-	 * @param object $request the prepared statement
+	 * @param \stdClass $request the prepared statement
 	 */
 	public function __construct(JsonSQL $jsonsql, \stdClass &$request) {
 		parent::__construct($jsonsql, $request);
@@ -178,6 +178,30 @@ class DDLStatement extends Statement {
 		}
 		$this->rowCount = 0;
 		return true;
+	}
+
+	protected function executeCompoundSelect() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeSelect() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeInsert() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeUpdate() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeDelete() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeTruncate() {
+		throw new JsonSQLException("JsonSQL internal error");
 	}
 
 }

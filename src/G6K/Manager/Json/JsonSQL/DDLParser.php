@@ -135,7 +135,7 @@ class DDLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $sql The create table statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseCreate($sql) {
@@ -181,7 +181,7 @@ class DDLParser extends Parser {
 		$foreignkeys = array();
 		foreach($columnsDef as $columnId => $columnDef) {
 			if (isset($clauses['asselect'])) {
-				if (preg_match('/^\w+$/', $columnDef, $m)) {
+				if (preg_match('/^(\w+)$/', $columnDef, $m)) {
 					$column =  $m[1];
 					$columns[$column] = (object)array(
 						'title' => $column,
@@ -303,7 +303,8 @@ class DDLParser extends Parser {
 			if (extension_loaded('apc') && ini_get('apc.enabled')) {
 				$request->select = $this->engine->loadRequestFromCache($select);
 			} else {
-				$request->select = $this->parse($select);
+				$dmlparser = new DMLParser($this->jsonsql, $select);
+				$request->select = $dmlparser->parse();
 			}
 			$scolumns = array();
 			foreach ($request->select->select as $field => $aliasc) {
@@ -396,7 +397,7 @@ class DDLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $sql The create alter statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseAlter($sql) {
@@ -410,7 +411,6 @@ class DDLParser extends Parser {
 		$comment = "";
 		$column = array();
 		$required = array();
-		$alter;
 		if (isset($clauses['renameto'])) {
 			$alter = 'rename table';
 			$newtable = $clauses['renameto'];
@@ -673,7 +673,7 @@ class DDLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $sql The drop table statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseDropTable($sql) {
@@ -730,6 +730,30 @@ class DDLParser extends Parser {
 			$decoded = base64_decode($m[1]);
 			return $withQuotes ? "'" . $decoded . "'" : $decoded;
 		}, $text);
+	}
+
+	protected function parseSelect($sql) {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function parseSetOperations($sql) {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function parseInsert($sql) {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function parseUpdate($sql) {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function parseDelete($sql) {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function parseTruncate($sql) {
+		throw new JsonSQLException("JsonSQL internal error");
 	}
 
 }

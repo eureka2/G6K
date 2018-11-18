@@ -195,7 +195,7 @@ class DMLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $sql The select statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseSelect($sql) {
@@ -408,7 +408,7 @@ class DMLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $sql The select statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseSetOperations($sql) {
@@ -462,7 +462,7 @@ class DMLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $sql The insert into statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseInsert($sql) {
@@ -532,7 +532,8 @@ class DMLParser extends Parser {
 			if (extension_loaded('apc') && ini_get('apc.enabled')) {
 				$request->select = $this->engine->loadRequestFromCache($select);
 			} else {
-				$request->select = $this->parse($select);
+				$dmlparser = new DMLParser($this->jsonsql, $select);
+				$request->select = $dmlparser->parse();
 			}
 			if (count($fields) != count($request->select->select)) {
 				throw new JsonSQLException("syntax error : number of columns and number of select list columns must be equals");
@@ -557,7 +558,7 @@ class DMLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $sql The update statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseUpdate($sql) {
@@ -608,7 +609,7 @@ class DMLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $sql The delete from statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseDelete($sql) {
@@ -642,7 +643,7 @@ class DMLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $sql The truncate table statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	protected function parseTruncate($sql) {
@@ -664,7 +665,7 @@ class DMLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $expression The expression to parse
-	 * @param string $columns The columns of the request
+	 * @param array $columns The columns of the request
 	 * @return string The parsed expression
 	 */
 	protected function parseExpression($expression, &$columns) {
@@ -704,7 +705,7 @@ class DMLParser extends Parser {
 	 *
 	 * @access protected
 	 * @param string $conditions The conditions to parse
-	 * @param string $columns The columns of the request
+	 * @param array $columns The columns of the request
 	 * @param array $select The select list of the request
 	 * @return string The converted conditions
 	 */
@@ -788,7 +789,7 @@ class DMLParser extends Parser {
 			// newline is forbidden
 			throw new JsonSQLException("syntax error");
 		}
-		if (preg_match('/[`\{\}\[\]\;]/', $expression, $m)) {
+		if (preg_match('/([`\{\}\[\]\;])/', $expression, $m)) {
 			// metacharacters are forbidden
 			throw new JsonSQLException("syntax error near : ".$m[1]);
 		}
@@ -829,6 +830,19 @@ class DMLParser extends Parser {
 			$expr
 		);
 	}
+
+	protected function parseCreate($sql) {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function parseAlter($sql) {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function parseDropTable($sql) {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
 }
 
 ?>

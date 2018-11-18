@@ -36,7 +36,7 @@ namespace App\G6K\Model;
 class Cell {
 
 	/**
-	 * @var \App\G6K\Model\Column $column Column that defines this cell
+	 * @var Column $column Column that defines this cell
 	 *
 	 * @access  private
 	 *
@@ -55,7 +55,7 @@ class Cell {
 	 * Constructor of class Cell
 	 *
 	 * @access  public
-	 * @param   \App\G6K\Model\Cell $column Column that defines this cell
+	 * @param   Column $column Column that defines this cell
 	 * @param   string $value (default: "") Cell value
 	 * @return  void
 	 *
@@ -69,7 +69,7 @@ class Cell {
 	 * Returns the column that contains the cell 
 	 *
 	 * @access  public
-	 * @return  \App\G6K\Model\Column the value of column
+	 * @return  Column the value of column
 	 *
 	 */
 	public function getColumn() {

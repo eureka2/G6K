@@ -293,7 +293,7 @@ class SQLToJSONConverter {
 	 * @access  protected
 	 * @param   \SimpleXMLElement $datasource The datasource definition extracted from DataSources.xml
 	 * @param   bool $withDbName (default: true) if false, the name of the database will not be inserted in the dsn string.
-	 * @return  The Database object
+	 * @return  \App\G6K\Model\Database The Database object
 	 *
 	 */
 	protected function getDatabase($datasource, $withDbName = true) {
@@ -308,7 +308,7 @@ class SQLToJSONConverter {
 	 * @access  protected
 	 * @param   \App\G6K\Model\Database $database The unified access interface to the database
 	 * @param   string $table The name of the table
-	 * @return  array|null The information on the table
+	 * @return  array|string|bool|null The information on the table
 	 *
 	 */
 	protected function tableInfos(Database $database, $table) {
@@ -417,7 +417,7 @@ class SQLToJSONConverter {
 		if (!is_numeric($value)) {
 			return 'string';
 		}
-		if (ctype_digit($text )) {
+		if (ctype_digit($value)) {
 			if ($priorType != '' && $priorType != 'integer') {
 				if ($priorType == 'number') {
 					return 'number';

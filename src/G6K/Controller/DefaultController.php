@@ -26,20 +26,11 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-use App\G6K\Model\Simulator;
 use App\G6K\Model\DataGroup;
 use App\G6K\Model\Data;
-use App\G6K\Model\FieldSet;
-use App\G6K\Model\FieldRow;
-use App\G6K\Model\Field;
 use App\G6K\Model\Step;
 
-use App\G6K\Manager\ControllersHelper;
-
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
 use Silex\Application;
@@ -53,8 +44,6 @@ use App\G6K\Silex\MobileDetectServiceProvider;
  *
  */
 class DefaultController extends BaseController {
-
-	use ControllersHelper;
 
 	/**
 	 * Entry point for the route paths begining by /{simu} excepted /admin

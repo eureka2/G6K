@@ -26,8 +26,6 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -490,7 +488,7 @@ class ViewsAdminController extends BaseAdminController {
 		$response->headers->set('Cache-Control', 'private');
 		$response->headers->set('Content-type', 'application/octet-stream');
 		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename. ".zip"));
-		$response->headers->set('Content-length', strlen($zipcontent));
+		$response->headers->set('Content-length', (string)strlen($zipcontent));
 		$response->sendHeaders();
 		$response->setContent($zipcontent);
 		return $response;

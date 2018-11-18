@@ -71,7 +71,7 @@ abstract class DatasetChild {
 	protected $label = "";
 
 	/**
-	 * @var string     $description The description of this dataset child.
+	 * @var \App\G6K\Model\RichText     $description The description of this dataset child.
 	 *
 	 * @access  protected
 	 *
@@ -218,7 +218,7 @@ abstract class DatasetChild {
 	 * Returns the description of this dataset child.
 	 *
 	 * @access  public
-	 * @return  string The description of this dataset child.
+	 * @return  \App\G6K\Model\RichText The description of this dataset child.
 	 *
 	 */
 	public function getDescription() {
@@ -229,7 +229,7 @@ abstract class DatasetChild {
 	 * Sets the description of this dataset child.
 	 *
 	 * @access  public
-	 * @param   string     $description The description of this dataset child.
+	 * @param   \App\G6K\Model\RichText     $description The description of this dataset child.
 	 * @return  void
 	 *
 	 */

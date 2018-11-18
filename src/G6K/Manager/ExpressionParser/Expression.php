@@ -296,7 +296,7 @@ class Expression {
 	 * Evaluates this expression
 	 *
 	 * @access  public
-	 * @return  \App\G6K\Manager\ExpressionParser\Token||false The result token of the evaluation
+	 * @return  \App\G6K\Manager\ExpressionParser\Token|false The result token of the evaluation
 	 *
 	 */
 	public function evaluate() {

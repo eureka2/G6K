@@ -62,7 +62,7 @@ class Profile {
 	private $label = "";
 
 	/**
-	 * @var string     $description The description of this profile. 
+	 * @var \App\G6K\Model\RichText     $description The description of this profile. 
 	 *
 	 * @access  private
 	 *
@@ -164,7 +164,7 @@ class Profile {
 	 * Returns the description of this profile.
 	 *
 	 * @access  public
-	 * @return  string The description of this profile.
+	 * @return  \App\G6K\Model\RichText The description of this profile.
 	 *
 	 */
 	public function getDescription() {
@@ -175,7 +175,7 @@ class Profile {
 	 * Sets the description of this profile.
 	 *
 	 * @access  public
-	 * @param   string     $description The description of this profile.
+	 * @param   \App\G6K\Model\RichText     $description The description of this profile.
 	 * @return  void
 	 *
 	 */

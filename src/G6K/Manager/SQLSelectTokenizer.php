@@ -226,7 +226,7 @@ class SQLSelectTokenizer  {
 			// newline is forbidden
 			throw new SQLSelectTokenizerException("syntax error");
 		}
-		if (preg_match('/[`\{\}\[\]\;]/', $expression, $m)) {
+		if (preg_match('/([`\{\}\[\]\;])/', $expression, $m)) {
 			// metacharacters are forbidden
 			throw new SQLSelectTokenizerException("syntax error near : ".$m[1]);
 		}
@@ -457,7 +457,7 @@ class SQLSelectTokenizer  {
 	 *
 	 * @access protected
 	 * @param string $sql The select statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws SQLSelectTokenizerException
 	 */
 	public function parseSelect($sql) {
@@ -688,7 +688,7 @@ class SQLSelectTokenizer  {
 	 *
 	 * @access protected
 	 * @param string $sql The select statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws SQLSelectTokenizerException
 	 */
 	public function parseSetOperations($sql) {

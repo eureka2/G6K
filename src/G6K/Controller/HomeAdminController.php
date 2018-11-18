@@ -27,8 +27,6 @@ THE SOFTWARE.
 namespace App\G6K\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Finder\Finder;
 
 use App\G6K\Manager\ControllersHelper;

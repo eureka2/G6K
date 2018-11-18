@@ -26,8 +26,6 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
@@ -349,7 +347,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				case 'doimport':
 					return $this->doImportTable($form, $dsid, $table, $database, $request->files->all());
 				case 'drop':
-					return $this->dropTable ($table, $database);
+					return $this->dropTable ($form, $table, $database);
 				case 'restore':
 					return $this->restoreTableRow ($form, $table, $database);
 				default:
@@ -709,7 +707,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$converter = new SQLToJSONConverter($parameters, $this->databasesDir);
 		$result = $converter->convert($datasource);
-		ini_set("serialize_precision", -1);
+		ini_set("serialize_precision", '-1');
 		$content = array(
 			array(
 				'name' => (string)$datasource['name'].".schema.json",
@@ -725,7 +723,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$response->headers->set('Cache-Control', 'private');
 		$response->headers->set('Content-type', 'application/octet-stream');
 		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', (string)$datasource['name'] . ".zip"));
-		$response->headers->set('Content-length', strlen($zipcontent));
+		$response->headers->set('Content-length', (string)strlen($zipcontent));
 		$response->sendHeaders();
 		$response->setContent($zipcontent);
 		return $response;
@@ -927,7 +925,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
-	 * @return  array|null The result set of the query
+	 * @return  array|string|null The result set of the query
 	 *
 	 */
 	protected function processSource($source) {
@@ -986,7 +984,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Filters the result set of a query on the source return path
 	 *
 	 * @access  protected
-	 * @param   array $result The result set of a query
+	 * @param   array|string $result The result set of a query
 	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
 	 * @return  array|null The filtered result set
 	 *
@@ -1001,7 +999,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			case 'xml':
 				return ResultFilter::filter("xml", $result, (string)$source['returnPath']);
 			case 'csv':
-				$result = ResultFilter::filter("csv", $result, "", null, (string)$source['separator'], (string)$source['delimiter']);
+				$result = ResultFilter::filter("csv", $result, "", array(), (string)$source['separator'], (string)$source['delimiter']);
 				return $this->filterResultByLines($result, (string)$source['returnPath']);
 		}
 		return null;
@@ -1149,7 +1147,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @return  array|null The list of tables
+	 * @return  array|string|bool|null The list of tables
 	 *
 	 */
 	protected function tablesList($database) {
@@ -1187,7 +1185,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   \App\G6K\Model\Database $database The Database object
 	 * @param   string $table The table name
-	 * @return  array|null Informations about a table
+	 * @return  array|string|bool|null Informations about a table
 	 *
 	 */
 	protected function tableInfos($database, $table) {
@@ -1336,7 +1334,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$type = $form['datasource-type'];
 		$dbtype = $form['datasource-database-type'];
 		if ($type == 'internal') {
-			if (($result = $this->createDB($datasource->getAttribute('id'), $dbtype)) !== true) {
+			if (($result = $this->createDB((int)($datasource->getAttribute('id')), $dbtype)) !== true) {
 				return $this->errorResponse($form, $result);
 			}
 		}
@@ -1872,7 +1870,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
 	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @return  bool
+	 * @return  bool|string
 	 *
 	 */
 	protected function updateDBTableRow($form, $table, $database) {
@@ -1956,17 +1954,18 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function createTable($form, $database) {
+		$helper = new DatasourcesHelper($this->datasources);
 		if (($result = $this->createDBTable($form, $database)) !== true) {
 			return $this->errorResponse($form, $result);
 		}
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $xpath->query("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']")->item(0);
+		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']")->item(0));
 		$tables = $datasource->getElementsByTagName('Table');
 		$len = $tables->length;
 		$maxId = 0;
 		for($i = 0; $i < $len; $i++) {
-			$id = (int)$tables->item($i)->getAttribute('id');
+			$id = (int)$helper->DOMNodeToDOMElement($tables->item($i))->getAttribute('id');
 			if ($id > $maxId) {
 				$maxId = $id;
 			}
@@ -2115,18 +2114,19 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function doEditTable($form, $table, $database) {
+		$helper = new DatasourcesHelper($this->datasources);
 		if (($result = $this->editDBTable($form, $table, $database)) !== true) {
 			return $this->errorResponse($form, $result);
 		}
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0);
+		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0));
 		$tables = $datasource->getElementsByTagName('Table');
 		$len = $tables->length;
 		for($i = 0; $i < $len; $i++) {
-			$name = $tables->item($i)->getAttribute('name');
+			$name = $helper->DOMNodeToDOMElement($tables->item($i))->getAttribute('name');
 			if ($name == $table) {
-				$theTable = $tables->item($i);
+				$theTable = $helper->DOMNodeToDOMElement($tables->item($i));
 				$theTable->setAttribute('name', $form['table-name']);
 				$theTable->setAttribute('label', $form['table-label']);
 				$descr = $dom->createElement("Description");
@@ -2173,7 +2173,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		foreach ($form['field'] as $i => $field) {
 			if ($field != '') {
 				$column = $dom->createElement("Column");
-				$column->setAttribute('id', $i + 1);
+				$column->setAttribute('id', (string)($i + 1));
 				$column->setAttribute('name', $field);
 				$column->setAttribute('type', $form['type'][$i]);
 				$column->setAttribute('label', $form['label'][$i]);
@@ -2184,7 +2184,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$choices = $dom->createElement("Choices");
 					if (isset($form['field-'.$i.'-choicesource-datasource'])) {
 						$source = $dom->createElement("Source");
-						$source->setAttribute('id', 1);
+						$source->setAttribute('id', '1');
 						$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
 						$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
 						$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
@@ -2208,7 +2208,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					} else{
 						foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
 							$choice = $dom->createElement("Choice");
-							$choice->setAttribute('id', $c + 1);
+							$choice->setAttribute('id', (string)($c + 1));
 							$choice->setAttribute('value', $value);
 							$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
 							$choices->appendChild($choice);
@@ -2227,22 +2227,24 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Route path : /admin/datasources/{dsid}/{table}/drop
 	 *
 	 * @access  protected
+	 * @param   array $form The form fields
 	 * @param   string $table The table name
 	 * @param   \App\G6K\Model\Database $database The Database object
 	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
 	 *
 	 */
-	protected function dropTable($table, $database) {
+	protected function dropTable($form, $table, $database) {
+		$helper = new DatasourcesHelper($this->datasources);
 		if (($result = $this->dropDBTable($table, $database)) !== true) {
 			return $this->errorResponse($form, $result);
 		}
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0);
+		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0));
 		$tables = $datasource->getElementsByTagName('Table');
 		$len = $tables->length;
 		for($i = 0; $i < $len; $i++) {
-			$name = $tables->item($i)->getAttribute('name');
+			$name = $helper->DOMNodeToDOMElement($tables->item($i))->getAttribute('name');
 			if ($name == $table) {
 				$datasource->removeChild($tables->item($i));
 				break;
@@ -2264,9 +2266,10 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function doEditDatasource($dsid, $form) {
+		$helper = new DatasourcesHelper($this->datasources);
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0);
+		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0));
 		$oldType = $datasource->getAttribute('type');
 		$type = $form['datasource-type'];
 		$datasource->setAttribute('type', $type);
@@ -2286,7 +2289,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$sameDatabase = true;
 		if (($type == 'internal' && $oldType == 'internal') || ($type == 'database' && $oldType == 'database')) {
-			$database = $xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0);
+			$database = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
 			if ($database->getAttribute('type') != $form['datasource-database-type']) {
 				$sameDatabase = false;
 			} else if ($database->getAttribute('name') != $form['datasource-database-name']) {
@@ -2312,17 +2315,17 @@ class DataSourcesAdminController extends BaseAdminController {
 					$datasource->removeAttribute ('uri');
 					$datasource->removeAttribute ('method');
 					$dbs = $xpath->query("/DataSources/Databases");
-					$db = $dbs->item(0)->getElementsByTagName('Database');
+					$db = $helper->DOMNodeToDOMElement($dbs->item(0))->getElementsByTagName('Database');
 					$len = $db->length;
 					$maxId = 0;
 					for($i = 0; $i < $len; $i++) {
-						$id = (int)$db->item($i)->getAttribute('id');
+						$id = (int)$helper->DOMNodeToDOMElement($db->item($i))->getAttribute('id');
 						if ($id > $maxId) {
 							$maxId = $id;
 						}
 					}
 					$database = $dom->createElement("Database");
-					$database->setAttribute('id', $maxId + 1);
+					$database->setAttribute('id', (string)($maxId + 1));
 					$database->setAttribute('type', $dbtype);
 					$database->setAttribute('name', $form['datasource-database-name']);
 					$database->setAttribute('label', $form['datasource-database-label']);
@@ -2337,7 +2340,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$dbs->item(0)->appendChild($database);
 					$datasource->setAttribute('database', $database->getAttribute('id'));
 				} else {
-					$database = $xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0);
+					$database = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
 					$oldDbtype = $database->getAttribute('type');
 					$database->setAttribute('type', $dbtype);
 					$database->setAttribute('name', $form['datasource-database-name']);
@@ -2367,8 +2370,8 @@ class DataSourcesAdminController extends BaseAdminController {
 				$datasource->setAttribute('uri', $form['datasource-uri']);
 				$datasource->setAttribute('method', $form['datasource-method']);
 				if ($oldType != 'uri') {
-					$databases = $xpath->query("/DataSources/Databases")->item(0);
-					$database = $xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0);
+					$databases = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases")->item(0));
+					$database = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
 					$datasource->removeAttribute ('database');
 					$databases->removeChild($database);
 				}
@@ -2393,13 +2396,14 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function dropDatasource ($dsid) {
+		$helper = new DatasourcesHelper($this->datasources);
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0);
+		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0));
 		$type = $datasource->getAttribute('type');
 		if ($type == 'internal' || $type == 'database') {
 			$dbs = $xpath->query("/DataSources/Databases");
-			$db = $xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0);
+			$db = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
 			$dbtype = $db->getAttribute('type');
 			if ($type == 'internal') { 
 				$dbname = $db->getAttribute('name');

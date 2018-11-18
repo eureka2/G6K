@@ -29,7 +29,6 @@ namespace App\G6K\Controller;
 use App\G6K\Manager\ControllersHelper;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 use Silex\Application;
 use App\G6K\Silex\MobileDetectServiceProvider;

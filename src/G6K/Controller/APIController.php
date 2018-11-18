@@ -26,9 +26,7 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-use App\G6K\Model\Simulator;
+use App\G6K\Model\DatasetChild;
 use App\G6K\Model\DataGroup;
 use App\G6K\Model\Data;
 use App\G6K\Model\FieldSet;
@@ -40,7 +38,6 @@ use App\G6K\Manager\ControllersHelper;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  *
@@ -93,7 +90,7 @@ class APIController extends BaseController {
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
-	 * @param   \App\G6K\Model\Simulator $simu The simulator object
+	 * @param   string $simu The simulator name
 	 * @return  \Symfony\Component\HttpFoundation\Response|\App\G6K\Model\Step The simulation step object or the API response object in JSON format
 	 *
 	 */
@@ -107,7 +104,7 @@ class APIController extends BaseController {
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
-	 * @param   \App\G6K\Model\Simulator $simu The simulator object
+	 * @param   string $simu The simulator name
 	 * @return  \Symfony\Component\HttpFoundation\Response|\App\G6K\Model\Step The simulation step object or the API response object in JSON format
 	 *
 	 */
@@ -121,7 +118,7 @@ class APIController extends BaseController {
 	 *
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
-	 * @param   \App\G6K\Model\Simulator $simu The simulator object
+	 * @param   string $simu The simulator name
 	 * @param   bool $test (default: false) if true, we are in test mode
 	 * @return  \Symfony\Component\HttpFoundation\Response|\App\G6K\Model\Step The simulation step object or the API response object in JSON format
 	 *
@@ -328,11 +325,11 @@ class APIController extends BaseController {
 	 *
 	 * @access  private
 	 * @param   array $form array of request parameters
-	 * @param   \App\G6K\Model\Data $data The data object
+	 * @param   \App\G6K\Model\DatasetChild $data The data object
 	 * @return  void
 	 *
 	 */
-	private function addResponseError($form, Data $data) {
+	private function addResponseError($form, DatasetChild $data) {
 		$name = $data->getName();
 		if (isset($form[$name])) {
 			$this->addParameterError(

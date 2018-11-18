@@ -120,7 +120,7 @@ class Connector {
 	 * Retrieves the conditions (Condition objects) or connectors (Connector objects) inside this connector.
 	 *
 	 * @access  public
-	 * @return  string The conditions or connectors inside this connector.
+	 * @return  array The conditions or connectors inside this connector.
 	 *
 	 */
 	public function getConditions() {
@@ -131,7 +131,7 @@ class Connector {
 	 * Sets the conditions (Condition objects) or connectors (Connector objects) inside this connector.
 	 *
 	 * @access  public
-	 * @param   string $conditions The conditions or connectors inside this connector.
+	 * @param   array $conditions The conditions or connectors inside this connector.
 	 * @return  void
 	 *
 	 */

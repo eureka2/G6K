@@ -39,7 +39,7 @@ namespace App\G6K\Model;
 class BlockInfo {
 
 	/**
-	 * @var \App\G6K\Model\Panel $panel Panel that contains this blockinfo
+	 * @var Panel $panel Panel that contains this blockinfo
 	 *
 	 * @access  private
 	 *
@@ -90,7 +90,7 @@ class BlockInfo {
 	 * Constructor of class BlockInfo
 	 *
 	 * @access  public
-	 * @param   \App\G6K\Model\Panel $panel Panel that contains this blockinfo
+	 * @param   Panel $panel Panel that contains this blockinfo
 	 * @param   int        $id Blockinfo id
 	 * @return  void
 	 *
@@ -104,7 +104,7 @@ class BlockInfo {
 	 * Returns the Panel object that contains this BlockInfo object
 	 *
 	 * @access  public
-	 * @return  App\G6K\Model\Panel The container Panel of this BlockInfo object
+	 * @return  Panel The container Panel of this BlockInfo object
 	 *
 	 */
 	public function getPanel() {
@@ -207,7 +207,7 @@ class BlockInfo {
 	 * Adds a chapter to the list of chapters contained in this BlockInfo object
 	 *
 	 * @access  public
-	 * @param   App\G6K\Model\Chapter $chapter
+	 * @param   Chapter $chapter
 	 * @return  void
 	 *
 	 */
@@ -232,7 +232,7 @@ class BlockInfo {
 	 *
 	 * @access  public
 	 * @param   int $id Chapter id
-	 * @return  \App\G6K\Model\Chapter|null The chapter with this ID
+	 * @return  Chapter|null The chapter with this ID
 	 *
 	 */
 	public function getChapterById($id) {

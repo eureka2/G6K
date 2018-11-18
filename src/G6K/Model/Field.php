@@ -45,7 +45,7 @@ class Field {
 	 * @access  private
 	 *
 	 */
-	private $fieldset = 0;
+	private $fieldset = null;
 
 	/**
 	 * @var int        $position  The position of this field in the field set

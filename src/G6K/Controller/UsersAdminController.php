@@ -28,7 +28,6 @@ namespace App\G6K\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use App\G6K\Manager\ControllersHelper;
 
@@ -228,22 +227,28 @@ class UsersAdminController extends BaseAdminController {
 				return $this->errorResponse($form, "This user doesn't  exists !");
 			}
 			$oldRoles = $user->getRoles();
+			if ($userName != $user->getUserName()) {
+				$otherUser = $userManager->findUserByUsername($userName);
+				if ($otherUser !== null) {
+					return $this->errorResponse($form, "This username already exists !");
+				}
+			}
+			if ($email != $user->getEmail()) {
+				$otherUser = $userManager->findUserByEmail($email);
+				if ($otherUser !== null) {
+					return $this->errorResponse($form, "This email already exists !");
+				}
+			}
 		} else {
 			$oldRoles = array();
-		}
-		if ($newUser || $restore || $userName != $user->getUserName()) {
 			$otherUser = $userManager->findUserByUsername($userName);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This username already exists !");
 			}
-		}
-		if ($newUser || $restore || $email != $user->getEmail()) {
 			$otherUser = $userManager->findUserByEmail($email);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This email already exists !");
 			}
-		}
-		if ($newUser || $restore) {
 			$user = $userManager->createUser();
 		}
 		$user->setUsername($userName);

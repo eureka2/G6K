@@ -37,8 +37,6 @@ use App\G6K\Model\RichText;
 use App\G6K\Manager\DOMClient as Client;
 use App\G6K\Manager\ResultFilter;
 
-use Symfony\Component\Translation\DataCollectorTranslator;
-
 /**
  *
  * This class implements common functions needed in G6KBundle controllers.

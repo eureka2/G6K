@@ -57,7 +57,7 @@ class DMLStatement extends Statement {
 	 *
 	 * @access public
 	 * @param JsonSQL $jsonsql the JsonSQL instance
-	 * @param object $request the prepared statement
+	 * @param \stdClass $request the prepared statement
 	 */
 	public function __construct(JsonSQL $jsonsql, \stdClass &$request) {
 		$this->parser = new Parser();
@@ -77,7 +77,7 @@ class DMLStatement extends Statement {
 	 * Fetches the next row from a result set
 	 *
 	 * @access public
-	 * @return int The next row from a result set.
+	 * @return mixed The next row from a result set.
 	 */
 	public function fetch() {
 		return next($this->result);
@@ -279,7 +279,7 @@ class DMLStatement extends Statement {
 	 * containing all the variables in the scope of the running request.
 	 *
 	 * @access protected
-	 * @param \stdClas $row The table row 
+	 * @param \stdClass $row The table row 
 	 * @return array The array of variables.
 	 */
 	protected function makeExpressionVariables(&$row) {
@@ -304,7 +304,7 @@ class DMLStatement extends Statement {
 	 *
 	 * @access protected
 	 * @param string $conditions the condition to evaluate 
-	 * @param \stdClas $row The table row 
+	 * @param object $row The table row 
 	 * @return string|bool The evaluation of the condition.
 	 * @throws JsonSQLException
 	 */
@@ -349,9 +349,10 @@ class DMLStatement extends Statement {
 	 *
 	 * @access protected
 	 * @param int $len The number of tables 
-	 * @return \stdClass|null The next row or null if no more row.
+	 * @return object|null The next row or null if no more row.
 	 */
 	protected function joins($len) {
+		$tuple = array();
 		$done = false;
 		while (!$done) {
 			$curr = $len - 1;
@@ -364,7 +365,7 @@ class DMLStatement extends Statement {
 			for ($i = $curr + 1; $i < $len; $i++) {
 				$this->request->from[$i]->table->rewind();
 			}
-			$tuple = null;
+			$tuple = array();
 			foreach($this->request->from as $i => $from) {
 				$row = (array)$from->table->current();
 				$ntuple = array();
@@ -409,7 +410,7 @@ class DMLStatement extends Statement {
 			}
 		}
 		$this->request->from[$curr]->table->next();
-		return (object)$tuple;
+		return empty($tuple) ? null : (object)$tuple;
 	}
 
 	/**
@@ -485,7 +486,7 @@ class DMLStatement extends Statement {
 	 * Returns the value of a field
 	 *
 	 * @access  private
-	 * @param   \stdClas $row The table row 
+	 * @param   \stdClass $row The table row 
 	 * @param   mixed $column The table column 
 	 * @return  mixed The value 
 	 *
@@ -633,6 +634,19 @@ class DMLStatement extends Statement {
 			return $result;
 		}
 	}
+
+	protected function executeCreateTable() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeAlterTable() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeDropTable() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
 }
 
 ?>

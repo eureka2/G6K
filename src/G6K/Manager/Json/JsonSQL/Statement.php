@@ -32,7 +32,7 @@ use App\G6K\Manager\Json\JsonSQL;
  *  The class JsonSQLStatement represents a prepared statement and, 
  *  after the statement is executed, an associated result set.
  */
-class Statement  {
+abstract class Statement  {
 
 	/**
 	 * @var \App\G6K\Manager\Json\JsonSQL $jsonsql the JsonSQL instance
@@ -43,7 +43,7 @@ class Statement  {
 	protected $jsonsql = null;
 
 	/**
-	 * @var \stdClass $request The prepared statement
+	 * @var object $request The prepared statement
 	 *
 	 * @access  protected
 	 *
@@ -104,7 +104,7 @@ class Statement  {
 	 * @access public
 	 * @static 
 	 * @param JsonSQL $jsonsql The JsonSQL instance
-	 * @param \stdClass $request The prepared statement
+	 * @param \stdClass &$request The prepared statement
 	 */
 	public function create(JsonSQL $jsonsql, \stdClass &$request) {
 		switch($request->statement) {
@@ -182,7 +182,7 @@ class Statement  {
 	 *
 	 * @access public
 	 * @param mixed $parameter The parameter identifier
-	 * @param  mixed $value The value to bind to the parameter
+	 * @param  mixed $variable The variable to bind to the parameter
 	 * @param int $type The data type for the parameter using the PDO::PARAM_* constants.
 	 * @return bool true on success or false on failure.
 	 */
@@ -195,7 +195,7 @@ class Statement  {
 	 * Executes a prepared statement.
 	 *
 	 * @access public
-	 * @param array $parameter An array of values with as many elements as there are bound parameters 
+	 * @param array $parameters An array of values with as many elements as there are bound parameters 
 	 * in the SQL statement being executed. All values are treated as PDO::PARAM_STR.
 	 * @return bool true on success or false on failure.
 	 */
@@ -214,8 +214,6 @@ class Statement  {
 			return $this->executeCompoundSelect();
 		} elseif ($this->request->statement == 'select') {
 			return $this->executeSelect();
-		} elseif ($this->request->statement == 'insert') {
-			return $this->executeInsert();
 		} elseif ($this->request->statement == 'insert') {
 			return $this->executeInsert();
 		} elseif ($this->request->statement == 'update') {
@@ -275,9 +273,82 @@ class Statement  {
 				throw new JsonSQLException("syntax error : bool value expected");
 			}
 		} else {
-			$this->engine->checkSafety($value);
+			$dmlparser = new DMLParser($this->jsonsql, "");
+			$dmlparser->checkSafety($value);
 		}
 	}
+
+	/**
+	 * Executes a prepared select statement with set opertations.
+	 *
+	 * @access protected
+	 * @return bool Always true.
+	 */
+	abstract protected function executeCompoundSelect();
+
+	/**
+	 * Executes a prepared select statement.
+	 *
+	 * @access protected
+	 * @return bool Always true.
+	 */
+	abstract protected function executeSelect();
+
+	/**
+	 * Executes a prepared insert statement.
+	 *
+	 * @access protected
+	 * @return bool Always true.
+	 */
+	abstract protected function executeInsert();
+
+	/**
+	 * Executes a prepared update statement.
+	 *
+	 * @access protected
+	 * @return bool Always true.
+	 */
+	abstract protected function executeUpdate();
+
+	/**
+	 * Executes a prepared delete statement.
+	 *
+	 * @access protected
+	 * @return bool Always true.
+	 */
+	abstract protected function executeDelete();
+
+	/**
+	 * Executes a prepared 'create table' statement.
+	 *
+	 * @access protected
+	 * @return bool TRUE.
+	 */
+	abstract protected function executeCreateTable();
+
+	/**
+	 * Executes a prepared 'alter table' statement.
+	 *
+	 * @access protected
+	 * @return bool TRUE.
+	 */
+	abstract protected function executeAlterTable();
+
+	/**
+	 * Executes a prepared 'truncate' statement.
+	 *
+	 * @access protected
+	 * @return bool Always true.
+	 */
+	abstract protected function executeTruncate();
+
+	/**
+	 * Executes a prepared 'drop table' statement.
+	 *
+	 * @access protected
+	 * @return bool TRUE.
+	 */
+	abstract protected function executeDropTable();
 
 }
 

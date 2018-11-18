@@ -71,7 +71,7 @@ class Site {
 	 *
 	 * @access  public
 	 * @param   \App\G6K\Model\Simulator $simulator The Simulator object that uses this web site.
-	 * @param   string $id The id of this Site object.
+	 * @param   int $id The id of this Site object.
 	 * @param   string $name The name of this web site.
 	 * @param   string $home The URL of the home page of this web site.
 	 * @return  void

@@ -74,12 +74,12 @@ class Table {
 	private $label = "";
 
 	/**
-	 * @var string     $description The description of this table
+	 * @var \App\G6K\Model\RichText|string|null     $description The description of this table
 	 *
 	 * @access  private
 	 *
 	 */
-	private $description = "";
+	private $description = null;
 
 	/**
 	 * @var array      $columns The list of columns of this table
@@ -101,7 +101,7 @@ class Table {
 	 * Constructor of class Table
 	 *
 	 * @access  public
-	 * @param   \App\G6K\Model\Data      $data The Data object of type 'table' associated with this this table
+	 * @param   \App\G6K\Model\Data|null      $data The Data object of type 'table' associated with this this table
 	 * @param   int      $id The ID of this table
 	 * @return  void
 	 *
@@ -197,7 +197,7 @@ class Table {
 	 * Returns the description of this table
 	 *
 	 * @access  public
-	 * @return  string The description of this table
+	 * @return  \App\G6K\Model\RichText|string|null The description of this table
 	 *
 	 */
 	public function getDescription() {
@@ -208,7 +208,7 @@ class Table {
 	 * Sets the description of this table
 	 *
 	 * @access  public
-	 * @param   string     $label The description of this table
+	 * @param   \App\G6K\Model\RichText|string $description The description of this table
 	 * @return  void
 	 *
 	 */

@@ -321,7 +321,7 @@ class DataSource {
 	 * The values in this array are the namespace uris.
 	 *
 	 * @access  public
-	 * @return  string The associative array of namespaces
+	 * @return  array The associative array of namespaces
 	 *
 	 */
 	public function getNamespaces() {
@@ -335,7 +335,7 @@ class DataSource {
 	 * The values in this array are the namespace uris.
 	 *
 	 * @access  public
-	 * @param   string $namespaces The associative array of namespaces
+	 * @param   array $namespaces The associative array of namespaces
 	 * @return  void
 	 *
 	 */

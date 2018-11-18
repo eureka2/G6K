@@ -114,7 +114,7 @@ class RichText {
 	 * Sets the text content
 	 *
 	 * @access  public
-	 * @param   string $text  The text content
+	 * @param   string $content  The text content
 	 * @return  void
 	 *
 	 */

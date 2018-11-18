@@ -278,7 +278,7 @@ class Evaluator {
 		if ($token->type == Token::T_TEXT) {
 			if (is_numeric($token->value)) {
 				$token->type = Token::T_NUMBER;
-				$token->value = parseFloat($token->value);
+				$token->value = floatval($token->value);
 			} else if (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $token->value)) {
 					$token->type = Token::T_DATE;
 					$date = \DateTime::createFromFormat("d/m/Y", $token->value, new \DateTimeZone( 'Europe/Paris' ));
