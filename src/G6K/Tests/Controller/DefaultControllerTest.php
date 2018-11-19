@@ -88,11 +88,11 @@ class DefaultControllerTest extends WebTestCase
 		self::$jsEngine = $finder->find("phantomjs");
 		fwrite(STDOUT, "Starting up of functional tests");
 		self::$startTime = time();
-		if (self::$jsEngine != null) {
+		if (self::$jsEngine !== null) {
 			fwrite(STDOUT, " with PhantomJS (webkit engine)"); 
 		} else {
 			self::$jsEngine = $finder->find("slimerjs");
-			if (self::$jsEngine != null) {
+			if (self::$jsEngine !== null) {
 				fwrite(STDOUT, " with SlimerJS (gecko engine)");
 			}
 		}
@@ -164,7 +164,7 @@ class DefaultControllerTest extends WebTestCase
 	 *
 	 */
 	private function runSimuTest($view, $simu, $fields) {
-		if (self::$jsEngine != null) {
+		if (self::$jsEngine !== null) {
 			try {
 				$this->runSimuTestWithJS($view, $simu, $fields);
 			} catch (ProcessFailedException $e) {
@@ -323,7 +323,6 @@ EOS;
 		$client = static::createClient();
 		$crawler = $client->request('GET', $simu);
 		$g6kform = $crawler->filter("#g6k_form");
-		// $this->echoField($g6kform->form());
 		$inputs = array();
 		foreach ($fields as $name => $value) {
 			if (!$g6kform->form()->has($name) && $crawler->selectButton($name)) { // button
@@ -354,10 +353,8 @@ EOS;
 				$form->getNode()->setAttribute("action", $simu);
 				$crawler = $client->submit($form, array($name => "1"));
 				$g6kform = $crawler->filter("#g6k_form");
-				// $this->echoField($g6kform->form());
 			} elseif ($value != "") {
 				if (($val = $this->isOutput($crawler, $name)) !== false) {
-					// echo $name . " : test " . ($value == $val ? "ok" : "ko => Expected : " . $value . " Found : " . $val) . PHP_EOL;
 					$this->assertEquals($value, $val, "Failure when checking content of " . $name . " for " . $simu);
 				} else { // input}
 					$inputs[$name] = $value;
@@ -388,10 +385,4 @@ EOS;
 		return $output;
 	}
 
-	private function echoField($form) {
-		$fields = $form->all();
-		foreach($fields as $field) {
-			echo $field->getName() . " => " . $field->getValue() . PHP_EOL;
-		}
-	}
 }

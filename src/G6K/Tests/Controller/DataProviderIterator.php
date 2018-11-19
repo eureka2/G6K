@@ -112,15 +112,16 @@ class DataProviderIterator implements \Iterator {
 		}
 	}
 
-    /**
-     * Rewind the Iterator to the first test element
-     *
-     * @access  public
-     * @return  void
-     *
-     */
-    public function rewind() {
-		for ($i = 0; $i < count($this->simus); $i++) {
+	/**
+	 * Rewind the Iterator to the first test element
+	 *
+	 * @access  public
+	 * @return  void
+	 *
+	 */
+	public function rewind() {
+		$nsimus = count($this->simus);
+		for ($i = 0; $i < $nsimus; $i++) {
 			rewind($this->simus[$i][1]);
 			$this->simus[$i][2] = false;
 		}
@@ -211,7 +212,8 @@ class DataProviderIterator implements \Iterator {
 			$view = "/" . $view;
 		}
 		$fields = array();
-		for ($i = 0; $i < count($fieldsName); $i++) {
+		$nnames = count($fieldsName);
+		for ($i = 0; $i < $nnames; $i++) {
 			$name = $fieldsName[$i];
 			$value = $i < count($values) ?  $values[$i] : "";
 			$fields[$name] = $value;
@@ -236,4 +238,5 @@ class DataProviderIterator implements \Iterator {
 	}
 
 }
+
 ?>
