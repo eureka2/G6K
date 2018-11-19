@@ -8637,7 +8637,7 @@ wysihtml.dom.insertCSS = function(rules) {
 
 /**
    * Check whether the given node is a proper loaded image
-   * FIXME: Returns undefined when unknown (Chrome, Safari)
+   * Returns undefined when unknown (Chrome, Safari)
 */
 
 wysihtml.dom.isLoadedImage = function (node) {
@@ -11521,7 +11521,7 @@ wysihtml.quirks.ensureProperClearing = (function() {
 
     /**
      * Scroll the current caret position into the view
-     * FIXME: This is a bit hacky, there might be a smarter way of doing this
+     * This is a bit hacky, there might be a smarter way of doing this
      *
      * @example
      *    selection.scrollIntoView();
@@ -15323,7 +15323,7 @@ wysihtml.views.View = Base.extend(
       this.parent.fire("destroy:composer");
   };
 
-  // Listens to "drop", "paste", "mouseup", "focus", "keyup" events and fires
+  // Listens to "drop", "paste", "cut", "mouseup", "focus", "keyup" events and fires // mo
   var handleUserInteraction = function (event) {
     this.parent.fire("beforeinteraction", event).fire("beforeinteraction:composer", event);
     setTimeout((function() {
@@ -15362,6 +15362,15 @@ wysihtml.views.View = Base.extend(
     }
   };
 
+  var handleCut = function(event) { // added by Eureka 2
+    this.parent.fire(event.type, event).fire(event.type + ":composer", event);
+    if (event.type === "cut") {
+      setTimeout((function() {
+        this.parent.fire("deletecharacter:composer");
+      }).bind(this), 0);
+    }
+  };
+
   var handleCopy = function(event) {
     if (this.config.copyedFromMarking) {
       // If supported the copied source can be based directly on selection
@@ -15377,9 +15386,13 @@ wysihtml.views.View = Base.extend(
 
   var handleKeyUp = function(event) {
     var keyCode = event.keyCode;
-    if (keyCode === wysihtml.SPACE_KEY || keyCode === wysihtml.ENTER_KEY) {
+    if (keyCode === wysihtml.SPACE_KEY || keyCode === wysihtml.ENTER_KEY || keyCode === wysihtml.TAB_KEY) { // modified by Eureka 2
       this.parent.fire("newword:composer");
-    }
+    } else if (keyCode === wysihtml.BACKSPACE_KEY || keyCode === wysihtml.DELETE_KEY) { // added by Eureka 2
+      this.parent.fire("deletecharacter:composer"); // added by Eureka 2
+    } else if (keyCode > 32) { // added by Eureka 2
+      this.parent.fire("newcharacter:composer"); // added by Eureka 2
+    } // added by Eureka 2
   };
 
   var handleMouseDown = function(event) {
@@ -15603,6 +15616,7 @@ wysihtml.views.View = Base.extend(
     focusBlurElement.addEventListener('focus', handleFocus.bind(this), false);
     focusBlurElement.addEventListener('blur',  handleBlur.bind(this), false);
 
+    actions.addListeners(this.element, ['cut', 'beforecut'], handleCut.bind(this), false); // added by Eureka 2
     actions.addListeners(this.element, ['drop', 'paste', 'beforepaste'], handlePaste.bind(this), false);
     this.element.addEventListener('copy',       handleCopy.bind(this), false);
     this.element.addEventListener('mousedown',  handleMouseDown.bind(this), false);

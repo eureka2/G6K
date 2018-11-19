@@ -8637,7 +8637,7 @@ wysihtml.dom.insertCSS = function(rules) {
 
 /**
    * Check whether the given node is a proper loaded image
-   * FIXME: Returns undefined when unknown (Chrome, Safari)
+   * Returns undefined when unknown (Chrome, Safari)
 */
 
 wysihtml.dom.isLoadedImage = function (node) {
@@ -11521,7 +11521,7 @@ wysihtml.quirks.ensureProperClearing = (function() {
 
     /**
      * Scroll the current caret position into the view
-     * FIXME: This is a bit hacky, there might be a smarter way of doing this
+     * This is a bit hacky, there might be a smarter way of doing this
      *
      * @example
      *    selection.scrollIntoView();
