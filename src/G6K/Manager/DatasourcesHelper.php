@@ -145,11 +145,11 @@ class DatasourcesHelper {
 		$dss = $xpath->query("/DataSources");
 		$dbs = $xpath->query("/DataSources/Databases");
 		$type = $form['datasource-type'];
-		$ds = $this->DOMNodeToDOMElement($dss->item(0))->getElementsByTagName('DataSource');
+		$ds = $this->convertDOMNodeToDOMElement($dss->item(0))->getElementsByTagName('DataSource');
 		$len = $ds->length;
 		$maxId = 0;
 		for($i = 0; $i < $len; $i++) {
-			$id = (int)$this->DOMNodeToDOMElement($ds->item($i))->getAttribute('id');
+			$id = (int)$this->convertDOMNodeToDOMElement($ds->item($i))->getAttribute('id');
 			if ($id > $maxId) {
 				$maxId = $id;
 			}
@@ -164,11 +164,11 @@ class DatasourcesHelper {
 		switch($type) {
 			case 'internal':
 			case 'database':
-				$db = $this->DOMNodeToDOMElement($dbs->item(0))->getElementsByTagName('Database');
+				$db = $this->convertDOMNodeToDOMElement($dbs->item(0))->getElementsByTagName('Database');
 				$len = $db->length;
 				$maxId = 0;
 				for($i = 0; $i < $len; $i++) {
-					$id = (int)$this->DOMNodeToDOMElement($db->item($i))->getAttribute('id');
+					$id = (int)$this->convertDOMNodeToDOMElement($db->item($i))->getAttribute('id');
 					if ($id > $maxId) {
 						$maxId = $id;
 					}
@@ -256,7 +256,7 @@ class DatasourcesHelper {
 	 * @return  \DOMElement|null The DOMElement.
 	 *
 	 */
-	public function DOMNodeToDOMElement($node) {
+	public function convertDOMNodeToDOMElement(\DOMNode $node) {
 		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
 			return $node;
 		}

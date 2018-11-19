@@ -303,7 +303,7 @@ class Deployer {
 	 * @return  \DOMElement|null The DOMElement.
 	 *
 	 */
-	private function getDOMElementItem($nodes, $index) {
+	private function getDOMElementItem(\DOMNodeList $nodes, $index) {
 		$node = $nodes->item($index);
 		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
 			return $node;

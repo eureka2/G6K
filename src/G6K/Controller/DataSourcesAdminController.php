@@ -703,7 +703,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$converter = new SQLToJSONConverter($parameters, $this->databasesDir);
 		$result = $converter->convert($datasource);
-		ini_set("serialize_precision", '-1');
+		// serialize_precision must be set to -1 in the php ini file
 		$content = array(
 			array(
 				'name' => (string)$datasource['name'].".schema.json",
@@ -1956,12 +1956,12 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']")->item(0));
+		$datasource = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/DataSource[@type='internal' and @database='".$database->getId()."']")->item(0));
 		$tables = $datasource->getElementsByTagName('Table');
 		$len = $tables->length;
 		$maxId = 0;
 		for($i = 0; $i < $len; $i++) {
-			$id = (int)$helper->DOMNodeToDOMElement($tables->item($i))->getAttribute('id');
+			$id = (int)$helper->convertDOMNodeToDOMElement($tables->item($i))->getAttribute('id');
 			if ($id > $maxId) {
 				$maxId = $id;
 			}
@@ -2116,13 +2116,13 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0));
+		$datasource = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0));
 		$tables = $datasource->getElementsByTagName('Table');
 		$len = $tables->length;
 		for($i = 0; $i < $len; $i++) {
-			$name = $helper->DOMNodeToDOMElement($tables->item($i))->getAttribute('name');
+			$name = $helper->convertDOMNodeToDOMElement($tables->item($i))->getAttribute('name');
 			if ($name == $table) {
-				$theTable = $helper->DOMNodeToDOMElement($tables->item($i));
+				$theTable = $helper->convertDOMNodeToDOMElement($tables->item($i));
 				$theTable->setAttribute('name', $form['table-name']);
 				$theTable->setAttribute('label', $form['table-label']);
 				$descr = $dom->createElement("Description");
@@ -2236,11 +2236,11 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0));
+		$datasource = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']")->item(0));
 		$tables = $datasource->getElementsByTagName('Table');
 		$len = $tables->length;
 		for($i = 0; $i < $len; $i++) {
-			$name = $helper->DOMNodeToDOMElement($tables->item($i))->getAttribute('name');
+			$name = $helper->convertDOMNodeToDOMElement($tables->item($i))->getAttribute('name');
 			if ($name == $table) {
 				$datasource->removeChild($tables->item($i));
 				break;
@@ -2265,7 +2265,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$helper = new DatasourcesHelper($this->datasources);
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0));
+		$datasource = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0));
 		$oldType = $datasource->getAttribute('type');
 		$type = $form['datasource-type'];
 		$datasource->setAttribute('type', $type);
@@ -2285,7 +2285,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$sameDatabase = true;
 		if (($type == 'internal' && $oldType == 'internal') || ($type == 'database' && $oldType == 'database')) {
-			$database = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
+			$database = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
 			if ($database->getAttribute('type') != $form['datasource-database-type']) {
 				$sameDatabase = false;
 			} else if ($database->getAttribute('name') != $form['datasource-database-name']) {
@@ -2311,11 +2311,11 @@ class DataSourcesAdminController extends BaseAdminController {
 					$datasource->removeAttribute ('uri');
 					$datasource->removeAttribute ('method');
 					$dbs = $xpath->query("/DataSources/Databases");
-					$db = $helper->DOMNodeToDOMElement($dbs->item(0))->getElementsByTagName('Database');
+					$db = $helper->convertDOMNodeToDOMElement($dbs->item(0))->getElementsByTagName('Database');
 					$len = $db->length;
 					$maxId = 0;
 					for($i = 0; $i < $len; $i++) {
-						$id = (int)$helper->DOMNodeToDOMElement($db->item($i))->getAttribute('id');
+						$id = (int)$helper->convertDOMNodeToDOMElement($db->item($i))->getAttribute('id');
 						if ($id > $maxId) {
 							$maxId = $id;
 						}
@@ -2336,7 +2336,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$dbs->item(0)->appendChild($database);
 					$datasource->setAttribute('database', $database->getAttribute('id'));
 				} else {
-					$database = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
+					$database = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
 					$oldDbtype = $database->getAttribute('type');
 					$database->setAttribute('type', $dbtype);
 					$database->setAttribute('name', $form['datasource-database-name']);
@@ -2366,8 +2366,8 @@ class DataSourcesAdminController extends BaseAdminController {
 				$datasource->setAttribute('uri', $form['datasource-uri']);
 				$datasource->setAttribute('method', $form['datasource-method']);
 				if ($oldType != 'uri') {
-					$databases = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases")->item(0));
-					$database = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
+					$databases = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/Databases")->item(0));
+					$database = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
 					$datasource->removeAttribute ('database');
 					$databases->removeChild($database);
 				}
@@ -2395,11 +2395,11 @@ class DataSourcesAdminController extends BaseAdminController {
 		$helper = new DatasourcesHelper($this->datasources);
 		$dom = dom_import_simplexml($this->datasources)->ownerDocument;
 		$xpath = new \DOMXPath($dom);
-		$datasource = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0));
+		$datasource = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/DataSource[@id='".$dsid."']")->item(0));
 		$type = $datasource->getAttribute('type');
 		if ($type == 'internal' || $type == 'database') {
 			$dbs = $xpath->query("/DataSources/Databases");
-			$db = $helper->DOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
+			$db = $helper->convertDOMNodeToDOMElement($xpath->query("/DataSources/Databases/Database[@id='".$datasource->getAttribute('database')."']")->item(0));
 			$dbtype = $db->getAttribute('type');
 			if ($type == 'internal') { 
 				$dbname = $db->getAttribute('name');
