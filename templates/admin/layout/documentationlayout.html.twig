@@ -45,11 +45,11 @@ THE SOFTWARE.
 {% endblock %} {# metas #}
 
 {% block styles %}
-<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/bootstrap4/css/bootstrap.min.css') }}" />
-<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/bootstrap-datepicker/css/bootstrap-datepicker.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap4/css/bootstrap.min.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap-datepicker/css/bootstrap-datepicker.css') }}" />
 <link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/css/font-awesome/css/font-awesome.min.css') }}" />
-<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/bootstrap4/css/docs.css') }}" />
-<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/bootstrap4/css/google-code-prettify/prettify.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap4/css/docs.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap4/css/google-code-prettify/prettify.css') }}" />
 <link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/css/g6k.admin.css') }}" />
 {% endblock %} {# styles #}
 
@@ -81,9 +81,9 @@ THE SOFTWARE.
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/bootstrap4/js/google-code-prettify/run_prettify.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/bootstrap4/js/bootstrap.bundle.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/bootstrap4/js/affix.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/google-code-prettify/run_prettify.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/bootstrap.bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/affix.js') }}"></script>
 <script type="text/javascript">
 $(function(){
 	$('[data-spy="affix"]').on('affixed.bs.affix', function () {

@@ -178,22 +178,22 @@ THE SOFTWARE.
 {% block scripts %}
 {{ parent() }}<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.views.js') }}"></script>
 {% if view is not empty %}
-<script type="text/javascript" src="{{ asset('assets/admin/js/jquery.treegrid/js/jquery.treegrid.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/jquery.treegrid/js/jquery.treegrid.bootstrap4.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery.treegrid/js/jquery.treegrid.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery.treegrid/js/jquery.treegrid.bootstrap4.js') }}"></script>
 {% if node > 0 and (file.mode == 'javascript' or file.mode == 'css' or file.mode == 'twig') %}
-<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/js/codemirror.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/codemirror/js/codemirror.js') }}"></script>
 {% if file.mode == 'javascript' %}
-<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/mode/javascript/javascript.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/codemirror/mode/javascript/javascript.js') }}"></script>
 {% endif %}
 {% if file.mode == 'css' %}
-<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/mode/css/css.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/codemirror/mode/css/css.js') }}"></script>
 {% endif %}
 {% if file.mode == 'twig' %}
-<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/mode/twig/twig.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/codemirror/mode/twig/twig.js') }}"></script>
 {% endif %}
-<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/addon/selection/active-line.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/addon/edit/matchbrackets.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/codemirror/addon/display/fullscreen.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/codemirror/addon/selection/active-line.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/codemirror/addon/edit/matchbrackets.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/codemirror/addon/display/fullscreen.js') }}"></script>
 {% endif %}
 {% endif %}
 <script type="text/javascript">

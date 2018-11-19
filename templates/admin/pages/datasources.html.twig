@@ -617,8 +617,8 @@ THE SOFTWARE.
 
 {% block scripts %}
 {{ parent() }}<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.datasources.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/json-validator/tv4.min.js') }}"></script>
-{% if app.request.locale == 'de' or  app.request.locale == 'es' or app.request.locale == 'fr' %}<script type="text/javascript" src="{{ asset('assets/admin/js/json-validator/lang/' ~ app.request.locale ~ '.js') }}"></script>{% endif %}{% if table is not empty %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/json-validator/tv4.min.js') }}"></script>
+{% if app.request.locale == 'de' or  app.request.locale == 'es' or app.request.locale == 'fr' %}<script type="text/javascript" src="{{ asset('assets/admin/js/libs/json-validator/lang/' ~ app.request.locale ~ '.js') }}"></script>{% endif %}{% if table is not empty %}
 <script type="text/javascript">
 $(function(){
 	var fields = [{%- for info in tableinfos -%}[{{ loop.index0 }}, '{{ info.name }}', '{{ info.label }}', '{{ info.description }}', '{{ info.notnull }}', '{{ info.g6k_type }}'{%- if info.choices is defined -%}, '{ {%- for value, label in info.choices -%}"{{ value }}": "{{ label }}"{%- if not loop.last -%}, {%- endif -%}{%- endfor -%} }'{%- endif -%}{%- if info.choicesource is defined -%}, '{ "id": {{ info.choicesource.id }}, "datasource": "{{ info.choicesource.datasource }}", "request": "{{ info.choicesource.request }}", "returnType": "{{ info.choicesource.returnType }}", "separator": "{{ info.choicesource.separator }}", "delimiter": "{{ info.choicesource.delimiter }}", "returnPath": "{{ info.choicesource.returnPath }}", "valueColumn": "{{ info.choicesource.valueColumn }}", "labelColumn": "{{ info.choicesource.labelColumn }}" }'{%- endif -%}]{%- if not loop.last -%},{%- endif -%}{%- endfor -%}];
