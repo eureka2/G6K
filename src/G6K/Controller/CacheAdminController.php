@@ -30,9 +30,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 use App\G6K\Manager\ControllersHelper;
 
-use Silex\Application;
-use App\G6K\Silex\MobileDetectServiceProvider;
-
 /**
  *
  * The UsersAdminController class is the controller that handles all actions of the symfony cache management interface.
@@ -114,13 +111,12 @@ class CacheAdminController extends BaseAdminController {
 
  		$hiddens = array();
 		$hiddens['script'] = $script;
-		$silex = new Application();
-		$silex->register(new MobileDetectServiceProvider());
+		$ua = new \Detection\MobileDetect();
 		try {
 			return $this->render(
 				'admin/pages/cache-clear.html.twig',
 				array(
-					'ua' => $silex["mobile_detect"],
+					'ua' => $ua,
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'caches',
 					'log' => $this->log,

@@ -35,9 +35,6 @@ use Symfony\Component\Finder\Finder;
 
 use App\G6K\Manager\ControllersHelper;
 
-use Silex\Application;
-use App\G6K\Silex\MobileDetectServiceProvider;
-
 /**
  *
  * The ViewsAdminController class is the controller that handles all actions of the views management interface.
@@ -224,13 +221,12 @@ class ViewsAdminController extends BaseAdminController {
 				$hiddens['action'] = 'create';
 			}
 		}
-		$silex = new Application();
-		$silex->register(new MobileDetectServiceProvider());
+		$ua = new \Detection\MobileDetect();
 		try {
 			return $this->render(
 				'admin/pages/views.html.twig',
 				array(
-					'ua' => $silex["mobile_detect"],
+					'ua' => $ua,
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'views',
 					'views' => $views,

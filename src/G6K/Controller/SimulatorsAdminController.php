@@ -66,9 +66,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
 
-use Silex\Application;
-use App\G6K\Silex\MobileDetectServiceProvider;
-
 /**
  *
  * The SimulatorsAdminController class is the controller that handles all actions of the simulator management interface.
@@ -404,8 +401,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			libxml_use_internal_errors(true);
 			$valid = $dom->schemaValidate($schema);
 		}
-		$silex = new Application();
-		$silex->register(new MobileDetectServiceProvider());
+		$ua = new \Detection\MobileDetect();
 		$widgets = $this->getWidgets();
 		$deployment = 	$this->container->hasParameter('deployment') && 
 						$this->get('security.authorization_checker')->isGranted('ROLE_MANAGER') && 
@@ -415,7 +411,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			return $this->render(
 				'admin/pages/simulators.html.twig',
 				array(
-					'ua' => $silex["mobile_detect"],
+					'ua' => $ua,
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'simulators',
 					'simulators' => $simulators,
@@ -1499,12 +1495,11 @@ class SimulatorsAdminController extends BaseAdminController {
 		} catch (\Exception $ex) {
 		}
 		$hiddens = array();
-		$silex = new Application();
-		$silex->register(new MobileDetectServiceProvider());
+		$ua = new \Detection\MobileDetect();
 		return $this->render(
 			'admin/pages/deploy-output.html.twig',
 			array(
-				'ua' => $silex["mobile_detect"],
+				'ua' => $ua,
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'simulators',
 				'simulator' => $this->simu,

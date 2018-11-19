@@ -30,9 +30,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 use App\G6K\Manager\ControllersHelper;
 
-use Silex\Application;
-use App\G6K\Silex\MobileDetectServiceProvider;
-
 /**
  *
  *  The DocumentationController class is the controller that manages the display of documentation pages.
@@ -78,13 +75,12 @@ class DocumentationController extends BaseAdminController {
 
 		$hiddens = array();
 		$hiddens['script'] = $script;
-		$silex = new Application();
-		$silex->register(new MobileDetectServiceProvider());
+		$ua = new \Detection\MobileDetect();
 		try {
 			return $this->render(
 				'admin/pages/documentation.html.twig',
 				array(
-					'ua' => $silex["mobile_detect"],
+					'ua' => $ua,
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'documentation',
 					'document' => $document,

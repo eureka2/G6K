@@ -33,9 +33,6 @@ use App\G6K\Model\Step;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Cookie;
 
-use Silex\Application;
-use App\G6K\Silex\MobileDetectServiceProvider;
-
 /**
  *
  * The actions of the DefaultController class are used to run the simulation engine for a particular simulator.
@@ -201,8 +198,7 @@ class DefaultController extends BaseController {
 		$hiddens['sequence'] = implode('|', $this->sequence);
 		$hiddens['script'] = $this->script;
 		$hiddens['view'] = $view;
-		$silex = new Application();
-		$silex->register(new MobileDetectServiceProvider());
+		$ua = new \Detection\MobileDetect();
 		$availWidgets = $this->container->getParameter('widgets');
 		$widgets = array();
 		foreach ($this->simuWidgets as $widget) {
@@ -217,7 +213,7 @@ class DefaultController extends BaseController {
 				array(
 					'view' => $view,
 					'script' => $this->script,
-					'ua' => $silex["mobile_detect"],
+					'ua' => $ua,
 					'path' => $this->path,
 					'log' => $this->log,
 					'step' => $step,
@@ -248,13 +244,12 @@ class DefaultController extends BaseController {
 	 */
 	protected function pdfOutput(Request $request, $step, $datas, $view = "Default")
 	{
- 		$silex = new Application();
-		$silex->register(new MobileDetectServiceProvider());
+		$ua = new \Detection\MobileDetect();
 		$page = $this->render(
 			$view.'/'.str_replace(':', '/', $step->getTemplate()),
 			array(
 				'view' => $view,
-				'ua' => $silex["mobile_detect"],
+				'ua' => $ua,
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'log' => $this->log,
 				'step' => $step,

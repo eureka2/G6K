@@ -30,9 +30,6 @@ use App\G6K\Manager\ControllersHelper;
 
 use Symfony\Component\HttpFoundation\Request;
 
-use Silex\Application;
-use App\G6K\Silex\MobileDetectServiceProvider;
-
 /**
  *
  * The IndexController class is the controller that give of online simulators.
@@ -84,14 +81,13 @@ class IndexController extends BaseController {
 				'description' => $s->Description
 			);
 		}
-		$silex = new Application();
-		$silex->register(new MobileDetectServiceProvider());
+		$ua = new \Detection\MobileDetect();
 		$widgets = $this->getWidgets();
 		try {
 			return $this->render(
 				'base/pages/index.html.twig',
 				array(
-					'ua' => $silex["mobile_detect"],
+					'ua' => $ua,
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'simulators' => $simulators,
 					'simulator' => null,

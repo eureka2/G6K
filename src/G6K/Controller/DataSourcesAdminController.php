@@ -41,9 +41,6 @@ use App\G6K\Manager\Json\SQLToJSONConverter;
 use App\G6K\Manager\DOMClient as Client;
 use App\G6K\Manager\ResultFilter;
 
-use Silex\Application;
-use App\G6K\Silex\MobileDetectServiceProvider;
-
 /**
  *
  * The DataSourcesAdminController class is the controller that handles all actions of the datasources management interface.
@@ -641,13 +638,12 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
  		$hiddens = array();
 		$hiddens['script'] = $this->script;
-		$silex = new Application();
-		$silex->register(new MobileDetectServiceProvider());
+		$ua = new \Detection\MobileDetect();
 		try {
 			return $this->render(
 				'admin/pages/datasources.html.twig',
 				array(
-					'ua' => $silex["mobile_detect"],
+					'ua' => $ua,
 					'path' => $this->request->getScheme().'://'.$this->request->getHttpHost(),
 					'nav' => 'datasources',
 					'datasource' => $datasource,

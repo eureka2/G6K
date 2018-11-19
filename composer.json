@@ -19,7 +19,6 @@
         "mobiledetect/mobiledetectlib": "^2.8",
         "mpdf/mpdf": "^7.1",
         "sensio/framework-extra-bundle": "^5.1",
-        "silex/silex": "^2.2",
         "symfony/asset": "*",
         "symfony/console": "*",
         "symfony/expression-language": "*",
