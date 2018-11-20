@@ -87,7 +87,7 @@ trait ControllersHelper {
 	 * Formats a source parameter value
 	 *
 	 * @access  protected
-	 * @param   \App\G6K\Model\Parameter The source parameter
+	 * @param   \App\G6K\Model\Parameter $param The source parameter
 	 * @return  string|null The formatted value
 	 *
 	 */
@@ -333,7 +333,7 @@ trait ControllersHelper {
 			case 'csv':
 				$returnPath = $source->getReturnPath();
 				$returnPath = $this->replaceVariables($returnPath);
-				$result = ResultFilter::filter("csv", $result, $returnPath, null, $source->getSeparator(), $source->getDelimiter());
+				$result = ResultFilter::filter("csv", $result, $returnPath, array(), $source->getSeparator(), $source->getDelimiter());
 				return $result;
 		}
 		return null;

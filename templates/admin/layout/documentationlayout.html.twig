@@ -54,10 +54,10 @@ THE SOFTWARE.
 {% endblock %} {# styles #}
 
 {% block hscripts %}
-<script type="text/javascript" src="{{ asset('assets/base/js/modernizr.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/modernizr.min.js') }}"></script>
 <!--[if lt IE 9]>
-<script src="{{ asset('assets/base/js/html5shiv.min.js') }}"></script>
-<script src="{{ asset('assets/base/js/respond.min.js') }}"></script>
+<script src="{{ asset('assets/base/js/libs/html5shiv.min.js') }}"></script>
+<script src="{{ asset('assets/base/js/libs/respond.min.js') }}"></script>
 <![endif]-->
 {% endblock %} {# hscripts #}
 </head>
@@ -70,11 +70,11 @@ THE SOFTWARE.
 
 {% block jquery %}
 <!--[if lt IE 9]>
-<script src="{{ asset('assets/base/js/jquery-1.11.1.min.js') }}"></script>
+<script src="{{ asset('assets/base/js/libs/jquery-1.11.1.min.js') }}"></script>
 <![endif]-->
 <!--[if gte IE 9]><!-->
-<script type="text/javascript" src="{{ asset('assets/base/js/jquery-3.3.1.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/base/js/jquery-migrate-3.0.0.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-3.3.1.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-migrate-3.0.0.js') }}"></script>
 <!--<![endif]-->
 {% endblock %} {# jquery #}
 

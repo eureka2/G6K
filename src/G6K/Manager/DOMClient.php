@@ -124,7 +124,7 @@ class DOMClient extends BaseClient {
 	 * @param   array $server (default: array()) An array of server parameters
 	 * @param   string|null $content (default: null) The raw body data
 	 * @param   bool $changeHistory (default: true) Whether to update the history or not (only used internally for back(), forward(), and reload())
-	 * @return  \Symfony\Component\DomCrawler\Crawler The Crawler object
+	 * @return  \Symfony\Component\DomCrawler\Crawler|string The Crawler object or the Response content
 	 *
 	 */
 	public function request(string $method, string $uri, array $parameters = array(), array $files = array(), array $server = array(), string $content = null, bool $changeHistory = true) {
@@ -143,7 +143,7 @@ class DOMClient extends BaseClient {
 	 * @access  public
 	 * @param   string $uri The URI to fetch
 	 * @param   array $headers (default: array() The headers of the request
-	 * @return  \Symfony\Component\DomCrawler\Crawler The Crawler object
+	 * @return  \Symfony\Component\DomCrawler\Crawler|string The Crawler object or the Response content
 	 *
 	 */
 	public function get($uri, $headers = array()) {
@@ -157,7 +157,7 @@ class DOMClient extends BaseClient {
 	 * @param   string $uri The URI to fetch
 	 * @param   array $headers The headers of the request
 	 * @param   array $data The data to post
-	 * @return  \Symfony\Component\DomCrawler\Crawler The Crawler object
+	 * @return  \Symfony\Component\DomCrawler\Crawler|string The Crawler object or the Response content
 	 *
 	 */
 	public function post($uri, $headers = array(), $data = array()) {
