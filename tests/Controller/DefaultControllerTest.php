@@ -38,7 +38,7 @@ use Symfony\Component\Process\ExecutableFinder;
 /**
  *
  * This class run functional tests of the simulation engine (DefaultController) from tab delimited text files
- * These text files located in the "src/EUREKA/G6KBundle/Resources/data/tests" directory contain the data of each of the simulators to be tested.
+ * These text files located in the "var/data/tests" directory contain the data of each of the simulators to be tested.
  *
  * This class can use either PhantomJS or SlimerJS as Javascript engine, the one installed
  *

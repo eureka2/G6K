@@ -30,7 +30,7 @@ namespace App\G6K\Tests\Controller;
  *
  * This class implements a custom data provider iterator for the functional tests
  *
- * It reads all the tab delimited text files in the src/EUREKA/G6KBundle/Resources/tests directory and provides their lines one by one to the test program. 
+ * It reads all the tab delimited text files in the var/data/tests directory and provides their lines one by one to the test program. 
  *
  * @copyright Jacques Archimède
  *
@@ -86,7 +86,7 @@ class DataProviderIterator implements \Iterator {
 	 */
 	public function __construct() {
 		$this->simus = array();
-		$testsDir = dirname(dirname(__DIR__)) . '/Resources/data/tests';
+		$testsDir = dirname(dirname(__DIR__)) . '/var/data/tests';
 		if (is_dir($testsDir)) {
 			$files = scandir($testsDir);
 			foreach ($files as $file) {
