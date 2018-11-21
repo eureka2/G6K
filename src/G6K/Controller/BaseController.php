@@ -320,13 +320,13 @@ class BaseController extends Controller {
 								}
 							} elseif ($child instanceof FieldRow) {
 								$fieldrow = $child;
-								foreach ($fieldrow->getFields() as $field) {
-									if ($field->getUsage() == "input") {
-										$id = $field->getData();
+								foreach ($fieldrow->getFields() as $rfield) {
+									if ($rfield->getUsage() == "input") {
+										$id = $rfield->getData();
 										$data = $this->simu->getDataById($id);
 										$data->setInputStepId($s->getId());
 										$fieldset->setInputFields(true);
-										if ($field->isRequired() || $field->isVisibleRequired()) {
+										if ($rfield->isRequired() || $rfield->isVisibleRequired()) {
 											$fieldset->setRequiredFields(true);
 										}
 										if ($data->getType() == 'boolean' && $s->getId() == $istep && !isset($form[$data->getName()])) {

@@ -2219,18 +2219,18 @@ class SimulatorsAdminController extends BaseAdminController {
 									);
 									$ofields = array();
 									$ochoices = array();
-									foreach ($fieldrow->getFields() as $field) {
-										$data = $this->simu->getDataById($field->getData());
+									foreach ($fieldrow->getFields() as $rfield) {
+										$data = $this->simu->getDataById($rfield->getData());
 										$name = $data->getName();
-										$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
+										$fieldLabel = $rfield->getLabel() != '' ? $rfield->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $rfield->getPosition()));
 										$ofields[] = array (
 											"label" => $fieldLabel,
-											"name" => $field->getPosition()
+											"name" => $rfield->getPosition()
 										);
 										if (isset($this->dataset[$name]) && isset($this->dataset[$name]['options'])) {
 											$ochoices[] = array (
 												"label" => $fieldLabel,
-												"name" => $field->getPosition(),
+												"name" => $rfield->getPosition(),
 												"fields" => array(
 													array(
 														"label" => $this->get('translator')->trans('whose label is'),
@@ -2241,7 +2241,7 @@ class SimulatorsAdminController extends BaseAdminController {
 												)
 											);
 										}
-										$tfieldrow['fields'][] = $this->loadBusinessRuleField($field);
+										$tfieldrow['fields'][] = $this->loadBusinessRuleField($rfield);
 									}
 									if (count($ofields) > 0) {
 										$ofieldrowfields[] = array(
