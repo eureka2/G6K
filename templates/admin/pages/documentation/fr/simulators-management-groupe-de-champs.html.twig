@@ -1,0 +1,64 @@
+				<h4 id="groupe-de-champs">
+					4.3.1.1. Groupe de champs
+				</h4>
+				<p>Le groupe de champs permet de regrouper des champs de même nature (logique ou thématique) faisant ressortir ainsi la structuration des informations demandées.</p>
+				<p>Pour ajouter un groupe de champs, cliquez sur le bouton « Ajouter » de la barre de titre du panneau « Panneau » :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-panel-add-menu.png') }}" alt="">
+				</p>
+				<p>puis sur « Ajouter un groupe de champs » du menu :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-fieldset-add.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Disposition » : « Classique », « Grille » ou « En ligne ».</li>
+					<li>« Affichage » : « En ligne » ou « Pop-in ».</li>
+				</ol>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Disposition</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Classique</td>
+							<td>Les éléments du formulaire appartenant au groupe de champs sont disposés de façon classique, c'est-à-dire qu'un champ précédé de son étiquette de champ est placé sur la ligne suivant celle du champ précédent</td>
+						</tr>
+						<tr>
+							<td>Grille</td>
+							<td>Les éléments du formulaire appartenant au groupe de champs sont placés dans un tableau</td>
+						</tr>
+						<tr>
+							<td>En ligne</td>
+							<td>Les éléments du formulaire appartenant au groupe de champs sont disposés en ligne de façon à former une phrase</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Affichage</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>En ligne</td>
+							<td>Les champs du groupe de champs sont affichés "en ligne" dans la page</td>
+						</tr>
+						<tr>
+							<td>Pop-in</td>
+							<td>Les champs du groupe de champs sont affichés dans une fenêtre pop-in modale. Un lien dont le libellé se trouve dans l'attribut « Lien d’activation du Pop-in » permet d'afficher la fenêtre</td>
+						</tr>
+					</tbody>
+				</table>
+				<p><strong>Attribut optionnel :</strong></p>
+				<ol>
+					<li>« Lien d’activation du Pop-in » : Cet attribut n'est à renseigner que si l'attribut « Affichage » du groupe de champ est « Pop-in ». C'est le texte du lien qui permet d'afficher le pop-in.</li>
+				</ol>
+				<p>Décrivez le groupe de champs dans le champ « Légende ». Cette légende s'affiche dans la zone <span class="bs-docs-number-circle">3</span> de la page.</p>
+				{% include 'admin/pages/documentation/fr/simulators-management-champs.html.twig' %}
+				

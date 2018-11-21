@@ -1,0 +1,30 @@
+				<h2 id="suppression-d-un-utilisateur">
+					2.3. Suppression d’un utilisateur
+				</h2>
+				<p>
+					Pour supprimer un utilisateur cliquez sur le bouton : 
+					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-delete-button.png') }}" alt="">
+				</p>
+				<p>
+					Un bouton de confirmation apparaîtra, cliquez sur ce dernier ( 
+					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-confirm-button.png') }}" alt="">
+					) pour supprimer le compte.
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-delete.png') }}" alt="">
+				</p>
+				<p>
+					Une fois confirmé, le compte de l'utilisateur sera supprimé de la base de données des utilisateurs, mais la ligne du compte restera affichée avec un bouton « Restaurer » si toutefois vous vous étiez trompé ou que vous changez d'avis.
+					<br>
+					A noter que si vous restaurer le compte, l'utilisateur ne pourra pas se connecter avec son ancien mot de passe. En effet, pour des raisons de sécurité, l'ancien mot de passe n'a pu être enregistré car celui-ci a été codé en fonction du jour de sa création.
+					<br>
+					Vous devez donc saisir un nouveau mot de passe et le communiquer à l'utilisateur.
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-delete-restore.png') }}" alt="">
+				</p>
+				<p>Au prochain ré-affichage de la page le compte n'apparaîtra plus dans la liste.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-list.png') }}" alt="">
+				</p>
+			

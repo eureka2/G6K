@@ -24,72 +24,40 @@
 					<div class="row">
 						<div class="documentation-illustration pull-right">
 							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulators-management' }) }}">
-								<img src="{{ asset('assets/admin/images/documentation/simulators-illustration.png') }}" alt="Simulators" />
+								<img src="{{ asset('assets/admin/images/documentation/simulators-illustration.png') }}" alt="Simulators">
 							</a>
 						</div>
 						<div class="documentation-text">
-							<h1 id="simulators">
-								1. Simulators
-							</h1>
-							A calculation simulator is an online service made available to a user to enable them to calculate the results (taxes, social benefits, etc.) corresponding to their particular situation.
-							<br />
-							<br />
-							The results are calculated on the basis of data supplied by the user, reference data (e.g. amount of a tax) and business rules reflecting the current legislation in the field of simulation.
-							<br />
-							<br />
-							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulators-management' }) }}"> <span>View the documentation</span>&nbsp;&nbsp;<span class="fa fa-book"></span> </a>
-						</div>
+							{% include 'admin/pages/documentation/en/index-simulators.html.twig' %}
+				</div>
 					</div>
 					<div class="row">
 						<div class="documentation-text pull-right">
-							<h1 id="data-sources">
-								2. Data sources
-							</h1>
-							A data source allows a simulator to query the simulation field reference values ​​to perform the simulation.
-							<br />
-							<br />
-							The data source can be internal, i.e. the values ​​are stored in a database managed by G6K, or external, i.e. the values ​​are supplied either via queries on a remote database or via a web service (API).
-							<br />
-							<br />
-							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'datasources-management' }) }}"> <span>View the documentation</span>&nbsp;&nbsp;<span class="fa fa-book"></span> </a>
-						</div>
+							{% include 'admin/pages/documentation/en/index-data-sources.html.twig' %}
+				</div>
 						<div class="documentation-illustration">
 							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'datasources-management' }) }}">
-								<img class="img-responsive" src="{{ asset('assets/admin/images/documentation/datasources-illustration.png') }}" alt="Data sources" />
+								<img class="img-responsive" src="{{ asset('assets/admin/images/documentation/datasources-illustration.png') }}" alt="Data sources">
 							</a>
 						</div>
 					</div>
 					<div class="row">
 						<div class="documentation-illustration pull-right">
 							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">
-								<img class="img-responsive" src="{{ asset('assets/admin/images/documentation/views-illustration.png') }}" alt="Views" />
+								<img class="img-responsive" src="{{ asset('assets/admin/images/documentation/views-illustration.png') }}" alt="Views">
 							</a>
 						</div>
 						<div class="documentation-text">
-							<h1 id="views">
-								3. Views
-							</h1>
-							Views are design elements of pages and styles in which the simulators are integrated.
-							<br />
-							They are composed of « Templates » and « Assets ».
-							<br />
-							<br />
-							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}"> <span>View the documentation</span>&nbsp;&nbsp;<span class="fa fa-book"></span> </a>
-						</div>
+							{% include 'admin/pages/documentation/en/index-views.html.twig' %}
+				</div>
 					</div>
 					<div class="row">
 						<div class="documentation-text pull-right">
-							<h1 id="users">
-								4. Users
-							</h1>
-							G6K has an interface allowing you to manage the user accounts that are authorized to access either the G6K administration module or the protected access simulators.
-							<br />
-							<br />
-							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'users-management' }) }}"> <span>View the documentation</span>&nbsp;&nbsp;<span class="fa fa-book"></span> </a>
-						</div>
+							{% include 'admin/pages/documentation/en/index-users.html.twig' %}
+				</div>
 						<div class="documentation-illustration">
 							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'users-management' }) }}">
-								<img class="img-responsive" src="{{ asset('assets/admin/images/documentation/users-illustration.png') }}" alt="Users" />
+								<img class="img-responsive" src="{{ asset('assets/admin/images/documentation/users-illustration.png') }}" alt="Users">
 							</a>
 						</div>
 					</div>

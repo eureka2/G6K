@@ -1,0 +1,123 @@
+				: empty</li>
+					<li>« content »: Visible content of the web page. Included in the body block: empty;</li>
+					<li>« scripts »: Scripts and script calls at the end of the page. Included in body block.</li>
+					<li>« jquery »: Call the correct version of jquery according to the browser.</li>
+				</ul>
+				<div class="alert alert-warning" role="alert">
+CAUTION: If you add content to these blocks, put &lbrace;&lbrace; parent() &rbrace;&rbrace; at the beginning of the block to avoid overwriting the content set by the basic layout. This is not useful for the « title », « bodyclass », « bodyattr » and « content » blocks that are empty.
+</div>
+				<p>Note that the base layout does not add any visible content to the web page. It's in the « content » block that you have to put your elements such as page header, footer, menus, sidebar(s) and other contents.
+You must also add the simulation form, which you will do using a macro twig and variables provided by G6K.</p>
+				<p>
+					Like the "Demo" view, it is advisable to define a layout specific to your view that will be responsible for displaying the different elements of the page except the simulation form and the elements specific to a simulator.
+					<br>
+					You will then define a template that will inherit the layout specific to the view and which will contain the simulation form and the elements specific to a simulator.
+					<br>
+					It's this last template that should be referenced in the definition of the simulation steps in the simulators. See <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulators-management' }) }}">Creating a simulator</a>
+				</p>
+				<p>Concretely, suppose your page has the following structure:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/views-management-template-layout.png') }}" alt="">
+				</p>
+				<p>It's the layout that displays the part with gray background and positions the « content » block (part with white background) on the page.</p>
+				<p>It's the child template that feeds the « content » block where:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-1.png') }}" alt="">
+					Label/Title of the simulator
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-2.png') }}" alt="">
+					Description of the simulator
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-3.png') }}" alt="">
+					Breadcrumb trail
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-4.png') }}" alt="">
+					Description of the current step
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-5.png') }}" alt="">
+					Location of the simulation form in the current step
+					<br>
+					 
+				</p>
+				<p>Variables and macros that feed these elements are:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-1.png') }}" alt="">
+					<code>&lbrace;&lbrace; step.simulator.label &rbrace;&rbrace;</code>
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-2.png') }}" alt="">
+					<code>&lbrace;&lbrace; form.paragraphs(step.simulator.description|jscode) &rbrace;&rbrace;</code>
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-3.png') }}" alt="">
+					<code>&lbrace;&lbrace; form.breadcrumb(_context) &rbrace;&rbrace;</code>
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-4.png') }}" alt="">
+					<code>&lbrace;&lbrace; step.description &rbrace;&rbrace;</code>
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-5.png') }}" alt="">
+					<code>&lbrace;&lbrace; form.draw(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control', 'panel panel-default', 'panel-heading', 'panel-body') &rbrace;&rbrace;</code>
+				</p>
+				<p>To use these macros, they must be imported into the template:</p>
+				<pre class="prettyprint"><code>&lbrace;% import "base/macros/form.html.twig" as form %&rbrace;
+</code></pre>
+				<p>The available and useful macros are:</p>
+				<ul>
+					<li>
+						« form.breadcrumb »: Draws the breadcrumb thread of the steps.
+						<br>
+						Parameter: _context
+					</li>
+					<li>
+						« form.draw »: Displays the simulation form for the current step.
+						<br>
+						Parameters : 
+						<ol>
+							<li>_context</li>
+							<li>CSS class of the field group container</li>
+							<li>CSS class of field container</li>
+							<li>CSS class of field labels</li>
+							<li>CSS class of the container that includes a field and its unit or the currency symbol</li>
+							<li>field CSS class</li>
+							<li>CSS Class of the Chapter Container</li>
+							<li>CSS class of the chapter header</li>
+							<li>CSS Class of Section Container</li>
+						</ol>
+					</li>
+					<li>
+						« form.heading »: Displays text with a heading level (tags h1, h2, ...) after removing line breaks.
+						<br>
+						Parameters : 
+						<ol>
+							<li>text to display</li>
+							<li>heading level (1 to 6)</li>
+							<li>CSS class of generated tag</li>
+						</ol>
+					</li>
+					<li>
+						« form.paragraphs »: Displays text with line breaks by including each line of text in HTML paragraphs (<p>).
+						<br>
+						Parameter: the text to display
+					</li>
+					<li>
+						« form.profiles »: Displays the profiles.
+						<br>
+						Parameter: _context
+					</li>
+				</ul>
+				<p>Available and useful variables are:</p>
+				<ul>
+					<li>« step.simulator.name »: Name of the simulator</li>
+					<li>« step.simulator.label »: Label/Title of the simulator</li>
+					<li>« step.simulator.description »: Description of the simulator</li>
+					<li>« step.simulator.referer »: URL of the page of the site where the simulator is referenced</li>
+					<li>« step.simulator.memo: True if the simulator allows the use of a memo (record of values ​​of fields in cookies), false if not</li>
+					<li>« step.name »: Name of the current step</li>
+					<li>« step.label »: Label/Title of the current step</li>
+					<li>« step.description »: Description of the current step</li>
+					<li>« step.dynamic »: True if Javascript is used to « animate » the simulation, false otherwise</li>
+					<li>« Script »: True if Javascript is enabled in the browser, false otherwise</li>
+				</ul>
+				<p class="figure-legend">Figure 8 - « Demo » template illustrating the use of macros and variables</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-page.png') }}" alt="">
+				</p>
+			

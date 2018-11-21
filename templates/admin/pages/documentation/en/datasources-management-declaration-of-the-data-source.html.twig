@@ -1,0 +1,30 @@
+				<h3 id="declaration-of-the-data-source">
+					3.1.1. Declaration of the data source
+				</h3>
+				<p>Click « Data sources » from the menu bar.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="">
+				</p>
+				<p>
+					then on 
+					<img src="{{ asset('assets/admin/images/documentation/en/datasources-management-create-button.png') }}" alt="">
+					from the left side menu.
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/datasources-management-create-external.png') }}" alt="">
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Name »: Name of the data source without spaces or special or accented characters.</li>
+					<li>« Type »: Type of data source « Internal », « External database » or « External web service (API Rest) ». Choose « External database ».</li>
+					<li>« Database » / « Type »: Type of the database (MySQL or PostgreSQL).</li>
+					<li>« Database name »: Name of the database without spaces or special characters or accented characters.</li>
+					<li>« Database label »: At your convenience.</li>
+					<li>« Database host »: The name of the server or its IP address.</li>
+					<li>« Database port »: port number, usually 4 digits.</li>
+					<li>« Database user »: The identifier of a user with the SELECT privilege.</li>
+					<li>« Database password »: The password associated with the identifier.</li>
+				</ol>
+				<p>You can describe the data source in the « Description » space provided for this purpose.</p>
+				{% include 'admin/pages/documentation/en/datasources-management-declaration-of-tables.html.twig' %}
+				

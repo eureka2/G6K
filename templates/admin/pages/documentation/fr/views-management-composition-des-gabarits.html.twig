@@ -1,0 +1,123 @@
+				: vide</li>
+					<li>« content » : Contenu visible de la page web. Inclus dans le bloc body : vide;</li>
+					<li>« scripts » : Scripts et appels de scripts en fin de page. Inclus dans le bloc body.</li>
+					<li>« jquery » : Appel de la bonne version de jquery en fonction du navigateur.</li>
+				</ul>
+				<div class="alert alert-warning" role="alert">
+ATTENTION: Si vous ajoutez du contenu à ces blocs, mettre &lbrace;&lbrace; parent() &rbrace;&rbrace; en début de bloc pour ne pas écraser le contenu mis par le layout de base. Ceci n'est pas utile pour les blocs « title », « bodyclass », « bodyattr » et « content » qui sont vides.
+</div>
+				<p>
+					A noter que le layout de base n'ajoute aucun contenu visible à la page web. C'est dans le bloc « content » que vous devez mettre vos éléménts tels que en-tête de page, pied de page, menus, barre(s) latérale(s) et autres contenus.
+					<br>
+					Vous devez y ajouter aussi le formulaire de simulation, ce que vous ferez à l'aide d'une macro twig et de variables fournis par G6K.
+				</p>
+				<p>
+					A l'instar de la vue « Demo », il est conseillé de définir une layout propre à votre vue qui sera chargée d'afficher les différents éléments de la page hormis le formulaire de simulation et les éléments propres à un simulateur.
+Vous définirez ensuite un gabarit qui héritera de la la layout propre à la vue et qui contiendra le formulaire de simulation et les éléments propre à un simulateur.
+					<br>
+					C'est ce dernier gabarit qui devra être référencé dans la définition des étapes de simulation dans les simulateurs. Cf. <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulators-management' }) }}">Création d’un simulateur</a>
+				</p>
+				<p>Concrètement, supposons que votre page à l'architecture suivante :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/views-management-template-layout.png') }}" alt="">
+				</p>
+				<p>C'est le layout qui affiche les parties à fond gris et positionne le bloc « content » (partie à fond blanc) dans la page.</p>
+				<p>C'est le gabarit enfant qui alimente le bloc « content » où :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-1.png') }}" alt="">
+					Libellé/Titre du simulateur
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-2.png') }}" alt="">
+					Description du simulateur
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-3.png') }}" alt="">
+					Fil d'Ariane d'enchainement des étapes
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-4.png') }}" alt="">
+					Description de l'étape courante
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-5.png') }}" alt="">
+					Emplacement du formulaire de simulation à l'étape courante
+				</p>
+				<p>Les variables et les macros qui permettent d'alimenter ces éléments sont :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-1.png') }}" alt="">
+					<code>&lbrace;&lbrace; step.simulator.label &rbrace;&rbrace;</code>
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-2.png') }}" alt="">
+					<code>&lbrace;&lbrace; form.paragraphs(step.simulator.description|jscode) &rbrace;&rbrace;</code>
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-3.png') }}" alt="">
+					<code>&lbrace;&lbrace; form.breadcrumb(_context) &rbrace;&rbrace;</code>
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-4.png') }}" alt="">
+					<code>&lbrace;&lbrace; step.description &rbrace;&rbrace;</code>
+					<br>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-area-5.png') }}" alt="">
+					<code>&lbrace;&lbrace; form.draw(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control', 'panel panel-default', 'panel-heading', 'panel-body') &rbrace;&rbrace;</code>
+				</p>
+				<p>Pour utiliser ces macros, il faut les importer dans le gabarit :</p>
+				<pre class="prettyprint"><code>&lbrace;% import "base/macros/form.html.twig" as form %&rbrace;
+</code></pre>
+				<p>Les macros disponibles et utiles sont :</p>
+				<ul>
+					<li>
+						« form.breadcrumb » : Dessine le fil d'Ariane d'enchaînement des étapes.
+						<br>
+						Paramère : _context
+					</li>
+					<li>
+						« form.draw » : Affiche le formulaire de simulation pour l'étape courante.
+						<br>
+						Paramètres : 
+						<ol>
+							<li>_context</li>
+							<li>classe CSS du conteneur de groupe de champs</li>
+							<li>classe CSS du conteneur de champs</li>
+							<li>classe CSS de l'étiquettes de champ</li>
+							<li>classe CSS du conteneur englobant un champ et son unité ou le symbole monétaire</li>
+							<li>classe CSS du champ</li>
+							<li>classe CSS du conteneur de chapître</li>
+							<li>classe CSS de l'êntête de chapître</li>
+							<li>classe CSS du conteneur de section</li>
+						</ol>
+					</li>
+					<li>
+						« form.heading » : Affiche un texte avec un niveau de titre (balises h1, h2, ...) après avoir supprimé les sauts de ligne.
+						<br>
+						Paramètres : 
+						<ol>
+							<li>texte à afficher</li>
+							<li>niveau de titre (1 à 6)</li>
+							<li>classe CSS de la balise générée</li>
+						</ol>
+					</li>
+					<li>
+						« form.paragraphs » : Affiche un texte comportant des sauts de ligne en englobant chaque ligne du texte dans des paragraphes HTML (<p>).
+						<br>
+						Paramètre : le texte à afficher
+					</li>
+					<li>
+						« form.profiles » : Affiche les profils.
+						<br>
+						Paramètre : _context
+					</li>
+				</ul>
+				<p>Les variables disponibles et utiles sont :</p>
+				<ul>
+					<li>« step.simulator.name » : Nom du simulateur</li>
+					<li>« step.simulator.label » : Libellé/Titre du simulateur</li>
+					<li>« step.simulator.description » : Description du simulateur</li>
+					<li>« step.simulator.referer » : URL de la page du site où est référencé le simulateur</li>
+					<li>« step.simulator.memo : Vrai si le simulateur autorise l'utilisation d'un memo (enregistrement de valeurs de champs dans les cookies), faux sinon</li>
+					<li>« step.name » : Nom de l'étape courante</li>
+					<li>« step.label » : Libellé/Titre de l'étape courante</li>
+					<li>« step.description » : Description de l'étape courante</li>
+					<li>« step.dynamic » : Vrai si Javascript est utilisé pour "animer" la simulation, faux sinon</li>
+					<li>« script » : Vrai si Javascript est activé dans le navigateur, faux sinon</li>
+				</ul>
+				<p class="figure-legend">Figure 8 - Gabarit « Demo » illustant l'utilisation des macros et des variables</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/views-management-template-page.png') }}" alt="">
+				</p>
+			

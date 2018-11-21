@@ -1,0 +1,44 @@
+				<h3 id="complex-query">
+						4.1.2. Complex query
+					</h3>
+					<p>In this case, the fields « Table », « Selected Columns », « Filter », « Order by », « Number of Results » and « From » are replaced by the « Request » field since those elements are contained in the request.</p>
+					<p>
+						As with simple queries, parameters can be used.
+						<br>
+						The forms $X$d where X is the number of the parameter, refer to integer values, $X$f to decimal values and $X$s to alphanumeric values.
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Request type »: Choose the « Complex » type.</li>
+						<li>« Request »: The SQL request.</li>
+						<li>
+							« Return type »: 
+							<ul>
+								<li>« JSON »: format for the exchange of data in readable text.</li>
+								<li>« XML »: format of description of the data.</li>
+								<li>« Single value »: N/A.</li>
+								<li>« Key / value pairs »: Table of key / value pairs.</li>
+								<li>« HTML »: data format designed to represent web pages.</li>
+								<li>« CSV »: open computer format representing data in comma-separated values.</li>
+							</ul>
+						</li>
+						<li>
+							« Return path »: The path depends on the format of the data being returned: 
+							<ul>
+								<li>« JSON »: Path to <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> or <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a>
+</li>
+								<li>« XML »: Path in the format <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a>
+</li>
+								<li>« Single Value »: N/A</li>
+								<li>« Key/value pair (table) »: path in the form « Line number/column name » (example: 0/rate: rate column of line 1)</li>
+							</ul>
+						</li>
+					</ol>
+					<p class="figure-legend">Figure 2: Data source with complex query</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-datasource-add-complex.png') }}" alt="">
+					</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-datasource-display-complex.png') }}" alt="">
+					</p>
+					

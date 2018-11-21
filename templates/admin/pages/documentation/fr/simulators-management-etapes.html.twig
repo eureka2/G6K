@@ -1,0 +1,67 @@
+				<h2 id="etapes">
+					4.3. Étapes
+				</h2>
+				<p>Une fois que vous avez défini vos sources de données et vos données vous allez pouvoir commencer à paramétrer la ou les étapes de votre simulateur.</p>
+				<p>Une étape est constituée d’un ou plusieurs panneaux dans lesquels sont disposés des blocs d'infos et des groupes de champs dans l'ordre où ils sont déclarés.</p>
+				<p>Les blocs d'infos sont composés de chapitres eux-mêmes composés de sections.</p>
+				<p>Les groupes de champs sont composés de champs qui peuvent être disposés de trois manières différentes :</p>
+				<ul>
+					<li>« Classique » : Les champs et leurs étiquettes sont affichés de façon classique, c'est-à-dire les uns en dessous des autres.</li>
+					<li>« Grille » : Les champs sont disposés par rangées sous forme de tableaux. Les données associées aux champs d'une rangée doivent être regroupées dans des « groupes de données » (Cf. infra). Les étiquettes de champ sont ignorées.</li>
+					<li>« En ligne » : Les champs et leurs étiquettes sont disposés les uns à la suite des autres de façon à former une phrase. </li>
+				</ul>
+				<p>Ces éléments sont disposés de la façon suivante dans la page d'une étape :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-step-page.png') }}" alt="">
+				</p>
+				<p>Pour ajouter une étape, cliquez sur le bouton « Ajouter » de la barre de titre du panneau « Etapes » :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-step-add-button.png') }}" alt="">
+				</p>
+				<p>Le formulaire de saisie d'une étape s'affiche :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-step-add.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Nom de l'étape » : Nom de l’étape sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Libellé de l’étape » : Titre de l’étape qui sera affiché dans le fil d'Ariane d'enchaînement des étapes.</li>
+					<li>« Gabarit d’affichage de l’étape » : Nom du gabarit utilisé par G6K pour afficher la page de l'étape. Pour plus d'information, consulter la page : <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">Gestion des vues</a>
+</li>
+				</ol>
+				<p><strong>Attributs optionnels :</strong></p>
+				<ol>
+					<li>« Sortie » : « Normal », « PDF en ligne », « PDF téléchargeable » ou « html ». Cf. la description de ces valeurs ci-dessous.</li>
+					<li>« UI interactif » : Si cette option est cochée, le moteur de simulation utilisera le Javascript pour donner de l’interactivité à la simulation pour cette étape (recommandé).</li>
+				</ol>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Sortie</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>« Normal »</td>
+							<td>L'étape est affichée normalement.</td>
+						</tr>
+						<tr>
+							<td>« PDF en ligne »</td>
+							<td>G6K affiche un PDF du rendu de la page générée.</td>
+						</tr>
+						<tr>
+							<td>« PDF téléchargeable »</td>
+							<td>G6K génère un fichier PDF du rendu de la page pour être téléchargé.</td>
+						</tr>
+						<tr>
+							<td>« html »</td>
+							<td>Réservé. Non implémenté</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>Décrivez l'étape dans le champ « Description ». Cette description s'affiche dans la zone <span class="bs-docs-number-circle">1</span> de la page.</p>
+				{% include 'admin/pages/documentation/fr/simulators-management-panneaux.html.twig' %}
+				{% include 'admin/pages/documentation/fr/simulators-management-notes-de-bas-de-page.html.twig' %}
+				{% include 'admin/pages/documentation/fr/simulators-management-boutons-d-actions.html.twig' %}
+				

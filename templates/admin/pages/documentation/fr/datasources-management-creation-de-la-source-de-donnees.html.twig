@@ -1,0 +1,42 @@
+				<h2 id="creation-de-la-source-de-donnees">
+					2.1. Création de la source de données
+				</h2>
+				<p>Cliquez sur « Sources de données » de la barre de menu</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-datasources-buttonbar.png') }}" alt="">
+				</p>
+				<p>
+					puis sur 
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-create-button.png') }}" alt="">
+					du menu latéral gauche.
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-create-internal.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Nom » : Nom de la source de données sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Type » : Type de la source de données « Interne », « Base de données externe » ou « Web service externe (API Rest) ». Choisir « Interne ».</li>
+					<li>« Base de données » / « Type » : Type de la base de données à choisir en fonction des SGBDR à votre disposition.</li>
+					<li>« Nom de la base de données » : Nom de la base de données sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Libellé de la base de données » : A votre convenance.</li>
+				</ol>
+				<p>Pour les bases de données de type MySQL ou PostgreSQL, il faut renseigner également :</p>
+				<ul>
+					<li>Le « Serveur de base de données »,</li>
+					<li>Le « Port de la base de données »,</li>
+					<li>L’ « identifiant de connexion à la base de données »,</li>
+					<li>Le « Mot de passe de la base de données ».</li>
+				</ul>
+				<p>L'identifiant de connexion et le mot de passe doivent vous être fournis par votre administrateur de bases de données. L'identifiant doit disposer du privilège de création de bases de données.</p>
+				<p>Vous pouvez décrire la source de données dans l’espace « Description » prévu à cet effet.</p>
+				<p>Cliquez sur « Enregistrer » pour sauvegarder la source.</p>
+				<div class="alert alert-info" role="alert">
+A NOTER : Le formulaire ne contient pas de bouton « Annuler ». Si vous souhaitez abandonner vos modifications, il suffit de passer à une autre page. Le cas échéant, le navigateur vous demandera de confirmer la sortie de la page du formulaire. C'est le cas pour tous les formulaires de saisie présentés dans ce document.
+</div>
+				{% include 'admin/pages/documentation/fr/datasources-management-creation-des-tables.html.twig' %}
+				{% include 'admin/pages/documentation/fr/datasources-management-alimentation-des-tables.html.twig' %}
+				{% include 'admin/pages/documentation/fr/datasources-management-import-de-donnees-dans-les-tables.html.twig' %}
+				{% include 'admin/pages/documentation/fr/datasources-management-modifier-la-structure-d-une-table.html.twig' %}
+				{% include 'admin/pages/documentation/fr/datasources-management-supprimer-une-table.html.twig' %}
+				

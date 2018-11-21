@@ -1,0 +1,286 @@
+				<h2 id="postgresql">
+					3.3. PostgreSQL
+				</h2>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Fonction</th>
+							<th>Description</th>
+							<th align="center">Nombre d'arguments</th>
+							<th>Type retourné</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>ascii</td>
+							<td>retourne le code ASCII du premier caractère de l'argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>char</td>
+							<td>retourne le caractère correspondant au code ascii fourni dans l'argument 1</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>char_length</td>
+							<td>renvoie la longueur de la chaîne passée en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>character_length</td>
+							<td>renvoie la longueur de la chaîne passée en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>initcap</td>
+							<td>convertit la première lettre de chaque mot de la chaîne en majuscule et toutes les autres lettres sont converties en minuscules</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>length</td>
+							<td>renvoie la longueur de la chaîne passée en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>lower</td>
+							<td>convertit la chaîne en lettres minuscules</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>lpad</td>
+							<td>complète l'argument 1 à sa gauche avec la chaîne en argument 3 répétée plusieurs fois jusqu'à ce que la chaîne atteigne la longueur spécifiée en argument 2</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>ltrim</td>
+							<td>supprime tous les caractères spécifiés (argument 2) du côté gauche de la chaîne passée en argument 1</td>
+							<td align="center">2</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>repeat</td>
+							<td>répète la chaîne en argument 1, le nombre de fois spécifié en argument 2</td>
+							<td align="center">2</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>replace</td>
+							<td>renvoie une copie de la chaîne en argument 1 avec chaque instance de la sous-chaîne en argument 2 remplacée par la sous-chaîne en argument 3</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>rpad</td>
+							<td>complète l'argument 1 à sa droite avec la chaîne en argument 3 répétée plusieurs fois jusqu'à ce que la chaîne atteigne la longueur spécifiée en argument 2</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>rtrim</td>
+							<td>supprime tous les caractères spécifiés (argument 2) du côté droit de la chaîne passée en argument 1</td>
+							<td align="center">2</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>split_part</td>
+							<td>découpe la chaine passée en argument 1 avec le délimiteur passé en argument2 et retourne la partie dont la position est spécifiée en argument 3</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>strpos</td>
+							<td>renvoie la position de la sous-chaîne en argument 2 dans la chaîne en argument 1</td>
+							<td align="center">2</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>substr</td>
+							<td>renvoie la sous-chaîne extraite de la chaîne passée en argument 1 à partir de la position en argument 2, d'une longueur spécifiée par l'argument 3</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>translate</td>
+							<td>remplace dans la chaîne en argument 1, chacun des caractères de la séquence en argument 2 par le caractère de même position de la séquence en argument 3</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>upper</td>
+							<td>convertit la chaîne en lettres majuscules</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>abs</td>
+							<td>renvoie la valeur absolue de l'argument numérique</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>acos</td>
+							<td>renvoie l'arc cosinus de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>asin</td>
+							<td>renvoie l'arc sinus de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>atan</td>
+							<td>renvoie l'arc tangente de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>atan2</td>
+							<td>renvoie l'arc tangente 2 de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>cbrt</td>
+							<td>renvoie la racine cubique de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>ceil</td>
+							<td>renvoie la plus petite valeur entière supérieure ou égale à la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>ceiling</td>
+							<td>renvoie la plus petite valeur entière supérieure ou égale à la valeur passée en argument. Alias de la fonction ceil</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>cos</td>
+							<td>renvoie le cosinus de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>cot</td>
+							<td>renvoie la cotangente de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>degrees</td>
+							<td>convertit en degrés la valeur en radians passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>exp</td>
+							<td>renvoie l'exponentiel de la valeur passée en argument, c-à-d la valeur de e portée à la puissance de l'argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>floor</td>
+							<td>renvoie la plus grande valeur entière inférieure ou égale à la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>ln</td>
+							<td>renvoie le logarithme naturel (népérien) de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>log</td>
+							<td>renvoie le logarithme de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>mod</td>
+							<td>renvoie le reste de la division de l'argument 1 par l'argument 2</td>
+							<td align="center">2</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>power</td>
+							<td>renvoie la valeur de l'argument 1 élevé à la puissance de la valeur de l'argument 2</td>
+							<td align="center">2</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>radians</td>
+							<td>convertit en radians la valeur en degrés passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>random</td>
+							<td>retourne une valeur aléatoire comprise entre 0 et 1 inclus</td>
+							<td align="center">0</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>round</td>
+							<td>arrondi la valeur de l'argument 1 à la valeur la plus proche avec le nombre de décimal passé en argument 2</td>
+							<td align="center">2</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>sin</td>
+							<td>renvoie le sinus de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>sqrt</td>
+							<td>renvoie la racine carrée de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>tan</td>
+							<td>renvoie la tangente de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>trunc</td>
+							<td>Tronque la valeur de l'argument 1 au nombre de décimales spécifié par l'argument 2</td>
+							<td align="center">2</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>date_part</td>
+							<td>extrait une partie de la date passée en argument 2 selon le mot-clé passée en argument 1. ex: date_part('day', '207-08-25') retourne 25. Les mots-clés sont: microseconds, milliseconds, second, minute, hour, day, week, month, quarter, year, decade, century, millennium</td>
+							<td align="center">2</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>date_trunc</td>
+							<td>Tronque la date en argument 2 à partir de sa partie spécifiée par le mot-clé figurant en argument 1: Les mot-clés sont :microseconds, milliseconds, second, minute, hour, day, week, month, quarter, year, decade, century, millennium</td>
+							<td align="center">2</td>
+							<td>date</td>
+						</tr>
+						<tr>
+							<td>now</td>
+							<td>retourne la date courante</td>
+							<td align="center">0</td>
+							<td>date</td>
+						</tr>
+					</tbody>
+				</table>
+			

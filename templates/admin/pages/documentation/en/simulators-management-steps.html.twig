@@ -1,0 +1,67 @@
+				<h2 id="steps">
+						4.3. Steps
+					</h2>
+					<p>Once you have defined your data sources and data you will be able to start setting up the step(s) of your simulator.</p>
+					<p>A step consists of one or more panels in which are arranged information blocks and groups of fields in the order in which they are declared.</p>
+					<p>The information blocks are composed of chapters, themselves composed of sections.</p>
+					<p>Field groups are composed of fields that can be arranged in three different ways:</p>
+					<ul>
+						<li>« Classic »: The fields and their labels are displayed in a classical way, that is to say one below the other.</li>
+						<li>« Grid »: The fields are arranged in rows in the form of tables. The data associated with the fields in a row must be grouped into « data groups » (see below). Field labels are ignored.</li>
+						<li>« Online »: The fields and their labels are arranged one after the other in order to form a sentence.</li>
+					</ul>
+					<p>These elements are arranged as follows in the page of a step:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-step-page.png') }}" alt="">
+					</p>
+					<p>To add a step, click the « Add » button in the title bar of the « Steps » panel:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-step-add-button.png') }}" alt="">
+					</p>
+					<p>The entry form for a step is displayed:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-step-add.png') }}" alt="">
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Step Name »: Name of the step without spaces or special or accented characters.</li>
+						<li>« Step Label »: Title of the step that will be displayed in the breadcrumb trail.</li>
+						<li>« Step Template »: Name of the template used by G6K to display the page of the step. For more information, see: <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">View Management</a>
+</li>
+					</ol>
+					<p><strong>Optional attributes:</strong></p>
+					<ol>
+						<li>« Output »: « Normal », « Inline PDF », « Downloadable PDF » or « html ». See the description of these values below.</li>
+						<li>« Interactive UI »: If this option is checked, the simulation engine will use Javascript to give interactivity to the simulation for this step (recommended).</li>
+					</ol>
+					<table class="table-responsive table-sm table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>Output</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>« Normal »</td>
+								<td>The step is displayed normally.</td>
+							</tr>
+							<tr>
+								<td>« Inline PDF »</td>
+								<td>G6K displays a PDF rendering of the generated page.</td>
+							</tr>
+							<tr>
+								<td>« Downloadable PDF »</td>
+								<td>G6K generates a PDF file of the rendering of the page to be downloaded.</td>
+							</tr>
+							<tr>
+								<td>« html »</td>
+								<td>Reserve. Not implemented</td>
+							</tr>
+						</tbody>
+					</table>
+					<p>Describe the step in the « Description » field. This description is displayed in the area <span class="bs-docs-number-circle">1</span> of the page.</p>
+					{% include 'admin/pages/documentation/en/simulators-management-panels.html.twig' %}
+				{% include 'admin/pages/documentation/en/simulators-management-footnotes.html.twig' %}
+				{% include 'admin/pages/documentation/en/simulators-management-action-buttons.html.twig' %}
+				

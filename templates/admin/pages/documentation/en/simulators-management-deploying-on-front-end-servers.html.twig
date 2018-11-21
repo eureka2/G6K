@@ -1,0 +1,47 @@
+				<h2 id="deploying-on-front-end-servers">
+						4.7. Deploying on front-end servers
+					</h2>
+					<p>If, for security reasons, the back-office is located on a different server from those on which visitors are performing simulations, you will have to deploy your simulators on these front-end servers from the back-office.</p>
+					<p>To do this, G6K provides deployment functionality to copy each simulator from the back-office to the front-end.</p>
+					<p>To enable this feature, the system administrator must add an « deployment » entry to the parameters.yml file of the G6K instance installed on the back-office server:</p>
+					<p>
+						<em><strong>Example of deployment settings:</strong></em>
+					</p>
+					<pre class="prettyprint">
+<em># config/packages/g6k.yaml</em> deployment: localhost: cp -f {local.rootdir}/{local.file} /var/www/html/simulator/{remote.dir}/ remotehost: rsync -a {local.rootdir}/{local.file} user@remoteserver/var/www/html/simulator/{remote.file}
+</pre>
+					<p>In this example, the system administrator declared two front-end servers of virtual names « localhost » and « remotehost ».</p>
+					<p>In front of each virtual name is the command that G6K must launch to copy the simulator files via the HTTP server user. Of course, this user must have the rights to execute these commands.</p>
+					<p>Each command is launched as many times as there are files in the deployed simulator. These files are:</p>
+					<ul>
+						<li>The XML definition file of the simulator.</li>
+						<li>The database files of internal SQLite data sources used by the simulator</li>
+						<li>The DataSources.xml file describing the data sources</li>
+						<li>Simulator css style files in each of the views where the simulator can be used.</li>
+					</ul>
+					<p>So for the command of the virtual server « localhost » of the example, suppose that the back office is installed in the directory « /var/www/html/g6k », the front-end is installed in the directory « /var www/html/simulator » and that you want to deploy a simulator named « demo » that accesses an internal data source « demo.db » and that it can be viewed in the « Demo » and « Default » views. The command will be started five times by G6K:</p>
+					<p><code>cp -f /var/www/html/g6k/var/data/simulators/demo.xml /var/www/html/simulator/var/data/simulators/</code></p>
+					<p><code>cp -f /var/www/html/g6k/var/data/databases/demo.db /var/www/html/simulator/var/data/databases/</code></p>
+					<p><code>cp -f /var/www/html/g6k/var/data/databases/DataSources.xml /var/www/html/simulator/var/data/databases/</code></p>
+					<p><code>cp -f /var/www/html/g6k/calcul/assets/Demo/demo.css /var/www/html/simulator/calcul/assets/Demo/</code></p>
+					<p><code>cp -f /var/www/html/g6k/calcul/assets/Default/demo.css /var/www/html/simulator/calcul/assets/Default/</code></p>
+					<p>after replacing:</p>
+					<ul>
+						<li>{local.rootdir} by « /var/www/html/g6k/»,</li>
+						<li>{local.file} successively by « var/data/databases/demo.db », « var/data/simulators/demo.xml », « var/data/databases/DataSources.xml », « calcul/assets/Default/demo.css »</li>
+						<li>{remote.dir} successively by « var/data/databases », « var/data/databases », « calcul/assets/Default »</li>
+					</ul>
+					<p>{local.rootdir}, {local.file}, {remote.dir}, and {remote.file} are parameters that the system administrator must use to configure commands:</p>
+					<ul>
+						<li>{local.rootdir}: G6K back-office installation directory</li>
+						<li>{local.file}: File to copy relative to {local.rootdir}</li>
+						<li>{remote.dir}: The directory of the file to be copied relative to the G6K installation directory on the front-end server.</li>
+						<li>{remote.file}: The file to be copied relative to the G6K installation directory on the front-end server.</li>
+					</ul>
+					<p>To deploy a simulator, click on the « Deploy simulator » button in the title bar of the simulator panel and confirm in the dialog box that appears:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-deployment-confirm.png') }}" alt="">
+					</p>
+					<p>A deployment log is displayed. If a log line shows an error (in red), report it to the system administrator.</p>
+					<p>You must have the « Manager » role to deploy a simulator.</p>
+				

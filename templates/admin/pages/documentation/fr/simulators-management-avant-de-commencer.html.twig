@@ -1,0 +1,51 @@
+				<h1 id="avant-de-commencer">
+					2. Avant de commencer
+				</h1>
+				<p>Avant de commencer la saisie du simulateur, bien réfléchir au scénario de simulation, à savoir son découpage en étapes et leurs enchainements. Une étape de simulation correspond à une page et réciproquement. </p>
+				<p>Dans chaque page il faut définir les informations qui seront demandées à l’utilisateur (via un formulaire) et celles qu’on lui restitue. Une page peut également contenir des blocs d’information.</p>
+				<p>Les informations restituées sont soit des données de références, soit des données issues du résultat d’un calcul en fonction de règles de calcul (législation).</p>
+				<p>Il faut donc au préalable faire l’inventaire de toutes ces données :</p>
+				<ul>
+					<li>Données saisies par l’utilisateur</li>
+					<li>Données de référence (ex : montant du SMIC, RSA, plafond sécu, barèmes divers, …)</li>
+					<li>Données issues d’un calcul</li>
+					<li>Données résultant d’un calcul intermédiaire.</li>
+				</ul>
+				<p>Pour les données de référence, il faut se poser la question de la source de données. Dispose-t-on d’une API (web service) interne ou externe ou d’une base de données pour retrouver ces données ?</p>
+				<p>Si oui, il sera possible de paramétrer cette API ou cette base de données dans G6K pour pouvoir y accéder.</p>
+				<p>Dans le cas contraire il faudra créer une source de données (base de données) interne dans G6K. A noter que les valeurs simples (tel que le montant du RSA) peuvent être définies en constante dans le simulateur, évitant ainsi la création d’une source de données. En revanche, les structures de données complexes (tel qu’un barème) nécessitent la création d’une source de données interne.</p>
+				<p>Ensuite, il est conseillé d’identifier tous les éléments d’une page, les nommer, les labelliser :</p>
+				<ol>
+					<li>Donner un nom au simulateur, celui qui figurera dans l’url</li>
+					<li>Donner un titre au simulateur. Ce titre apparaitra sur chaque page en dessous du fil d’Ariane de navigation sur le site</li>
+					<li>Définir une description chapeau qui apparaitra sur chaque page de la simulation en dessous du titre</li>
+					<li>
+						Pour chaque étape : 
+						<ul>
+							<li>Donner un nom court à l’étape et un libellé (pas trop long). Le nom court figurera dans le fil d’Ariane de succession des étapes.</li>
+							<li>Définir les informations (champs) qui seront demandées ou restituées à l’utilisateur</li>
+							<li>Pour chaque champ :</li>
+							<li>Lui donner un nom et une étiquette (label)</li>
+							<li>Lui attribuer un type (date, entier, montant, pourcentage, liste de choix, …)</li>
+							<li>Décrire le champ (cette description pourra servir de bulle d’aide)</li>
+							<li>Décrire les conditions^1^ d’affichage du champ</li>
+							<li>Définir son usage (saisie utilisateur ou restitution)</li>
+							<li>
+								S’il s’agit d’un champ de saisie : 
+								<ul>
+									<li>Définir les contrôles de saisie ainsi que les messages d’erreurs associés.</li>
+									<li>Eventuellement définir une mention qui pourra apparaître au-dessus ou au-dessous du champ de saisie.</li>
+								</ul>
+							</li>
+							<li>
+								S’il s’agit d’un champ de restitution : 
+								<ul>
+									<li>Définir les règles de constitution de la valeur du champ (calcul, source de données, …)</li>
+								</ul>
+							</li>
+							<li>Eventuellement définir des notes de bas de page et les conditions^1^ de leur affichage.</li>
+							<li>Définir des boutons de navigation entre les étapes (étape suivante, précédente, nouvelle simulation, saut à l’étape N) et leur condition d’affichage.</li>
+						</ul>
+					</li>
+				</ol>
+				

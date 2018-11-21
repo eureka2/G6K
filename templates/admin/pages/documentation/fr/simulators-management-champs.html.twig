@@ -1,0 +1,52 @@
+				<h5 id="champs">
+					4.3.1.1.1. Champs
+				</h5>
+				<p>
+					Le champ est l'élément du formulaire qui permet la saisie ou la restitution d'une donnée. Il prend la forme d'une boite de saisie, d'une boite à liste, d'une case à cocher ou de boutons radio.
+					<br>
+					C'est en principe un élément natif d'un formulaire html mais on peut lui associer un "widget" (sélecteur de date, auto-complétion, ...) pour faciliter la saisie par l'utilisateur.
+					<br>
+					Il est précédé par une étiquette de champ sauf s'il est placé dans la cellule d'un tableau.
+					<br>
+					Il peut être obligatoire ou facultatif.
+				</p>
+				<p>Pour ajouter un champ, cliquez sur le bouton « Ajouter un champ » de la barre de titre du panneau du groupe de champ dans lequel vous souhaitez l'ajouter :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-fieldset-add-field-button.png') }}" alt="">
+				</p>
+				<p>Le formulaire de saisie d'un champ s'affiche :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-field-add.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Donnée » : Donnée associée au champ. S’il s’agit d’un champ de saisie, c’est dans cette donnée que sera stockée la valeur saisie par l’utilisateur. S’il s’agit d’un champ de restitution, c’est le contenu de cette donnée qui sera affichée dans le champ.</li>
+					<li>« Usage » : Saisie par l’utilisateur ou restitution à l’utilisateur.</li>
+				</ol>
+				<p><strong>Attributs optionnels :</strong></p>
+				<ol>
+					<li>« Libellé » : Etiquette du champ. Cf. <span class="bs-docs-number-circle">4</span>.</li>
+					<li>« Requis » : Champ requis (Un message d’erreur sera affiché si le champ n’est pas renseigné).</li>
+					<li>« Afficher ‘:’ après l’étiquette de champ ? » : Si cette case est cochée, les ':' seront affichés après l'étiquette.</li>
+					<li>« Utiliser la description de données comme aide ? » : Si cette case est cochée, un point d'interrogation sera affiché après le champ (Cf. <span class="bs-docs-number-circle">6</span>). Si l'utilise clique sur ce point d'interrogation, la description de la donnée est affichée sous le champ en tant que texte d'aide (Cf. <span class="bs-docs-number-circle">8</span>).</li>
+					<li>« Invite » : Texte à afficher dans e champ de saisie pour lui indiquer le format de saisie ou ce qu'il faut saisir ou sélectionner.</li>
+					<li>« Saut de ligne avant le champ ? » : Si cette case est cochée, le champ s'affichera sur une nouvelle ligne.</li>
+					<li>« Requis si visible » : Si cette case est cochée, le champ sera rendu obligatoire si et seulement si il n'est pas caché.</li>
+					<li>« Placez le champ sous l’étiquette de champ ? » : Si cette case est cochée, le champ s'affichera en dessous de son étiquette et non à sa droite.</li>
+					<li>« Mettre en évidence l’étiquette de champ ? » : Si cette case est cochée, l'étiquette de champ sera affichée en caractères gras.</li>
+					<li>« Afficher les choix avec les boutons radio ? » : Ne pas utiliser pour les longues listes de choix.</li>
+					<li>« Explication » : Texte expliquant le mode de calcul du champ.</li>
+					<li>
+						« Widget » : A choisir en fonction de vos besoins : 
+						<ul>
+							<li>« Boite à liste conforme RGAA » : Boîte à liste conforme au Référentiel Général d’Accessibilité pour les Administration.</li>
+							<li>« Boîte à liste avec auto-complétion » : Lors de la saisie l’auto-complétion se fait automatiquement, cela permet à l’utilisateur de trouver l’élément qu’il recherche.</li>
+							<li>« Code postal obtenu par auto-complétion sur le nom de la commune ou son code postal » : Permet à l’utilisateur de profiter de l’auto-complétion concernant le nom de la commune ou son code postal.</li>
+							<li>« Code Insee obtenu par auto-complétion sur le nom de la commune ou son code postal » : Permet à l’utilisateur de profiter de l’auto-complétion concernant le nom de la commune ou son code postal.</li>
+							<li>« Code Insee obtenu à partir d'une carte de France » : Une carte apparaît et laisse le choix à l’utilisateur de se géolocaliser ou non.</li>
+							<li>« Sélecteur de date conforme RGAA » : Permet à l’utilisateur de sélectionner une date.</li>
+							<li>« Éditeur en place de champ de formulaire » : Permet de placer un champ de saisie au milieu d'un texte.</li>
+						</ul>
+					</li>
+				</ol>
+				

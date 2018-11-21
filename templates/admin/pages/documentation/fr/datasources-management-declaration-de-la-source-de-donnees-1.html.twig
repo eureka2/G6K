@@ -1,0 +1,27 @@
+				<h3 id="declaration-de-la-source-de-donnees-1">
+					3.2.1. Déclaration de la source de données
+				</h3>
+				<p>Cliquez sur « Sources de données » de la barre de menu</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-datasources-buttonbar.png') }}" alt="">
+				</p>
+				<p>
+					puis sur 
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-create-button.png') }}" alt="">
+					du menu latéral gauche.
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-create-webservice.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Nom » : Nom de la source de données sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Type » : Type de la source de données « Interne », « Base de données externe » ou « Web service externe (API Rest) ». Choisir « Web service externe (API Rest) ».</li>
+					<li>« URI » : URI du webservice sans paramètres.</li>
+					<li>« Méthode » : GET (les paramètres sont ajoutés à l'URI) ou POST (les paramètres sont transmis dans le corps du message HTTP).</li>
+				</ol>
+				<p>Vous pouvez décrire la source de données dans l’espace « Description » prévu à cet effet.</p>
+				<p>Les paramètres transmis à l'API sont définis par chacun des simulateurs utilisant l'API.</p>
+				<p>Si l'URI du webservice comporte un chemin fixe indépendant des requêtes, le faire figurer dans l'URI.</p>
+				<p>S'il existe un chemin variable en fonction des requêtes soumises au web service, ne pas le mettre dans l'URI, il appartiendra au simulateur de compléter l'URI avec le chemin approprié.</p>
+			

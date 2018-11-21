@@ -1,0 +1,30 @@
+				<h2 id="selection-of-columns">
+					2.2. Selection of columns
+				</h2>
+				<p>Columns are the values of the fields in the table that you want to retrieve after query execution.</p>
+				<p>
+					G6K allows to define pseudo-columns using expressions.
+					<br>
+					These expressions usually contain actual column names from the table, but they are not required.
+					<br>
+					The pseudo-columns must have an alias name that allows them to be referenced as a result index in the simulator.
+				</p>
+				<p>To define a column or a pseudo-column, click in the « Selected Columns » field or the «   » sign to the right of the field:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-column-add.png') }}" alt="">
+				</p>
+				<p>In front of the list box that was displayed, the « X » allows to delete the column.</p>
+				<p>Click on the list box:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-expression-listbox.png') }}" alt="">
+				</p>
+				<p>then select the table field or refer to the <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition of expressions</a> page to compose a pseudo-column.</p>
+				<p>The functions are specific to the database of the source, they are defined <a href="#functions">hereafter</a>.</p>
+				<p>If you have simply selected a field without composing an expression, the entry of the column is completed, otherwise you must enter an alias:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-column-alias-ask.png') }}" alt="">
+				</p>
+				<p>Click on « Click to enter the column alias », enter the alias (without spaces or special characters or accented characters) in the input box and press the « Enter » key.</p>
+				<p>To define a new column or a pseudo-column, click in the empty space of the field or on the «   » sign.</p>
+				<p>The number of columns is not limited.</p>
+				

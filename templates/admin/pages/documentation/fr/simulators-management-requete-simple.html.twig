@@ -1,0 +1,72 @@
+				<h3 id="requete-simple">
+					4.1.1. Requête simple
+				</h3>
+				<p>
+					Une requête est dite simple si elle ne porte que sur une seule table et qu'elle ne comporte pas de sous-requête imbriquée.
+					<br>
+					Le formulaire permet de construire les requêtes simples sans que vous ayez à connaitre le langage SQL.
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Type de requête » : Choisir le type « Simple ».</li>
+					<li>« Table » : Nom de la table sur laquelle porte la requête.</li>
+					<li>« Colonnes sélectionnées » : Champs/colonnes de la table qui contiennent les données que vous souhaitez récupérer.
+Pour entrer une colonne, cliquez sur le ' ' à droite du champ puis sélectionnez la colonne dans la liste déroulante.
+Vous pouvez également composer une expression auquel cas vous devrez définir un alias comme nom de colonne.
+Pour supprimer une colonne, cliquez sur le 'x' à gauche du nom de la colonne.</li>
+					<li>« Filtre » : Conditions portant sur les champs/colonnes permettant de ne garder que les lignes du résultat de la requête respectant ces conditions.</li>
+					<li>« Trié par » : Tri par ordre croissant ou décroissant sur les champs/colonnes sélectionnées. Pour entrer une colonne, faire comme en 3., puis sélectionnez l'ordre de tri (croissant ou décroissant).</li>
+					<li>« Nombre de résultats » : Parmi toutes les « lignes » de résultats retournées par la requête, indiquer le nombre de lignes qui doivent être conservées. Mettre 0 si toutes les lignes doivent être conservées.</li>
+					<li>« à partir de » : Parmi toutes les « lignes » de résultats retournées par la requête, indiquer le numéro de la première ligne qui doit être prise en considération pour le traitement de la requête. Le numéro de la première ligne est 0, 1 la deuxième et ainsi de suite.</li>
+					<li>
+						« Format des données retournées » : 
+						<ul>
+							<li>« JSON » : format d'échange de données en texte lisible.</li>
+							<li>« XML » : format de description des données.</li>
+							<li>« valeur simple » : N/A.</li>
+							<li>« paires clé/valeur » : Tableau de paires clé/valeur.</li>
+							<li>« HTML » : format de données conçu pour représenter les pages web.</li>
+							<li>« CSV » : format informatique ouvert représentant des données tabulaires sous forme de valeurs séparées par des virgules.</li>
+						</ul>
+					</li>
+					<li>
+						« Chemin d’accès aux données recherchées » : Le chemin d’accès dépend du format des données retournées : 
+						<ul>
+							<li>« JSON » : Chemin au format <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> ou <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a>
+</li>
+							<li>« XML » : Chemin au format <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a>
+</li>
+							<li>« Valeur simple » : N/A</li>
+							<li>« Paires clé/valeur (tableau) » : chemin sous la forme « N° de ligne / nom de colonnes » (exemple : 0/taxe : colonne taxe de la ligne 1)</li>
+						</ul>
+					</li>
+				</ol>
+				<p>Pour construire la requête, se reporter à la documentation du <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'source-query-builder' }) }}">Composant visuel de fabrication de requêtes simples</a></p>
+				<p>Si le filtre de la requête contient un paramètre variable, vous devez d'abord déclarer une donnée (Cf. la section « Données » infra) qui contiendra la valeur du paramètre.</p>
+				<p>
+					Ensuite, validez la saisie sans saisir le filtre dans un premier temps. Cliquez sur le bouton « Modifier », le bouton 
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-datasource-parameter-add-button.png') }}" alt="">
+					apparait en bas à droite du formulaire pour vous permettre de déclarer le paramètre.
+					<br>
+					Après avoir déclaré le paramètre, vous pouvez saisir le filtre et sélectionner le paramètre de l'expression.
+				</p>
+				<p><strong>Attributs des Paramètres :</strong></p>
+				<ol>
+					<li>« Nom » : Nom du paramètre sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Provenance » : Provenance du paramètre soit « Donnée » soit « Constante ».</li>
+					<li>« Donnée » : Nom de la donnée avec laquelle vous allez travailler.</li>
+				</ol>
+				<p><strong>Attribut optionnel des Paramètres :</strong></p>
+				<ol>
+					<li>« Optionnel » : Paramètre optionnel ou non. Un paramètre ne peut être optionnel que s’il est utilisé par une requête d’une source de données de type « Web service »</li>
+				</ol>
+				<p class="figure-legend">Figure 1 : Source de données avec une requête simple et un paramètre</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-datasource-add-simple.png') }}" alt="">
+				</p>
+				<p>Une fois la saisie validée, l'écran suivant s'affiche :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-datasource-display-simple.png') }}" alt="">
+				</p>
+				<p>Cette requête retournera un tableau de paires « 'taux'/valeur du taux ». Le chemin d'accès spécifié (0/taux) sélectionnera la première ligne du tableau et la valeur correspondant à 'taux'. Nous verrons plus loin comment déclarer une donnée pour stocker la valeur du taux.</p>
+				

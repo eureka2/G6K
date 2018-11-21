@@ -1,0 +1,56 @@
+				<h2 id="saisie-d-une-action">
+					3.2. Saisie d'une action
+				</h2>
+				<p>Vous pouvez saisir une action soit dans le bloc « alors ... » si vous souhaitez qu'elle soit exécutée lorsque le résultat de l'évaluation de la condition retourne 'vrai', soit dans le bloc « sinon ... » dans le cas 'faux'.</p>
+				<p>Vous pouvez ajouter plusieurs actions dans chacun des blocs d'une même règle.</p>
+				<p>
+					Cliquez sur le bouton 
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-add-button.png') }}" alt="">
+					de l'un de ces deux blocs, la ligne suivante s'affiche :
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-add.png') }}" alt="">
+				</p>
+				<p>Cliquez sur « Choisissez une action ... » pour ouvrir la liste des actions possibles :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-actions-list.png') }}" alt="">
+				</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Action</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>afficher l'erreur</td>
+							<td>Permet de définir un message d'erreur associé à une donnée, un groupe de données ou toutes les données</td>
+						</tr>
+						<tr>
+							<td>afficher l'avertissement</td>
+							<td>Permet de définir un message d'avertissement associé à une donnée, un groupe de données ou toutes les données. A l'inverse du message d'erreur, le message d'avertissement ne bloque pas le déroulement de la simulation</td>
+						</tr>
+						<tr>
+							<td>Cacher</td>
+							<td>Permet de cacher un élément du formulaire de simulation</td>
+						</tr>
+						<tr>
+							<td>Montrer</td>
+							<td>Permet de montrer (afficher) un élément du formulaire de simulation</td>
+						</tr>
+						<tr>
+							<td>Mettre</td>
+							<td>Permet d'affecter une valeur ou le résultat de l'évaluation d'une expression au contenu d'une donnée ou encore à sa valeur par défaut, sa valeur minimale ou maximale ou de définir le champ d'une source de données permettant d'alimenter la donnée.</td>
+						</tr>
+						<tr>
+							<td>Effacer</td>
+							<td>Permet d'effacer (mettre à blanc) le contenu d'une donnée. La donnée devient « non renseignée ».</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>Ces actions sont détaillées ci-après :</p>
+				{% include 'admin/pages/documentation/fr/business-rules-afficher-une-erreur-ou-un-avertissement.html.twig' %}
+				{% include 'admin/pages/documentation/fr/business-rules-cacher-ou-montrer-un-element-du-formulaire-de-simulation.html.twig' %}
+				{% include 'admin/pages/documentation/fr/business-rules-affecter-une-valeur-a-un-attribut-d-une-donnee.html.twig' %}
+				

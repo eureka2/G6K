@@ -1,0 +1,82 @@
+				<h3 id="hide-or-show-an-element-of-the-simulation-form">
+					3.2.2. Hide or show an element of the simulation form
+				</h3>
+				<p>These two actions are used to manage the display of the form elements of a simulation step.</p>
+				<p>Choose « Hide » or « Show » in the list of actions, the list of items is displayed:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-showobject-targets-list.png') }}" alt="">
+				</p>
+				<p>
+					Once the form element is selected, the row completes to select the 'container' elements of the item to be hidden or shown.
+					<br>
+					For example, if you choose to hide a field, you must successively select the step, the panel, the group of fields that contains this field.
+				</p>
+				<p>The table below shows the hierarchy of the containers according to the chosen element:</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Form element</th>
+							<th>containers</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>the step</td>
+							<td>none</td>
+						</tr>
+						<tr>
+							<td>the panel</td>
+							<td>step</td>
+						</tr>
+						<tr>
+							<td>the blockinfo</td>
+							<td>step / panel</td>
+						</tr>
+						<tr>
+							<td>the chapter</td>
+							<td>step / panel / blockinfo</td>
+						</tr>
+						<tr>
+							<td>the section</td>
+							<td>step / panel / blockinfo / chapter</td>
+						</tr>
+						<tr>
+							<td>the fieldset</td>
+							<td>step / panel</td>
+						</tr>
+						<tr>
+							<td>the column</td>
+							<td>step / panel / fieldset</td>
+						</tr>
+						<tr>
+							<td>the fieldrow</td>
+							<td>step / panel / fieldset</td>
+						</tr>
+						<tr>
+							<td>the field (1)</td>
+							<td>step / panel / fieldset [ / fieldrow ]</td>
+						</tr>
+						<tr>
+							<td>the actionbutton</td>
+							<td>step</td>
+						</tr>
+						<tr>
+							<td>the footnote</td>
+							<td>step</td>
+						</tr>
+						<tr>
+							<td>the choice (2)</td>
+							<td>list of choices of data of type 'choice'</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>
+					(1) the row is to be specified only if the field is contained in an array.
+					<br>
+					(2) makes it possible to show/hide a list element when the data item is of the 'choice' type
+				</p>
+				<p><strong>Examples of actions to show form elements</strong></p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-showobject-examples.png') }}" alt="">
+				</p>
+				

@@ -1,0 +1,56 @@
+				<h2 id="entering-an-action">
+					3.2. Entering an action
+				</h2>
+				<p>You can enter an action either in the "then do ..." block if you want it to be executed when the result of the condition evaluation returns 'true' or in the 'else do ...' block in the case 'false'.</p>
+				<p>You can add more than one action in each block of the same rule.</p>
+				<p>
+					Click on the button 
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-add-button.png') }}" alt="">
+					of one of these two blocks, the following line is displayed:
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-add.png') }}" alt="">
+				</p>
+				<p>Click on « Choose an action ... » to open the list of possible actions:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-actions-list.png') }}" alt="">
+				</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Action</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>notify Error</td>
+							<td>Allows you to define an error message associated with a data, a data group or all the data</td>
+						</tr>
+						<tr>
+							<td>notify Warning</td>
+							<td>Defines a warning message associated with a data item, data group, or all data. Unlike the error message, the warning message does not block the progress of the simulation</td>
+						</tr>
+						<tr>
+							<td>Hide</td>
+							<td>Allows to hide an element of the simulation form</td>
+						</tr>
+						<tr>
+							<td>Show</td>
+							<td>Allows you to show (display) an element of the simulation form</td>
+						</tr>
+						<tr>
+							<td>Set</td>
+							<td>Allows to assign a value or the result of the evaluation of an expression to the content of a data item or to its default value, its minimum or maximum value, or to define the field of a data source feeding the data.</td>
+						</tr>
+						<tr>
+							<td>Unset</td>
+							<td>Deletes the contents of a data item. The data becomes "not filled".</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>These actions are detailed below:</p>
+				{% include 'admin/pages/documentation/en/business-rules-display-an-error-or-a-warning.html.twig' %}
+				{% include 'admin/pages/documentation/en/business-rules-hide-or-show-an-element-of-the-simulation-form.html.twig' %}
+				{% include 'admin/pages/documentation/en/business-rules-assigning-a-value-to-a-data-attribute.html.twig' %}
+				

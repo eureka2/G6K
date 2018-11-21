@@ -1,0 +1,65 @@
+				<h3 id="assigning-a-value-to-a-data-attribute">
+					3.2.3. Assigning a value to a data attribute
+				</h3>
+				<p>Choose « Set » or « Unset » in the list of actions, the list of attributes is displayed:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-setattribute-targets-list.png') }}" alt="">
+				</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Attribute</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>the content</td>
+							<td>Contains the value assigned to the data</td>
+						</tr>
+						<tr>
+							<td>the default</td>
+							<td>Contains the value to be taken into account when the "value" attribute is not filled.</td>
+						</tr>
+						<tr>
+							<td>the minimum</td>
+							<td>Contains the minimum value that can be assigned to the data.</td>
+						</tr>
+						<tr>
+							<td>the maximum</td>
+							<td>Contains the maximum value that can be assigned to the data.</td>
+						</tr>
+						<tr>
+							<td>the result index</td>
+							<td>Contains the name of a data source query field when the data is powered by this source.</td>
+						</tr>
+						<tr>
+							<td>the explanation</td>
+							<td>Contains an explanation of how the data is calculated</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>The « Set » action can be used to assign a value to one of these attributes, the « Unset » action can be used to erase (clear) the contents.</p>
+				<p>Once the attribute is chosen, the line completes as follows:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-setattribute-value.png') }}" alt="">
+				</p>
+				<p>Click "click to select ..." to display the list of data:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-setattribute-value-datas-list.png') }}" alt="">
+				</p>
+				<p>Choose the data for which you want to change the attribute value.</p>
+				<p>
+					If the action is « Unset », the entry of the action is completed.
+					<br>
+					If this is the « Set » action, you can now choose the value or compose the expression to assign to the attribute:
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-setattribute-value-data-expression.png') }}" alt="">
+				</p>
+				<p>Refer to the <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition of expressions</a> page for how to enter the expression.</p>
+				<p><strong>Example of action assigning the result of a calculation to a data</strong></p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-setattribute-example.png') }}" alt="">
+				</p>
+				

@@ -1,0 +1,27 @@
+				<h5 id="chapter">
+						4.3.1.2.1. Chapter
+					</h5>
+					<p>
+						The chapter is a subdivision of the Blockinfo. It is composed of sections.
+						<br>
+						It can be made foldable / unfoldable in the case of a block of information containing many chapters to facilitate the reading of the page.
+						<br>
+						It can also be associated with an icon to make it visually distinguishable from the other chapters.
+					</p>
+					<p>To add a chapter, click the "Add chapter" button in the title bar of the « Blockinfo » panel:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-blockinfo-add-chapter-button.png') }}" alt="">
+					</p>
+					<p>The form for entering a chapter is displayed:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-chapter-add.png') }}" alt="">
+					</p>
+					<p><strong>Optional attributes:</strong></p>
+					<ol>
+						<li>« Name »: Name of the chapter without spaces or special characters or accented.</li>
+						<li>« Label »: Title of the chapter. It appears in the <span class="bs-docs-number-circle">10</span> area of the page.</li>
+						<li>« Icon »: Absolute or relative URL of an image.</li>
+						<li>« Allow collape/expand »: If this box is checked, only the title bar of the chapter panel is displayed. By clicking on the title bar, the panel unfolds to show the contents.</li>
+					</ol>
+					{% include 'admin/pages/documentation/en/simulators-management-section.html.twig' %}
+				

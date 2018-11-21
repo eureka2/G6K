@@ -1,0 +1,22 @@
+				<h2 id="regles-metier">
+					4.4. Règles métier
+				</h2>
+				<p>Les règles métier se définissent de la façon suivante : « Lorsque … » conditions, « Alors … » actions et « sinon … » actions.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-rule-add-button.png') }}" alt="">
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-rule-add.png') }}" alt="">
+				</p>
+				<p>Ce sont les règles « métier » qui déterminent le comportement du simulateur. Elles se déclenchent lorsque le contexte change.</p>
+				<p>Un changement de contexte se traduit toujours par l'acquisition ou la modification d'une donnée.</p>
+				<p>G6k s'informe du changement de contexte en revérifiant les conditions associées aux règles lorsque la valeur d'une donnée change.</p>
+				<p>Ainsi lorsque l'utilisateur saisit une valeur, que g6K accède à une donnée de référence ou qu'une valeur est calculée, les règles impactées sont déclenchées et les actions associées sont réalisées :</p>
+				<p>Les actions qui peuvent être réalisées sont :</p>
+				<ul>
+					<li>Montrer ou cacher une partie de la page (un champ, un groupe de champs, un panneau, un bouton, ...)</li>
+					<li>Afficher un message d'erreur ou d'avertissement</li>
+					<li>Effectuer un calcul et l'affecter à une donnée</li>
+				</ul>
+				<p>Se reporter à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'business-rules' }) }}">Composition des règles métier</a> pour savoir comment on compose une règle.</p>
+				

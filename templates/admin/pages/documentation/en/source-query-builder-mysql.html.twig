@@ -1,0 +1,393 @@
+				<h2 id="mysql">
+					3.2. MySQL
+				</h2>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Function</th>
+							<th>Description</th>
+							<th align="center">Number of arguments</th>
+							<th>Type returned</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>ascii</td>
+							<td>returns the ASCII code of the first character of the argument</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>char</td>
+							<td>returns the character corresponding to the ascii code provided in argument 1</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>char_length</td>
+							<td>returns the length of the string passed as argument</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>character_length</td>
+							<td>returns the length of the string passed as argument</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>format</td>
+							<td>format the argument 1 with the format #,###,###.## and round up with the number of decimal places specified in argument 2</td>
+							<td align="center">2</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>insert</td>
+							<td>returns a string after replacing the string portion of argument 1, starting at the position specified by argument 2 and of length in characters specified by argument 3, argument 4</td>
+							<td align="center">4</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>instr</td>
+							<td>returns the position of the first occurrence of the string of argument 2 in the string of argument 1</td>
+							<td align="center">2</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>left</td>
+							<td>returns the characters to the left of the string of argument 1, the length specified by argument 2</td>
+							<td align="center">2</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>length</td>
+							<td>returns the length of the string passed as argument</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>locate</td>
+							<td>returns the position of the first occurrence of the string of argument 1 in the string of argument 2, starting from the position specified by argument 3</td>
+							<td align="center">3</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>lower</td>
+							<td>converts the string to lowercase letters</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>lpad</td>
+							<td>complete the argument 1 to its left with the string in argument 3 repeated several times until the string reaches the length specified in argument 2</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>ltrim</td>
+							<td>returns a string whose white characters at the beginning of the supplied string are deleted</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>mid</td>
+							<td>returns the substring extracted from the string passed in argument 1 from the position in argument 2, of a length specified by argument 3</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>position</td>
+							<td>returns the position of the first occurrence of the string of argument 1 in the character string of argument 2, starting from the position specified by argument 3</td>
+							<td align="center">3</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>quote</td>
+							<td>returns a string that is the value of its argument in a form suitable for inclusion in an SQL statement. The strings are surrounded by single quotation marks with escapes on inner quotation marks if necessary.</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>repeat</td>
+							<td>returns a string consisting of repeating the string of argument 1, a number of times specified by argument 2. If number of times <= 0, returns an empty string. Returns NULL on one of the two arguments is NULL</td>
+							<td align="center">2</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>replace</td>
+							<td>returns a copy of the string in argument 1 with each instance of the substring in argument 2 replaced with the substring as argument 3</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>reverse</td>
+							<td>returns a string whose order of characters is the inverse of the string provided in argument</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>right</td>
+							<td>returns the characters to the right of the string of argument 1, the length specified by argument 2</td>
+							<td align="center">2</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>rpad</td>
+							<td>complete the argument 1 to its right with the string in argument 3 repeated several times until the string reaches the length specified in argument 2</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>rtrim</td>
+							<td>returns a string whose white characters at the end of the supplied string are deleted</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>soundex</td>
+							<td>returns a string that is the soundex encoding of the string passed in argument</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>space</td>
+							<td>returns a string consisting of the number of spaces provided as argument</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>substring</td>
+							<td>returns the substring extracted from the string passed in argument 1 from the position in argument 2, of a length specified by argument 3</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>substring_index</td>
+							<td>returns a portion of the string of argument 1 before the number of occurrences specified by argument 3 of the delimiter specified by argument 2. If argument 3 is positive, all which precedes the delimiter will be returned. If argument 3 is negative, everything after the delimiter will be returned</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>trim</td>
+							<td>returns a string whose white characters at the beginning and end of the supplied string are deleted</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>upper</td>
+							<td>converts the string to uppercase</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>abs</td>
+							<td>returns the absolute value of the numeric argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>acos</td>
+							<td>returns the arc cosine of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>asin</td>
+							<td>returns the sine arc of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>atan</td>
+							<td>returns the arc tangent of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>atan2</td>
+							<td>returns the tangent arc 2 of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>ceil</td>
+							<td>returns the smallest integer value greater than or equal to the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>ceiling</td>
+							<td>returns the smallest integer value greater than or equal to the value passed as an argument. Alias ​​of the function ceil</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>cos</td>
+							<td>returns the cosine of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>cot</td>
+							<td>returns the cotangent of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>degrees</td>
+							<td>converts the value in radians passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>exp</td>
+							<td>returns exponent</td>
+							<td align="center"></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+				<p><strong>MySQL date format specifiers</strong></p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Specifier</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>%a</td>
+							<td>Short name of the day of the week (Mon ... Sun)</td>
+						</tr>
+						<tr>
+							<td>%b</td>
+							<td>Short Name of the Month (Jan ... Dec)</td>
+						</tr>
+						<tr>
+							<td>%c</td>
+							<td>Monthly, digital (0 ... 12)</td>
+						</tr>
+						<tr>
+							<td>%D</td>
+							<td>Day of the month with English suffix (0th, 1st, 2nd, 3rd, ...)</td>
+						</tr>
+						<tr>
+							<td>%d</td>
+							<td>Day of the month, numeric (00 ... 31)</td>
+						</tr>
+						<tr>
+							<td>%e</td>
+							<td>Day of the month, digital (0 ... 31)</td>
+						</tr>
+						<tr>
+							<td>%f</td>
+							<td>Microseconds (000000 ... 999999)</td>
+						</tr>
+						<tr>
+							<td>%H</td>
+							<td>Time (00 ... 23)</td>
+						</tr>
+						<tr>
+							<td>%h</td>
+							<td>Time (01 ... 12)</td>
+						</tr>
+						<tr>
+							<td>%I</td>
+							<td>Time (01 ... 12)</td>
+						</tr>
+						<tr>
+							<td>%i</td>
+							<td>Minutes, numeric (00 ... 59)</td>
+						</tr>
+						<tr>
+							<td>%j</td>
+							<td>Day of the year (001 ... 366)</td>
+						</tr>
+						<tr>
+							<td>%k</td>
+							<td>Time (0 ... 23)</td>
+						</tr>
+						<tr>
+							<td>%l</td>
+							<td>Hour (1 ... 12)</td>
+						</tr>
+						<tr>
+							<td>%M</td>
+							<td>Name of the month (January ... December)</td>
+						</tr>
+						<tr>
+							<td>%m</td>
+							<td>Month, numeric (00 ... 12)</td>
+						</tr>
+						<tr>
+							<td>%p</td>
+							<td>AM or PM</td>
+						</tr>
+						<tr>
+							<td>%r</td>
+							<td>Time, 12 hours (hh: mm: ss followed by AM or PM)</td>
+						</tr>
+						<tr>
+							<td>%S</td>
+							<td>Seconds (00 ... 59)</td>
+						</tr>
+						<tr>
+							<td>%s</td>
+							<td>Seconds (00 ... 59)</td>
+						</tr>
+						<tr>
+							<td>%T</td>
+							<td>Time, 24 hours (hh: mm: ss)</td>
+						</tr>
+						<tr>
+							<td>%U</td>
+							<td>Week (00 ... 53), where Sunday is the first day of the week; WEEK () Mode 0</td>
+						</tr>
+						<tr>
+							<td>%u</td>
+							<td>Week (00 ... 53), where Monday is the first day of the week; WEEK () Mode 1</td>
+						</tr>
+						<tr>
+							<td>%V</td>
+							<td>Week (01 ... 53), where Sunday is the first day of the week; WEEK () Mode 2; used with% X</td>
+						</tr>
+						<tr>
+							<td>%v</td>
+							<td>Week (01 ... 53), where Monday is the first day of the week; WEEK () Mode 3; used with% x</td>
+						</tr>
+						<tr>
+							<td>%W</td>
+							<td>Name of the day of the week (Monday ... Sunday)</td>
+						</tr>
+						<tr>
+							<td>%w</td>
+							<td>Day of the week (0 = Sunday .. 6 = Saturday)</td>
+						</tr>
+						<tr>
+							<td>%X</td>
+							<td>Year of the week where Sunday is the first day of the week, numeric, four digits; used with% V</td>
+						</tr>
+						<tr>
+							<td>%x</td>
+							<td>Year of the week, where Monday is the first day of the week, numeric, four digits; used with% v</td>
+						</tr>
+						<tr>
+							<td>%Y</td>
+							<td>Year, numeric, four digits</td>
+						</tr>
+						<tr>
+							<td>%y</td>
+							<td>Year, numeric (two digits)</td>
+						</tr>
+						<tr>
+							<td>%%</td>
+							<td>One % literal</td>
+						</tr>
+						<tr>
+							<td>%x</td>
+							<td>x, For any "x" not mentioned above</td>
+						</tr>
+					</tbody>
+				</table>
+				

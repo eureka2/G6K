@@ -1,0 +1,46 @@
+				<h2 id="creating-the-data-source">
+					2.1. Creating the data source
+				</h2>
+				<p>Click on « Data sources » of the menu bar</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="">
+				</p>
+				<p>
+					then on 
+					<img src="{{ asset('assets/admin/images/documentation/en/datasources-management-create-button.png') }}" alt="">
+					of the left side menu.
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/datasources-management-create-internal.png') }}" alt="">
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>« Name »: Name of the data source without spaces or special or accented characters.</li>
+					<li>« Type »: Type of data source « Internal », « External database » or « External web service (API Rest) ». Choose « Internal ».</li>
+					<li>« Database » / « Type »: The type of database to be chosen according to the RDBMS at your disposal.</li>
+					<li>« Database Name »: Name of the database without spaces or special characters or accented characters.</li>
+					<li>« Database label »: At your convenience.</li>
+				</ol>
+				<p>For databases such as MySQL or PostgreSQL, you must also provide:</p>
+				<ul>
+					<li>The « Database host »</li>
+					<li>The « Database port»</li>
+					<li>The « Database user »</li>
+					<li>The « Database password ».</li>
+				</ul>
+				<p>
+					The login and password must be provided to you by your database administrator.
+					<br>
+					The identifier must have the privilege of creating databases.
+				</p>
+				<p>You can describe the data source in the « Description » space provided for this purpose.</p>
+				<p>Click « Save » to save the source.</p>
+				<div class="alert alert-info" role="alert">
+NOTE: The form does not contain a « Cancel » button. If you want to leave your changes, just go to another page. If necessary, the browser will ask you to confirm the exit of the form page. This is the case for all the input forms presented in this document.
+</div>
+				{% include 'admin/pages/documentation/en/datasources-management-creating-tables.html.twig' %}
+				{% include 'admin/pages/documentation/en/datasources-management-table-feeding.html.twig' %}
+				{% include 'admin/pages/documentation/en/datasources-management-importing-data-into-tables.html.twig' %}
+				{% include 'admin/pages/documentation/en/datasources-management-modify-the-structure-of-a-table.html.twig' %}
+				{% include 'admin/pages/documentation/en/datasources-management-delete-a-table.html.twig' %}
+				

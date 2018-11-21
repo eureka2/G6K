@@ -1,0 +1,26 @@
+				<h2 id="export-a-data-source">
+					2.2. Export a data source
+				</h2>
+				<p>You can export a data source for archiving, broadcasting, or simply importing it into another instance of G6K (see above).</p>
+				<p>Click « Data sources » from the menu bar.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/datasources-management-datasources-buttonbar.png') }}" alt="">
+				</p>
+				<p>Then click the data source you want to export in the left sidebar.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/datasources-management-export-button.png') }}" alt="">
+				</p>
+				<p>Then click the « Export datasource » button in the title bar.</p>
+				<p>G6K generates two JSON files with the following characteristics:</p>
+				<p>
+					The first file, whose name is formed with the name of the source followed by the .schema.json extension, describes data contained in the source.
+					<br>
+					The description of the data is consistent with the <a href="http://json-schema.org/">JSON schema</a> specification which is both a description standard and a JSON data validation standard.
+				</p>
+				<p>The second file, whose name is formed with the name of the source followed by the .json extension, contains the data of the source.</p>
+				<p>
+					These two files are compressed into a file that also has the name of the source with the .zip extension.
+					<br>
+					It is available for download and archiving.
+				</p>
+				

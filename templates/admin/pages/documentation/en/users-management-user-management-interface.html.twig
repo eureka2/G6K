@@ -1,0 +1,37 @@
+				<h1 id="user-management-interface">
+					2. User management interface
+				</h1>
+				<p>If you have access to this interface, then you are one of the « Super admins"</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-users-buttonbar.png') }}" alt="">
+				</p>
+				<p>Click « Users » from the menu bar to access it.</p>
+				<p>The list of user accounts is displayed as a table:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-list.png') }}" alt="">
+				</p>
+				<p>Several attributes concern users, they are defined below:</p>
+				<p><strong>Attributes :</strong></p>
+				<ul>
+					<li>« UserName : user identifier. <em>Specification :</em> <strong>Minimum 3 characters</strong>
+</li>
+					<li>« Email » : user's email. <em>Specification:</em> <strong>Different from other emails already registered</strong>
+</li>
+					<li>« Password » : password of the user who will be encrypted. <em>Specification:</em> <strong>Minimum 6 characters</strong>
+</li>
+					<li>« Enabled » : determines whether the account is enabled or not.</li>
+					<li>« Roles » : User, Contributor, Manager, Admin and Super admin.</li>
+					<li>« Last Login » : The date the user last logged in.</li>
+				</ul>
+				<p>
+					You can adjust the size of the list with 
+					<img src="{{ asset('assets/admin/images/documentation/en/users-management-list-size.png') }}" alt="">
+					, sort the list by clicking on the column name you want to make it easier to read and search the long list.
+					<br>
+					So if you click on "UserName", the list will be sorted by usernames in ascending order. If you click a second time, it will be sorted in decreasing order. The same is true for the other columns of the table.
+				</p>
+				<p>However above all, you can add, edit or delete a user account.</p>
+				{% include 'admin/pages/documentation/en/users-management-adding-a-user.html.twig' %}
+				{% include 'admin/pages/documentation/en/users-management-editing-a-user.html.twig' %}
+				{% include 'admin/pages/documentation/en/users-management-deleting-a-user.html.twig' %}
+				

@@ -1,0 +1,26 @@
+				<h2 id="exporter-une-source-de-donnees">
+					2.2. Exporter une source de données
+				</h2>
+				<p>Vous pouvez exporter une source de données en vue de l'archiver, de la diffuser ou tout simplement l'importer dans une autre instance de G6K (Cf. supra).</p>
+				<p>Cliquez sur « Sources de données » de la barre de menu.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-datasources-buttonbar.png') }}" alt="">
+				</p>
+				<p>Puis cliquez sur la source de données à exporter dans la barre latérale gauche.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-export-button.png') }}" alt="">
+				</p>
+				<p>Puis cliquez sur le bouton « Exporter » de la barre de titre.</p>
+				<p>G6K génère deux fichiers au format JSON dont les caractéristiques sont les suivantes :</p>
+				<p>
+					Le premier fichier, dont le nom est formé avec le nom de la source suivi de l'extension .schema.json, décrit des données contenues dans la source.
+					<br>
+					La description des données est conforme à la spécification <a href="http://json-schema.org/">JSON schema</a> qui est à la fois une norme de description et une norme de validation de données JSON.
+				</p>
+				<p>Le deuxième fichier, dont le nom est formé avec le nom de la source suivi de l'extension .json., comporte les données contenues dans la source.</p>
+				<p>
+					Ces deux fichiers sont compressés dans un fichier qui porte également le nom de la source avec l'extension .zip.
+					<br>
+					Il vous est proposé en téléchargement pour archivage.
+				</p>
+				

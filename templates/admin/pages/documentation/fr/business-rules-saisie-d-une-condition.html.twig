@@ -1,0 +1,69 @@
+				<h2 id="saisie-d-une-condition">
+					3.1. Saisie d'une condition
+				</h2>
+				<p>
+					Dans le bloc de saisie de la condition figure la ligne : 
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-conditions-connector.png') }}" alt="">
+					<br>
+					Cliquez sur le mot souligné pour sélectionner le connecteur : 
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-connectors-list.png') }}" alt="">
+				</p>
+				<p>
+					Le connecteur permet de saisir une « condition composée » en combinant les « conditions simples » que vous saisirez directement sous le connecteur.
+					<br>
+					Les conditions sont présentées par niveaux. Le connecteur introduit un niveau de conditions. Un niveau est matérialisé par un retrait par rapport au connecteur.
+				</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Connecteur</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>toutes</td>
+							<td>Toutes les conditions des lignes du niveau immédiatement inférieur doivent être vraies (c'est l'équivalent du ET)</td>
+						</tr>
+						<tr>
+							<td>au moins une</td>
+							<td>Au moins une des conditions des lignes du niveau immédiatement inférieur doit être vraie (c'est l'équivalent du OU)</td>
+						</tr>
+						<tr>
+							<td>aucune</td>
+							<td>Aucune des conditions des lignes du niveau immédiatement inférieur ne doit être vraie</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>Par exemple :</p>
+				<pre class="prettyprint">
+<span class="label label-default">toutes</span> les conditions suivantes sont satisfaites : <span class="label label-default">condition simple A</span> <span class="label label-default">au moins une</span> des conditions suivantes est satisfaite : <span class="label label-default">condition simple B</span> <span class="label label-default">condition simple C</span>
+</pre>
+				<p>traduit l'expression booléenne : <code>condition simple A ET (condition simple B OU condition simple C)</code></p>
+				<pre class="prettyprint">
+<span class="label label-default">condition simple A</span> est de niveau 1, <span class="label label-default">condition simple B</span> et <span class="label label-default">condition simple C</span> sont de niveau 2.
+</pre>
+				<p>
+					Cliquez sur 
+					<img src="{{ asset('assets/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="">
+					pour ajouter une condition composée en introduisant un niveau de sous-conditions sous ce connecteur.
+					<br>
+					La ligne ci-dessous s'affiche sous le connecteur avec un retrait matérialisé par la flèche :
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-conditions-subcondition.png') }}" alt="">
+				</p>
+				<p>ou</p>
+				<p>
+					Cliquez sur 
+					<img src="{{ asset('assets/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="">
+					à droite du connecteur pour ajouter une condition simple du niveau de ce connecteur.
+					<br>
+					La ligne ci-dessous s'affiche sous le connecteur avec un retrait :
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-conditions-condition.png') }}" alt="">
+				</p>
+				{% include 'admin/pages/documentation/fr/business-rules-condition-simple.html.twig' %}
+				{% include 'admin/pages/documentation/fr/business-rules-suppression-d-une-condition.html.twig' %}
+				

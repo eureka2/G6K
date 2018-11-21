@@ -1,0 +1,30 @@
+				<h3 id="declaration-de-la-source-de-donnees">
+					3.1.1. Déclaration de la source de données
+				</h3>
+				<p>Cliquez sur « Sources de données » de la barre de menu</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-datasources-buttonbar.png') }}" alt="">
+				</p>
+				<p>
+					puis sur 
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-create-button.png') }}" alt="">
+					du menu latéral gauche.
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-create-external.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Nom » : Nom de la source de données sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Type » : Type de la source de données « Interne », « Base de données externe » ou « Web service externe (API Rest) ». Choisir « Base de données externe ».</li>
+					<li>« Base de données » / « Type » : Type de la base de données (MySQL ou PostgreSQL).</li>
+					<li>« Nom de la base de données » : Nom de la base de données sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Libellé de la base de données » : A votre convenance.</li>
+					<li>« Serveur de base de données » : Nom du serveur ou son adresse IP.</li>
+					<li>« Port de la base de données » : numéro du port, en général sur 4 chiffres.</li>
+					<li>« Identifiant de connexion à la base de données » : Identifiant d'un utilisateur disposant du privilège SELECT.</li>
+					<li>« Mot de passe de la base de données » : Mot de passe associé à l'identifiant.</li>
+				</ol>
+				<p>Vous pouvez décrire la source de données dans l’espace « Description » prévu à cet effet.</p>
+				{% include 'admin/pages/documentation/fr/datasources-management-declaration-des-tables.html.twig' %}
+				

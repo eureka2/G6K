@@ -1,0 +1,603 @@
+				<h2 id="mysql">
+					3.2. MySQL
+				</h2>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Fonction</th>
+							<th>Description</th>
+							<th align="center">Nombre d'arguments</th>
+							<th>Type retourné</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>ascii</td>
+							<td>retourne le code ASCII du premier caractère de l'argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>char</td>
+							<td>retourne le caractère correspondant au code ascii fourni dans l'argument 1</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>char_length</td>
+							<td>renvoie la longueur de la chaîne passée en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>character_length</td>
+							<td>renvoie la longueur de la chaîne passée en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>format</td>
+							<td>formate l'argument 1 avec le format #,###,###.## et l'arrondi avec le nombre de décimales spécifié dans l'argument 2</td>
+							<td align="center">2</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>insert</td>
+							<td>retourne une chaîne de caractères, après avoir remplacé la portion de chaîne de l'argument 1, commençant à la position spécifiée par l'argument 2 et de longueur en caractères spécifiée par l'argument 3, par la chaîne de l'argument 4</td>
+							<td align="center">4</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>instr</td>
+							<td>retourne la position de la première occurrence de la chaîne de l'argument 2 dans la chaîne de caractères de l'argument 1</td>
+							<td align="center">2</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>left</td>
+							<td>retourne les caractères les plus à gauche de la chaîne de caractères de l'argument 1, de la longueur spécifiée par l'argument 2</td>
+							<td align="center">2</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>length</td>
+							<td>renvoie la longueur de la chaîne passée en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>locate</td>
+							<td>retourne la position de la première occurrence de la chaîne de l'argument 1 dans la chaîne de caractères de l'argument 2 , à partir de la position spécifiée par l'argument 3</td>
+							<td align="center">3</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>lower</td>
+							<td>convertit la chaîne en lettres minuscules</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>lpad</td>
+							<td>complète l'argument 1 à sa gauche avec la chaîne en argument 3 répétée plusieurs fois jusqu'à ce que la chaîne atteigne la longueur spécifiée en argument 2</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>ltrim</td>
+							<td>renvoie une chaîne dont les caractères blancs au début de la chaîne fournie en argument sont supprimés</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>mid</td>
+							<td>renvoie la sous-chaîne extraite de la chaîne passée en argument 1 à partir de la position en argument 2, d'une longueur spécifiée par l'argument 3</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>position</td>
+							<td>retourne la position de la première occurrence de la chaîne de l'argument 1 dans la chaîne de caractères de l'argument 2 , à partir de la position spécifiée par l'argument 3</td>
+							<td align="center">3</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>quote</td>
+							<td>renvoie une chaîne qui est la valeur de son argument sous une forme appropriée pour l'inclusion dans une instruction SQL. Les chaînes sont entourées de guillemets simples avec des échappements sur des guillemets intérieurs au besoin.</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>repeat</td>
+							<td>retourne une chaîne de caractères constituée de la répétition de la chaîne de l'argument 1, d'un nombre de fois spécifié par l'argument 2. Si nombre de fois <= 0, retourne une chaîne vide. Retourne NULL su un des deux arguments est NULL</td>
+							<td align="center">2</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>replace</td>
+							<td>renvoie une copie de la chaîne en arguement 1 avec chaque instance de la sous-chaîne en argument 2 remplacée par la sous-chaîne en argument 3</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>reverse</td>
+							<td>retourne une chaîne dont l'ordre des caractères est l'inverse de la chaîne fournie en l'argument</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>right</td>
+							<td>retourne les caractères les plus à droite de la chaîne de caractères de l'argument 1, de la longueur spécifiée par l'argument 2</td>
+							<td align="center">2</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>rpad</td>
+							<td>complète l'argument 1 à sa droite avec la chaîne en argument 3 répétée plusieurs fois jusqu'à ce que la chaîne atteigne la longueur spécifiée en argument 2</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>rtrim</td>
+							<td>renvoie une chaîne dont les caractères blancs de la fin de la chaîne fournie en argument sont supprimés</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>soundex</td>
+							<td>renvoie une chaîne qui est le codage soundex de la chaîne passée en argument</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>space</td>
+							<td>retourne une chaîne constituée du nombre d'espaces fourni en argument</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>substring</td>
+							<td>renvoie la sous-chaîne extraite de la chaîne passée en argument 1 à partir de la position en argument 2, d'une longueur spécifiée par l'argument 3</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>substring_index</td>
+							<td>retourne une portion de la chaîne de caractères de l'argument 1, située avant le nombre d'occurences spécifié par l'argument 3, du délimiteur spécifié par l'argument 2. Si l'argument 3 est positif, tout ce qui précède le délimiteur sera retourné. Si l'argument 3 est négatif, tout ce qui suit le délimiteur sera retourné</td>
+							<td align="center">3</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>trim</td>
+							<td>renvoie une chaîne dont les caractères blancs au début et à la fin de la chaîne fournie en argument sont supprimés</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>upper</td>
+							<td>convertit la chaîne en lettres majuscules</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>abs</td>
+							<td>renvoie la valeur absolue de l'argument numérique</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>acos</td>
+							<td>renvoie l'arc cosinus de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>asin</td>
+							<td>renvoie l'arc sinus de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>atan</td>
+							<td>renvoie l'arc tangente de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>atan2</td>
+							<td>renvoie l'arc tangente 2 de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>ceil</td>
+							<td>renvoie la plus petite valeur entière supérieure ou égale à la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>ceiling</td>
+							<td>renvoie la plus petite valeur entière supérieure ou égale à la valeur passée en argument. Alias de la fonction ceil</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>cos</td>
+							<td>renvoie le cosinus de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>cot</td>
+							<td>renvoie la cotangente de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>degrees</td>
+							<td>convertit en degrés la valeur en radians passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>exp</td>
+							<td>renvoie l'exponentiel de la valeur passée en argument, c-à-d la la valeur de e portée à la puissance de l'argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>floor</td>
+							<td>renvoie la plus grande valeur entière inférieure ou égale à la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>ln</td>
+							<td>renvoie le logarithme naturel (népérien) de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>log</td>
+							<td>renvoie le logarithme de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>log10</td>
+							<td>renvoie le logarithme base 10 de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>log2</td>
+							<td>renvoie le logarithme base 2 de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>power</td>
+							<td>renvoie la valeur de l'argument 1 élevé à la puissance de la valeur de l'argument 2</td>
+							<td align="center">2</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>radians</td>
+							<td>convertit en radians la valeur en degrés passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>rand</td>
+							<td>retourne une valeur aléatoire comprise entre 0 et 1 inclus avec l'argument comme valeur de départ</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>round</td>
+							<td>arrondi la valeur de l'argument 1 à la valeur la plus proche avec le nombre de décimal passé en argument 2</td>
+							<td align="center">2</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>sin</td>
+							<td>renvoie le sinus de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>sqrt</td>
+							<td>renvoie la racine carrée de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>tan</td>
+							<td>renvoie la tangente de la valeur passée en argument</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>truncate</td>
+							<td>tronque l'argument 1 du nombre de décimales fournie en argument 2 et retourne le résultat</td>
+							<td align="center">2</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>adddate</td>
+							<td>Ajoute à la date figurant dans l'argument 1, le nombre de jours spécifié dans l'argument 2</td>
+							<td align="center">2</td>
+							<td>date</td>
+						</tr>
+						<tr>
+							<td>date_format</td>
+							<td>retourne la date fournie en argument 1, formaté avec le format spécifié en argument 2. Cf. la liste des spécificateurs de format supra.</td>
+							<td align="center">2</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>datediff</td>
+							<td>retourne le nombre de jours entre les 2 dates fournies en arguments</td>
+							<td align="center">2</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>dayname</td>
+							<td>renvoie le nom du jour de semaine de la date fournie en argument</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>dayofmonth</td>
+							<td>retourne le jour du mois (1 à 31) de la date fournie en argument</td>
+							<td align="center"></td>
+							<td>1|entier</td>
+						</tr>
+						<tr>
+							<td>dayofweek</td>
+							<td>retourne l'index du jour de la semaine pour date ( 1 = dimanche, 2 = lundi, ..., 7 = samedi)</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>dayofyear</td>
+							<td>retourne le jour de l'année (1 à 366) de la date fournie en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>from_days</td>
+							<td>retourne la date calculée à partir du nombre de jours écoulé depuis l'année 0 fourni en argument</td>
+							<td align="center">1</td>
+							<td>date</td>
+						</tr>
+						<tr>
+							<td>last_day</td>
+							<td>retourne la date du dernier jour du mois pour la date fournie en argument</td>
+							<td align="center">1</td>
+							<td>date</td>
+						</tr>
+						<tr>
+							<td>makedate</td>
+							<td>retourne la date calculée à partir de l'année fournie en argument 1 et du jour dans l'année fournie en argument 2.</td>
+							<td align="center">3</td>
+							<td>date</td>
+						</tr>
+						<tr>
+							<td>month</td>
+							<td>retourne le mois de la date fournie en argument, dans la fourchette de 1 à 12</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>monthname</td>
+							<td>retourne le nom complet du mois de la date fournie en argument</td>
+							<td align="center">1</td>
+							<td>texte</td>
+						</tr>
+						<tr>
+							<td>now</td>
+							<td>retourne la date courante</td>
+							<td align="center">0</td>
+							<td>date</td>
+						</tr>
+						<tr>
+							<td>quarter</td>
+							<td>retourne le trimestre de la date fournie en argument, dans la fourchette de 1 à 4</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>str_to_date</td>
+							<td>retourne la date correspondant à la chaîne fournie en argument1, dont le format est spécifié en argument 2. Cf. la liste des spécificateurs de format supra.</td>
+							<td align="center">1</td>
+							<td>nombre</td>
+						</tr>
+						<tr>
+							<td>subdate</td>
+							<td>soustrait le nombre de jours fourni en argument 2 à la date fournie en argument 1.</td>
+							<td align="center">2</td>
+							<td>date</td>
+						</tr>
+						<tr>
+							<td>to_days</td>
+							<td>retourne le nombre de jours écoulé depuis l'année 0 jusqu'à la date fournie en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>week</td>
+							<td>retourne le numéro de la semaine de la date fournie en argument 1 selon le premier jour de la semaine fourni en argument 2 (nombre pair de 0 à 6 = dimanche, numéro impair de 1 à 7 = lundi)</td>
+							<td align="center">2</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>weekday</td>
+							<td>retourne l'index du jour de semaine de la date fournie en argument ( 0 = lundi, 1 = mardi, ..., 6 = dimanche).</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>weekofyear</td>
+							<td>retourne le numéro de la semaine dans l'année de la date fournie en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>year</td>
+							<td>retourne l'année de la date fournie en argument</td>
+							<td align="center">1</td>
+							<td>entier</td>
+						</tr>
+						<tr>
+							<td>yearweek</td>
+							<td>retourne l'année suivie du numéro de la semaine de la date fournie en argument 1 selon le premier jour de la semaine fourni en argument 2 (nombre pair de 0 à 6 = dimanche, numéro impair de 1 à 7 = lundi)</td>
+							<td align="center">2</td>
+							<td>entier</td>
+						</tr>
+					</tbody>
+				</table>
+				<p><strong>Spécificateurs de format de date MySQL</strong></p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Spécificateur</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>%a</td>
+							<td>Nom abrégé du jour de la semaine ( Lun...Dim )</td>
+						</tr>
+						<tr>
+							<td>%b</td>
+							<td>Nom abrégé du mois ( Jan...Déc )</td>
+						</tr>
+						<tr>
+							<td>%c</td>
+							<td>Mois, numérique ( 0... 12 )</td>
+						</tr>
+						<tr>
+							<td>%D</td>
+							<td>Jour du mois avec le suffixe anglais ( 0th, 1st, 2nd, 3rd, ... )</td>
+						</tr>
+						<tr>
+							<td>%d</td>
+							<td>Jour du mois, numérique ( 00...31 )</td>
+						</tr>
+						<tr>
+							<td>%e</td>
+							<td>Jour du mois, numérique ( 0...31 )</td>
+						</tr>
+						<tr>
+							<td>%f</td>
+							<td>Microsecondes ( 000000...999999 )</td>
+						</tr>
+						<tr>
+							<td>%H</td>
+							<td>Heure ( 00...23 )</td>
+						</tr>
+						<tr>
+							<td>%h</td>
+							<td>Heure ( 01...12 )</td>
+						</tr>
+						<tr>
+							<td>%I</td>
+							<td>Heure ( 01...12 )</td>
+						</tr>
+						<tr>
+							<td>%i</td>
+							<td>Minutes, numérique ( 00...59 )</td>
+						</tr>
+						<tr>
+							<td>%j</td>
+							<td>Jour de l'année ( 001...366 )</td>
+						</tr>
+						<tr>
+							<td>%k</td>
+							<td>Heure ( 0...23 )</td>
+						</tr>
+						<tr>
+							<td>%l</td>
+							<td>Heure ( 1...12 )</td>
+						</tr>
+						<tr>
+							<td>%M</td>
+							<td>Nom du mois ( Janvier...Décembre )</td>
+						</tr>
+						<tr>
+							<td>%m</td>
+							<td>Mois, numérique ( 00...12 )</td>
+						</tr>
+						<tr>
+							<td>%p</td>
+							<td>AM ou PM</td>
+						</tr>
+						<tr>
+							<td>%r</td>
+							<td>Temps, 12 heures ( hh:mm:ss suivi de AM ou PM)</td>
+						</tr>
+						<tr>
+							<td>%S</td>
+							<td>Secondes ( 00...59 )</td>
+						</tr>
+						<tr>
+							<td>%s</td>
+							<td>Secondes ( 00...59 )</td>
+						</tr>
+						<tr>
+							<td>%T</td>
+							<td>Temps, 24 heures ( hh:mm:ss )</td>
+						</tr>
+						<tr>
+							<td>%U</td>
+							<td>Semaine ( 00... 53), où le dimanche est le premier jour de la semaine; WEEK() Mode 0</td>
+						</tr>
+						<tr>
+							<td>%u</td>
+							<td>Semaine ( 00... 53), où lundi est le premier jour de la semaine; WEEK() Mode 1</td>
+						</tr>
+						<tr>
+							<td>%V</td>
+							<td>Semaine ( 01... 53), où le dimanche est le premier jour de la semaine; WEEK() Mode 2; utilisé avec %X</td>
+						</tr>
+						<tr>
+							<td>%v</td>
+							<td>Semaine ( 01... 53), où lundi est le premier jour de la semaine; WEEK() Mode 3; utilisé avec %x</td>
+						</tr>
+						<tr>
+							<td>%W</td>
+							<td>Nom du jour de la semaine ( Lundi... Dimanche)</td>
+						</tr>
+						<tr>
+							<td>%w</td>
+							<td>Jour de la semaine ( 0 = dimanche .. 6 = samedi)</td>
+						</tr>
+						<tr>
+							<td>%X</td>
+							<td>Année de la semaine où le dimanche est le premier jour de la semaine, numérique, quatre chiffres; utilisé avec %V</td>
+						</tr>
+						<tr>
+							<td>%x</td>
+							<td>Année de la semaine, où le lundi est le premier jour de la semaine, numérique, quatre chiffres; utilisé avec %v</td>
+						</tr>
+						<tr>
+							<td>%Y</td>
+							<td>Année, numérique, quatre chiffres</td>
+						</tr>
+						<tr>
+							<td>%y</td>
+							<td>Année, numérique (deux chiffres)</td>
+						</tr>
+						<tr>
+							<td>%%</td>
+							<td>Un caractère % littéral</td>
+						</tr>
+						<tr>
+							<td>%x</td>
+							<td>x, Pour tout " x" non mentionné ci-dessus</td>
+						</tr>
+					</tbody>
+				</table>
+				

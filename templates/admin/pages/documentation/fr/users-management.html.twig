@@ -15,150 +15,18 @@
 <a class="nav-link ml-1" href="#interface-de-gestion-des-utilisateurs">2. Interface de gestion des utilisateurs</a>
 
 					<nav class="nav nav-pills flex-column">
-<a class="nav-link ml-2" href="#ajout-d’un-utilisateur">2.1. Ajout d’un utilisateur</a>
-<a class="nav-link ml-2" href="#modification-d’un-utilisateur">2.2. Modification d’un utilisateur</a>
-<a class="nav-link ml-2" href="#suppression-d’un-utilisateur">2.3. Suppression d’un utilisateur</a>
+<a class="nav-link ml-2" href="#ajout-d-un-utilisateur">2.1. Ajout d’un utilisateur</a>
+<a class="nav-link ml-2" href="#modification-d-un-utilisateur">2.2. Modification d’un utilisateur</a>
+<a class="nav-link ml-2" href="#suppression-d-un-utilisateur">2.3. Suppression d’un utilisateur</a>
 </nav>
 				</nav>
 			</nav>
 		</div>
 		<div class="col-9">
 			<div class="document-content">
-				<h1 id="comptes-utilisateurs">
-					1. Comptes utilisateurs
-				</h1>
-				<p>Cette interface vous permet des gérer les comptes utilisateurs qui sont autorisés à accéder soit au module d'administration de G6K, soit aux simulateurs à accès protégés.</p>
-				<p><strong>A noter que le module d'administration ne permet pas de protéger l'accès à un simulateur, il faut en faire la demande à l'administrateur système qui modifiera la configuration de G6K en conséquence.</strong></p>
-				<p>Tous les comptes utilisateurs n'ont pas accès aux mêmes fonctions d'administration.</p>
-				<p>L'accès aux fonctions se fait selon des « rôles » qui respectent la hiérarchie suivante :</p>
-				<ul>
-					<li>« Utilisateur » : accès aux simulateurs protégès nécessitant une authentification.</li>
-					<li>« Contributeur » : fonction du rôle « utilisateur » + accès aux tutoriels, mis à jour des données et donc accès au menu « Sources de données ».</li>
-					<li>« Manager » : fonctions du rôle « contributeur » + gestion (création/modification) des simulateurs.</li>
-					<li>« Admin » : fonctions du rôle « manager » + gestion des vues et du cache.</li>
-					<li>« Super admin » : fonctions du rôle « admin » + gestion des utilisateurs.</li>
-				</ul>
-				<p>Ainsi tout manager est contributeur, tout admin est manager et ainsi de suite ...</p>
-				<h1 id="interface-de-gestion-des-utilisateurs">
-					2. Interface de gestion des utilisateurs
-				</h1>
-				<p>Si vous avez accès à cette interface, c'est donc que vous êtes un des « Super admins »</p>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-users-buttonbar.png') }}" alt="" />
-				</p>
-				<p>Cliquez sur « Utilisateurs » de la barre de menu pour y accèdez.</p>
-				<p>La liste des comptes utilisateurs s'affiche sous forme de tableau:</p>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-list.png') }}" alt="" />
-				</p>
-				<p>Plusieurs attributs sont liés aux utilisateurs, ils sont définis ci-dessous :</p>
-				<p><strong>Attributs :</strong></p>
-				<ul>
-					<li>« Identifiant » : identifiant de l’utilisateur. <em>Spécification :</em> <strong>Minimum 3 caractères.</strong></li>
-					<li>« Email » : email de l’utilisateur. <em>Spécification :</em> <strong>Différent des autres emails déjà enregistrés.</strong></li>
-					<li>
-						« Mot de passe » : mot de passe de l’utilisateur qui sera crypté. 
-						<em>Spécification <strong>:</strong></em>
-						<strong>Minimum 6 caractères.</strong>
-					</li>
-					<li>« Activé » : détermine si le compte est activé ou non.</li>
-					<li>« Rôles » : Utilisateur, Contributeur, Manager, Admin et Super admin.</li>
-					<li>« Dernière connexion » : date à laquelle l’utilisateur s’est connecté pour la dernière fois.</li>
-				</ul>
-				<p>
-					Vous pouvez ajuster la taille de la liste avec 
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-list-size.png') }}" alt="" />
-					, trier la liste en cliquant sur le nom de colonne qui vous interesse afin de faciliter la lecture et la recherche dans les listes longues.
-Ainsi si vous cliquez sur « Identifiant », la liste sera triée par identifiants en ordre croissant. Si vous cliquez une deuxième fois, elle sera triée en ordre décroissanr. Il en est de même pour les autres colonnes du tableau.
-				</p>
-				<p>Mais surtout, vous pouvez ajouter, modifier ou supprimer un compte utilisateur.</p>
-				<h2 id="ajout-d’un-utilisateur">
-					2.1. Ajout d’un utilisateur
-				</h2>
-				<p>
-					Pour créer un compte utilisateur, cliquez sur le bouton 
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-create-button.png') }}" alt="" />
-					en haut à droite de la liste.
-				</p>
-				<p>Une ligne vierge apparaîtra en tête de liste, vous pouvez alors saisir les attributs du compte en respectant leurs spécifications.</p>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-create.png') }}" alt="" />
-				</p>
-				<p>
-					Pour sauvegarder le compte, cliquez sur le bouton 
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-edit-save-button.png') }}" alt="" />
-					, il sera immédiatement enregistré dans la base de données.
-				</p>
-				<p><em>Si l’utilisateur entre un mauvais identifiant lors de sa connexion, le message suivant sera affiché ‘’Identifiants invalides.’’.</em></p>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-login-invalid.png') }}" alt="" />
-				</p>
-				<p>
-					<em>
-						Lorsqu’un compte est désactivé, il ne peut plus se connecter pour accèder aux fonctions de son rôle.
-						<br />
-						Par exemple, si le compte de « Guest » est désactivé, il en sera notifié par le message ‘’Le compte est désactivé.’’. lorsqu'il essaiera de se connecter
-					</em>
-				</p>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-login-disabled.png') }}" alt="" />
-				</p>
-				<h2 id="modification-d’un-utilisateur">
-					2.2. Modification d’un utilisateur
-				</h2>
-				<p>
-					Pour modifier un compte utilisateur, cliquez sur le bouton : 
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-edit-button.png') }}" alt="" />
-					<br />
-					La ligne du compte devient éditable, vous pouvez ainsi effectuer vos modifications :
-				</p>
-				<ul>
-					<li>activer/désactiver le compte;</li>
-					<li>modifier l’identifiant, l’email, le mot de passe;</li>
-					<li>ajouter ou supprimer des rôles.</li>
-				</ul>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-edit.png') }}" alt="" />
-				</p>
-				<p>Pour supprimer un rôle, cliquez sur la croix à gauche du nom du rôle.</p>
-				<p>Lorsque vous cliquez dans le champ « Rôles », une liste déroulante s'ouvre pour sélectionner un rôle.</p>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-create-roles.png') }}" alt="" />
-				</p>
-				<p>
-					Pour sauvegarder vos changements, cliquez sur le bouton : 
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-edit-save-button.png') }}" alt="" />
-				</p>
-				<h2 id="suppression-d’un-utilisateur">
-					2.3. Suppression d’un utilisateur
-				</h2>
-				<p>
-					Pour supprimer un utilisateur cliquez sur le bouton : 
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-delete-button.png') }}" alt="" />
-				</p>
-				<p>
-					Un bouton de confirmation apparaîtra, cliquez sur ce dernier ( 
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-confirm-button.png') }}" alt="" />
-					) pour supprimer le compte.
-				</p>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-delete.png') }}" alt="" />
-				</p>
-				<p>
-					Une fois confirmé, le compte de l'utilisateur sera supprimé de la base de données des utilisateurs, mais la ligne du compte restera affichée avec un bouton « Restaurer » si toutefois vous vous étiez trompé ou que vous changez d'avis.
-					<br />
-					A noter que si vous restaurer le compte, l'utilisateur ne pourra pas se connecter avec son ancien mot de passe. En effet, pour des raisons de sécurité, l'ancien mot de passe n'a pu être enregistré car celui-ci a été codé en fonction du jour de sa création.
-					<br />
-					Vous devez donc saisir un nouveau mot de passe et le communiquer à l'utilisateur.
-				</p>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-user-delete-restore.png') }}" alt="" />
-				</p>
-				<p>Au prochain ré-affichage de la page le compte n'apparaîtra plus dans la liste.</p>
-				<p>
-					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-list.png') }}" alt="" />
-				</p>
-			</div>
+				{% include 'admin/pages/documentation/fr/users-management-comptes-utilisateurs.html.twig' %}
+				{% include 'admin/pages/documentation/fr/users-management-interface-de-gestion-des-utilisateurs.html.twig' %}
+				</div>
 		</div>
 	</div>
 </div>
