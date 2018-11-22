@@ -1138,9 +1138,9 @@ class SimulatorsAdminController extends BaseAdminController {
 					case 'field':
 						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
 						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
 						$ruleActionObj->setPanel($panel);
 						$ruleActionObj->setFieldset($fieldset);
+						$disposition = $this->findDisposition($ruleActionObj);
 						if ($disposition == 'grid') {
 							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
 							$ruleActionObj->setField($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
@@ -1151,9 +1151,9 @@ class SimulatorsAdminController extends BaseAdminController {
 					case 'prenote':
 						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
 						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
 						$ruleActionObj->setPanel($panel);
 						$ruleActionObj->setFieldset($fieldset);
+						$disposition = $this->findDisposition($ruleActionObj);
 						if ($disposition == 'grid') {
 							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
 							$ruleActionObj->setPrenote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
@@ -1164,9 +1164,9 @@ class SimulatorsAdminController extends BaseAdminController {
 					case 'postnote':
 						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
 						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
 						$ruleActionObj->setPanel($panel);
 						$ruleActionObj->setFieldset($fieldset);
+						$disposition = $this->findDisposition($ruleActionObj);
 						if ($disposition == 'grid') {
 							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
 							$ruleActionObj->setPostnote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
@@ -1217,7 +1217,9 @@ class SimulatorsAdminController extends BaseAdminController {
 					case 'choice':
 						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
 						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+						$ruleActionObj->setPanel($panel);
+						$ruleActionObj->setFieldset($fieldset);
+						$disposition = $this->findDisposition($ruleActionObj);
 						if ($disposition == 'grid') {
 							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
 							$position = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
@@ -1226,8 +1228,6 @@ class SimulatorsAdminController extends BaseAdminController {
 							$position = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
 							$choice = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
 						}
-						$ruleActionObj->setPanel($panel);
-						$ruleActionObj->setFieldset($fieldset);
 						$ruleActionObj->setField($position);
 						$ruleActionObj->setChoice($choice);
 						break;
@@ -3486,262 +3486,152 @@ class SimulatorsAdminController extends BaseAdminController {
 						case 'field':
 						case 'prenote':
 						case 'postnote':
-							$step = $action->getStep();
-							$panel = $action->getPanel();
-							$fieldset = $action->getFieldset();
-							$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+							$disposition = $this->findDisposition($action);
 							if ($disposition == 'grid') {
-								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-										array('name' => 'objectId',	'value' => $target, 'fields' => array(
-												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																		array('name' => 'fieldrowId', 'value' => $action->getFieldrow(), 'fields' => array(
-																				array('name' => 'fieldId', 'value' => $action->getTargetId())
-																			)
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								);
+								$clause = $this->makeClause(array(
+									'action-select' => $action->getName(),
+									'objectId' => $target,
+									'stepId' => $action->getStep(),
+									'panelId' => $action->getPanel(),
+									'fieldsetId' => $action->getFieldset(),
+									'fieldrowId' => $action->getFieldrow(),
+									'fieldId' => $action->getTargetId()
+								));
 							} else {
-								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-										array('name' => 'objectId',	'value' => $target, 'fields' => array(
-												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																		array('name' => 'fieldId', 'value' => $action->getTargetId())
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								);
+								$clause = $this->makeClause(array(
+									'action-select' => $action->getName(),
+									'objectId' => $target,
+									'stepId' => $action->getStep(),
+									'panelId' => $action->getPanel(),
+									'fieldsetId' => $action->getFieldset(),
+									'fieldId' => $action->getTargetId()
+								));
 							}
 							break;
 						case 'section':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'blockinfoId', 'value' => $action->getBlockinfo(), 'fields' => array(
-																	array('name' => 'chapterId', 'value' => $action->getChapter(), 'fields' => array(
-																			array('name' => 'sectionId', 'value' => $action->getTargetId())
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'blockinfoId' => $action->getBlockinfo(),
+								'chapterId' => $action->getChapter(),
+								'sectionId' => $action->getTargetId()
+							));
 							break;
 						case 'chapter':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'blockinfoId', 'value' => $action->getBlockinfo(), 'fields' => array(
-																	array('name' => 'chapterId', 'value' => $action->getTargetId())
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'blockinfoId' => $action->getBlockinfo(),
+								'chapterId' => $action->getTargetId()
+							));
 							break;
 						case 'column':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																	array('name' => 'columnId', 'value' => $action->getTargetId())
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'fieldsetId' => $action->getFieldset(),
+								'columnId' => $action->getTargetId()
+							));
 							break;
 						case 'fieldrow':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																	array('name' => 'fieldrowId', 'value' => $action->getTargetId())
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'fieldsetId' => $action->getFieldset(),
+								'fieldrowId' => $action->getTargetId()
+							));
 							break;
 						case 'fieldset':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => $action->getTargetId())
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'fieldsetId' => $action->getTargetId()
+							));
 							break;
 						case 'blockinfo':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'blockinfoId', 'value' => $action->getTargetId())
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'blockinfoId' => $action->getTargetId()
+							));
 							break;
 						case 'panel':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getTargetId())
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getTargetId()
+							));
 							break;
 						case 'step':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getTargetId())
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getTargetId()
+							));
 							break;
 						case 'footnote':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'footnoteId', 'value' => $action->getTargetId())
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'footnoteId' => $action->getTargetId()
+							));
 							break;
 						case 'action':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'actionId', 'value' => $action->getTargetId())
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'actionId' => $action->getTargetId()
+							));
 							break;
 						case 'choice':
-							$step = $action->getStep();
-							$panel = $action->getPanel();
-							$fieldset = $action->getFieldset();
-							$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+							$disposition = $this->findDisposition($action);
 							if ($disposition == 'grid') {
-								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-										array('name' => 'objectId',	'value' => $target, 'fields' => array(
-												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																		array('name' => 'fieldrowId', 'value' => $action->getFieldrow(), 'fields' => array(
-																				array('name' => 'fieldId', 'value' => $action->getField(), 'fields' => array(
-																						array('name' => 'choiceId', 'value' => $action->getTargetId())
-																					)
-																				)
-																			)
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								);
+								$clause = $this->makeClause(array(
+									'action-select' => $action->getName(),
+									'objectId' => $target,
+									'stepId' => $action->getStep(),
+									'panelId' => $action->getPanel(),
+									'fieldsetId' => $action->getFieldset(),
+									'fieldrowId' => $action->getFieldrow(),
+									'fieldId' => $action->getField(),
+									'choiceId' => $action->getTargetId()
+								));
 							} else {
-								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-										array('name' => 'objectId',	'value' => $target, 'fields' => array(
-												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																		array('name' => 'fieldId', 'value' => $action->getField(), 'fields' => array(
-																				array('name' => 'choiceId', 'value' => $action->getTargetId())
-																			)
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								);
+								$clause = $this->makeClause(array(
+									'action-select' => $action->getName(),
+									'objectId' => $target,
+									'stepId' => $action->getStep(),
+									'panelId' => $action->getPanel(),
+									'fieldsetId' => $action->getFieldset(),
+									'fieldId' => $action->getField(),
+									'choiceId' => $action->getTargetId()
+								));
 							}
 							break;
 					}
 					break;
 				case 'setAttribute':
-					$clause = array('name' => 'action-select', 'value' => 'setAttribute', 'fields' => array(
-							array('name' => 'attributeId', 'value' => $target, 'fields' => array(
-									array('name' => 'fieldName', 'value' => $this->findDataNameById($action->getData()), 'fields' => array(
-											array('name' => 'newValue', 'value' => $action->getValue())
-										)
-									)
-								)
-							)
-						)
-					);
+					$clause = $this->makeClause(array(
+						'action-select' => 'setAttribute',
+						'attributeId' => $target,
+						'fieldName' => $this->findDataNameById($action->getData()),
+						'newValue' => $action->getValue()
+					));
 					if (preg_match_all("/#(\d+)/", $action->getValue(), $matches)) {
 						foreach($matches[1] as $id) {
 							$name = $this->findDataNameById($id);
@@ -3753,18 +3643,49 @@ class SimulatorsAdminController extends BaseAdminController {
 					}
 					break;
 				case 'unsetAttribute':
-					$clause = array('name' => 'action-select', 'value' => 'unsetAttribute', 'fields' => array(
-							array('name' => 'attributeId', 'value' => $target, 'fields' => array(
-									array('name' => 'fieldName', 'value' => $this->findDataNameById($action->getData()))
-								)
-							)
-						)
-					);
+					$clause = $this->makeClause(array(
+						'action-select' => 'unsetAttribute',
+						'attributeId' => $target,
+						'fieldName' => $this->findDataNameById($action->getData())
+					));
 					break;
 			}
 			$datas[] = $clause;
 		}
 		return $datas;
+	}
+
+	/**
+	 * Finds the disposition of a fieldset where one of the elements is the target of a rule action
+	 *
+	 * @access  private
+	 * @param   \App\G6K\Model\RuleAction $action The rule action
+	 * @return  string
+	 *
+	 */
+	private function findDisposition(RuleAction $action) {
+		$step = $action->getStep();
+		$panel = $action->getPanel();
+		$fieldset = $action->getFieldset();
+		return $this->simu->getStepById((int)$step)->getPanelById((int)$panel)->getFieldSetById((int)$fieldset)->getDisposition();
+	}
+
+	/**
+	 * Makes a clause from the fields of a rule cation
+	 *
+	 * @access  private
+	 * @param   array $fields The fields of the rule action
+	 * @return  array
+	 *
+	 */
+	private function makeClause($fields) {
+		$clause = array();
+		$entry = &$clause;
+		foreach($fields as $name => $value) {
+			$entry['fields'] = array(array('name' => $name, 'value' => $value));
+			$entry = &$entry['fields'][0]; 
+		}
+		return $clause['fields'][0];
 	}
 
 	/**
