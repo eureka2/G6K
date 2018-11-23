@@ -67,9 +67,6 @@ Le taux est établi selon une table de référence publiée annuellement par le 
 		<Data id="5" name="montantForfaitaireRSA" label="Montant forfaitaire du RSA" type="money" content="550.93" />
 		<Data id="6" name="mtEnfantPA" label="Montant par enfant" type="money" content="max(0, round((#1 - #5) * #4 /100))" round="0" />
 		<Data id="7" name="totalPA" label="Montant total" type="money" content="max(0, min(#1 - #5, #6 * #3))" round="0" />
-		<Data id="8" name="dateRSA" label="Date du montant forfaitaire du RSA" type="date" source="2" index="'debut'" />
-		<Data id="9" name="paramRSA" label="Paramètre openfisca pour le RSA Socle" type="text" content="'minim.rmi.rmi'" />
-		<Data id="10" name="dateDuJour" label="Date du jour" type="date" content="now" />
 	</DataSet>
 	<Steps>
 		<Step id="0" name="calcul" label="pension alimentaire" template="pages:article.html.twig">
@@ -98,7 +95,7 @@ Pension alimentaire
 				</Panel>
 			</Panels>
 			<ActionList>
-				<Action name="effacer" label="Recommencer" class="btn-default" what="reset" for="currentStep" />
+				<Action name="effacer" label="Recommencer" class="btn-secondary" what="reset" for="currentStep" />
 			</ActionList>
 		</Step>
 		<Step id="1" name="calcul" label="pension alimentaire" template="pages:article.html.twig">
@@ -119,7 +116,7 @@ Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pensi
 				</Panel>
 			</Panels>
 			<ActionList>
-				<Action name="effacer" label="Effacer formulaire" class="btn-default" what="reset" for="currentStep" />
+				<Action name="effacer" label="Effacer formulaire" class="btn-secondary" what="reset" for="currentStep" />
 				<Action name="calculer" label="Calculer" class="btn-primary" what="submit" for="currentStep" />
 			</ActionList>
 		</Step>

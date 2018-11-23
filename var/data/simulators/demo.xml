@@ -77,9 +77,6 @@ The employee owes in every case, keep at least this sum after seizure
 			<Description><![CDATA[
 			]]></Description>
 		</Data>
-		<Data id="8" name="RSADate" label="Date of the lump sum of French RSA" type="date" source="2" index="'start'"></Data>
-		<Data id="9" name="RSAParam" label="Openfisca parameter for the RSA Socle" type="text" content="'rsa_socle'"></Data>
-		<Data id="10" name="todaysDate" label="Today's date" type="date" content="now"></Data>
 	</DataSet>
 	<Steps>
 		<Step id="0" name="calculation" label="Maintenance allowance" template="pages:article.html.twig">
@@ -106,7 +103,7 @@ Maintenance allowance
 				</Panel>
 			</Panels>
 			<ActionList>
-				<Action name="reset" label="Reset" class="btn-default" what="reset" for="currentStep"></Action>
+				<Action name="reset" label="Reset" class="btn-secondary" what="reset" for="currentStep"></Action>
 			</ActionList>
 		</Step>
 		<Step id="1" name="calculation" label="Maintenance allowance" template="pages:article.html.twig">
@@ -126,8 +123,8 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 				</Panel>
 			</Panels>
 			<ActionList>
-				<Action name="reset" label="Reset" class="btn-primary" what="reset" for="currentStep"></Action>
-				<Action name="calculate" label="Calculate" class="" what="submit" for="currentStep"></Action>
+				<Action name="reset" label="Reset" class="btn-secondary" what="reset" for="currentStep"></Action>
+				<Action name="calculate" label="Calculate" class="btn-primary" what="submit" for="currentStep"></Action>
 			</ActionList>
 		</Step>
 	</Steps>
