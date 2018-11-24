@@ -120,6 +120,10 @@ class CacheAdminController extends BaseAdminController {
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'caches',
 					'log' => $this->log,
+					'script' => 1,
+					'simulator' => null,
+					'file' => null,
+					'view' => 'admin',
 					'hiddens' => $hiddens
 				)
 		);

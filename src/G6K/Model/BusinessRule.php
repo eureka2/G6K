@@ -408,11 +408,14 @@ class BusinessRule {
 	 * @return  array The array of conditions
 	 *
 	 */
-	private function ruleConnector($pconnector) {
+	public function ruleConnector($pconnector) {
 		if ($pconnector instanceof Condition) {
-			$data = $this->simulator->getDataById((int)$pconnector->getOperand());
+			$operand = $pconnector->getOperand();
+			$data = is_numeric($operand) ? 
+					$this->simulator->getDataById((int)$operand) :
+					$this->simulator->getDataByName($operand);
 			return array(
-				'name' => $data === null ? $pconnector->getOperand() : $data->getName(),
+				'name' => $data === null ? $operand : $data->getName(),
 				'operator' => $pconnector->getOperator(),
 				'value' =>  $pconnector->getExpression()
 			);

@@ -620,7 +620,7 @@ class Simulator {
 				return $data;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the data whose id is '" . $id . "'");
 	}
 
 	/**
@@ -641,7 +641,10 @@ class Simulator {
 				return $data;
 			}
 		}
-		return null;
+		if ($name == 'script' || $name == 'dynamic' || preg_match("/step\d+\.dynamic/", $name)) {
+			return null;
+		}
+		throw new \Exception("Unable to find the data whose name is '" . $name . "'");
 	}
 
 	/**
@@ -658,7 +661,7 @@ class Simulator {
 				return $data;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the data group whose id is '" . $id . "'");
 	}
 
 	/**
@@ -675,7 +678,7 @@ class Simulator {
 				return $data;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the data group whose name is '" . $name . "'");
 	}
 
 	/**
@@ -762,7 +765,7 @@ class Simulator {
 				return $step;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the step whose id is '" . $id . "'");
 	}
 
 	/**
@@ -873,7 +876,7 @@ class Simulator {
 				return $businessrule;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the business rule whose id is '" . $id . "'");
 	}
 
 	/**
@@ -913,7 +916,7 @@ class Simulator {
 				return $site;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the site whose id is '" . $id . "'");
 	}
 
 	/**
@@ -930,7 +933,7 @@ class Simulator {
 				return $database;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the database whose id is '" . $id . "'");
 	}
 
 	/**
@@ -947,7 +950,7 @@ class Simulator {
 				return $datasource;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the datasource whose id is '" . $id . "'");
 	}
 
 	/**
@@ -964,7 +967,7 @@ class Simulator {
 				return $datasource;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the datasource whose name is '" . $name . "'");
 	}
 
 	/**
@@ -981,7 +984,7 @@ class Simulator {
 				return $source;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the source whose id is '" . $id . "'");
 	}
 
 	/**

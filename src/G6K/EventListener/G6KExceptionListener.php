@@ -89,7 +89,7 @@ class G6KExceptionListener
 		$twig = $this->kernel->getContainer()->get('templating');
 		$response = new Response();
 
-		if ($exception instanceof HttpExceptionInterface) {
+		if (! $exception instanceof \Exception) {
 			$response->setContent(
 				$twig->render(
 					'base\pages\exception.html.twig', 
@@ -139,7 +139,7 @@ class G6KExceptionListener
 		$step = (object)array('simulator' => array('label' => 'Exception'));
 		$response = new Response();
 
-		if ($exception instanceof HttpExceptionInterface) {
+		if (! $exception instanceof \Exception) {
 			$response->setContent(
 				$twig->render(
 					'admin/pages/exception.html.twig',
@@ -249,11 +249,14 @@ class G6KExceptionListener
 			$line = array_key_exists('file', $trace[0]) && array_key_exists('line', $trace[0]) && $trace[0]['line'] ? $trace[0]['line'] : null;
 			array_shift($trace);
 		}
+		$result = array_filter($result, function ($line) {
+			return !preg_match("/at __TwigTemplate_/", $line);
+		}); 
 		$result = join("<br>", $result);
 		if ($prev)
 			$result  .= "<br>" . $this->trace($prev, $seen);
 		return $result;
-}
+	}
 }
 
 ?>

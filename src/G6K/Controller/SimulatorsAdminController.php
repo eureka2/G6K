@@ -432,7 +432,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			);
 		} catch (\Exception $e) {
 			echo $e->getMessage();
-			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+			throw $e;
 		}
 	}
 
@@ -3358,7 +3358,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'name' => $brule->getName(),
 				'label' => $brule->getLabel(),
 				'conditions' => $brule->getConditions(),
-				'connector' => $brule->getConnector() !== null ? $this->ruleConnector($brule->getConnector()) : null,
+				'connector' => $brule->getConnector() !== null ? $brule->ruleConnector($brule->getConnector()) : null,
 				'ifdata' =>  $this->actionsData($brule->getId(), $brule->getIfActions()),
 				'elsedata' => $this->actionsData($brule->getId(), $brule->getElseActions())
 			);
@@ -3412,33 +3412,6 @@ class SimulatorsAdminController extends BaseAdminController {
 			'widget' => $field->getWidget()
 		);
 		return $tfield;
-	}
-
-	/**
-	 * Builds a connector data array for the Javascript rule engine
-	 *
-	 * @access  private
-	 * @param   \App\G6K\Model\Connector|\App\G6K\Model\Condition $pconnector
-	 * @return  array The connector data array
-	 *
-	 */
-	private function ruleConnector($pconnector) {
-		if ($pconnector instanceof Condition) {
-			$data = $this->simu->getDataById((int)$pconnector->getOperand());
-			return array(
-				'name' => $data === null ? $pconnector->getOperand() : $data->getName(),
-				'operator' => $pconnector->getOperator(),
-				'value' =>  $pconnector->getExpression()
-			);
-		}
-		$kind = $pconnector->getType();
-		$connector = array(
-			$kind => array()
-		);
-		foreach ($pconnector->getConditions() as $cond) {
-			$connector[$kind][] = $this->ruleConnector($cond);
-		}
-		return $connector;
 	}
 
 	/**

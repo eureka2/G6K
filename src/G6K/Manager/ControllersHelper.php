@@ -610,7 +610,7 @@ trait ControllersHelper {
 				return $action;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the action whose name is '" . $name . "'");
 	}
 
 	/**
@@ -629,7 +629,7 @@ trait ControllersHelper {
 			$value = $field[$name];
 			$currentNode = $this->findActionOption($name, $value, $currentNode);
 			if ($currentNode === null) { 
-				return null; 
+				throw new \Exception("Unable to find the action field node in the fields : '" . json_encode($fields) . "'");
 			}
 		}
 		return $currentNode;
