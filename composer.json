@@ -63,7 +63,7 @@
     "autoload-dev": {
         "psr-4": {
             "App\\Tests\\": "tests/",
-            "G6K\\Tests\\": "tests/G6K/"
+            "App\\Tests\\G6K\\": "tests/G6K/"
         }
     },
     "replace": {
