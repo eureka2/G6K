@@ -3,23 +3,9 @@ parameters:
 
     domainview: 
         localhost: Demo
-        service-public.fr: particuliers
-        service-public.fr.qualif.ext.dila.fr: particuliers
-        service-public.fr.pre-prod.ext.dila.fr: particuliers
-        service-public-v3.fr.prod.ext.dila.fr: particuliers
-        simulateurs.sc.prod.ext.dila.fr: particuliers
-        simulateurs.sc.preprod.ext.dila.fr: particuliers
-        bo.simulateurs.sc.prod.ext.dila.fr: particuliers
-        bo.simulateurs.sc.preprod.ext.dila.fr: particuliers
-        interne.local: particuliers
-        boamp.fr: boamp
 
     viewpath:
         Demo: www.mysite.com
-        particuliers: https://www.service-public.fr
-        professionnels-entreprises: https://www.service-public.fr
-        boamp: http://www.boamp.fr
-        boamp-acheteur: http://www.boamp.fr
 
     page404: /404.html
 
@@ -107,16 +93,16 @@ parameters:
                 - lib/Leaflet.GoogleMutant.js
                 - js/geoAPIMaps.js
 
-    api:
-        taxe-amenagement:
-            step: 1
-            action: calculer
-        cout-certificat-immatriculation:
-            step: 0
-            action: calculer
+    # api configuration
+    # api:
+        # <simulator-name>:
+            # step: 1
+            # action: compute
 
-    deployment:
-        localhost: cp -f "{local.rootdir}/{local.file}" "D:/var/www/html/simudev/{remote.dir}"
+    # Deployment configuration
+    # deployment:
+        # localhost: cp -f "{local.rootdir}/{local.file}" "c:/var/www/html/simulator/{remote.dir}/"
+        # remotehost: rsync -a {local.rootdir}/{local.file} user@remoteserver:/var/www/html/simulator/{remote.file}
 
 
 services:

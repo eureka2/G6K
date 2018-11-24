@@ -1494,6 +1494,8 @@ class SimulatorsAdminController extends BaseAdminController {
 			$output = $this->get('g6k.deployer')->deploy($this->simu);
 		} catch (\Exception $ex) {
 		}
+		$no_js = $request->query->get('no-js') || 0;
+		$script = $no_js == 1 ? 0 : 1;
 		$hiddens = array();
 		$ua = new \Detection\MobileDetect();
 		return $this->render(
@@ -1502,7 +1504,16 @@ class SimulatorsAdminController extends BaseAdminController {
 				'ua' => $ua,
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'simulators',
+				'view' => null,
 				'simulator' => $this->simu,
+				'script' => $script,
+				'dataset' => array(),
+				'steps' => array(),
+				'actions' => array(),
+				'rules' => array(),
+				'datasources' => array(),
+				'views' => array(),
+				'widgets' => array(),
 				'log' => $output,
 				'hiddens' => $hiddens
 			)

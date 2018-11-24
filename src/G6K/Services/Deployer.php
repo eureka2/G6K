@@ -35,6 +35,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Lock\Factory;
 use Symfony\Component\Lock\Store\SemaphoreStore;
+use Symfony\Component\Lock\Store\FlockStore;
 
 /**
  * This class implements a service that performs the deployment of files from a new simulator or modified simulator to all front-end servers described in the entry 'deployment of parameters.yml.
@@ -369,7 +370,11 @@ class Deployer {
 	public function deploy(Simulator $simu){
 		$this->output = array();
 		$this->importedCSS = array();
-		$store = new SemaphoreStore();
+		try {
+			$store = new SemaphoreStore();
+		} catch (\Exception $ex) {
+			$store = new FlockStore(sys_get_temp_dir());
+		}
 		$factory = new Factory($store);
 		$this->lock = $factory->createLock('g6k.deployment.lock');
 		if (!$this->lock->acquire()) {
@@ -381,9 +386,10 @@ class Deployer {
 		$deployment = $this->kernel->getContainer()->getParameter('deployment');
 		$databasesDir = $this->kernel->getProjectDir().'/var/data/databases';
 		$localRootDir = dirname($this->kernel->getRootDir());
+		$publicDir = $this->kernel->getContainer()->getParameter('public_dir') ?? 'public';
 		$this->loadDeployed($databasesDir . "/deployment/deployed-datasources.txt");
 		$finder = new Finder();
-		$finder->name($simu->getName().'.css')->in($this->kernel->getProjectDir() . '/public')->exclude('admin')->exclude('base')->exclude('bundles');
+		$finder->name($simu->getName().'.css')->in($this->kernel->getProjectDir() . '/' . $publicDir)->exclude('admin')->exclude('base')->exclude('bundles');
 		foreach ($deployment as $server => $command){
 			$this->output[] = '<h4>' . $this->translator->trans('Deployment on the server « %server% »', array( '%server%' => $server)) . '</h4>';
 			$internalDB = array();
@@ -404,17 +410,17 @@ class Deployer {
 			}
 			foreach(array_unique($internalDB) as $db) {
 				$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $db)) . '</h5>';
-				$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/data/databases/'.$db;
+				$localFile = $remoteFile = 'var/data/databases/'.$db;
 				$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
 			}
 			$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $simu->getName().'.xml')) . '</h5>';
-			$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/data/simulators/'.$simu->getName().'.xml';
+			$localFile = $remoteFile = 'var/data/simulators/'.$simu->getName().'.xml';
 			$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
 			if ($usingDatasource) {
 				$this->saveDataSources($server, $databasesDir);
 				$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => 'DataSources.xml')) . '</h5>';
-				$localFile = 'src/EUREKA/G6KBundle/Resources/data/databases/deployment/'.$server.'/DataSources.xml';
-				$remoteFile = 'src/EUREKA/G6KBundle/Resources/data/databases/DataSources.xml';
+				$localFile = 'var/data/databases/deployment/'.$server.'/DataSources.xml';
+				$remoteFile = 'var/data/databases/DataSources.xml';
 				$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
 			}
 			foreach ($finder as $file) {
@@ -424,13 +430,13 @@ class Deployer {
 				foreach($cssFiles as $cssFile) {
 					if (! in_array($relativePath.'/'.$cssFile, $this->importedCSS)) {
 						$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $relativePath.'/'.$cssFile)) . '</h5>';
-						$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/public/'.$relativePath.'/'.$cssFile;
+						$localFile = $remoteFile = $publicDir.'/'.$relativePath.'/'.$cssFile;
 						$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);
 						$this->importedCSS[] = $relativePath.'/'.$cssFile;
 					}
 				}
 				$this->output[] = '<h5>' . $this->translator->trans('Copy the file « %file% » with the command:', array( '%file%' => $pathname)) . '</h5>';
-				$localFile = $remoteFile = 'src/EUREKA/G6KBundle/Resources/public/'.$pathname;
+				$localFile = $remoteFile = $publicDir.'/'.$pathname;
 				$this->doDeploy($localRootDir, $localFile, $remoteFile, $command);  
 			}
 		}
