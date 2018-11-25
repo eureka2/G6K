@@ -48,7 +48,10 @@ THE SOFTWARE.
 				e.preventDefault();
 				return false;
 			});
-			$("#new-table-form").submit(function (e) {
+			$('#btnSaveNewTable').on('click', function(e) {
+				$('textarea.richtext').each(function() {
+					$(this).val(Admin.clearHTML($(this)));
+				});
 				var errors = Datasources.checkNewTable();
 				if (errors.length > 0) {
 					e.preventDefault();
@@ -57,7 +60,8 @@ THE SOFTWARE.
 				}
 				Datasources.hideErrors();
 				Admin.updated = false;
-				return true;
+				e.preventDefault();
+				$(this).parent('form').submit();
 			});
 			Datasources.addNewColumn([0, '', '', '', '', '']);
 			$('#btnSaveEditedTable').on('click', function (e) {
