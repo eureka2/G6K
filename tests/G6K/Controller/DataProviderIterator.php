@@ -86,7 +86,7 @@ class DataProviderIterator implements \Iterator {
 	 */
 	public function __construct() {
 		$this->simus = array();
-		$testsDir = dirname(dirname(__DIR__)) . '/var/data/tests';
+		$testsDir = dirname(dirname(dirname(__DIR__))) . '/var/data/tests';
 		if (is_dir($testsDir)) {
 			$files = scandir($testsDir);
 			foreach ($files as $file) {
@@ -128,54 +128,56 @@ class DataProviderIterator implements \Iterator {
 		$this->curr = 0;
 		$this->num = 0;
 		$this->next();
-   }
+	}
 
-    /**
-     *  Checks if current test element is valid
-     *
-     * @access  public
-     * @return  bool true if current test element is valid, false otherwise
-     *
-     */
-    public function valid() {
-        return $this->current !== null;
-    }
+	/**
+	 *  Checks if current test element is valid
+	 *
+	 * @access  public
+	 * @return  bool true if current test element is valid, false otherwise
+	 *
+	 */
+	public function valid() {
+		return $this->current !== null;
+	}
 
-    /**
-     * Returns the key of the current test element
-     *
-     * @access  public
-     * @return  string The key of the current test element
-     *
-     */
-    public function key() {
-        return $this->key;
-    }
+	/**
+	 * Returns the key of the current test element
+	 *
+	 * @access  public
+	 * @return  string The key of the current test element
+	 *
+	 */
+	public function key() {
+		return $this->key;
+	}
 
-    /**
-     * Returns the current test element
-     *
-     * @access  public
-     * @return  array The current test element
-     *
-     */
-    public function current() {
-        return $this->current;
-    }
+	/**
+	 * Returns the current test element
+	 *
+	 * @access  public
+	 * @return  array The current test element
+	 *
+	 */
+	public function current() {
+		return $this->current;
+	}
 
-    /**
-     * Move forward to next test element
-     *
-     * @access  public
-     * @return  void
-     *
-     */
-    public function next() {
+	/**
+	 * Move forward to next test element
+	 *
+	 * @access  public
+	 * @return  void
+	 *
+	 */
+	public function next() {
 		$next = $this->advance();
-        $this->num++;
-		$this->key = $this->num . ": " . array_shift($next);
-        $this->current = $next;
-    }
+		$this->num++;
+		if ($next !== null) {
+			$this->key = $this->num . ": " . array_shift($next);
+		}
+		$this->current = $next;
+	}
 
 	/**
 	 * Advances to the next test element and returns it

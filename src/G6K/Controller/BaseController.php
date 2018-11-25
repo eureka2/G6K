@@ -269,22 +269,28 @@ class BaseController extends Controller {
 			} elseif (preg_match("/^(.+)_g6k_(day|month|year)$/", $name, $matches)) {
 				$dates[$matches[1]][$matches[2]] = $value;
 			} else {
-				$data = $this->simu->getDataByName($name);
-				if ($data !== null) {
-					$data->setValue($value);
-					$this->variables[''.$data->getId()] = $data->getValue();
-					$this->variables[$name] = $data->getValue();
+				try {
+					$data = $this->simu->getDataByName($name);
+					if ($data !== null) {
+						$data->setValue($value);
+						$this->variables[''.$data->getId()] = $data->getValue();
+						$this->variables[$name] = $data->getValue();
+					}
+				} catch (\Exception $e) {
 				}
 			}
 		}
 		foreach ($dates as $name => $date) {
-			$data = $this->simu->getDataByName($name);
-			if ($data !== null) {
-				$value = $date['day'] . "/" . $date['month'] . "/" . $date['year'];
-				$data->setValue($value);
-				$this->variables[''.$data->getId()] = $data->getValue();
-				$this->variables[$name] = $data->getValue();
-				$form[$name] = $data->getValue();
+			try {
+				$data = $this->simu->getDataByName($name);
+				if ($data !== null) {
+					$value = $date['day'] . "/" . $date['month'] . "/" . $date['year'];
+					$data->setValue($value);
+					$this->variables[''.$data->getId()] = $data->getValue();
+					$this->variables[$name] = $data->getValue();
+					$form[$name] = $data->getValue();
+				}
+			} catch (\Exception $e) {
 			}
 		}
 		$dynamic = $this->simu->isDynamic() && 

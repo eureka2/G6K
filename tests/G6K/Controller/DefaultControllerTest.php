@@ -34,6 +34,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Dotenv\Dotenv;
 
 /**
  *
@@ -84,6 +85,8 @@ class DefaultControllerTest extends WebTestCase
 	 *
 	 */
 	public static function setUpBeforeClass () {
+		$dotenv = new Dotenv();
+		$dotenv->load(dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . '.env');
 		$finder = new ExecutableFinder();
 		self::$jsEngine = $finder->find("phantomjs");
 		fwrite(STDOUT, "Starting up of functional tests");
@@ -368,10 +371,10 @@ EOS;
 		$https = $client->getServerParameter('HTTPS');
 		$scheme = ($https != '' ? 'https://' : 'http://' );
 		$server = $client->getServerParameter('HTTP_HOST');
-		$dir = dirname(dirname(dirname(dirname(dirname(__DIR__)))));
+		$dir = dirname(dirname(dirname(__DIR__)));
 		$root = basename($dir);
 		$finder = new Finder();
-		$finder->files()->in($dir)->name("app.php");
+		$finder->files()->in($dir)->name("index.php");
 		$webapp = current(iterator_to_array($finder))->getRelativePath();
 		return $scheme.$server."/".$root."/".$webapp.$simu.$view;
 	}
