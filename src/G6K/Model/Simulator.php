@@ -93,7 +93,7 @@ class Simulator {
 	private $memo = false;
 
 	/**
-	 * @var RichText     $description The description of this simulator
+	 * @var \App\G6K\Model\RichText     $description The description of this simulator
 	 *
 	 * @access  private
 	 *
@@ -442,7 +442,7 @@ class Simulator {
 	 * Returns the description of this simulator
 	 *
 	 * @access  public
-	 * @return  RichText The description of this simulator
+	 * @return  \App\G6K\Model\RichText The description of this simulator
 	 *
 	 */
 	public function getDescription() {
@@ -453,7 +453,7 @@ class Simulator {
 	 * Sets the description of this simulator
 	 *
 	 * @access  public
-	 * @param   RichText $description The description of this simulator
+	 * @param   \App\G6K\Model\RichText $description The description of this simulator
 	 * @return  void
 	 *
 	 */
@@ -2695,7 +2695,7 @@ class Simulator {
 	 * Cleans the text produced with the Javascript component "bootstrap3-wysihtml5" for its registration in the XML file of definition of this simulator
 	 *
 	 * @access  private
-	 * @param   RichText|null $richtext The text to clean
+	 * @param   \App\G6K\Model\RichText|null $richtext The text to clean
 	 * @return  string The cleaned text
 	 *
 	 */

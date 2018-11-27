@@ -211,7 +211,7 @@ class Panel {
 	 * Adds a Fieldset or BlockInfo object to the list of field sets or block of informations contained in this panel.
 	 *
 	 * @access  public
-	 * @param   \App\G6K\Model\Fieldset|\App\G6K\Model\BlockInfo $fieldset The FieldSet or BlockInfo object
+	 * @param   \App\G6K\Model\FieldSet|\App\G6K\Model\BlockInfo $fieldset The FieldSet or BlockInfo object
 	 * @return  void
 	 *
 	 */
