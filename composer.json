@@ -1,8 +1,14 @@
 {
-    "name": "symfony/framework-standard-edition",
+    "name": "eureka2/g6k",
     "license": "MIT",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "description": "Generator of simulator of calculation (calculator)",
+    "authors": [
+        {
+            "name": "Eureka2",
+            "homepage": "https://github.com/eureka2/G6K"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "EUREKA\\G6KBundle\\": "src/EUREKA/G6KBundle"
@@ -47,7 +53,9 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget",
+            "EUREKA\\G6KBundle\\Composer\\ScriptHandler::installUsers",
+            "EUREKA\\G6KBundle\\Composer\\ScriptHandler::installDemo"
         ],
         "post-install-cmd": [
             "@symfony-scripts"
@@ -73,7 +81,7 @@
             "file": "app/config/parameters.yml"
         },
         "branch-alias": {
-            "dev-master": "3.3-dev"
+            "dev-master": "3.x-dev"
         }
     }
 }
