@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -52,7 +52,7 @@ class FieldNote {
 	private $displayable = true;
 
 	/**
-	 * @var string $text The text of this note
+	 * @var \EUREKA\G6KBundle\Model\RichText $text The text of this note
 	 *
 	 * @access  private
 	 *
@@ -120,7 +120,7 @@ class FieldNote {
 	 * Returns the text of this note
 	 *
 	 * @access  public
-	 * @return  string The text of this note
+	 * @return  \EUREKA\G6KBundle\Model\RichText The text of this note
 	 *
 	 */
 	public function getText() {
@@ -131,7 +131,7 @@ class FieldNote {
 	 * Sets the text of this note
 	 *
 	 * @access  public
-	 * @param   string $text  The text of this note
+	 * @param   \EUREKA\G6KBundle\Model\RichText $text  The text of this note
 	 * @return  void
 	 *
 	 */

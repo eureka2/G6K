@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2017-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace EUREKA\G6KBundle\Tests\Controller;
+namespace Tests\EUREKA\G6KBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Field\ChoiceFormField;
@@ -89,11 +89,11 @@ class DefaultControllerTest extends WebTestCase
 		self::$jsEngine = $finder->find("phantomjs");
 		fwrite(STDOUT, "Starting up of functional tests");
 		self::$startTime = time();
-		if (self::$jsEngine != null) {
+		if (self::$jsEngine !== null) {
 			fwrite(STDOUT, " with PhantomJS (webkit engine)"); 
 		} else {
 			self::$jsEngine = $finder->find("slimerjs");
-			if (self::$jsEngine != null) {
+			if (self::$jsEngine !== null) {
 				fwrite(STDOUT, " with SlimerJS (gecko engine)");
 			}
 		}
@@ -165,7 +165,7 @@ class DefaultControllerTest extends WebTestCase
 	 *
 	 */
 	private function runSimuTest($view, $simu, $fields) {
-		if (self::$jsEngine != null) {
+		if (self::$jsEngine !== null) {
 			try {
 				$this->runSimuTestWithJS($view, $simu, $fields);
 			} catch (ProcessFailedException $e) {
@@ -326,7 +326,6 @@ EOS;
 		$client = static::createClient();
 		$crawler = $client->request('GET', $simu);
 		$g6kform = $crawler->filter("#g6k_form");
-		// $this->echoField($g6kform->form());
 		$inputs = array();
 		foreach ($fields as $name => $value) {
 			if (!$g6kform->form()->has($name) && $crawler->selectButton($name)) { // button
@@ -357,10 +356,8 @@ EOS;
 				$form->getNode()->setAttribute("action", $simu);
 				$crawler = $client->submit($form, array($name => "1"));
 				$g6kform = $crawler->filter("#g6k_form");
-				// $this->echoField($g6kform->form());
 			} elseif ($value != "") {
 				if (($val = $this->isOutput($crawler, $name)) !== false) {
-					// echo $name . " : test " . ($value == $val ? "ok" : "ko => Expected : " . $value . " Found : " . $val) . PHP_EOL;
 					$this->assertEquals($value, $val, "Failure when checking content of " . $name . " for " . $simu);
 				} else { // input}
 					$inputs[$name] = $value;
@@ -374,7 +371,7 @@ EOS;
 		$https = $client->getServerParameter('HTTPS');
 		$scheme = ($https != '' ? 'https://' : 'http://' );
 		$server = $client->getServerParameter('HTTP_HOST');
-		$dir = dirname(dirname(dirname(dirname(dirname(__DIR__)))));
+		$dir = dirname(dirname(dirname(dirname(__DIR__))));
 		$root = basename($dir);
 		$finder = new Finder();
 		$finder->files()->in($dir)->name("app.php");
@@ -391,10 +388,4 @@ EOS;
 		return $output;
 	}
 
-	private function echoField($form) {
-		$fields = $form->all();
-		foreach($fields as $field) {
-			echo $field->getName() . " => " . $field->getValue() . PHP_EOL;
-		}
-	}
 }

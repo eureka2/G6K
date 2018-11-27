@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,6 @@ namespace EUREKA\G6KBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
@@ -133,6 +132,9 @@ class UsersAdminController extends BaseAdminController {
 						'ua' => $silex["mobile_detect"],
 						'path' => $request->getScheme().'://'.$request->getHttpHost(),
 						'nav' => 'users',
+						'script' => 1,
+						'simulator' => "",
+						'view' => "",
 						'pagination' => $pagination,
 						'hiddens' => $hiddens
 					)
@@ -225,22 +227,28 @@ class UsersAdminController extends BaseAdminController {
 				return $this->errorResponse($form, "This user doesn't  exists !");
 			}
 			$oldRoles = $user->getRoles();
+			if ($userName != $user->getUserName()) {
+				$otherUser = $userManager->findUserByUsername($userName);
+				if ($otherUser !== null) {
+					return $this->errorResponse($form, "This username already exists !");
+				}
+			}
+			if ($email != $user->getEmail()) {
+				$otherUser = $userManager->findUserByEmail($email);
+				if ($otherUser !== null) {
+					return $this->errorResponse($form, "This email already exists !");
+				}
+			}
 		} else {
 			$oldRoles = array();
-		}
-		if ($newUser || $restore || $userName != $user->getUserName()) {
 			$otherUser = $userManager->findUserByUsername($userName);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This username already exists !");
 			}
-		}
-		if ($newUser || $restore || $email != $user->getEmail()) {
 			$otherUser = $userManager->findUserByEmail($email);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This email already exists !");
 			}
-		}
-		if ($newUser || $restore) {
 			$user = $userManager->createUser();
 		}
 		$user->setUsername($userName);

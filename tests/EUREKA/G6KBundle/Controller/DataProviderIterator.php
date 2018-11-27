@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2017-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace EUREKA\G6KBundle\Tests\Controller;
+namespace Tests\EUREKA\G6KBundle\Controller;
 
 /**
  *
@@ -86,7 +86,7 @@ class DataProviderIterator implements \Iterator {
 	 */
 	public function __construct() {
 		$this->simus = array();
-		$testsDir = dirname(dirname(__DIR__)) . '/Resources/data/tests';
+		$testsDir = dirname(dirname(dirname(dirname(__DIR__)))) . '/src/EUREKA/G6KBundle/Resources/data/tests';
 		if (is_dir($testsDir)) {
 			$files = scandir($testsDir);
 			foreach ($files as $file) {
@@ -112,69 +112,72 @@ class DataProviderIterator implements \Iterator {
 		}
 	}
 
-    /**
-     * Rewind the Iterator to the first test element
-     *
-     * @access  public
-     * @return  void
-     *
-     */
-    public function rewind() {
-		for ($i = 0; $i < count($this->simus); $i++) {
+	/**
+	 * Rewind the Iterator to the first test element
+	 *
+	 * @access  public
+	 * @return  void
+	 *
+	 */
+	public function rewind() {
+		$nsimus = count($this->simus);
+		for ($i = 0; $i < $nsimus; $i++) {
 			rewind($this->simus[$i][1]);
 			$this->simus[$i][2] = false;
 		}
 		$this->curr = 0;
 		$this->num = 0;
 		$this->next();
-   }
+	}
 
-    /**
-     *  Checks if current test element is valid
-     *
-     * @access  public
-     * @return  bool true if current test element is valid, false otherwise
-     *
-     */
-    public function valid() {
-        return $this->current !== null;
-    }
+	/**
+	 *  Checks if current test element is valid
+	 *
+	 * @access  public
+	 * @return  bool true if current test element is valid, false otherwise
+	 *
+	 */
+	public function valid() {
+		return $this->current !== null;
+	}
 
-    /**
-     * Returns the key of the current test element
-     *
-     * @access  public
-     * @return  string The key of the current test element
-     *
-     */
-    public function key() {
-        return $this->key;
-    }
+	/**
+	 * Returns the key of the current test element
+	 *
+	 * @access  public
+	 * @return  string The key of the current test element
+	 *
+	 */
+	public function key() {
+		return $this->key;
+	}
 
-    /**
-     * Returns the current test element
-     *
-     * @access  public
-     * @return  array The current test element
-     *
-     */
-    public function current() {
-        return $this->current;
-    }
+	/**
+	 * Returns the current test element
+	 *
+	 * @access  public
+	 * @return  array The current test element
+	 *
+	 */
+	public function current() {
+		return $this->current;
+	}
 
-    /**
-     * Move forward to next test element
-     *
-     * @access  public
-     * @return  void
-     *
-     */
-    public function next() {
+	/**
+	 * Move forward to next test element
+	 *
+	 * @access  public
+	 * @return  void
+	 *
+	 */
+	public function next() {
 		$next = $this->advance();
-        $this->num++;
-		$this->key = $this->num . ": " . array_shift($next);
-        $this->current = $next;
-    }
+		$this->num++;
+		if ($next !== null) {
+			$this->key = $this->num . ": " . array_shift($next);
+		}
+		$this->current = $next;
+	}
 
 	/**
 	 * Advances to the next test element and returns it
@@ -211,7 +214,8 @@ class DataProviderIterator implements \Iterator {
 			$view = "/" . $view;
 		}
 		$fields = array();
-		for ($i = 0; $i < count($fieldsName); $i++) {
+		$nnames = count($fieldsName);
+		for ($i = 0; $i < $nnames; $i++) {
 			$name = $fieldsName[$i];
 			$value = $i < count($values) ?  $values[$i] : "";
 			$fields[$name] = $value;
@@ -236,4 +240,5 @@ class DataProviderIterator implements \Iterator {
 	}
 
 }
+
 ?>

@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ class Field {
 	 * @access  private
 	 *
 	 */
-	private $fieldset = 0;
+	private $fieldset = null;
 
 	/**
 	 * @var int        $position  The position of this field in the field set

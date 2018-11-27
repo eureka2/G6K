@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -293,7 +293,7 @@ class SQLToJSONConverter {
 	 * @access  protected
 	 * @param   \SimpleXMLElement $datasource The datasource definition extracted from DataSources.xml
 	 * @param   bool $withDbName (default: true) if false, the name of the database will not be inserted in the dsn string.
-	 * @return  The Database object
+	 * @return  \EUREKA\G6KBundle\Model\Database The Database object
 	 *
 	 */
 	protected function getDatabase($datasource, $withDbName = true) {
@@ -308,7 +308,7 @@ class SQLToJSONConverter {
 	 * @access  protected
 	 * @param   \EUREKA\G6KBundle\Model\Database $database The unified access interface to the database
 	 * @param   string $table The name of the table
-	 * @return  array|null The information on the table
+	 * @return  array|string|bool|null The information on the table
 	 *
 	 */
 	protected function tableInfos(Database $database, $table) {
@@ -417,7 +417,7 @@ class SQLToJSONConverter {
 		if (!is_numeric($value)) {
 			return 'string';
 		}
-		if (ctype_digit($text )) {
+		if (ctype_digit($value)) {
 			if ($priorType != '' && $priorType != 'integer') {
 				if ($priorType == 'number') {
 					return 'number';

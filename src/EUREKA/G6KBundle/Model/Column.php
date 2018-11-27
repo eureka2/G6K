@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -88,7 +88,7 @@ class Column {
 	 * Constructor of class Column
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Model\Table $table The Table object to which the column belongs
+	 * @param   \EUREKA\G6KBundle\Model\Table|null $table The Table object to which the column belongs
 	 * @param   int      $id The ID of this Column object
 	 * @param   string   $name The name of this Column object
 	 * @param   string   $type eg date, boolean, number, integer, text, textarea, money, choice, percent, table, department region, country

@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -104,7 +104,7 @@ class BlockInfo {
 	 * Returns the Panel object that contains this BlockInfo object
 	 *
 	 * @access  public
-	 * @return  EUREKA\G6KBundle\Model\Panel The container Panel of this BlockInfo object
+	 * @return  \EUREKA\G6KBundle\Model\Panel The container Panel of this BlockInfo object
 	 *
 	 */
 	public function getPanel() {
@@ -207,7 +207,7 @@ class BlockInfo {
 	 * Adds a chapter to the list of chapters contained in this BlockInfo object
 	 *
 	 * @access  public
-	 * @param   EUREKA\G6KBundle\Model\Chapter $chapter
+	 * @param   \EUREKA\G6KBundle\Model\Chapter $chapter
 	 * @return  void
 	 *
 	 */

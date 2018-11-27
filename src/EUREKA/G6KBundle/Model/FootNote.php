@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,7 @@ class FootNote {
 	private $displayable = true;
 
 	/**
-	 * @var string     $text The text of this footnote
+	 * @var \EUREKA\G6KBundle\Model\RichText|null     $text The text of this footnote
 	 *
 	 * @access  private
 	 *
@@ -154,7 +154,7 @@ class FootNote {
 	 * Returns the text of this footnote
 	 *
 	 * @access  public
-	 * @return  string the The text of this footnote
+	 * @return  \EUREKA\G6KBundle\Model\RichText|null the The text of this footnote
 	 *
 	 */
 	public function getText() {
@@ -165,7 +165,7 @@ class FootNote {
 	 * Sets the text of this footnote
 	 *
 	 * @access  public
-	 * @param   string $text The text of this footnote
+	 * @param   \EUREKA\G6KBundle\Model\RichText $text The text of this footnote
 	 * @return  void
 	 *
 	 */

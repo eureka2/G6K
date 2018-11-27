@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2017-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,10 @@ namespace EUREKA\G6KBundle\Services;
 use EUREKA\G6KBundle\Model\Simulator;
 
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\LockHandler;
 
 /**
@@ -141,7 +139,7 @@ class Deployer {
 	 * Transforms a Windows path in a Unix path for a 'rsync' command
 	 *
 	 * @access  private
-	 * @param   string $localRootDir The transformed path
+	 * @param   string $rootDir The transformed path
 	 * @return  string
 	 *
 	 */

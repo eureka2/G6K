@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -246,7 +246,7 @@ class Operation {
 		} elseif ($arg1->type != Token::T_NUMBER || $arg2->type != Token::T_NUMBER) { 
 			throw new \Exception("Illegal argument : operands must be numbers");
 		} else {
-			$result->value = (float)$arg1->value & $arg2->value;
+			$result->value = (float)((int)$arg1->value & (int)$arg2->value);
 		}
 	}
 
@@ -269,7 +269,7 @@ class Operation {
 		} elseif ($arg1->type != Token::T_NUMBER || $arg2->type != Token::T_NUMBER) { 
 			throw new \Exception("Illegal argument : operands must be numbers");
 		} else {
-			$result->value = (float)$arg1->value ^ $arg2->value;
+			$result->value = (float)((int)$arg1->value ^ (int)$arg2->value);
 		}
 	}
 
@@ -292,7 +292,7 @@ class Operation {
 		} elseif ($arg1->type != Token::T_NUMBER || $arg2->type != Token::T_NUMBER) { 
 			throw new \Exception("Illegal argument : operands must be numbers");
 		} else {
-			$result->value = (float)$arg1->value | $arg2->value;
+			$result->value = (float)((int)$arg1->value | (int)$arg2->value);
 		}
 	}
 

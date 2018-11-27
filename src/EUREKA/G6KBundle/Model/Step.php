@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -83,7 +83,7 @@ class Step {
 	private $output = "";
 
 	/**
-	 * @var string     $description The description of this step 
+	 * @var \EUREKA\G6KBundle\Model\RichText|null     $description The description of this step 
 	 *
 	 * @access  private
 	 *
@@ -294,7 +294,7 @@ class Step {
 	 * Returns the description of this step
 	 *
 	 * @access  public
-	 * @return  string the The description of this step
+	 * @return  \EUREKA\G6KBundle\Model\RichText|null the The description of this step
 	 *
 	 */
 	public function getDescription() {
@@ -305,7 +305,7 @@ class Step {
 	 * Sets the description of this step
 	 *
 	 * @access  public
-	 * @param   string     $description The description of this step
+	 * @param   \EUREKA\G6KBundle\Model\RichText     $description The description of this step
 	 * @return  void
 	 *
 	 */

@@ -296,7 +296,7 @@ class Expression {
 	 * Evaluates this expression
 	 *
 	 * @access  public
-	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token||false The result token of the evaluation
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token|false The result token of the evaluation
 	 *
 	 */
 	public function evaluate() {

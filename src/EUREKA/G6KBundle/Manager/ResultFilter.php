@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -583,7 +583,7 @@ class ResultFilter {
 	 *
 	 * @access  public
 	 * @static 
-	 * @param   array $xml The array of SimpleXMLElement
+	 * @param   array|object $xml The array of SimpleXMLElement
 	 * @return  array|string The associative array
 	 *
 	 */
@@ -598,9 +598,9 @@ class ResultFilter {
 				if (is_object($value) && strpos(get_class($value),"SimpleXML")!==false) {
 						$result[$key] = self::xml2array($value);
 				} elseif ($key == '@attributes') {
-					$keys = array_keys($item);
+					$keys = array_keys($value);
 					$key = $keys[0];
-					$item = $item[$key];
+					$item = $value[$key];
 					$result[$key] = $item;
 				} else {
 					$result[$key] = self::xml2array($value);

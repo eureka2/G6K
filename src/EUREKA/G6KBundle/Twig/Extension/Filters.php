@@ -90,7 +90,7 @@ class Filters extends \Twig_Extension {
 	 *
 	 * @access  public
 	 * @param   string $string The string to be filtered
-	 * @return  void
+	 * @return  string
 	 *
 	 */
 	public function jscodeFilter($string) {
@@ -102,7 +102,7 @@ class Filters extends \Twig_Extension {
 	 *
 	 * @access  public
 	 * @param   string $string The string to be filtered
-	 * @return  void
+	 * @return  string
 	 *
 	 */
 	public function htmlRaw($string) {
@@ -136,7 +136,7 @@ class Filters extends \Twig_Extension {
 	 *
 	 * @access  public
 	 * @param   string $string The string to be filtered
-	 * @return  void
+	 * @return  string
 	 *
 	 */
 	public function noFilter($string) {
@@ -148,7 +148,7 @@ class Filters extends \Twig_Extension {
 	 * Replaces footnotes reference in a text by a html link
 	 *
 	 * @access  public
-	 * @param   string $string
+	 * @param   \EUREKA\G6KBundle\Model\RichText|string $string
 	 * @return  string
 	 *
 	 */

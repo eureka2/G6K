@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Manager\Json\JsonSQL;
 
 use EUREKA\G6KBundle\Manager\Json\JsonSQL;
-use EUREKA\G6KBundle\Manager\Splitter;
 
 /**
  * This class allows you  to store and retrieve data from files in JSON format using SQL standard.
@@ -41,7 +40,7 @@ use EUREKA\G6KBundle\Manager\Splitter;
  *
  * @author Jacques Archimède
  */
-class Parser  {
+abstract class Parser  {
 
 	/**
 	 * @var string     SQL_SELECT_KEYWORD
@@ -128,7 +127,7 @@ class Parser  {
 	 * @access protected
 	 * @static
 	 * @param string $sql The sql statement
-	 * @return \stdClass The parsed request
+	 * @return \EUREKA\G6KBundle\Manager\Json\JsonSQL\Parser A parser for the given request
 	 * @throws JsonSQLException
 	 */
 	public static function create(JsonSQL $jsonsql, $sql) {
@@ -159,7 +158,7 @@ class Parser  {
 	 * Parses the sql statement.
 	 *
 	 * @access public
-	 * @return \stdClass The parsed request
+	 * @return object The parsed request
 	 * @throws JsonSQLException
 	 */
 	public function parse() {
@@ -183,6 +182,96 @@ class Parser  {
 			throw new JsonSQLException("syntax error near : " . substr($this->sql, 0, 6));
 		}
 	}
+
+	/**
+	 * Parses a sql select request
+	 *
+	 * @access protected
+	 * @param string $sql The select statement
+	 * @return object The parsed request
+	 * @throws JsonSQLException
+	 */
+	abstract protected function parseSelect($sql);
+
+	/**
+	 * Parses a sql compound select request containing set operations
+	 *
+	 * @access protected
+	 * @param string $sql The select statement
+	 * @return object The parsed request
+	 * @throws JsonSQLException
+	 */
+	abstract protected function parseSetOperations($sql);
+
+	/**
+	 * Parses a sql insert into statement
+	 *
+	 * @access protected
+	 * @param string $sql The insert into statement
+	 * @return object The parsed request
+	 * @throws JsonSQLException
+	 */
+	abstract protected function parseInsert($sql);
+
+	/**
+	 * Parses a sql update statement
+	 *
+	 * @access protected
+	 * @param string $sql The update statement
+	 * @return object The parsed request
+	 * @throws JsonSQLException
+	 */
+	abstract protected function parseUpdate($sql);
+
+	/**
+	 * Parses a sql delete from statement
+	 *
+	 * @access protected
+	 * @param string $sql The delete from statement
+	 * @return object The parsed request
+	 * @throws JsonSQLException
+	 */
+	abstract protected function parseDelete($sql);
+
+	/**
+	 * Parses a sql create table statement
+	 *
+	 * @access protected
+	 * @param string $sql The create table statement
+	 * @return object The parsed request
+	 * @throws JsonSQLException
+	 */
+	abstract protected function parseCreate($sql);
+
+	/**
+	 * Parses a sql alter table statement according to this two BNF syntax :
+	 *
+	 * @access protected
+	 * @param string $sql The create alter statement
+	 * @return object The parsed request
+	 * @throws JsonSQLException
+	 */
+	abstract protected function parseAlter($sql);
+
+	/**
+	 * Parses a sql truncate table statement
+	 *
+	 * @access protected
+	 * @param string $sql The truncate table statement
+	 * @return object The parsed request
+	 * @throws JsonSQLException
+	 */
+	abstract protected function parseTruncate($sql);
+
+	/**
+	 * Parses a sql drop table statement
+	 *
+	 * @access protected
+	 * @param string $sql The drop table statement
+	 * @return object The parsed request
+	 * @throws JsonSQLException
+	 */
+	abstract protected function parseDropTable($sql);
 
 }
 

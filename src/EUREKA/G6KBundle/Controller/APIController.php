@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2017-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,7 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-use EUREKA\G6KBundle\Model\Simulator;
+use EUREKA\G6KBundle\Model\DatasetChild;
 use EUREKA\G6KBundle\Model\DataGroup;
 use EUREKA\G6KBundle\Model\Data;
 use EUREKA\G6KBundle\Model\FieldSet;
@@ -40,7 +38,6 @@ use EUREKA\G6KBundle\Manager\ControllersHelper;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  *
@@ -93,7 +90,7 @@ class APIController extends BaseController {
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
-	 * @param   \EUREKA\G6KBundle\Model\Simulator $simu The simulator object
+	 * @param   string $simu The simulator name
 	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Model\Step The simulation step object or the API response object in JSON format
 	 *
 	 */
@@ -107,7 +104,7 @@ class APIController extends BaseController {
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
-	 * @param   \EUREKA\G6KBundle\Model\Simulator $simu The simulator object
+	 * @param   string $simu The simulator name
 	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Model\Step The simulation step object or the API response object in JSON format
 	 *
 	 */
@@ -121,7 +118,7 @@ class APIController extends BaseController {
 	 *
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
-	 * @param   \EUREKA\G6KBundle\Model\Simulator $simu The simulator object
+	 * @param   string $simu The simulator name
 	 * @param   bool $test (default: false) if true, we are in test mode
 	 * @return  \Symfony\Component\HttpFoundation\Response|\EUREKA\G6KBundle\Model\Step The simulation step object or the API response object in JSON format
 	 *
@@ -328,11 +325,11 @@ class APIController extends BaseController {
 	 *
 	 * @access  private
 	 * @param   array $form array of request parameters
-	 * @param   \EUREKA\G6KBundle\Model\Data $data The data object
+	 * @param   \EUREKA\G6KBundle\Model\DatasetChild $data The data object
 	 * @return  void
 	 *
 	 */
-	private function addResponseError($form, Data $data) {
+	private function addResponseError($form, DatasetChild $data) {
 		$name = $data->getName();
 		if (isset($form[$name])) {
 			$this->addParameterError(

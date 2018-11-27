@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -123,7 +123,7 @@ class JsonSQL  {
 	 * Returns a pointer to the json schema object
 	 *
 	 * @access public
-	 * @return \stdClass The json schema object
+	 * @return object The json schema object
 	 */
 	public function schema() {
 		return $this->engine->schema();
@@ -134,7 +134,7 @@ class JsonSQL  {
 	 *
 	 * @access public
 	 * @param string $name The table name
-	 * @return ArrayIterator The ArrayIterator
+	 * @return \ArrayIterator The ArrayIterator
 	 */
 	public function table($name) {
 		return $this->engine->table($name);
@@ -279,7 +279,7 @@ class JsonSQL  {
 	 * @access public
 	 * @param string $table The table name
 	 * @param int $index The position of the row in the table
-	 * @param array $row The new row
+	 * @param object $row The new row
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -292,7 +292,7 @@ class JsonSQL  {
 	 *
 	 * @access public
 	 * @param string $table The table name
-	 * @param \stdClass $columns The columns definition 
+	 * @param object $columns The columns definition 
 	 * @param array $required The list of required columns
 	 * @param array $foreignkeys The list of foreign keys definition
 	 * @param bool $ifnotexists if true, don't throw an error if the table already exists
@@ -347,7 +347,7 @@ class JsonSQL  {
 	 * @access public
 	 * @param string $table The table name
 	 * @param string $column The name of the new column
-	 * @param \stdClass $columnDef The column definition 
+	 * @param object $columnDef The column definition 
 	 * @param array $required an array with the column name if required
 	 * @return void
 	 * @throws JsonSQLException
@@ -390,7 +390,9 @@ class JsonSQL  {
 	 * @access public
 	 * @param string $table The table name
 	 * @param string $column The actual column name
-	 * @param bool $ifexists if true, don't throw an error if the table or the column doesn't exists
+	 * @param string $type The type of the column
+	 * @param string $format The format of the column
+	 * @param string $datatype The datatype of the column
 	 * @return void
 	 * @throws JsonSQLException
 	 */

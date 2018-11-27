@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,6 @@ namespace EUREKA\G6KBundle\Model;
  * This class allows the storage and retrieval of the attributes of a cell
  *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class Cell {
@@ -55,7 +54,7 @@ class Cell {
 	 * Constructor of class Cell
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Model\Cell $column Column that defines this cell
+	 * @param   \EUREKA\G6KBundle\Model\Column $column Column that defines this cell
 	 * @param   string $value (default: "") Cell value
 	 * @return  void
 	 *

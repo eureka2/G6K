@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -74,12 +74,12 @@ class Table {
 	private $label = "";
 
 	/**
-	 * @var string     $description The description of this table
+	 * @var \EUREKA\G6KBundle\Model\RichText|string|null     $description The description of this table
 	 *
 	 * @access  private
 	 *
 	 */
-	private $description = "";
+	private $description = null;
 
 	/**
 	 * @var array      $columns The list of columns of this table
@@ -101,7 +101,7 @@ class Table {
 	 * Constructor of class Table
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Model\Data      $data The Data object of type 'table' associated with this this table
+	 * @param   \EUREKA\G6KBundle\Model\Data|null      $data The Data object of type 'table' associated with this this table
 	 * @param   int      $id The ID of this table
 	 * @return  void
 	 *
@@ -197,7 +197,7 @@ class Table {
 	 * Returns the description of this table
 	 *
 	 * @access  public
-	 * @return  string The description of this table
+	 * @return  \EUREKA\G6KBundle\Model\RichText|string|null The description of this table
 	 *
 	 */
 	public function getDescription() {
@@ -208,7 +208,7 @@ class Table {
 	 * Sets the description of this table
 	 *
 	 * @access  public
-	 * @param   string     $label The description of this table
+	 * @param   \EUREKA\G6KBundle\Model\RichText|string     $description The description of this table
 	 * @return  void
 	 *
 	 */

@@ -37,8 +37,6 @@ use EUREKA\G6KBundle\Model\RichText;
 use EUREKA\G6KBundle\Manager\DOMClient as Client;
 use EUREKA\G6KBundle\Manager\ResultFilter;
 
-use Symfony\Component\Translation\DataCollectorTranslator;
-
 /**
  *
  * This class implements common functions needed in G6KBundle controllers.
@@ -89,7 +87,7 @@ trait ControllersHelper {
 	 * Formats a source parameter value
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Model\Parameter The source parameter
+	 * @param   \EUREKA\G6KBundle\Model\Parameter $param The source parameter
 	 * @return  string|null The formatted value
 	 *
 	 */
@@ -335,7 +333,7 @@ trait ControllersHelper {
 			case 'csv':
 				$returnPath = $source->getReturnPath();
 				$returnPath = $this->replaceVariables($returnPath);
-				$result = ResultFilter::filter("csv", $result, $returnPath, null, $source->getSeparator(), $source->getDelimiter());
+				$result = ResultFilter::filter("csv", $result, $returnPath, array(), $source->getSeparator(), $source->getDelimiter());
 				return $result;
 		}
 		return null;
@@ -612,7 +610,7 @@ trait ControllersHelper {
 				return $action;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the action whose name is '" . $name . "'");
 	}
 
 	/**
@@ -631,7 +629,7 @@ trait ControllersHelper {
 			$value = $field[$name];
 			$currentNode = $this->findActionOption($name, $value, $currentNode);
 			if ($currentNode === null) { 
-				return null; 
+				throw new \Exception("Unable to find the action field node in the fields : '" . json_encode($fields) . "'");
 			}
 		}
 		return $currentNode;

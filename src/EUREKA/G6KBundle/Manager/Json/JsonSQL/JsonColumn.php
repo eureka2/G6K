@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ class JsonColumn  {
 	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
 	 * @param string $table The table name
 	 * @param string $column The name of the new column
-	 * @param object $columnDef The column definition 
+	 * @param \stdClass $columnDef The column definition 
 	 * @param array $required An array with the column name if required
 	 * @return void
 	 * @throws JsonSQLException
@@ -74,7 +74,7 @@ class JsonColumn  {
 	 * @static
 	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
 	 * @param string $table The table name
-	 * @param string $columnThe  actual column name in the table
+	 * @param string $column The  actual column name in the table
 	 * @param string $newname The new name of the column
 	 * @return void
 	 * @throws JsonSQLException
@@ -141,7 +141,9 @@ class JsonColumn  {
 	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
 	 * @param string $table The table name
 	 * @param string $column The actual column name
-	 * @param bool $ifexists if true, don't throw an error if the table or the column doesn't exists
+	 * @param string $type The type of the column
+	 * @param string $format The format of the column
+	 * @param string $datatype The datatype of the column
 	 * @return void
 	 * @throws JsonSQLException
 	 */
@@ -265,7 +267,7 @@ class JsonColumn  {
 						}
 						$columnSchema->type = $type;
 						foreach ($engine->getDb()->data->{$table} as &$row) {
-							$row->$column == boolval($row->$column); 
+							$row->$column = boolval($row->$column); 
 						}
 						if (isset($columnSchema->default)) {
 							$columnSchema->default = boolval($columnSchema->default); 
@@ -290,7 +292,7 @@ class JsonColumn  {
 					} elseif ($type == 'boolean') {
 						$columnSchema->type = $type;
 						foreach ($engine->getDb()->data->{$table} as &$row) {
-							$row->$column == boolval($row->$column); 
+							$row->$column = boolval($row->$column); 
 						}
 						if (isset($columnSchema->default)) {
 							$columnSchema->default = boolval($columnSchema->default); 
@@ -315,7 +317,7 @@ class JsonColumn  {
 					} elseif ($type == 'boolean') {
 						$columnSchema->type = $type;
 						foreach ($engine->getDb()->data->{$table} as &$row) {
-							$row->$column == boolval($row->$column); 
+							$row->$column = boolval($row->$column); 
 						}
 						if (isset($columnSchema->default)) {
 							$columnSchema->default = boolval($columnSchema->default); 
@@ -550,7 +552,7 @@ class JsonColumn  {
 		}
 		$engine->beginTransaction();
 		if ($title === false) {
-			$columnSchema->title == '';
+			$columnSchema->title = '';
 		} else {
 			$columnSchema->title = $title; 
 		}
@@ -580,7 +582,7 @@ class JsonColumn  {
 		}
 		$engine->beginTransaction();
 		if ($description === false) {
-			$columnSchema->description == '';
+			$columnSchema->description = '';
 		} else {
 			$columnSchema->description = $description; 
 		}

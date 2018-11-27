@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,20 +26,11 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-use EUREKA\G6KBundle\Model\Simulator;
 use EUREKA\G6KBundle\Model\DataGroup;
 use EUREKA\G6KBundle\Model\Data;
-use EUREKA\G6KBundle\Model\FieldSet;
-use EUREKA\G6KBundle\Model\FieldRow;
-use EUREKA\G6KBundle\Model\Field;
 use EUREKA\G6KBundle\Model\Step;
 
-use EUREKA\G6KBundle\Manager\ControllersHelper;
-
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
 use Silex\Application;
@@ -53,8 +44,6 @@ use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
  *
  */
 class DefaultController extends BaseController {
-
-	use ControllersHelper;
 
 	/**
 	 * Entry point for the route paths begining by /{simu} excepted /admin

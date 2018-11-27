@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Manager;
 
 use Symfony\Component\BrowserKit\Client as BaseClient;
-use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\BrowserKit\Response;
 
 /**
@@ -120,11 +119,15 @@ class DOMClient extends BaseClient {
 	 * @access  public
 	 * @param   string $method The HTTP request method (GET or POST)
 	 * @param   string $uri The URI to fetch
-	 * @param   array $parameters (default: array() The Request parameters
-	 * @return  \Symfony\Component\DomCrawler\Crawler The Crawler object
+	 * @param   array $parameters (default: array()) The Request parameters
+	 * @param   array $files (default: array()) An array of uploaded files
+	 * @param   array $server (default: array()) An array of server parameters
+	 * @param   string|null $content (default: null) The raw body data
+	 * @param   bool $changeHistory (default: true) Whether to update the history or not (only used internally for back(), forward(), and reload())
+	 * @return  \Symfony\Component\DomCrawler\Crawler|string The Crawler object or the Response content
 	 *
 	 */
-	public function request($method, $uri, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true) {
+	public function request(string $method, string $uri, array $parameters = array(), array $files = array(), array $server = array(), string $content = null, bool $changeHistory = true) {
 		$parameters = array_merge($this->parameters, $parameters);
 		$crawler = parent::request($method, $uri, $parameters, $files, $server, $content, $changeHistory);
 		if ($crawler->getNode(0) === null) {
@@ -140,7 +143,7 @@ class DOMClient extends BaseClient {
 	 * @access  public
 	 * @param   string $uri The URI to fetch
 	 * @param   array $headers (default: array() The headers of the request
-	 * @return  \Symfony\Component\DomCrawler\Crawler The Crawler object
+	 * @return  \Symfony\Component\DomCrawler\Crawler|string The Crawler object or the Response content
 	 *
 	 */
 	public function get($uri, $headers = array()) {
@@ -154,11 +157,11 @@ class DOMClient extends BaseClient {
 	 * @param   string $uri The URI to fetch
 	 * @param   array $headers The headers of the request
 	 * @param   array $data The data to post
-	 * @return  \Symfony\Component\DomCrawler\Crawler The Crawler object
+	 * @return  \Symfony\Component\DomCrawler\Crawler|string The Crawler object or the Response content
 	 *
 	 */
-	public function post($uri, $headers, $data) {
-		return $this->request("POST", $uri, array(), array(), $headers, $data);
+	public function post($uri, $headers = array(), $data = array()) {
+		return $this->request("POST", $uri, array(), array(), $headers, http_build_query($data));
 	}
 
 	/**
@@ -251,7 +254,7 @@ class DOMClient extends BaseClient {
 				$content = gzinflate($content);
 			}
 		}
-		return new Response($content, $status, $headers);
+		return new Response($content, (int)$status, $headers);
 	}
 
 	/**
@@ -274,9 +277,9 @@ class DOMClient extends BaseClient {
 				'Access-Control-Allow-Origin' => '*',
 				'Cache-Control' => 'max-age=86400'
 			);
-			return new Response($content, '200', $headers);
+			return new Response($content, 200, $headers);
 		} catch (\Exception $e) {
-			return new Response($e->getMessage(), '500', array());
+			return new Response($e->getMessage(), 500, array());
 		}
 	}
 

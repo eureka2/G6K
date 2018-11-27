@@ -44,7 +44,7 @@ class Simulator {
 	private $controller = null;
 
 	/**
-	 * @var string     $name The name of this simulator. It will be part of the URL (* .../calcul/simulator-name *) and the name of the XML definition file 
+	 * @var string|int     $name The name of this simulator. It will be part of the URL (* .../calcul/simulator-name *) and the name of the XML definition file 
 	 *
 	 * @access  private
 	 *
@@ -93,7 +93,7 @@ class Simulator {
 	private $memo = false;
 
 	/**
-	 * @var string     $description The description of this simulator
+	 * @var \EUREKA\G6KBundle\Model\RichText     $description The description of this simulator
 	 *
 	 * @access  private
 	 *
@@ -141,7 +141,7 @@ class Simulator {
 	private $datas = array();
 
 	/**
-	 * @var \EUREKA\G6KBundle\Model\Profile $profiles The profiles container used in this simulator
+	 * @var \EUREKA\G6KBundle\Model\Profiles $profiles The profiles container used in this simulator
 	 *
 	 * @access  private
 	 *
@@ -197,7 +197,7 @@ class Simulator {
 	private $businessrules = array();
 
 	/**
-	 * @var string     $relatedInformations The informations related to this simulator.
+	 * @var \EUREKA\G6KBundle\Model\RichText     $relatedInformations The informations related to this simulator.
 	 *
 	 * @access  private
 	 *
@@ -271,7 +271,7 @@ class Simulator {
 	 * Returns the name of this simulator
 	 *
 	 * @access  public
-	 * @return  string The name of this simulator
+	 * @return  string|int The name of this simulator
 	 *
 	 */
 	public function getName() {
@@ -282,7 +282,7 @@ class Simulator {
 	 * Sets the name of this simulator
 	 *
 	 * @access  public
-	 * @param   string $name The name of this simulator
+	 * @param   string|int $name The name of this simulator
 	 * @return  void
 	 *
 	 */
@@ -442,7 +442,7 @@ class Simulator {
 	 * Returns the description of this simulator
 	 *
 	 * @access  public
-	 * @return  string The description of this simulator
+	 * @return  \EUREKA\G6KBundle\Model\RichText The description of this simulator
 	 *
 	 */
 	public function getDescription() {
@@ -453,7 +453,7 @@ class Simulator {
 	 * Sets the description of this simulator
 	 *
 	 * @access  public
-	 * @param   string $description The description of this simulator
+	 * @param   \EUREKA\G6KBundle\Model\RichText $description The description of this simulator
 	 * @return  void
 	 *
 	 */
@@ -579,10 +579,10 @@ class Simulator {
 	}
 
 	/**
-	 * Adds a Data object in the list of data used by this simulator.
+	 * Adds a DatasetChild object in the list of data used by this simulator.
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Model\Data $data The Data object
+	 * @param   \EUREKA\G6KBundle\Model\DatasetChild $data The DatasetChild object
 	 * @return  void
 	 *
 	 */
@@ -591,7 +591,7 @@ class Simulator {
 	}
 
 	/**
-	 * Removes a Data object from the list of data used by this simulator.
+	 * Removes a DatasetChild object from the list of data used by this simulator.
 	 *
 	 * @access  public
 	 * @param   int $index The index of the data item in the list of data.
@@ -620,7 +620,7 @@ class Simulator {
 				return $data;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the data whose id is '" . $id . "'");
 	}
 
 	/**
@@ -641,7 +641,10 @@ class Simulator {
 				return $data;
 			}
 		}
-		return null;
+		if ($name == 'script' || $name == 'dynamic' || preg_match("/step\d+\.dynamic/", $name)) {
+			return null;
+		}
+		throw new \Exception("Unable to find the data whose name is '" . $name . "'");
 	}
 
 	/**
@@ -658,7 +661,7 @@ class Simulator {
 				return $data;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the data group whose id is '" . $id . "'");
 	}
 
 	/**
@@ -666,7 +669,7 @@ class Simulator {
 	 *
 	 * @access  public
 	 * @param   string $name The name of the DataGroup object
-	 * @return  \EUREKA\G6KBundle\Model\DataGroup The DataGroup object
+	 * @return  \EUREKA\G6KBundle\Model\DataGroup|null The DataGroup object
 	 *
 	 */
 	public function getDataGroupByName($name) {
@@ -675,7 +678,7 @@ class Simulator {
 				return $data;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the data group whose name is '" . $name . "'");
 	}
 
 	/**
@@ -753,7 +756,7 @@ class Simulator {
 	 *
 	 * @access  public
 	 * @param   int $id <parameter description>
-	 * @return  \EUREKA\G6KBundle\Model\Step the value of stepById
+	 * @return  \EUREKA\G6KBundle\Model\Step|null the value of stepById
 	 *
 	 */
 	public function getStepById($id) {
@@ -762,7 +765,7 @@ class Simulator {
 				return $step;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the step whose id is '" . $id . "'");
 	}
 
 	/**
@@ -864,7 +867,7 @@ class Simulator {
 	 *
 	 * @access  public
 	 * @param   int $id <parameter description>
-	 * @return  \EUREKA\G6KBundle\Model\BusinessRule the value of businessRuleById
+	 * @return  \EUREKA\G6KBundle\Model\BusinessRule|null the value of businessRuleById
 	 *
 	 */
 	public function getBusinessRuleById($id) {
@@ -873,14 +876,14 @@ class Simulator {
 				return $businessrule;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the business rule whose id is '" . $id . "'");
 	}
 
 	/**
 	 * Returns the informations related to this simulator.
 	 *
 	 * @access  public
-	 * @return  string The informations related to this simulator
+	 * @return  \EUREKA\G6KBundle\Model\RichText The informations related to this simulator
 	 *
 	 */
 	public function getRelatedInformations() {
@@ -891,7 +894,7 @@ class Simulator {
 	 * Sets the informations related to this simulator.
 	 *
 	 * @access  public
-	 * @param   string $relatedInformations The informations related to this simulator
+	 * @param   \EUREKA\G6KBundle\Model\RichText $relatedInformations The informations related to this simulator
 	 * @return  void
 	 *
 	 */
@@ -904,7 +907,7 @@ class Simulator {
 	 *
 	 * @access  public
 	 * @param   int $id <parameter description>
-	 * @return  \EUREKA\G6KBundle\Model\Site the value of siteById
+	 * @return  \EUREKA\G6KBundle\Model\Site|null the value of siteById
 	 *
 	 */
 	public function getSiteById($id) {
@@ -913,7 +916,7 @@ class Simulator {
 				return $site;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the site whose id is '" . $id . "'");
 	}
 
 	/**
@@ -921,7 +924,7 @@ class Simulator {
 	 *
 	 * @access  public
 	 * @param   int $id <parameter description>
-	 * @return  \EUREKA\G6KBundle\Model\Database the value of databaseById
+	 * @return  \EUREKA\G6KBundle\Model\Database|null the value of databaseById
 	 *
 	 */
 	public function getDatabaseById($id) {
@@ -930,7 +933,7 @@ class Simulator {
 				return $database;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the database whose id is '" . $id . "'");
 	}
 
 	/**
@@ -938,7 +941,7 @@ class Simulator {
 	 *
 	 * @access  public
 	 * @param   int $id <parameter description>
-	 * @return  \EUREKA\G6KBundle\Model\DataSource the value of datasourceById
+	 * @return  \EUREKA\G6KBundle\Model\DataSource|null the value of datasourceById
 	 *
 	 */
 	public function getDatasourceById($id) {
@@ -947,7 +950,7 @@ class Simulator {
 				return $datasource;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the datasource whose id is '" . $id . "'");
 	}
 
 	/**
@@ -955,7 +958,7 @@ class Simulator {
 	 *
 	 * @access  public
 	 * @param   string $name <parameter description>
-	 * @return  \EUREKA\G6KBundle\Model\DataSource the value of datasourceByName
+	 * @return  \EUREKA\G6KBundle\Model\DataSource|null the value of datasourceByName
 	 *
 	 */
 	public function getDatasourceByName($name) {
@@ -964,7 +967,7 @@ class Simulator {
 				return $datasource;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the datasource whose name is '" . $name . "'");
 	}
 
 	/**
@@ -972,7 +975,7 @@ class Simulator {
 	 *
 	 * @access  public
 	 * @param   int $id <parameter description>
-	 * @return  \EUREKA\G6KBundle\Model\Source the value of sourceById
+	 * @return  \EUREKA\G6KBundle\Model\Source|null the value of sourceById
 	 *
 	 */
 	public function getSourceById($id) {
@@ -981,7 +984,7 @@ class Simulator {
 				return $source;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the source whose id is '" . $id . "'");
 	}
 
 	/**
@@ -1266,7 +1269,7 @@ class Simulator {
 					$choicegroup = $child;
 					$choiceGroupObj = new ChoiceGroup((string)$choicegroup['label']);
 					foreach ($choicegroup->Choice as $choice) {
-						$choiceObj = new Choice($dataObj, (string)$choice['id'], (string)$choice['value'], (string)$choice['label']);
+						$choiceObj = new Choice($dataObj, (int)$choice['id'], (string)$choice['value'], (string)$choice['label']);
 						$choiceGroupObj->addChoice($choiceObj);
 					}
 					if ($choicegroup->Source) {
@@ -1278,7 +1281,7 @@ class Simulator {
 					$dataObj->addChoice($choiceGroupObj);
 				} elseif ($child->getName() == "Choice") {
 					$choice = $child;
-					$choiceObj = new Choice($dataObj, (string)$choice['id'], (string)$choice['value'], (string)$choice['label']);
+					$choiceObj = new Choice($dataObj, (int)$choice['id'], (string)$choice['value'], (string)$choice['label']);
 					$dataObj->addChoice($choiceObj);
 				} elseif ($child->getName() == "Source") {
 					$source = $child;
@@ -1291,7 +1294,7 @@ class Simulator {
 		}
 		if ($data->Table) {
 			$table = $data->Table;
-			$tableObj = new Table($dataObj, (string)$table['id']);
+			$tableObj = new Table($dataObj, (int)$table['id']);
 			$tableObj->setName((string)$table['name']);
 			$tableObj->setLabel((string)$table['label']);
 			$tableObj->setDescription(new RichText((string)$table->Description, (string)$table->Description['edition']));
@@ -1587,12 +1590,12 @@ class Simulator {
 		$fieldObj->setExpanded((string)$field['expanded'] == '1');
 		$fieldObj->setWidget((string)$field['widget']);
 		if ($field->PreNote) {
-			$noteObj = new FieldNote($this);
+			$noteObj = new FieldNote($fieldObj);
 			$noteObj->setText(new RichText((string)$field->PreNote, (string)$field->PreNote['edition']));
 			$fieldObj->setPreNote($noteObj);
 		}
 		if ($field->PostNote) {
-			$noteObj = new FieldNote($this);
+			$noteObj = new FieldNote($fieldObj);
 			$noteObj->setText(new RichText((string)$field->PostNote, (string)$field->PostNote['edition']));
 			$fieldObj->setPostNote($noteObj);
 		}
@@ -1610,8 +1613,8 @@ class Simulator {
 	protected function loadRuleAction(\SimpleXMLElement $action) {
 		$ruleActionObj = new RuleAction((int)$action['id'], (string)$action['name']);
 		$ruleActionObj->setTarget((string)$action['target']);
-		$ruleActionObj->setData((string)$action['data']);
-		$ruleActionObj->setDatagroup((string)$action['datagroup']);
+		$ruleActionObj->setData((int)$action['data']);
+		$ruleActionObj->setDatagroup((int)$action['datagroup']);
 		$ruleActionObj->setStep((string)$action['step']);
 		$ruleActionObj->setPanel((string)$action['panel']);
 		$ruleActionObj->setFieldset((string)$action['fieldset']);
@@ -1867,8 +1870,8 @@ class Simulator {
 	 * Converts the lines of the given text into HTML paragraphs
 	 *
 	 * @access  public
-	 * @param   string $string <parameter description>
-	 * @return  string <description of the return value>
+	 * @param   \EUREKA\G6KBundle\Model\RichText|string $string <parameter description>
+	 * @return  \EUREKA\G6KBundle\Model\RichText|string <description of the return value>
 	 *
 	 */
 	public function paragraphs ($string) {
@@ -2604,10 +2607,10 @@ class Simulator {
 				$sources[$id]['returnPath'] = $this->replaceIdByName((string)$source['returnPath']);
 			}
 		}
-		foreach ($this->datas as $id => $data) {
-			$name = $data['name'];
-			unset($data['name']);
-			foreach($data as $key => $value) {
+		foreach ($this->datas as $id => $odata) {
+			$name = $odata['name'];
+			unset($odata['name']);
+			foreach($odata as $key => $value) {
 				$datas[$name][$key] = $value;
 			}
 		}
@@ -2692,12 +2695,12 @@ class Simulator {
 	 * Cleans the text produced with the Javascript component "bootstrap3-wysihtml5" for its registration in the XML file of definition of this simulator
 	 *
 	 * @access  private
-	 * @param   string $text The text to clean
+	 * @param   \EUREKA\G6KBundle\Model\RichText|null $richtext The text to clean
 	 * @return  string The cleaned text
 	 *
 	 */
-	private function cleanRichText($richtext) {
-		if ($richtext == null) {
+	private function cleanRichText(RichText $richtext = null) {
+		if ($richtext === null) {
 			return '';
 		}
 		if (! $richtext->isManual()) {

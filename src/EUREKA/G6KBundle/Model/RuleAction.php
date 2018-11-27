@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -64,20 +64,20 @@ class RuleAction {
 	private $target = "";
 
 	/**
-	 * @var string     $data The ID of the data item if target is equal to 'data'
+	 * @var int     $data The ID of the data item if target is equal to 'data'
 	 *
 	 * @access  private
 	 *
 	 */
-	private $data = "";
+	private $data = 0;
 
 	/**
-	 * @var string     $datagroup The ID of the data group if target is equal to 'datagroup'
+	 * @var int     $datagroup The ID of the data group if target is equal to 'datagroup'
 	 *
 	 * @access  private
 	 *
 	 */
-	private $datagroup = ""; 
+	private $datagroup = 0; 
 
 	/**
 	 * @var string     $step The ID of the step if target is equal to 'step'
@@ -298,7 +298,7 @@ class RuleAction {
 	 * Available if target is equal to 'data'
 	 *
 	 * @access  public
-	 * @return  string the The ID of the target data item
+	 * @return  int the The ID of the target data item
 	 *
 	 */
 	public function getData() {
@@ -309,7 +309,7 @@ class RuleAction {
 	 * Sets the ID of the target data item of this action
 	 *
 	 * @access  public
-	 * @param   string     $data The ID of the target data item
+	 * @param   int     $data The ID of the target data item
 	 * @return  void
 	 *
 	 */
@@ -323,7 +323,7 @@ class RuleAction {
 	 * Available if target is equal to 'datagroup'
 	 *
 	 * @access  public
-	 * @return  string The ID of the target data group
+	 * @return  int The ID of the target data group
 	 *
 	 */
 	public function getDatagroup() {
@@ -334,7 +334,7 @@ class RuleAction {
 	 * Sets the ID of the target data group of this action
 	 *
 	 * @access  public
-	 * @param   string     $datagroup The ID of the target data group
+	 * @param   int     $datagroup The ID of the target data group
 	 * @return  void
 	 *
 	 */
@@ -728,7 +728,7 @@ class RuleAction {
 			case 'choice':
 				return $this->getChoice();
 		}
-		return 0;
+		return '0';
 	}	
 
 	/**

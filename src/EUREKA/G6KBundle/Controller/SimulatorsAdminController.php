@@ -26,8 +26,6 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use EUREKA\G6KBundle\Model\Simulator;
 use EUREKA\G6KBundle\Model\Source;
 use EUREKA\G6KBundle\Model\Parameter;
@@ -67,8 +65,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
-
-use EUREKA\G6KBundle\Model\Database;
 
 use Silex\Application;
 use EUREKA\G6KBundle\Silex\MobileDetectServiceProvider;
@@ -118,7 +114,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	const SQL_LIMIT_KEYWORD = 'LIMIT ';
 
 	/**
-	 * @var \EUREKA\G6KBundle\Model\Simulator $simu Instance of the Simulator class
+	 * @var \EUREKA\G6KBundle\Model\Simulator|null $simu Instance of the Simulator class
 	 *
 	 * @access  public
 	 *
@@ -440,7 +436,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			);
 		} catch (\Exception $e) {
 			echo $e->getMessage();
-			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+			throw $e;
 		}
 	}
 
@@ -529,7 +525,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * $form['update'] isset
 	 *
 	 * @access  protected
-	 * @param   mixed $simulator simulator name
+	 * @param   string $simulator simulator name
 	 * @param   mixed $form The form fields
 	 * @return  void
 	 *
@@ -672,7 +668,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function makeSource($source) {
-		$sourceObj = new Source($this, (int)$source['id'], $source['datasource'], $source['returnType']);
+		$sourceObj = new Source($this->simu, (int)$source['id'], $source['datasource'], $source['returnType']);
 		if (isset($source['label'])) {
 			$sourceObj->setLabel($source['label']);
 		}
@@ -756,7 +752,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function makeData($data) {
-		$dataObj = new Data($this, (int)$data['id'], $data['name']);
+		$dataObj = new Data($this->simu, (int)$data['id'], $data['name']);
 		$dataObj->setLabel($data['label']);
 		$dataObj->setType($data['type']);
 		if (isset($data['min'])) {
@@ -819,7 +815,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function makeStep($step) {
-		$stepObj = new Step($this, (int)$step['id'], $step['name'], $step['label'], $step['template']);
+		$stepObj = new Step($this->simu, (int)$step['id'], $step['name'], $step['label'], $step['template']);
 		$stepObj->setOutput($step['output']);
 		$stepObj->setDescription(
 			new RichText(
@@ -972,7 +968,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		if ($fieldsetObj->getDisposition() != 'grid' && isset($field['Note'])) {
 			$note = $field['Note'];
 			if ($note['position'] == 'beforeField') {
-				$noteObj = new FieldNote($this);
+				$noteObj = new FieldNote($fieldObj);
 				$noteObj->setText(
 					new RichText(
 						trim($this->replaceSpecialTags($note['text']['content'])),
@@ -981,7 +977,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				);
 				$fieldObj->setPreNote($noteObj);
 			} elseif ($note['position'] == 'afterField') {
-				$noteObj = new FieldNote($this);
+				$noteObj = new FieldNote($fieldObj);
 				$noteObj->setText(
 					new RichText(
 						trim($this->replaceSpecialTags($note['text']['content'])),
@@ -1147,9 +1143,9 @@ class SimulatorsAdminController extends BaseAdminController {
 					case 'field':
 						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
 						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
 						$ruleActionObj->setPanel($panel);
 						$ruleActionObj->setFieldset($fieldset);
+						$disposition = $this->findDisposition($ruleActionObj);
 						if ($disposition == 'grid') {
 							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
 							$ruleActionObj->setField($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
@@ -1160,9 +1156,9 @@ class SimulatorsAdminController extends BaseAdminController {
 					case 'prenote':
 						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
 						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
 						$ruleActionObj->setPanel($panel);
 						$ruleActionObj->setFieldset($fieldset);
+						$disposition = $this->findDisposition($ruleActionObj);
 						if ($disposition == 'grid') {
 							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
 							$ruleActionObj->setPrenote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
@@ -1173,9 +1169,9 @@ class SimulatorsAdminController extends BaseAdminController {
 					case 'postnote':
 						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
 						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
 						$ruleActionObj->setPanel($panel);
 						$ruleActionObj->setFieldset($fieldset);
+						$disposition = $this->findDisposition($ruleActionObj);
 						if ($disposition == 'grid') {
 							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
 							$ruleActionObj->setPostnote($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
@@ -1226,7 +1222,9 @@ class SimulatorsAdminController extends BaseAdminController {
 					case 'choice':
 						$panel = $action['fields'][0]['fields'][0]['fields'][0]['value'];
 						$fieldset = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
-						$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+						$ruleActionObj->setPanel($panel);
+						$ruleActionObj->setFieldset($fieldset);
+						$disposition = $this->findDisposition($ruleActionObj);
 						if ($disposition == 'grid') {
 							$ruleActionObj->setFieldrow($action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value']);
 							$position = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
@@ -1235,8 +1233,6 @@ class SimulatorsAdminController extends BaseAdminController {
 							$position = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
 							$choice = $action['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['fields'][0]['value'];
 						}
-						$ruleActionObj->setPanel($panel);
-						$ruleActionObj->setFieldset($fieldset);
 						$ruleActionObj->setField($position);
 						$ruleActionObj->setChoice($choice);
 						break;
@@ -1424,7 +1420,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$response->headers->set('Cache-Control', 'private');
 		$response->headers->set('Content-type', 'application/octet-stream');
 		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', (string)$simulator['name'] . ".zip"));
-		$response->headers->set('Content-length', strlen($zipcontent));
+		$response->headers->set('Content-length', (string)strlen($zipcontent));
 		$response->sendHeaders();
 		$response->setContent($zipcontent);
 		return $response;
@@ -1503,6 +1499,8 @@ class SimulatorsAdminController extends BaseAdminController {
 			$output = $this->get('g6k.deployer')->deploy($this->simu);
 		} catch (\Exception $ex) {
 		}
+		$no_js = $request->query->get('no-js') || 0;
+		$script = $no_js == 1 ? 0 : 1;
 		$hiddens = array();
 		$silex = new Application();
 		$silex->register(new MobileDetectServiceProvider());
@@ -1512,7 +1510,16 @@ class SimulatorsAdminController extends BaseAdminController {
 				'ua' => $silex["mobile_detect"],
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'simulators',
+				'view' => null,
 				'simulator' => $this->simu,
+				'script' => $script,
+				'dataset' => array(),
+				'steps' => array(),
+				'actions' => array(),
+				'rules' => array(),
+				'datasources' => array(),
+				'views' => array(),
+				'widgets' => array(),
 				'log' => $output,
 				'hiddens' => $hiddens
 			)
@@ -1811,7 +1818,6 @@ class SimulatorsAdminController extends BaseAdminController {
 		$postnotes = array();
 		$footnotes = array();
 		$actionbuttons = array();
-		$choices = array();
 		$fchoices = array();
 		foreach ($this->simu->getDatas() as $data) {
 			if ($data instanceof DataGroup) {
@@ -2213,18 +2219,18 @@ class SimulatorsAdminController extends BaseAdminController {
 									);
 									$ofields = array();
 									$ochoices = array();
-									foreach ($fieldrow->getFields() as $field) {
-										$data = $this->simu->getDataById($field->getData());
+									foreach ($fieldrow->getFields() as $rfield) {
+										$data = $this->simu->getDataById($rfield->getData());
 										$name = $data->getName();
-										$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
+										$fieldLabel = $rfield->getLabel() != '' ? $rfield->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $rfield->getPosition()));
 										$ofields[] = array (
 											"label" => $fieldLabel,
-											"name" => $field->getPosition()
+											"name" => $rfield->getPosition()
 										);
 										if (isset($this->dataset[$name]) && isset($this->dataset[$name]['options'])) {
 											$ochoices[] = array (
 												"label" => $fieldLabel,
-												"name" => $field->getPosition(),
+												"name" => $rfield->getPosition(),
 												"fields" => array(
 													array(
 														"label" => $this->get('translator')->trans('whose label is'),
@@ -2235,7 +2241,7 @@ class SimulatorsAdminController extends BaseAdminController {
 												)
 											);
 										}
-										$tfieldrow['fields'][] = $this->loadBusinessRuleField($field);
+										$tfieldrow['fields'][] = $this->loadBusinessRuleField($rfield);
 									}
 									if (count($ofields) > 0) {
 										$ofieldrowfields[] = array(
@@ -3352,7 +3358,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'name' => $brule->getName(),
 				'label' => $brule->getLabel(),
 				'conditions' => $brule->getConditions(),
-				'connector' => $brule->getConnector() !== null ? $this->ruleConnector($brule->getConnector()) : null,
+				'connector' => $brule->getConnector() !== null ? $brule->ruleConnector($brule->getConnector()) : null,
 				'ifdata' =>  $this->actionsData($brule->getId(), $brule->getIfActions()),
 				'elsedata' => $this->actionsData($brule->getId(), $brule->getElseActions())
 			);
@@ -3409,33 +3415,6 @@ class SimulatorsAdminController extends BaseAdminController {
 	}
 
 	/**
-	 * Builds a connector data array for the Javascript rule engine
-	 *
-	 * @access  private
-	 * @param   EUREKA\G6KBundle\Model\Connector|EUREKA\G6KBundle\Model\Condition $pconnector
-	 * @return  array The connector data array
-	 *
-	 */
-	private function ruleConnector($pconnector) {
-		if ($pconnector instanceof Condition) {
-			$data = $this->simu->getDataById($pconnector->getOperand());
-			return array(
-				'name' => $data === null ? $pconnector->getOperand() : $data->getName(),
-				'operator' => $pconnector->getOperator(),
-				'value' =>  $pconnector->getExpression()
-			);
-		}
-		$kind = $pconnector->getType();
-		$connector = array(
-			$kind => array()
-		);
-		foreach ($pconnector->getConditions() as $cond) {
-			$connector[$kind][] = $this->ruleConnector($cond);
-		}
-		return $connector;
-	}
-
-	/**
 	 * Builds an actions data array for the Javascript rule engine
 	 *
 	 * @access  private
@@ -3480,280 +3459,168 @@ class SimulatorsAdminController extends BaseAdminController {
 						case 'field':
 						case 'prenote':
 						case 'postnote':
-							$step = $action->getStep();
-							$panel = $action->getPanel();
-							$fieldset = $action->getFieldset();
-							$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+							$disposition = $this->findDisposition($action);
 							if ($disposition == 'grid') {
-								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-										array('name' => 'objectId',	'value' => $target, 'fields' => array(
-												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																		array('name' => 'fieldrowId', 'value' => $action->getFieldrow(), 'fields' => array(
-																				array('name' => 'fieldId', 'value' => $action->getTargetId())
-																			)
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								);
+								$clause = $this->makeClause(array(
+									'action-select' => $action->getName(),
+									'objectId' => $target,
+									'stepId' => $action->getStep(),
+									'panelId' => $action->getPanel(),
+									'fieldsetId' => $action->getFieldset(),
+									'fieldrowId' => $action->getFieldrow(),
+									'fieldId' => $action->getTargetId()
+								));
 							} else {
-								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-										array('name' => 'objectId',	'value' => $target, 'fields' => array(
-												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																		array('name' => 'fieldId', 'value' => $action->getTargetId())
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								);
+								$clause = $this->makeClause(array(
+									'action-select' => $action->getName(),
+									'objectId' => $target,
+									'stepId' => $action->getStep(),
+									'panelId' => $action->getPanel(),
+									'fieldsetId' => $action->getFieldset(),
+									'fieldId' => $action->getTargetId()
+								));
 							}
 							break;
 						case 'section':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'blockinfoId', 'value' => $action->getBlockinfo(), 'fields' => array(
-																	array('name' => 'chapterId', 'value' => $action->getChapter(), 'fields' => array(
-																			array('name' => 'sectionId', 'value' => $action->getTargetId())
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'blockinfoId' => $action->getBlockinfo(),
+								'chapterId' => $action->getChapter(),
+								'sectionId' => $action->getTargetId()
+							));
 							break;
 						case 'chapter':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'blockinfoId', 'value' => $action->getBlockinfo(), 'fields' => array(
-																	array('name' => 'chapterId', 'value' => $action->getTargetId())
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'blockinfoId' => $action->getBlockinfo(),
+								'chapterId' => $action->getTargetId()
+							));
 							break;
 						case 'column':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																	array('name' => 'columnId', 'value' => $action->getTargetId())
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'fieldsetId' => $action->getFieldset(),
+								'columnId' => $action->getTargetId()
+							));
 							break;
 						case 'fieldrow':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																	array('name' => 'fieldrowId', 'value' => $action->getTargetId())
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'fieldsetId' => $action->getFieldset(),
+								'fieldrowId' => $action->getTargetId()
+							));
 							break;
 						case 'fieldset':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => $action->getTargetId())
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'fieldsetId' => $action->getTargetId()
+							));
 							break;
 						case 'blockinfo':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-															array('name' => 'blockinfoId', 'value' => $action->getTargetId())
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getPanel(),
+								'blockinfoId' => $action->getTargetId()
+							));
 							break;
 						case 'panel':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'panelId', 'value' => $action->getTargetId())
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'panelId' => $action->getTargetId()
+							));
 							break;
 						case 'step':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getTargetId())
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getTargetId()
+							));
 							break;
 						case 'footnote':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'footnoteId', 'value' => $action->getTargetId())
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'footnoteId' => $action->getTargetId()
+							));
 							break;
 						case 'action':
-							$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-													array('name' => 'actionId', 'value' => $action->getTargetId())
-												)
-											)
-										)
-									)
-								)
-							);
+							$clause = $this->makeClause(array(
+								'action-select' => $action->getName(),
+								'objectId' => $target,
+								'stepId' => $action->getStep(),
+								'actionId' => $action->getTargetId()
+							));
 							break;
 						case 'choice':
-							$step = $action->getStep();
-							$panel = $action->getPanel();
-							$fieldset = $action->getFieldset();
-							$disposition = $this->simu->getStepById($step)->getPanelById($panel)->getFieldSetById($fieldset)->getDisposition();
+							$disposition = $this->findDisposition($action);
 							if ($disposition == 'grid') {
-								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-										array('name' => 'objectId',	'value' => $target, 'fields' => array(
-												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																		array('name' => 'fieldrowId', 'value' => $action->getFieldrow(), 'fields' => array(
-																				array('name' => 'fieldId', 'value' => $action->getField(), 'fields' => array(
-																						array('name' => 'choiceId', 'value' => $action->getTargetId())
-																					)
-																				)
-																			)
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								);
+								$clause = $this->makeClause(array(
+									'action-select' => $action->getName(),
+									'objectId' => $target,
+									'stepId' => $action->getStep(),
+									'panelId' => $action->getPanel(),
+									'fieldsetId' => $action->getFieldset(),
+									'fieldrowId' => $action->getFieldrow(),
+									'fieldId' => $action->getField(),
+									'choiceId' => $action->getTargetId()
+								));
 							} else {
-								$clause = array('name' => 'action-select', 'value' => $action->getName(), 'fields' => array(
-										array('name' => 'objectId',	'value' => $target, 'fields' => array(
-												array('name' => 'stepId', 'value' => $action->getStep(), 'fields' => array(
-														array('name' => 'panelId', 'value' => $action->getPanel(), 'fields' => array(
-																array('name' => 'fieldsetId', 'value' => $action->getFieldset(), 'fields' => array(
-																		array('name' => 'fieldId', 'value' => $action->getField(), 'fields' => array(
-																				array('name' => 'choiceId', 'value' => $action->getTargetId())
-																			)
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								);
+								$clause = $this->makeClause(array(
+									'action-select' => $action->getName(),
+									'objectId' => $target,
+									'stepId' => $action->getStep(),
+									'panelId' => $action->getPanel(),
+									'fieldsetId' => $action->getFieldset(),
+									'fieldId' => $action->getField(),
+									'choiceId' => $action->getTargetId()
+								));
 							}
 							break;
 					}
 					break;
 				case 'setAttribute':
-					$clause = array('name' => 'action-select', 'value' => 'setAttribute', 'fields' => array(
-							array('name' => 'attributeId', 'value' => $target, 'fields' => array(
-									array('name' => 'fieldName', 'value' => $this->findDataNameById($action->getData()), 'fields' => array(
-											array('name' => 'newValue', 'value' => $action->getValue())
-										)
-									)
-								)
-							)
-						)
-					);
+					$clause = $this->makeClause(array(
+						'action-select' => 'setAttribute',
+						'attributeId' => $target,
+						'fieldName' => $this->findDataNameById($action->getData()),
+						'newValue' => $action->getValue()
+					));
 					if (preg_match_all("/#(\d+)/", $action->getValue(), $matches)) {
 						foreach($matches[1] as $id) {
 							$name = $this->findDataNameById($id);
-							if (! isset($dataset[$name]['rulesActionsDependency'])) {
-								$dataset[$name]['rulesActionsDependency'] = array();
+							if (! isset($this->dataset[$name]['rulesActionsDependency'])) {
+								$this->dataset[$name]['rulesActionsDependency'] = array();
 							}
-							$dataset[$name]['rulesActionsDependency'][] = $ruleID;
+							$this->dataset[$name]['rulesActionsDependency'][] = $ruleID;
 						}
 					}
 					break;
 				case 'unsetAttribute':
-					$clause = array('name' => 'action-select', 'value' => 'unsetAttribute', 'fields' => array(
-							array('name' => 'attributeId', 'value' => $target, 'fields' => array(
-									array('name' => 'fieldName', 'value' => $this->findDataNameById($action->getData()))
-								)
-							)
-						)
-					);
+					$clause = $this->makeClause(array(
+						'action-select' => 'unsetAttribute',
+						'attributeId' => $target,
+						'fieldName' => $this->findDataNameById($action->getData())
+					));
 					break;
 			}
 			$datas[] = $clause;
@@ -3762,11 +3629,44 @@ class SimulatorsAdminController extends BaseAdminController {
 	}
 
 	/**
+	 * Finds the disposition of a fieldset where one of the elements is the target of a rule action
+	 *
+	 * @access  private
+	 * @param   \EUREKA\G6KBundle\Model\RuleAction $action The rule action
+	 * @return  string
+	 *
+	 */
+	private function findDisposition(RuleAction $action) {
+		$step = $action->getStep();
+		$panel = $action->getPanel();
+		$fieldset = $action->getFieldset();
+		return $this->simu->getStepById((int)$step)->getPanelById((int)$panel)->getFieldSetById((int)$fieldset)->getDisposition();
+	}
+
+	/**
+	 * Makes a clause from the fields of a rule cation
+	 *
+	 * @access  private
+	 * @param   array $fields The fields of the rule action
+	 * @return  array
+	 *
+	 */
+	private function makeClause($fields) {
+		$clause = array();
+		$entry = &$clause;
+		foreach($fields as $name => $value) {
+			$entry['fields'] = array(array('name' => $name, 'value' => $value));
+			$entry = &$entry['fields'][0]; 
+		}
+		return $clause['fields'][0];
+	}
+
+	/**
 	 * Transforms the lines of a text into html paragraphs
 	 *
 	 * @access  private
-	 * @param   string $string
-	 * @return  string
+	 * @param   \EUREKA\G6KBundle\Model\RichText|string $string
+	 * @return  \EUREKA\G6KBundle\Model\RichText|string
 	 *
 	 */
 	private function paragraphs ($string) {

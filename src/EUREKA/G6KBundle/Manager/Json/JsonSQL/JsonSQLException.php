@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2016-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ class JsonSQLException extends \Exception {
 	 * @access public
 	 * @param string $message The Exception message to throw. 
 	 * @param int $code The Exception code
-	 * @param Exception $previous The previous exception used for the exception chaining.
+	 * @param \Exception|null $previous The previous exception used for the exception chaining.
 	 */
 	public function __construct($message, $code = 0, \Exception $previous = null) {
 		parent::__construct($message, $code, $previous);

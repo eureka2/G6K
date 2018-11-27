@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -193,16 +193,16 @@ class JSONToSQLConverter {
 	 */
 	private function connectDatabase($dbschema, $dbtype) {
 		$this->database = new Database(null, $this->databasesDir, 1, $dbtype, str_replace('-', '_', $dbschema));
-		if ($this->parameters['database_host'] != "") {
+		if ($this->parameters['database_host'] !== null && $this->parameters['database_host'] != "") {
 			$this->database->setHost($this->parameters['database_host']);
 		}
-		if ($this->parameters['database_port'] != "") {
+		if ($this->parameters['database_port'] !== null && $this->parameters['database_port'] != "") {
 			$this->database->setPort((int)$this->parameters['database_port']);
 		}
-		if ($this->parameters['database_user'] != "") {
+		if ($this->parameters['database_user'] !== null && $this->parameters['database_user'] != "") {
 			$this->database->setUser($this->parameters['database_user']);
 		}
-		if ($this->parameters['database_password'] != "") {
+		if ($this->parameters['database_password'] !== null && $this->parameters['database_password'] != "") {
 			$this->database->setPassword($this->parameters['database_password']);
 		}
 		$this->database->connect(false);
