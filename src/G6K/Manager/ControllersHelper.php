@@ -494,8 +494,8 @@ trait ControllersHelper {
 	 * Replaces all the html tag data containing the ID of a data item by # followed by the ID 
 	 *
 	 * @access  public
-	 * @param   string $target The target text
-	 * @return  string The result text
+	 * @param   \App\G6K\Model\RichText|string $target The target text
+	 * @return  \App\G6K\Model\RichText|string The result text
 	 *
 	 */
 	public function replaceDataTagByVariable($target) {
@@ -533,8 +533,8 @@ trait ControllersHelper {
 	 * Replaces all the html tag dfn containing the ID of a footnote by [text^ID(title)]
 	 *
 	 * @access  public
-	 * @param   string $target The target text
-	 * @return  string The result text
+	 * @param   \App\G6K\Model\RichText|string $target The target text
+	 * @return  \App\G6K\Model\RichText|string The result text
 	 *
 	 */
 	public function replaceDfnTagByFootnote($target) {
@@ -588,7 +588,7 @@ trait ControllersHelper {
 	 *
 	 * @access  public
 	 * @param   int $id The ID of the data item.
-	 * @return  \App\G6K\Model\Data The Data object
+	 * @return  \App\G6K\Model\Data|null The Data object
 	 *
 	 */
 	public function getDataById($id) {

@@ -182,7 +182,7 @@ abstract class Statement  {
 	 *
 	 * @access public
 	 * @param mixed $parameter The parameter identifier
-	 * @param  mixed $variable The variable to bind to the parameter
+	 * @param  mixed &$variable The variable to bind to the parameter
 	 * @param int $type The data type for the parameter using the PDO::PARAM_* constants.
 	 * @return bool true on success or false on failure.
 	 */

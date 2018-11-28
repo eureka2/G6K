@@ -101,7 +101,7 @@ class Filters extends \Twig_Extension {
 	 * Returns the string as HTML raw
 	 *
 	 * @access  public
-	 * @param   string $string The string to be filtered
+	 * @param   \App\G6K\Model\RichText|string $string The string to be filtered
 	 * @return  string
 	 *
 	 */
@@ -135,7 +135,7 @@ class Filters extends \Twig_Extension {
 	 * Returns the string as is without any modification
 	 *
 	 * @access  public
-	 * @param   string $string The string to be filtered
+	 * @param   \App\G6K\Model\RichText|string $string The string to be filtered
 	 * @return  string
 	 *
 	 */
@@ -148,7 +148,7 @@ class Filters extends \Twig_Extension {
 	 * Replaces footnotes reference in a text by a html link
 	 *
 	 * @access  public
-	 * @param   RichText|string $string
+	 * @param   \App\G6K\Model\RichText|string $string
 	 * @return  string
 	 *
 	 */
@@ -164,7 +164,7 @@ class Filters extends \Twig_Extension {
 	 * Removes footnotes reference in a text 
 	 *
 	 * @access  public
-	 * @param   string $string
+	 * @param   \App\G6K\Model\RichText|string $string
 	 * @return  string
 	 *
 	 */

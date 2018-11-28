@@ -79,6 +79,8 @@ t.add("The host could not be resolved.", "Nazwa hosta nie zosta\u0142a rozpoznan
 t.add("This value does not match the expected {{ charset }} charset.", "Ta warto\u015b\u0107 nie pasuje do oczekiwanego zestawu znak\u00f3w {{ charset }}.", "validators", "pl");
 t.add("This is not a valid Business Identifier Code (BIC).", "Ta warto\u015b\u0107 nie jest poprawnym kodem BIC (Business Identifier Code).", "validators", "pl");
 t.add("Error", "B\u0142\u0105d", "validators", "pl");
+t.add("This is not a valid UUID.", "To nie jest poprawne UUID.", "validators", "pl");
+t.add("This value should be a multiple of {{ compared_value }}.", "Ta warto\u015b\u0107 powinna by\u0107 wielokrotno\u015bci\u0105 {{ compared_value }}.", "validators", "pl");
 t.add("This form should not contain extra fields.", "Ten formularz nie powinien zawiera\u0107 dodatkowych p\u00f3l.", "validators", "pl");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Wgrany plik by\u0142 za du\u017cy. Prosz\u0119 spr\u00f3bowa\u0107 wgra\u0107 mniejszy plik.", "validators", "pl");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "Token CSRF jest nieprawid\u0142owy. Prosz\u0119 spr\u00f3bowa\u0107 wys\u0142a\u0107 formularz ponownie.", "validators", "pl");

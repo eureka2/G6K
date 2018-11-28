@@ -12,7 +12,7 @@ t.add("This field was not expected.", "Det h\u00e4r f\u00e4ltet f\u00f6rv\u00e4n
 t.add("This field is missing.", "Det h\u00e4r f\u00e4ltet saknas.", "validators", "sv");
 t.add("This value is not a valid date.", "V\u00e4rdet \u00e4r inte ett giltigt datum.", "validators", "sv");
 t.add("This value is not a valid datetime.", "V\u00e4rdet \u00e4r inte ett giltigt datum med tid.", "validators", "sv");
-t.add("This value is not a valid email address.", "V\u00e4rdet \u00e4r inte en giltig epost-adress.", "validators", "sv");
+t.add("This value is not a valid email address.", "V\u00e4rdet \u00e4r inte en giltig e-postadress.", "validators", "sv");
 t.add("The file could not be found.", "Filen kunde inte hittas.", "validators", "sv");
 t.add("The file is not readable.", "Filen \u00e4r inte l\u00e4sbar.", "validators", "sv");
 t.add("The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.", "Filen \u00e4r f\u00f6r stor ({{ size }} {{ suffix }}). St\u00f6rsta till\u00e5tna storlek \u00e4r {{ limit }} {{ suffix }}.", "validators", "sv");

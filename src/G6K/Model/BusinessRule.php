@@ -33,7 +33,6 @@ use App\G6K\Manager\ExpressionParser\Token;
  * This class allows the storage and retrieval of the attributes of a business rule
  *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class BusinessRule {
@@ -403,7 +402,7 @@ class BusinessRule {
 	 *
 	 * A connector is either a Condition object or a Connector object
 	 *
-	 * @access  private
+	 * @access  public
 	 * @param   \App\G6K\Model\Connector|\App\G6K\Model\Condition $pconnector The connector
 	 * @return  array The array of conditions
 	 *

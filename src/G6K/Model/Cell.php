@@ -30,13 +30,12 @@ namespace App\G6K\Model;
  * This class allows the storage and retrieval of the attributes of a cell
  *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class Cell {
 
 	/**
-	 * @var Column $column Column that defines this cell
+	 * @var \App\G6K\Model\Column $column Column that defines this cell
 	 *
 	 * @access  private
 	 *
@@ -55,7 +54,7 @@ class Cell {
 	 * Constructor of class Cell
 	 *
 	 * @access  public
-	 * @param   Column $column Column that defines this cell
+	 * @param   \App\G6K\Model\Column $column Column that defines this cell
 	 * @param   string $value (default: "") Cell value
 	 * @return  void
 	 *
@@ -69,7 +68,7 @@ class Cell {
 	 * Returns the column that contains the cell 
 	 *
 	 * @access  public
-	 * @return  Column the value of column
+	 * @return  \App\G6K\Model\Column the value of column
 	 *
 	 */
 	public function getColumn() {
