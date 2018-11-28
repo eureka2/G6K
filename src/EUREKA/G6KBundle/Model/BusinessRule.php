@@ -33,7 +33,6 @@ use EUREKA\G6KBundle\Manager\ExpressionParser\Token;
  * This class allows the storage and retrieval of the attributes of a business rule
  *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class BusinessRule {
@@ -403,7 +402,7 @@ class BusinessRule {
 	 *
 	 * A connector is either a Condition object or a Connector object
 	 *
-	 * @access  private
+	 * @access  public
 	 * @param   \EUREKA\G6KBundle\Model\Connector|\EUREKA\G6KBundle\Model\Condition $pconnector The connector
 	 * @return  array The array of conditions
 	 *

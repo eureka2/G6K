@@ -55,7 +55,6 @@ namespace EUREKA\G6KBundle\Model;
  * - country: a country code
  *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class Data extends DatasetChild {
@@ -680,7 +679,7 @@ class Data extends DatasetChild {
 	 * Returns the label of the choice corresponding to the current value of this data item.
 	 *
 	 * @access  public
-	 * @return  string The label of the choice
+	 * @return  string|array The label of the choice
 	 *
 	 */
 	public function getChoiceLabel() {
@@ -692,7 +691,7 @@ class Data extends DatasetChild {
 	 *
 	 * @access  public
 	 * @param   mixed $avalue The value of the choice
-	 * @return  string The label of the choice
+	 * @return  string|array The label of the choice
 	 *
 	 */
 	public function getChoiceLabelByValue($avalue) {
@@ -840,7 +839,7 @@ class Data extends DatasetChild {
 	 * Retrieves the current value of this data item
 	 *
 	 * @access  public
-	 * @return  string The current value
+	 * @return  mixed The current value
 	 *
 	 */
 	public function getValue() {

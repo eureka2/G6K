@@ -628,7 +628,7 @@ class Simulator {
 	 *
 	 * @access  public
 	 * @param   string $name The name of the Data object
-	 * @return  \EUREKA\G6KBundle\Model\Data The Data object
+	 * @return  \EUREKA\G6KBundle\Model\Data|null The Data object
 	 *
 	 */
 	public function getDataByName($name) {
