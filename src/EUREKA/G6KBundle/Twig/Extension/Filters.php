@@ -164,7 +164,7 @@ class Filters extends \Twig_Extension {
 	 * Removes footnotes reference in a text 
 	 *
 	 * @access  public
-	 * @param   string $string
+	 * @param   \EUREKA\G6KBundle\Model\RichText|string $string
 	 * @return  string
 	 *
 	 */
