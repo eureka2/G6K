@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,7 @@ class Site {
 	 *
 	 * @access  public
 	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simulator The Simulator object that uses this web site.
-	 * @param   string $id The id of this Site object.
+	 * @param   int $id The id of this Site object.
 	 * @param   string $name The name of this web site.
 	 * @param   string $home The URL of the home page of this web site.
 	 * @return  void

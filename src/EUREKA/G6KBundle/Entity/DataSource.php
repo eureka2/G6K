@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -321,7 +321,7 @@ class DataSource {
 	 * The values in this array are the namespace uris.
 	 *
 	 * @access  public
-	 * @return  string The associative array of namespaces
+	 * @return  array The associative array of namespaces
 	 *
 	 */
 	public function getNamespaces() {
@@ -335,7 +335,7 @@ class DataSource {
 	 * The values in this array are the namespace uris.
 	 *
 	 * @access  public
-	 * @param   string $namespaces The associative array of namespaces
+	 * @param   array $namespaces The associative array of namespaces
 	 * @return  void
 	 *
 	 */

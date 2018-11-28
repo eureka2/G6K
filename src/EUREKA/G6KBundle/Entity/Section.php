@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,7 @@ class Section {
 	private $label = "";
 
 	/**
-	 * @var string     $content The textual content of this section
+	 * @var \EUREKA\G6KBundle\Entity\RichText|null     $content The textual content of this section
 	 *
 	 * @access  private
 	 *
@@ -79,7 +79,7 @@ class Section {
 	private $content = null;
 
 	/**
-	 * @var string     $annotations The annotations on the text of this section
+	 * @var \EUREKA\G6KBundle\Entity\RichText|null     $annotations The annotations on the text of this section
 	 *
 	 * @access  private
 	 *
@@ -192,7 +192,7 @@ class Section {
 	 * Returns the textual content of this section
 	 *
 	 * @access  public
-	 * @return  string The textual content of this section.
+	 * @return  \EUREKA\G6KBundle\Entity\RichText|null The textual content of this section.
 	 *
 	 */
 	public function getContent() {
@@ -203,7 +203,7 @@ class Section {
 	 * Sets the textual content of this section
 	 *
 	 * @access  public
-	 * @param   string     $content The textual content of this section.
+	 * @param   \EUREKA\G6KBundle\Entity\RichText     $content The textual content of this section.
 	 * @return  void
 	 *
 	 */
@@ -215,7 +215,7 @@ class Section {
 	 * Returns the annotations on the text of this section
 	 *
 	 * @access  public
-	 * @return  string The annotations on the text of this section
+	 * @return  \EUREKA\G6KBundle\Entity\RichText|null The annotations on the text of this section
 	 *
 	 */
 	public function getAnnotations() {
@@ -226,7 +226,7 @@ class Section {
 	 * Sets the annotations on the text of this section
 	 *
 	 * @access  public
-	 * @param   string     $annotations The annotations on the text of this section
+	 * @param   \EUREKA\G6KBundle\Entity\RichText     $annotations The annotations on the text of this section
 	 * @return  void
 	 *
 	 */

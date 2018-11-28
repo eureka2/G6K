@@ -1799,6 +1799,7 @@
 					}
 					if (ok) {
 						if ($('#' + active).attr('id') == undefined) {
+							$cells = this.$grid.find('td.selectable');
 							var $lastCell = $cells.eq($cells.length - 1);
 							this.$grid.attr('aria-activedescendant', $lastCell.attr('id'));
 							this.selectGridCell($lastCell.attr('id'));
@@ -1835,6 +1836,7 @@
 					}
 					if (ok) {
 						if ($('#' + active).attr('id') == undefined) {
+							$cells = this.$grid.find('td.selectable');
 							var $lastCell = $cells.eq($cells.length - 1);
 							this.$grid.attr('aria-activedescendant', $lastCell.attr('id'));
 							this.selectGridCell($lastCell.attr('id'));

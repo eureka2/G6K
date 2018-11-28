@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ class JsonTable  {
 	 * @static
 	 * @param \EUREKA\G6KBundle\Manager\Json\JsonSQL\Engine $engine The engine using this function
 	 * @param string $table The table name
-	 * @param object $columns The columns definition 
+	 * @param \stdClass $columns The columns definition 
 	 * @param array $required The list of required columns
 	 * @param array $foreignkeys The list of foreign keys definition
 	 * @param bool $ifnotexists if true, don't throw an error if the table already exists
@@ -157,7 +157,7 @@ class JsonTable  {
 		}
 		$engine->beginTransaction();
 		if ($title === false) {
-			$tableSchema->title == '';
+			$tableSchema->title = '';
 		} else {
 			$tableSchema->title = $title; 
 		}
@@ -188,7 +188,7 @@ class JsonTable  {
 		}
 		$engine->beginTransaction();
 		if ($description === false) {
-			$tableSchema->description == '';
+			$tableSchema->description = '';
 		} else {
 			$tableSchema->description = $description; 
 		}

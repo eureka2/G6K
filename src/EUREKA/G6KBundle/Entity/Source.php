@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -90,7 +90,7 @@ class Source {
 	 * @access  private
 	 *
 	 */
-	private $parsed = ""; 
+	private $parsed = array(); 
 
 	/**
 	 * @var string     $returnType  The type (format) or the result returned by the request: json, xml, html, csv, assocArray or singleValue
@@ -136,7 +136,7 @@ class Source {
 	 * Constructor of class Source
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simulator The Simulator object that uses this source
+	 * @param   \EUREKA\G6KBundle\Entity\Simulator|null $simulator The Simulator object that uses this source
 	 * @param   int        $id The ID of this source
 	 * @param   string     $datasource The name of the data source accessed by this source
 	 * @param   string     $returnType  The type (format) or the result returned by the request

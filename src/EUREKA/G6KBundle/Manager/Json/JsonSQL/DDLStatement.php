@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2016 Jacques Archimède
+Copyright (c) 2016-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ class DDLStatement extends Statement {
 	 *
 	 * @access public
 	 * @param JsonSQL $jsonsql the JsonSQL instance
-	 * @param object $request the prepared statement
+	 * @param \stdClass $request the prepared statement
 	 */
 	public function __construct(JsonSQL $jsonsql, \stdClass &$request) {
 		parent::__construct($jsonsql, $request);
@@ -178,6 +178,30 @@ class DDLStatement extends Statement {
 		}
 		$this->rowCount = 0;
 		return true;
+	}
+
+	protected function executeCompoundSelect() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeSelect() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeInsert() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeUpdate() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeDelete() {
+		throw new JsonSQLException("JsonSQL internal error");
+	}
+
+	protected function executeTruncate() {
+		throw new JsonSQLException("JsonSQL internal error");
 	}
 
 }

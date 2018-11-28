@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -85,7 +85,7 @@ class ControllersHelper {
 	 * Formats a source parameter value
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Parameter The source parameter
+	 * @param   \EUREKA\G6KBundle\Entity\Parameter $param The source parameter
 	 * @return  string|null The formatted value
 	 *
 	 */
@@ -331,7 +331,7 @@ class ControllersHelper {
 			case 'csv':
 				$returnPath = $source->getReturnPath();
 				$returnPath = $this->replaceVariables($returnPath);
-				$result = ResultFilter::filter("csv", $result, $returnPath, null, $source->getSeparator(), $source->getDelimiter());
+				$result = ResultFilter::filter("csv", $result, $returnPath, array(), $source->getSeparator(), $source->getDelimiter());
 				return $result;
 		}
 		return null;
@@ -492,8 +492,8 @@ class ControllersHelper {
 	 * Replaces all the html tag data containing the ID of a data item by # followed by the ID 
 	 *
 	 * @access  public
-	 * @param   string $target The target text
-	 * @return  string The result text
+	 * @param   \EUREKA\G6KBundle\Entity\RichText|string $target The target text
+	 * @return  \EUREKA\G6KBundle\Entity\RichText|string The result text
 	 *
 	 */
 	public function replaceDataTagByVariable($target) {
@@ -531,8 +531,8 @@ class ControllersHelper {
 	 * Replaces all the html tag dfn containing the ID of a footnote by [text^ID(title)]
 	 *
 	 * @access  public
-	 * @param   string $target The target text
-	 * @return  string The result text
+	 * @param   \EUREKA\G6KBundle\Entity\RichText|string $target The target text
+	 * @return  \EUREKA\G6KBundle\Entity\RichText|string The result text
 	 *
 	 */
 	public function replaceDfnTagByFootnote($target) {
@@ -586,7 +586,7 @@ class ControllersHelper {
 	 *
 	 * @access  public
 	 * @param   int $id The ID of the data item.
-	 * @return  \EUREKA\G6KBundle\Entity\Data The Data object
+	 * @return  \EUREKA\G6KBundle\Entity\Data|null The Data object
 	 *
 	 */
 	public function getDataById($id) {
@@ -608,7 +608,7 @@ class ControllersHelper {
 				return $action;
 			}
 		}
-		return null;
+		throw new \Exception("Unable to find the action whose name is '" . $name . "'");
 	}
 
 	/**
@@ -627,7 +627,7 @@ class ControllersHelper {
 			$value = $field[$name];
 			$currentNode = $this->findActionOption($name, $value, $currentNode);
 			if ($currentNode === null) { 
-				return null; 
+				throw new \Exception("Unable to find the action field node in the fields : '" . json_encode($fields) . "'");
 			}
 		}
 		return $currentNode;

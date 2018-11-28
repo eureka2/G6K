@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2017-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,7 @@ class DatasourcesHelper {
 		$tableid = 1;
 		foreach ($form['datasource-tables'] as $tbl) {
 			$table = $dom->createElement("Table");
-			$table->setAttribute('id', $tableid++);
+			$table->setAttribute('id', (string)$tableid++);
 			$table->setAttribute('name', $tbl['name']);
 			$table->setAttribute('label', $tbl['label']);
 			$descr = $dom->createElement("Description");
@@ -89,7 +89,7 @@ class DatasourcesHelper {
 			$columnid = 1;
 			foreach ($tbl['columns'] as $col) {
 				$column = $dom->createElement("Column");
-				$column->setAttribute('id', $columnid++);
+				$column->setAttribute('id', (string)$columnid++);
 				$column->setAttribute('name', $col['name']);
 				$column->setAttribute('type', $col['type']);
 				$column->setAttribute('label', $col['label']);
@@ -101,7 +101,7 @@ class DatasourcesHelper {
 					$choiceid = 1;
 					foreach ($col['choices'] as $ch) {
 						$choice = $dom->createElement("Choice");
-						$choice->setAttribute('id', $choiceid++);
+						$choice->setAttribute('id', (string)$choiceid++);
 						$choice->setAttribute('value', $ch['value']);
 						$choice->setAttribute('label', $ch['label']);
 						$choices->appendChild($choice);
@@ -110,7 +110,7 @@ class DatasourcesHelper {
 				} elseif (isset($col['source'])) {
 					$choices = $dom->createElement("Choices");
 					$source = $dom->createElement("Source");
-					$source->setAttribute('id', 1);
+					$source->setAttribute('id', '1');
 					$source->setAttribute('datasource', $col['source']['datasource']);
 					if (isset($col['source']['request'])) {
 						$source->setAttribute('request', $col['source']['request']);
@@ -155,7 +155,7 @@ class DatasourcesHelper {
 			}
 		}
 		$datasource = $dom->createElement("DataSource");
-		$datasource->setAttribute('id', $maxId + 1);
+		$datasource->setAttribute('id', (string)($maxId + 1));
 		$datasource->setAttribute('type', $type);
 		$datasource->setAttribute('name', $form['datasource-name']);
 		$descr = $dom->createElement("Description");
@@ -179,7 +179,7 @@ class DatasourcesHelper {
 					$dbname .= '.db';
 				}
 				$database = $dom->createElement("Database");
-				$database->setAttribute('id', $maxId + 1);
+				$database->setAttribute('id', (string)($maxId + 1));
 				$database->setAttribute('type', $dbtype);
 				$database->setAttribute('name', $dbname);
 				$database->setAttribute('label', $form['datasource-database-label']);

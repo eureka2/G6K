@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,17 +29,12 @@ namespace EUREKA\G6KBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use EUREKA\G6KBundle\Entity\Simulator;
-use EUREKA\G6KBundle\Entity\Source;
-use EUREKA\G6KBundle\Entity\ChoiceGroup;
-use EUREKA\G6KBundle\Entity\Choice;
 use EUREKA\G6KBundle\Entity\DataGroup;
 use EUREKA\G6KBundle\Entity\Data;
 use EUREKA\G6KBundle\Entity\FieldSet;
 use EUREKA\G6KBundle\Entity\FieldRow;
 use EUREKA\G6KBundle\Entity\Field;
 use EUREKA\G6KBundle\Entity\BlockInfo;
-use EUREKA\G6KBundle\Entity\Chapter;
-use EUREKA\G6KBundle\Entity\Section;
 use EUREKA\G6KBundle\Entity\Step;
 
 use EUREKA\G6KBundle\Manager\ExpressionParser\Parser;
@@ -48,8 +43,6 @@ use EUREKA\G6KBundle\Manager\ResultFilter;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  *
@@ -280,27 +273,33 @@ class BaseController extends Controller {
 			} elseif (preg_match("/^(.+)_g6k_(day|month|year)$/", $name, $matches)) {
 				$dates[$matches[1]][$matches[2]] = $value;
 			} else {
-				$data = $this->simu->getDataByName($name);
-				if ($data !== null) {
-					$data->setValue($value);
-					$this->variables[''.$data->getId()] = $data->getValue();
-					$this->variables[$name] = $data->getValue();
+				try {
+					$data = $this->simu->getDataByName($name);
+					if ($data !== null) {
+						$data->setValue($value);
+						$this->variables[''.$data->getId()] = $data->getValue();
+						$this->variables[$name] = $data->getValue();
+					}
+				} catch (\Exception $e) {
 				}
 			}
 		}
 		foreach ($dates as $name => $date) {
-			$data = $this->simu->getDataByName($name);
-			if ($data !== null) {
-				$value = $date['day'] . "/" . $date['month'] . "/" . $date['year'];
-				$data->setValue($value);
-				$this->variables[''.$data->getId()] = $data->getValue();
-				$this->variables[$name] = $data->getValue();
-				$form[$name] = $data->getValue();
+			try {
+				$data = $this->simu->getDataByName($name);
+				if ($data !== null) {
+					$value = $date['day'] . "/" . $date['month'] . "/" . $date['year'];
+					$data->setValue($value);
+					$this->variables[''.$data->getId()] = $data->getValue();
+					$this->variables[$name] = $data->getValue();
+					$form[$name] = $data->getValue();
+				}
+			} catch (\Exception $e) {
 			}
 		}
 		$dynamic = $this->simu->isDynamic() && 
 					($no_js == 0) &&
-					($istep < 0 || $this->script = 1);
+					($istep < 0 || $this->script == 1);
 		$this->simu->setDynamic($dynamic);
 		$this->variables['script'] = $this->script;
 		$this->variables['dynamic'] = $dynamic;
@@ -331,13 +330,13 @@ class BaseController extends Controller {
 								}
 							} elseif ($child instanceof FieldRow) {
 								$fieldrow = $child;
-								foreach ($fieldrow->getFields() as $field) {
-									if ($field->getUsage() == "input") {
-										$id = $field->getData();
+								foreach ($fieldrow->getFields() as $rfield) {
+									if ($rfield->getUsage() == "input") {
+										$id = $rfield->getData();
 										$data = $this->simu->getDataById($id);
 										$data->setInputStepId($s->getId());
 										$fieldset->setInputFields(true);
-										if ($field->isRequired() || $field->isVisibleRequired()) {
+										if ($rfield->isRequired() || $rfield->isVisibleRequired()) {
 											$fieldset->setRequiredFields(true);
 										}
 										if ($data->getType() == 'boolean' && $s->getId() == $istep && !isset($form[$data->getName()])) {
@@ -705,7 +704,7 @@ class BaseController extends Controller {
 	 * @return  void
 	 *
 	 */
-	protected function processField($field, $step, &$displayable) 
+	protected function processField(Field $field, Step $step, &$displayable) 
 	{
 		$id = $field->getData();
 		$data = $this->simu->getDataById($id);
@@ -993,7 +992,7 @@ class BaseController extends Controller {
 	 * Executes all the actions of a business rule of the step
 	 *
 	 * @access  protected
-	 * @param   \EUREKA\G6KBundle\Entity\Action $actions Actions of the business rule
+	 * @param   array $actions Actions of the business rule
 	 * @param   int $istep The step number
 	 * @return  void
 	 *

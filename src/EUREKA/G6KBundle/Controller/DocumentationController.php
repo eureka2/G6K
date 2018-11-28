@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2017-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,6 @@ THE SOFTWARE.
 namespace EUREKA\G6KBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Finder\Finder;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
@@ -51,7 +48,7 @@ class DocumentationController extends BaseAdminController {
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
 	 * @param   string $document (default: null) The document name
-	 * @return  \Symfony\Component\HttpFoundation\Response; The rendered document
+	 * @return  \Symfony\Component\HttpFoundation\Response The rendered document
 	 *
 	 */
 	public function indexAction(Request $request, $document = null)
@@ -66,7 +63,7 @@ class DocumentationController extends BaseAdminController {
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
 	 * @param   string $document (default: null) The document name
-	 * @return  \Symfony\Component\HttpFoundation\Response; The rendered document
+	 * @return  \Symfony\Component\HttpFoundation\Response The rendered document
 	 *
 	 */
 	protected function runIndex(Request $request, $document) {

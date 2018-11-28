@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -90,7 +90,7 @@ class Token {
 	public $type;
 
 	/**
-	 * @var string      $value String representation of the value of this token
+	 * @var mixed      $value String representation of the value of this token
 	 *
 	 * @access  public
 	 *
@@ -98,7 +98,7 @@ class Token {
 	public $value;
 
 	/**
-	 * @var string      $arity Number of parsed arguments if this token is a funcion
+	 * @var int      $arity Number of parsed arguments if this token is a funcion
 	 *
 	 * @access  public
 	 *
@@ -110,7 +110,7 @@ class Token {
 	 *
 	 * @access  public
 	 * @param   int $type The type of this token
-	 * @param   string $value The value of this token
+	 * @param   mixed $value The value of this token
 	 * @return  void
 	 *
 	 */

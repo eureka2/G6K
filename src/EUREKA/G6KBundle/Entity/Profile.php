@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ class Profile {
 	private $label = "";
 
 	/**
-	 * @var string     $description The description of this profile. 
+	 * @var \EUREKA\G6KBundle\Entity\RichText     $description The description of this profile. 
 	 *
 	 * @access  private
 	 *
@@ -164,7 +164,7 @@ class Profile {
 	 * Returns the description of this profile.
 	 *
 	 * @access  public
-	 * @return  string The description of this profile.
+	 * @return  \EUREKA\G6KBundle\Entity\RichText The description of this profile.
 	 *
 	 */
 	public function getDescription() {
@@ -175,7 +175,7 @@ class Profile {
 	 * Sets the description of this profile.
 	 *
 	 * @access  public
-	 * @param   string     $description The description of this profile.
+	 * @param   \EUREKA\G6KBundle\Entity\RichText     $description The description of this profile.
 	 * @return  void
 	 *
 	 */

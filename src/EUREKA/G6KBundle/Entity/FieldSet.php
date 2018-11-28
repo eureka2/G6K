@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,7 @@ class FieldSet {
 	private $id = 0;
 
 	/**
-	 * @var string     $legend The legend of this field set.
+	 * @var \EUREKA\G6KBundle\Entity\RichText     $legend The legend of this field set.
 	 *
 	 * @access  private
 	 *
@@ -182,7 +182,7 @@ class FieldSet {
 	 * Returns the legend of this field set
 	 *
 	 * @access  public
-	 * @return  string The legend of this field set
+	 * @return  \EUREKA\G6KBundle\Entity\RichText The legend of this field set
 	 *
 	 */
 	public function getLegend() {
@@ -193,7 +193,7 @@ class FieldSet {
 	 * Sets the legend of this field set
 	 *
 	 * @access  public
-	 * @param   string     $legend The legend of this field set
+	 * @param   \EUREKA\G6KBundle\Entity\RichText     $legend The legend of this field set
 	 * @return  void
 	 *
 	 */

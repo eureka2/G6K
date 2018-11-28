@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,6 @@ namespace EUREKA\G6KBundle\Entity;
 
 use EUREKA\G6KBundle\Manager\Splitter;
 use EUREKA\G6KBundle\Manager\Json\JsonSQL;
-use \PDO;
 
 /**
  *
@@ -90,7 +89,7 @@ class Database {
 	private $label;
 
 	/**
-	 * @var string      $host The database host or relative path in the case of sqlite
+	 * @var string|null      $host The database host or relative path in the case of sqlite
 	 *
 	 * @access  private
 	 *
@@ -106,7 +105,7 @@ class Database {
 	private $port;
 
 	/**
-	 * @var string      $user The identifier of the user who can connect and access the database.
+	 * @var string|null      $user The identifier of the user who can connect and access the database.
 	 *
 	 * @access  private
 	 *
@@ -114,7 +113,7 @@ class Database {
 	private $user;
 
 	/**
-	 * @var string      $password The password of the user who can connect and access the database.
+	 * @var string|null      $password The password of the user who can connect and access the database.
 	 *
 	 * @access  private
 	 *
@@ -130,7 +129,7 @@ class Database {
 	private $connected = false;
 
 	/**
-	 * @var \PDO $link link to the connection
+	 * @var \PDO|\EUREKA\G6KBundle\Manager\Json\JsonSQL $link link to the connection
 	 *
 	 * @access  private
 	 *
@@ -181,7 +180,7 @@ class Database {
 	 * Constructor of class Database
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simulator The Simulator object that uses this database 
+	 * @param   \EUREKA\G6KBundle\Entity\Simulator|null $simulator The Simulator object that uses this database 
 	 * @param   string      $databasesDir The "databases" directory, specially for SQLite.
 	 * @param   int         $id The ID of the database
 	 * @param   string      $type The type of the database
@@ -304,7 +303,7 @@ class Database {
 	 * Returns the host of this database
 	 *
 	 * @access  public
-	 * @return  string The database host or the relative path in the case of sqlite
+	 * @return  string|null The database host or the relative path in the case of sqlite
 	 *
 	 */
 	public function getHost() {
@@ -315,7 +314,7 @@ class Database {
 	 * Sets the host of this database
 	 *
 	 * @access  public
-	 * @param   string      $host The host of this database or the relative path if sqlite
+	 * @param   string|null      $host The host of this database or the relative path if sqlite
 	 * @return  void
 	 *
 	 */
@@ -350,7 +349,7 @@ class Database {
 	 * Returns the identifier of the user with access rights to this database
 	 *
 	 * @access  public
-	 * @return  string The identifier of the user
+	 * @return  string|null The identifier of the user
 	 *
 	 */
 	public function getUser() {
@@ -361,7 +360,7 @@ class Database {
 	 * Sets the identifier of the user with access rights to this database
 	 *
 	 * @access  public
-	 * @param   string      $user The identifier of the user
+	 * @param   string|null      $user The identifier of the user
 	 * @return  void
 	 *
 	 */
@@ -373,7 +372,7 @@ class Database {
 	 * Returns the password of the user with access rights to this database
 	 *
 	 * @access  public
-	 * @return  string The password of the user
+	 * @return  string|null The password of the user
 	 *
 	 */
 	public function getPassword() {
@@ -384,7 +383,7 @@ class Database {
 	 * Sets the password of the user with access rights to this database
 	 *
 	 * @access  public
-	 * @param   string      $password The password of the user
+	 * @param   string|null     $password The password of the user
 	 * @return  void
 	 *
 	 */
@@ -507,7 +506,7 @@ class Database {
 	 *
 	 * @access  public
 	 * @param   string $sql The SQL statement to be prepares and executed.
-	 * @return  array The result set rows
+	 * @return  array|string|bool The result set rows
 	 *
 	 *
 	 */
@@ -557,7 +556,7 @@ class Database {
 	 *
 	 * @access  public
 	 * @param   \PDOStatement $stmt The statement object returned by the prepare method. 
-	 * @param   string|int Parameter identifier. For a prepared statement using named placeholders, this will be a parameter name of the form :name. For a prepared statement using question mark placeholders, this will be the 1-indexed position of the parameter.
+	 * @param   string|int $parameter Parameter identifier. For a prepared statement using named placeholders, this will be a parameter name of the form :name. For a prepared statement using question mark placeholders, this will be the 1-indexed position of the parameter.
 	 * @param   string &$variable  Name of the PHP variable to bind to the SQL statement parameter.
 	 * @param   string $type (default: 'text') The type of the parameter
 	 * @return  bool true on success or false on failure.
@@ -597,7 +596,7 @@ class Database {
 	 *
 	 * @access  public
 	 * @param   \PDOStatement $stmt The statement object returned by the prepare method. 
-	 * @param   string|int The parameter identifier. For a prepared statement using named placeholders, this will be a parameter name of the form :name. For a prepared statement using question mark placeholders, this will be the 1-indexed position of the parameter.
+	 * @param   string|int $parameter The parameter identifier. For a prepared statement using named placeholders, this will be a parameter name of the form :name. For a prepared statement using question mark placeholders, this will be the 1-indexed position of the parameter.
 	 * @param   string $value The value to bind to the parameter.
 	 * @param   string $type (default: 'text') The type of the parameter 
 	 * @return  bool true on success or false on failure.
@@ -635,7 +634,7 @@ class Database {
 	 *
 	 * @access  public
 	 * @param   \PDOStatement $stmt The statement object returned by the prepare method. 
-	 * @return  bool true on success or false on failure.
+	 * @return  array|string|bool the result array of the statement on success or false on failure.
 	 *
 	 */
 	public function execute(\PDOStatement $stmt) {
@@ -673,7 +672,7 @@ class Database {
 			case "jsonsql":
 				$affected = $this->link->exec($sql);
 				if ($affected === false) {
-					$err = $this->pdo->errorInfo();
+					$err = $this->link->errorInfo();
 					if ($err[0] === '00000' || $err[0] === '01000') {
 						return 1;
 					}
@@ -691,17 +690,18 @@ class Database {
 	 *
 	 * @access  public
 	 * @param   string $value The string to be quoted.
+	 * @param   int $type The parameter type.
 	 * @return  string The quoted string or false if the driver does not support quoting in this way.
 	 *
 	 */
-	public function quote($value) {
+	public function quote($value, $type = \PDO::PARAM_STR) {
 		switch ($this->type) {
 			case "mysql":
 			case "mysqli":
 			case "pgsql":
 			case "sqlite":
 			case "jsonsql":
-				return $this->link->quote($value);
+				return $this->link->quote($value, $type);
 		}
 		return $value;
 	}
@@ -722,7 +722,7 @@ class Database {
 			case "jsonsql":
 				return $this->link->lastInsertId();
 		}
-		return 0;
+		return '0';
 	}
 
 	/**

@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,6 @@ THE SOFTWARE.
 */
 
 namespace EUREKA\G6KBundle\Controller;
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
@@ -347,7 +345,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				case 'doimport':
 					return $this->doImportTable($form, $dsid, $table, $database, $request->files->all());
 				case 'drop':
-					return $this->dropTable ($table, $database);
+					return $this->dropTable ($form, $table, $database);
 				case 'restore':
 					return $this->restoreTableRow ($form, $table, $database);
 				default:
@@ -706,7 +704,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$converter = new SQLToJSONConverter($parameters, $this->databasesDir);
 		$result = $converter->convert($datasource);
-		ini_set("serialize_precision", -1);
+		ini_set("serialize_precision", '-1');
 		$content = array(
 			array(
 				'name' => (string)$datasource['name'].".schema.json",
@@ -722,7 +720,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$response->headers->set('Cache-Control', 'private');
 		$response->headers->set('Content-type', 'application/octet-stream');
 		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', (string)$datasource['name'] . ".zip"));
-		$response->headers->set('Content-length', strlen($zipcontent));
+		$response->headers->set('Content-length', (string)strlen($zipcontent));
 		$response->sendHeaders();
 		$response->setContent($zipcontent);
 		return $response;
@@ -924,7 +922,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
-	 * @return  array|null The result set of the query
+	 * @return  array|string|null The result set of the query
 	 *
 	 */
 	protected function processSource($source) {
@@ -983,7 +981,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Filters the result set of a query on the source return path
 	 *
 	 * @access  protected
-	 * @param   array $result The result set of a query
+	 * @param   array|string $result The result set of a query
 	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
 	 * @return  array|null The filtered result set
 	 *
@@ -998,7 +996,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			case 'xml':
 				return ResultFilter::filter("xml", $result, (string)$source['returnPath']);
 			case 'csv':
-				$result = ResultFilter::filter("csv", $result, "", null, (string)$source['separator'], (string)$source['delimiter']);
+				$result = ResultFilter::filter("csv", $result, "", array(), (string)$source['separator'], (string)$source['delimiter']);
 				return $this->filterResultByLines($result, (string)$source['returnPath']);
 		}
 		return null;
@@ -1146,7 +1144,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
-	 * @return  array|null The list of tables
+	 * @return  array|string|bool|null The list of tables
 	 *
 	 */
 	protected function tablesList($database) {
@@ -1184,7 +1182,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
 	 * @param   string $table The table name
-	 * @return  array|null Informations about a table
+	 * @return  array|string|bool|null Informations about a table
 	 *
 	 */
 	protected function tableInfos($database, $table) {
@@ -1205,6 +1203,9 @@ class DataSourcesAdminController extends BaseAdminController {
 				break;
 			case 'sqlite':
 				$tableinfos = $database->query("PRAGMA table_info('".$table."')");
+				foreach($tableinfos as &$info) {
+					$info['filtertext'] = '';
+				}
 				break;
 			case 'pgsql':
 				$tableinfos = $database->query("SELECT ordinal_position as cid, column_name as name, data_type as type, is_nullable, column_default as dflt_value FROM information_schema.columns where table_name = '$table' order by ordinal_position");
@@ -1330,7 +1331,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$type = $form['datasource-type'];
 		$dbtype = $form['datasource-database-type'];
 		if ($type == 'internal') {
-			if (($result = $this->createDB($datasource->getAttribute('id'), $dbtype)) !== true) {
+			if (($result = $this->createDB((int)($datasource->getAttribute('id')), $dbtype)) !== true) {
 				return $this->errorResponse($form, $result);
 			}
 		}
@@ -1866,7 +1867,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @param   array $form The form fields
 	 * @param   string $table The table name
 	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
-	 * @return  bool
+	 * @return  bool|string
 	 *
 	 */
 	protected function updateDBTableRow($form, $table, $database) {
@@ -2167,7 +2168,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		foreach ($form['field'] as $i => $field) {
 			if ($field != '') {
 				$column = $dom->createElement("Column");
-				$column->setAttribute('id', $i + 1);
+				$column->setAttribute('id', (string)($i + 1));
 				$column->setAttribute('name', $field);
 				$column->setAttribute('type', $form['type'][$i]);
 				$column->setAttribute('label', $form['label'][$i]);
@@ -2178,7 +2179,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$choices = $dom->createElement("Choices");
 					if (isset($form['field-'.$i.'-choicesource-datasource'])) {
 						$source = $dom->createElement("Source");
-						$source->setAttribute('id', 1);
+						$source->setAttribute('id', '1');
 						$source->setAttribute('datasource', $form['field-'.$i.'-choicesource-datasource']);
 						$source->setAttribute('returnType', $form['field-'.$i.'-choicesource-returnType']);
 						$source->setAttribute('valueColumn', $form['field-'.$i.'-choicesource-valueColumn']);
@@ -2202,7 +2203,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					} else{
 						foreach ($form['field-'.$i.'-choice-value'] as $c => $value) {
 							$choice = $dom->createElement("Choice");
-							$choice->setAttribute('id', $c + 1);
+							$choice->setAttribute('id', (string)($c + 1));
 							$choice->setAttribute('value', $value);
 							$choice->setAttribute('label', $form['field-'.$i.'-choice-label'][$c]);
 							$choices->appendChild($choice);
@@ -2221,12 +2222,13 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Route path : /admin/datasources/{dsid}/{table}/drop
 	 *
 	 * @access  protected
+	 * @param   array $form The form fields
 	 * @param   string $table The table name
 	 * @param   \EUREKA\G6KBundle\Entity\Database $database The Database object
 	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
 	 *
 	 */
-	protected function dropTable($table, $database) {
+	protected function dropTable($form, $table, $database) {
 		if (($result = $this->dropDBTable($table, $database)) !== true) {
 			return $this->errorResponse($form, $result);
 		}
@@ -2316,7 +2318,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						}
 					}
 					$database = $dom->createElement("Database");
-					$database->setAttribute('id', $maxId + 1);
+					$database->setAttribute('id', (string)($maxId + 1));
 					$database->setAttribute('type', $dbtype);
 					$database->setAttribute('name', $form['datasource-database-name']);
 					$database->setAttribute('label', $form['datasource-database-label']);

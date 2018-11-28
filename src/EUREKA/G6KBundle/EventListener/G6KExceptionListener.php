@@ -123,7 +123,9 @@ EOT;
 				array(
 					'message' => $this->trace($exception),
 					'stacktrace' => str_replace("\n", "<br>", $exception->getTraceAsString()),
-					'code' => $exception->getCode()
+					'code' => $exception->getCode(),
+					'view' => $view, 
+					'exception' => true
 				)
 			)
 		);
@@ -243,11 +245,14 @@ EOT;
 			$line = array_key_exists('file', $trace[0]) && array_key_exists('line', $trace[0]) && $trace[0]['line'] ? $trace[0]['line'] : null;
 			array_shift($trace);
 		}
+		$result = array_filter($result, function ($line) {
+			return !preg_match("/at __TwigTemplate_/", $line);
+		}); 
 		$result = join("<br>", $result);
 		if ($prev)
 			$result  .= "<br>" . $this->trace($prev, $seen);
 		return $result;
-}
+	}
 }
 
 ?>

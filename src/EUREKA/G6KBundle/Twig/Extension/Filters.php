@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 Jacques Archimède
+Copyright (c) 2017-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -90,7 +90,7 @@ class Filters extends \Twig_Extension {
 	 *
 	 * @access  public
 	 * @param   string $string The string to be filtered
-	 * @return  void
+	 * @return  string
 	 *
 	 */
 	public function jscodeFilter($string) {
@@ -101,8 +101,8 @@ class Filters extends \Twig_Extension {
 	 * Returns the string as HTML raw
 	 *
 	 * @access  public
-	 * @param   string $string The string to be filtered
-	 * @return  void
+	 * @param   \EUREKA\G6KBundle\Entity\RichText|string $string The string to be filtered
+	 * @return  string
 	 *
 	 */
 	public function htmlRaw($string) {
@@ -135,8 +135,8 @@ class Filters extends \Twig_Extension {
 	 * Returns the string as is without any modification
 	 *
 	 * @access  public
-	 * @param   string $string The string to be filtered
-	 * @return  void
+	 * @param   \EUREKA\G6KBundle\Entity\RichText|string $string The string to be filtered
+	 * @return  string
 	 *
 	 */
 	public function noFilter($string) {
@@ -148,7 +148,7 @@ class Filters extends \Twig_Extension {
 	 * Replaces footnotes reference in a text by a html link
 	 *
 	 * @access  public
-	 * @param   string $string
+	 * @param   \EUREKA\G6KBundle\Entity\RichText|string $string
 	 * @return  string
 	 *
 	 */

@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -296,7 +296,7 @@ class Expression {
 	 * Evaluates this expression
 	 *
 	 * @access  public
-	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token||false The result token of the evaluation
+	 * @return  \EUREKA\G6KBundle\Manager\ExpressionParser\Token|false The result token of the evaluation
 	 *
 	 */
 	public function evaluate() {

@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,20 +26,13 @@ THE SOFTWARE.
 
 namespace EUREKA\G6KBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-use EUREKA\G6KBundle\Entity\Simulator;
 use EUREKA\G6KBundle\Entity\DataGroup;
 use EUREKA\G6KBundle\Entity\Data;
-use EUREKA\G6KBundle\Entity\FieldSet;
-use EUREKA\G6KBundle\Entity\FieldRow;
-use EUREKA\G6KBundle\Entity\Field;
 use EUREKA\G6KBundle\Entity\Step;
 
 use EUREKA\G6KBundle\Manager\ControllersHelper;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
 use Silex\Application;

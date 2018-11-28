@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,6 @@ use EUREKA\G6KBundle\Manager\ExpressionParser\Token;
  * This class allows the storage and retrieval of the attributes of a business rule
  *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class BusinessRule {
@@ -52,15 +51,15 @@ class BusinessRule {
 	 * @access  private
 	 *
 	 */
-	private $elementId = 0;
+	private $elementId = '0';
 
 	/**
-	 * @var string     $id ID of this BusinessRule
+	 * @var int     $id ID of this BusinessRule
 	 *
 	 * @access  private
 	 *
 	 */
-	private $id = "";
+	private $id = 0;
 
 	/**
 	 * @var string     $name Name of this BusinessRule without spaces or special or accented characters
@@ -111,7 +110,7 @@ class BusinessRule {
 	private $elseActions = array();	
 
 	/**
-	 * @var null $translator Instance of translation service
+	 * @var \Symfony\Component\Translation\TranslatorInterface|null $translator Instance of translation service
 	 *
 	 * @access  private
 	 *
@@ -144,8 +143,8 @@ class BusinessRule {
 	 *
 	 * @access  public
 	 * @param   \EUREKA\G6KBundle\Entity\Simulator $simulator Simulator object that defines this BusinessRule
-	 * @param   int    $elementId Generated id of this business rule for the DOM element in the browser
-	 * @param   string $id ID of this business rule
+	 * @param   string    $elementId Generated id of this business rule for the DOM element in the browser
+	 * @param   int $id ID of this business rule
 	 * @param   string $name Name of this business rule without spaces or special or accented characters
 	 * @return  void
 	 *
@@ -197,7 +196,7 @@ class BusinessRule {
 	 * Returns the business rule ID
 	 *
 	 * @access  public
-	 * @return  string The business rule id
+	 * @return  int The business rule id
 	 *
 	 */
 	public function getId() {
@@ -208,7 +207,7 @@ class BusinessRule {
 	 * Sets the business rule ID
 	 *
 	 * @access  public
-	 * @param   string $id The business rule id
+	 * @param   int $id The business rule id
 	 * @return  void
 	 *
 	 */
@@ -335,7 +334,7 @@ class BusinessRule {
 	 * Adds an action to the list of actions that must be executed if the conditions of this business rule are verified.
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Entity\Action  $ifAction The action to be added
+	 * @param   \EUREKA\G6KBundle\Entity\RuleAction  $ifAction The action to be added
 	 * @return  void
 	 *
 	 */
@@ -370,7 +369,7 @@ class BusinessRule {
 	 * Adds an action to the list of actions that must be executed if the conditions of this business rule are NOT verified.
 	 *
 	 * @access  public
-	 * @param   \EUREKA\G6KBundle\Entity\Action  $else Action The action to be added
+	 * @param   \EUREKA\G6KBundle\Entity\RuleAction  $elseAction The action to be added
 	 * @return  void
 	 *
 	 */
@@ -384,7 +383,7 @@ class BusinessRule {
 	 * If the business rule has no connector, the conditions are first parsed then optimized.
 	 *
 	 * @access  public
-	 * @return  string The conditions in a readable format
+	 * @return  array The conditions in a readable format
 	 *
 	 */
 	public function getExtendedConditions() {
@@ -403,16 +402,19 @@ class BusinessRule {
 	 *
 	 * A connector is either a Condition object or a Connector object
 	 *
-	 * @access  private
-	 * @param   \EUREKA\G6KBundle\Entity\Connector|\EUREKA\G6KBundle\Entity\Condition $connector The connector
+	 * @access  public
+	 * @param   \EUREKA\G6KBundle\Entity\Connector|\EUREKA\G6KBundle\Entity\Condition $pconnector The connector
 	 * @return  array The array of conditions
 	 *
 	 */
-	private function ruleConnector($pconnector) {
+	public function ruleConnector($pconnector) {
 		if ($pconnector instanceof Condition) {
-			$data = $this->simulator->getDataById($pconnector->getOperand());
+			$operand = $pconnector->getOperand();
+			$data = is_numeric($operand) ? 
+					$this->simulator->getDataById((int)$operand) :
+					$this->simulator->getDataByName($operand);
 			return array(
-				'name' => $data === null ? $pconnector->getOperand() : $data->getName(),
+				'name' => $data === null ? $operand : $data->getName(),
 				'operator' => $pconnector->getOperator(),
 				'value' =>  $pconnector->getExpression()
 			);
@@ -494,11 +496,12 @@ class BusinessRule {
 					$ruleData["operator"] =  $ruleData["value"] == 1 ? $this->translator->trans('is') : $this->translator->trans('is not');
 					$ruleData["value"] = $this->translator->trans('interactive');
 				} elseif (preg_match("/step(\d+)\.dynamic$/", $ruleData["name"], $matches)) {
+					$ruleData["id"] = 0;
 					$ruleData["name"] = $this->translator->trans('User Interface for step %id%', array('%id%' => $matches[1]));
 					$ruleData["operator"] =  $ruleData["value"] == 1 ? $this->translator->trans('is') : $this->translator->trans('is not');
 					$ruleData["value"] = $this->translator->trans('interactive');
 				} elseif (preg_match("/^#(\d+)$/", $ruleData["name"], $matches)) {
-					$data = $this->simulator->getDataById($matches[1]);
+					$data = $this->simulator->getDataById((int)$matches[1]);
 					$type = $data->getType();
 					$ruleData["id"] = $data->getId();
 					$ruleData["name"] = $data->getLabel();
@@ -603,7 +606,7 @@ class BusinessRule {
 	 *
 	 * @access  protected
 	 * @param   array &$ruleData <parameter description>
-	 * @param   \EUREKA\G6KBundle\Entity\Connector $connector Connector that defines this BusinessRule
+	 * @param   string $connector Connector that defines this BusinessRule
 	 * @return  bool the value of optimized
 	 *
 	 */
@@ -691,7 +694,7 @@ class BusinessRule {
 				if (count($ops) > 0) {
 					$fieldName = $ops[count($ops) - 1];
 					if (preg_match("/^#(\d+)$/", $fieldName, $matches)) {
-						$data = $this->simulator->getDataById($matches[1]);
+						$data = $this->simulator->getDataById((int)$matches[1]);
 					} else {
 						$data = $this->simulator->getDataByName($fieldName);
 					}

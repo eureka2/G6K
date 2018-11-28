@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -226,7 +226,7 @@ class SQLSelectTokenizer  {
 			// newline is forbidden
 			throw new SQLSelectTokenizerException("syntax error");
 		}
-		if (preg_match('/[`\{\}\[\]\;]/', $expression, $m)) {
+		if (preg_match('/([`\{\}\[\]\;])/', $expression, $m)) {
 			// metacharacters are forbidden
 			throw new SQLSelectTokenizerException("syntax error near : ".$m[1]);
 		}
@@ -457,7 +457,7 @@ class SQLSelectTokenizer  {
 	 *
 	 * @access protected
 	 * @param string $sql The select statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws SQLSelectTokenizerException
 	 */
 	public function parseSelect($sql) {
@@ -688,7 +688,7 @@ class SQLSelectTokenizer  {
 	 *
 	 * @access protected
 	 * @param string $sql The select statement
-	 * @return array The parsed request
+	 * @return object The parsed request
 	 * @throws SQLSelectTokenizerException
 	 */
 	public function parseSetOperations($sql) {

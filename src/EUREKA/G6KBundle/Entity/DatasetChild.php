@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,7 @@ abstract class DatasetChild {
 	protected $label = "";
 
 	/**
-	 * @var string     $description The description of this dataset child.
+	 * @var \EUREKA\G6KBundle\Entity\RichText     $description The description of this dataset child.
 	 *
 	 * @access  protected
 	 *
@@ -218,7 +218,7 @@ abstract class DatasetChild {
 	 * Returns the description of this dataset child.
 	 *
 	 * @access  public
-	 * @return  string The description of this dataset child.
+	 * @return  \EUREKA\G6KBundle\Entity\RichText The description of this dataset child.
 	 *
 	 */
 	public function getDescription() {
@@ -229,7 +229,7 @@ abstract class DatasetChild {
 	 * Sets the description of this dataset child.
 	 *
 	 * @access  public
-	 * @param   string     $description The description of this dataset child.
+	 * @param   \EUREKA\G6KBundle\Entity\RichText     $description The description of this dataset child.
 	 * @return  void
 	 *
 	 */
