@@ -68,12 +68,13 @@ class DatasourcesHelper {
 	 * @param   array $parameters The database parameters
 	 * @param   string $databasesDir The databases directory
 	 * @param   int &$id The ID of the data source
+	 * @param   callable|null $fprogress a function receiving the row number that's inserted
 	 * @return  \DOMDocument The XML DOM document
 	 *
 	 */
-	public function makeDatasourceDom($schemafile, $datafile, $parameters, $databasesDir, &$id) {
+	public function makeDatasourceDom($schemafile, $datafile, $parameters, $databasesDir, &$id, $fprogress = null) {
 		$converter = new JSONToSQLConverter($parameters, $databasesDir);
-		$form = $converter->convert($schemafile, $datafile);
+		$form = $converter->convert($schemafile, $datafile,$fprogress);
 		$datasource = $this->doCreateDatasource($form);
 		$id = $datasource->getAttribute('id');
 		$dom = $datasource->ownerDocument;
