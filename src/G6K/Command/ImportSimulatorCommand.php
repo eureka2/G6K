@@ -20,6 +20,7 @@ class ImportSimulatorCommand extends Command
 	/**
 	 * The constructor for the 'g6k:import-simulator' command
 	 *
+	 * @param   string $projectDir The project directory
 	 * @access  public
 	 */
 	public function __construct(string $projectDir) {
@@ -28,9 +29,10 @@ class ImportSimulatorCommand extends Command
 	}
 
 	/**
-	 * This function parses the '.env' file and returns an array of parameters
+	 * This function parses the '.env' file to an array of parameters
 	 *
 	 * @access  private
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
 	 * @return  array|false parameters array or false in case of error
 	 *
 	 */
@@ -52,6 +54,7 @@ class ImportSimulatorCommand extends Command
 	 * Returns the value of a given parameter
 	 *
 	 * @access  private
+	 * @param   string $parameter The parameter
 	 * @return  string The value of the parameter
 	 *
 	 */
@@ -80,7 +83,7 @@ class ImportSimulatorCommand extends Command
 	}
 
 	/**
-	 * Configures the current command.
+	 * Configures the current command (g6k:import-simulator).
 	 *
 	 * @access  protected
 	 * @return void
@@ -117,8 +120,10 @@ class ImportSimulatorCommand extends Command
 	}
 
 	/**
-	 * Executes the current command.
+	 * Executes the current command (g6k:import-simulator).
 	 *
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
 	 * @return int|null null or 0 if everything went fine, or an error code
 	 *
 	 * @throws LogicException When this abstract method is not implemented

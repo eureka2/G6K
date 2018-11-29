@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Finder\Finder;
 
 class ImportViewCommand extends Command
 {
@@ -21,6 +22,7 @@ class ImportViewCommand extends Command
 	/**
 	 * The constructor for the 'g6k:import-view' command
 	 *
+	 * @param   string $projectDir The project directory
 	 * @access  public
 	 */
 	public function __construct(string $projectDir) {
@@ -29,9 +31,10 @@ class ImportViewCommand extends Command
 	}
 
 	/**
-	 * This function parses the '.env' file and returns an array parameters
+	 * This function parses the '.env' file and returns an array of parameters
 	 *
 	 * @access  private
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
 	 * @return  array|false parameters array or false in case of error
 	 *
 	 */
@@ -54,6 +57,7 @@ class ImportViewCommand extends Command
 	 * Returns the value of a given parameter
 	 *
 	 * @access  private
+	 * @param   string $parameter The given parameter
 	 * @return  string The value of the parameter
 	 *
 	 */
@@ -65,7 +69,7 @@ class ImportViewCommand extends Command
 	}
 
 	/**
-	 * Configures the current command.
+	 * Configures the current command (g6k:import-view).
 	 *
 	 * @access  protected
 	 * @return void
@@ -99,8 +103,10 @@ class ImportViewCommand extends Command
 	}
 
 	/**
-	 * Executes the current command.
+	 * Executes the current command (g6k:import-view).
 	 *
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
 	 * @return int|null null or 0 if everything went fine, or an error code
 	 *
 	 * @throws LogicException When this abstract method is not implemented
@@ -147,6 +153,7 @@ class ImportViewCommand extends Command
 			}
 			$archive->extractTo($templatesDir . DIRECTORY_SEPARATOR . $view, $extract);
 			$archive->close();
+			$this->migrate3To4($templatesDir . DIRECTORY_SEPARATOR . $view);
 		} else {
 			try {
 				$fsystem->mkdir($templatesDir . DIRECTORY_SEPARATOR . $view);
@@ -176,4 +183,28 @@ class ImportViewCommand extends Command
 		$output->writeln(sprintf("The view '%s' is successfully created", $view));
 		return 0;
 	}
+
+
+	/**
+	 * Migrates the templates written for Symfony 2 or 3.
+	 *
+	 * @param   string $parameter The templates directory
+	 * @return void
+	 *
+	 */
+	private function migrate3To4($dir) {
+		$finder = new Finder();
+		$finder->files()->in($dir)->name('/\.twig$/');
+		foreach ($finder as $file) {
+			$path = $file->getRealPath();
+			$content = file_get_contents($path);
+			$content = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $content);
+			$content = preg_replace("|asset\('assets/base/js/|m", "asset('assets/base/js/libs/", $content);
+			$content = preg_replace("|asset\('assets/base/js/libs/g6k\.|m", "asset('assets/base/js/g6k.", $content);
+			$content = preg_replace("|asset\('assets/admin/js/|m", "asset('assets/admin/js/libs/", $content);
+			$content = preg_replace("|asset\('assets/admin/js/libs/g6k\.|m", "asset('assets/admin/js/g6k.", $content);
+			file_put_contents($path, $content);
+		}
+	}
+
 }

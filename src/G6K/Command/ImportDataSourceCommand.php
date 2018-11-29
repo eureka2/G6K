@@ -18,6 +18,12 @@ class ImportDataSourceCommand extends Command
 	 */
 	private $projectDir;
 
+	/**
+	 * The constructor for the 'g6k:import-datasource' command
+	 *
+	 * @param   string $projectDir The project directory
+	 * @access  public
+	 */
 	public function __construct(string $projectDir) {
 		parent::__construct();
 		$this->projectDir = $projectDir;
@@ -27,6 +33,7 @@ class ImportDataSourceCommand extends Command
 	 * This function parses the '.env' file and returns an array of database parameters
 	 *
 	 * @access  private
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
 	 * @return  array|false parameters array or false in case of error
 	 *
 	 */
@@ -52,9 +59,10 @@ class ImportDataSourceCommand extends Command
 	}
 
 	/**
-	 * Returns the value of a given parameter
+	 * Returns the value of a parameter
 	 *
 	 * @access  private
+	 * @param   string $parameter The given parameter
 	 * @return  string The value of the parameter
 	 *
 	 */
@@ -66,7 +74,7 @@ class ImportDataSourceCommand extends Command
 	}
 
 	/**
-	 * Configures the current command.
+	 * Configures the current command (g6k:import-datasource).
 	 *
 	 * @access  protected
 	 * @return void
@@ -101,8 +109,10 @@ class ImportDataSourceCommand extends Command
 	}
 
 	/**
-	 * Executes the current command.
+	 * Executes the current command (g6k:import-datasource).
 	 *
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
 	 * @return int|null null or 0 if everything went fine, or an error code
 	 *
 	 * @throws LogicException When this abstract method is not implemented
