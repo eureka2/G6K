@@ -18,6 +18,11 @@ class ImportViewCommand extends Command
 	 */
 	private $projectDir;
 
+	/**
+	 * The constructor for the 'g6k:import-view' command
+	 *
+	 * @access  public
+	 */
 	public function __construct(string $projectDir) {
 		parent::__construct();
 		$this->projectDir = $projectDir;
@@ -35,11 +40,12 @@ class ImportViewCommand extends Command
 		try {
 			$dotenv = new Dotenv();
 			$dotenv->load($this->projectDir . DIRECTORY_SEPARATOR . '.env');
-			$parameters['public_dir'] = $this->getParameterValue('PUBLIC_DIR');
 			$parameters['locale'] = $this->getParameterValue('G6K_LOCALE');
+			$parameters['app_env'] = $this->getParameterValue('APP_ENV');
+			$parameters['public_dir'] = $this->getParameterValue('PUBLIC_DIR');
 			return $parameters;
 		} catch (\Exception $e) {
-			$output->writeln(sprintf("Unable to get database parameters: %s", $e->getMessage()));
+			$output->writeln(sprintf("Unable to get parameters: %s", $e->getMessage()));
 			return false;
 		}
 	}
@@ -57,24 +63,6 @@ class ImportViewCommand extends Command
 		$value = str_replace('%PUBLIC_DIR%', getenv('PUBLIC_DIR'), $value);
 		return $value;
 	}
-
-	/**
-	 * Retuns the DOMElement at position $index of the DOMNodeList
-	 *
-	 * @access  private
-	 * @param   \DOMNodeList $nodes The DOMNodeList
-	 * @param   int $index The position in the DOMNodeList
-	 * @return  \DOMElement|null The DOMElement.
-	 *
-	 */
-	private function getDOMElementItem($nodes, $index) {
-		$node = $nodes->item($index);
-		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
-			return $node;
-		}
-		return null;
-	}
-
 
 	/**
 	 * Configures the current command.

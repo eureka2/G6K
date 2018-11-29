@@ -17,6 +17,11 @@ class ImportSimulatorCommand extends Command
 	 */
 	private $projectDir;
 
+	/**
+	 * The constructor for the 'g6k:import-simulator' command
+	 *
+	 * @access  public
+	 */
 	public function __construct(string $projectDir) {
 		parent::__construct();
 		$this->projectDir = $projectDir;
@@ -38,7 +43,7 @@ class ImportSimulatorCommand extends Command
 			$parameters['locale'] = $this->getParameterValue('G6K_LOCALE');
 			return $parameters;
 		} catch (\Exception $e) {
-			$output->writeln(sprintf("Unable to get database parameters: %s", $e->getMessage()));
+			$output->writeln(sprintf("Unable to get parameters: %s", $e->getMessage()));
 			return false;
 		}
 	}
