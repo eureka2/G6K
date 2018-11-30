@@ -214,11 +214,12 @@ class JSONToSQLConverter {
 	 * @access  public
 	 * @param   string $schemafile The JSON schema file
 	 * @param   string $datafile The JSON data file
+	 * @param   callable|null $fprogress a function receiving the row number that's inserted
 	 * @return  array The array descriptor of the SQL database
 	 * @throws \Exception
 	 *
 	 */
-	public function convert($schemafile, $datafile) {
+	public function convert($schemafile, $datafile, $fprogress = null) {
 		$schema = file_get_contents($schemafile);
 		if ($schema === false) {
 			throw new \Exception("JSON schema file '$schemafile' schema doesn't exists");
@@ -339,7 +340,8 @@ class JSONToSQLConverter {
 			$create_table .= ")\n";
 			$this->database->exec($create_table);
 			$maxvalue = 0;
-			foreach ($data->$table as $row) {
+			$nrows = count($data->$table);
+			foreach ($data->$table as $rownum => $row) {
 				$cols = array();
 				$values = array();
 				foreach ($row as $col => $value) {
@@ -358,6 +360,9 @@ class JSONToSQLConverter {
 				$insert_row .= implode(", ", $values);
 				$insert_row .= ")\n";
 				$this->database->exec($insert_row);
+				if ($fprogress !== null) {
+					call_user_func($fprogress, $table, $nrows, $rownum + 1);
+				}
 			}
 			if ($maxvalue > 0) {
 				switch ($this->parameters['database_driver']) {

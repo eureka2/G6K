@@ -27,3 +27,24 @@ services:
         class: EUREKA\G6KBundle\Twig\Loader\StringTemplateLoader
         tags:
             - { name: twig.loader }
+
+    # Data source importer
+    g6k.command.import_datasource_command:
+        class: EUREKA\G6KBundle\Command\ImportDataSourceCommand
+        arguments: ["%kernel.project_dir%"]
+        tags:
+            - { name: console.command }
+
+    # Simulator importer
+    g6k.command.import_simulator_command:
+        class: EUREKA\G6KBundle\Command\ImportSimulatorCommand
+        arguments: ["%kernel.project_dir%"]
+        tags:
+            - { name: console.command }
+
+    # View importer
+    g6k.command.import_view_command:
+        class: EUREKA\G6KBundle\Command\ImportViewCommand
+        arguments: ["%kernel.project_dir%"]
+        tags:
+            - { name: console.command }
