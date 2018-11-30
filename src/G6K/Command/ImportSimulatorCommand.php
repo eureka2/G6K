@@ -114,7 +114,7 @@ class ImportSimulatorCommand extends Command
 		;
 		$this
 			->addArgument('simulatorname', InputArgument::REQUIRED, 'The name of the simulator.')
-			->addArgument('simulatorpath', InputArgument::REQUIRED, 'The directory where is located the stylesheet.')
+			->addArgument('simulatorpath', InputArgument::REQUIRED, 'The directory where is located the simulator XML file.')
 			->addArgument('stylesheetpath', InputArgument::OPTIONAL , 'The directoty where is located the stylesheet, if any.')
 		;
 	}
