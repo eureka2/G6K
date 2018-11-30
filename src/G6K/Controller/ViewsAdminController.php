@@ -285,6 +285,7 @@ class ViewsAdminController extends BaseAdminController {
 			$zip->extractTo($this->viewsDir . '/' . $view, $extract);
 			$zip->close();
 			$fs->remove($templatesfile);
+			$this->fixTemplates($this->viewsDir . '/' . $view);
 		} else {
 			try {
 				$fs->mkdir($this->viewsDir . '/' . $view);
@@ -309,6 +310,28 @@ class ViewsAdminController extends BaseAdminController {
 			}
 		}
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
+	}
+
+	/**
+	 * Corrects the templates written for Symfony 2 or 3.
+	 *
+	 * @param   string $dir The templates directory
+	 * @return void
+	 *
+	 */
+	private function fixTemplates($dir) {
+		$finder = new Finder();
+		$finder->files()->in($dir)->name('/\.twig$/');
+		foreach ($finder as $file) {
+			$path = $file->getRealPath();
+			$template = file_get_contents($path);
+			$template = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $template);
+			$template = preg_replace("|asset\('assets/base/js/|m", "asset('assets/base/js/libs/", $template);
+			$template = preg_replace("|asset\('assets/base/js/libs/g6k\.|m", "asset('assets/base/js/g6k.", $template);
+			$template = preg_replace("|asset\('assets/admin/js/|m", "asset('assets/admin/js/libs/", $template);
+			$template = preg_replace("|asset\('assets/admin/js/libs/g6k\.|m", "asset('assets/admin/js/g6k.", $template);
+			file_put_contents($path, $template);
+		}
 	}
 
 	/**

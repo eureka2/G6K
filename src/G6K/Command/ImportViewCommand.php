@@ -184,11 +184,10 @@ class ImportViewCommand extends Command
 		return 0;
 	}
 
-
 	/**
 	 * Migrates the templates written for Symfony 2 or 3.
 	 *
-	 * @param   string $parameter The templates directory
+	 * @param   string $dir The templates directory
 	 * @return void
 	 *
 	 */
