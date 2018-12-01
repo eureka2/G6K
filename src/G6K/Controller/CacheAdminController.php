@@ -26,6 +26,10 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\G6K\Manager\ControllersHelper;
@@ -67,7 +71,7 @@ class CacheAdminController extends BaseAdminController {
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
-	 * @param   string $env (default: 'prod') The environment to clear (prod, test, dev, admin)
+	 * @param   string $env (default: 'prod') The environment to clear (prod, test)
 	 * @return  \Symfony\Component\HttpFoundation\Response The response object
 	 *
 	 */
@@ -75,6 +79,25 @@ class CacheAdminController extends BaseAdminController {
 	{
 		$this->initialize();
 		return $this->runClear($request, $env);
+	}
+
+	/**
+	 * Entry point for the route paths begining by /admin/cache/warmup
+	 *
+	 * These route paths are :
+	 *
+	 * - /admin/cache/warmup
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string $env (default: 'prod') The environment to clear (prod, test)
+	 * @return  \Symfony\Component\HttpFoundation\Response The response object
+	 *
+	 */
+	public function warmupAction(Request $request)
+	{
+		$this->initialize();
+		return $this->runWarmup($request);
 	}
 
 	/**
@@ -88,27 +111,103 @@ class CacheAdminController extends BaseAdminController {
 	 */
 	protected function runClear(Request $request, $env)
 	{
-		$no_js = $request->query->get('no-js') || 0;
-		$script = $no_js == 1 ? 0 : 1;
-		
 		if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
 			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 		}
 		$cache_dir = dirname($this->get('kernel')->getCacheDir());
 		$this->log[] = "<b>" . $this->get('translator')->trans("cache directory : %cachedir%", array('%cachedir%' => $cache_dir)) . "</b>";
-
-		if (is_dir($cache_dir)) {
-			if (basename($cache_dir) == "cache") {
-				$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("clearing cache") . " :</b>";
-				$this->cc($cache_dir, $env);
+		if ($this->getEnvironment() == $env) {
+			$application = new Application($this->get('kernel'));
+			$application->setAutoExit(false);
+			$input = new ArrayInput(array(
+				'command' => 'cache:clear',
+				'--no-warmup' => true,
+				'--no-debug' => true,
+				'--env' => $env
+			));
+			$output = new BufferedOutput(
+				OutputInterface::VERBOSITY_NORMAL, // VERBOSITY_QUIET, VERBOSITY_NORMAL, VERBOSITY_VERBOSE, VERBOSITY_VERY_VERBOSE or VERBOSITY_DEBUG
+				false // true for decorated
+			);
+			$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("clearing cache") . " :</b>";
+			$returnCode = $application->run($input, $output);
+			$this->log = array_merge(
+				$this->log, 
+				array_map(
+					function($elem) {
+						return "<br> " . $elem;
+					}, 
+					preg_split("/[\r\n]+/", trim($output->fetch()))
+				)
+			);
+			if ($returnCode == 0) {
 				$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("done !") . "</b>";
 			} else {
-				$this->log[] = "<br/> " . $this->get('translator')->trans("Error : %cachedir% is not a named cache", array('%cachedir%' => $cache_dir));
+				$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("not done !") . "</b>";
 			}
 		} else {
-			$this->log[] = "<br/> " . $this->get('translator')->trans("Error : %cachedir% is not a directory", array('%cachedir%' => $cache_dir));
+			if (is_dir($cache_dir)) {
+				if (basename($cache_dir) == "cache") {
+					$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("clearing cache") . " :</b>";
+					$this->cc($cache_dir, $env);
+					$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("done !") . "</b>";
+				} else {
+					$this->log[] = "<br/> " . $this->get('translator')->trans("Error : %cachedir% is not a named cache", array('%cachedir%' => $cache_dir));
+				}
+			} else {
+				$this->log[] = "<br/> " . $this->get('translator')->trans("Error : %cachedir% is not a directory", array('%cachedir%' => $cache_dir));
+			}
 		}
+		return $this->doRender($request);
+	}
 
+	/**
+	 * Processes the warm up action
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @return  \Symfony\Component\HttpFoundation\Response The response object
+	 *
+	 */
+	protected function runWarmup(Request $request)
+	{
+		if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+		}
+		$cache_dir = dirname($this->get('kernel')->getCacheDir());
+		$this->log[] = "<b>" . $this->get('translator')->trans("cache directory : %cachedir%", array('%cachedir%' => $cache_dir)) . "</b>";
+		$application = new Application($this->get('kernel'));
+		$application->setAutoExit(false);
+		$input = new ArrayInput(array(
+			'command' => 'cache:warmup'
+		));
+		$output = new BufferedOutput(
+			OutputInterface::VERBOSITY_NORMAL, // VERBOSITY_QUIET, VERBOSITY_NORMAL, VERBOSITY_VERBOSE, VERBOSITY_VERY_VERBOSE or VERBOSITY_DEBUG
+			false // true for decorated
+		);
+		$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("warming cache") . " :</b>";
+		$returnCode = $application->run($input, $output);
+		$this->log = array_merge(
+			$this->log, 
+			array_map(
+				function($elem) {
+					return "<br> " . $elem;
+				}, 
+				preg_split("/[\r\n]+/", trim($output->fetch()))
+			)
+		);
+		if ($returnCode == 0) {
+			$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("done !") . "</b>";
+		} else {
+			$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("not done !") . "</b>";
+		}
+		return $this->doRender($request);
+	}
+
+	private function doRender(Request $request)
+	{
+		$no_js = $request->query->get('no-js') || 0;
+		$script = $no_js == 1 ? 0 : 1;
  		$hiddens = array();
 		$hiddens['script'] = $script;
 		$ua = new \Detection\MobileDetect();
@@ -120,15 +219,15 @@ class CacheAdminController extends BaseAdminController {
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'caches',
 					'log' => $this->log,
-					'script' => 1,
+					'script' => $script,
 					'simulator' => null,
 					'file' => null,
 					'view' => 'admin',
 					'hiddens' => $hiddens
 				)
-		);
+			);
 		} catch (\Exception $e) {
-			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+			throw $e;
 		}
 	}
 

@@ -23,11 +23,29 @@
 			<li class="nav-item dropdown">
 				<a href="#" class="nav-link dropdown-toggle{%- if nav == 'caches' %} active{%- endif -%}" data-toggle="dropdown" role="button" aria-expanded="false">{{ 'Caches'|trans }}<span class="caret"></span></a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache') }}">{{ 'Clear production cache'|trans }}</a></li>
-					<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'test'}) }}">{{ 'Clear test cache'|trans }}</a></li>
-					<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'dev'}) }}">{{ 'Clear dev cache'|trans }}</a></li>
+					<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_warmup_cache') }}">{{ 'Warm up current %environment% cache'|trans({'%environment%': app.environment}) }}</a></li>
 					<li class="dropdown-divider"></li>
-					<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'admin'}) }}">{{ 'Clear admin cache'|trans }}</a></li>
+					<li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">{{ 'Clear'|trans }}</a>
+						<ul class="dropdown-menu">
+							{% if app.environment == 'dev' %}
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'admin'}) }}">{{ 'admin cache'|trans }}</a></li>
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache') }}">{{ 'production cache'|trans }}</a></li>
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'test'}) }}">{{ 'test cache'|trans }}</a></li>
+							{% elseif app.environment == 'prod' %}
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'admin'}) }}">{{ 'admin cache'|trans }}</a></li>
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'dev'}) }}">{{ 'development cache'|trans }}</a></li>
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'test'}) }}">{{ 'test cache'|trans }}</a></li>
+							{% elseif app.environment == 'test' %}
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'admin'}) }}">{{ 'admin cache'|trans }}</a></li>
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'dev'}) }}">{{ 'development cache'|trans }}</a></li>
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'test'}) }}">{{ 'test cache'|trans }}</a></li>
+							{% else %}
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache') }}">{{ 'production cache'|trans }}</a></li>
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'test'}) }}">{{ 'development cache'|trans }}</a></li>
+							<li><a class="dropdown-item" href="{{ path('eureka_g6k_admin_clear_cache_env', { 'env' : 'test'}) }}">{{ 'test cache'|trans }}</a></li>
+							{% endif %}
+						</ul>
+					</li>
 				</ul>
 			</li>
 			{% endif %}

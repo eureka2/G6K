@@ -18,6 +18,12 @@ eureka_g6k_admin_clear_cache_env:
     methods: [ get, post ]
     defaults: { _controller: App\G6K\Controller\CacheAdminController::clearAction }
 
+eureka_g6k_admin_warmup_cache:
+    path:     /admin/cache/warmup
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\CacheAdminController::warmupAction }
+
+
 eureka_g6k_admin_datasources:
     path:     /admin/datasources
     methods: [ get, post ]

@@ -693,6 +693,17 @@ trait ControllersHelper {
 		return in_array($this->get('kernel')->getEnvironment(), array('test', 'dev'));
 	}
 
+	/**
+	 * Returns the current environment
+	 *
+	 * @access  public
+	 * @return  string The first letters of the current environment 
+	 *
+	 */
+	public function getEnvironment() {
+		return $this->get('kernel')->getEnvironment();
+	}
+
 }
 
 ?>
