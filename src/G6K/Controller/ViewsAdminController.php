@@ -326,6 +326,7 @@ class ViewsAdminController extends BaseAdminController {
 			$path = $file->getRealPath();
 			$template = file_get_contents($path);
 			$template = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $template);
+			$content = preg_replace("|asset\('bundles/eurekag6k/|m", "asset('assets/", $content);
 			$template = preg_replace("|asset\('assets/base/js/|m", "asset('assets/base/js/libs/", $template);
 			$template = preg_replace("|asset\('assets/base/js/libs/g6k\.|m", "asset('assets/base/js/g6k.", $template);
 			$template = preg_replace("|asset\('assets/admin/js/|m", "asset('assets/admin/js/libs/", $template);

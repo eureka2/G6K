@@ -198,6 +198,7 @@ class ImportViewCommand extends Command
 			$path = $file->getRealPath();
 			$content = file_get_contents($path);
 			$content = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $content);
+			$content = preg_replace("|asset\('bundles/eurekag6k/|m", "asset('assets/", $content);
 			$content = preg_replace("|asset\('assets/base/js/|m", "asset('assets/base/js/libs/", $content);
 			$content = preg_replace("|asset\('assets/base/js/libs/g6k\.|m", "asset('assets/base/js/g6k.", $content);
 			$content = preg_replace("|asset\('assets/admin/js/|m", "asset('assets/admin/js/libs/", $content);
