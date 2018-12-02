@@ -58,7 +58,7 @@ However, on some platforms, this message does not appear. If so, run the followi
 
 ### Classes
 
-[Documentation of G6K classes](http://eureka2.github.io/g6k/documentation/classes/)
+[Documentation of G6K classes](http://eureka2.github.io/g6k/documentation/classes/3.x)
 
 ## Innovation Award
 
