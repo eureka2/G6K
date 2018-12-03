@@ -10,6 +10,7 @@ use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Yaml;
 
 class ImportViewCommand extends Command
 {
@@ -89,8 +90,9 @@ class ImportViewCommand extends Command
 				. "\n"
 				. "You must provide:\n"
 				. "- the name of the view (viewname).\n"
-				. "and optionally:\n"
 				. "- the full path of the directory (viewpath) where the .zip files are located.\n"
+				. "and optionally:\n"
+				. "- the url (viewurl) of the website where this view is used.\n"
 				. "The file names will be composed as follows:\n"
 				. "- <viewpath>/<viewname>-templates.zip for the compressed twig templates file\n"
 				. "- <viewpath>/<viewname>-assets.zip for the compressed assets file\n"
@@ -98,7 +100,8 @@ class ImportViewCommand extends Command
 		;
 		$this
 			->addArgument('viewname', InputArgument::REQUIRED, 'The name of the view.')
-			->addArgument('viewpath', InputArgument::OPTIONAL, 'The directory where are located the view files.')
+			->addArgument('viewpath', InputArgument::REQUIRED, 'The directory where are located the view files.')
+			->addArgument('viewurl', InputArgument::OPTIONAL, 'The url of the website where this view is used.')
 		;
 	}
 
@@ -115,6 +118,7 @@ class ImportViewCommand extends Command
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$view = $input->getArgument('viewname');
 		$viewpath = $input->getArgument('viewpath');
+		$viewurl = $input->getArgument('viewurl');
 		$templates = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-templates.zip" : "";
 		$assets = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-assets.zip" : "";
 		$output->writeln([
@@ -128,6 +132,10 @@ class ImportViewCommand extends Command
 		}
 		if ($assets != '' && ! file_exists($assets)) {
 			$output->writeln(sprintf("The compressed assets file '%s' doesn't exists", $assets));
+			return 1;
+		}
+		if ($viewurl && ! filter_var($viewurl, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) {
+			$output->writeln(sprintf("The url of the website '%s' isn't valid", $viewurl));
 			return 1;
 		}
 		if (($parameters = $this->getParameters($output)) === false) {
@@ -177,6 +185,34 @@ class ImportViewCommand extends Command
 				}
 			} catch (IOExceptionInterface $e) {
 				$output->writeln(sprintf("Error while creating '%s' in '%s' : %s", $view, $assetsDir, $e->getMessage()));
+				$output->writeln(sprintf("The view '%s' is partially created", $view));
+				return 1;
+			}
+		}
+		if ($viewurl) {
+			try {
+				$configFile = $this->projectDir . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . "packages". DIRECTORY_SEPARATOR . "g6k.yml";
+				$domain = parse_url ($viewurl, PHP_URL_HOST);
+				$domain = preg_replace("/^www\./", "", $domain);
+				if ($domain !== null) {
+					$config = file_get_contents($configFile);
+					$yaml = Yaml::parse($config);
+					$updated = false;
+					if (! isset( $yaml['parameters']['domainview'][$domain])) {
+						$config = preg_replace("/^(    domainview:)/m", "$1\n        ".$domain.": ".$view, $config);
+						$updated = true;
+					}
+					if (! isset($yaml['parameters']['viewpath'][$view])) {
+						$config = preg_replace("/^(    viewpath:)/m", "$1\n        ".$view.": ".$viewurl, $config);
+						$updated = true;
+					}
+					if ($updated) {
+						file_put_contents($configFile, $config);
+					}
+				}
+			} catch (Exception $e) {
+				$output->writeln(sprintf("Error while updating '%s' for '%s' : %s", $configFile, $view, $e->getMessage()));
+				$output->writeln(sprintf("The view '%s' is partially created", $view));
 				return 1;
 			}
 		}
