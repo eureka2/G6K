@@ -32,24 +32,6 @@ class ImportViewCommand extends Command
 	}
 
 	/**
-	 * This function parses the 'parameters.yml' file and returns an array of parameters
-	 *
-	 * @access  private
-	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
-	 * @return  array|false parameters array or false in case of error
-	 *
-	 */
-	private function getParameters(OutputInterface $output) {
-		try {
-			$config = Yaml::parse(file_get_contents($this->projectDir . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'parameters.yml'));
-			return $config['parameters'];
-		} catch (ParseException $e) {
-			$output->writeln(sprintf("Unable to parse parameters.yml: %s", $e->getMessage()));
-			return false;
-		}
-	}
-
-	/**
 	 * Configures the current command (g6k:import-view).
 	 *
 	 * @access  protected
@@ -116,9 +98,6 @@ class ImportViewCommand extends Command
 		}
 		if ($viewurl && ! filter_var($viewurl, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) {
 			$output->writeln(sprintf("The url of the website '%s' isn't valid", $viewurl));
-			return 1;
-		}
-		if (($parameters = $this->getParameters($output)) === false) {
 			return 1;
 		}
 		if ($viewpath) {
