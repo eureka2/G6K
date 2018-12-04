@@ -21,7 +21,7 @@ class ImportViewCommand extends Command
 	private $projectDir;
 
 	/**
-	 * The constructor for the 'g6k:import-view' command
+	 * The constructor for the 'g6k:view:import' command
 	 *
 	 * @param   string $rootDir The root directory
 	 * @access  public
@@ -32,7 +32,7 @@ class ImportViewCommand extends Command
 	}
 
 	/**
-	 * Configures the current command (g6k:import-view).
+	 * Configures the current command (g6k:view:import).
 	 *
 	 * @access  protected
 	 * @return void
@@ -40,7 +40,7 @@ class ImportViewCommand extends Command
 	protected function configure() {
 		$this
 			// the name of the command (the part after "bin/console")
-			->setName('g6k:import-view')
+			->setName('g6k:view:import')
 
 			// the short description shown while running "php bin/console list"
 			->setDescription('Creates and optionally imports a view from a previously exported view with G6K.')
@@ -68,7 +68,7 @@ class ImportViewCommand extends Command
 	}
 
 	/**
-	 * Executes the current command (g6k:import-view).
+	 * Executes the current command (g6k:view:import).
 	 *
 	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
 	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface

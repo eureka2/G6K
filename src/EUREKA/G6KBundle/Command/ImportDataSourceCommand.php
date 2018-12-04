@@ -20,7 +20,7 @@ class ImportDataSourceCommand extends Command
 	private $projectDir;
 
 	/**
-	 * The constructor for the 'g6k:import-datasource' command
+	 * The constructor for the 'g6k:datasource:import' command
 	 *
 	 * @param   string $rootDir The root directory
 	 * @access  public
@@ -49,7 +49,7 @@ class ImportDataSourceCommand extends Command
 	}
 
 	/**
-	 * Configures the current command (g6k:import-datasource).
+	 * Configures the current command (g6k:datasource:import).
 	 *
 	 * @access  protected
 	 * @return void
@@ -57,7 +57,7 @@ class ImportDataSourceCommand extends Command
 	protected function configure() {
 		$this
 			// the name of the command (the part after "bin/console")
-			->setName('g6k:import-datasource')
+			->setName('g6k:datasource:import')
 
 			// the short description shown while running "php bin/console list"
 			->setDescription('Imports a datasource from an exported json file.')
@@ -84,7 +84,7 @@ class ImportDataSourceCommand extends Command
 	}
 
 	/**
-	 * Executes the current command (g6k:import-datasource).
+	 * Executes the current command (g6k:datasource:import).
 	 *
 	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
 	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
