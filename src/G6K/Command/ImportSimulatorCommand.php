@@ -18,7 +18,7 @@ class ImportSimulatorCommand extends Command
 	private $projectDir;
 
 	/**
-	 * The constructor for the 'g6k:import-simulator' command
+	 * The constructor for the 'g6k:simulator:import' command
 	 *
 	 * @param   string $projectDir The project directory
 	 * @access  public
@@ -83,7 +83,7 @@ class ImportSimulatorCommand extends Command
 	}
 
 	/**
-	 * Configures the current command (g6k:import-simulator).
+	 * Configures the current command (g6k:simulator:import).
 	 *
 	 * @access  protected
 	 * @return void
@@ -91,7 +91,7 @@ class ImportSimulatorCommand extends Command
 	protected function configure() {
 		$this
 			// the name of the command (the part after "bin/console")
-			->setName('g6k:import-simulator')
+			->setName('g6k:simulator:import')
 
 			// the short description shown while running "php bin/console list"
 			->setDescription('Imports a simulator from an exported xml file.')
@@ -120,7 +120,7 @@ class ImportSimulatorCommand extends Command
 	}
 
 	/**
-	 * Executes the current command (g6k:import-simulator).
+	 * Executes the current command (g6k:simulator:import).
 	 *
 	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
 	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
