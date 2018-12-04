@@ -155,7 +155,7 @@ class SQLToJSONConverter {
 	public function __construct($fparameters, $databasesDir) {
 		$this->parameters = array_merge($this->parameters, $fparameters);
 		$this->databasesDir = $databasesDir;
-		$this->datasources =  new \SimpleXMLElement($this->databasesDir."/Datasources.xml", LIBXML_NOWARNING, true);
+		$this->datasources =  new \SimpleXMLElement($this->databasesDir."/DataSources.xml", LIBXML_NOWARNING, true);
 	}
 
 	/**
