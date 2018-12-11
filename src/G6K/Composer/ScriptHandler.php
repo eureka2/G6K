@@ -56,6 +56,7 @@ class ScriptHandler
 		$extras = $event->getComposer()->getPackage()->getExtra();
 		$installationManager = $event->getComposer()->getInstallationManager();
 		$package = $event->getComposer()->getPackage();
+		putenv('APP_VERSION=' . $package->getVersion());
 		$installPath = $installationManager->getInstallPath($package);
 		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 
@@ -74,6 +75,7 @@ class ScriptHandler
 
 		$params = self::getEnvironmentVariables($event, $variables);
 
+		self::setEnvironmentVariable($params, 'APP_VERSION', $package->getVersion());
 		self::setEnvironmentVariable($params, 'PUBLIC_DIR', $extras['public-dir'] ?? 'public');
 		if (isset($params['DATABASE_URL'])) {
 			$url = $params['DATABASE_URL'];
