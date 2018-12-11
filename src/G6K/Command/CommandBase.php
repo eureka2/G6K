@@ -33,6 +33,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Console\Exception\LogicException;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Base class for all command of the g6k namespace.
@@ -55,6 +56,11 @@ abstract class CommandBase extends Command
 	 * @var string
 	 */
 	protected $projectDir;
+
+	/**
+	 * @var string
+	 */
+	protected $publicDir;
 
 	/**
 	 * @var \Symfony\Component\Translation\Translator
@@ -186,6 +192,35 @@ abstract class CommandBase extends Command
 		if ($this->parameters === false) {
 			throw new LogicException("<error>Unable to get parameters</error>");
 		}
+		$this->publicDir = $this->projectDir . DIRECTORY_SEPARATOR . $this->parameters['public_dir'];
+		$output->writeln([
+			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
+			'',
+		]);
+	}
+
+	/**
+	 * Asks an argument if it's not supplied in the command line.
+	 *
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $argumentName The argument name
+	 * @param   string $questionText The question text
+	 * @return  void
+	 *
+	 */
+	protected function askArgument(InputInterface $input, OutputInterface $output, string $argumentName, string $questionText) {
+		$questionHelper = $this->getHelper('question');
+		$argument = $input->getArgument($argumentName);
+		if (! $argument) {
+			$question = new Question($this->translator->trans($questionText));
+			$argument = $questionHelper->ask($input, $output, $question);
+			if ($argument !== null) {
+				$input->setArgument($argumentName, $argument);
+			}
+			$output->writeln('');
+		}
+		$output->writeln($argumentName . ' : ' . $argument);
 	}
 
 	/**

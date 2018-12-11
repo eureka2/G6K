@@ -31,7 +31,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Helper\ProgressBar;
 use App\G6K\Manager\DatasourcesHelper;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Imports a datasource from an exported json file.
@@ -106,25 +105,8 @@ class ImportDataSourceCommand extends CommandBase
 	 *
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
-		$questionHelper = $this->getHelper('question');
-		$datasourcename = $input->getArgument('datasourcename');
-		if (! $datasourcename) {
-			$question = new Question($this->translator->trans("Enter the name of the datasource : "));
-			$datasourcename = $questionHelper->ask($input, $output, $question);
-			if ($datasourcename !== null) {
-				$input->setArgument('datasourcename', $datasourcename);
-			}
-			$output->writeln('');
-		}
-		$datasourcepath = $input->getArgument('datasourcepath');
-		if (! $datasourcepath) {
-			$question = new Question($this->translator->trans("Enter the full path of the directory where the files of your data source are located : "));
-			$datasourcepath = $questionHelper->ask($input, $output, $question);
-			if ($datasourcepath !== null) {
-				$input->setArgument('datasourcepath', $datasourcepath);
-			}
-			$output->writeln('');
-		}
+		$this->askArgument($input, $output, 'datasourcename', "Enter the name of the datasource : ");
+		$this->askArgument($input, $output, 'datasourcepath', "Enter the full path of the directory where the files of your data source are located : ");
 	}
 
 	/**
@@ -134,8 +116,6 @@ class ImportDataSourceCommand extends CommandBase
 		$schemafile = $input->getArgument('datasourcepath') . DIRECTORY_SEPARATOR . $input->getArgument('datasourcename') . ".schema.json";
 		$datafile = $input->getArgument('datasourcepath') . DIRECTORY_SEPARATOR . $input->getArgument('datasourcename') . ".json";
 		$output->writeln([
-			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
-			'',
 			$this->translator->trans("Datasource Importer"),
 			'===================',
 			'',

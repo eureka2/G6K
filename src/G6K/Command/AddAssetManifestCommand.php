@@ -31,7 +31,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Adds an asset to the manifest.json file for the assets versioning.
@@ -105,31 +104,15 @@ class AddAssetManifestCommand extends AssetManifestCommandBase
 	 *
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
-		$file = $input->getArgument('assetpath');
-		if (! $file) {
-			$questionHelper = $this->getHelper('question');
-			$question = new Question($this->translator->trans("Enter the path of the asset relatively to the public directory : "));
-			$file = $questionHelper->ask($input, $output, $question);
-			if ($file !== null) {
-				$input->setArgument('assetpath', $file);
-			}
-			$output->writeln('');
-		}
+		$this->askArgument($input, $output, 'assetpath', "Enter the path of the asset relatively to the public directory : ");
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
+		parent::execute($input, $output);
 		$file = $input->getArgument('assetpath');
-		$output->writeln([
-			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
-			'',
-			$this->translator->trans("Asset manifest editor"),
-			'===============================================',
-			'',
-		]);
-		$this->publicDir = $this->projectDir . DIRECTORY_SEPARATOR . $this->parameters['public_dir'];
 		if (! file_exists($this->publicDir . "/" . $file)) {
 			$output->writeln("<error>" . $this->translator->trans("The file '%s%' doesn't exists", array('%s%' => $file)) . "</error>");
 			return 1;

@@ -43,11 +43,6 @@ abstract class AssetManifestCommandBase extends CommandBase
 	protected $manifest;
 
 	/**
-	 * @var string
-	 */
-	protected $publicDir;
-
-	/**
 	 * @inheritdoc
 	 */
 	public function __construct(string $projectDir) {
@@ -87,7 +82,11 @@ abstract class AssetManifestCommandBase extends CommandBase
 	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		throw new LogicException($this->translator->trans("execute method is not implemented"));
+		$output->writeln([
+			$this->translator->trans("Asset manifest editor"),
+			'===============================================',
+			'',
+		]);
 	}
 
 	/**

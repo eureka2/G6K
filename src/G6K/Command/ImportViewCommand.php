@@ -33,7 +33,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Creates and optionally imports a view from a previously exported view with G6K.
@@ -114,25 +113,8 @@ class ImportViewCommand extends CommandBase
 	 *
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
-		$questionHelper = $this->getHelper('question');
-		$viewname = $input->getArgument('viewname');
-		if (! $viewname) {
-			$question = new Question($this->translator->trans("Enter the name of the view : "));
-			$viewname = $questionHelper->ask($input, $output, $question);
-			if ($viewname !== null) {
-				$input->setArgument('viewname', $viewname);
-			}
-			$output->writeln('');
-		}
-		$viewpath = $input->getArgument('viewpath');
-		if (! $viewpath) {
-			$question = new Question($this->translator->trans("Enter the directory where are located the view files : "));
-			$viewpath = $questionHelper->ask($input, $output, $question);
-			if ($viewpath !== null) {
-				$input->setArgument('viewpath', $viewpath);
-			}
-			$output->writeln('');
-		}
+		$this->askArgument($input, $output, 'viewname', "Enter the name of the view : ");
+		$this->askArgument($input, $output, 'viewpath', "Enter the directory where are located the view files : ");
 	}
 
 	/**
@@ -145,8 +127,6 @@ class ImportViewCommand extends CommandBase
 		$templates = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-templates.zip" : "";
 		$assets = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-assets.zip" : "";
 		$output->writeln([
-			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
-			'',
 			$this->translator->trans("View Importer"),
 			'=======================================',
 			'',

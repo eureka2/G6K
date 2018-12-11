@@ -31,7 +31,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Removes the assets of a view from the manifest.json file for the assets versioning.
@@ -105,31 +104,15 @@ class RemoveViewAssetManifestCommand extends AssetManifestCommandBase
 	 *
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
-		$file = $input->getArgument('viewname');
-		if (! $file) {
-			$questionHelper = $this->getHelper('question');
-			$question = new Question($this->translator->trans("Enter the name of the view : "));
-			$file = $questionHelper->ask($input, $output, $question);
-			if ($file !== null) {
-				$input->setArgument('viewname', $file);
-			}
-			$output->writeln('');
-		}
+		$this->askArgument($input, $output, 'viewname', "Enter the name of the view : ");
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
+		parent::execute($input, $output);
 		$view = $input->getArgument('viewname');
-		$output->writeln([
-			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
-			'',
-			$this->translator->trans("Asset manifest editor"),
-			'===============================================',
-			'',
-		]);
-		$this->publicDir = $this->projectDir . DIRECTORY_SEPARATOR . $this->parameters['public_dir'];
 		if (file_exists($this->publicDir . "/assets/" . $view)) {
 			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: The view '%s%' still exists, drop it first.", array('%s%' => $view)) . "</error>");
 			return 1;

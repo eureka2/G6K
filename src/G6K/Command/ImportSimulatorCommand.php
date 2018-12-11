@@ -31,7 +31,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Imports a simulator from an exported xml file.
@@ -113,26 +112,8 @@ class ImportSimulatorCommand extends CommandBase
 	 *
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
-		$questionHelper = $this->getHelper('question');
-		$simulatorname = $input->getArgument('simulatorname');
-		if (! $simulatorname) {
-			$question = new Question($this->translator->trans("Enter the name of the simulator : "));
-			$simulatorname = $questionHelper->ask($input, $output, $question);
-			if ($simulatorname !== null) {
-				$input->setArgument('simulatorname', $simulatorname);
-			}
-			$output->writeln('');
-		}
-		$output->writeln('simulatorname : ' . $simulatorname);
-		$simulatorpath = $input->getArgument('simulatorpath');
-		if (! $simulatorpath) {
-			$question = new Question($this->translator->trans("Enter the directory where is located the simulator XML file: "));
-			$simulatorpath = $questionHelper->ask($input, $output, $question);
-			if ($simulatorpath !== null) {
-				$input->setArgument('simulatorpath', $simulatorpath);
-			}
-			$output->writeln('');
-		}
+		$this->askArgument($input, $output, 'simulatorname', "Enter the name of the simulator : ");
+		$this->askArgument($input, $output, 'simulatorpath', "Enter the directory where is located the simulator XML file: ");
 	}
 
 	/**
@@ -144,8 +125,6 @@ class ImportSimulatorCommand extends CommandBase
 		$csspath = $input->getArgument('stylesheetpath');
 		$stylesheet = $csspath ? $csspath . DIRECTORY_SEPARATOR . $input->getArgument('simulatorname') . ".css" : "";
 		$output->writeln([
-			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
-			'',
 			$this->translator->trans("Simulator Importer"),
 			'===================',
 			'',

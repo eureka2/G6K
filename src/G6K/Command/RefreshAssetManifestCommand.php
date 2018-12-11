@@ -95,13 +95,7 @@ class RefreshAssetManifestCommand extends AssetManifestCommandBase
 	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$output->writeln([
-			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
-			'',
-			$this->translator->trans("Asset manifest editor"),
-			'===============================================',
-			'',
-		]);
+		parent::execute($input, $output);
 		$templatesDir = $this->projectDir . DIRECTORY_SEPARATOR . "templates";
 		$this->publicDir = $this->projectDir . DIRECTORY_SEPARATOR . $this->parameters['public_dir'];
 		$finder = Finder::create()->files()->in($templatesDir)->name('/\.twig$/');

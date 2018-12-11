@@ -92,8 +92,6 @@ class MigrateTemplatesCommand extends CommandBase
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$output->writeln([
-			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
-			'',
 			$this->translator->trans("Templates migrator"),
 			'============================================',
 			'',
