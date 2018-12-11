@@ -92,7 +92,7 @@ class HomeAdminController extends BaseAdminController {
 		$simulatorsCount = $finder->count();
 
 		$finder = new Finder();
-		$finder->depth('== 0')->ignoreVCS(true)->exclude(array('admin', 'base', 'Theme'))->directories()->in($this->viewsDir);
+		$finder->depth('== 0')->ignoreVCS(true)->exclude(array('admin', 'base', 'bundles', 'Theme'))->directories()->in($this->viewsDir);
 		$viewsCount = $finder->count();
 
  		$hiddens = array();
