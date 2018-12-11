@@ -94,10 +94,10 @@ abstract class CommandBase extends Command
 	private function doInitialization() {
 		if (! $this->initialized) {
 			$this->projectDir = $this->projectDir ?? dirname(dirname(dirname(__DIR__)));
-			$composer = json_decode(file_get_contents($this->projectDir . "/composer.json"), true);
-			$this->version = $composer['version'] ?? '4.x';
+			$this->version = '4.x';
 			$this->parameters = $this->getParameters();
 			if ($this->parameters !== false) {
+				$this->version = $this->parameters['app_version'] ?? '4.x';
 				$translations = $this->projectDir . "/translations/commands." . $this->parameters['locale'] . ".xlf";
 				$this->translator = new Translator($this->parameters['locale']);
 				if (file_exists($translations)) {
@@ -122,6 +122,7 @@ abstract class CommandBase extends Command
 			$dotenv = new Dotenv();
 			$dotenv->load($this->projectDir . DIRECTORY_SEPARATOR . '.env');
 			$parameters['app_env'] = $this->getParameterValue('APP_ENV');
+			$parameters['app_version'] = $this->getParameterValue('APP_VERSION');
 			$parameters['database_driver'] = 'pdo_' . $this->getParameterValue('DB_ENGINE');
 			$parameters['database_host'] = $this->getParameterValue('DB_HOST');
 			$parameters['database_port'] = $this->getParameterValue('DB_PORT');

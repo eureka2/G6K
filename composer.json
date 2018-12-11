@@ -1,6 +1,5 @@
 {
     "name": "eureka2/g6k",
-    "version": "4.2.1",
     "license": "MIT",
     "type": "project",
     "description": "Generator of simulator of calculation (calculator)",
