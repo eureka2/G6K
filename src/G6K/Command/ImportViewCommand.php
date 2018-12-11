@@ -1,119 +1,142 @@
 <?php
 
+/*
+The MIT License (MIT)
+
+Copyright (c) 2018 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
 namespace App\G6K\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Console\Question\Question;
 
-class ImportViewCommand extends Command
+/**
+ * Creates and optionally imports a view from a previously exported view with G6K.
+ *
+ * This command allows to create a view and optionally import the templates and assets from a previously exported view in a .zip files with G6K.
+ */
+class ImportViewCommand extends CommandBase
 {
 
 	/**
-	 * @var string
-	 */
-	private $projectDir;
-
-	/**
-	 * The constructor for the 'g6k:view:import' command
-	 *
-	 * @param   string $projectDir The project directory
-	 * @access  public
+	 * @inheritdoc
 	 */
 	public function __construct(string $projectDir) {
-		parent::__construct();
-		$this->projectDir = $projectDir;
+		parent::__construct($projectDir);
 	}
 
 	/**
-	 * This function parses the '.env' file and returns an array of parameters
+	 * @inheritdoc
+	 */
+	protected function getCommandName() {
+		return 'g6k:view:import';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function getCommandDescription() {
+		return $this->translator->trans('Creates and optionally imports a view from a previously exported view with G6K.');
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function getCommandHelp() {
+		return
+			  $this->translator->trans("This command allows you to create a view and optionally import the templates and assets from a previously exported view in a .zip files with G6K.")."\n"
+			. "\n"
+			. $this->translator->trans("You must provide:")."\n"
+			. $this->translator->trans("- the name of the view (viewname).")."\n"
+			. $this->translator->trans("- the full path of the directory (viewpath) where the .zip files are located.")."\n"
+			. $this->translator->trans("and optionally:")."\n"
+			. $this->translator->trans("- the url (viewurl) of the website where this view is used.")."\n"
+			. $this->translator->trans("The file names will be composed as follows:")."\n"
+			. $this->translator->trans("- <viewpath>/<viewname>-templates.zip for the compressed twig templates file")."\n"
+			. $this->translator->trans("- <viewpath>/<viewname>-assets.zip for the compressed assets file")."\n"
+		;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function getCommandArguments() {
+		return array(
+			array(
+				'viewname',
+				InputArgument::REQUIRED,
+				$this->translator->trans('The name of the view.')
+			),
+			array(
+				'viewpath',
+				InputArgument::REQUIRED,
+				$this->translator->trans('The directory where are located the view files.')
+			),
+			array(
+				'viewurl',
+				InputArgument::OPTIONAL,
+				$this->translator->trans('The url of the website where this view is used.')
+			)
+		);
+	}
+
+	/**
+	 * Checks the argument of the current command (g6k:view:import).
 	 *
-	 * @access  private
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
 	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
-	 * @return  array|false parameters array or false in case of error
+	 * @return  void
 	 *
 	 */
-	private function getParameters(OutputInterface $output) {
-		$parameters = array();
-		try {
-			$dotenv = new Dotenv();
-			$dotenv->load($this->projectDir . DIRECTORY_SEPARATOR . '.env');
-			$parameters['locale'] = $this->getParameterValue('G6K_LOCALE');
-			$parameters['app_env'] = $this->getParameterValue('APP_ENV');
-			$parameters['public_dir'] = $this->getParameterValue('PUBLIC_DIR');
-			return $parameters;
-		} catch (\Exception $e) {
-			$output->writeln(sprintf("Unable to get parameters: %s", $e->getMessage()));
-			return false;
+	protected function interact(InputInterface $input, OutputInterface $output) {
+		$questionHelper = $this->getHelper('question');
+		$viewname = $input->getArgument('viewname');
+		if (! $viewname) {
+			$question = new Question($this->translator->trans("Enter the name of the view : "));
+			$viewname = $questionHelper->ask($input, $output, $question);
+			if ($viewname !== null) {
+				$input->setArgument('viewname', $viewname);
+			}
+			$output->writeln('');
+		}
+		$viewpath = $input->getArgument('viewpath');
+		if (! $viewpath) {
+			$question = new Question($this->translator->trans("Enter the directory where are located the view files : "));
+			$viewpath = $questionHelper->ask($input, $output, $question);
+			if ($viewpath !== null) {
+				$input->setArgument('viewpath', $viewpath);
+			}
+			$output->writeln('');
 		}
 	}
 
 	/**
-	 * Returns the value of a given parameter
-	 *
-	 * @access  private
-	 * @param   string $parameter The given parameter
-	 * @return  string The value of the parameter
-	 *
-	 */
-	private function getParameterValue($parameter) {
-		$value = getenv($parameter);
-		$value = str_replace('%kernel.project_dir%', $this->projectDir, $value);
-		$value = str_replace('%PUBLIC_DIR%', getenv('PUBLIC_DIR'), $value);
-		return $value;
-	}
-
-	/**
-	 * Configures the current command (g6k:view:import).
-	 *
-	 * @access  protected
-	 * @return void
-	 */
-	protected function configure() {
-		$this
-			// the name of the command (the part after "bin/console")
-			->setName('g6k:view:import')
-
-			// the short description shown while running "php bin/console list"
-			->setDescription('Creates and optionally imports a view from a previously exported view with G6K.')
-
-			// the full command description shown when running the command with
-			// the "--help" option
-			->setHelp(
-				  "This command allows you to create a view  and optionally import the templates and assets from a previously exported view in .zip files with G6K.\n"
-				. "\n"
-				. "You must provide:\n"
-				. "- the name of the view (viewname).\n"
-				. "- the full path of the directory (viewpath) where the .zip files are located.\n"
-				. "and optionally:\n"
-				. "- the url (viewurl) of the website where this view is used.\n"
-				. "The file names will be composed as follows:\n"
-				. "- <viewpath>/<viewname>-templates.zip for the compressed twig templates file\n"
-				. "- <viewpath>/<viewname>-assets.zip for the compressed assets file\n"
-			)
-		;
-		$this
-			->addArgument('viewname', InputArgument::REQUIRED, 'The name of the view.')
-			->addArgument('viewpath', InputArgument::REQUIRED, 'The directory where are located the view files.')
-			->addArgument('viewurl', InputArgument::OPTIONAL, 'The url of the website where this view is used.')
-		;
-	}
-
-	/**
-	 * Executes the current command (g6k:view:import).
-	 *
-	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
-	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
-	 * @return int|null null or 0 if everything went fine, or an error code
-	 *
-	 * @throws LogicException When this abstract method is not implemented
-	 *
+	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$view = $input->getArgument('viewname');
@@ -122,33 +145,32 @@ class ImportViewCommand extends Command
 		$templates = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-templates.zip" : "";
 		$assets = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-assets.zip" : "";
 		$output->writeln([
-			'View Importer',
-			'===================',
+			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
+			'',
+			$this->translator->trans("View Importer"),
+			'=======================================',
 			'',
 		]);
 		if ($templates != '' && ! file_exists($templates)) {
-			$output->writeln(sprintf("The compressed templates file '%s' doesn't exists", $templates));
+			$output->writeln($this->translator->trans("View Importer: The compressed templates file '%s%' doesn't exists", array('%s%' => $templates)));
 			return 1;
 		}
 		if ($assets != '' && ! file_exists($assets)) {
-			$output->writeln(sprintf("The compressed assets file '%s' doesn't exists", $assets));
+			$output->writeln($this->translator->trans("View Importer: The compressed assets file '%s%' doesn't exists", array('%s%' => $assets)));
 			return 1;
 		}
 		if ($viewurl && ! filter_var($viewurl, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) {
-			$output->writeln(sprintf("The url of the website '%s' isn't valid", $viewurl));
-			return 1;
-		}
-		if (($parameters = $this->getParameters($output)) === false) {
+			$output->writeln($this->translator->trans("View Importer: The url of the website '%s%' isn't valid", array('%s%' => $viewurl)));
 			return 1;
 		}
 		if ($viewpath) {
-			$output->writeln("Importing the view '".$view."' located in '" . $viewpath . "'");
+			$output->writeln($this->translator->trans("View Importer: Importing the view '%view%' located in '%viewpath%'", array('%view%' => $view, '%viewpath%' => $viewpath)));
 		} else {
-			$output->writeln("Creating the view '".$view."' from the Default view");
+			$output->writeln($this->translator->trans("View Importer: Creating the view '%view%' from the Default view", array('%view%' => $view)));
 		}
 		$fsystem = new Filesystem();
 		$templatesDir = $this->projectDir . DIRECTORY_SEPARATOR . "templates";
-		$assetsDir = $this->projectDir . DIRECTORY_SEPARATOR . $parameters['public_dir']. DIRECTORY_SEPARATOR . "assets";
+		$assetsDir = $this->projectDir . DIRECTORY_SEPARATOR . $this->parameters['public_dir']. DIRECTORY_SEPARATOR . "assets";
 		$archive = new \ZipArchive();
 		if ($templates != '') {
 			$archive->open($templates, \ZipArchive::CHECKCONS);
@@ -161,7 +183,7 @@ class ImportViewCommand extends Command
 			}
 			$archive->extractTo($templatesDir . DIRECTORY_SEPARATOR . $view, $extract);
 			$archive->close();
-			$this->migrate3To4($templatesDir . DIRECTORY_SEPARATOR . $view);
+			$this->migrate3To4($view, $output);
 		} else {
 			try {
 				$fsystem->mkdir($templatesDir . DIRECTORY_SEPARATOR . $view);
@@ -169,7 +191,7 @@ class ImportViewCommand extends Command
 					$fsystem->mirror($templatesDir . DIRECTORY_SEPARATOR . 'Default', $templatesDir . DIRECTORY_SEPARATOR . $view);
 				}
 			} catch (IOExceptionInterface $e) {
-				$output->writeln(sprintf("Error while creating '%s' in '%s' : %s", $view, $templatesDir, $e->getMessage()));
+				$output->writeln($this->translator->trans("View Importer: Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $templatesDir, '%message%' => $e->getMessage())));
 				return 1;
 			}
 		}
@@ -184,8 +206,8 @@ class ImportViewCommand extends Command
 					$fsystem->mirror($assetsDir . DIRECTORY_SEPARATOR . 'Default', $assetsDir . DIRECTORY_SEPARATOR . $view);
 				}
 			} catch (IOExceptionInterface $e) {
-				$output->writeln(sprintf("Error while creating '%s' in '%s' : %s", $view, $assetsDir, $e->getMessage()));
-				$output->writeln(sprintf("The view '%s' is partially created", $view));
+				$output->writeln($this->translator->trans("View Importer: Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $assetsDir, '%message%' => $e->getMessage())));
+				$output->writeln($this->translator->trans("View Importer: The view '%s%' is partially created", array('%s%' => $view)));
 				return 1;
 			}
 		}
@@ -210,36 +232,61 @@ class ImportViewCommand extends Command
 						file_put_contents($configFile, $config);
 					}
 				}
-			} catch (Exception $e) {
-				$output->writeln(sprintf("Error while updating '%s' for '%s' : %s", $configFile, $view, $e->getMessage()));
-				$output->writeln(sprintf("The view '%s' is partially created", $view));
+			} catch (\Exception $e) {
+				$output->writeln($this->translator->trans("View Importer: Error while updating '%view%' for '%s%' : %message%", array('%view%' => $configFile, '%s%' => $view, '%message%' => $e->getMessage())));
+				$output->writeln($this->translator->trans("View Importer: The view '%s%' is partially created", array('%s%' => $view)));
 				return 1;
 			}
 		}
-		$output->writeln(sprintf("The view '%s' is successfully created", $view));
+		$output->writeln($this->translator->trans("View Importer: The view '%s%' is successfully created", array('%s%' => $view)));
+		$this->refreshAssetsManifest($output);
 		return 0;
+	}
+
+	/**
+	 * Updates (or Creates) the manifest.json file for the assets versioning.
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @return void
+	 *
+	 */
+	private function refreshAssetsManifest($output) {
+		$command = $this->getApplication()->find('g6k:assets:manifest:refresh');
+		$input = new ArrayInput(array(
+			'command' => 'g6k:assets:manifest:refresh',
+			'--no-interaction' => true
+		));
+		$output->writeln("");
+		$output->writeln($this->translator->trans("View Importer: Refreshing the assets manifest"));
+		$returnCode = $command->run($input, $output);
+		if ($returnCode == 0) {
+			$output->writeln($this->translator->trans("View Importer: Refreshing manifest done!"));
+		} else {
+			$output->writeln($this->translator->trans("View Importer: Refreshing manifest not done!"));
+		}
 	}
 
 	/**
 	 * Migrates the templates written for Symfony 2 or 3.
 	 *
-	 * @param   string $dir The templates directory
+	 * @param   string $view The view name
 	 * @return void
 	 *
 	 */
-	private function migrate3To4($dir) {
-		$finder = new Finder();
-		$finder->files()->in($dir)->name('/\.twig$/');
-		foreach ($finder as $file) {
-			$path = $file->getRealPath();
-			$content = file_get_contents($path);
-			$content = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $content);
-			$content = preg_replace("|asset\('bundles/eurekag6k/|m", "asset('assets/", $content);
-			$content = preg_replace("|asset\('assets/base/js/|m", "asset('assets/base/js/libs/", $content);
-			$content = preg_replace("|asset\('assets/base/js/libs/g6k\.|m", "asset('assets/base/js/g6k.", $content);
-			$content = preg_replace("|asset\('assets/admin/js/|m", "asset('assets/admin/js/libs/", $content);
-			$content = preg_replace("|asset\('assets/admin/js/libs/g6k\.|m", "asset('assets/admin/js/g6k.", $content);
-			file_put_contents($path, $content);
+	private function migrate3To4($view, $output) {
+		$command = $this->getApplication()->find('g6k:templates:migrate');
+		$input = new ArrayInput(array(
+			'command' => 'g6k:templates:migrate',
+			'viewname' => $view,
+			'--no-interaction' => true
+		));
+		$output->writeln("");
+		$output->writeln($this->translator->trans("View Importer: migration of the templates"));
+		$returnCode = $command->run($input, $output);
+		if ($returnCode == 0) {
+			$output->writeln($this->translator->trans("View Importer: Migration of the templates is done!"));
+		} else {
+			$output->writeln($this->translator->trans("View Importer: Migration of the templates is not done!"));
 		}
 	}
 

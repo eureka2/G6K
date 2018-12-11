@@ -26,6 +26,11 @@ THE SOFTWARE.
  
 namespace App\G6K\Manager;
 
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+
 use App\G6K\Model\Data;
 use App\G6K\Model\Source;
 use App\G6K\Model\Parameter;
@@ -680,6 +685,58 @@ trait ControllersHelper {
 			throw new \Exception("Error on date '$dateStr', expected format '$format' : " . implode(" ", $errors['errors']));
 		}
 		return $date;
+	}
+
+	/**
+	 * Return a relative path to a file or directory using base directory. 
+	 * 
+	 * @param   String   $base   A base path used to construct relative path. For example /website
+	 * @param   String   $path   A full path to file or directory used to construct relative path. For example /website/store/library.php
+	 * 
+	 * @return  String
+	 */
+	private function getRelativePath($base, $path) {
+		$base = str_replace('\\', '/', $base);
+		$path = str_replace('\\', '/', $path);
+		$pos = strpos($path, $base);
+		if ($pos !== false && $pos == 0) {
+			$path = substr($path , strlen($base) + 1);
+		}
+		return $path;
+	}
+
+	/**
+	 * Run a console command.
+	 *
+	 * @param   array $command The command
+	 * @param   array|null &$report An array for receiving the output of the command
+	 * @return bool
+	 *
+	 */
+	private function runConsoleCommand($command, &$report = null) {
+		$application = new Application($this->get('kernel'));
+		$application->setAutoExit(false);
+		$command['--no-debug'] = true;
+		$command['--no-interaction'] = true;
+		$input = new ArrayInput($command);
+		$output = new BufferedOutput(
+			OutputInterface::VERBOSITY_NORMAL, // VERBOSITY_QUIET, VERBOSITY_NORMAL, VERBOSITY_VERBOSE, VERBOSITY_VERY_VERBOSE or VERBOSITY_DEBUG
+			false // true for decorated
+		);
+		$returnCode = $application->run($input, $output);
+		if ($report !== null) {
+			$translator = $this->get('translator');
+			$report = array_merge(
+				$report, 
+				array_map(
+					function($elem) use ($translator) {
+						return "<br> " . $translator->trans(trim($elem), array(), 'commands');
+					}, 
+					preg_split("/[\r\n]+/", trim($output->fetch()))
+				)
+			);
+		}
+		return $returnCode == 0;
 	}
 
 	/**

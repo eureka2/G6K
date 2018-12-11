@@ -285,7 +285,7 @@ class ViewsAdminController extends BaseAdminController {
 			$zip->extractTo($this->viewsDir . '/' . $view, $extract);
 			$zip->close();
 			$fs->remove($templatesfile);
-			$this->fixTemplates($this->viewsDir . '/' . $view);
+			$this->fixTemplates($view);
 		} else {
 			try {
 				$fs->mkdir($this->viewsDir . '/' . $view);
@@ -300,11 +300,13 @@ class ViewsAdminController extends BaseAdminController {
 			$zip->extractTo($this->assetsDir . '/' . $view);
 			$zip->close();
 			$fs->remove($assetsfile);
+			$this->refreshManifest();
 		} else {
 			try {
 				$fs->mkdir($this->assetsDir . '/' . $view);
 				if ($fs->exists($this->assetsDir . '/Default')) {
 					$fs->mirror($this->assetsDir . '/Default', $this->assetsDir . '/' . $view);
+					$this->refreshManifest();
 				}
 			} catch (IOExceptionInterface $e) {
 			}
@@ -313,26 +315,87 @@ class ViewsAdminController extends BaseAdminController {
 	}
 
 	/**
-	 * Corrects the templates written for Symfony 2 or 3.
+	 * Refresh the manifest of assets for versionning.
 	 *
-	 * @param   string $dir The templates directory
-	 * @return void
+	 * @return bool
 	 *
 	 */
-	private function fixTemplates($dir) {
-		$finder = new Finder();
-		$finder->files()->in($dir)->name('/\.twig$/');
-		foreach ($finder as $file) {
-			$path = $file->getRealPath();
-			$template = file_get_contents($path);
-			$template = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $template);
-			$content = preg_replace("|asset\('bundles/eurekag6k/|m", "asset('assets/", $content);
-			$template = preg_replace("|asset\('assets/base/js/|m", "asset('assets/base/js/libs/", $template);
-			$template = preg_replace("|asset\('assets/base/js/libs/g6k\.|m", "asset('assets/base/js/g6k.", $template);
-			$template = preg_replace("|asset\('assets/admin/js/|m", "asset('assets/admin/js/libs/", $template);
-			$template = preg_replace("|asset\('assets/admin/js/libs/g6k\.|m", "asset('assets/admin/js/g6k.", $template);
-			file_put_contents($path, $template);
-		}
+	private function refreshManifest() {
+		return $this->runConsoleCommand(array(
+			'command' => 'g6k:assets:manifest:refresh'
+		));
+	}
+
+	/**
+	 * Removes a view from the manifest of assets.
+	 *
+	 * @param   string $view The view name
+	 * @return bool
+	 *
+	 */
+	private function removeViewFromManifest($view) {
+		return $this->runConsoleCommand(array(
+			'command' => 'g6k:assets:manifest:remove-view',
+			'viewname' => $view
+		));
+	}
+
+	/**
+	 * Adds a node to the manifest of assets.
+	 *
+	 * @param   string $node The node
+	 * @return bool
+	 *
+	 */
+	private function addNodeToManifest($node) {
+		return $this->runConsoleCommand(array(
+			'command' => 'g6k:assets:manifest:add-asset',
+			'assetpath' => $node
+		));
+	}
+
+	/**
+	 * Removes a node from the manifest of assets.
+	 *
+	 * @param   string $node The node
+	 * @return bool
+	 *
+	 */
+	private function removeNodeFromManifest($node) {
+		return $this->runConsoleCommand(array(
+			'command' => 'g6k:assets:manifest:remove-asset',
+			'assetpath' => $node
+		));
+	}
+
+	/**
+	 * Renames a node in the manifest of assets.
+	 *
+	 * @param   string $node The node
+	 * @param   string $newnode The new node
+	 * @return bool
+	 *
+	 */
+	private function renameNodeInManifest($node, $newnode) {
+		return $this->runConsoleCommand(array(
+			'command' => 'g6k:assets:manifest:rename-asset',
+			'assetpath' => $node,
+			'newassetpath' => $newnode
+		));
+	}
+
+	/**
+	 * Corrects the templates written for Symfony 2 or 3 of the given view.
+	 *
+	 * @param   string $view The view name
+	 * @return bool
+	 *
+	 */
+	private function fixTemplates($view) {
+		return $this->runConsoleCommand(array(
+			'command' => 'g6k:templates:migrate',
+			'viewname' => $view
+		));
 	}
 
 	/**
@@ -350,6 +413,7 @@ class ViewsAdminController extends BaseAdminController {
 		try {
 			$fs->remove($this->viewsDir . '/' . $view);
 			$fs->remove($this->assetsDir . '/' . $view);
+			$this->removeViewFromManifest($view);
 		} catch (IOExceptionInterface $e) {
 		}
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_views'));
@@ -398,9 +462,21 @@ class ViewsAdminController extends BaseAdminController {
 			$newpath = $this->assetsDir . '/' . $newName;
 			$fs->rename($oldpath, $newpath);
 			$view =$newName;
+			if (! preg_match("/\.twig$/", $newpath)) {
+				$this->renameNodeInManifest(
+					$this->getRelativePath($this->publicDir, $oldpath),
+					$this->getRelativePath($this->publicDir, $newpath)
+				);
+			}
 		} else {
 			$newpath = preg_replace("/".basename($nodePath)."$/", $newName, $nodePath);
 			$fs->rename($nodePath, $newpath);
+			if (! preg_match("/\.twig$/", $newpath)) {
+				$this->renameNodeInManifest(
+					$this->getRelativePath($this->publicDir, $nodePath),
+					$this->getRelativePath($this->publicDir, $newpath)
+				);
+			}
 		}
 		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
 	}
@@ -421,6 +497,9 @@ class ViewsAdminController extends BaseAdminController {
 		if ($nodePath != '') {
 			try {
 				$fs->remove($nodePath);
+				if (! preg_match("/\.twig$/", $nodePath)) {
+					$this->removeNodeFromManifest($this->getRelativePath($this->publicDir, $nodePath));
+				}
 			} catch (IOExceptionInterface $e) {
 			}
 		}
@@ -463,6 +542,9 @@ class ViewsAdminController extends BaseAdminController {
 					try {
 						$fs->copy($nodeFile, $nodePath . '/' . $nodeName);
 						$fs->remove($nodeFile);
+						if (! preg_match("/\.twig$/", $nodeName)) {
+							$this->addNodeToManifest($this->getRelativePath($this->publicDir, $nodePath . '/' . $nodeName));
+						}
 					} catch (IOExceptionInterface $e) {
 					}
 				}

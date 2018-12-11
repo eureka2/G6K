@@ -26,10 +26,6 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\G6K\Manager\ControllersHelper;
@@ -90,7 +86,6 @@ class CacheAdminController extends BaseAdminController {
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
-	 * @param   string $env (default: 'prod') The environment to clear (prod, test)
 	 * @return  \Symfony\Component\HttpFoundation\Response The response object
 	 *
 	 */
@@ -111,51 +106,35 @@ class CacheAdminController extends BaseAdminController {
 	 */
 	protected function runClear(Request $request, $env)
 	{
+		$translator = $this->get('translator');
 		if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+			throw $this->createAccessDeniedException ($translator->trans("Access Denied!"));
 		}
 		$cache_dir = dirname($this->get('kernel')->getCacheDir());
-		$this->log[] = "<b>" . $this->get('translator')->trans("cache directory : %cachedir%", array('%cachedir%' => $cache_dir)) . "</b>";
+		$this->log[] = "<b>" . $translator->trans("cache directory : %cachedir%", array('%cachedir%' => $cache_dir)) . "</b>";
 		if ($this->getEnvironment() == $env) {
-			$application = new Application($this->get('kernel'));
-			$application->setAutoExit(false);
-			$input = new ArrayInput(array(
+			$this->log[] =  "<br/><br/><b>" . $translator->trans("clearing cache") . " :</b>";
+			$ok = $this->runConsoleCommand(array(
 				'command' => 'cache:clear',
 				'--no-warmup' => true,
-				'--no-debug' => true,
 				'--env' => $env
-			));
-			$output = new BufferedOutput(
-				OutputInterface::VERBOSITY_NORMAL, // VERBOSITY_QUIET, VERBOSITY_NORMAL, VERBOSITY_VERBOSE, VERBOSITY_VERY_VERBOSE or VERBOSITY_DEBUG
-				false // true for decorated
-			);
-			$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("clearing cache") . " :</b>";
-			$returnCode = $application->run($input, $output);
-			$this->log = array_merge(
-				$this->log, 
-				array_map(
-					function($elem) {
-						return "<br> " . $elem;
-					}, 
-					preg_split("/[\r\n]+/", trim($output->fetch()))
-				)
-			);
-			if ($returnCode == 0) {
-				$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("done !") . "</b>";
+			), $this->log);
+			if ($ok) {
+				$this->log[] =  "<br/><br/><b>" . $translator->trans("done !") . "</b>";
 			} else {
-				$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("not done !") . "</b>";
+				$this->log[] =  "<br/><br/><b>" . $translator->trans("not done !") . "</b>";
 			}
 		} else {
 			if (is_dir($cache_dir)) {
 				if (basename($cache_dir) == "cache") {
-					$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("clearing cache") . " :</b>";
+					$this->log[] =  "<br/><br/><b>" . $translator->trans("clearing cache") . " :</b>";
 					$this->cc($cache_dir, $env);
-					$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("done !") . "</b>";
+					$this->log[] =  "<br/><br/><b>" . $translator->trans("done !") . "</b>";
 				} else {
-					$this->log[] = "<br/> " . $this->get('translator')->trans("Error : %cachedir% is not a named cache", array('%cachedir%' => $cache_dir));
+					$this->log[] = "<br/> " . $translator->trans("Error : %cachedir% is not a named cache", array('%cachedir%' => $cache_dir));
 				}
 			} else {
-				$this->log[] = "<br/> " . $this->get('translator')->trans("Error : %cachedir% is not a directory", array('%cachedir%' => $cache_dir));
+				$this->log[] = "<br/> " . $translator->trans("Error : %cachedir% is not a directory", array('%cachedir%' => $cache_dir));
 			}
 		}
 		return $this->doRender($request);
@@ -171,35 +150,20 @@ class CacheAdminController extends BaseAdminController {
 	 */
 	protected function runWarmup(Request $request)
 	{
+		$translator = $this->get('translator');
 		if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+			throw $this->createAccessDeniedException ($translator->trans("Access Denied!"));
 		}
 		$cache_dir = dirname($this->get('kernel')->getCacheDir());
-		$this->log[] = "<b>" . $this->get('translator')->trans("cache directory : %cachedir%", array('%cachedir%' => $cache_dir)) . "</b>";
-		$application = new Application($this->get('kernel'));
-		$application->setAutoExit(false);
-		$input = new ArrayInput(array(
+		$this->log[] = "<b>" . $translator->trans("cache directory : %cachedir%", array('%cachedir%' => $cache_dir)) . "</b>";
+		$this->log[] =  "<br/><br/><b>" . $translator->trans("warming cache") . " :</b>";
+		$ok = $this->runConsoleCommand(array(
 			'command' => 'cache:warmup'
-		));
-		$output = new BufferedOutput(
-			OutputInterface::VERBOSITY_NORMAL, // VERBOSITY_QUIET, VERBOSITY_NORMAL, VERBOSITY_VERBOSE, VERBOSITY_VERY_VERBOSE or VERBOSITY_DEBUG
-			false // true for decorated
-		);
-		$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("warming cache") . " :</b>";
-		$returnCode = $application->run($input, $output);
-		$this->log = array_merge(
-			$this->log, 
-			array_map(
-				function($elem) {
-					return "<br> " . $elem;
-				}, 
-				preg_split("/[\r\n]+/", trim($output->fetch()))
-			)
-		);
-		if ($returnCode == 0) {
-			$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("done !") . "</b>";
+		), $this->log);
+		if ($ok) {
+			$this->log[] =  "<br/><br/><b>" . $translator->trans("done !") . "</b>";
 		} else {
-			$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("not done !") . "</b>";
+			$this->log[] =  "<br/><br/><b>" . $translator->trans("not done !") . "</b>";
 		}
 		return $this->doRender($request);
 	}

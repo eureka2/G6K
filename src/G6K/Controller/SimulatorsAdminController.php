@@ -602,6 +602,10 @@ class SimulatorsAdminController extends BaseAdminController {
 		if ($view != '' && ! $fs->exists($this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css')) {
 			if ($fs->exists($this->publicDir.'/assets/'.$view.'/css/common.css')) {
 				$fs->dumpFile($this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css', '@import "common.css";'."\n");
+				$this->runConsoleCommand(array(
+					'command' => 'g6k:assets:manifest:add-asset',
+					'assetpath' => 'assets/'.$view.'/css/'.$simulator.'.css'
+				));
 			}
 		}
 	}
@@ -627,6 +631,10 @@ class SimulatorsAdminController extends BaseAdminController {
 			$finder->name($simulator.'.css')->in($this->publicDir.'/assets')->exclude('admin')->exclude('base')->exclude('bundles');
 			foreach ($finder as $file) {
 				$fs->remove($file->getRealPath());
+				$this->runConsoleCommand(array(
+					'command' => 'g6k:assets:manifest:remove-asset',
+					'assetpath' => 'assets/' . $file->getRelativePathname()
+				));
 			}
 		} catch (\Exception $e) {
 		}
@@ -1599,6 +1607,10 @@ class SimulatorsAdminController extends BaseAdminController {
 					$fs->mkdir($this->publicDir.'/assets/'.$view.'/css');
 				}
 				$fs->copy($stylesheet, $this->publicDir.'/assets/'.$view.'/css/'.$simu.'.css', true);
+				$this->runConsoleCommand(array(
+					'command' => 'g6k:assets:manifest:add-asset',
+					'assetpath' => 'assets/'.$view.'/css/'.$simu.'.css'
+				));
 			} else if (! $fs->exists($this->publicDir.'/assets/'.$view.'/css/'.$simu.'.css')) {
 				if ($view == 'Demo') {
 					$fs->dumpFile($this->publicDir.'/assets/'.$view.'/css/'.$simu.'.css', '@import "common.css";'."\n");
@@ -1608,6 +1620,10 @@ class SimulatorsAdminController extends BaseAdminController {
 					}
 					$fs->copy($this->publicDir.'/assets/Demo/css/common.css', $this->publicDir.'/assets/'.$view.'/css/'.$simu.'.css');
 				}
+				$this->runConsoleCommand(array(
+					'command' => 'g6k:assets:manifest:add-asset',
+					'assetpath' => 'assets/'.$view.'/css/'.$simu.'.css'
+				));
 			}
 		}
 		try {

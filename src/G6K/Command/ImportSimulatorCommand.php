@@ -1,133 +1,142 @@
 <?php
 
+/*
+The MIT License (MIT)
+
+Copyright (c) 2018 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
 namespace App\G6K\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Console\Question\Question;
 
-class ImportSimulatorCommand extends Command
+/**
+ * Imports a simulator from an exported xml file.
+ *
+ * This command allows to import a simulator and eventually, its stylesheets.
+ */
+class ImportSimulatorCommand extends CommandBase
 {
 
 	/**
-	 * @var string
-	 */
-	private $projectDir;
-
-	/**
-	 * The constructor for the 'g6k:simulator:import' command
-	 *
-	 * @param   string $projectDir The project directory
-	 * @access  public
+	 * @inheritdoc
 	 */
 	public function __construct(string $projectDir) {
-		parent::__construct();
-		$this->projectDir = $projectDir;
+		parent::__construct($projectDir);
 	}
 
 	/**
-	 * This function parses the '.env' file to an array of parameters
-	 *
-	 * @access  private
-	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
-	 * @return  array|false parameters array or false in case of error
-	 *
+	 * @inheritdoc
 	 */
-	private function getParameters(OutputInterface $output) {
-		$parameters = array();
-		try {
-			$dotenv = new Dotenv();
-			$dotenv->load($this->projectDir . DIRECTORY_SEPARATOR . '.env');
-			$parameters['public_dir'] = $this->getParameterValue('PUBLIC_DIR');
-			$parameters['locale'] = $this->getParameterValue('G6K_LOCALE');
-			return $parameters;
-		} catch (\Exception $e) {
-			$output->writeln(sprintf("Unable to get parameters: %s", $e->getMessage()));
-			return false;
-		}
+	protected function getCommandName() {
+		return 'g6k:simulator:import';
 	}
 
 	/**
-	 * Returns the value of a given parameter
-	 *
-	 * @access  private
-	 * @param   string $parameter The parameter
-	 * @return  string The value of the parameter
-	 *
+	 * @inheritdoc
 	 */
-	private function getParameterValue($parameter) {
-		$value = getenv($parameter);
-		$value = str_replace('%kernel.project_dir%', $this->projectDir, $value);
-		$value = str_replace('%PUBLIC_DIR%', getenv('PUBLIC_DIR'), $value);
-		return $value;
+	protected function getCommandDescription() {
+		return $this->translator->trans('Imports a simulator from an exported xml file.');
 	}
 
 	/**
-	 * Retuns the DOMElement at position $index of the DOMNodeList
-	 *
-	 * @access  private
-	 * @param   \DOMNodeList $nodes The DOMNodeList
-	 * @param   int $index The position in the DOMNodeList
-	 * @return  \DOMElement|null The DOMElement.
-	 *
+	 * @inheritdoc
 	 */
-	private function getDOMElementItem($nodes, $index) {
-		$node = $nodes->item($index);
-		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
-			return $node;
-		}
-		return null;
+	protected function getCommandHelp() {
+		return
+			  $this->translator->trans("This command allows you to import a simulator and eventually, its stylesheets.")."\n"
+			. "\n"
+			. $this->translator->trans("You must provide:")."\n"
+			. $this->translator->trans("- the name of the simulator (simulatorname).")."\n"
+			. $this->translator->trans("- the full path of the directory (simulatorpath) where the XML file of your simulator is located.")."\n"
+			. $this->translator->trans("and optionally:")."\n"
+			. $this->translator->trans("- the full path of the directory (stylesheetpath) where the css file of the stylesheet is located.")."\n"
+			. "\n"
+			. $this->translator->trans("The file names will be composed as follows:")."\n"
+			. $this->translator->trans("- <simulatorpath>/<simulatorname>.xml for the simulator XML file")."\n"
+			. $this->translator->trans("- <stylesheetpath>/<simulatorname>.css for the stylesheet file")."\n"
+		;
 	}
 
 	/**
-	 * Configures the current command (g6k:simulator:import).
-	 *
-	 * @access  protected
-	 * @return void
+	 * @inheritdoc
 	 */
-	protected function configure() {
-		$this
-			// the name of the command (the part after "bin/console")
-			->setName('g6k:simulator:import')
-
-			// the short description shown while running "php bin/console list"
-			->setDescription('Imports a simulator from an exported xml file.')
-
-			// the full command description shown when running the command with
-			// the "--help" option
-			->setHelp(
-				  "This command allows you to import a simulator and eventually, its stylesheets.\n"
-				. "\n"
-				. "You must provide:\n"
-				. "- the name of the simulator (simulatorname).\n"
-				. "- the full path of the directory (simulatorpath) where the XML file of your simulator is located.\n"
-				. "and optionaly:\n"
-				. "- the full path of the directory (stylesheetpath) where the css file of the stylesheet is located.\n"
-				. "\n"
-				. "The file names will be composed as follows:\n"
-				. "- <simulatorpath>/<simulatorname>.xml for the simulator XML file\n"
-				. "- <stylesheetpath>/<simulatorname>.css for the stylesheet file\n"
+	protected function getCommandArguments() {
+		return array(
+			array(
+				'simulatorname',
+				InputArgument::REQUIRED,
+				$this->translator->trans('The name of the simulator.')
+			),
+			array(
+				'simulatorpath',
+				InputArgument::REQUIRED,
+				$this->translator->trans('The directory where is located the simulator XML file.')
+			),
+			array(
+				'stylesheetpath',
+				InputArgument::OPTIONAL,
+				$this->translator->trans('The directoty where is located the stylesheet, if any.')
 			)
-		;
-		$this
-			->addArgument('simulatorname', InputArgument::REQUIRED, 'The name of the simulator.')
-			->addArgument('simulatorpath', InputArgument::REQUIRED, 'The directory where is located the simulator XML file.')
-			->addArgument('stylesheetpath', InputArgument::OPTIONAL , 'The directoty where is located the stylesheet, if any.')
-		;
+		);
 	}
 
 	/**
-	 * Executes the current command (g6k:simulator:import).
+	 * Checks the argument of the current command (g6k:simulator:import).
 	 *
 	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
 	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
-	 * @return int|null null or 0 if everything went fine, or an error code
+	 * @return  void
 	 *
-	 * @throws LogicException When this abstract method is not implemented
-	 *
+	 */
+	protected function interact(InputInterface $input, OutputInterface $output) {
+		$questionHelper = $this->getHelper('question');
+		$simulatorname = $input->getArgument('simulatorname');
+		if (! $simulatorname) {
+			$question = new Question($this->translator->trans("Enter the name of the simulator : "));
+			$simulatorname = $questionHelper->ask($input, $output, $question);
+			if ($simulatorname !== null) {
+				$input->setArgument('simulatorname', $simulatorname);
+			}
+			$output->writeln('');
+		}
+		$output->writeln('simulatorname : ' . $simulatorname);
+		$simulatorpath = $input->getArgument('simulatorpath');
+		if (! $simulatorpath) {
+			$question = new Question($this->translator->trans("Enter the directory where is located the simulator XML file: "));
+			$simulatorpath = $questionHelper->ask($input, $output, $question);
+			if ($simulatorpath !== null) {
+				$input->setArgument('simulatorpath', $simulatorpath);
+			}
+			$output->writeln('');
+		}
+	}
+
+	/**
+	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$simupath = $input->getArgument('simulatorpath');
@@ -135,25 +144,24 @@ class ImportSimulatorCommand extends Command
 		$csspath = $input->getArgument('stylesheetpath');
 		$stylesheet = $csspath ? $csspath . DIRECTORY_SEPARATOR . $input->getArgument('simulatorname') . ".css" : "";
 		$output->writeln([
-			'Simulator Importer',
+			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
+			'',
+			$this->translator->trans("Simulator Importer"),
 			'===================',
 			'',
 		]);
 		if (! file_exists($simufile)) {
-			$output->writeln(sprintf("The simulator XML file '%s' doesn't exists", $simufile));
+			$output->writeln($this->translator->trans("The simulator XML file '%s%' doesn't exists", array('%s%' => $simufile)));
 			return 1;
 		}
 		if (! file_exists($stylesheet)) {
-			$output->writeln(sprintf("The stylesheet file '%s' doesn't exists", $stylesheet));
+			$output->writeln($this->translator->trans("The stylesheet file '%s%' doesn't exists", array('%s%' => $stylesheet)));
 			return 1;
 		}
-		if (($parameters = $this->getParameters($output)) === false) {
-			return 1;
-		}
-		$output->writeln("Importing the simulator '".$input->getArgument('simulatorname')."' located in '" . $input->getArgument('simulatorpath') . "'");
+		$output->writeln($this->translator->trans("Importing the simulator '%simulatorname%' located in '%simulatorpath%'", array('%simulatorname%' => $input->getArgument('simulatorname'), '%simulatorpath%' => $input->getArgument('simulatorpath'))));
 		$schema = $this->projectDir."/var/doc/Simulator.xsd";
 		$simulatorsDir = $this->projectDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
-		$assetsDir = $this->projectDir."/".$parameters['public_dir']."/assets";
+		$assetsDir = $this->projectDir."/".$this->parameters['public_dir']."/assets";
 		$viewsDir = $this->projectDir."/templates";
 		$dom = new \DOMDocument();
 		$dom->preserveWhiteSpace  = false;
@@ -168,7 +176,7 @@ class ImportSimulatorCommand extends Command
 			}
 			libxml_clear_errors();
 			$output->writeln([
-				"XML Validation errors:",
+				$this->translator->trans("XML Validation errors:"),
 				$mess
 			]);
 			return 1;
@@ -199,6 +207,7 @@ class ImportSimulatorCommand extends Command
 				$fsystem->mkdir($assetsDir.'/'.$view.'/css');
 			}
 			$fsystem->copy($stylesheet, $assetsDir.'/'.$view.'/css/'.$simu.'.css', true);
+			$this->addToManifest('assets/'.$view.'/css/'.$simu.'.css', $output);
 		} else if (! $fsystem->exists($assetsDir.'/'.$view.'/css/'.$simu.'.css')) {
 			if ($view == 'Demo') {
 				$fsystem->dumpFile($assetsDir.'/'.$view.'/css/'.$simu.'.css', '@import "common.css";'."\n");
@@ -208,8 +217,50 @@ class ImportSimulatorCommand extends Command
 				}
 				$fsystem->copy($assetsDir.'/Demo/css/common.css', $assetsDir.'/'.$view.'/css/'.$simu.'.css');
 			}
+			$this->addToManifest('assets/'.$view.'/css/'.$simu.'.css', $output);
 		}
-		$output->writeln(sprintf("The simulator '%s' is successfully imported", $simu));
+		$output->writeln($this->translator->trans("The simulator '%s%' is successfully imported", array('%s%' => $simu)));
 		return 0;
+	}
+
+	/**
+	 * Adds a stylesheet to the assets manifest
+	 *
+	 * @param   string $assetpath The asset path
+	 * @return void
+	 *
+	 */
+	private function addToManifest($assetpath, $output) {
+		$command = $this->getApplication()->find('g6k:assets:manifest:add-asset');
+		$input = new ArrayInput(array(
+			'command' => 'g6k:assets:manifest:add-asset',
+			'assetpath' => $assetpath,
+			'--no-interaction' => true
+		));
+		$output->writeln("");
+		$output->writeln($this->translator->trans("View Importer: Adding the stylesheet to the assets manifest"));
+		$returnCode = $command->run($input, $output);
+		if ($returnCode == 0) {
+			$output->writeln($this->translator->trans("View Importer: Adding of the stylesheet is done!"));
+		} else {
+			$output->writeln($this->translator->trans("View Importer: Adding of the stylesheet is not done!"));
+		}
+	}
+
+	/**
+	 * Retuns the DOMElement at position $index of the DOMNodeList
+	 *
+	 * @access  private
+	 * @param   \DOMNodeList $nodes The DOMNodeList
+	 * @param   int $index The position in the DOMNodeList
+	 * @return  \DOMElement|null The DOMElement.
+	 *
+	 */
+	private function getDOMElementItem($nodes, $index) {
+		$node = $nodes->item($index);
+		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
+			return $node;
+		}
+		return null;
 	}
 }
