@@ -2929,7 +2929,7 @@ THE SOFTWARE.
 																			fields: [
 																				{
 																					name: 'fieldId',
-																					value: $(this).attr('data-field')
+																					value: $(this).attr('data-' + target)
 																				}
 																			]
 																		}
@@ -2966,7 +2966,7 @@ THE SOFTWARE.
 																	fields: [
 																		{
 																			name: 'fieldId',
-																			value: $(this).attr('data-field')
+																			value: $(this).attr('data-' + target)
 																		}
 																	]
 																}
@@ -4036,11 +4036,11 @@ THE SOFTWARE.
 					break;
 				case 'prenote':
 					if (fieldsetObj.disposition === 'grid') {
-						actionContainer.append('<span class="action-prenote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-prenote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}, {fieldId: prenote}], optionNode).label}) + '</span>');
 						actionContainer.append('<span class="action-fieldrow"> ' + Translator.trans('in') + ' ' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}], optionNode).label + '</span>');
 						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('of fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
 					} else {
-						actionContainer.append('<span class="action-prenote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-prenote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: prenote}], optionNode).label}) + '</span>');
 						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
 					}
 					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
@@ -4048,11 +4048,11 @@ THE SOFTWARE.
 					break;
 				case 'postnote':
 					if (fieldsetObj.disposition === 'grid') {
-						actionContainer.append('<span class="action-postnote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-postnote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}, {fieldId: postnote}], optionNode).label}) + '</span>');
 						actionContainer.append('<span class="action-fieldrow"> ' + Translator.trans('in') + ' ' + Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldrowId: fieldrow}], optionNode).label + '</span>');
 						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('of fieldset «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
 					} else {
-						actionContainer.append('<span class="action-postnote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: field}], optionNode).label}) + '</span>');
+						actionContainer.append('<span class="action-postnote"> ' + Translator.trans('of field «%label%»', {'label': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}, {fieldId: postnote}], optionNode).label}) + '</span>');
 						actionContainer.append('<span class="action-fieldset"> ' + Translator.trans('in fieldset «%fieldset%»', {'fieldset': Simulators.findActionField([{stepId: step}, {panelId: panel}, {fieldsetId: fieldset}], optionNode).label})+ '</span>');
 					}
 					actionContainer.append('<span class="action-panel"> ' + Translator.trans('of panel «%panel%»', {'panel': Simulators.findActionField([{stepId: step}, {panelId: panel}], optionNode).label}) + '</span>');
