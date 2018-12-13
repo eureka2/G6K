@@ -96,6 +96,13 @@ class RemoveViewAssetManifestCommand extends AssetManifestCommandBase
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	protected function getCommandOptions() {
+		return array();
+	}
+
+	/**
 	 * Checks the argument of the current command (g6k:assets:manifest:remove-view).
 	 *
 	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface

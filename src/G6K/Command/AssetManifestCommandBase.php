@@ -81,6 +81,13 @@ abstract class AssetManifestCommandBase extends CommandBase
 	/**
 	 * @inheritdoc
 	 */
+	protected function getCommandOptions() {
+		throw new LogicException("getCommandOptions method is not implemented");
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$output->writeln([
 			$this->translator->trans("Asset manifest editor"),

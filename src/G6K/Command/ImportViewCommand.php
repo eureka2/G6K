@@ -105,6 +105,13 @@ class ImportViewCommand extends CommandBase
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	protected function getCommandOptions() {
+		return array();
+	}
+
+	/**
 	 * Checks the argument of the current command (g6k:view:import).
 	 *
 	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface

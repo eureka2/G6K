@@ -94,6 +94,13 @@ class RefreshAssetManifestCommand extends AssetManifestCommandBase
 	/**
 	 * @inheritdoc
 	 */
+	protected function getCommandOptions() {
+		return array();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
 		$templatesDir = $this->projectDir . DIRECTORY_SEPARATOR . "templates";

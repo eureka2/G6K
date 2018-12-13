@@ -177,6 +177,10 @@ abstract class CommandBase extends Command
 			$default = $argument[3] ?? null;
 			$this->addArgument($argument[0], $argument[1], $argument[2], $default);
 		}
+		foreach($this->getCommandOptions() as $option) {
+			$default = $option[4] ?? null;
+			$this->addOption($option[0], $option[1], $option[2], $option[3], $default);
+		}
 	}
 
 	/**
@@ -273,5 +277,14 @@ abstract class CommandBase extends Command
 	 *
 	 */
 	abstract protected function getCommandArguments();
+
+
+	/**
+	 * Returns the options of the current command 
+	 *
+	 * @return array The help text
+	 *
+	 */
+	abstract protected function getCommandOptions();
 
 }

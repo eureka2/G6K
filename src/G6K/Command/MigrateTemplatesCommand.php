@@ -90,6 +90,13 @@ class MigrateTemplatesCommand extends CommandBase
 	/**
 	 * @inheritdoc
 	 */
+	protected function getCommandOptions() {
+		return array();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$output->writeln([
 			$this->translator->trans("Templates migrator"),
