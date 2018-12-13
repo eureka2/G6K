@@ -1109,14 +1109,14 @@ class BaseController extends Controller {
 						case 'prenote':
 							$panel = $step->getPanelById($action->getpanel());
 							$fieldset = $panel->getFieldSetById($action->getFieldset());
-							$field = $fieldset->getFieldByPosition($action->getField());
+							$field = $fieldset->getFieldByPosition($action->getPreNote());
 							$prenote = $field->getPreNote();
 							$prenote->setDisplayable($action->getName() == 'showObject');
 							break;
 						case 'postnote':
 							$panel = $step->getPanelById($action->getpanel());
 							$fieldset = $panel->getFieldSetById($action->getFieldset());
-							$field = $fieldset->getFieldByPosition($action->getField());
+							$field = $fieldset->getFieldByPosition($action->getPostNote());
 							$postnote = $field->getPostNote();
 							$postnote->setDisplayable($action->getName() == 'showObject');
 							break;
