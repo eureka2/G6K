@@ -3283,11 +3283,6 @@ THE SOFTWARE.
 				e.stopPropagation();
 				return false;
 			});
-			$( ".disposition-classic select").each(function(k) {
-				if (! this.hasAttribute('data-widget')) {
-					$(this).listbox();
-				}
-			});
 			if (this.isDynamic) {
 				var view = $('input[name=view]').eq(0).val();
 				var step = $('input[name=step]').eq(0).val();
