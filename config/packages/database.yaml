@@ -1,0 +1,10 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: 'pdo_%env(DB_ENGINE)%'
+    database_host: '%env(DB_HOST)%'
+    database_port: '%env(DB_PORT)%'
+    database_name: '%env(DB_NAME)%'
+    database_user: '%env(DB_USER)%'
+    database_password: '%env(DB_PASSWORD)%'
+    database_path: '%env(resolve:DB_PATH)%'
+    database_version: '%env(DB_VERSION)%'

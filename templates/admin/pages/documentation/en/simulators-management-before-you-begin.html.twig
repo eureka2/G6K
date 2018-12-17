@@ -1,0 +1,55 @@
+				<h1 id="before-you-begin">
+					2. Before you begin
+				</h1>
+				<p>Before starting to enter the simulator, think carefully about the simulation scenario, that is, its step-by-step division and their sequence. A simulation step corresponds to a page and vice versa.</p>
+				<p>In each page, it is necessary to define the information that will be requested from the user (via a form) and those that are restituted to him. A page may also contain blocks of information.</p>
+				<p>The information returned is either reference data or data from the result of a calculation according to calculation rules (legislation).</p>
+				<p>It is therefore necessary to make an inventory of all these data:</p>
+				<ul>
+					<li>Data entered by the user</li>
+					<li>Reference data (e.g. amount of SMIC, RSA, ceiling safety, various scales, ...)</li>
+					<li>Data from a calculation</li>
+					<li>Data resulting from an intermediate calculation.</li>
+				</ul>
+				<p>For the reference data, the question of the data source must be asked. Is there an internal or external web service API or a database to retrieve these data?</p>
+				<p>If so, it will be possible to set this API or this database in G6K to be able to access it.</p>
+				<p>Otherwise, it will be necessary to create an internal data source (database) in G6K. Note that simple values ​​(such as the amount of the RSA) can be set constantly in the simulator, thus avoiding the creation of a data source. On the other hand, complex data structures (such as a scale) require the creation of an internal data source.</p>
+				<p>Then, it is advisable to identify all the elements of a page, name them, label them:</p>
+				<ol>
+					<li>Give a name to the simulator, the one that will appear in the url</li>
+					<li>Give a title to the simulator. This title will appear on each page underneath the breadcrumb navigation.</li>
+					<li>Define a hat description that will appear on each page of the simulation below the title</li>
+					<li>
+						For each step: 
+						<ul>
+							<li>Give a short name to the step and a label (not too long). The short name will appear in the breadcrumb sequence.</li>
+							<li>Define the information (fields) that will be requested or restored to the user</li>
+							<li>
+								For each field: 
+								<ul>
+									<li>Give it a name and label (label)</li>
+									<li>Assign a type (date, integer, amount, percentage, choice list, ...)</li>
+									<li>Describe the field (this description can be used as a tooltip)</li>
+									<li>Describe the conditions ^1^ to display the field</li>
+									<li>Define its use (user input or restitution)</li>
+									<li>
+										If this is an input field: 
+										<ul>
+											<li>Define input controls and associated error messages.</li>
+											<li>Possibly define a statement that may appear above or below the input field.</li>
+										</ul>
+									</li>
+									<li>
+										If it is a field of restitution: 
+										<ul>
+											<li>Define the rules for establishing the value of the field (calculation, data source, ...)</li>
+										</ul>
+									</li>
+									<li>Possibly define footnotes and conditions ^1^ of their display.</li>
+									<li>Define navigation buttons between the steps (next step, previous, new simulation, jump to step N) and their display condition.</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ol>
+				

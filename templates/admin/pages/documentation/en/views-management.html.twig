@@ -1,0 +1,41 @@
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>
+			G6K: Administration Guide
+		</h1>
+		<p class="lead">Views management</p>
+	</div>
+</header>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+					<a class="nav-link ml-1" href="#what-is-a-view">1. What is a view?</a>
+<a class="nav-link ml-1" href="#creating-a-view">2. Creating a View</a>
+<a class="nav-link ml-1" href="#export-a-view">3. Export a view</a>
+<a class="nav-link ml-1" href="#managing-a-view">4. Managing a view</a>
+
+					<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-2" href="#adding-a-subfolder-or-a-file-to-an-existing-folder">4.1. Adding a subfolder or a file to an existing folder</a>
+<a class="nav-link ml-2" href="#rename-an-element">4.2. Rename an element</a>
+<a class="nav-link ml-2" href="#update-a-file">4.3. Update a file</a>
+<a class="nav-link ml-2" href="#remove-an-element">4.4. Remove an element</a>
+<a class="nav-link ml-2" href="#remove-a-view">4.5. Remove a view</a>
+</nav>
+					<a class="nav-link ml-1" href="#composition-of-templates">5. Composition of templates</a>
+
+				</nav>
+			</nav>
+		</div>
+		<div class="col-9">
+			<div class="document-content">
+				{% include 'admin/pages/documentation/en/views-management-what-is-a-view.html.twig' %}
+				{% include 'admin/pages/documentation/en/views-management-creating-a-view.html.twig' %}
+				{% include 'admin/pages/documentation/en/views-management-export-a-view.html.twig' %}
+				{% include 'admin/pages/documentation/en/views-management-managing-a-view.html.twig' %}
+				{% include 'admin/pages/documentation/en/views-management-composition-of-templates.html.twig' %}
+				</div>
+		</div>
+	</div>
+</div>

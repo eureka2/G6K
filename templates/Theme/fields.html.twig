@@ -1,0 +1,81 @@
+{% use 'form_div_layout.html.twig' with form_label as base_form_label %}
+
+{% block form_label -%}
+    {% if label is not same as(false) -%}
+        {% if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif %}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif %}
+        {% if label is empty -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+        {% if label is not empty -%}
+			<label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}
+			{% if required -%}
+				<span class="asterisk" title="Ce champ est requis">*</span>
+			{%- endif %}
+			</label>
+		{%- endif %}
+    {%- endif %}
+	
+{% endblock %}
+
+{% block integer_widget %}
+    <div class="integer_widget">
+        {% set type = type|default('number') %}
+        {{ block('form_widget_simple') }}
+    </div>
+{% endblock %}
+
+{% block submit_widget -%}
+    {% set type = type|default('submit') %}
+    {% if label is empty -%}
+        {% set label = name|humanize %}
+    {%- endif -%}
+    <input type="{{ type }}" {{ block('button_attributes') }} value="{{ label|trans({}, translation_domain) }}" />
+{%- endblock submit_widget %}
+
+{% use 'form_div_layout.html.twig' with form_widget_simple as base_form_widget_simple %}
+
+{% block form_widget_simple %}
+    {% set type = type|default('text') -%}
+    {% if type == 'text' %}
+        {%- if disabled %}
+			<span id="{{ id }}" class="output disabled">{{ value }}</span>
+		{% else %}
+			{{ block('base_form_widget_simple') }}
+		{%- endif -%}
+    {% else %}
+		{{ block('base_form_widget_simple') }}
+	{%- endif -%}
+    {%- for attrname, attrvalue in attr -%}
+		{%- if attrname in ['help'] -%}
+			<button type="button" data-toggle="collapse" data-target="#help-{{ id }}" class="btn-help btn-swap" title="aide sur {{ label }}"><img src="{{ asset('assets/Default/images/help-off.png') }}" alt="aide sur {{ label }}" /></button>
+			<div class="collapse help-panel" id="help-{{ id }}">
+			{%- for val in attrvalue -%}
+				<p>{{ val }}</p>
+			{%- endfor -%}
+			</div>
+		{%- endif -%}
+	{%- endfor -%}
+{% endblock %}
+
+{% block widget_attributes -%}
+    id="{{ id }}" name="{{ full_name }}"
+    {%- if read_only %} readonly="readonly"{% endif -%}
+    {%- if disabled %} disabled="disabled"{% endif -%}
+    {%- if required %} required="required"{% endif -%}
+    {%- for attrname, attrvalue in attr -%}
+        {{- " " -}}
+        {%- if attrname in ['placeholder', 'title'] -%}
+            {{- attrname }}="{{ attrvalue|trans({}, translation_domain) }}"
+        {%- elseif attrname in ['help'] -%}
+		{%- elseif attrvalue is same as(true) -%}
+            {{- attrname }}="{{ attrname }}"
+        {%- elseif attrvalue is not same as(false) -%}
+            {{- attrname }}="{{ attrvalue }}"
+        {%- endif -%}
+    {%- endfor -%}
+{%- endblock widget_attributes %}

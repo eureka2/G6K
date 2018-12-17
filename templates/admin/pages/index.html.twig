@@ -1,0 +1,89 @@
+{#
+The MIT License (MIT)
+
+Copyright (c) 2015-2018 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+#}
+
+{% extends "admin/layout/pagelayout.html.twig" %}
+
+{% block content %}
+<div class="jumbotron">
+  <h1>{{ 'Welcome to G6K world!'|trans }}</h1>
+  <p class="lead">{{ 'G6K is a calculation simulator engine'|trans }}</p>
+  <p><a class="btn btn-primary btn-lg" href="{{ path('eureka_g6k_admin_documentation', {'document': 'learn-more' }) }}" role="button">{{ 'Learn more'|trans }}</a></p>
+</div>
+
+<div class="row thumbnails">
+	{% if is_granted('ROLE_CONTRIBUTOR') %}
+   <div class="col-sm-6 col-md-3">
+      <a href="{{ path('eureka_g6k_admin_datasources') }}" class="thumbnail">
+         <img src="{{ asset('assets/admin/images/database1.png') }}" alt="{{ 'Data sources'|trans }}">
+      <div class="caption">
+         <h3>{{ datasourcesCount }} {{ 'Data sources'|trans }}</h3>
+         <p>{{ 'Data sources management'|trans }}</p>
+      </div>
+      </a>
+   </div>
+   {% endif %}
+	{% if is_granted('ROLE_ADMIN') %}
+   <div class="col-sm-6 col-md-3">
+      <a href="{{ path('eureka_g6k_admin_views') }}" class="thumbnail">
+         <img src="{{ asset('assets/admin/images/view.png') }}" alt="{{ 'Views'|trans }}">
+      <div class="caption">
+         <h3>{{ viewsCount }} {{ 'Views'|trans }}</h3>
+         <p>{{ 'Views management'|trans }}</p>
+      </div>
+      </a>
+   </div>
+   {% endif %}
+	{% if is_granted('ROLE_MANAGER') %}
+   <div class="col-sm-6 col-md-3">
+      <a href="{{ path('eureka_g6k_admin_simulators') }}" class="thumbnail">
+         <img src="{{ asset('assets/admin/images/gear.png') }}" alt="{{ 'Simulators'|trans }}">
+       <div class="caption">
+         <h3>{{ simulatorsCount }} {{ 'Simulators'|trans }}</h3>
+         <p>{{ 'Simulators definition'|trans }}</p>
+      </div>
+     </a>
+	</div>
+	{% endif %}
+	{% if is_granted('ROLE_SUPER_ADMIN') %}
+   <div class="col-sm-6 col-md-3">
+      <a href="{{ path('eureka_g6k_admin_users') }}" class="thumbnail">
+         <img src="{{ asset('assets/admin/images/user.png') }}" alt="{{ 'Users'|trans }}">
+      <div class="caption">
+         <h3>{{ usersCount }} {{ 'Users'|trans }}</h3>
+         <p>{{ 'Users management'|trans }}</p>
+      </div>
+      </a>
+   </div>
+   {% endif %}
+   <div class="col-sm-6 col-md-3">
+      <a href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'index' }) }}" class="thumbnail">
+         <img src="{{ asset('assets/admin/images/help.png') }}" alt="{{ 'Help'|trans }}">
+      <div class="caption">
+         <h3>{{ 'Help'|trans }}</h3>
+         <p>{{ 'Tutorials'|trans }}</p>
+      </div>
+      </a>
+   </div>
+</div>
+{% endblock %}

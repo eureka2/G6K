@@ -1,0 +1,41 @@
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>
+			G6K: Guide d'administration
+		</h1>
+		<p class="lead">Gestion des vues</p>
+	</div>
+</header>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+					<a class="nav-link ml-1" href="#qu-est-ce-qu-une-vue">1. Qu'est-ce qu'une vue ?</a>
+<a class="nav-link ml-1" href="#creation-d-une-vue">2. Création d’une vue</a>
+<a class="nav-link ml-1" href="#exporter-une-vue">3. Exporter une vue</a>
+<a class="nav-link ml-1" href="#gestion-d-une-vue">4. Gestion d’une vue</a>
+
+					<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-2" href="#ajout-d-un-sous-dossier-ou-d-un-fichier-a-un-dossier-existant">4.1. Ajout d’un sous-dossier ou d’un fichier à un dossier existant</a>
+<a class="nav-link ml-2" href="#renommer-un-element">4.2. Renommer un élément</a>
+<a class="nav-link ml-2" href="#mettre-a-jour-un-fichier">4.3. Mettre à jour un fichier</a>
+<a class="nav-link ml-2" href="#supprimer-un-element">4.4. Supprimer un élément</a>
+<a class="nav-link ml-2" href="#supprimer-une-vue">4.5. Supprimer une vue</a>
+</nav>
+					<a class="nav-link ml-1" href="#composition-des-gabarits">5. Composition des gabarits</a>
+
+				</nav>
+			</nav>
+		</div>
+		<div class="col-9">
+			<div class="document-content">
+				{% include 'admin/pages/documentation/fr/views-management-qu-est-ce-qu-une-vue.html.twig' %}
+				{% include 'admin/pages/documentation/fr/views-management-creation-d-une-vue.html.twig' %}
+				{% include 'admin/pages/documentation/fr/views-management-exporter-une-vue.html.twig' %}
+				{% include 'admin/pages/documentation/fr/views-management-gestion-d-une-vue.html.twig' %}
+				{% include 'admin/pages/documentation/fr/views-management-composition-des-gabarits.html.twig' %}
+				</div>
+		</div>
+	</div>
+</div>

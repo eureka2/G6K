@@ -1,0 +1,50 @@
+				<h5 id="fields">
+						4.3.1.1.1. Fields
+					</h5>
+					<p>
+						The field is the element of the form that allows the input or the restitution of a data. It takes the form of an entry box, a list box, a checkbox or radio buttons.
+						<br>
+						It is preceded by a field label unless it is placed in the cell of an array.
+						<br>
+						It may be mandatory or optional.
+					</p>
+					<p>To add a field, click the « Add field » button in the title bar of the fieldset panel to which you want to add it:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-fieldset-add-field-button.png') }}" alt="">
+					</p>
+					<p>The form for entering a field is displayed:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-field-add.png') }}" alt="">
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Data »: Data associated with the field. If it is an input field, it is in this data that the value entered by the user will be stored. If it is a field of restitution, it is the content of this data that will be displayed in the field.</li>
+						<li>« Usage »: User input or restitution to the user.</li>
+					</ol>
+					<p><strong>Optional attributes:</strong></p>
+					<ol>
+						<li>« Label »: Label of the field. See <span class="bs-docs-number-circle">4</span>.</li>
+						<li>« Required »: Required field (An error message will be displayed if the field is not filled in).</li>
+						<li>« Show after the field label? »: If this box is checked, the ':' will be displayed after the label.</li>
+						<li>« Use data description as help? »: If this box is checked, a question mark will be displayed after the field (see <span class="bs-docs-number-circle">6</span>). If the user clicks on this question mark, the description of the data is displayed below the field as help text (see <span class="bs-docs-number-circle">8</span>).</li>
+						<li>« Prompt »: Text to be displayed in the input field to indicate the input format or what to enter or select.</li>
+						<li>« Line jump before field? »: If this box is checked, the field will be displayed on a new line.</li>
+						<li>« Required if visible »:If this box is checked, the field will be made mandatory if and only if it is not hidden.</li>
+						<li>« Place the field under the field label? »: If this box is checked, the field will be displayed below its label and not to its right.</li>
+						<li>« Highlight the field label? »: If this box is checked, the field label will be displayed in bold.</li>
+						<li>« Show choices with radio buttons? » Do not use for long lists of choices.</li>
+						<li>« Explanation »: Text explaining how the field is calculated.</li>
+						<li>
+							« Widget »: To be chosen according to your needs: 
+							<ul>
+								<li>« List box conforming to RGAA »: List box according to the General Repository of Accessibility for the Administration.</li>
+								<li>« List box with auto-completion »: When entering the auto-completion is done automatically, this allows the user to find the item he is looking for.</li>
+								<li>« Postal code obtained by self-completion on the name of the municipality or its postal code »: Allows the user to take advantage of the self-completion concerning the name of the commune or its postal code.</li>
+								<li>« INSEE code obtained by self-completion on the name of the commune or its postal code »: Allows the user to benefit from the self-completion concerning the name of the commune or its postal code.</li>
+								<li>« Insee code derived from a card of France»: A map appears and leaves the choice to the user to geolocate or not.</li>
+								<li>« RGAA-compliant date selector »: Allows the user to select a date.</li>
+								<li>« Form Field Editor »: Allows you to place an input field in the middle of a text.</li>
+							</ul>
+						</li>
+					</ol>
+					

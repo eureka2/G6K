@@ -1,0 +1,66 @@
+				<h2 id="entering-a-condition">
+					3.1. Entering a condition
+				</h2>
+				<p>
+					In the condition entry block, there is the line: 
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-conditions-connector.png') }}" alt="">
+					<br>
+					Click on the underlined word to select the connector: 
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-connectors-list.png') }}" alt="">
+				</p>
+				<p>The connector allows you to enter a "compound condition" by combining the "simple conditions" that you enter directly below the connector.
+The conditions are presented by levels. The connector introduces a level of conditions. One level is materialized by a shrinkage from the connector.</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Connector</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>All</td>
+							<td>All line conditions of the next lower level must be true (this is the equivalent of AND)</td>
+						</tr>
+						<tr>
+							<td>Any</td>
+							<td>At least one of the conditions of the lines of the next lower level must be true (this is the equivalent of OR)</td>
+						</tr>
+						<tr>
+							<td>None</td>
+							<td>None of the conditions of the lines of the next lower level must be true</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>For example:</p>
+				<pre class="prettyprint">
+<span class="label-default">All</span> the following conditions are met: <span class="label label-default">simple condition A </span> <span class="label label-default">Any</span> of the following conditions is satisfied: <span class="label label-default">simple condition B </span> <span class="label label-default">simple condition C </span>
+</pre>
+				<p>translates the boolean expression: <code>simple condition A AND (simple condition B OR simple condition C)</code></p>
+				<pre class="prettyprint">
+<span class="label label-default">simple condition A</span> is level 1, <span class="label label-default">simple condition B</span> and <span class="label label-default">simple condition C</span> are level 2.
+</pre>
+				<p>
+					Click 
+					<img src="{{ asset('assets/admin/images/documentation/business-rules-subcondition-add-button.png') }}" alt="">
+					to add a compound condition by entering a subcondition level under that connector.
+					<br>
+					The line below is displayed below the connector with an indent indicated by the arrow:
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-conditions-subcondition.png') }}" alt="">
+				</p>
+				<p>or</p>
+				<p>
+					Click 
+					<img src="{{ asset('assets/admin/images/documentation/business-rules-condition-add-button.png') }}" alt="">
+					to the right of the connector to add a simple condition of that connector's level.
+					<br>
+					The following line is displayed below the connector with an indent:
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-conditions-condition.png') }}" alt="">
+				</p>
+				{% include 'admin/pages/documentation/en/business-rules-simple-condition.html.twig' %}
+				{% include 'admin/pages/documentation/en/business-rules-deleting-a-condition.html.twig' %}
+				

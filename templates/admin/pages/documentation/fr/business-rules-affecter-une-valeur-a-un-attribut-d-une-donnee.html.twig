@@ -1,0 +1,65 @@
+				<h3 id="affecter-une-valeur-a-un-attribut-d-une-donnee">
+					3.2.3. Affecter une valeur à un attribut d'une donnée
+				</h3>
+				<p>Choisissez « Mettre » ou « Effacer » dans la liste des actions, la liste des attributs s'affiche :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-setattribute-targets-list.png') }}" alt="">
+				</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Attribut</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>la valeur</td>
+							<td>Contient la valeur attribuée à la donnée</td>
+						</tr>
+						<tr>
+							<td>la valeur par défaut</td>
+							<td>Contient la valeur à prendre en compte lorsque l'attribut « la valeur » n'est pas renseignée.</td>
+						</tr>
+						<tr>
+							<td>la valeur minimale</td>
+							<td>Contient la valeur minimale pouvant être attribuée à la donnée.</td>
+						</tr>
+						<tr>
+							<td>la valeur maximale</td>
+							<td>Contient la valeur maximale pouvant être attribuée à la donnée.</td>
+						</tr>
+						<tr>
+							<td>l'index de résultat</td>
+							<td>Contient le nom d'un champ de requête de source de données lorsque la donnée est alimentée par cette source.</td>
+						</tr>
+						<tr>
+							<td>l'explication</td>
+							<td>Contient une explication du mode de calcul de la donnée</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>L'action « Mettre » permet d'affecter une valeur à l'un de ces attributs, l'action « Effacer » permet d'en effacer (mettre à blanc) le contenu.</p>
+				<p>Une fois l'attribut choisi, la ligne se complète ainsi :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-setattribute-value.png') }}" alt="">
+				</p>
+				<p>Cliquez sur « cliquez pour sélectionner ... » pour afficher la liste des données :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-setattribute-value-datas-list.png') }}" alt="">
+				</p>
+				<p>Choisissez la donnée pour laquelle vous souhaitez modifier la valeur d'attribut.</p>
+				<p>
+					S'il s'agit de l'action « Effacer », la saisie de l'action est terminée.
+					<br>
+					S'il s'agit de l'action « Mettre », vous pouvez maintenant choisir la valeur ou composer l'expression à affecter à l'attribut :
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-setattribute-value-data-expression.png') }}" alt="">
+				</p>
+				<p>Se reporter à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition des expressions</a> pour savoir comment saisir l'expression.</p>
+				<p><strong>Exemple d'action permettant d'affecter le résultat d'un calcul à une donnée</strong></p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-setattribute-example.png') }}" alt="">
+				</p>
+				

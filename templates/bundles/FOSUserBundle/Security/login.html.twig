@@ -1,0 +1,45 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+<div class="container">	
+	<div id="loginbox" class="mainbox col-md-6 col-sm-8 mx-auto mt-5">
+		<div class="card" >
+			<div class="card-header bg-primary">
+				<div class="float-right small"><a class="text-white" href="{{ path('fos_user_resetting_request') }}">{{ 'Forgot password?'|trans({}, 'messages') }}</a></div>
+				<div class="card-title mb-0 font-weight-bold text-white">{{ 'layout.login'|trans }}</div>
+			</div>	 
+			<div style="padding-top:30px" class="card-body" >
+				{% include "@FOSUser/fos.messages.html.twig" %}
+				{% if error %}
+				<div id="login-alert" class="alert alert-danger col-sm-12">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+				{% endif %}
+				<form id="loginform" action="{{ path("fos_user_security_check") }}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+					<div class="input-group mb-3">
+						<div class="input-group-prepend"><i class="input-group-text pt-2 fa fa-user"></i></div>
+						<input id="login-username" type="text" class="form-control" name="_username" value="{{ last_username }}" placeholder="{{ 'security.login.username'|trans }}" required="required">
+					</div>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend"><i class="input-group-text pt-2 fa fa-lock"></i></div>
+						 <input id="login-password" type="password" class="form-control" name="_password" placeholder="{{ 'security.login.password'|trans }}" required="required">
+					</div>
+					 <div class="input-group">
+						<div class="checkbox mb-3">
+							<label>
+								<input id="login-remember" type="checkbox" name="_remember_me" value="1"> {{ 'security.login.remember_me'|trans }}
+							</label>
+						</div>
+					</div>
+					<div style="margin-top:10px" class="form-group">
+						<div class="col-sm-12 controls">
+							<input type="submit" id="_submit" class="btn btn-primary btn-lg btn-block" name="_submit" value="{{ 'security.login.submit'|trans }}" />
+						</div>
+					</div>
+				</form>	 
+			</div>
+		</div>  
+	</div>
+</div>
+{% endblock fos_user_content %}

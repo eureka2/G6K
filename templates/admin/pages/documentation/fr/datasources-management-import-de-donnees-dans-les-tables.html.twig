@@ -1,0 +1,27 @@
+				<h3 id="import-de-donnees-dans-les-tables">
+					2.1.3. Import de données dans les tables
+				</h3>
+				<p>Un autre moyen d’alimenter votre table est d'importer des données au format .csv ou .txt provenant d'un fichier Excel. Si vous choisissez d'importer des données, cliquez sur le bouton « Importer données » de la barre de titre.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-table-import-button.png') }}" alt="">
+				</p>
+				<p>
+					Le message « Êtes-vous sûr de vouloir importer des données dans la table ‘Libellé de la table sélectionnée’ ? » s’affiche, appuyez sur « OK » pour confirmer.
+					<br>
+					L'écran suivant s’affiche :
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-table-import.png') }}" alt="">
+				</p>
+				<p>Dans ce formulaire, une fois que vous aurez sélectionné le « Fichier texte » depuis le disque dur de votre ordinateur, il vous sera proposé le « Séparateur » et le « Délimiteur » les plus appropriés au format du fichier (selon son extension : .csv ou .txt).</p>
+				<p>Si dans votre fichier vous avez une ligne titre avec les noms de colonnes, assurez-vous d'avoir nommé chaque colonne avec le nom du champ correspondant et non le libellé. Vous devez aussi vérifier que les valeurs affectées aux champs sont conformes à leurs types (par exemple que le champ « donnee_1 » contient une valeur de type date).</p>
+				<p>Si vous avez choisi de ne pas mettre de ligne de titre dans votre fichier, décochez la case « Nom des colonnes en première ligne ? ». Dans ce cas, les colonnes doivent être présentées dans l'ordre de déclaration des champs de la table.</p>
+				<p>Exemple .csv (DOS ou point-virgule lors de l’enregistrement) :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-table-import-csv.png') }}" alt="">
+				</p>
+				<p>Exemple .txt (Texte séparateur Tabulation lors de l’enregistrement) :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/datasources-management-table-import-txt.png') }}" alt="">
+				</p>
+				

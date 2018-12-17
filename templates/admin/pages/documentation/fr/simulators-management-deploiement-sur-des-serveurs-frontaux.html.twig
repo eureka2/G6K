@@ -1,0 +1,47 @@
+				<h2 id="deploiement-sur-des-serveurs-frontaux">
+					4.7. Déploiement sur des serveurs frontaux
+				</h2>
+				<p>Si, pour des raisons de sécurité, le module d'administration (back-office) est situé sur un serveur différent de ceux sur lesquels les visiteurs effectuent des simulations, vous allez devoir déployer vos simulateurs sur ces serveurs frontaux depuis le serveur de back-office.</p>
+				<p>Pour cela, G6K fournit une fonctionnalité de déploiement permettant de copier chaque simulateur du back-office vers les frontaux.</p>
+				<p>Pour activer cette fonctionnalité, l'administrateur système doit ajouter une entrée « deployment » dans le fichier parameters.yml de l'instance G6K installée sur le serveur de back-office :</p>
+				<p>
+					<em><strong>Exemple de paramétrage du déploiement :</strong></em>
+				</p>
+				<pre class="prettyprint">
+<em># config/packages/g6k.yaml</em> deployment: localhost: cp -f {local.rootdir}/{local.file} /var/www/html/simulator/{remote.dir}/ remotehost: rsync -a {local.rootdir}/{local.file} user@remoteserver:/var/www/html/simulator/{remote.file}
+</pre>
+				<p>Dans cet exemple, l'administrateur du système a déclaré deux serveurs frontaux de noms virtuels « localhost » et « remotehost ».</p>
+				<p>En face de chaque nom virtuel, se trouve la commande que G6K doit lancer pour copier les fichiers du simulateur via l'utilisateur du serveur HTTP. Bien sûr, cet utilisateur devra disposer des droits d'exécution de ces commandes.</p>
+				<p>Chaque commande est lancée autant fois qu'il y de fichiers composant le simulateur déployé. Ces fichiers sont :</p>
+				<ul>
+					<li>Le fichier XML de définition du simulateur.</li>
+					<li>Les fichiers base de données des sources de données interne SQLite utilisés par le simulateur</li>
+					<li>Le fichier DataSources.xml de description des sources de données</li>
+					<li>Les fichiers de styles css du simulateur dans chacune des vues où le simulateur peut être utilisé.</li>
+				</ul>
+				<p>Ainsi pour la commande du serveur virtuel « localhost » de l'exemple, supposons que le back-office est installé dans le répertoire « /var/www/html/g6k », que le frontal est installé dans le répertoire « /var/www/html/simulator » et que l'on souhaite déployer un simulateur nommé « demo » qui accède a une source de données interne « demo.db » et qu'il est visualisable dans les vues « Demo » et « Default ». La commande sera lancée cinq fois par G6K :</p>
+				<p><code>cp -f /var/www/html/g6k/var/data/simulators/demo.xml /var/www/html/simulator/var/data/simulators/</code></p>
+				<p><code>cp -f /var/www/html/g6k/var/data/databases/demo.db /var/www/html/simulator/var/data/databases/</code></p>
+				<p><code>cp -f /var/www/html/g6k/var/data/databases/DataSources.xml /var/www/html/simulator/var/data/databases/</code></p>
+				<p><code>cp -f /var/www/html/g6k/calcul/assets/Demo/demo.css /var/www/html/simulator/calcul/assets/Demo/</code></p>
+				<p><code>cp -f /var/www/html/g6k/calcul/assets/Default/demo.css /var/www/html/simulator/calcul/assets/Default/</code></p>
+				<p>après avoir remplacé :</p>
+				<ul>
+					<li>{local.rootdir} par "/var/www/html/g6k/",</li>
+					<li>{local.file} successivement par "var/data/simulators/demo.xml", "var/data/databases/demo.db", "var/data/databases/DataSources.xml", "calcul/assets/Demo/demo.css", "calcul/assets/Default/demo.css"</li>
+					<li>{remote.dir} successivement par "var/data/simulators", "var/data/databases", "var/data/databases", "calcul/assets/Demo", "calcul/assets/Default"</li>
+				</ul>
+				<p>{local.rootdir}, {local.file}, {remote.dir} et {remote.file} sont des paramètres que l'administrateur du système doit utiliser pour configurer les commandes :</p>
+				<ul>
+					<li>{local.rootdir} : Répertoire d'installation du back-office G6K</li>
+					<li>{local.file} : Fichier à copier relativement à {local.rootdir}</li>
+					<li>{remote.dir} : Répertoire du fichier à copier relativement au répertoire d'installation de G6K sur le serveur frontal.</li>
+					<li>{remote.file} : Fichier à copier relativement au répertoire d'installation de G6K sur le serveur frontal.</li>
+				</ul>
+				<p>Pour déployer un simulateur, cliquez sur le bouton « Déployer » de la barre de titre du panneau du simulateur, puis confirmer sur la boite de dialogue qui s'affiche :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-deployment-confirm.png') }}" alt="">
+				</p>
+				<p>Un journal du déploiement s'affiche. Si une ligne du journal fait apparaitre une erreur (en rouge), signalez là à l'administrateur du système.</p>
+				<p>Vous devez disposer du rôle « Manager » pour déployer un simulateur.</p>
+			

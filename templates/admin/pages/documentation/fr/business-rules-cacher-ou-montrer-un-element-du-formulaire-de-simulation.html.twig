@@ -1,0 +1,82 @@
+				<h3 id="cacher-ou-montrer-un-element-du-formulaire-de-simulation">
+					3.2.2. Cacher ou montrer un élément du formulaire de simulation
+				</h3>
+				<p>Ces deux actions permettent de gérer l'affichage des éléments du formulaire d'une étape de simulation.</p>
+				<p>Choisissez « Cacher » ou « Montrer » dans la liste des actions, la liste des éléments s'affiche :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-showobject-targets-list.png') }}" alt="">
+				</p>
+				<p>
+					Une fois choisi l'élément du formulaire, la ligne se complète pour sélectionner les éléments 'conteneurs' de l'élément à cacher ou montrer.
+					<br>
+					Par exemple, si on choisit de cacher un champ, il faut sélectionner successivement l'étape, le panneau, le groupe de champs qui contient ce champ.
+				</p>
+				<p>Le tableau ci-dessous montre la hiérarchie des conteneurs en fonction de l'élément choisi :</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Elément formulaire</th>
+							<th>Conteneurs</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>l'étape</td>
+							<td>aucun</td>
+						</tr>
+						<tr>
+							<td>le panneau</td>
+							<td>étape</td>
+						</tr>
+						<tr>
+							<td>le bloc d'infos</td>
+							<td>étape / panneau</td>
+						</tr>
+						<tr>
+							<td>le chapitre</td>
+							<td>étape / panneau / bloc d'infos</td>
+						</tr>
+						<tr>
+							<td>la section</td>
+							<td>étape / panneau / bloc d'infos / chapitre</td>
+						</tr>
+						<tr>
+							<td>le groupe de champs</td>
+							<td>étape / panneau</td>
+						</tr>
+						<tr>
+							<td>la colonne</td>
+							<td>étape / panneau / groupe de champs</td>
+						</tr>
+						<tr>
+							<td>la rangée</td>
+							<td>étape / panneau / groupe de champs</td>
+						</tr>
+						<tr>
+							<td>le champ (1)</td>
+							<td>étape / panneau / groupe de champs [ / rangée ]</td>
+						</tr>
+						<tr>
+							<td>le bouton d'action</td>
+							<td>étape</td>
+						</tr>
+						<tr>
+							<td>la note de bas de page</td>
+							<td>étape</td>
+						</tr>
+						<tr>
+							<td>le choix (2)</td>
+							<td>liste de choix d'une donnée de type 'choix'</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>
+					(1) la rangée n'est à préciser que si le champ est contenu dans un tableau.
+					<br>
+					(2) permet de montrer/cacher un élément de liste lorsque la donnée est de type 'choix'
+				</p>
+				<p><strong>Exemples d'actions permettant de montrer des éléments de formulaire</strong></p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-showobject-examples.png') }}" alt="">
+				</p>
+				

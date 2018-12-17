@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="demo" defaultView="Demo" label="Simulateur de calcul de pension alimentaire" dynamic="1">
+	<Description><![CDATA[
+Le montant de la pension par enfant est calculé en proportion du revenu, net d'un minimum vital (RSA), du parent débiteur. Cette proportion est différente selon le nombre total d'enfants à la charge du parent débiteur (quelle que soit l'union dont ils sont nés) et l'amplitude du droit de visite et d'hébergement (réduit, classique, ou alterné sans partage spontané des frais).
+	]]></Description>
+	<DataSet dateFormat="d/m/Y" decimalPoint="," moneySymbol="€" symbolPosition="after">
+		<Data id="1" name="revenus" label="Revenus du débiteur" type="money">
+			<Description><![CDATA[
+Sont prises en compte les ressources personnelles du débiteur qui sont imposables ainsi que les prestations sociales, à l’exception de celles visant à améliorer le niveau de vie des enfants (ex : prestations familiales).
+			]]></Description>
+		</Data>
+		<Data id="2" name="droitVH" label="Droit de visite et d'hébergement" type="choice">
+			<Description><![CDATA[
+<strong>Droit de visite et d'hébergement :</strong>
+
+<strong>Réduit :</strong> la résidence de l'enfant est fixée principalement chez l'un des parents et le temps de résidence chez l'autre parent est inférieur à 1/4 du temps de résidence globale. Cela peut consister en un droit de visite et d’hébergement peu fréquent en raison de l’indisponibilité du parent, ou en un droit de visite simple, sans hébergement, si le parent ne dispose pas de condition de logement adéquat ou que cet hébergement ne serait pas conforme à l'intérêt de l'enfant;
+
+<strong>Classique :</strong>  la résidence est fixée principalement chez l'un des parents et le temps de résidence chez l'autre parent est équivalent à 1/4 du temps de résidence globale (ex : un week-end sur deux et la moitié des vacances scolaires).;
+
+<strong>Alterné :</strong> les enfants résident alternativement au domicile de chacun des parents. La résidence alternée peut donner lieu à contribution à l'entretien et à l'éducation des enfants quand les parents ne se sont pas mis d'accord sur le partage des frais liés à l'enfant en fonction de leurs ressources ou quand l'un des parents ne peut pas assumer seul la charge financière de la résidence alternée.
+			]]></Description>
+			<Choices>
+				<Choice id="1" value="1" label="réduite" />
+				<Choice id="2" value="2" label="classique" />
+				<Choice id="3" value="3" label="alternée" />
+			</Choices>
+		</Data>
+		<Data id="3" name="nbEnfants" label="Nombre d'enfants" type="number" min="1">
+			<Description><![CDATA[
+Nombre total d'enfants à la charge du parent débiteur (quelle que soit l'union dont ils sont nés). Sont donc pris en compte l'ensemble des enfants dont le parent débiteur a la charge, y compris ceux qui ne résident pas avec lui.
+			]]></Description>
+		</Data>
+		<Data id="4" name="tauxPA" label="Taux pension alimentaire" type="percent" source="1">
+			<Description><![CDATA[
+Le taux est établi selon une table de référence publiée annuellement par le ministère de la justice :
+<strong>Droit de visite et d'hébergement réduit</strong>
+<ul>
+<li>1 enfant : 18,0%</li>
+<li>2 enfants : 15,5%</li>
+<li>3 enfants : 13,3%</li>
+<li>4 enfants : 11,7%</li>
+<li>5 enfants : 10,6%</li>
+<li>6 enfants : 9,5%</li>
+</ul>
+
+<strong>Droit de visite et d'hébergement classique</strong>
+<ul>
+<li>1 enfant : 13,5%</li>
+<li>2 enfants : 11,5%</li>
+<li>3 enfants : 10,0%</li>
+<li>4 enfants : 8,8%</li>
+<li>5 enfants : 8,0%</li>
+<li>6 enfants : 7,2%</li>
+</ul>
+
+<strong>Droit de visite et d'hébergement alterné</strong>
+<ul>
+<li>1 enfant : 9,0%</li>
+<li>2 enfants : 7,8%</li>
+<li>3 enfants : 6,7%</li>
+<li>4 enfants : 5,9%</li>
+<li>5 enfants : 5,3%</li>
+<li>6 enfants : 4,8%</li>
+</ul>
+			]]></Description>
+		</Data>
+		<Data id="5" name="montantForfaitaireRSA" label="Montant forfaitaire du RSA" type="money" content="550.93" />
+		<Data id="6" name="mtEnfantPA" label="Montant par enfant" type="money" content="max(0, round((#1 - #5) * #4 /100))" round="0" />
+		<Data id="7" name="totalPA" label="Montant total" type="money" content="max(0, min(#1 - #5, #6 * #3))" round="0" />
+	</DataSet>
+	<Steps>
+		<Step id="0" name="calcul" label="pension alimentaire" template="pages:article.html.twig">
+			<Description><![CDATA[
+Le montant de pension à verser ou à recevoir que vous calculerez en utilisant ce simulateur est strictement indicatif. 
+Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pension en prenant en compte la situation spécifique des parents.
+			]]></Description>
+			<Panels>
+				<Panel id="1" name="panel1" label="">
+					<FieldSet id="1">
+						<Legend><![CDATA[
+Revenus et enfants
+						]]></Legend>
+						<Field position="1" label="Revenus mensuels du parent débiteur" usage="input" required="1" help="1" data="1" />
+						<Field position="2" label="Amplitude du droit de visite et d'hébergement" usage="input" prompt="--- Sélectionnez l'amplitude ---" required="1" expanded="0" underlabel="0" help="1" data="2" />
+						<Field position="3" label="Nombre d'enfants du parent débiteur" usage="input" required="1" help="1" data="3"/>
+						<Field position="4" label="Taux applicable par enfant" usage="output" required="0" help="1" data="4" />
+					</FieldSet>
+					<FieldSet id="2">
+						<Legend><![CDATA[
+Pension alimentaire
+						]]></Legend>
+						<Field position="1" label="Montant par enfant" usage="output" required="0" help="0" emphasize="1" data="6" />
+						<Field position="2" label="Montant total" usage="output" required="0" help="0" emphasize="1" data="7" />
+					</FieldSet>
+				</Panel>
+			</Panels>
+			<ActionList>
+				<Action name="effacer" label="Recommencer" class="btn-secondary" what="reset" for="currentStep" />
+			</ActionList>
+		</Step>
+		<Step id="1" name="calcul" label="pension alimentaire" template="pages:article.html.twig">
+			<Description><![CDATA[
+Le montant de pension à verser ou à recevoir que vous calculerez en utilisant ce simulateur est strictement indicatif. 
+Seul le juge, s’il est saisi, peut prononcer le montant définitif de la pension en prenant en compte la situation spécifique des parents.
+			]]></Description>
+			<Panels>
+				<Panel id="1" name="panel1" label="">
+					<FieldSet id="1">
+						<Field position="1" label="Revenus mensuels du parent débiteur" usage="input" required="1" help="1" explanation="1" data="1" />
+						<Field position="2" label="Amplitude du droit de visite et d'hébergement" usage="input" prompt="--- Sélectionnez l'amplitude ---" required="1" expanded="0" underlabel="0" help="1" explanation="2" data="2" />
+						<Field position="3" label="Nombre d'enfants du parent débiteur" usage="input" required="1" help="1" explanation="3" data="3" />
+						<Field position="4" label="Taux applicable par enfant" usage="output" required="0" help="1" explanation="4" data="4" />
+						<Field position="5" label="Pension alimentaire par enfant" usage="output" required="0" help="0" emphasize="1" explanation="'6 = ((1) - 550.93) * (4) /100'" data="6" />
+						<Field position="6" label="Total de la pension alimentaire" usage="output" required="0" help="0" emphasize="1" explanation="'7 = (6) * (3)'" data="7" />
+					</FieldSet>
+				</Panel>
+			</Panels>
+			<ActionList>
+				<Action name="effacer" label="Effacer formulaire" class="btn-secondary" what="reset" for="currentStep" />
+				<Action name="calculer" label="Calculer" class="btn-primary" what="submit" for="currentStep" />
+			</ActionList>
+		</Step>
+	</Steps>
+	<Sources>
+		<Source id="1" datasource="demo" request="SELECT rate FROM MARate WHERE AARight = '%1$s' AND nChildren &lt;= %2$f ORDER BY nChildren DESC LIMIT 1" returnType="assocArray" returnPath="0/rate">
+			<Parameter type="columnValue" name="droitVH" data="2" />
+			<Parameter type="columnValue" name="nbEnfants" data="3" />
+		</Source>
+	</Sources>
+	<BusinessRules>
+		<BusinessRule id="1" name="R1" label="Contrôle du champ 'Revenus du débiteur'">
+			<Conditions value="#1 &lt;= 0">
+				<Condition operand="revenus" operator="&lt;=" expression="0" />
+			</Conditions>
+			<IfActions>
+				<Action id="1" name="notifyError" target="data" data="1" value="Votre revenu doit être supérieur à 0" />
+			</IfActions>
+			<ElseActions>
+			</ElseActions>
+		</BusinessRule>
+		<BusinessRule id="2" name="R2" label="Contrôle du champ 'Nombre d'enfants du parent débiteur'">
+			<Conditions value="defined(#3) &amp;&amp; #3 &lt;= 0">
+				<Connector type="all">
+					<Condition operand="nbEnfants" operator="present" />
+					<Condition operand="nbEnfants" operator="&lt;=" expression="0" />
+				</Connector>
+			</Conditions>
+			<IfActions>
+				<Action id="1" name="notifyError" target="data" data="3" value="Le nombre d'enfants doit être supérieur à 0" />
+			</IfActions>
+			<ElseActions>
+			</ElseActions>
+		</BusinessRule>
+		<BusinessRule id="3" name="R3" label="Condition d'affichage du fieldset 'Pension alimentaire' et du bouton 'Recommencer'">
+			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6)">
+				<Connector type="all">
+					<Condition operand="revenus" operator="present" />
+					<Condition operand="droitVH" operator="present" />
+					<Condition operand="nbEnfants" operator="present" />
+					<Condition operand="tauxPA" operator="present" />
+					<Condition operand="mtEnfantPA" operator="present" />
+				</Connector>
+			</Conditions>
+			<IfActions>
+				<Action id="1" name="showObject" target="field" step="0" panel="1" fieldset="1" field="4" />
+				<Action id="2" name="showObject" target="fieldset" step="0" panel="1" fieldset="2" />
+				<Action id="3" name="showObject" target="action" step="0" action="effacer" />
+			</IfActions>
+			<ElseActions>
+				<Action id="1" name="hideObject" target="field" step="0" panel="1" fieldset="1" field="4" />
+				<Action id="2" name="hideObject" target="fieldset" step="0" panel="1" fieldset="2" />
+				<Action id="3" name="hideObject" target="action" step="0" action="effacer" />
+			</ElseActions>
+		</BusinessRule>
+	</BusinessRules>
+</Simulator>

@@ -1,0 +1,23 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<div class="container">	
+	<div id="resetbox class="mainbox col-md-6 col-sm-8 mx-auto mt-5">
+		<div class="card" >
+			<div class="card-header bg-primary">
+				<div class="float-right small"><a class="text-white" href="{{ path('fos_user_resetting_request') }}">{{ 'Forgot password?'|trans({}, 'messages') }}</a></div>
+				<div class="card-title mb-0 font-weight-bold text-white">{{ 'layout.login'|trans }}</div>
+			</div>	 
+			<div style="padding-top:30px" class="card-body" >
+				{% include "@FOSUser/fos.messages.html.twig" %}
+				{{ form_start(form, { 'action': path('fos_user_resetting_reset', {'token': token}), 'attr': { 'class': 'fos_user_resetting_reset' } }) }}
+					{{ form_widget(form) }}
+					<div style="margin-top:10px" class="form-group">
+						<div class="col-sm-12 controls">
+							<input type="submit" class="btn btn-primary btn-lg btn-block" style="height: auto;" value="{{ 'resetting.reset.submit'|trans }}" />
+						</div>
+					</div>
+				{{ form_end(form) }}
+			</div>
+		</div>  
+	</div>
+</div>

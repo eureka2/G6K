@@ -1,0 +1,64 @@
+				<h4 id="fieldset">
+						4.3.1.1. Fieldset
+					</h4>
+					<p>Fieldset makes it possible to group together fields of the same nature (logical or thematic) thus highlighting the structuring of the information requested.</p>
+					<p>To add a fieldset, click the « Add » button in the title bar of the "Panel" panel:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-panel-add-menu.png') }}" alt="">
+					</p>
+					<p>then click « Add fieldset » in the menu:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-fieldset-add.png') }}" alt="">
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Disposition »: « Classic », « Grid » or « Inline ».</li>
+						<li>« Display »: « Inline » or « Pop-in ».</li>
+					</ol>
+					<table class="table-responsive table-sm table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>Disposition</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Classic</td>
+								<td>The elements of the form belonging to the group of fields are arranged in a conventional way, that is, a field preceded by its field label is placed on the line following that of the preceding field</td>
+							</tr>
+							<tr>
+								<td>Grid</td>
+								<td>Form elements belonging to the field group are placed in a table</td>
+							</tr>
+							<tr>
+								<td>Inline</td>
+								<td>The elements of the form belonging to the group of fields are arranged on line to form a sentence</td>
+							</tr>
+						</tbody>
+					</table>
+					<table class="table-responsive table-sm table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>Display</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Inline</td>
+								<td>The fields of the field group are displayed "online" in the page</td>
+							</tr>
+							<tr>
+								<td>Pop-in</td>
+								<td>Fields in the field group are displayed in a pop-in-modal window. A link whose label is in the "Pop-in activation link" attribute displays the</td>
+							</tr>
+						</tbody>
+					</table>
+					<p><strong>Optional attribute:</strong></p>
+					<ol>
+						<li>« Pop-in activation link »: This attribute is to be filled in only if the « Display » attribute of the field group is « Pop-in ». It's the text of the link that displays the pop-in.</li>
+					</ol>
+					<p>Describe the fieldset in the « Legend » field. This legend appears in the area <span class="bs-docs-number-circle">3</span> of the page.</p>
+					{% include 'admin/pages/documentation/en/simulators-management-fields.html.twig' %}
+				

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2015 rel. 3 (x64) (http://www.altova.com) by Jacques ARCHIMEDE (DILA) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="DataSources">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="DataSource" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence minOccurs="0">
+							<xs:element name="Description" type="xs:string" minOccurs="0"/>
+							<xs:element name="Namespace" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="prefix" type="xs:string"/>
+									<xs:attribute name="uri" type="xs:anyURI"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Table" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Description" type="xs:string" minOccurs="0"/>
+										<xs:element name="Column" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Description" type="xs:string" minOccurs="0"/>
+													<xs:element name="Choices" minOccurs="0">
+														<xs:complexType>
+															<xs:choice>
+																<xs:element name="Choice" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:attribute name="id" type="xs:string" use="required"/>
+																		<xs:attribute name="value" type="xs:string" use="required"/>
+																		<xs:attribute name="label" type="xs:string" use="required"/>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="Source">
+																	<xs:complexType>
+																		<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+																		<xs:attribute name="datasource" type="xs:string" use="required"/>
+																		<xs:attribute name="returnType" use="required">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:NMTOKEN">
+																					<xs:enumeration value="json"/>
+																					<xs:enumeration value="xml"/>
+																					<xs:enumeration value="assocArray"/>
+																					<xs:enumeration value="csv"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:attribute>
+																		<xs:attribute name="request" type="xs:string"/>
+																		<xs:attribute name="valueColumn" type="xs:string" use="required"/>
+																		<xs:attribute name="labelColumn" type="xs:string" use="required"/>
+																		<xs:attribute name="returnPath" type="xs:string"/>
+																		<xs:attribute name="separator" type="xs:string"/>
+																		<xs:attribute name="delimiter" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:choice>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+												<xs:attribute name="name" type="xs:string" use="required"/>
+												<xs:attribute name="type" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:NMTOKENS">
+															<xs:enumeration value="day"/>
+															<xs:enumeration value="month"/>
+															<xs:enumeration value="year"/>
+															<xs:enumeration value="boolean"/>
+															<xs:enumeration value="choice"/>
+															<xs:enumeration value="date"/>
+															<xs:enumeration value="money"/>
+															<xs:enumeration value="integer"/>
+															<xs:enumeration value="percent"/>
+															<xs:enumeration value="number"/>
+															<xs:enumeration value="text"/>
+															<xs:enumeration value="textarea"/>
+															<xs:enumeration value="country"/>
+															<xs:enumeration value="region"/>
+															<xs:enumeration value="department"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+												<xs:attribute name="label" type="xs:string"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+									<xs:attribute name="name" use="required"/>
+									<xs:attribute name="label"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+						<xs:attribute name="name" use="required"/>
+						<xs:attribute name="type" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:NMTOKEN">
+									<xs:enumeration value="uri"/>
+									<xs:enumeration value="database"/>
+									<xs:enumeration value="internal"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="uri" type="xs:string"/>
+						<xs:attribute name="method" default="GET">
+							<xs:simpleType>
+								<xs:restriction base="xs:NMTOKEN">
+									<xs:enumeration value="GET"/>
+									<xs:enumeration value="POST"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="database" type="xs:positiveInteger"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Databases" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Database" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+									<xs:attribute name="type" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="mysql"/>
+												<xs:enumeration value="mysqli"/>
+												<xs:enumeration value="pgsql"/>
+												<xs:enumeration value="sqlite"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="label"/>
+									<xs:attribute name="host" type="xs:string"/>
+									<xs:attribute name="port" type="xs:unsignedInt"/>
+									<xs:attribute name="user" type="xs:string"/>
+									<xs:attribute name="password" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,17 @@
+				<h1 id="data-source">
+					1. Data source
+				</h1>
+				<p>A data source allows a simulator to query the simulation field reference values ​​to perform the simulation.</p>
+				<p>
+					The data source can be internal, i.e. the values ​​are stored in a database managed by G6K,
+					<br>
+					or external, i.e. the values ​​are supplied either via queries on a remote database or via a web service (API).
+				</p>
+				<p>In all cases, you must declare the source so that it can be used by the simulation engine.</p>
+				<p>If it is a database (internal or remote), you must also describe the tables and their columns so that the simulation engine can build the queries to find the desired values.</p>
+				<p>
+					If it is a web service, you must specify the API url and the HTTP method to be implemented (GET or POST).
+					<br>
+					The parameters of the API will be defined by the simulator which uses it at the time of creation of the latter.
+				</p>
+				

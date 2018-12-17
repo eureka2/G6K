@@ -1,0 +1,53 @@
+				<h3 id="afficher-une-erreur-ou-un-avertissement">
+					3.2.1. Afficher une erreur ou un avertissement
+				</h3>
+				<p>
+					Choisissez « afficher l'erreur » ou « afficher l'avertissement » dans la liste des actions.
+					<br>
+					La ligne se complète pour vous permettre de saisir le message ainsi que sa cible :
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-notifyerror.png') }}" alt="">
+				</p>
+				<p>Cliquez sur « cliquez pour saisir le message », le champ de saisie apparait.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-notifyerror-message.png') }}" alt="">
+				</p>
+				<p>Saisissez le message puis valider en cliquant sur « Ok ».</p>
+				<p>Cliquez sur « cliquez pour sélectionner ... », pour choisir la cible.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-notifyerror-target.png') }}" alt="">
+				</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Cible</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>la donnée</td>
+							<td>Le message concerne une donnée particulière, le message s'affiche en dessous du champ de saisie</td>
+						</tr>
+						<tr>
+							<td>l'ensemble des données</td>
+							<td>Le message concerne tout le formulaire de simulation (ex : incohérence de données saisies), le message s'affiche en dessous du formulaire.</td>
+						</tr>
+						<tr>
+							<td>le groupe de données</td>
+							<td>Le message concerne un groupe de données, le message s'affiche en dessous du groupe.</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>Si la cible est une donnée ou un groupe de données, il faut sélectionner la donnée (ou le groupe) dans la liste qui s'affiche:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/business-rules-action-notifyerror-target-datas-list.png') }}" alt="">
+				</p>
+				<p>A noter : Pour les valeurs de données résultant d'une saisie utilisateur, il n'est pas nécessaire de définir un message d'erreur dans les cas suivants :</p>
+				<ul>
+					<li>Le champ de saisie n'est pas renseigné alors que la donnée est requise.</li>
+					<li>La valeur saisie ne correspond pas au format attendu compte tenu du type de la donnée.</li>
+				</ul>
+				<p>Ces cas sont traités automatiquement par G6K ou le navigateur.</p>
+				

@@ -1,0 +1,73 @@
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>
+			G6K: Guide d'administration
+		</h1>
+		<p class="lead">Composition des règles métier</p>
+	</div>
+</header>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+					<a class="nav-link ml-1" href="#regles-metier">1. Règles métier</a>
+<a class="nav-link ml-1" href="#interface-de-composition-des-regles">2. Interface de composition des règles</a>
+<a class="nav-link ml-1" href="#saisie-d-une-regle">3. Saisie d'une règle</a>
+
+					<nav class="nav nav-pills flex-column">
+						<a class="nav-link ml-2" href="#saisie-d-une-condition">3.1. Saisie d'une condition</a>
+
+						<nav class="nav nav-pills flex-column">
+							<a class="nav-link ml-3" href="#condition-simple">3.1.1. Condition simple</a>
+
+							<nav class="nav nav-pills flex-column">
+								<a class="nav-link ml-4" href="#selection-de-l-operande">3.1.1.1. Sélection de l'opérande</a>
+<a class="nav-link ml-4" href="#selection-de-l-operateur">3.1.1.2. Sélection de l'opérateur</a>
+
+								<nav class="nav nav-pills flex-column">
+									<a class="nav-link ml-5" href="#operateurs">3.1.1.2.1. Opérateurs</a>
+
+									<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-6" href="#operateurs-de-chaines">3.1.1.2.1.1. Opérateurs de chaînes</a>
+<a class="nav-link ml-6" href="#operateurs-numeriques">3.1.1.2.1.2. Opérateurs numériques</a>
+<a class="nav-link ml-6" href="#operateurs-de-date">3.1.1.2.1.3. Opérateurs de date</a>
+<a class="nav-link ml-6" href="#operateurs-de-choix">3.1.1.2.1.4. Opérateurs de choix</a>
+<a class="nav-link ml-6" href="#operateurs-booleens">3.1.1.2.1.5. Opérateurs booléens</a>
+</nav>
+								</nav>
+								<a class="nav-link ml-4" href="#saisie-de-la-valeur-de-l-expression">3.1.1.3. Saisie de la valeur / de l'expression</a>
+
+							</nav>
+							<a class="nav-link ml-3" href="#suppression-d-une-condition">3.1.2. Suppression d'une condition</a>
+
+						</nav>
+						<a class="nav-link ml-2" href="#saisie-d-une-action">3.2. Saisie d'une action</a>
+
+						<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-3" href="#afficher-une-erreur-ou-un-avertissement">3.2.1. Afficher une erreur ou un avertissement</a>
+<a class="nav-link ml-3" href="#cacher-ou-montrer-un-element-du-formulaire-de-simulation">3.2.2. Cacher ou montrer un élément du formulaire de simulation</a>
+<a class="nav-link ml-3" href="#affecter-une-valeur-a-un-attribut-d-une-donnee">3.2.3. Affecter une valeur à un attribut d'une donnée</a>
+</nav>
+						<a class="nav-link ml-2" href="#suppression-d-une-action">3.3. Suppression d'une action</a>
+
+					</nav>
+					<a class="nav-link ml-1" href="#modification-d-une-regle">4. Modification d'une règle</a>
+<a class="nav-link ml-1" href="#suppression-d-une-regle">5. Suppression d'une règle</a>
+<a class="nav-link ml-1" href="#tri-des-regles">6. Tri des règles</a>
+
+				</nav>
+			</nav>
+		</div>
+		<div class="col-9">
+			<div class="document-content">
+				{% include 'admin/pages/documentation/fr/business-rules-regles-metier.html.twig' %}
+				{% include 'admin/pages/documentation/fr/business-rules-interface-de-composition-des-regles.html.twig' %}
+				{% include 'admin/pages/documentation/fr/business-rules-saisie-d-une-regle.html.twig' %}
+				{% include 'admin/pages/documentation/fr/business-rules-modification-d-une-regle.html.twig' %}
+				{% include 'admin/pages/documentation/fr/business-rules-suppression-d-une-regle.html.twig' %}
+				{% include 'admin/pages/documentation/fr/business-rules-tri-des-regles.html.twig' %}
+				</div>
+		</div>
+	</div>
+</div>

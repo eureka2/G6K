@@ -1,0 +1,27 @@
+				<h5 id="chapitre">
+					4.3.1.2.1. Chapitre
+				</h5>
+				<p>
+					Le chapitre est une sous-partie du bloc d'infos. Il est composé de sections.
+					<br>
+					On peut le rendre pliable / dépliable dans le cas d'un bloc d'infos contenant de nombreux chapitres pour faciliter la lecture de la page.
+					<br>
+					On peut également lui associer une icône pour permettre de le distinguer visuellement des autres chapitres.
+				</p>
+				<p>Pour ajouter un chapitre, cliquez sur le bouton « Ajouter un chapitre » de la barre de titre du panneau « Bloc d'infos » :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-blockinfo-add-chapter-button.png') }}" alt="">
+				</p>
+				<p>Le formulaire de saisie d'un chapitre s'affiche :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-chapter-add.png') }}" alt="">
+				</p>
+				<p><strong>Attributs optionnels :</strong></p>
+				<ol>
+					<li>« Nom » : Nom du chapitre sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Libellé » : Titre du chapitre. Il s'affiche dans la zone <span class="bs-docs-number-circle">10</span> de la page.</li>
+					<li>« Icône » : URL absolue ou relative d'une image.</li>
+					<li>« Permettre Plier / Déplier » : Si cette case est cochée, seule la barre de titre du panneau du chapitre est affichée. En cliquant sur la barre de titre, le panneau se déplie pour en montrer le contenu.</li>
+				</ol>
+				{% include 'admin/pages/documentation/fr/simulators-management-section.html.twig' %}
+				

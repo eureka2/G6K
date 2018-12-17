@@ -1,0 +1,19 @@
+				<h1 id="expressions">
+					1. Expressions
+				</h1>
+				<p>Expressions are mathematical formulas evaluated by G6K to perform a simulation.</p>
+				<p>An expression is a combination of operands and operators.</p>
+				<pre class="prettyprint">
+<expression>: <operand>[<operator><operand>]
+<operand>: <expression>|<operand>
+</pre>
+				<p>G6K has a component for entering expressions.</p>
+				<p>This component is used:</p>
+				<ul>
+					<li>for the constitution of the filters of the access requests to the reference data sources</li>
+					<li>to calculate the default value, the minimum value, the maximum value or the content of a data</li>
+					<li>for the constitution of the conditions of business rules</li>
+				</ul>
+				{% include 'admin/pages/documentation/en/expression-builder-composition-of-an-expression.html.twig' %}
+				{% include 'admin/pages/documentation/en/expression-builder-example-of-expression.html.twig' %}
+				

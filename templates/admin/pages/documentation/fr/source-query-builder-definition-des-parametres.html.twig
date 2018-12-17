@@ -1,0 +1,27 @@
+				<h2 id="definition-des-parametres">
+					2.6. Définition des paramètres
+				</h2>
+				<p>Les paramètres permettent d'introduire des données variables dans des requêtes. Ces requêtes sont dites "paramétrées".</p>
+				<p>Les contenus des paramètres sont soit des constantes, soit des données saisies par l'utilisateur, des données calculées ou des données provenant d'autres sources</p>
+				<p>Pour accéder au panneau des paramètres d'une source, cliquez sur le bouton « Modifier » de la barre de titre du panneau de la source.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-parameter-empty.png') }}" alt="">
+				</p>
+				<p>Pour ajouter un paramètre, cliquez sur le bouton « Ajouter un paramètre » :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-parameter-data.png') }}" alt="">
+				</p>
+				<p>Le champ « Provenance » est positionné par défaut sur « Donnée » et le champ « Donnée » est affiché en dessous pour vous permettre de choisir la donnée.</p>
+				<p>Si vous sélectionnez « Constante » dans le champ « Provenance », le champ du dessous est remplacé par « Constante » avec un champ de saisie de texte :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-parameter-contant.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ul>
+					<li>« Nom » : Nom du paramètre sans espace ni caractères spéciaux ou accentués</li>
+					<li>« Provenance » : Provenance de la donnée : « Constante » ou « Donnée »</li>
+					<li>« Donnée » : Donnée variable alimentant le paramètre</li>
+					<li>« Constante » : Valeur fixe affectée au paramètre</li>
+					<li>« Optionnel » : Si la case est cochée, le paramètre ne sera pas transmis à la requête s'il ne contient aucune valeur.</li>
+				</ul>
+				

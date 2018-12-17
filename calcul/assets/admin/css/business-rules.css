@@ -1,0 +1,249 @@
+#business-rules .conditions, #business-rules .actions {
+	margin: 20px 0;
+}
+
+#business-rules .conditions > .conditional > .remove, #business-rules .actions > .conditional > .remove {
+	display: none;
+}
+#business-rules .error {
+	border: 1px solid red;
+}
+
+#business-rules .form-control, #datas .attribute-expression .form-control {
+	display: inline;
+	width: auto;
+	height: 30px;
+}
+
+#business-rules .conditional {
+	padding-left: 60px;
+}
+
+#business-rules .conditional .all-any-none-wrapper {
+	margin: 5px 20px 5px -60px;
+	display: -moz-inline-stack;
+	display: inline-block;
+}
+
+#business-rules .all-any-none {
+	margin-right: 10px;
+}
+
+#business-rules .all-any-none-wrapper, #business-rules .conditional, #business-rules .rule-container {
+	margin: 10px 0;
+}
+
+#business-rules .rule-container input {
+	width: 250px;
+}
+
+#business-rules .rule-container input.input-rule-label {
+	min-width: 400px;
+}
+
+#business-rules .rule-container select {
+	margin-right: 10px;
+}
+
+#business-rules .rule-container .delete-rule {
+	margin-top: -8px;
+}
+
+#business-rules .action-buttons {
+	margin: 20px 0;
+}
+
+#business-rules .action {
+	margin: 10px 0;
+}
+
+#business-rules .action .subfields, #business-rules .action .subfields .field {
+	display: inline;
+}
+
+#business-rules .action select, #business-rules .action input, #business-rules .action textarea {
+	margin-right: 10px;
+}
+
+#business-rules .action textarea, #business-rules .action input {
+	width: 250px;
+}
+
+#business-rules .action textarea {
+	margin-top: -6px;
+	vertical-align: top;
+	height: 50px;
+}
+
+#business-rules .remove, #business-rules .add, #business-rules .add-condition, #business-rules .add-sub-condition {
+	height: 24px;
+	margin: auto 5px;
+	padding: 4px 5px;
+}
+
+
+.editable-select, .editable-textarea {
+	cursor: pointer;
+	padding-bottom: 2px;
+	border-bottom: thin dotted;
+}
+.editable-select:focus {
+	outline: thin dotted;
+}
+.editable-textarea textarea {
+	min-width: 20em;
+	min-height: 5em;
+	vertical-align: middle;
+}
+.action div, .editable-select select, .editable-textarea textarea{
+	display: inline;
+}
+.action span, .action label,
+.rule span, .rule label {
+	margin-right: .2em;
+	font-weight: normal;
+}
+.action .subfields .subfields .editable-select:before, .action .editable-textarea:before {
+	content: '«';
+}
+.action .subfields .subfields .editable-select:after, .action .editable-textarea:after {
+	content: '» ';
+}
+.rule .field.editable-select:before, .rule .field.editable-textarea:before,
+.rule .value.editable-select:before, .rule .value.editable-textarea:before,
+.rule .value.expression:before {
+	content: '«';
+}
+.rule .field.editable-select:after, .rule .field.editable-textarea:after,
+.rule .value.editable-select:after, .rule .value.editable-textarea:after,
+.rule .value.expression:after {
+	content: '» ';
+}
+.expression .operand-holder {
+	width: auto;
+	border: none;
+}
+.rule-header {
+	width: 100%;
+	background: #D0D0D0;
+	font-size: 1.8em;
+}
+.rule-container {
+	margin-bottom: 2em;
+}
+
+.operand-wrapper, .operator-wrapper {
+	padding: 0;
+	margin: 0;
+}
+
+.operand-holder, .operator-holder, .right-parenthesis-holder  {
+	border: none;
+}
+
+div.expression-operand-choices-container,
+div.field-choices-container {
+	display: inline-block;
+	position: relative;
+}
+button.expression-operand-choices-button,
+button.field-choices-button {
+	width: 100%;
+	text-align: left;
+	background: #fff;
+	border: 1px solid #ccc;
+	min-width: 20em;
+	font-size: 0.9em;
+}
+button.expression-operand-choices-button:focus,
+button.field-choices-button:focus {
+	outline: thin dotted !important;
+}
+button.expression-operand-choices-button > span:last-child,
+button.field-choices-button > span:last-child {
+	height: 100%;
+	padding: 4px 3px;
+	margin-right: -8px;
+	margin-left: 1px;
+	background: #fff;
+	border: none;
+}
+button.expression-operand-choices-button:hover > span:last-child,
+button.field-choices-button:hover > span:last-child {
+	background: #e5f1fb;
+	padding: 3px 2px;
+	border: 1px solid #0078d7;
+}
+ul.expression-operand-choices,
+ul.field-choices {
+	list-style-type: none;
+	display: none;
+	position: absolute;
+	max-height: 15em;
+	max-width: 20em;
+	background: #fff;
+	padding-left: 0;
+	z-index: 2;
+	border: 1px solid #ccc;
+	overflow-y: scroll;
+}
+ul.expression-operand-choices li,
+ul.field-choices li {
+	position: relative;
+	min-height: 1em;
+}
+ul.expression-operand-choices li[operand-type],
+ul.field-choices li[field-name] {
+	cursor: default;
+	font-size: 0.9em;
+	font-weight: normal;
+	background: #fff;
+	color: #000;
+}
+ul.field-choices li[field-name]:nth-child(even) {
+	background: #eee;
+	color: #000;
+}
+ul.expression-operand-choices li[operand-type] {
+	padding-left: 1.5em;
+}
+ul.field-choices li[field-name] {
+	padding-left: 0.5em;
+}
+ul.expression-operand-choices li[operand-type][aria-selected=true],
+ul.expression-operand-choices li[operand-type]:hover,
+ul.field-choices li[field-name][aria-selected=true],
+ul.field-choices li[field-name]:hover {
+	background: #0078d7;
+	color: #fff;
+}
+li.expression-operand-choices-group > span,
+li.field-choices-group > span {
+	margin: 0;
+	padding-left: 0.5em;
+	font-size: 0.9em;
+	font-weight: bold;
+}
+div.expression-input-container {
+	position: relative;
+	padding: 0;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	display: none;
+}
+div.expression-input-container input {
+	border: none;
+	margin: 0;
+	padding: 0;
+	width: 10em;
+	min-width: 10em;
+}
+div.expression-input-container button {
+	border : none;
+	background : transparent;
+	margin-right: 0.5em;
+	padding-left: 0.3em;
+	overflow: hidden;
+	outline-style: hidden;
+	width: 1em;
+}

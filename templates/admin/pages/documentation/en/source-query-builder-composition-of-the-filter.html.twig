@@ -1,0 +1,107 @@
+				<h2 id="composition-of-the-filter">
+					2.3. Composition of the filter
+				</h2>
+				<p>
+					Without a filter, the query would return all rows in the table, which is not desirable unless you want to build a list of choices from the entire table.
+					<br>
+					The filter allows to retain only the lines that meet a certain condition. This can be a simple condition or a combined condition.
+				</p>
+				<p>A condition has the following syntax:</p>
+				<pre class="prettyprint">
+<condition> : <simple condition> | <combined condition>
+<simple condition> : <expression><comparison operator><expression>
+<combined condition> : <conjunction> | <disjunction>
+<conjunction> : <condition> <span class="label label-default">and</span> <condition> | <span class="label label-default">(</span> <condition> <span class="label label-default">and</span> <condition> <span class="label label-default">)</span>
+<disjunction> : <condition> <span class="label label-default">or</span> <condition> | <span class="label label-default">(</span> <condition> <span class="label label-default">or</span> <condition> <span class="label label-default">)</span>
+<expression> : <operand>[<arithmetic operator><operand>]
+<operand> : <expression>|<operand>
+</pre>
+				<p>Refer to <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'business-rules' }) }}#operators">here</a> for the list of comparison operators and <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}#operators">here</a> for the list of numeric operators.</p>
+				<p>To compose the filter, click in the « Filter » field or on the «   » sign to the right of the field:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-add.png') }}" alt="">
+				</p>
+				<p>Click on the list box:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-expression-listbox.png') }}" alt="">
+				</p>
+				<p>
+					In this example, there are two parameters: « AARight » and « nChildren ». Parameters contain constants, values of user input, calculated data, or data from other sources.
+					<br>
+					If you need parameters to constitute your query, validate the form without entering a filter then click on « Edit ».
+					<br>
+					A « Parameters » panel is displayed below the form so you can define it. Refer to the <a href="#setting-parameters">Setting Parameters</a> section of this page.
+				</p>
+				<p>To compose an expression from this list, see the <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition of expressions</a> page.</p>
+				<p>After entering the expression, « click to select the operator » is displayed:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-operator-ask.png') }}" alt="">
+				</p>
+				<p>Click to choose the comparison operator:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-operators-list.png') }}" alt="">
+				</p>
+				<p>Once you have chosen the operator, you can compose the second expression:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-right-expression.png') }}" alt="">
+				</p>
+				<p>You have finished entering a first condition, you can enter others by clicking in the empty space of the field or by the sign «   »</p>
+				<p>From the second condition, the conditions are numbered and a button is displayed above the field to allow you to combine the conditions:</p>
+				<p>
+					Clicking on this button gives you three combinations:
+ 
+
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-combined-all.png') }}" alt="">
+				</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Combination</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>All of the following</td>
+							<td>Combines all conditions with connector 'and'</td>
+						</tr>
+						<tr>
+							<td>Any of the following</td>
+							<td>Combines all conditions with connector 'or'</td>
+						</tr>
+						<tr>
+							<td>Advanced</td>
+							<td>Allows combining conditions with 'and', 'or' and parentheses</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>The « Advanced » mode displays a bar below the conditions for combining the conditions by their numbers:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-combined-advanced.png') }}" alt="">
+				</p>
+				<p>
+					Click on a connector 
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-combined-and.png') }}" alt="">
+					change it to 
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-combined-or.png') }}" alt="">
+					, click on a connector 
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-combined-or.png') }}" alt="">
+					change it to 
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-combined-and.png') }}" alt="">
+					.
+				</p>
+				<p>
+					Click the 
+					<img src="{{ asset('assets/admin/images/documentation/query-builder-filter-combined-brackets-button.png') }}" alt="">
+					button to add an opening and closing parentheses pair.
+				</p>
+				<p>The opening parenthesis is placed at the beginning of the condition, the closing one at the end of the condition.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-combined-brackets.png') }}" alt="">
+				</p>
+				<p>You can remove a parenthesis pair by clicking the red cross above one of the two parentheses.</p>
+				<p>You can move each of the elements (number, connector, or parenthesis) of the condition by dragging them from one position to another.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-filter-combined-condition.png') }}" alt="">
+				</p>
+				

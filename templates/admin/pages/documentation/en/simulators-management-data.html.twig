@@ -1,0 +1,159 @@
+				<h2 id="data">
+						4.2. Data
+					</h2>
+					<p>The data allow to store values whatever their origin (user input, data source, element or result of calculations).
+They can be grouped into groups of data, allowing them to be arranged in the rows of a table (see « Grid layout » for a group of fields later in this document).</p>
+					<p>To add a data or a data group, click « Add » in the title bar « Datas »:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-data-add-button.png') }}" alt="">
+					</p>
+					<p>then click « Add data » or « Add datagroup » depending on the case:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-data-add-menu.png') }}" alt="">
+					</p>
+					<p class="figure-legend">Figure 3 : Form for adding a data group</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-datagroup-add.png') }}" alt="">
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Group Name »: Name of the data group without spaces or special or accented characters.</li>
+						<li>« Group Label »: Title of the data group that can be selected when defining fields groups of the step, business rules, or profiles.</li>
+					</ol>
+					<p>Give a description of the data group in the "Description" field.</p>
+					<p class="figure-legend">Figure 4 : Form for adding a data</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-data-add.png') }}" alt="">
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Name »: Name of the data without spaces or special or accented characters.</li>
+						<li>« Label »: Label of the data that can be selected in the step fields, in the profiles.</li>
+						<li>« Type »: Type of data. See Data type below.</li>
+					</ol>
+					<p><strong>Data type</strong></p>
+					<table class="table-responsive table-sm table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>date</td>
+								<td>Date in the format defined in the simulator options. See supra. If the data is associated with an input field, a date picker will be proposed to the user.</td>
+							</tr>
+							<tr>
+								<td>day</td>
+								<td>Day number from 1 to 31.</td>
+							</tr>
+							<tr>
+								<td>month</td>
+								<td>Number of months from 1 to 12.</td>
+							</tr>
+							<tr>
+								<td>year</td>
+								<td>Year in 4 digits.</td>
+							</tr>
+							<tr>
+								<td>boolean</td>
+								<td>Boolean value (0/1). If the data is associated with an input field, a check cache will be offered to the user.</td>
+							</tr>
+							<tr>
+								<td>integer</td>
+								<td>Integer value.</td>
+							</tr>
+							<tr>
+								<td>number</td>
+								<td>Decimal value with decimal point.</td>
+							</tr>
+							<tr>
+								<td>text</td>
+								<td>Alphanumeric value.</td>
+							</tr>
+							<tr>
+								<td>textarea</td>
+								<td>Alphanumeric value with enrichment (bold, italic, underline, ...).</td>
+							</tr>
+							<tr>
+								<td>money</td>
+								<td>Monetary value to 2 decimals.</td>
+							</tr>
+							<tr>
+								<td>choice</td>
+								<td>Value that can be selected from a drop-down list or with radio buttons.</td>
+							</tr>
+							<tr>
+								<td>multichoice</td>
+								<td>Values ​​selected using check boxes.</td>
+							</tr>
+							<tr>
+								<td>percent</td>
+								<td>Percentage from 0 to 100, possibly with decimal values.​​</td>
+							</tr>
+							<tr>
+								<td>array</td>
+								<td>List of values. Can not be used for input.</td>
+							</tr>
+							<tr>
+								<td>table</td>
+								<td>Table of values. Can not be used for input.</td>
+							</tr>
+							<tr>
+								<td>department</td>
+								<td>Department code. If the data is associated with an input field, the user chooses from a drop-down list.</td>
+							</tr>
+							<tr>
+								<td>region</td>
+								<td>Region code. If the data is associated with an input field, the user chooses from a drop-down list.</td>
+							</tr>
+							<tr>
+								<td>country</td>
+								<td>Country name.</td>
+							</tr>
+						</tbody>
+					</table>
+					<p><strong>Optional attributes:</strong></p>
+					<ol>
+						<li>« Default »: Default value of the data.</li>
+						<li>« Min »: The minimum value of the data for numeric data.</li>
+						<li>« Max »: The maximum value of the data for numeric data.</li>
+						<li>« Content »: Unconditional expression to be assigned to the data. For the composition of the expression, refer to <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition of expressions</a>.</li>
+						<li>« Round »: Can be used with « Decimal Number » data. Allows you to set the decimal place after the decimal point. The last decimal place is rounded.</li>
+						<li>« Unit »: Characterizes a numerical value such as "miles", "liters", "ampere", etc. The unit is displayed after the field.</li>
+						<li>« Source »: If the data is to be supplied by a data source defined in the "Used datasources" panel.</li>
+						<li>« Index »: Corresponds to the field returned by the request to supply the data.</li>
+						<li>« Memorize »: Keep in memory (user's cookie) the value so that the user does not have to re-enter it (see attribute « Memo » of the simulator)</li>
+					</ol>
+					<p>Give a description of the data in the "Description" field. This description can be displayed in a tooltip at the request of the user.</p>
+					<p>In the case of "choice" data, you have to indicate how to feed the list of choices, for this a « Choices » panel is displayed at the bottom of the entry form:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-data-choices.png') }}" alt="">
+					</p>
+					<p>The list is either static, ie its elements appear in extenso in the definition file of the simulator, or dynamic, ie it is filled by a data source</p>
+					<p>To create a static list, click on the "Add choice" button in the "Choices" panel:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-data-choice-add.png') }}" alt="">
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Value »: The value assigned to the data if this list item is selected.</li>
+						<li>« Label »: The text of the item that appears in the list.</li>
+					</ol>
+					<p>Add choices as many times as necessary to constitute the list.</p>
+					<p>To create a dynamic list, click the "Add source" button:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-data-source-add.png') }}" alt="">
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Source »: Source of the data to feed the list.</li>
+						<li>« Source column value »: The field containing the value assigned to the data item if this list item is selected.</li>
+						<li>« Source column label »: Field containing the text of the element appearing in the list.</li>
+					</ol>
+					<p><strong>Optional attribute:</strong></p>
+					<ol>
+						<li>"Source column ID": The field containing the element ID.</li>
+					</ol>
+					

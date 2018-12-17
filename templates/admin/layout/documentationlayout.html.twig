@@ -1,0 +1,110 @@
+{#
+The MIT License (MIT)
+
+Copyright (c) 2015-2017 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+#}
+
+{% block doctype %}<!DOCTYPE html>{% endblock %}
+
+{% block html %}<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7 ]> <html lang="{{ app.request.locale }}" class="no-js ie ie6" dir="ltr"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="{{ app.request.locale }}" class="no-js ie ie7" dir="ltr"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="{{ app.request.locale }}" class="no-js ie ie8" dir="ltr"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="{{ app.request.locale }}" class="no-js ie ie9" dir="ltr"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="{{ app.request.locale }}"><!--<![endif]-->
+{% endblock %} {# html #}
+
+<head>
+<meta charset="utf-8" />
+<title>{% block title %}{{ 'G6K: Administration guide'|trans }}{% endblock %}</title>
+{% block metas %}
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!--[if IE]>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %} {# metas #}
+
+{% block styles %}
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap4/css/bootstrap.min.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap-datepicker/css/bootstrap-datepicker.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/css/font-awesome/css/font-awesome.min.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap4/css/docs.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap4/css/google-code-prettify/prettify.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/css/g6k.admin.css') }}" />
+{% endblock %} {# styles #}
+
+{% block hscripts %}
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/modernizr.min.js') }}"></script>
+<!--[if lt IE 9]>
+<script src="{{ asset('assets/base/js/libs/html5shiv.min.js') }}"></script>
+<script src="{{ asset('assets/base/js/libs/respond.min.js') }}"></script>
+<![endif]-->
+{% endblock %} {# hscripts #}
+</head>
+<body class="{% block bodyclass %}{% endblock %}"{% block bodyattr %} data-spy="scroll" data-target="#document-toc" data-offset="0"{% endblock %}>
+
+{% block body %}
+{% block content %}{% endblock %}
+
+{% block scripts %}
+
+{% block jquery %}
+<!--[if lt IE 9]>
+<script src="{{ asset('assets/base/js/libs/jquery-1.11.1.min.js') }}"></script>
+<![endif]-->
+<!--[if gte IE 9]><!-->
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-3.3.1.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-migrate-3.0.0.js') }}"></script>
+<!--<![endif]-->
+{% endblock %} {# jquery #}
+
+<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/google-code-prettify/run_prettify.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/bootstrap.bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/affix.js') }}"></script>
+<script type="text/javascript">
+$(function(){
+	$('[data-spy="affix"]').on('affixed.bs.affix', function () {
+	$(".affix").css("width",$(".affix").parent().css("width").replace('px','') - 30);
+			})
+	$('body').append('<div id="toTop" class="btn btn-light"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
+	$(window).scroll(function () {
+		if ($(this).scrollTop() != 0) {
+			$('#toTop').fadeIn();
+		} else {
+			$('#toTop').fadeOut();
+		}
+	}); 
+	$('#toTop').click(function(){
+		$("html, body").animate({ scrollTop: 0 }, 600);
+		return false;
+	});
+});
+</script>
+{% endblock %} {# scripts #}
+
+{% endblock %} {# body #}
+</body>
+</html>

@@ -1,0 +1,29 @@
+				<h3 id="boutons-d-actions">
+					4.3.3. Boutons d’actions
+				</h3>
+				<p>
+					Les boutons d’actions permettent d'enchainer les étapes, de réinitialiser un formulaire, de lancer une nouvelle simulation ou d'ouvrir une page externe au simulateur.
+					<br>
+					Ils s'afficheront dans la zone <span class="bs-docs-number-circle">15</span> de la page.
+				</p>
+				<p>Pour ajouter un bouton d'action, cliquez sur le bouton « Ajouter un bouton d'action » de la barre de titre du panneau « Boutons d'action » :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-action-add-button.png') }}" alt="">
+				</p>
+				<p>Le formulaire de saisie des attributs du bouton s'affiche :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-action-add.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Nom » : Nom du bouton sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Libellé » : Libellé du bouton.</li>
+					<li>« Action » : « Soumettre » si on souhaite passer à l’étape définie par l’attribut « Vers », « Réinitialiser » pour réinitialiser (effacer les données) du formulaire.</li>
+					<li>« Vers » : Si l'action choisie est « Soumettre », cet attribut définit l'enchaînement (étape suivante, précédente, courante ou étape spécifique), une nouvelle simulation ou l'ouverture du page externe.</li>
+				</ol>
+				<p><strong>Attributs optionnels :</strong></p>
+				<ol>
+					<li>« URI / étape » : Si l'attribut « Vers » contient « Page externe », alors cet attribut contient l'URI de la page. Si l'attribut « Vers » contient « Aller à l'étape », alors cet attribut contient le numéro de l'étape cible.</li>
+					<li>« Classe » : Niveau d’importance du bouton : « Principale » le bouton sera mis en avant visuellement, « Secondaire » le bouton ne sera pas mis en avant visuellement.</li>
+				</ol>
+				

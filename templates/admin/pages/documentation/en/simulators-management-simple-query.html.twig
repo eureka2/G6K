@@ -1,0 +1,73 @@
+				<h3 id="simple-query">
+						4.1.1. Simple query
+					</h3>
+					<p>
+						A query is simple if it relates to only one table and does not have a nested subquery.
+						<br>
+						The form allows you to build simple queries without having to know the SQL language.
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Request type »: The queries are either « Simple », that is, you are guided by the menu, or of type « Complex » in this case you will be free to type your queries with the SQL language. If the query is for a single table and does not have a nested query, choose the « Simple » type, otherwise choose the « Complex » type.</li>
+						<li>« Table »: Name of the table to which the request relates.</li>
+						<li>« Selected Columns »: Fields/columns of the table that contain the data you want to retrieve.
+To enter a column, click the ' ' to the right of the field and select the column from the drop-down list.
+You can also compose an expression in which case you will need to define an alias as the column name.
+To delete a column, click the 'x' to the left of the column name.</li>
+						<li>« Filter »: Requirements for fields/columns to keep only the rows of the result of the query complying with these conditions.</li>
+						<li>« Order by »: Sort in ascending or descending order on the selected fields/columns.
+To enter a column, do as in & nbsp; 3., And then select the sort order (ascending or descending).</li>
+						<li>« Number of Results »: Include the number of rows that should be retained among all « rows » of results returned by the query. Set 0 if all lines are to be retained.</li>
+						<li>« From »: From all « rows » of results returned by the query, indicate the number of the first line that must be taken into account for processing the query. The number of the first line is 0, 1 the second and so on.</li>
+						<li>
+							« Return type »: 
+							<ul>
+								<li>« JSON »: format for the exchange of data in readable text.</li>
+								<li>« XML »: format of description of the data.</li>
+								<li>« Single value »: N/A.</li>
+								<li>« Key / value pairs »: Table of key / value pairs.</li>
+								<li>« HTML »: data format designed to represent web pages.</li>
+								<li>« CSV »: open computer format representing data in comma-separated values.</li>
+							</ul>
+						</li>
+						<li>
+							« Return path »: The path depends on the format of the data being returned: 
+							<ul>
+								<li>« JSON »: Path to <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> or <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a>
+</li>
+								<li>« XML »: Path in the format <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a>
+</li>
+								<li>« Single Value »: N/A</li>
+								<li>« Key/value pair (table) »: path in the form « Line number/column name » (example: 0/rate: rate column of line 1)</li>
+							</ul>
+						</li>
+					</ol>
+					<p>To construct the query, refer to the <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'source-query-builder' }) }}">Visual Component Manufacturing Simple Queries</a> documentation</p>
+					<p>If the query contains a variable parameter, you must first declare a data (see « Data » section below) which will contain the value of the parameter.</p>
+					<p>
+						Then, validate the entry without entering the filter at first. Click on the « Edit » button. The 
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-datasource-parameter-add-button.png') }}" alt="">
+						button appears at the bottom right of the form to allow you to declare the parameter.
+						<br>
+						After you declare the parameter, you can enter the filter and select the parameter of the expression.
+					</p>
+					<p><strong>Parameter attributes:</strong></p>
+					<ol>
+						<li>« Name »: Parameter name without spaces or special or accented characters.</li>
+						<li>« Provenance »: Origin of the parameter either « Data » or « Constant ».</li>
+						<li>« Data »: The name of the data you are going to work with.</li>
+					</ol>
+					<p><strong>Optional attribute of parameters:</strong></p>
+					<ol>
+						<li>« Optional »: Optional parameter or not. A parameter can only be optional if it is used by a request to a « Web service » data source</li>
+					</ol>
+					<p class="figure-legend">Figure 1: Data source with a simple query and parameter</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-datasource-add-simple.png') }}" alt="">
+					</p>
+					<p>Once the input is validated, the following screen is displayed:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-datasource-display-simple.png') }}" alt="">
+					</p>
+					<p>This query will return an array of « 'rate'/rate value » pairs. The specified return path (0/rate) will select the first row of the array and the value corresponding to 'rate'. We will see later how to declare a data to store the value of the rate.</p>
+					

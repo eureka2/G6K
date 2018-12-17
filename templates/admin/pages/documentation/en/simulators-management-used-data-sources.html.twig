@@ -1,0 +1,27 @@
+				<h2 id="used-data-sources">
+						4.1. Used data sources
+					</h2>
+					<p>In the « Used data sources » fold-out panel you will be able to define the specific requests for access to the datasources reference data.
+Some of these queries may require parameters that must be defined in the « Data » panel beforehand.</p>
+					<p>In the title bar of the « Used data sources » panel, click the « Add » button to display the screen for selecting the source and defining a query:</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-datasource-add-button.png') }}" alt="">
+					</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-datasource-add.png') }}" alt="">
+					</p>
+					<p><strong>Attributes:</strong></p>
+					<ol>
+						<li>« Datasource »: Corresponds to the data source to which the request relates.</li>
+					</ol>
+					<p><strong>Optional attribute:</strong></p>
+					<ol>
+						<li>« Source label »: Title to be given to the source for this request.</li>
+					</ol>
+					<p>Once the source is selected, the form completes the definition fields of the query.</p>
+					<p>
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-datasource-add-selected.png') }}" alt="">
+					</p>
+					{% include 'admin/pages/documentation/en/simulators-management-simple-query.html.twig' %}
+				{% include 'admin/pages/documentation/en/simulators-management-complex-query.html.twig' %}
+				

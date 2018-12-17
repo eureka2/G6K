@@ -1,0 +1,32 @@
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>
+			G6K: Guide d'administration
+		</h1>
+		<p class="lead">Gestion des utilisateurs</p>
+	</div>
+</header>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+					<a class="nav-link ml-1" href="#comptes-utilisateurs">1. Comptes utilisateurs</a>
+<a class="nav-link ml-1" href="#interface-de-gestion-des-utilisateurs">2. Interface de gestion des utilisateurs</a>
+
+					<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-2" href="#ajout-d-un-utilisateur">2.1. Ajout d’un utilisateur</a>
+<a class="nav-link ml-2" href="#modification-d-un-utilisateur">2.2. Modification d’un utilisateur</a>
+<a class="nav-link ml-2" href="#suppression-d-un-utilisateur">2.3. Suppression d’un utilisateur</a>
+</nav>
+				</nav>
+			</nav>
+		</div>
+		<div class="col-9">
+			<div class="document-content">
+				{% include 'admin/pages/documentation/fr/users-management-comptes-utilisateurs.html.twig' %}
+				{% include 'admin/pages/documentation/fr/users-management-interface-de-gestion-des-utilisateurs.html.twig' %}
+				</div>
+		</div>
+	</div>
+</div>

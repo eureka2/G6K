@@ -1,0 +1,27 @@
+				<h2 id="setting-parameters">
+					2.6. Setting parameters
+				</h2>
+				<p>The parameters allow you to enter variable data into queries. These queries are called "parametrized".</p>
+				<p>The contents of the parameters are either constants or user-entered data, calculated data, or data from other sources</p>
+				<p>To access the source parameters panel, click the « Edit » button in the title bar of the source panel.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-parameter-empty.png') }}" alt="">
+				</p>
+				<p>To add a parameter, click the « Add parameter » button:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-parameter-data.png') }}" alt="">
+				</p>
+				<p>The « Origin » field is set to « Data » by default and the « Data » field is displayed below to allow you to choose the data.</p>
+				<p>If you select « Constant » in the « Origin » field, the lower field is replaced by « Constant » with a text entry field:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/query-builder-parameter-contant.png') }}" alt="">
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ul>
+					<li>« Name »: Parameter name without space or special or accented characters</li>
+					<li>« Origin »: Origin of the data: « Constant » or « Data »</li>
+					<li>« Data »: Variable data feeding parameter</li>
+					<li>« Constant »: Fixed value assigned to the parameter</li>
+					<li>« Optional »: If this field is checked, the parameter will not be passed to the query if it does not contain any value.</li>
+				</ul>
+				

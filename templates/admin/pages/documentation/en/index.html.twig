@@ -1,0 +1,68 @@
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>
+			G6K: Administration guide
+		</h1>
+		<p class="lead">Tutorials</p>
+	</div>
+</header>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-1" href="#simulators">1. Simulators</a>
+<a class="nav-link ml-1" href="#data-sources">2. Data sources</a>
+<a class="nav-link ml-1" href="#views">3. Views</a>
+<a class="nav-link ml-1" href="#users">4. Users</a>
+</nav>
+			</nav>
+		</div>
+		<div class="col-9">
+			<div class="document-content">
+				<div class="documentation-index container-fluid">
+					<div class="row">
+						<div class="documentation-illustration pull-right">
+							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'simulators-management' }) }}">
+								<img src="{{ asset('assets/admin/images/documentation/simulators-illustration.png') }}" alt="Simulators">
+							</a>
+						</div>
+						<div class="documentation-text">
+							{% include 'admin/pages/documentation/en/index-simulators.html.twig' %}
+				</div>
+					</div>
+					<div class="row">
+						<div class="documentation-text pull-right">
+							{% include 'admin/pages/documentation/en/index-data-sources.html.twig' %}
+				</div>
+						<div class="documentation-illustration">
+							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'datasources-management' }) }}">
+								<img class="img-responsive" src="{{ asset('assets/admin/images/documentation/datasources-illustration.png') }}" alt="Data sources">
+							</a>
+						</div>
+					</div>
+					<div class="row">
+						<div class="documentation-illustration pull-right">
+							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">
+								<img class="img-responsive" src="{{ asset('assets/admin/images/documentation/views-illustration.png') }}" alt="Views">
+							</a>
+						</div>
+						<div class="documentation-text">
+							{% include 'admin/pages/documentation/en/index-views.html.twig' %}
+				</div>
+					</div>
+					<div class="row">
+						<div class="documentation-text pull-right">
+							{% include 'admin/pages/documentation/en/index-users.html.twig' %}
+				</div>
+						<div class="documentation-illustration">
+							<a href="{{ path('eureka_g6k_admin_documentation', {'document': 'users-management' }) }}">
+								<img class="img-responsive" src="{{ asset('assets/admin/images/documentation/users-illustration.png') }}" alt="Users">
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

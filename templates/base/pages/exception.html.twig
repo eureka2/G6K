@@ -1,0 +1,27 @@
+{% extends view ~ "/layout/pagelayout.html.twig" %}
+{% block content %}
+{% if app.user and is_granted('ROLE_ADMIN') %}
+<div class="exception alert alert-danger has-error">
+	<span class="help-block">
+		{{ 'Error'|trans }} : {{ adminmessage }}
+	</span>
+	<span class="help-block">
+		Code : {{ code }}
+	</span>
+</div>
+<div class="alert alert-danger has-error">
+	<span class="help-block">
+		{{ stacktrace|jscode }}
+	</span>
+</div>
+{% else %}
+<div class="exception alert alert-danger has-error">
+	<span class="help-block">
+		{{ message|trans }}
+	</span>
+	<span class="help-block">
+		{{ 'Please retry later'|trans }}
+	</span>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+				<h2 id="selection-des-colonnes">
+					2.2. Sélection des colonnes
+				</h2>
+				<p>Les colonnes sont les valeurs des champs de la table que vous souhaitez récupérer après l'exécution de la requête.</p>
+				<p>
+					G6K permet de définir des pseudo-colonnes à l'aide d'expressions.
+					<br>
+					Ces expressions contiennent le plus souvent des noms réels de colonnes de la table mais ce n'est pas obligatoire.
+					<br>
+					Les pseudo-colonnes doivent posséder un nom d'alias permettant de les référencer en tant qu'indice de résultat dans le simulateur.
+				</p>
+				<p>Pour définir une colonne ou une pseudo-colonne, cliquez dans le champ « Colonnes sélectionnées » ou sur le signe «   » à droite du champ :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-column-add.png') }}" alt="">
+				</p>
+				<p>Devant la boite à liste qui s'est affichée, le « X » permet de supprimer la colonne.</p>
+				<p>Cliquez sur la boite à liste :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-expression-listbox.png') }}" alt="">
+				</p>
+				<p>puis sélectionner le champ de la table ou reportez-vous à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition des expressions</a> pour composer une pseudo-colonne.</p>
+				<p>Les fonctions sont spécifiques à la base de données de la source, elles sont définies <a href="#fonctions">ci-après</a>.</p>
+				<p>Si vous avez simplement sélectionné un champ sans composer d'expression, la saisie de la colonne est terminée sinon vous devez entrer un alias :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-column-alias-ask.png') }}" alt="">
+				</p>
+				<p>Cliquez sur « Cliquez pour entrer l'alias de la colonne », saisissez l'alias (sans espaces ni caractères spéciaux ou accentués) dans la boite de saisie puis appuyez sur la touche « Entrée ».</p>
+				<p>Pour définir une nouvelle colonne ou une pseudo-colonne, cliquez dans l'espace vide du champ ou sur le signe «   ».</p>
+				<p>Le nombre de colonnes n'est pas limité.</p>
+				

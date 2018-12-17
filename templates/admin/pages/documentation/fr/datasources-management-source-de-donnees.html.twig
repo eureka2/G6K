@@ -1,0 +1,9 @@
+				<h1 id="source-de-donnees">
+					1. Source de données
+				</h1>
+				<p>Une source de données permet à un simulateur d'interroger les valeurs de référence du domaine de la simulation pour réaliser la simulation.</p>
+				<p>La source de données peut être interne, c'est-à-dire que les valeurs sont stockées dans une base de données gérée par G6K, ou externe, c'est-à-dire que les valeurs sont fournies soit via des requêtes sur une bases de données distante, soit via un web service (API).</p>
+				<p>Dans tous les cas, vous devez déclarer la source afin qu'elle puisse être utilisée par le moteur de simulation.</p>
+				<p>S'il s'agit d'une base de données (interne ou distante), vous devez également décrire les tables et leurs colonnes afin que le moteur de simulation puisse construire les requêtes permettant de retrouver les valeurs recherchées.</p>
+				<p>S'il s'agit d'un web service, vous devez indiquer l'url de l'API ainsi que la méthode HTTP à mettre en oeuvre (GET ou POST). Les paramètres de l'API seront définis par le simulateur qui l'utilise au moment de la création de ce dernier.</p>
+				

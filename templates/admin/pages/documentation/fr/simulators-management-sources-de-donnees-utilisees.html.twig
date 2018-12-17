@@ -1,0 +1,27 @@
+				<h2 id="sources-de-donnees-utilisees">
+					4.1. Sources de données utilisées
+				</h2>
+				<p>Dans le panneau dépliable « Sources de données utilisées » vous allez pouvoir définir les requêtes spécifiques d'accès aux données de référence des sources de données.
+Certaines de ces requêtes peuvent nécessiter des paramètres qui doivent être définis, au préalable, dans le panneau « Données ».</p>
+				<p>Dans la barre de titre du panneau « Sources de données utilisées », cliquez sur le bouton « Ajouter » pour afficher l'écran de sélection de la source et de définition d'une requête :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-datasource-add-button.png') }}" alt="">
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-datasource-add.png') }}" alt="">
+				</p>
+				<p><strong>Attribut :</strong></p>
+				<ol>
+					<li>« Source de données » : Correspond à la source de données sur laquelle porte la requête.</li>
+				</ol>
+				<p><strong>Attribut optionnel :</strong></p>
+				<ol>
+					<li>« Libellé de la source de données » : Titre à donner à la source pour cette requête.</li>
+				</ol>
+				<p>Une fois la source sélectionnée, le formulaire se complète des champs de définition de la requête.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-datasource-add-selected.png') }}" alt="">
+				</p>
+				{% include 'admin/pages/documentation/fr/simulators-management-requete-simple.html.twig' %}
+				{% include 'admin/pages/documentation/fr/simulators-management-requete-complexe.html.twig' %}
+				

@@ -1,0 +1,9 @@
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/bootstrap/js/bootstrap.js') }}"></script>
+$(function(){
+	$( ".disposition-classic select").each(function(k) {
+		if (! this.hasAttribute('data-widget')) {
+			$(this).attr('data-widget', 'abListbox');
+		}
+	});
+});
+</script>

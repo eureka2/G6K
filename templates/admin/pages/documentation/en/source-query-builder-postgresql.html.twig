@@ -1,0 +1,286 @@
+				<h2 id="postgresql">
+					3.3. PostgreSQL
+				</h2>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Function</th>
+							<th>Description</th>
+							<th align="center">Number of arguments</th>
+							<th>Type returned</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>ascii</td>
+							<td>returns the ASCII code of the first character of the argument</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>char</td>
+							<td>returns the character corresponding to the ascii code provided in argument 1</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>char_length</td>
+							<td>returns the length of the string passed as argument</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>character_length</td>
+							<td>returns the length of the string passed as argument</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>initcap</td>
+							<td>converts the first letter of each word in the string to uppercase and all other letters are converted to lowercase</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>length</td>
+							<td>returns the length of the string passed as argument</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>lower</td>
+							<td>converts the string to lowercase letters</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>lpad</td>
+							<td>complete the argument 1 to its left with the string in argument 3 repeated several times until the string reaches the length specified in argument 2</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>ltrim</td>
+							<td>delete all specified characters (argument 2) on the left side of the string passed as argument 1</td>
+							<td align="center">2</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>repeat</td>
+							<td>repeats the string in argument 1, the number of times specified in argument 2</td>
+							<td align="center">2</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>replace</td>
+							<td>returns a copy of the string in argument 1 with each instance of the substring in argument 2 replaced with the substring as argument 3</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>rpad</td>
+							<td>complete the argument 1 to its right with the string in argument 3 repeated several times until the string reaches the length specified in argument 2</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>rtrim</td>
+							<td>deletes all the specified characters (argument 2) on the right side of the string passed as argument 1</td>
+							<td align="center">2</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>split_part</td>
+							<td>splits the string passed in argument 1 with the delimiter passed in argument2 and returns the part whose position is specified in argument 3</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>strpos</td>
+							<td>returns the position of the substring as argument 2 in the argument string 1</td>
+							<td align="center">2</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>substr</td>
+							<td>returns the substring extracted from the string passed in argument 1 from the position in argument 2, of a length specified by argument 3</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>translate</td>
+							<td>replaces in the string in argument 1, each of the characters of the sequence in argument 2 by the character of the same position of the sequence in argument 3</td>
+							<td align="center">3</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>upper</td>
+							<td>converts the string to uppercase</td>
+							<td align="center">1</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>abs</td>
+							<td>returns the absolute value of the numeric argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>acos</td>
+							<td>returns the arc cosine of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>asin</td>
+							<td>returns the sine arc of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>atan</td>
+							<td>returns the arc tangent of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>atan2</td>
+							<td>returns the tangent arc 2 of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>cbrt</td>
+							<td>returns the cubic root of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>ceil</td>
+							<td>returns the smallest integer value greater than or equal to the value passed in argument</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>ceiling</td>
+							<td>returns the smallest integer value greater than or equal to the value passed as an argument. Alias ​​of the function ceil</td>
+							<td align="center">1</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>cos</td>
+							<td>returns the cosine of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>cot</td>
+							<td>returns the cotangent of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>degrees</td>
+							<td>converts the value in radians passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>exp</td>
+							<td>returns the exponential of the value passed in argument, ie the value of e scope to the power of the argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>floor</td>
+							<td>returns the largest integer value less than or equal to the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>ln</td>
+							<td>returns the natural (natural) logarithm of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>log</td>
+							<td>returns the logarithm of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>mod</td>
+							<td>returns the remainder of the division of argument 1 by argument 2</td>
+							<td align="center">2</td>
+							<td>integer</td>
+						</tr>
+						<tr>
+							<td>power</td>
+							<td>returns the value of argument 1 high to the power of the value of argument 2</td>
+							<td align="center">2</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>radians</td>
+							<td>converts the past value in degrees to argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>random</td>
+							<td>returns a random value between 0 and 1 inclusive</td>
+							<td align="center">0</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>round</td>
+							<td>round up the value of argument 1 to the nearest value with the number of decimals passed in argument 2</td>
+							<td align="center">2</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>sin</td>
+							<td>returns the sine of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>sqrt</td>
+							<td>returns the square root of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>tan</td>
+							<td>returns the tangent of the value passed in argument</td>
+							<td align="center">1</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>trunc</td>
+							<td>truncates the value of argument 1 to the number of decimal places specified by argument 2</td>
+							<td align="center">2</td>
+							<td>number</td>
+						</tr>
+						<tr>
+							<td>date_part</td>
+							<td>retrieves part of the date passed in argument 2 according to the keyword passed in argument 1. ex: date_part ('day', '207-08-25') returns 25. The key words are: microseconds, milliseconds, second, minute, hour, day, week, month, quarter, year, decade, century, millennium</td>
+							<td align="center">2</td>
+							<td>date</td>
+						</tr>
+						<tr>
+							<td>date_trunc</td>
+							<td>truncates the date to argument 2 from its part specified by the keyword in argument 1: The keywords are: microseconds, milliseconds, second, minute, hour, day, week, month, quarter, year , decade, century, millennium</td>
+							<td align="center">0</td>
+							<td>date</td>
+						</tr>
+						<tr>
+							<td>now</td>
+							<td>returns the current date</td>
+							<td align="center">0</td>
+							<td>date</td>
+						</tr>
+					</tbody>
+				</table>
+			

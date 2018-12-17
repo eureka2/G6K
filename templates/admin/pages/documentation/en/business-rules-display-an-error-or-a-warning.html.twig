@@ -1,0 +1,53 @@
+				<h3 id="display-an-error-or-a-warning">
+					3.2.1. Display an error or a warning
+				</h3>
+				<p>
+					Choose « notify Error » or « notify Warning » in the action list.
+					<br>
+					The line completes to allow you to enter the message as well as its target:
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-notifyerror.png') }}" alt="">
+				</p>
+				<p>Click "click to enter the message", the input field appears.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-notifyerror-message.png') }}" alt="">
+				</p>
+				<p>Enter the message and validate by clicking on « Ok ».</p>
+				<p>Click « click to select ... », to choose the target.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-notifyerror-target.png') }}" alt="">
+				</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Target</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>the data</td>
+							<td>The message concerns a particular data, the message is displayed below the input field</td>
+						</tr>
+						<tr>
+							<td>the dataset</td>
+							<td>The message concerns all the simulation form (eg inconsistency of entered data), the message appears below the form.</td>
+						</tr>
+						<tr>
+							<td>the datagroup</td>
+							<td>The message concerns a group of data, the message is displayed below the group.</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>If the target is a data or a data group, the data (or group) must be selected from the list that appears:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/business-rules-action-notifyerror-target-datas-list.png') }}" alt="">
+				</p>
+				<p>Note: For data values resulting from user input, it is not necessary to define an error message in the following cases:</p>
+				<ul>
+					<li>The input field is not set while the data is required.</li>
+					<li>The value entered does not correspond to the format expected given the type of the data.</li>
+				</ul>
+				<p>These cases are processed automatically by G6K or the browser.</p>
+				

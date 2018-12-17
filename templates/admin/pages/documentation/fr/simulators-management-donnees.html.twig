@@ -1,0 +1,158 @@
+				<h2 id="donnees">
+					4.2. Données
+				</h2>
+				<p>Les données permettent de stocker des valeurs quel que soit leurs provenances (saisies par l'utilisateur, source de données, élément ou résultat de calculs). Elles peuvent être regroupées en groupes de données, ce qui permet de les disposer dans les rangées d’un tableau (Cf. disposition « grille » d’un groupe de champs, plus loin dans ce document).</p>
+				<p>Pour ajouter une donnée ou un groupe de données, cliquez sur « Ajouter » de la barre de titre « Données » :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-data-add-button.png') }}" alt="">
+				</p>
+				<p>puis sur « Ajouter une donnée » ou « Ajouter un groupe de données » selon le cas :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-data-add-menu.png') }}" alt="">
+				</p>
+				<p class="figure-legend">Figure 3 : Formulaire d'ajout d'un groupe de données</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-datagroup-add.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Nom du groupe » : Nom du groupe de données sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Libellé du groupe » : Titre du groupe de données que l’on pourra sélectionner lors de la définition des groupes des champs des étapes, des règles métier ou des profils.</li>
+				</ol>
+				<p>Donnez une description du groupe de données dans le champ « Description »</p>
+				<p class="figure-legend">Figure 4 : Formulaire d'ajout d'une donnée</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-data-add.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Nom » : Nom de la donnée sans espaces ni caractères spéciaux ou accentués.</li>
+					<li>« Libellé » : Titre de la donnée que l’on pourra sélectionner lors de la définition des champs des étapes, des règles métier ou des profils.</li>
+					<li>« Type » : Type de la donnée. Cf. Type de données ci-dessous.</li>
+				</ol>
+				<p><strong>Type de données</strong></p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Type</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>date</td>
+							<td>date au format défini dans les options du simulateur. Cf. supra. Si la donnée est associée à un champ de saisie, un sélecteur de date sera proposé à l'utilisateur.</td>
+						</tr>
+						<tr>
+							<td>jour</td>
+							<td>Numéro de jour de 1 à 31.</td>
+						</tr>
+						<tr>
+							<td>mois</td>
+							<td>Numéro de mois de 1 à 12.</td>
+						</tr>
+						<tr>
+							<td>année</td>
+							<td>Année sur 4 chiffres.</td>
+						</tr>
+						<tr>
+							<td>booléen</td>
+							<td>Valeur booléenne (0/1). Si la donnée est associée à un champ de saisie, une cache à cocher sera proposée à l'utilisateur.</td>
+						</tr>
+						<tr>
+							<td>entier</td>
+							<td>Valeur entière.</td>
+						</tr>
+						<tr>
+							<td>nombre décimal</td>
+							<td>Valeur décimale avec virgule.</td>
+						</tr>
+						<tr>
+							<td>texte</td>
+							<td>Valeur alphanumérique.</td>
+						</tr>
+						<tr>
+							<td>texte enrichi</td>
+							<td>Valeur alphanumérique avec enrichissement (gras, italique, souligné, ...).</td>
+						</tr>
+						<tr>
+							<td>montant</td>
+							<td>Valeur monétaire à 2 décimales.</td>
+						</tr>
+						<tr>
+							<td>choix</td>
+							<td>Valeur pouvant être choisie dans une liste déroulante ou avec des boutons radios.</td>
+						</tr>
+						<tr>
+							<td>choix multiple</td>
+							<td>Valeurs choisies à l'aide de cases à cocher.</td>
+						</tr>
+						<tr>
+							<td>pourcentage</td>
+							<td>Pourcentage de 0 à 100, possiblement avec des valeurs décimales.</td>
+						</tr>
+						<tr>
+							<td>liste</td>
+							<td>Liste de valeurs. Ne peut être utilisé en saisie.</td>
+						</tr>
+						<tr>
+							<td>table</td>
+							<td>Tableau de valeurs. Ne peut être utilisé en saisie.</td>
+						</tr>
+						<tr>
+							<td>département</td>
+							<td>Code de département. Si la donnée est associée à un champ de saisie, l'utilisateur choisit dans une liste déroulante.</td>
+						</tr>
+						<tr>
+							<td>région</td>
+							<td>Code de région. Si la donnée est associée à un champ de saisie, l'utilisateur choisit dans une liste déroulante.</td>
+						</tr>
+						<tr>
+							<td>pays</td>
+							<td>Nom de pays</td>
+						</tr>
+					</tbody>
+				</table>
+				<p><strong>Attributs optionnels :</strong></p>
+				<ol>
+					<li>« Valeur par défaut » : Valeur par défaut de la donnée.</li>
+					<li>« Min » : Valeur minimale de la donnée pour les données de type numérique.</li>
+					<li>« Max » : Valeur maximale de la donnée pour les données de type numérique.</li>
+					<li>« Contenu » : Expression inconditionnelle à affecter à la donnée. Pour la composition de l'expression se reporter à <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition des expressions</a>.</li>
+					<li>« Arrondi » : Utilisable avec les données de type « Nombre décimal ». Permet de fixer le nombre de décimales après la virgule. La dernière décimale est arrondie.</li>
+					<li>« Unité » : Caractérise une valeur numérique comme par exemple "kilomètres", "litres", "ampère", etc ... L'unité est affichée après le champ.</li>
+					<li>« Source » : Si la donnée doit être alimentée par une source de donnée définie dans le panneau « Sources de données utilisées ».</li>
+					<li>« Indice » : Correspond au champ retourné par la requête destiné à alimenter la donnée.</li>
+					<li>« Mémoriser » : Garder en mémoire (cookie de l’utilisateur) la valeur afin que l’utilisateur n’ait pas à la ressaisir (Cf. attribut « Mémo » du simulateur)</li>
+				</ol>
+				<p>Donnez une description de la donnée dans le champ « Description ». Cette description pourra être affichée dans une bulle d'aide, à la demande de l'utilisateur.</p>
+				<p>Dans le cas des données de type « choix », vous devez indiquer comment alimenter la liste de choix, pour cela un panneau « Liste de choix » s'affiche en bas du formulaire de saisie :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-data-choices.png') }}" alt="">
+				</p>
+				<p>La liste est soit statique, c'est-à-dire que ses éléments figurent in extenso dans le fichier de définition du simulateur, soit dynamique, c'est-à-dire qu'elle est alimentée par une source de données</p>
+				<p>Pour créer une liste statique, cliquez sur le bouton « Ajouter un choix » du panneau « Liste de choix » :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-data-choice-add.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Valeur » : Valeur attribuée à la donnée si cet élément de liste est sélectionné.</li>
+					<li>« Libellé » : Texte de l'élément apparaissant dans la liste.</li>
+				</ol>
+				<p>Ajouter des choix autant de fois que nécessaire pour constituer la liste.</p>
+				<p>Pour créer une liste dynamique, cliquez sur le bouton « Ajouter une source de données » :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-data-source-add.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Source » : Source de la donnée devant alimenter la liste.</li>
+					<li>« Champ de la source à utiliser comme valeur de la donnée » : Champ contenant la valeur attribuée à la donnée si cet élément de liste est sélectionné.</li>
+					<li>« Champ de la source à utiliser comme libellé dans la liste de choix » : Champ contenant le texte de l'élément apparaissant dans la liste.</li>
+				</ol>
+				<p><strong>Attribut optionnel :</strong></p>
+				<ol>
+					<li>« Champ de la source à utiliser comme ID » : Champ contenant l'ID de l'élément.</li>
+				</ol>
+				

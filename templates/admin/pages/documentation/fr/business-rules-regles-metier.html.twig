@@ -1,0 +1,71 @@
+				<h1 id="regles-metier">
+					1. Règles métier
+				</h1>
+				<p>Ce sont les règles « métier » qui déterminent le comportement du simulateur. Elles se déclenchent lorsque le contexte change.</p>
+				<p>Un changement de contexte se traduit toujours par l'acquisition ou la modification d'une donnée.</p>
+				<p>G6k s'informe du changement de contexte en revérifiant les conditions associées aux règles lorsque la valeur d'une donnée change.</p>
+				<p>Ainsi lorsque l'utilisateur saisit une valeur, que g6K accède à une donnée de référence ou qu'une valeur est calculée, les règles impactées sont évaluées et les actions associées sont exécutées le cas échéant.</p>
+				<p>Les actions qui peuvent être réalisées sont :</p>
+				<ul>
+					<li>Montrer ou cacher une partie de la page (un champ, un groupe de champs, un panneau, un bouton, ...)</li>
+					<li>Afficher un message d'erreur ou d'avertissement</li>
+					<li>Effectuer un calcul et l'affecter à une donnée</li>
+				</ul>
+				<p>Une règle métier a la syntaxe suivante :</p>
+				<pre class="prettyprint">
+<règle métier> : <span class="label label-default">Lorsque ...</span><condition>[<span class="label label-default">alors ...</span><action>...<action>][<span class="label label-default">sinon ...</span><action> ... <action>]
+</pre>
+				<p><strong><condition></strong></p>
+				<pre class="prettyprint">
+<condition> : <condition simple> | <condition composée> <condition simple> : <opérande><opérateur>[(<valeur> | <expression>)] <condition composée> : <connecteur> <condition> ... <condition>
+</pre>
+				<p><strong><opérateur></strong></p>
+				<pre class="prettyprint">
+<opérateur> : <span class="label label-default">contient</span> | <span class="label label-default">correspond à</span> | <span class="label label-default">est antérieure à</span> | <span class="label label-default">est égal à</span> | <span class="label label-default">est faux</span> | <span class="label label-default">est inférieur à</span> | <span class="label label-default">est inférieur ou égal à</span> | <span class="label label-default">est postérieure à</span> | <span class="label label-default">est renseigné</span> | <span class="label label-default">est supérieur à</span> | <span class="label label-default">est supérieur ou égal à</span> | <span class="label label-default">est vrai</span> | <span class="label label-default">ne contient pas</span> | <span class="label label-default">ne correspond pas à</span> | <span class="label label-default">n'est pas antérieure à</span> | <span class="label label-default">n'est pas égal à</span> | <span class="label label-default">n'est pas postérieure à</span> | <span class="label label-default">n'est pas renseigné</span>
+</pre>
+				<p><strong><connecteur></strong></p>
+				<pre class="prettyprint">
+<connecteur> : <span class="label label-default">toutes</span> | <span class="label label-default">au moins une</span> | <span class="label label-default">aucune</span>
+</pre>
+				<p><strong><action></strong></p>
+				<pre class="prettyprint">
+<action> : (<span class="label label-default">afficher l'erreur</span> | <span class="label label-default">afficher l'avertissement</span>)<message><span class="label label-default">portant sur</span><span class="label label-default">la donnée</span><donnée>
+ou
+<action> : (<span class="label label-default">afficher l'erreur</span> | <span class="label label-default">afficher l'avertissement</span>)<message><span class="label label-default">portant sur</span><span class="label label-default">l'ensemble des données</span>
+ou
+<action> : (<span class="label label-default">afficher l'erreur</span> | <span class="label label-default">afficher l'avertissement</span>)<message><span class="label label-default">portant sur</span><span class="label label-default">le groupe de données</span><groupe de données>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">l'étape</span><étape>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le panneau</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">dont le libellé est</span><panneau>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le groupe de champs</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">du panneau</span><panneau><span class="label label-default">dont le libellé est</span><groupe de champs>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le champ</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">du panneau</span><panneau><span class="label label-default">du groupe de champs</span><groupe de champs><span class="label label-default">dont le libellé est</span><champ>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la colonne</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">du panneau</span><panneau><span class="label label-default">du groupe de champs</span><groupe de champs><span class="label label-default">dont le libellé est</span><colonne>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la rangée</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">du panneau</span><panneau><span class="label label-default">du groupe de champs</span><groupe de champs><span class="label label-default">dont le libellé est</span><rangée>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le bloc d'infos</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">du panneau</span><panneau><span class="label label-default">dont le libellé est</span><bloc d'infos>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le chapitre</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">du panneau</span><panneau><span class="label label-default">du bloc d'infos</span><bloc d'infos><span class="label label-default">dont le libellé est</span><chapitre>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la section</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">du panneau</span><panneau><span class="label label-default">du bloc d'infos</span><bloc d'infos><span class="label label-default">du chapitre</span><chapitre><span class="label label-default">dont le libellé est</span><section>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le bouton d'action</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">dont le libellé est</span><bouton d'action>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">la note de bas de page</span> <span class="label label-default">de l'étape</span><étape><span class="label label-default">dont le libellé est</span><note de bas de page>
+ou
+<action> : (<span class="label label-default">Cacher</span> | <span class="label label-default">Montrer</span>) <span class="label label-default">le choix</span> <span class="label label-default">de la donnée</span><donnée><span class="label label-default">dont le libellé est</span><choix>
+</pre>
+				<p>Evaluer une règle consiste à évaluer la condition qui la compose. Le résultat de l'évaluation a trois états : « vrai », « faux » ou « indéterminé ».</p>
+				<p>
+					Si l'état est « vrai » alors les actions <span class="label label-default">alors ...</span> sont exécutées.
+					<br>
+					Si l'état est « faux » alors les actions <span class="label label-default">sinon ...</span> sont exécutées.
+					<br>
+					Si l'état est « indéterminé » alors aucune action n'est exécutée.
+				</p>
+				<p>L'évaluation renvoie « indéterminé », si au moins une des opérandes ne contient aucune valeur.</p>
+				

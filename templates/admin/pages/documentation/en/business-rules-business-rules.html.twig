@@ -1,0 +1,71 @@
+				<h1 id="business-rules">
+					1. Business rules
+				</h1>
+				<p>It is the « business rules » that determine the behavior of the simulator. They are triggered when the context changes.</p>
+				<p>A change of context always results in the acquisition or modification of data.</p>
+				<p>G6k inquiries about the context change by reverting the conditions associated with the rules when the value of a data changes.</p>
+				<p>Thus, when the user enters a value, g6K accesses a reference data or a value is calculated, the impacted rules are evaluated and the associated actions are executed if necessary.</p>
+				<p>The actions that can be carried out are:</p>
+				<ul>
+					<li>Show or hide part of the page (a field, a fields set, a panel, a button, ...)</li>
+					<li>Display an error or warning message</li>
+					<li>Perform a calculation and assign it to a data</li>
+				</ul>
+				<p>A business rule has the following syntax:</p>
+				<pre class="prettyprint">
+<business rule>: <span class="label label-default">When ...</span><condition>[<span class="label label-default">then do ...</span><action>...<action>][<span class="label label-default">else do ...</span><action> ... <action>]
+</pre>
+				<p><strong><condition></strong></p>
+				<pre class="prettyprint">
+<condition>: <simple condition> | <composite condition> <simple condition>: <operand><operator>[(<value> | <expression>)] <composite condition>: <connector> <condition> ... <condition>
+</pre>
+				<p><strong><operator></strong></p>
+				<pre class="prettyprint">
+<operator>:<span class="label label-default">contains</span> | <span class="label label-default">corresponds to</span> | <span class="label label-default">does not corresponds to</span> | <span class="label label-default">is after</span> | <span class="label label-default">is before</span> | <span class="label label-default">is equal to</span> | <span class="label label-default">is greater than</span> | <span class="label label-default">is greater than or equal to</span> | <span class="label label-default">is less than</span> | <span class="label label-default">is less than or equal to</span> | <span class="label label-default">is not after</span> | <span class="label label-default">is not before</span> | <span class="label label-default">is not equal to</span> | <span class="label label-default">is not present</span> | <span class="label label-default">is present</span> | <span class="label label-default">is true</span> | <span class="label label-default">matches</span> | <span class="label label-default">not contains</span>
+</pre>
+				<p><strong><connector></strong></p>
+				<pre class="prettyprint">
+<connector>: <span class="label label-default">All</span> | <span class="label label-default">Any</span> | <span class="label label-default">None</span>
+</pre>
+				<p><strong><action></strong></p>
+				<pre class="prettyprint">
+<action>: (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)<message><span class="label label-default">on</span><span class="label label-default">the data</span><data>
+ou
+<action>: (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)<message><span class="label label-default">on</span><span class="label label-default">the dataset</span>
+ou
+<action>: (<span class="label label-default">notify Error</span> | <span class="label label-default">notify Warning</span>)<message><span class="label label-default">on</span><span class="label label-default">the datagroup</span><datagroup>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the step</span><step>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the panel</span> <span class="label label-default">of step</span><step><span class="label label-default">whose label is</span><panel>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the fieldset</span> <span class="label label-default">of step</span><step><span class="label label-default">of panel</span><panel><span class="label label-default">whose label is</span><fieldset>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the field</span> <span class="label label-default">of step</span><step><span class="label label-default">of panel</span><panel><span class="label label-default">of fieldset</span><fieldset><span class="label label-default">whose label is</span><field>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the column</span> <span class="label label-default">of step</span><step><span class="label label-default">of panel</span><panel><span class="label label-default">of fieldset</span><fieldset><span class="label label-default">whose label is</span><column>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the fieldrow</span> <span class="label label-default">of step</span><step><span class="label label-default">of panel</span><panel><span class="label label-default">of fieldset</span><fieldset><span class="label label-default">whose label is</span><fieldrow>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the blockinfo</span> <span class="label label-default">of step</span><step><span class="label label-default">of panel</span><panel><span class="label label-default">whose label is</span><blockinfo>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the chapter</span> <span class="label label-default">of step</span><step><span class="label label-default">of panel</span><panel><span class="label label-default">of blockinfo</span><blockinfo><span class="label label-default">whose label is</span><chapter>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the section</span> <span class="label label-default">of step</span><step><span class="label label-default">of panel</span><panel><span class="label label-default">of blockinfo</span><blockinfo><span class="label label-default">of chapter</span><chapter><span class="label label-default">whose label is</span><section>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the actionbutton</span> <span class="label label-default">of step</span><step><span class="label label-default">whose label is</span><actionbutton>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the footnote</span> <span class="label label-default">of step</span><step><span class="label label-default">whose label is</span><footnote>
+ou
+<action>: (<span class="label label-default">Hide</span> | <span class="label label-default">Show</span>) <span class="label label-default">the choice</span> <span class="label label-default">of data</span><data><span class="label label-default">whose label is</span><choice>
+</pre>
+				<p>Evaluating a rule consists to evaluate the condition of the rule. The result of the evaluation has three states: « true », « false » or « undefined ».</p>
+				<p>
+					If the state is « true » then the <span class="label label-default">then do ...</span> actions are executed.
+					<br>
+					If the state is « false » then the <span class="label label-default">else do ... </span> actions are executed.
+					<br>
+					If the state is « undefined » then no action is executed.
+				</p>
+				<p>The evaluation returns « undefined » if at least one of the operands contains no value.</p>
+				

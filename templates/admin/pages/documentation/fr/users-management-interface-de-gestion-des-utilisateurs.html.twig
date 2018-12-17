@@ -1,0 +1,39 @@
+				<h1 id="interface-de-gestion-des-utilisateurs">
+					2. Interface de gestion des utilisateurs
+				</h1>
+				<p>Si vous avez accès à cette interface, c'est donc que vous êtes un des « Super admins »</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-users-buttonbar.png') }}" alt="">
+				</p>
+				<p>Cliquez sur « Utilisateurs » de la barre de menu pour y accèdez.</p>
+				<p>La liste des comptes utilisateurs s'affiche sous forme de tableau:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-list.png') }}" alt="">
+				</p>
+				<p>Plusieurs attributs sont liés aux utilisateurs, ils sont définis ci-dessous :</p>
+				<p><strong>Attributs :</strong></p>
+				<ul>
+					<li>« Identifiant » : identifiant de l’utilisateur. <em>Spécification :</em> <strong>Minimum 3 caractères.</strong>
+</li>
+					<li>« Email » : email de l’utilisateur. <em>Spécification :</em> <strong>Différent des autres emails déjà enregistrés.</strong>
+</li>
+					<li>
+						« Mot de passe » : mot de passe de l’utilisateur qui sera crypté. 
+						<em>Spécification <strong>:</strong></em>
+						<strong>Minimum 6 caractères.</strong>
+					</li>
+					<li>« Activé » : détermine si le compte est activé ou non.</li>
+					<li>« Rôles » : Utilisateur, Contributeur, Manager, Admin et Super admin.</li>
+					<li>« Dernière connexion » : date à laquelle l’utilisateur s’est connecté pour la dernière fois.</li>
+				</ul>
+				<p>
+					Vous pouvez ajuster la taille de la liste avec 
+					<img src="{{ asset('assets/admin/images/documentation/fr/users-management-list-size.png') }}" alt="">
+					, trier la liste en cliquant sur le nom de colonne qui vous interesse afin de faciliter la lecture et la recherche dans les listes longues.
+Ainsi si vous cliquez sur « Identifiant », la liste sera triée par identifiants en ordre croissant. Si vous cliquez une deuxième fois, elle sera triée en ordre décroissanr. Il en est de même pour les autres colonnes du tableau.
+				</p>
+				<p>Mais surtout, vous pouvez ajouter, modifier ou supprimer un compte utilisateur.</p>
+				{% include 'admin/pages/documentation/fr/users-management-ajout-d-un-utilisateur.html.twig' %}
+				{% include 'admin/pages/documentation/fr/users-management-modification-d-un-utilisateur.html.twig' %}
+				{% include 'admin/pages/documentation/fr/users-management-suppression-d-un-utilisateur.html.twig' %}
+				

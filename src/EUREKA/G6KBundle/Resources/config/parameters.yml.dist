@@ -1,6 +1,0 @@
-parameters:
-    domainview: 
-        localhost: Default
-    viewpath:
-        Default: www.mysite.com
-    page404: /404.html

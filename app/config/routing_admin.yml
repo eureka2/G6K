@@ -1,9 +1,0 @@
-fos_user:
-    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
-
-eureka_g6k:
-    resource: "@EUREKAG6KBundle/Resources/config/routing_admin.yml"
-    prefix:   /
-
-_bazinga_jstranslation:
-    resource: "@BazingaJsTranslationBundle/Resources/config/routing/routing.yml"

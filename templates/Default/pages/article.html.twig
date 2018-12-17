@@ -1,0 +1,49 @@
+{# DO NOT MODIFY THIS FILE #}	
+
+{% extends 'Default/layout/pagelayout.html.twig' %}
+
+{% import "base/macros/form.html.twig" as form %}
+
+{% block title %}{{ parent() }} - {{ step.label }}{% endblock %}
+
+{% block content %}
+<article>
+	<div id="step{{ step.id }}" class="step-page">
+	
+	<h1>{% block page_title %}{{ step.simulator.label }}{% endblock %}</h1>
+	{{ form.paragraphs(step.simulator.description|jscode) }}
+	
+	{{ form.breadcrumb(_context) }}
+	
+	{% set simu = step.simulator %}
+	
+	<div class="step-description">
+		{{ form.paragraphs(step.description) }}
+	</div>
+	{{ form.requiredmention(_context) }}
+	
+	<form method="post" action="#main" enctype="multipart/form-data" id="g6k_form">
+	{{ form.draw(_context, 'form-horizontal', 'form-group', 'control-label', 'input-group', 'form-control') }}
+	</form>
+	
+	{%- for data in simu.datas -%}
+	{%- if data.class == "DataGroup" -%}
+		{%- for gdata in data.datas -%}
+			{%- if gdata.error -%}
+				Error on {{ gdata.name }}  : {{ gdata.errorMessage }}<br />
+			{% endif %}
+		{% endfor %}	
+	{% else %}		
+		{%- if data.error -%}
+			Error on {{ data.name }}  : {{ data.errorMessage }}<br />
+		{% endif %}
+	{% endif %}
+	{% endfor %}
+	{%- if simu.error -%}
+	{%- for gerror in simu.errorMessages -%}
+	Global error  : {{ gerror }}<br />
+	{% endfor %}
+	{% endif %}
+	</div>
+</article>
+{% endblock %}

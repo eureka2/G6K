@@ -1,0 +1,32 @@
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>
+			G6K: Administration Guide
+		</h1>
+		<p class="lead">Users management</p>
+	</div>
+</header>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+					<a class="nav-link ml-1" href="#user-accounts">1. User accounts</a>
+<a class="nav-link ml-1" href="#user-management-interface">2. User management interface</a>
+
+					<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-2" href="#adding-a-user">2.1. Adding a user</a>
+<a class="nav-link ml-2" href="#editing-a-user">2.2. Editing a user</a>
+<a class="nav-link ml-2" href="#deleting-a-user">2.3. Deleting a user</a>
+</nav>
+				</nav>
+			</nav>
+		</div>
+		<div class="col-9">
+			<div class="document-content">
+				{% include 'admin/pages/documentation/en/users-management-user-accounts.html.twig' %}
+				{% include 'admin/pages/documentation/en/users-management-user-management-interface.html.twig' %}
+				</div>
+		</div>
+	</div>
+</div>

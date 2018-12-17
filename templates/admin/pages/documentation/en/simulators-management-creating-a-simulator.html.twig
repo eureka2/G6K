@@ -1,0 +1,60 @@
+				<h1 id="creating-a-simulator">
+					4. Creating a simulator
+				</h1>
+				<p>Click on « Simulators » from the menu bar:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-simulators-buttonbar.png') }}" alt="">
+				</p>
+				<p>
+					then click the 
+					<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-create-button.png') }}" alt="">
+					button on the left side menu.
+				</p>
+				<p>A form for entering the general parameters of the simulator is proposed to you:</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-options.png') }}" alt="">
+				</p>
+				<p><strong>Attributes:</strong></p>
+				<ol>
+					<li>
+						« Name »: This is the name that will be displayed in the URL (* .../calcul/simulator-name *) and the .XML file created when the simulator was registered.
+The simulator will be saved as 
+						<simulator-name>
+							.xml in the G6K simulator directory.
+						</simulator-name>
+</li>
+						<li>« Label »: Title that will be displayed on the page of your simulator.</li>
+						<li>« Default view »: View with which your simulator will be displayed.
+The view is a set of templates and styles used to display the simulator.
+For more information on views, see the <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">Views management</a> page of the documentation.</li>
+						<li>« Date format »: To be selected according to the format of display and the most commonly used dates in the country.</li>
+						<li>« Decimal point »: To be selected according to the display format of the numerical values ​​(amount, percentages, ...) desired.</li>
+						<li>« Currency symbol »: To be chosen according to the country.</li>
+						<li>« Symbol position »: To be chosen according to the country.</li>
+					</ol>
+					<p><strong>Optional attributes:</strong></p>
+					<ol>
+						<li>« Main Referer »: URL of the site page that calls the simulator.
+G6K constructs a navigation line where the penultimate element is constructed with this URL and the label of the simulator.</li>
+						<li>« Interactive UI »: If this option is checked, the simulation engine will use Javascript to give interactivity to the simulation (recommended)</li>
+						<li>« Data Memo »: If this option is checked, the simulation engine will be allowed to save the value of certain fields in the browser cookies for later use. Useful for a value like date of birth.</li>
+					</ol>
+					<p>Describe what your simulator does in the « Description » field.
+This description will be displayed below the simulator label/title of all pages/simulation steps.</p>
+					<p>Optionally, you can enter additional information in the « Related Informations » field that the view template will display or not.</p>
+					<p>
+						When you have finished entering the parameters and clicking on the button 
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-validate-button.png') }}" alt="Validate">
+						, the 
+						<img src="{{ asset('assets/admin/images/documentation/en/simulators-management-save.png') }}" alt="Save">
+						button appears at the top right of the page.
+This button allows you to send the entered or modified information to the server at any time, because the « Validate » button only keeps the information in the memory of your computer.
+					</p>
+					{% include 'admin/pages/documentation/en/simulators-management-used-data-sources.html.twig' %}
+				{% include 'admin/pages/documentation/en/simulators-management-data.html.twig' %}
+				{% include 'admin/pages/documentation/en/simulators-management-steps.html.twig' %}
+				{% include 'admin/pages/documentation/en/simulators-management-business-rules.html.twig' %}
+				{% include 'admin/pages/documentation/en/simulators-management-profiles.html.twig' %}
+				{% include 'admin/pages/documentation/en/simulators-management-simulator-registration.html.twig' %}
+				{% include 'admin/pages/documentation/en/simulators-management-deploying-on-front-end-servers.html.twig' %}
+				

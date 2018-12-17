@@ -1,0 +1,105 @@
+				<h2 id="composition-du-filtre">
+					2.3. Composition du filtre
+				</h2>
+				<p>
+					Sans filtre, la requête retournerait toutes les lignes de la table, ce qui n'est pas souhaitable sauf si on souhaite constituer une liste de choix à partir de l'intégralité de la table.
+					<br>
+					Le filtre permet de ne retenir que les lignes qui répondent à une certaine condition. Ce peut être une condition simple ou une condition combinée.
+				</p>
+				<p>Une condition à la syntaxe suivante :</p>
+				<pre class="prettyprint">
+<condition> : <condition simple> | <condition combinée>
+<condition simple> : <expression><operateur de comparaison><expression>
+<condition combinée> : <conjonction> | <disjonction>
+<conjonction> : <condition> <span class="label label-default">et</span> <condition> | <span class="label label-default">(</span> <condition> <span class="label label-default">et</span> <condition> <span class="label label-default">)</span>
+<disjonction> : <condition> <span class="label label-default">ou</span> <condition> | <span class="label label-default">(</span> <condition> <span class="label label-default">ou</span> <condition> <span class="label label-default">)</span>
+<expression> : <opérande>[<opérateur arithmétique><opérande>]
+<opérande> : <expression>|<opérande>
+</pre>
+				<p>Se reporter <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'business-rules' }) }}#operateurs">ici</a> pour la liste des opérateurs de comparaison et <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}#operateurs">ici</a> pour la liste des opérateurs numériques.</p>
+				<p>Pour composer le filtre, cliquez dans le champ « Filtre » ou sur le signe «   » à droite du champ :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-add.png') }}" alt="">
+				</p>
+				<p>Cliquez sur la boite à liste :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-expression-listbox.png') }}" alt="">
+				</p>
+				<p>
+					Dans cet exemple, il y a deux paramètres : « droitVH » et « nbEnfants ». Les paramètres contiennent des constantes, des valeurs des données saisies par l'utilisateurs, des données calculées ou des données provenant d'autres sources.
+					<br>
+					Si vous avez besoin de paramètres pour constituer votre requête, validez le formulaire sans saisir de filtre puis cliquez sur « Modifier ».
+					<br>
+					Un panneau « Paramètres » s'affiche en dessous du formulaire pour vous permettre d'en définir. Se reporter à la section <a href="#definition-des-parametres">Définition des paramètres</a> de cette page.
+				</p>
+				<p>Pour composer une expression depuis cette liste, reportez-vous à la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'expression-builder' }) }}">Composition des expressions</a>.</p>
+				<p>Après saisie de l'expression, « Cliquez pour sélectionner l'opérateur » s'affiche :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-operator-ask.png') }}" alt="">
+				</p>
+				<p>Cliquez pour choisir l'opérateur de comparaison :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-operators-list.png') }}" alt="">
+				</p>
+				<p>Une fois choisi l'opérateur, vous pouvez composer la deuxième expression :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-right-expression.png') }}" alt="">
+				</p>
+				<p>Vous avez terminé la saisie d'une première condition, vous pouvez en saisir d'autres en cliquant dans l'espace vide du champ ou sur le signe «   »</p>
+				<p>A partir de la deuxième condition, les conditions sont numérotées et un bouton s'affiche au-dessus du champ pour vous permettre de combiner les conditions :</p>
+				<p>En cliquant sur ce bouton, vous obtenez trois possibilités de combinaison :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-all.png') }}" alt="">
+				</p>
+				<table class="table-responsive table-sm table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Combinaison</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Toutes les conditions suivantes :</td>
+							<td>Combine toutes les conditions avec le connecteur 'et'</td>
+						</tr>
+						<tr>
+							<td>L'une des conditions suivantes :</td>
+							<td>Combine toutes les conditions avec le connecteur 'ou'</td>
+						</tr>
+						<tr>
+							<td>Avancée</td>
+							<td>Permet de combiner les conditions avec des 'et', des 'ou' et des parenthèses</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>Le mode « Avancée » affiche une barre en dessous des conditions permettant de combiner les conditions par leurs numéros :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-advanced.png') }}" alt="">
+				</p>
+				<p>
+					Cliquer sur un connecteur 
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-and.png') }}" alt="">
+					le change en 
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-or.png') }}" alt="">
+					, cliquer sur un connecteur 
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-or.png') }}" alt="">
+					le change en 
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-and.png') }}" alt="">
+					.
+				</p>
+				<p>
+					Cliquez sur le bouton 
+					<img src="{{ asset('assets/admin/images/documentation/query-builder-filter-combined-brackets-button.png') }}" alt="">
+					pour ajouter une paire de parenthèses ouvrante et fermante.
+				</p>
+				<p>La parenthèse ouvrante se place en début de condition, la fermante en fin de condition.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-brackets.png') }}" alt="">
+				</p>
+				<p>Vous pouvez supprimer une paire de parenthèse en cliquant sur la croix rouge au-dessus d'une des deux parenthèses.</p>
+				<p>Vous pouvez déplacer chacun des éléments (chiffre, connecteur ou parenthèse) de la condition en les faisant glisser d'une position à l'autre.</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/query-builder-filter-combined-condition.png') }}" alt="">
+				</p>
+				

@@ -1,0 +1,58 @@
+				<h1 id="creation-d-un-simulateur">
+					4. Création d’un simulateur
+				</h1>
+				<p>Cliquez sur « Simulateurs » de la barre de menu :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-simulators-buttonbar.png') }}" alt="">
+				</p>
+				<p>
+					puis sur le bouton 
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-create-button.png') }}" alt="">
+					du menu latéral gauche.
+				</p>
+				<p>Il vous est proposé un formulaire de saisie des paramètres généraux du simulateur :</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-options.png') }}" alt="">
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Nom » : Correspond au nom qui sera affiché dans l’URL (<em>…/calcul/nom-du-simulateur</em>) et au fichier .XML créé lors de l’enregistrement du simulateur.
+Le simulateur sera enregistré sous le nom <nom-du-simulateur>.xml dans le répertoire des simulateurs de G6K.</li>
+					<li>« Libellé » : Titre qui sera affiché sur la page de votre simulateur.</li>
+					<li>« Vue par défaut » : Vue avec laquelle sera affiché votre simulateur.
+La vue est un ensemble de gabarits et de styles utilisés pour afficher le simulateur.
+Pour plus d'informations sur les vues, consulter la page <a href="{{ path('eureka_g6k_admin_documentation', {'document': 'views-management' }) }}">« Gestion des vues »</a> de la documentation.</li>
+					<li>« Format de date » : A choisir en fonction du format d’affichage et de saisie des dates le plus couramment utilisé dans le pays.</li>
+					<li>« Point décimal » : A choisir en fonction du format d’affichage des valeurs numériques (montant, pourcentages, ...) souhaité.</li>
+					<li>« Symbole monétaire » : A choisir en fonction du pays.</li>
+					<li>« Position du symbole » : A choisir en fonction du pays.</li>
+				</ol>
+				<p><strong>Attributs optionnels :</strong></p>
+				<ol>
+					<li>« Referer principal » : URL de la page du site qui appelle le simulateur.
+G6K constitue un fil d'Ariane de navigation où l'avant dernier élément est construit avec cette URL et le libellé du simulateur.</li>
+					<li>« UI interactif » : Si cette option est cochée, le moteur de simulation utilisera le Javascript pour donner de l’interactivité à la simulation (recommandé)</li>
+					<li>« Mémo de données » : Si cette option est cochée le moteur de simulation sera autorisé à enregistrer la valeur de certains champs dans les cookies du navigateur pour une utilisation ultérieure. Utile pour une valeur comme la date de naissance.</li>
+				</ol>
+				<p>
+					Décrire ce que fait votre simulateur dans le champ « Description ».
+					<br>
+					Cette description sera affichée en dessous du libellé/titre du simulateur de toutes les pages/étapes de simulation.
+				</p>
+				<p>Optionnellement, vous pouvez saisir des informations complémentaires dans le champ « Informations connexes » que le gabarit de la vue pourra afficher ou pas.</p>
+				<p>
+					Une fois la saisie des paramètres terminée et que vous avez cliqué sur le bouton 
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-validate-button.png') }}" alt="Valider">
+					, le bouton 
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-save.png') }}" alt="Enregistrer">
+					apparait en haut à droite de la page.
+Ce bouton permet d'envoyer les informations saisies ou modifiées au serveur à tout moment, parce que le bouton « Valider » ne fait que garder les informations dans la mémoire de votre ordinateur.
+				</p>
+				{% include 'admin/pages/documentation/fr/simulators-management-sources-de-donnees-utilisees.html.twig' %}
+				{% include 'admin/pages/documentation/fr/simulators-management-donnees.html.twig' %}
+				{% include 'admin/pages/documentation/fr/simulators-management-etapes.html.twig' %}
+				{% include 'admin/pages/documentation/fr/simulators-management-regles-metier.html.twig' %}
+				{% include 'admin/pages/documentation/fr/simulators-management-profils.html.twig' %}
+				{% include 'admin/pages/documentation/fr/simulators-management-enregistrement-du-simulateur.html.twig' %}
+				{% include 'admin/pages/documentation/fr/simulators-management-deploiement-sur-des-serveurs-frontaux.html.twig' %}
+				

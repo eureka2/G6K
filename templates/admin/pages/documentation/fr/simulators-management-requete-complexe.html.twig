@@ -1,0 +1,44 @@
+				<h3 id="requete-complexe">
+					4.1.2. Requête complexe
+				</h3>
+				<p>Dans ce cas, les champs « Table », « Colonnes sélectionnées », « Filtre », « Trié par », « Nombre de résultats » et « à partir de » sont remplacés par le champ « Requête SQL » car ces éléments figurent dans la requête.</p>
+				<p>
+					Comme pour les requêtes simples, des paramètres peuvent être utilisés.
+					<br>
+					Les formes $X$d où X est le numéro du paramètre, font référence à des valeurs entières, $X$f à des valeurs décimales et $X$s à des valeurs alphanumériques.
+				</p>
+				<p><strong>Attributs :</strong></p>
+				<ol>
+					<li>« Type de requête » : Choisir le type « Complexe ».</li>
+					<li>« Requête SQL » : La requête SQL.</li>
+					<li>
+						« Format des données retournées » : 
+						<ul>
+							<li>« JSON » : format d'échange de données en texte lisible.</li>
+							<li>« XML » : format de description des données.</li>
+							<li>« valeur simple » : N/A.</li>
+							<li>« paires clé/valeur » : Tableau de paires clé/valeur.</li>
+							<li>« HTML » : format de données conçu pour représenter les pages web.</li>
+							<li>« CSV » : format informatique ouvert représentant des données tabulaires sous forme de valeurs séparées par des virgules.</li>
+						</ul>
+					</li>
+					<li>
+						« Chemin d’accès aux données recherchées » : Le chemin d’accès dépend du format des données retournées : 
+						<ul>
+							<li>« JSON » : Chemin au format <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> ou <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a>
+</li>
+							<li>« XML » : Chemin au format <a href="http://xmlfr.org/w3c/TR/xpath/">Xpath</a>
+</li>
+							<li>« Valeur simple » : N/A</li>
+							<li>« Paires clé/valeur (tableau) » : chemin sous la forme « N° de ligne / nom de colonnes » (exemple : 0/taxe : colonne taxe de la ligne 1)</li>
+						</ul>
+					</li>
+				</ol>
+				<p class="figure-legend">Figure 2 : Source de données avec une requête complexe</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-datasource-add-complex.png') }}" alt="">
+				</p>
+				<p>
+					<img src="{{ asset('assets/admin/images/documentation/fr/simulators-management-datasource-display-complex.png') }}" alt="">
+				</p>
+				

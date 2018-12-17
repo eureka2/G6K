@@ -1,0 +1,43 @@
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>
+			G6K: Administration guide
+		</h1>
+		<p class="lead">Visual component for making simple queries</p>
+	</div>
+</header>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-3">
+			<nav id="document-toc" class="navbar navbar-light bg-light flex-column" data-spy="affix" data-offset-top="200" data-offset-bottom="200">
+				<nav class="nav nav-pills flex-column">
+					<a class="nav-link ml-1" href="#overview">1. Overview</a>
+<a class="nav-link ml-1" href="#usage">2. Usage</a>
+
+					<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-2" href="#selection-of-the-table">2.1. Selection of the table</a>
+<a class="nav-link ml-2" href="#selection-of-columns">2.2. Selection of columns</a>
+<a class="nav-link ml-2" href="#composition-of-the-filter">2.3. Composition of the filter</a>
+<a class="nav-link ml-2" href="#sorting-result-rows">2.4. Sorting result rows</a>
+<a class="nav-link ml-2" href="#limit-the-number-of-result-rows">2.5. Limit the number of result rows</a>
+<a class="nav-link ml-2" href="#setting-parameters">2.6. Setting parameters</a>
+</nav>
+					<a class="nav-link ml-1" href="#functions">3. Functions</a>
+
+					<nav class="nav nav-pills flex-column">
+<a class="nav-link ml-2" href="#sqlite">3.1. SQLite</a>
+<a class="nav-link ml-2" href="#mysql">3.2. MySQL</a>
+<a class="nav-link ml-2" href="#postgresql">3.3. PostgreSQL</a>
+</nav>
+				</nav>
+			</nav>
+		</div>
+		<div class="col-9">
+			<div class="document-content">
+				{% include 'admin/pages/documentation/en/source-query-builder-overview.html.twig' %}
+				{% include 'admin/pages/documentation/en/source-query-builder-usage.html.twig' %}
+				{% include 'admin/pages/documentation/en/source-query-builder-functions.html.twig' %}
+				</div>
+		</div>
+	</div>
+</div>
