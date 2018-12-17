@@ -44,7 +44,7 @@ class ImportDataSourceCommand extends CommandBase
 	 * @inheritdoc
 	 */
 	public function __construct(string $projectDir) {
-		parent::__construct($projectDir);
+		parent::__construct($projectDir, "Datasource Importer");
 	}
 
 	/**
@@ -91,7 +91,7 @@ class ImportDataSourceCommand extends CommandBase
 			array(
 				'datasourcepath',
 				InputArgument::OPTIONAL,
-				$this->translator->trans('The directory.')
+				$this->translator->trans('The directory containing the json schema and data of the data source.')
 			)
 		);
 	}
@@ -120,22 +120,18 @@ class ImportDataSourceCommand extends CommandBase
 	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
+		parent::execute($input, $output);
 		$schemafile = $input->getArgument('datasourcepath') . DIRECTORY_SEPARATOR . $input->getArgument('datasourcename') . ".schema.json";
 		$datafile = $input->getArgument('datasourcepath') . DIRECTORY_SEPARATOR . $input->getArgument('datasourcename') . ".json";
-		$output->writeln([
-			$this->translator->trans("Datasource Importer"),
-			'===================',
-			'',
-		]);
 		if (! file_exists($schemafile)) {
-			$output->writeln($this->translator->trans("The schema file '%s%' doesn't exists", array('%s%' => $schemafile)));
+			$this->error($output, "The schema file '%s%' doesn't exists", array('%s%' => $schemafile));
 			return 1;
 		}
 		if (! file_exists($datafile)) {
-			$output->writeln($this->translator->trans("The data file '%s%' doesn't exists", array('%s%' => $datafile)));
+			$this->error($output, "The data file '%s%' doesn't exists", array('%s%' => $datafile));
 			return 1;
 		}
-		$output->writeln($this->translator->trans("Importing the datasource '%datasourcename%' located in '%datasourcepath%'", array('%datasourcename%' => $input->getArgument('datasourcename'), '%datasourcepath%' => $input->getArgument('datasourcepath'))));
+		$this->info($output, "Importing the datasource '%datasourcename%' located in '%datasourcepath%'", array('%datasourcename%' => $input->getArgument('datasourcename'), '%datasourcepath%' => $input->getArgument('datasourcepath')));
 		$databasesDir = $this->projectDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
 		if ($this->parameters['database_driver'] == 'pdo_sqlite') {
 			$this->parameters['database_path'] = $databasesDir . DIRECTORY_SEPARATOR . $input->getArgument('datasourcename'). ".db";
@@ -151,7 +147,8 @@ class ImportDataSourceCommand extends CommandBase
 				if ($progressBar !== null) {
 					$progressBar->finish();
 				}
-				$output->writeln("\n" . $this->translator->trans("Updating table %s%", array('%s%' => $table)));
+				$output->writeln("");
+				$this->info($output, "Updating table %s%", array('%s%' => $table));
 				$currentTable = $table;
 				$progressBar = new ProgressBar($output, $nrows);
 				$progressBar->start();
@@ -171,7 +168,8 @@ class ImportDataSourceCommand extends CommandBase
 			return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
 		}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
 		file_put_contents($databasesDir."/DataSources.xml", $formatted);
-		$output->writeln("\n" . $this->translator->trans("The data source '%s%' is successfully imported", array('%s%' => $input->getArgument('datasourcename'))));
+		$output->writeln("");
+		$this->success($output, "The data source '%s%' is successfully imported", array('%s%' => $input->getArgument('datasourcename')));
 		return 0;
 	}
 }

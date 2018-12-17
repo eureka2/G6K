@@ -119,6 +119,7 @@ class RenameAssetManifestCommand extends AssetManifestCommandBase
 	protected function interact(InputInterface $input, OutputInterface $output) {
 		$this->askArgument($input, $output, 'assetpath', "Enter the path of the asset relatively to the public directory : ");
 		$this->askArgument($input, $output, 'newassetpath', "Enter the new path of the asset relatively to the public directory : ");
+		$output->writeln("");
 	}
 
 	/**
@@ -129,21 +130,21 @@ class RenameAssetManifestCommand extends AssetManifestCommandBase
 		$file = $input->getArgument('assetpath');
 		$newfile = $input->getArgument('newassetpath');
 		if (file_exists($this->publicDir . "/" . $file)) {
-			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: The file '%s%' still exists.", array('%s%' => $file)) . "</error>");
+			$this->error($output, "The file '%s%' still exists.", array('%s%' => $file));
 			return 1;
 		}
 		if (! file_exists($this->publicDir . "/" . $newfile)) {
-			$output->writeln("<error>" . $this->translator->trans("Asset manifest: The file '%s%' doesn't exists", array('%s%' => $newfile)) . "</error>");
+			$this->error($output, "The file '%s%' doesn't exists", array('%s%' => $newfile));
 			return 1;
 		}
 		$file = str_replace('\\', '/', $file);
 		if (!isset($this->manifest[$file])) {
-			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: The file '%s%' isn't in the manifest.", array('%s%' => $file)) . "</error>");
+			$this->error($output, "The file '%s%' isn't in the manifest.", array('%s%' => $file));
 			return 1;
 		}
 		$newfile = str_replace('\\', '/', $newfile);
 		if (isset($this->manifest[$newfile])) {
-			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: The file '%s%' is already in the manifest.", array('%s%' => $newfile)) . "</error>");
+			$this->error($output, "The file '%s%' is already in the manifest.", array('%s%' => $newfile));
 			return 1;
 		}
 		try {
@@ -154,10 +155,10 @@ class RenameAssetManifestCommand extends AssetManifestCommandBase
 				$fsystem = new Filesystem();
 				$fsystem->dumpFile($this->projectDir . "/manifest.json", $manifest);
 			}
-			$output->writeln($this->translator->trans("Asset manifest: The asset is successfully renamed"));
+			$this->success($output, "The asset is successfully renamed");
 			return 0;
 		} catch (IOExceptionInterface $e) {
-			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: Fail to update the asset manifest : %s%", array('%s%' => $e->getMessage())) . "</error>");
+			$this->failure($output, "Fail to update the asset manifest : %s%", array('%s%' => $e->getMessage()));
 			return 1;
 		}
 	}

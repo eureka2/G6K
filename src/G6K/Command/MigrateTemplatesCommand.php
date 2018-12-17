@@ -46,7 +46,7 @@ class MigrateTemplatesCommand extends CommandBase
 	 * @inheritdoc
 	 */
 	public function __construct(string $projectDir) {
-		parent::__construct($projectDir);
+		parent::__construct($projectDir, "Templates migrator");
 	}
 
 	/**
@@ -98,11 +98,7 @@ class MigrateTemplatesCommand extends CommandBase
 	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$output->writeln([
-			$this->translator->trans("Templates migrator"),
-			'============================================',
-			'',
-		]);
+		parent::execute($input, $output);
 		try {
 			$fsystem = new Filesystem();
 			$templatesDir = $this->projectDir . DIRECTORY_SEPARATOR . "templates";
@@ -110,7 +106,7 @@ class MigrateTemplatesCommand extends CommandBase
 			if ($viewname) {
 				$templatesDir .= DIRECTORY_SEPARATOR . $viewname;
 				if (! file_exists($templatesDir)) {
-					$output->writeln("<error>" . $this->translator->trans("The view '%s%' doesn't exists", array('%s%' => $viewname)) . "</error>");
+					$this->error($output, "The view '%s%' doesn't exists", array('%s%' => $viewname));
 					return 1;
 				}
 			}
@@ -128,10 +124,10 @@ class MigrateTemplatesCommand extends CommandBase
 				$fsystem->dumpFile($path, $content);
 			} 
 		} catch (\Exception $e) {
-			$output->writeln($this->translator->trans("Templates migrator: Error while migrating the templates : %s", array('%s%' => $e->getMessage())));
+			$this->failure($output, "Error while migrating the templates : %s", array('%s%' => $e->getMessage()));
 			return 1;
 		}
-		$output->writeln($this->translator->trans("Templates migrator: The templates are successfully migrated"));
+		$this->success($output, "The templates are successfully migrated");
 		return 0;
 	}
 

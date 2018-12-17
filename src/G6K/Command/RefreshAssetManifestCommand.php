@@ -131,10 +131,10 @@ class RefreshAssetManifestCommand extends AssetManifestCommandBase
 		try {
 			$fsystem = new Filesystem();
 			$fsystem->dumpFile($this->projectDir . "/manifest.json", $manifest);
-			$output->writeln($this->translator->trans("Asset manifest: The asset manifest is successfully refreshed"));
+			$this->success($output, "The asset manifest is successfully refreshed");
 			return 0;
 		} catch (IOExceptionInterface $e) {
-			$output->writeln("<error>" . $this->translator->trans("Asset manifest: Fail to refresh the asset manifest : %s%", array('%s%' => $e->getMessage())) . "</error>");
+			$this->failure($output, "Fail to refresh the asset manifest : %s%", array('%s%' => $e->getMessage()));
 			return 1;
 		}
 	}
@@ -148,11 +148,11 @@ class RefreshAssetManifestCommand extends AssetManifestCommandBase
 			$version = $this->version;
 			if (isset($this->oldmanifest[$file])) {
 				if (! isset($this->manifest[$file]) && $this->oldmanifest[$file]['h'] != $md5) {
-					$output->writeln($this->translator->trans("Asset manifest: The file %s% has been modified", array('%s%' => $file)));
+					$this->info($output, "The file %s% has been modified", array('%s%' => $file));
 					$version = $this->incrementVersion($this->oldmanifest[$file]['v']);
 				}
 			} else {
-				$output->writeln($this->translator->trans("Asset manifest: The file %s% has been added", array('%s%' => $file)));
+				$this->info($output, "The file %s% has been added", array('%s%' => $file));
 			}
 			$this->manifest[$file] = array(
 				'h' => $md5,

@@ -33,7 +33,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Console\Exception\LogicException;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Base class for all command of the g6k namespace.
@@ -41,6 +44,11 @@ use Symfony\Component\Console\Question\Question;
  */
 abstract class CommandBase extends Command
 {
+
+	/**
+	 * @var string
+	 */
+	protected $name;
 
 	/**
 	 * @var string
@@ -76,11 +84,13 @@ abstract class CommandBase extends Command
 	 * The constructor for the command
 	 *
 	 * @param   string $projectDir The project directory
+	 * @param   string $name The command name
 	 * @access  public
 	 */
-	public function __construct(string $projectDir) {
+	public function __construct(string $projectDir, $name) {
 		parent::__construct();
 		$this->projectDir = $projectDir;
+		$this->name = $name;
 		$this->doInitialization();
 	}
 
@@ -236,11 +246,238 @@ abstract class CommandBase extends Command
 	 * @return int|null null or 0 if everything went fine, or an error code
 	 *
 	 * @throws \Symfony\Component\Console\Exception\LogicException When this abstract method is not implemented
-	 * @throws \Symfony\Component\Filesystem\Exception\IOExceptionInterface 
 	 *
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		throw new LogicException($this->translator->trans("execute method is not implemented"));
+		$io = new SymfonyStyle($input, $output);
+		$io->title($this->translator->trans($this->name));
+		return 1;
+	}
+
+	/**
+	 * Casts a DOMNode to DOMElement
+	 *
+	 * @access  protected
+	 * @param   \DOMNode $node The DOMNodeList
+	 * @return  \DOMElement|null The DOMElement.
+	 *
+	 */
+	protected function castDOMElement($node) : ?\DOMElement {
+		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
+			return $node;
+		}
+		return null;
+	}
+
+	/**
+	 * Retuns the DOMElement at position $index of the DOMNodeList
+	 *
+	 * @access  protected
+	 * @param   \DOMNodeList $nodes The DOMNodeList
+	 * @param   int $index The position in the DOMNodeList
+	 * @return  \DOMElement|null The DOMElement.
+	 *
+	 */
+	protected function getDOMElementItem($nodes, $index) : ?\DOMElement {
+		$node = $nodes->item($index);
+		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
+			return $node;
+		}
+		return null;
+	}
+
+	/**
+	 * Converts a relative path of a file to an absolute path
+	 *
+	 * @param   string $path The relative path name of the file
+	 * @param   string $base The base path
+	 * @return  string
+	 *
+	 */
+	protected function resolvePath($path, $base) { 
+		$path = str_replace(array('\\', '//'), array('/', '/'), $base . "/" . $path);
+		$parts = explode('/', $path);
+		$newparts = array();
+		foreach($parts as $part) {
+			if (preg_match("/^\.+$/", $part)) {
+				$n = strlen($part);
+				for ($i = 1; $i < $n; $i++) {
+					array_pop($newparts);
+				}
+			} elseif ($part != '') {
+				$newparts[] = $part;
+			}
+		}
+		return implode('/', $newparts);
+	}
+
+	/**
+	 * Finds files in the subdirectories of a giving directory
+	 *
+	 * @param   string $in The start directory of the search
+	 * @param   string $name The base name of the searched file
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   array $filters Optional, filters to apply to the search
+	 * @return  array The full path of the files or an empty array if none has been found
+	 *
+	 */
+	protected function findFile(string $in, string $name, InputInterface $input, OutputInterface $output, $filters = []) { 
+		$files = array();
+		$finder = new Finder();
+		$finder->files()->in($in)->name($name);
+		if (isset($filters['path'])) {
+			$finder->path($filters['path']);
+		}
+		if (isset($filters['notPath'])) {
+			$finder->notPath($filters['notPath']);
+		}
+		$multiple = isset($filters['multiple']) && $filters['multiple'];
+		if ($finder->count() == 0) {
+			$this->error($output, "Can not find the file %name% in '%in%'", array('%name%' => $name, '%in%' => $in));
+		} elseif ($finder->count() > 1) {
+			if ($multiple) {
+				foreach($finder as $file) {
+					$files[] = $file->getRealPath();
+				}
+			} elseif ($input->isInteractive()) {
+				$choices = [];
+				foreach($finder as $file) {
+					$choices[] = $file->getRelativePathname();
+				}
+				$helper = $this->getHelper('question');
+				$question = new ChoiceQuestion(
+					$this->translator->trans($this->name) . ": " . $this->translator->trans("Multiple copies of the file %name% were found in '%in%', please choose one :", array('%name%' => $name, '%in%' => $in)),
+					$choices,
+					0
+				);
+				$question->setErrorMessage($this->translator->trans('Your choice %s is invalid.'));
+				$choice = $helper->ask($input, $output, $question);
+				$this->info($output, "You have just selected: '%s%'", array('%s%' => $choice));
+				$files[] = $in . DIRECTORY_SEPARATOR . $choice;
+			} else {
+				$this->error($output, "Multiple copies of the file %name% were found in '%in%'", array('%name%' => $name, '%in%' => $in));
+			}
+		} else {
+			foreach($finder as $file) {
+				$files[] = $file->getRealPath();
+			}
+		}
+		return $files;
+	}
+
+	/**
+	 * Displays an message
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $message The message to display
+	 * @param   array $parameters Optional, message parameters for translation
+	 * @param   string $start The start tag
+	 * @param   string $end The end tag
+	 * @param   int $verbosity The verbosity option (default: OutputInterface::VERBOSITY_NORMAL), values : VERBOSITY_QUIET, VERBOSITY_NORMAL, VERBOSITY_VERBOSE, VERBOSITY_VERY_VERBOSE, VERBOSITY_DEBUG
+	 * @return  void
+	 *
+	 */
+	private function message(OutputInterface $output, string $message, $parameters = [], string $start = 'info', string $end = 'info', int $verbosity = OutputInterface::VERBOSITY_NORMAL) { 
+		$output->write([
+			"<".$start.">",
+			$this->translator->trans($this->name),
+			": ",
+			$this->translator->trans($message, $parameters),
+			"</".$end.">",
+			"\n",
+		], false, $verbosity);
+	}
+
+	/**
+	 * Displays an info message
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $message The message to display
+	 * @param   array $parameters Optional, message parameters
+	 * @return  void
+	 *
+	 */
+	protected function info(OutputInterface $output, string $message, $parameters = []) { 
+		$this->message($output, $message, $parameters, 'info', 'info');
+	}
+
+	/**
+	 * Displays a warning message
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $message The message to display
+	 * @param   array $parameters Optional, message parameters
+	 * @return  void
+	 *
+	 */
+	protected function warning(OutputInterface $output, string $message, $parameters = []) { 
+		$this->message($output, $message, $parameters, 'fg=magenta;bg=black', '');
+	}
+
+	/**
+	 * Displays a success message
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $message The message to display
+	 * @param   array $parameters Optional, message parameters
+	 * @return  void
+	 *
+	 */
+	protected function success(OutputInterface $output, string $message, $parameters = []) { 
+		$this->message($output, $message, $parameters, 'fg=black;bg=green', '');
+	}
+
+	/**
+	 * Displays a failure message
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $message The message to display
+	 * @param   array $parameters Optional, message parameters
+	 * @return  void
+	 *
+	 */
+	protected function failure(OutputInterface $output, string $message, $parameters = []) { 
+		$this->message($output, $message, $parameters, 'fg=white;bg=red;options=bold', '');
+	}
+
+	/**
+	 * Displays an error message
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $message The message to display
+	 * @param   array $parameters Optional, message parameters
+	 * @return  void
+	 *
+	 */
+	protected function error(OutputInterface $output, string $message, $parameters = []) { 
+		$this->message($output, $message, $parameters, 'fg=white;bg=red', '');
+	}
+
+	/**
+	 * Displays a debug message
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $message The message to display
+	 * @param   array $parameters Optional, message parameters
+	 * @return  void
+	 *
+	 */
+	protected function debug(OutputInterface $output, string $message, $parameters = []) { 
+		$this->message($output, $message, $parameters, 'info', 'info', OutputInterface::VERBOSITY_DEBUG);
+	}
+
+	/**
+	 * Displays a comment
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $message The message to display
+	 * @param   array $parameters Optional, message parameters
+	 * @return  void
+	 *
+	 */
+	protected function comment(OutputInterface $output, string $message, $parameters = []) { 
+		$this->message($output, $message, $parameters, 'comment', 'comment', OutputInterface::VERBOSITY_VERY_VERBOSE);
 	}
 
 	/**

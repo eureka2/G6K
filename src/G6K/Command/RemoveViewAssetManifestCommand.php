@@ -112,6 +112,7 @@ class RemoveViewAssetManifestCommand extends AssetManifestCommandBase
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
 		$this->askArgument($input, $output, 'viewname', "Enter the name of the view : ");
+		$output->writeln("");
 	}
 
 	/**
@@ -121,22 +122,22 @@ class RemoveViewAssetManifestCommand extends AssetManifestCommandBase
 		parent::execute($input, $output);
 		$view = $input->getArgument('viewname');
 		if (file_exists($this->publicDir . "/assets/" . $view)) {
-			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: The view '%s%' still exists, drop it first.", array('%s%' => $view)) . "</error>");
+			$this->error($output, "The view '%s%' still exists, drop it first.", array('%s%' => $view));
 			return 1;
 		}
 		try {
 			$removed = $this->processFile("assets/" . $view, $output);
 			if (! $removed) {
-				$output->writeln($this->translator->trans("Asset manifest: No assets from this view were found in the manifest"));
+				$this->failure($output, "No assets from this view were found in the manifest");
 				return 0;
 			}
 			$manifest = json_encode($this->manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 			$fsystem = new Filesystem();
 			$fsystem->dumpFile($this->projectDir . "/manifest.json", $manifest);
-			$output->writeln($this->translator->trans("Asset manifest: The asset manifest is successfully updated"));
+			$this->success($output, "The asset manifest is successfully updated");
 			return 0;
 		} catch (IOExceptionInterface $e) {
-			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: Fail to update the asset manifest : %s%", array('%s%' => $e->getMessage())) . "</error>");
+			$this->failure($output, "Fail to update the asset manifest : %s%", array('%s%' => $e->getMessage()));
 			return 1;
 		}
 	}
@@ -158,7 +159,7 @@ class RemoveViewAssetManifestCommand extends AssetManifestCommandBase
 			if ($pos !== false && $pos == 0) {
 				unset($this->manifest[$asset]);
 				$removed = true;
-				$output->writeln($this->translator->trans("Asset manifest: The file %s% has been removed", array('%s%' => $asset)));
+				$this->info($output, "The file %s% has been removed", array('%s%' => $asset));
 			}
 		}
 		return $removed;

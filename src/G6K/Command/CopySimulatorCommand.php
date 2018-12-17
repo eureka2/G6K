@@ -37,28 +37,28 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * This command allows to import a simulator and eventually, its stylesheets.
  */
-class ImportSimulatorCommand extends SimulatorCommandBase
+class CopySimulatorCommand extends SimulatorCommandBase
 {
 
 	/**
 	 * @inheritdoc
 	 */
 	public function __construct(string $projectDir) {
-		parent::__construct($projectDir, "Simulator Importer");
+		parent::__construct($projectDir, "Simulator Copier");
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected function getCommandName() {
-		return 'g6k:simulator:import';
+		return 'g6k:simulator:copy';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected function getCommandDescription() {
-		return $this->translator->trans('Imports a simulator from an exported xml file.');
+		return $this->translator->trans('Copies a simulator from another instance of G6K.');
 	}
 
 	/**
@@ -66,17 +66,11 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 	 */
 	protected function getCommandHelp() {
 		return
-			  $this->translator->trans("This command allows you to import a simulator and eventually, its stylesheets.")."\n"
+			  $this->translator->trans("This command allows you to copy a simulator and its stylesheets from another instance of G6K after a fresh installation.")."\n"
 			. "\n"
 			. $this->translator->trans("You must provide:")."\n"
 			. $this->translator->trans("- the name of the simulator (simulatorname).")."\n"
-			. $this->translator->trans("- the full path of the directory (simulatorpath) where the XML file of your simulator is located.")."\n"
-			. $this->translator->trans("and optionally:")."\n"
-			. $this->translator->trans("- the full path of the directory (stylesheetpath) where the css file of the stylesheet is located.")."\n"
-			. "\n"
-			. $this->translator->trans("The file names will be composed as follows:")."\n"
-			. $this->translator->trans("- <simulatorpath>/<simulatorname>.xml for the simulator XML file")."\n"
-			. $this->translator->trans("- <stylesheetpath>/<simulatorname>.css for the stylesheet file")."\n"
+			. $this->translator->trans("- the full path of the directory (anotherg6kpath) where the other instance of G6K is installed.")."\n"
 		;
 	}
 
@@ -91,14 +85,9 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 				$this->translator->trans('The name of the simulator.')
 			),
 			array(
-				'simulatorpath',
+				'anotherg6kpath',
 				InputArgument::REQUIRED,
-				$this->translator->trans('The directory where is located the simulator XML file.')
-			),
-			array(
-				'stylesheetpath',
-				InputArgument::OPTIONAL,
-				$this->translator->trans('The directoty where is located the stylesheet, if any.')
+				$this->translator->trans('The installation directory of the other instance of G6K.')
 			)
 		);
 	}
@@ -127,7 +116,7 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
 		$this->askArgument($input, $output, 'simulatorname', "Enter the name of the simulator : ");
-		$this->askArgument($input, $output, 'simulatorpath', "Enter the directory where is located the simulator XML file: ");
+		$this->askArgument($input, $output, 'anotherg6kpath', "Enter the installation directory of the other instance of G6K : ");
 		$output->writeln("");
 	}
 
@@ -139,24 +128,30 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 		$simulatorsDir = $this->projectDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
 		$assetsDir = $this->projectDir."/".$this->parameters['public_dir']."/assets";
 		$viewsDir = $this->projectDir."/templates";
-		$simupath = $input->getArgument('simulatorpath');
-		$simufile = $simupath . DIRECTORY_SEPARATOR . $input->getArgument('simulatorname') . ".xml";
-		$csspath = $input->getArgument('stylesheetpath');
-		$stylesheet = $csspath ? $csspath . DIRECTORY_SEPARATOR . $input->getArgument('simulatorname') . ".css" : "";
-		if (! file_exists($simufile)) {
-			$this->error($output, "The simulator XML file '%s%' doesn't exists", array('%s%' => $simufile));
-			return 1;
-		}
-		if (! file_exists($stylesheet)) {
-			$this->error($output, "The stylesheet file '%s%' doesn't exists", array('%s%' => $stylesheet));
-			return 1;
-		}
+		$simulatorname = $input->getArgument('simulatorname');
+		$anotherg6kpath = $input->getArgument('anotherg6kpath');
 		$widget = $input->getOption('default-choice-widget');
 		if ($widget && ! file_exists($assetsDir . '/base/widgets/' . $widget)) {
 			$this->error($output, "The widget '%s%' doesn't exists", array('%s%' => $widget));
 			return 1;
 		}
-		$this->info($output, "Importing the simulator '%simulatorname%' located in '%simulatorpath%'", array('%simulatorname%' => $input->getArgument('simulatorname'), '%simulatorpath%' => $input->getArgument('simulatorpath')));
+		if (! file_exists($anotherg6kpath)) {
+			$this->error($output, "The directory of the other instance '%s%' doesn't exists", array('%s%' => $anotherg6kpath));
+			return 1;
+		}
+		$this->info($output, "Finding the %name%.xml file from the other instance '%s%' in progress", array('%name%' => $simulatorname, '%s%' => $anotherg6kpath));
+		$simufiles = $this->findFile($anotherg6kpath, $simulatorname.'.xml', $input, $output, ['path' => '/simulators/', 'notPath' => '/work/']);
+		if (empty($simufiles)) {
+			return 1;
+		}
+		$simufile = $simufiles[0];
+		$this->info($output, "Finding the %simulatorname%.css files from the other instance '%s%' in progress", array('%simulatorname%' => $simulatorname, '%s%' => $anotherg6kpath));
+		$stylesheets = $this->findFile($anotherg6kpath, $simulatorname.'.css', $input, $output, ['path' => '/css/', 'multiple' => true]);
+		$stylesheets = array_filter($stylesheets, function ($stylesheet) use ($assetsDir) {
+			$view = basename(dirname(dirname($stylesheet)));
+			return file_exists($assetsDir ."/" . $view);
+		});
+		$this->info($output, "Copying the simulator '%simulatorname%' located in '%simulatorpath%'", array('%simulatorname%' => $simulatorname, '%simulatorpath%' => dirname($simufile)));
 		$simulator = new \DOMDocument();
 		$simulator->preserveWhiteSpace  = false;
 		$simulator->formatOutput = true;
@@ -168,10 +163,10 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 		$simu = $simulator->documentElement->getAttribute('name');
 		$view = $simulator->documentElement->getAttribute('defaultView');
 		if (! $fsystem->exists(array($viewsDir.'/'.$view, $assetsDir.'/'.$view))) {
-			$view = 'Demo';
+			$view = empty($stylesheets) ? 'Demo' : basename(dirname(dirname($stylesheets[0])));
 			$simulator->documentElement->setAttribute('defaultView', $view);
 		}
-		$this->fixDatasourcesReference($simulator, $this->projectDir."/var/data/databases", $input, $output);
+		$this->fixDatasourcesReference($simulator, $anotherg6kpath, $input, $output);
 		if ($widget) {
 			$this->setChoiceWidget($simulator, $widget);
 		}
@@ -179,24 +174,17 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 			return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
 		}, $simulator->saveXML(null, LIBXML_NOEMPTYTAG));
 		$fsystem->dumpFile($simulatorsDir.'/'.$simu.'.xml', $formatted);
-		if ($stylesheet != '') {
-			if (! $fsystem->exists($assetsDir.'/'.$view.'/css')) {
-				$fsystem->mkdir($assetsDir.'/'.$view.'/css');
-			}
-			$fsystem->copy($stylesheet, $assetsDir.'/'.$view.'/css/'.$simu.'.css', true);
+		if (empty($stylesheets)) {
+			$fsystem->dumpFile($assetsDir.'/'.$view.'/css/'.$simu.'.css', '@import "common.css";'."\n");
 			$this->addToManifest('assets/'.$view.'/css/'.$simu.'.css', $output);
-		} else if (! $fsystem->exists($assetsDir.'/'.$view.'/css/'.$simu.'.css')) {
-			if ($view == 'Demo') {
-				$fsystem->dumpFile($assetsDir.'/'.$view.'/css/'.$simu.'.css', '@import "common.css";'."\n");
-			} else {
-				if (! $fsystem->exists($assetsDir.'/'.$view.'/css')) {
-					$fsystem->mkdir($assetsDir.'/'.$view.'/css');
-				}
-				$fsystem->copy($assetsDir.'/Demo/css/common.css', $assetsDir.'/'.$view.'/css/'.$simu.'.css');
+		} else {
+			foreach($stylesheets as $stylesheet) {
+				$view = basename(dirname(dirname($stylesheet)));
+				$fsystem->copy($stylesheet, $assetsDir.'/'.$view.'/css/'.$simu.'.css', true);
+				$this->addToManifest('assets/'.$view.'/css/'.$simu.'.css', $output);
 			}
-			$this->addToManifest('assets/'.$view.'/css/'.$simu.'.css', $output);
 		}
-		$this->success($output, "The simulator '%s%' is successfully imported", array('%s%' => $simu));
+		$this->success($output, "The simulator '%s%' is successfully copied", array('%s%' => $simu));
 		return 0;
 	}
 

@@ -112,6 +112,7 @@ class RemoveAssetManifestCommand extends AssetManifestCommandBase
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
 		$this->askArgument($input, $output, 'assetpath', "Enter the path of the asset relatively to the public directory : ");
+		$output->writeln("");
 	}
 
 	/**
@@ -121,12 +122,12 @@ class RemoveAssetManifestCommand extends AssetManifestCommandBase
 		parent::execute($input, $output);
 		$file = $input->getArgument('assetpath');
 		if (file_exists($this->publicDir . "/" . $file)) {
-			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: The file '%s%' still exists, delete it first.", array('%s%' => $file)) . "</error>");
+			$this->error($output, "The file '%s%' still exists, delete it first.", array('%s%' => $file));
 			return 1;
 		}
 		$file = str_replace('\\', '/', $file);
 		if (!isset($this->manifest[$file])) {
-			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: The file '%s%' isn't in the manifest.", array('%s%' => $file)) . "</error>");
+			$this->error($output, "The file '%s%' isn't in the manifest.", array('%s%' => $file));
 			return 1;
 		}
 		try {
@@ -136,10 +137,10 @@ class RemoveAssetManifestCommand extends AssetManifestCommandBase
 				$fsystem = new Filesystem();
 				$fsystem->dumpFile($this->projectDir . "/manifest.json", $manifest);
 			}
-			$output->writeln($this->translator->trans("Asset manifest: The asset manifest is successfully updated"));
+			$this->success($output, "The asset manifest is successfully updated");
 			return 0;
 		} catch (IOExceptionInterface $e) {
-			$output->writeln("<error>" .  $this->translator->trans("Asset manifest: Fail to update the asset manifest : %s%", array('%s%' => $e->getMessage())) . "</error>");
+			$this->failure($output, "Fail to update the asset manifest : %s%", array('%s%' => $e->getMessage()));
 			return 1;
 		}
 	}

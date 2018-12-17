@@ -26,13 +26,11 @@ THE SOFTWARE.
 
 namespace App\G6K\Command;
 
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\LogicException;
 
 /**
  * Base class for all command of the g6k:assets namespace.
- *
  */
 abstract class AssetManifestCommandBase extends CommandBase
 {
@@ -45,8 +43,8 @@ abstract class AssetManifestCommandBase extends CommandBase
 	/**
 	 * @inheritdoc
 	 */
-	public function __construct(string $projectDir) {
-		parent::__construct($projectDir);
+	public function __construct(string $projectDir, $name = "Asset manifest editor") {
+		parent::__construct($projectDir, $name);
 		$this->manifest = array();
 	}
 
@@ -83,17 +81,6 @@ abstract class AssetManifestCommandBase extends CommandBase
 	 */
 	protected function getCommandOptions() {
 		throw new LogicException("getCommandOptions method is not implemented");
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output) {
-		$output->writeln([
-			$this->translator->trans("Asset manifest editor"),
-			'===============================================',
-			'',
-		]);
 	}
 
 	/**
@@ -176,31 +163,6 @@ abstract class AssetManifestCommandBase extends CommandBase
 				$added = $this->addFile($file, $output);
 		}
 		return $added;
-	}
-
-	/**
-	 * Converts a relative path of a file to an absolute path
-	 *
-	 * @param   string $path The relative path name of the file
-	 * @param   string $base The base path
-	 * @return  string
-	 *
-	 */
-	private function resolvePath($path, $base) { 
-		$path = str_replace(array('\\', '//'), array('/', '/'), $base . "/" . $path);
-		$parts = explode('/', $path);
-		$newparts = array();
-		foreach($parts as $part) {
-			if (preg_match("/^\.+$/", $part)) {
-				$n = strlen($part);
-				for ($i = 1; $i < $n; $i++) {
-					array_pop($newparts);
-				}
-			} elseif ($part != '') {
-				$newparts[] = $part;
-			}
-		}
-		return implode('/', $newparts);
 	}
 
 	/**

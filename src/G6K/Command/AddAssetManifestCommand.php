@@ -112,6 +112,7 @@ class AddAssetManifestCommand extends AssetManifestCommandBase
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
 		$this->askArgument($input, $output, 'assetpath', "Enter the path of the asset relatively to the public directory : ");
+		$output->writeln("");
 	}
 
 	/**
@@ -121,7 +122,7 @@ class AddAssetManifestCommand extends AssetManifestCommandBase
 		parent::execute($input, $output);
 		$file = $input->getArgument('assetpath');
 		if (! file_exists($this->publicDir . "/" . $file)) {
-			$output->writeln("<error>" . $this->translator->trans("The file '%s%' doesn't exists", array('%s%' => $file)) . "</error>");
+			$this->error($output, "The file '%s%' doesn't exists", array('%s%' => $file));
 			return 1;
 		}
 		try {
@@ -131,10 +132,10 @@ class AddAssetManifestCommand extends AssetManifestCommandBase
 				$fsystem = new Filesystem();
 				$fsystem->dumpFile($this->projectDir . "/manifest.json", $manifest);
 			}
-			$output->writeln($this->translator->trans("Asset manifest: The asset manifest is successfully updated"));
+			$this->success($output, "The asset manifest is successfully updated");
 			return 0;
 		} catch (IOExceptionInterface $e) {
-			$output->writeln("<error>" . $this->translator->trans("Asset manifest: Fail to update the asset manifest : %s%", array('%s%' => $e->getMessage())) . "</error>");
+			$this->failure($output, "Fail to update the asset manifest : %s%", array('%s%' => $e->getMessage()));
 			return 1;
 		}
 	}
@@ -148,11 +149,11 @@ class AddAssetManifestCommand extends AssetManifestCommandBase
 			$version = $this->version;
 			if (isset($this->manifest[$file])) {
 				if ($this->manifest[$file]['h'] != $md5) {
-					$output->writeln($this->translator->trans("Asset manifest: The file %s% has been modified", array('%s%' => $file)));
+					$this->info($output, "The file %s% has been modified", array('%s%' => $file));
 					$version = $this->incrementVersion($this->manifest[$file]['v']);
 				}
 			} else {
-				$output->writeln($this->translator->trans("Asset manifest: The file %s% has been added", array('%s%' => $file)));
+				$this->info($output, "The file %s% has been added", array('%s%' => $file));
 			}
 			$this->manifest[$file] = array(
 				'h' => $md5,

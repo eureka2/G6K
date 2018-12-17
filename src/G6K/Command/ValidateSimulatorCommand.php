@@ -39,7 +39,7 @@ use App\G6K\Manager\SQLSelectTokenizer;
  * Validates a simulator against the Simulator.xsd schema file.
  *
  */
-class ValidateSimulatorCommand extends CommandBase
+class ValidateSimulatorCommand extends SimulatorCommandBase
 {
 
 	/**
@@ -51,7 +51,7 @@ class ValidateSimulatorCommand extends CommandBase
 	 * @inheritdoc
 	 */
 	public function __construct(string $projectDir) {
-		parent::__construct($projectDir);
+		parent::__construct($projectDir, "Simulator Validator");
 	}
 
 	/**
@@ -119,24 +119,21 @@ class ValidateSimulatorCommand extends CommandBase
 	 */
 	protected function interact(InputInterface $input, OutputInterface $output) {
 		$this->askArgument($input, $output, 'simulatorname', "Enter the name of the simulator : ");
+		$output->writeln("");
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$output->writeln([
-			$this->translator->trans("Simulator Validator"),
-			'=========================================== ',
-			'',
-		]);
+		parent::execute($input, $output);
 		$work = $input->getOption('working-version');
 		$simulatorsDir = $this->projectDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
 		if ($work) {
 			$simulatorsDir .= DIRECTORY_SEPARATOR . "work";
 		}
 		$simulatorname = $input->getArgument('simulatorname');
-		if ($simulatorname == 'all') {
+		if ($simulatorname == 'all' && ! file_exists($simulatorsDir. DIRECTORY_SEPARATOR . "all.xml")) {
 			$finder = new Finder();
 			$finder->files()->in($simulatorsDir)->name('/\.xml$/');
 			$allok = true;
@@ -165,10 +162,10 @@ class ValidateSimulatorCommand extends CommandBase
 	private function validate(string $simulatorsDir, string $simulatorname, OutputInterface $output) {
 		$simufile = $simulatorsDir."/".$simulatorname. ".xml";
 		if (! file_exists($simufile)) {
-			$output->writeln($this->translator->trans("The simulator XML file '%s%' doesn't exists", array('%s%' => $simufile)));
+			$this->error($output, "The simulator XML file '%s%' doesn't exists", array('%s%' => $simufile));
 			return false;
 		}
-		$output->writeln($this->translator->trans("Validating the simulator '%simulatorname%' located in '%simulatorpath%'", array('%simulatorname%' => $simulatorname, '%simulatorpath%' => $simulatorsDir)));
+		$this->info($output, "Validating the simulator '%simulatorname%' located in '%simulatorpath%'", array('%simulatorname%' => $simulatorname, '%simulatorpath%' => $simulatorsDir));
 		$simulator = new \DOMDocument();
 		$simulator->preserveWhiteSpace  = false;
 		$simulator->formatOutput = true;
@@ -199,38 +196,11 @@ class ValidateSimulatorCommand extends CommandBase
 			$ok = false;
 		}
 		if ($ok) {
-			$output->writeln($this->translator->trans("The simulator '%s%' is successfully validated", array('%s%' => $simu)));
+			$this->success($output, "The simulator '%s%' is successfully validated", array('%s%' => $simu));
 		} else {
-			$output->writeln($this->translator->trans("The simulator xml file of '%s%' has some errors.", array('%s%' => $simu)));
+			$this->failure($output, "The simulator xml file of '%s%' has some errors.", array('%s%' => $simu));
 		}
 		return $ok;
-	}
-
-	/**
-	 * Validates the simulator against its schema
-	 *
-	 * @access  private
-	 * @param   \DOMDocument $simulator The simulator document
-	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
-	 * @return  bool true if simulator is valid, false if not.
-	 *
-	 */
-	private function validatesAgainstSchema(\DOMDocument $simulator, OutputInterface $output) {
-		$schema = $this->projectDir."/var/doc/Simulator.xsd";
-		if (!$simulator->schemaValidate($schema)) {
-			$errors = libxml_get_errors();
-			$mess = "";
-			foreach ($errors as $error) {
-				$mess .= "Line ".$error->line . '.' .  $error->column . ": " .  $error->message . "\n";
-			}
-			libxml_clear_errors();
-			$output->writeln([
-				$this->translator->trans("XML Validation errors:"),
-				$mess
-			]);
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -250,7 +220,7 @@ class ValidateSimulatorCommand extends CommandBase
 		$fsystem = new Filesystem();
 		$view = $simulatorxpath->query("/Simulator/@defaultView")->item(0)->nodeValue;
 		if (! $fsystem->exists($assetsDir.'/'.$view.'/css/'.$simu.'.css')) {
-			$output->writeln($this->translator->trans("The stylesheet associated to '%simulatorname%' doesn't exists.", array('%simulatorname%' => $simu)));
+			$this->error($output, "The stylesheet associated to '%simulatorname%' doesn't exists.", array('%simulatorname%' => $simu));
 			$ok = false;
 		}
 		$steps = $simulatorxpath->query("/Simulator/Steps/Step");
@@ -259,7 +229,7 @@ class ValidateSimulatorCommand extends CommandBase
 			$step = $this->getDOMElementItem($steps, $i);
 			$template = str_replace(':', '/', $step->getAttribute('template'));
 			if (! $fsystem->exists($viewsDir.'/'.$view.'/'.$template)) {
-				$output->writeln($this->translator->trans("In line %line%, the template '%template%' associated to step %step% of '%simulatorname%' doesn't exists.", array('%line%' => $step->getLineNo(), '%template%' => $template, '%step%' => $step->getAttribute('id'), '%simulatorname%' => $simu)));
+				$this->error($output, "In line %line%, the template '%template%' associated to step %step% of '%simulatorname%' doesn't exists.", array('%line%' => $step->getLineNo(), '%template%' => $template, '%step%' => $step->getAttribute('id'), '%simulatorname%' => $simu));
 				$ok = false;
 			}
 		}
@@ -283,7 +253,7 @@ class ValidateSimulatorCommand extends CommandBase
 			$data = $ref->nodeValue;
 			$datas = $simulatorxpath->query("//DataSet//Data[@id='".$data."']");
 			if ($datas->length == 0) {
-				$output->writeln($this->translator->trans("In line %line%, the data '%data%' referenced by an element '%element%' of '%simulatorname%' doesn't exists.", array('%line%' => $ref->getLineNo(), '%data%' => $data, '%element%' => $ref->ownerElement->getNodePath(), '%simulatorname%' => $simu)));
+				$this->error($output, "In line %line%, the data '%data%' referenced by an element '%element%' of '%simulatorname%' doesn't exists.", array('%line%' => $ref->getLineNo(), '%data%' => $data, '%element%' => $ref->ownerElement->getNodePath(), '%simulatorname%' => $simu));
 				$ok = false;
 			}
 		}
@@ -293,7 +263,7 @@ class ValidateSimulatorCommand extends CommandBase
 				foreach($m[1] as $data) {
 					$datas = $simulatorxpath->query("//DataSet//Data[@id='".$data."']");
 					if ($datas->length == 0) {
-						$output->writeln($this->translator->trans("In line %line%, the data '%data%' referenced in the element '%element%' text of '%simulatorname%' doesn't exists.", array('%line%' => $text->getLineNo(), '%data%' => $data, '%element%' => $text->getNodePath(), '%simulatorname%' => $simu)));
+						$this->error($output, "In line %line%, the data '%data%' referenced in the element '%element%' text of '%simulatorname%' doesn't exists.", array('%line%' => $text->getLineNo(), '%data%' => $data, '%element%' => $text->getNodePath(), '%simulatorname%' => $simu));
 						$ok = false;
 					}
 				}
@@ -328,7 +298,7 @@ class ValidateSimulatorCommand extends CommandBase
 					$datasource = $datasourcesxpath->query("/DataSources/DataSource[@name='".$datasourcename."']");
 				}
 				if ($datasource->length == 0) {
-					$output->writeln($this->translator->trans("In line %line%, the '%datasource%' associated to source %source% of '%simulatorname%' doesn't exists.", array('%line%' => $source->getLineNo(), '%datasource%' => $datasourcename, '%source%' => $source->getAttribute('id'), '%simulatorname%' => $simu)));
+					$this->error($output, "In line %line%, the '%datasource%' associated to source %source% of '%simulatorname%' doesn't exists.", array('%line%' => $source->getLineNo(), '%datasource%' => $datasourcename, '%source%' => $source->getAttribute('id'), '%simulatorname%' => $simu));
 					$ok = false;
 				} else {
 					$id = $source->getAttribute('id');
@@ -363,7 +333,7 @@ class ValidateSimulatorCommand extends CommandBase
 								}
 								foreach($acolumns as $column) {
 									if (!in_array($column, $columns)) {
-										$output->writeln($this->translator->trans("In line %line%, the column '%column%' of '%attribute%' in '%element%' isn't returned by the source %source% of '%simulatorname%'.", array('%line%' => $source->getLineNo(), '%column%' => $column, '%attribute%' => $index->nodeName, '%element%' => $index->ownerElement->getNodePath(), '%source%' => $id, '%simulatorname%' => $simu)));
+										$this->error($output, "In line %line%, the column '%column%' of '%attribute%' in '%element%' isn't returned by the source %source% of '%simulatorname%'.", array('%line%' => $source->getLineNo(), '%column%' => $column, '%attribute%' => $index->nodeName, '%element%' => $index->ownerElement->getNodePath(), '%source%' => $id, '%simulatorname%' => $simu));
 										$ok = false;
 									}
 								}
@@ -378,7 +348,7 @@ class ValidateSimulatorCommand extends CommandBase
 			$source = $ref->nodeValue;
 			$sources = $simulatorxpath->query("//Sources/Source[@id='".$source."']");
 			if ($sources->length == 0) {
-				$output->writeln($this->translator->trans("In line %line%, the source '%source%' used by an element '%element%' of '%simulatorname%' doesn't exists.", array('%line%' => $ref->getLineNo(), '%source%' => $source, '%element%' => $ref->ownerElement->getNodePath(), '%simulatorname%' => $simu)));
+				$this->error($output, "In line %line%, the source '%source%' used by an element '%element%' of '%simulatorname%' doesn't exists.", array('%line%' => $ref->getLineNo(), '%source%' => $source, '%element%' => $ref->ownerElement->getNodePath(), '%simulatorname%' => $simu));
 				$ok = false;
 			}
 		}
@@ -402,7 +372,7 @@ class ValidateSimulatorCommand extends CommandBase
 			if (! in_array($operand->nodeValue, ['dynamic', 'script']) && ! preg_match("/^step\d+\.dynamic$/", $operand->nodeValue)) {
 				$datas = $simulatorxpath->query("//DataSet//Data[@name='".$operand->nodeValue."']");
 				if ($datas->length == 0) {
-					$output->writeln($this->translator->trans("In line %line%, the data '%data%' used in the element '%element%' of '%simulatorname%' doesn't exists.", array('%line%' => $operand->getLineNo(), '%data%' => $operand->nodeValue, '%element%' => $operand->ownerElement->getNodePath(), '%simulatorname%' => $simu)));
+					$this->error($output, "In line %line%, the data '%data%' used in the element '%element%' of '%simulatorname%' doesn't exists.", array('%line%' => $operand->getLineNo(), '%data%' => $operand->nodeValue, '%element%' => $operand->ownerElement->getNodePath(), '%simulatorname%' => $simu));
 					$ok = false;
 				}
 			}
@@ -410,15 +380,15 @@ class ValidateSimulatorCommand extends CommandBase
 		$operators = $simulatorxpath->query("//Condition/@operator");
 		foreach($operators as $operator) {
 			if (! in_array($operator->nodeValue, ['=', '!=', '>', '>=', '<', '<=', 'isTrue', 'isFalse', '~', '!~', 'matches', 'present', 'blank'])) {
-				$output->writeln($this->translator->trans("In line %line%, the operator '%operator%' used in the element '%element%' of '%simulatorname%' is invalid.", array('%line%' => $operator->getLineNo(), '%operator%' => $operator->nodeValue, '%element%' => $operator->ownerElement->getNodePath(), '%simulatorname%' => $simu)));
+				$this->error($output, "In line %line%, the operator '%operator%' used in the element '%element%' of '%simulatorname%' is invalid.", array('%line%' => $operator->getLineNo(), '%operator%' => $operator->nodeValue, '%element%' => $operator->ownerElement->getNodePath(), '%simulatorname%' => $simu));
 				$ok = false;
 			}
 			if (in_array($operator->nodeValue, ['=', '!=', '>', '>=', '<', '<=', '~', '!~', 'matches']) && ! $operator->ownerElement->hasAttribute('expression')) {
-				$output->writeln($this->translator->trans("In line %line%, the expression is required when the operator '%operator%' is used in the element '%element%' of '%simulatorname%'", array('%line%' => $operator->getLineNo(), '%operator%' => $operator->nodeValue, '%element%' => $operator->ownerElement->getNodePath(), '%simulatorname%' => $simu)));
+				$this->error($output, "In line %line%, the expression is required when the operator '%operator%' is used in the element '%element%' of '%simulatorname%'", array('%line%' => $operator->getLineNo(), '%operator%' => $operator->nodeValue, '%element%' => $operator->ownerElement->getNodePath(), '%simulatorname%' => $simu));
 				$ok = false;
 			}
 			if (in_array($operator->nodeValue, ['isTrue', 'isFalse', 'present', 'blank']) && $operator->ownerElement->hasAttribute('expression')) {
-				$output->writeln($this->translator->trans("In line %line%, the expression must not be used with the operator '%operator%' in the element '%element%' of '%simulatorname%'", array('%line%' => $operator->getLineNo(), '%operator%' => $operator->nodeValue, '%element%' => $operator->ownerElement->getNodePath(), '%simulatorname%' => $simu)));
+				$this->error($output, "In line %line%, the expression must not be used with the operator '%operator%' in the element '%element%' of '%simulatorname%'", array('%line%' => $operator->getLineNo(), '%operator%' => $operator->nodeValue, '%element%' => $operator->ownerElement->getNodePath(), '%simulatorname%' => $simu));
 				$ok = false;
 			}
 		}
@@ -439,7 +409,7 @@ class ValidateSimulatorCommand extends CommandBase
 							$targetname = 'dataset';
 						}
 					}
-					$output->writeln($this->translator->trans("In line %line%, the '%targetname%' '%target%' referenced in the rule action '%element%' of '%simulatorname%' doesn't exists.", array('%line%' => $action->getLineNo(), '%targetname%' => $targetname, '%target%' => $action->getAttribute($targetname), '%element%' => $action->getNodePath(), '%simulatorname%' => $simu)));
+					$this->error($output, "In line %line%, the '%targetname%' '%target%' referenced in the rule action '%element%' of '%simulatorname%' doesn't exists.", array('%line%' => $action->getLineNo(), '%targetname%' => $targetname, '%target%' => $action->getAttribute($targetname), '%element%' => $action->getNodePath(), '%simulatorname%' => $simu));
 					$ok = false;
 				}
 			}
@@ -532,20 +502,5 @@ class ValidateSimulatorCommand extends CommandBase
 		return $tables;
 	}
 
-	/**
-	 * Retuns the DOMElement at position $index of the DOMNodeList
-	 *
-	 * @access  private
-	 * @param   \DOMNodeList $nodes The DOMNodeList
-	 * @param   int $index The position in the DOMNodeList
-	 * @return  \DOMElement|null The DOMElement.
-	 *
-	 */
-	private function getDOMElementItem($nodes, $index) {
-		$node = $nodes->item($index);
-		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
-			return $node;
-		}
-		return null;
-	}
+
 }

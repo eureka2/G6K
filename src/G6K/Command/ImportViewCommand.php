@@ -26,7 +26,6 @@ THE SOFTWARE.
 
 namespace App\G6K\Command;
 
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -39,14 +38,14 @@ use Symfony\Component\Yaml\Yaml;
  *
  * This command allows to create a view and optionally import the templates and assets from a previously exported view in a .zip files with G6K.
  */
-class ImportViewCommand extends CommandBase
+class ImportViewCommand extends ViewCommandBase
 {
 
 	/**
 	 * @inheritdoc
 	 */
 	public function __construct(string $projectDir) {
-		parent::__construct($projectDir);
+		parent::__construct($projectDir, "View Importer");
 	}
 
 	/**
@@ -122,38 +121,35 @@ class ImportViewCommand extends CommandBase
 	protected function interact(InputInterface $input, OutputInterface $output) {
 		$this->askArgument($input, $output, 'viewname', "Enter the name of the view : ");
 		$this->askArgument($input, $output, 'viewpath', "Enter the directory where are located the view files : ");
+		$output->writeln("");
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
+		parent::execute($input, $output);
 		$view = $input->getArgument('viewname');
 		$viewpath = $input->getArgument('viewpath');
 		$viewurl = $input->getArgument('viewurl');
 		$templates = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-templates.zip" : "";
 		$assets = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-assets.zip" : "";
-		$output->writeln([
-			$this->translator->trans("View Importer"),
-			'=======================================',
-			'',
-		]);
 		if ($templates != '' && ! file_exists($templates)) {
-			$output->writeln($this->translator->trans("View Importer: The compressed templates file '%s%' doesn't exists", array('%s%' => $templates)));
+			$this->error($output, "The compressed templates file '%s%' doesn't exists", array('%s%' => $templates));
 			return 1;
 		}
 		if ($assets != '' && ! file_exists($assets)) {
-			$output->writeln($this->translator->trans("View Importer: The compressed assets file '%s%' doesn't exists", array('%s%' => $assets)));
+			$this->error($output, "The compressed assets file '%s%' doesn't exists", array('%s%' => $assets));
 			return 1;
 		}
 		if ($viewurl && ! filter_var($viewurl, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) {
-			$output->writeln($this->translator->trans("View Importer: The url of the website '%s%' isn't valid", array('%s%' => $viewurl)));
+			$this->error($output, "The url of the website '%s%' isn't valid", array('%s%' => $viewurl));
 			return 1;
 		}
 		if ($viewpath) {
-			$output->writeln($this->translator->trans("View Importer: Importing the view '%view%' located in '%viewpath%'", array('%view%' => $view, '%viewpath%' => $viewpath)));
+			$this->info($output, "Importing the view '%view%' located in '%viewpath%'", array('%view%' => $view, '%viewpath%' => $viewpath));
 		} else {
-			$output->writeln($this->translator->trans("View Importer: Creating the view '%view%' from the Default view", array('%view%' => $view)));
+			$this->info($output, "Creating the view '%view%' from the Default view", array('%view%' => $view));
 		}
 		$fsystem = new Filesystem();
 		$templatesDir = $this->projectDir . DIRECTORY_SEPARATOR . "templates";
@@ -178,7 +174,7 @@ class ImportViewCommand extends CommandBase
 					$fsystem->mirror($templatesDir . DIRECTORY_SEPARATOR . 'Default', $templatesDir . DIRECTORY_SEPARATOR . $view);
 				}
 			} catch (IOExceptionInterface $e) {
-				$output->writeln($this->translator->trans("View Importer: Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $templatesDir, '%message%' => $e->getMessage())));
+				$this->error($output, "Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $templatesDir, '%message%' => $e->getMessage()));
 				return 1;
 			}
 		}
@@ -193,8 +189,8 @@ class ImportViewCommand extends CommandBase
 					$fsystem->mirror($assetsDir . DIRECTORY_SEPARATOR . 'Default', $assetsDir . DIRECTORY_SEPARATOR . $view);
 				}
 			} catch (IOExceptionInterface $e) {
-				$output->writeln($this->translator->trans("View Importer: Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $assetsDir, '%message%' => $e->getMessage())));
-				$output->writeln($this->translator->trans("View Importer: The view '%s%' is partially created", array('%s%' => $view)));
+				$this->error($output, "Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $assetsDir, '%message%' => $e->getMessage()));
+				$this->comment($output, "The view '%s%' is partially created", array('%s%' => $view));
 				return 1;
 			}
 		}
@@ -220,61 +216,14 @@ class ImportViewCommand extends CommandBase
 					}
 				}
 			} catch (\Exception $e) {
-				$output->writeln($this->translator->trans("View Importer: Error while updating '%view%' for '%s%' : %message%", array('%view%' => $configFile, '%s%' => $view, '%message%' => $e->getMessage())));
-				$output->writeln($this->translator->trans("View Importer: The view '%s%' is partially created", array('%s%' => $view)));
+				$this->error($output, "Error while updating '%view%' for '%s%' : %message%", array('%view%' => $configFile, '%s%' => $view, '%message%' => $e->getMessage()));
+				$this->comment($output, "The view '%s%' is partially created", array('%s%' => $view));
 				return 1;
 			}
 		}
-		$output->writeln($this->translator->trans("View Importer: The view '%s%' is successfully created", array('%s%' => $view)));
+		$this->success($output, "The view '%s%' is successfully created", array('%s%' => $view));
 		$this->refreshAssetsManifest($output);
 		return 0;
-	}
-
-	/**
-	 * Updates (or Creates) the manifest.json file for the assets versioning.
-	 *
-	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
-	 * @return void
-	 *
-	 */
-	private function refreshAssetsManifest($output) {
-		$command = $this->getApplication()->find('g6k:assets:manifest:refresh');
-		$input = new ArrayInput(array(
-			'command' => 'g6k:assets:manifest:refresh',
-			'--no-interaction' => true
-		));
-		$output->writeln("");
-		$output->writeln($this->translator->trans("View Importer: Refreshing the assets manifest"));
-		$returnCode = $command->run($input, $output);
-		if ($returnCode == 0) {
-			$output->writeln($this->translator->trans("View Importer: Refreshing manifest done!"));
-		} else {
-			$output->writeln($this->translator->trans("View Importer: Refreshing manifest not done!"));
-		}
-	}
-
-	/**
-	 * Migrates the templates written for Symfony 2 or 3.
-	 *
-	 * @param   string $view The view name
-	 * @return void
-	 *
-	 */
-	private function migrate3To4($view, $output) {
-		$command = $this->getApplication()->find('g6k:templates:migrate');
-		$input = new ArrayInput(array(
-			'command' => 'g6k:templates:migrate',
-			'viewname' => $view,
-			'--no-interaction' => true
-		));
-		$output->writeln("");
-		$output->writeln($this->translator->trans("View Importer: migration of the templates"));
-		$returnCode = $command->run($input, $output);
-		if ($returnCode == 0) {
-			$output->writeln($this->translator->trans("View Importer: Migration of the templates is done!"));
-		} else {
-			$output->writeln($this->translator->trans("View Importer: Migration of the templates is not done!"));
-		}
 	}
 
 }
