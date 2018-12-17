@@ -167,10 +167,10 @@ abstract class SimulatorCommandBase extends CommandBase
 		for ($i = 0; $i < $fields->length; $i++) {
 			$field = $this->getDOMElementItem($fields, $i);
 			if (! $field->hasAttribute('widget')) {
-				if (! $field->hasAttribute('expanded') || $field->getAttribute('expanded') == '0') {
+				if ($field->parentNode->nodeName != 'FieldRow' && (! $field->hasAttribute('expanded') || $field->getAttribute('expanded') == '0')) {
 					$dataId = $field->getAttribute('data');
 					$type = $xpath->query("//DataSet//Data[@id='".$dataId."']/@type")->item(0)->nodeValue;
-					if ($type == 'choice') {
+					if (in_array($type, ['choice', 'department', 'region', 'year', 'month', 'day'])) {
 						$field->setAttribute('widget', $widget);
 						$set = true;
 					}

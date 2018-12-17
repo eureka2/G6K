@@ -1,5 +1,8 @@
 # G6K
+
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![SymfonyInsight](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb/mini.svg)](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb)
+[![Total Downloads](https://img.shields.io/packagist/dt/eureka2/g6k.svg?style=flat-square)](https://packagist.org/packages/eureka2/g6k)
 
 G6K is a tool that enables the creation and online publishing of calculation simulators without coding. It has a simulation engine and an administration module.
 
