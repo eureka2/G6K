@@ -29,6 +29,7 @@ namespace App\G6K\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\LogicException;
+use Symfony\Component\Yaml\Yaml;
 
 /**
 Base class for all command of the g6k:view namespace.
@@ -124,6 +125,43 @@ abstract class ViewCommandBase extends CommandBase
 		} else {
 			$this->error($output, "Migration of the templates is not done!");
 		}
+	}
+
+	/**
+	 * Updates the parameters (domainview and viewpath) for a view
+	 *
+	 * @param   string $view The view name
+	 * @param   string $viewurl The website url using this view
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @return bool if the parameters are successfully updated, false if not
+	 *
+	 */
+	protected function updateViewParameters(string $view, string $viewurl, OutputInterface $output) {
+		try {
+			$configFile = $this->projectDir . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . "packages". DIRECTORY_SEPARATOR . "g6k.yml";
+			$domain = parse_url ($viewurl, PHP_URL_HOST);
+			$domain = preg_replace("/^www\./", "", $domain);
+			if ($domain !== null) {
+				$config = file_get_contents($configFile);
+				$yaml = Yaml::parse($config);
+				$updated = false;
+				if (! isset( $yaml['parameters']['domainview'][$domain])) {
+					$config = preg_replace("/^(    domainview:)/m", "$1\n        ".$domain.": ".$view, $config);
+					$updated = true;
+				}
+				if (! isset($yaml['parameters']['viewpath'][$view])) {
+					$config = preg_replace("/^(    viewpath:)/m", "$1\n        ".$view.": ".$viewurl, $config);
+					$updated = true;
+				}
+				if ($updated) {
+					file_put_contents($configFile, $config);
+				}
+			}
+		} catch (\Exception $e) {
+			$this->error($output, "Error while updating '%view%' for '%s%' : %message%", array('%view%' => $configFile, '%s%' => $view, '%message%' => $e->getMessage()));
+			return false;
+		}
+		return true;
 	}
 
 }

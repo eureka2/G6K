@@ -181,7 +181,6 @@ class CopyDataSourceCommand extends CommandBase
 				$maxDatabaseId = (int)($id->nodeValue);
 			}
 		}
-		$databaseset1 = $this->getDOMElementItem($dom1->getElementsByTagName("Databases"), 0);
 		$databaseset2 = $this->getDOMElementItem($dom2->getElementsByTagName("Databases"), 0);
 		$datasource2 = $this->castDOMElement($dom2->importNode($datasource1, true));
 		$datasource2->setAttribute('id', (string)($maxDataSourceId + 1));

@@ -232,29 +232,24 @@ class CopyViewCommand extends ViewCommandBase
 			$this->comment($output, "The view '%s%' is partially created", array('%s%' => $view));
 			return 1;
 		}
-		if ($viewurl) {
-			try {
-				$configFile = $this->projectDir . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . "packages". DIRECTORY_SEPARATOR . "g6k.yml";
-				$domain = parse_url ($viewurl, PHP_URL_HOST);
-				$domain = preg_replace("/^www\./", "", $domain);
-				if ($domain !== null) {
-					$config = file_get_contents($configFile);
-					$yaml = Yaml::parse($config);
-					$updated = false;
-					if (! isset( $yaml['parameters']['domainview'][$domain])) {
-						$config = preg_replace("/^(    domainview:)/m", "$1\n        ".$domain.": ".$view, $config);
-						$updated = true;
-					}
-					if (! isset($yaml['parameters']['viewpath'][$view])) {
-						$config = preg_replace("/^(    viewpath:)/m", "$1\n        ".$view.": ".$viewurl, $config);
-						$updated = true;
-					}
-					if ($updated) {
-						file_put_contents($configFile, $config);
-					}
+		if (!$viewurl) {
+			$otherConfigFile = $anotherg6kpath."/src/EUREKA/G6KBundle/Resources/config/parameters.yml";
+			if (!file_exists($otherConfigFile)) {
+				$otherConfigFile = $anotherg6kpath."/config/packages/g6k.yml";
+				if (! file_exists($otherConfigFile)) {
+					$otherConfigFile = '';
 				}
-			} catch (\Exception $e) {
-				$this->error($output, "Error while updating '%view%' for '%s%' : %message%", array('%view%' => $configFile, '%s%' => $view, '%message%' => $e->getMessage()));
+			}
+			if ($otherConfigFile != '') {
+				$config = file_get_contents($otherConfigFile);
+				$yaml = Yaml::parse($config);
+				if (isset($yaml['parameters']['viewpath'][$view])) {
+					$viewurl = $yaml['parameters']['viewpath'][$view];
+				}
+			}
+		}
+		if ($viewurl) {
+			if (! $this->updateViewParameters($view, $viewurl, $output)) {
 				$this->comment($output, "The view '%s%' is partially created", array('%s%' => $view));
 				return 1;
 			}

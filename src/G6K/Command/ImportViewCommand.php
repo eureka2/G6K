@@ -31,7 +31,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Creates and optionally imports a view from a previously exported view with G6K.
@@ -195,28 +194,7 @@ class ImportViewCommand extends ViewCommandBase
 			}
 		}
 		if ($viewurl) {
-			try {
-				$configFile = $this->projectDir . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . "packages". DIRECTORY_SEPARATOR . "g6k.yml";
-				$domain = parse_url ($viewurl, PHP_URL_HOST);
-				$domain = preg_replace("/^www\./", "", $domain);
-				if ($domain !== null) {
-					$config = file_get_contents($configFile);
-					$yaml = Yaml::parse($config);
-					$updated = false;
-					if (! isset( $yaml['parameters']['domainview'][$domain])) {
-						$config = preg_replace("/^(    domainview:)/m", "$1\n        ".$domain.": ".$view, $config);
-						$updated = true;
-					}
-					if (! isset($yaml['parameters']['viewpath'][$view])) {
-						$config = preg_replace("/^(    viewpath:)/m", "$1\n        ".$view.": ".$viewurl, $config);
-						$updated = true;
-					}
-					if ($updated) {
-						file_put_contents($configFile, $config);
-					}
-				}
-			} catch (\Exception $e) {
-				$this->error($output, "Error while updating '%view%' for '%s%' : %message%", array('%view%' => $configFile, '%s%' => $view, '%message%' => $e->getMessage()));
+			if (! $this->updateViewParameters($view, $viewurl, $output)) {
 				$this->comment($output, "The view '%s%' is partially created", array('%s%' => $view));
 				return 1;
 			}
