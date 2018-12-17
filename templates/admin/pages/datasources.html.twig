@@ -67,7 +67,7 @@ THE SOFTWARE.
 					{% if dss.type == 'uri' %}
 					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_datasources') }}/{{ dss.id }}">{{ dss.name }}</a></li>
 					{% else %}
-					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_datasources') }}/{{ dss.id }}">{{ dss.database.label }}</a></li>
+					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_datasources') }}/{{ dss.id }}">{{ dss.database.label|striptags }}</a></li>
 					{% endif %}
 					{% endfor %}
 				</ul>
