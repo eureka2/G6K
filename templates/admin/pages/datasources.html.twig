@@ -325,7 +325,7 @@ THE SOFTWARE.
 					<a class="btn btn-primary float-right export-datasource-button" href="{{ path('eureka_g6k_admin_datasource_crud', {'dsid': datasource.id, 'table': 'dummy', 'crud': 'export-datasource'}) }}" title="{{ 'Export datasource'|trans }}"><span class="button-label">{{ 'Export datasource'|trans }}</span> <span class="fa fa-upload"></span></a>
 					{% endif %}
 					{% endif %}
-					<h4 class="card-title">{{ datasource.label }}</h4>
+					<h4 class="card-title">{{ datasource.label|striptags }}</h4>
 					</div>
 					<div class="card-body">
 						<div class="alert alert-danger" role="alert">
