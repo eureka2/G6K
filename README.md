@@ -1,4 +1,5 @@
 # G6K
+[![SymfonyInsight](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb/mini.svg)](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb)
 
 G6K is a tool that enables the creation and online publishing of calculation simulators without coding. It has a simulation engine and an administration module.
 
@@ -59,6 +60,10 @@ However, on some platforms, this message does not appear. If so, run the followi
 ### Classes
 
 [Documentation of G6K classes](http://eureka2.github.io/g6k/documentation/classes/4.x)
+
+## Code quality
+
+[![SymfonyInsight](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb/big.svg)](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb)
 
 ## Innovation Award
 
