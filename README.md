@@ -1,5 +1,5 @@
 # G6K
-
+[![SymfonyInsight](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb/mini.svg)](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb)
 G6K is a tool that enables the creation and online publishing of calculation simulators without coding. It has a simulation engine and an administration module.
 
 A calculation simulator is an online service made available to a user to enable them to calculate the results (taxes, social benefits, etc.) corresponding to their particular situation. The results are calculated on the basis of data supplied by the user, reference data (eg amount of a tax) and business rules reflecting the current legislation in the field of simulation.
@@ -33,7 +33,7 @@ A calculation simulator is an online service made available to a user to enable 
 1. If you plan to use MySQL or PostgreSQL, create a user with "CREATE DATABASE" and "CREATE TABLE" privileges using the administration tool of your RDBMS.
 2. Be placed in the <DOCUMENT_ROOT> Web Server
 3. Download composer.phar (https://getcomposer.org/download/) in <DOCUMENT_ROOT>. composer 1.7.2+ is required.
-4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/ 4.x-dev`` 
+4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/ 3.4.*`` 
 5. Enter the parameter values required by the installer, including:
   * database_driver => pdo_pgsl, pdo_mysql or pdo_sqlite
   * database_host => name or IP address of your database server (simply &lt;Enter&gt; in case of SQLite)
@@ -59,6 +59,10 @@ However, on some platforms, this message does not appear. If so, run the followi
 ### Classes
 
 [Documentation of G6K classes](http://eureka2.github.io/g6k/documentation/classes/4.x)
+
+## Code quality
+
+[![SymfonyInsight](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb/big.svg)](https://insight.symfony.com/projects/c84bb3b7-3ba8-4513-821b-bbcd35364fdb)
 
 ## Innovation Award
 
