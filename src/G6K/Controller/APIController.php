@@ -34,7 +34,7 @@ use App\G6K\Model\FieldRow;
 use App\G6K\Model\Field;
 use App\G6K\Model\Step;
 
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,7 +59,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class APIController extends BaseController {
 
-	use ControllersHelper;
+	use ControllersTrait;
 
 	/**
 	 * @var array      $datas API response datas

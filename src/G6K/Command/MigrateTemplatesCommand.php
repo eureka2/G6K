@@ -101,10 +101,10 @@ class MigrateTemplatesCommand extends CommandBase
 		parent::execute($input, $output);
 		try {
 			$fsystem = new Filesystem();
-			$templatesDir = $this->projectDir . DIRECTORY_SEPARATOR . "templates";
+			$templatesDir = $this->projectDir . "/templates";
 			$viewname = $input->getArgument('viewname');
 			if ($viewname) {
-				$templatesDir .= DIRECTORY_SEPARATOR . $viewname;
+				$templatesDir .= '/' . $viewname;
 				if (! file_exists($templatesDir)) {
 					$this->error($output, "The view '%s%' doesn't exists", array('%s%' => $viewname));
 					return 1;
@@ -113,7 +113,7 @@ class MigrateTemplatesCommand extends CommandBase
 			$finder = new Finder();
 			$finder->files()->in($templatesDir)->name('/\.twig$/');
 			foreach ($finder as $file) {
-				$path = $file->getRealPath();
+				$path = str_replace('\\', '/', $file->getRealPath());
 				$content = $file->getContents();
 				$content = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $content);
 				$content = preg_replace("|asset\('bundles/eurekag6k/base/js/|m", "asset('assets/base/js/libs/", $content);

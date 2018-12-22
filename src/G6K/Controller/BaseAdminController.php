@@ -40,14 +40,6 @@ use Symfony\Component\HttpFoundation\Response;
 class BaseAdminController extends Controller {
 
 	/**
-	 * @var            \App\G6K\Manager\ControllersHelper $helper helper instance used by this controller
-	 *
-	 * @access  public
-	 *
-	 */
-	public $helper;
-
-	/**
 	 * @var string      $databasesDir Databases directory
 	 *
 	 * @access  public

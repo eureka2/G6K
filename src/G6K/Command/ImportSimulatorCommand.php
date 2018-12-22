@@ -136,13 +136,13 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
-		$simulatorsDir = $this->projectDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
+		$simulatorsDir = $this->projectDir . '/var/data/simulators';
 		$assetsDir = $this->projectDir."/".$this->parameters['public_dir']."/assets";
 		$viewsDir = $this->projectDir."/templates";
-		$simupath = $input->getArgument('simulatorpath');
-		$simufile = $simupath . DIRECTORY_SEPARATOR . $input->getArgument('simulatorname') . ".xml";
+		$simupath = str_replace('\\', '/', $input->getArgument('simulatorpath'));
+		$simufile = $simupath . '/'. $input->getArgument('simulatorname') . ".xml";
 		$csspath = $input->getArgument('stylesheetpath');
-		$stylesheet = $csspath ? $csspath . DIRECTORY_SEPARATOR . $input->getArgument('simulatorname') . ".css" : "";
+		$stylesheet = $csspath ? $csspath . '/' . $input->getArgument('simulatorname') . ".css" : "";
 		if (! file_exists($simufile)) {
 			$this->error($output, "The simulator XML file '%s%' doesn't exists", array('%s%' => $simufile));
 			return 1;

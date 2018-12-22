@@ -120,7 +120,7 @@ class AddAssetManifestCommand extends AssetManifestCommandBase
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
-		$file = $input->getArgument('assetpath');
+		$file = str_replace('\\', '/', $input->getArgument('assetpath'));
 		if (! file_exists($this->publicDir . "/" . $file)) {
 			$this->error($output, "The file '%s%' doesn't exists", array('%s%' => $file));
 			return 1;

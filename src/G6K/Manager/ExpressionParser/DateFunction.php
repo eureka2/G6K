@@ -127,6 +127,28 @@ class DateFunction {
 		return $newDate;
 	}
 
+	/**
+	 * Parses a date string to the given format and converts it to a DateTime object
+	 *
+	 * @access  public
+	 * @param   string $format The given format
+	 * @param   string $dateStr The date to be converted
+	 * @return  \DateTime|null The DateTime object
+	 * @throws \Exception
+	 *
+	 */
+	public static function parseDate($format, $dateStr) {
+		if (empty($dateStr)) {
+			return null;
+		}
+		$date = \DateTime::createFromFormat($format, $dateStr);
+		$errors = \DateTime::getLastErrors();
+		if ($errors['error_count'] > 0) {
+			throw new \Exception("Error on date '$dateStr', expected format '$format' : " . implode(" ", $errors['errors']));
+		}
+		return $date;
+	}
+
 }
 
 ?>

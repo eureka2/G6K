@@ -30,6 +30,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Console\Exception\LogicException;
@@ -81,6 +82,11 @@ abstract class CommandBase extends Command
 	protected $initialized = false;
 
 	/**
+	 * @var bool
+	 */
+	protected $html = false;
+
+	/**
 	 * The constructor for the command
 	 *
 	 * @param   string $projectDir The project directory
@@ -89,7 +95,7 @@ abstract class CommandBase extends Command
 	 */
 	public function __construct(string $projectDir, $name) {
 		parent::__construct();
-		$this->projectDir = $projectDir;
+		$this->projectDir = str_replace('\\', '/', $projectDir);
 		$this->name = $name;
 		$this->doInitialization();
 	}
@@ -103,7 +109,7 @@ abstract class CommandBase extends Command
 	 */
 	private function doInitialization() {
 		if (! $this->initialized) {
-			$this->projectDir = $this->projectDir ?? dirname(dirname(dirname(__DIR__)));
+			$this->projectDir = $this->projectDir ?? str_replace('\\', '/', dirname(dirname(dirname(__DIR__))));
 			$this->version = '4.x';
 			$this->parameters = $this->getParameters();
 			if ($this->parameters !== false) {
@@ -130,7 +136,7 @@ abstract class CommandBase extends Command
 		$parameters = array();
 		try {
 			$dotenv = new Dotenv();
-			$dotenv->load($this->projectDir . DIRECTORY_SEPARATOR . '.env');
+			$dotenv->load($this->projectDir.'/.env');
 			$parameters['app_env'] = $this->getParameterValue('APP_ENV');
 			$parameters['app_version'] = $this->getParameterValue('APP_VERSION');
 			$parameters['database_driver'] = 'pdo_' . $this->getParameterValue('DB_ENGINE');
@@ -191,6 +197,7 @@ abstract class CommandBase extends Command
 			$default = $option[4] ?? null;
 			$this->addOption($option[0], $option[1], $option[2], $option[3], $default);
 		}
+		$this->addOption('html', null, InputOption::VALUE_NONE, $this->translator->trans('Display messages in HTML.'));
 	}
 
 	/**
@@ -207,11 +214,21 @@ abstract class CommandBase extends Command
 		if ($this->parameters === false) {
 			throw new LogicException("<error>Unable to get parameters</error>");
 		}
-		$this->publicDir = $this->projectDir . DIRECTORY_SEPARATOR . $this->parameters['public_dir'];
-		$output->writeln([
-			$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
-			'',
-		]);
+		$this->publicDir = $this->projectDir . '/' . $this->parameters['public_dir'];
+		$this->html = $input->getOption('html') ?? false;
+		if ($this->html) {
+			$output->writeln([
+				'<span class="command-header">',
+				$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
+				'</span>',
+				"\n",
+			]);
+		} else {
+			$output->writeln([
+				$this->translator->trans("G6K version %s%", array('%s%' => $this->version)),
+				'',
+			]);
+		}
 	}
 
 	/**
@@ -235,7 +252,9 @@ abstract class CommandBase extends Command
 			}
 			$output->writeln('');
 		}
-		$output->writeln($argumentName . ' : ' . $argument);
+		if (! $this->html) {
+			$output->writeln($argumentName . ' : ' . $argument);
+		}
 	}
 
 	/**
@@ -249,8 +268,15 @@ abstract class CommandBase extends Command
 	 *
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$io = new SymfonyStyle($input, $output);
-		$io->title($this->translator->trans($this->name));
+		$this->html = $input->getOption('html') ?? false;
+		if ($this->html) {
+			$output->write('<span class="command-title">');
+			$output->write($this->translator->trans($this->name));
+			$output->write("</span>\n");
+		} else {
+			$io = new SymfonyStyle($input, $output);
+			$io->title($this->translator->trans($this->name));
+		}
 		return 1;
 	}
 
@@ -338,7 +364,7 @@ abstract class CommandBase extends Command
 		} elseif ($finder->count() > 1) {
 			if ($multiple) {
 				foreach($finder as $file) {
-					$files[] = $file->getRealPath();
+					$files[] = str_replace('\\', '/', $file->getRealPath());
 				}
 			} elseif ($input->isInteractive()) {
 				$choices = [];
@@ -354,16 +380,158 @@ abstract class CommandBase extends Command
 				$question->setErrorMessage($this->translator->trans('Your choice %s is invalid.'));
 				$choice = $helper->ask($input, $output, $question);
 				$this->info($output, "You have just selected: '%s%'", array('%s%' => $choice));
-				$files[] = $in . DIRECTORY_SEPARATOR . $choice;
+				$files[] = $in . '/' . $choice;
 			} else {
 				$this->error($output, "Multiple copies of the file %name% were found in '%in%'", array('%name%' => $name, '%in%' => $in));
 			}
 		} else {
 			foreach($finder as $file) {
-				$files[] = $file->getRealPath();
+				$files[] = str_replace('\\', '/', $file->getRealPath());
 			}
 		}
 		return $files;
+	}
+
+	/**
+	 * Finds the assets directory
+	 *
+	 * @param   string $in The start directory of the search
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @return  string|int The full path of the directory or an error code (1: not found, 2: multiple found)
+	 *
+	 */
+	protected function findAssetsDirectory(string $in, InputInterface $input, OutputInterface $output) {
+		$assetsDir = '';
+		$finder = new Finder();
+		$finder->files()->in($in)->path('/admin/js')->name('g6k.admin.js');
+		if ($finder->count() == 0) {
+			return 1;
+		}
+		if ($finder->count() > 1) {
+			if ($input->isInteractive()) {
+				$choices = [];
+				foreach($finder as $file) {
+					$choices[] = dirname(dirname(dirname($file->getRelativePathname())));
+				}
+				$helper = $this->getHelper('question');
+				$question = new ChoiceQuestion(
+					$this->translator->trans($this->name) . ": " . $this->translator->trans("Multiple assets directories were found, please choose one :"),
+					$choices,
+					0
+				);
+				$question->setErrorMessage($this->translator->trans('Your choice %s is invalid.'));
+				$choice = $helper->ask($input, $output, $question);
+				$this->info($output, "You have just selected: '%s%'", array('%s%' => $choice));
+				$assetsDir = $in . '/' . $choice;
+			} else {
+				return 2;
+			}
+		} else {
+			foreach($finder as $file) {
+				$assetsDir = str_replace('\\', '/', dirname(dirname(dirname($file->getRealPath()))));
+				break;
+			}
+		}
+		return $assetsDir;
+	}
+
+	/**
+	 * Finds the templates directory
+	 *
+	 * @param   string $in The start directory of the search
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @return  string|int The full path of the directory or an error code (1: not found, 2: multiple found)
+	 *
+	 */
+	protected function findTemplatesDirectory(string $in, InputInterface $input, OutputInterface $output) {
+		$templatesDir = '';
+		$finder = new Finder();
+		$finder->files()->in($in)->path('/admin/layout')->name('pagelayout.html.twig');
+		if ($finder->count() == 0) {
+			return 1;
+		}
+		if ($finder->count() > 1) {
+			if ($input->isInteractive()) {
+				$choices = [];
+				foreach($finder as $file) {
+					$choices[] = dirname(dirname(dirname($file->getRelativePathname())));
+				}
+				$helper = $this->getHelper('question');
+				$question = new ChoiceQuestion(
+					$this->translator->trans($this->name) . ": " . $this->translator->trans("Multiple templates directories were found, please choose one :"),
+					$choices,
+					0
+				);
+				$question->setErrorMessage($this->translator->trans('Your choice %s is invalid.'));
+				$choice = $helper->ask($input, $output, $question);
+				$this->info($output, "You have just selected: '%s%'", array('%s%' => $choice));
+				$templatesDir = $in . '/' . $choice;
+			} else {
+				return 2;
+			}
+		} else {
+			foreach($finder as $file) {
+				$templatesDir = str_replace('\\', '/', dirname(dirname(dirname($file->getRealPath()))));
+				break;
+			}
+		}
+		return $templatesDir;
+	}
+
+	/**
+	 * Finds the simulators directory
+	 *
+	 * @param   string $in The start directory of the search
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @return  string|int The full path of the files or an error code (1: not found, 2: multiple found)
+	 *
+	 */
+	protected function findSimulatorsDirectory(string $in, InputInterface $input, OutputInterface $output) {
+		$simulatorsDir = '';
+		$finder = new Finder();
+		$finder->directories()->in($in)->path('/data/simulators')->notPath('/work');
+		if ($finder->count() == 0) {
+			return 1;
+		}
+		if ($finder->count() > 1) {
+			if ($input->isInteractive()) {
+				$choices = [];
+				foreach($finder as $dir) {
+					$choices[] = $dir->getRelativePathname();
+				}
+				$helper = $this->getHelper('question');
+				$question = new ChoiceQuestion(
+					$this->translator->trans($this->name) . ": " . $this->translator->trans("Multiple simulators directories were found, please choose one :"),
+					$choices,
+					0
+				);
+				$question->setErrorMessage($this->translator->trans('Your choice %s is invalid.'));
+				$choice = $helper->ask($input, $output, $question);
+				$this->info($output, "You have just selected: '%s%'", array('%s%' => $choice));
+				$simulatorsDir = $in . '/' . $choice;
+			} else {
+				return 1;
+			}
+		} else {
+			foreach($finder as $file) {
+				$simulatorsDir = str_replace('\\', '/', $file->getRealPath());
+				break;
+			}
+		}
+		return $simulatorsDir;
+	}
+
+	/**
+	 * Returns true, if the message are displayed in HTML, false if not. 
+	 *
+	 * @return  bool
+	 *
+	 */
+	protected function isHtml() {
+		return $this->html;
 	}
 
 	/**
@@ -398,8 +566,12 @@ abstract class CommandBase extends Command
 	 * @return  void
 	 *
 	 */
-	protected function info(OutputInterface $output, string $message, $parameters = []) { 
-		$this->message($output, $message, $parameters, 'info', 'info');
+	protected function info(OutputInterface $output, string $message, $parameters = []) {
+		if ($this->html) {
+			$this->message($output, $message, $parameters, 'span class="alert-light"', 'span');
+		} else {
+			$this->message($output, $message, $parameters, 'info', 'info');
+		}
 	}
 
 	/**
@@ -411,8 +583,12 @@ abstract class CommandBase extends Command
 	 * @return  void
 	 *
 	 */
-	protected function warning(OutputInterface $output, string $message, $parameters = []) { 
-		$this->message($output, $message, $parameters, 'fg=magenta;bg=black', '');
+	protected function warning(OutputInterface $output, string $message, $parameters = []) {
+		if ($this->html) {
+			$this->message($output, $message, $parameters, 'span class="alert-warning"', 'span');
+		} else {
+			$this->message($output, $message, $parameters, 'fg=magenta;bg=black', '');
+		}
 	}
 
 	/**
@@ -425,7 +601,11 @@ abstract class CommandBase extends Command
 	 *
 	 */
 	protected function success(OutputInterface $output, string $message, $parameters = []) { 
-		$this->message($output, $message, $parameters, 'fg=black;bg=green', '');
+		if ($this->html) {
+			$this->message($output, $message, $parameters, 'span class="alert-success"', 'span');
+		} else {
+			$this->message($output, $message, $parameters, 'fg=black;bg=green', '');
+		}
 	}
 
 	/**
@@ -438,7 +618,28 @@ abstract class CommandBase extends Command
 	 *
 	 */
 	protected function failure(OutputInterface $output, string $message, $parameters = []) { 
-		$this->message($output, $message, $parameters, 'fg=white;bg=red;options=bold', '');
+		if ($this->html) {
+			$this->message($output, $message, $parameters, 'span class="alert-danger"', 'span');
+		} else {
+			$this->message($output, $message, $parameters, 'fg=white;bg=red;options=bold', '');
+		}
+	}
+
+	/**
+	 * Displays an fatal error message
+	 *
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @param   string $message The message to display
+	 * @param   array $parameters Optional, message parameters
+	 * @return  void
+	 *
+	 */
+	protected function fatal(OutputInterface $output, string $message, $parameters = []) { 
+		if ($this->html) {
+			$this->message($output, $message, $parameters, 'span class="alert-danger text-lg-left"', 'span');
+		} else {
+			$this->message($output, $message, $parameters, 'fg=white;bg=red', '');
+		}
 	}
 
 	/**
@@ -451,7 +652,11 @@ abstract class CommandBase extends Command
 	 *
 	 */
 	protected function error(OutputInterface $output, string $message, $parameters = []) { 
-		$this->message($output, $message, $parameters, 'fg=white;bg=red', '');
+		if ($this->html) {
+			$this->message($output, $message, $parameters, 'span class="alert-danger"', 'span');
+		} else {
+			$this->message($output, $message, $parameters, 'fg=white;bg=red', '');
+		}
 	}
 
 	/**

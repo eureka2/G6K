@@ -856,6 +856,9 @@ THE SOFTWARE.
 		if (! /^[\w\-]+$/.test(name)) {
 			errors.push(Translator.trans("Incorrect datasource name"));
 		}
+		if (name == 'all') {
+			errors.push(Translator.trans("The name of the data source can't be 'all'"));
+		}
 		var type = $("#datasource-type").val();
 		switch (type) {
 			case 'internal':

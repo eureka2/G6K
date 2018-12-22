@@ -121,8 +121,8 @@ class ImportDataSourceCommand extends CommandBase
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
-		$schemafile = $input->getArgument('datasourcepath') . DIRECTORY_SEPARATOR . $input->getArgument('datasourcename') . ".schema.json";
-		$datafile = $input->getArgument('datasourcepath') . DIRECTORY_SEPARATOR . $input->getArgument('datasourcename') . ".json";
+		$schemafile = str_replace('\\', '/', $input->getArgument('datasourcepath') . '/' . $input->getArgument('datasourcename') . ".schema.json");
+		$datafile = str_replace('\\', '/', $input->getArgument('datasourcepath') . '/' . $input->getArgument('datasourcename') . ".json");
 		if (! file_exists($schemafile)) {
 			$this->error($output, "The schema file '%s%' doesn't exists", array('%s%' => $schemafile));
 			return 1;
@@ -132,9 +132,9 @@ class ImportDataSourceCommand extends CommandBase
 			return 1;
 		}
 		$this->info($output, "Importing the datasource '%datasourcename%' located in '%datasourcepath%'", array('%datasourcename%' => $input->getArgument('datasourcename'), '%datasourcepath%' => $input->getArgument('datasourcepath')));
-		$databasesDir = $this->projectDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
+		$databasesDir = $this->projectDir . '/var/data/databases';
 		if ($this->parameters['database_driver'] == 'pdo_sqlite') {
-			$this->parameters['database_path'] = $databasesDir . DIRECTORY_SEPARATOR . $input->getArgument('datasourcename'). ".db";
+			$this->parameters['database_path'] = $databasesDir . '/' . $input->getArgument('datasourcename'). ".db";
 		} else {
 			$this->parameters['name'] = $input->getArgument('datasourcename');
 		}
@@ -142,7 +142,8 @@ class ImportDataSourceCommand extends CommandBase
 		$helper = new DatasourcesHelper(new \SimpleXMLElement($datasrc, LIBXML_NOWARNING, true));
 		$dsid = 0;
 		$currentTable = $progressBar = null;
-		$dom = $helper->makeDatasourceDom($schemafile, $datafile, $this->parameters, $databasesDir, $dsid, function($table, $nrows, $rownum) use ($output, &$currentTable, &$progressBar) {
+		$isHtml = $this->isHtml();
+		$dom = $helper->makeDatasourceDom($schemafile, $datafile, $this->parameters, $databasesDir, $dsid, $this->translator, function($table, $nrows, $rownum) use ($output, $isHtml, &$currentTable, &$progressBar) {
 			if ($currentTable != $table) {
 				if ($progressBar !== null) {
 					$progressBar->finish();
@@ -150,9 +151,11 @@ class ImportDataSourceCommand extends CommandBase
 				$output->writeln("");
 				$this->info($output, "Updating table %s%", array('%s%' => $table));
 				$currentTable = $table;
-				$progressBar = new ProgressBar($output, $nrows);
-				$progressBar->start();
-			} else {
+				if (! $isHtml){
+					$progressBar = new ProgressBar($output, $nrows);
+					$progressBar->start();
+				}
+			} elseif (! $isHtml) {
 				$progressBar->advance();
 			}
 		});

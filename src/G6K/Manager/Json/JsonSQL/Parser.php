@@ -68,6 +68,11 @@ abstract class Parser  {
 	const SQL_LIMIT_KEYWORD = 'LIMIT ';
 
 	/**
+	 * @const string   SQL_OFFSET_KEYWORD
+	 */
+	const SQL_OFFSET_KEYWORD = 'OFFSET ';
+
+	/**
 	 * @var string     SQL_UPDATE_KEYWORD
 	 */
 	const SQL_UPDATE_KEYWORD = 'UPDATE ';

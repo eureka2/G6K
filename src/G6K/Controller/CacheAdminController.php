@@ -28,7 +28,7 @@ namespace App\G6K\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 
 /**
  *
@@ -47,7 +47,7 @@ use App\G6K\Manager\ControllersHelper;
  */
 class CacheAdminController extends BaseAdminController {
 
-	use ControllersHelper;
+	use ControllersTrait;
 
 	/**
 	 * @var array      $log Cache cleaning log

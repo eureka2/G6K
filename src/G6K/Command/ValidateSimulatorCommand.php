@@ -105,6 +105,12 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 				'w', 
 				InputOption::VALUE_NONE, 
 				$this->translator->trans('Validate working version.'),
+			),
+			array(
+				'schema-only', 
+				's', 
+				InputOption::VALUE_NONE, 
+				$this->translator->trans('Validate against the schema only, not the content.'),
 			)
 		);
 	}
@@ -128,24 +134,25 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
 		$work = $input->getOption('working-version');
-		$simulatorsDir = $this->projectDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
+		$schemaOnly = $input->getOption('schema-only');
+		$simulatorsDir = $this->projectDir . '/var/data/simulators';
 		if ($work) {
-			$simulatorsDir .= DIRECTORY_SEPARATOR . "work";
+			$simulatorsDir .= "/work";
 		}
-		$simulatorname = $input->getArgument('simulatorname');
-		if ($simulatorname == 'all' && ! file_exists($simulatorsDir. DIRECTORY_SEPARATOR . "all.xml")) {
+		$simulatorname = (string)$input->getArgument('simulatorname');
+		if ($simulatorname == 'all' && ! file_exists($simulatorsDir."/all.xml")) {
 			$finder = new Finder();
 			$finder->files()->in($simulatorsDir)->name('/\.xml$/');
 			$allok = true;
 			foreach ($finder as $file) {
 				$simulatorname = basename($file->getRelativePathname(), '.xml');
-				if (!$this->validate($simulatorsDir, $simulatorname, $output)) {
+				if (!$this->validate($simulatorsDir, $simulatorname, $schemaOnly, $output)) {
 					$allok = false;
 				}
 			}
 			return $allok ? 0 : 1;
 		} else {
-			return $this->validate($simulatorsDir, $simulatorname, $output) ? 0 : 1;
+			return $this->validate($simulatorsDir, $simulatorname, $schemaOnly, $output) ? 0 : 1;
 		}
 	}
 
@@ -155,11 +162,12 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 	 * @access  private
 	 * @param   string $simulatorsDir The directory where is located the simulator
 	 * @param   string $simulatorname The simulator name
+	 * @param   bool $schemaOnly true if the validation is against the schema only
 	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
 	 * @return  bool true if simulator is valid, false if not.
 	 *
 	 */
-	private function validate(string $simulatorsDir, string $simulatorname, OutputInterface $output) {
+	private function validate(string $simulatorsDir, string $simulatorname, bool $schemaOnly, OutputInterface $output) {
 		$simufile = $simulatorsDir."/".$simulatorname. ".xml";
 		if (! file_exists($simufile)) {
 			$this->error($output, "The simulator XML file '%s%' doesn't exists", array('%s%' => $simufile));
@@ -171,29 +179,30 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 		$simulator->formatOutput = true;
 		libxml_use_internal_errors(true);
 		$simulator->load($simufile);
-		if (!$this->validatesAgainstSchema($simulator, $output)) {
-			return false;
-		}
 		$ok = true;
-		$simulatorxpath = new \DOMXPath($simulator);
-		$simu = $simulator->documentElement->getAttribute('name');
-		$datasourcesfile = $this->projectDir."/var/data/databases/DataSources.xml";
-		$datasources = new \DOMDocument();
-		$datasources->preserveWhiteSpace  = false;
-		$datasources->formatOutput = true;
-		$datasources->load($datasourcesfile);
-		$datasourcesxpath = new \DOMXPath($datasources);
-		if ($simulator->documentElement->hasAttribute('defaultView') && ! $this->checkDefaultViewElements($simu, $simulatorxpath, $output)) {
+		if (!$this->validatesAgainstSchema($simulator, $output)) {
 			$ok = false;
-		}
-		if (! $this->checkDataReferences($simu, $simulatorxpath, $output)) {
-			$ok = false;
-		}
-		if (! $this->checkSources($simu, $simulatorxpath, $datasourcesxpath, $output)) {
-			$ok = false;
-		}
-		if (! $this->checkBusinessRules($simu, $simulatorxpath, $output)) {
-			$ok = false;
+		} elseif (! $schemaOnly) {
+			$simulatorxpath = new \DOMXPath($simulator);
+			$simu = $simulator->documentElement->getAttribute('name');
+			$datasourcesfile = $this->projectDir."/var/data/databases/DataSources.xml";
+			$datasources = new \DOMDocument();
+			$datasources->preserveWhiteSpace  = false;
+			$datasources->formatOutput = true;
+			$datasources->load($datasourcesfile);
+			$datasourcesxpath = new \DOMXPath($datasources);
+			if ($simulator->documentElement->hasAttribute('defaultView') && ! $this->checkDefaultViewElements($simu, $simulatorxpath, $output)) {
+				$ok = false;
+			}
+			if (! $this->checkDataReferences($simu, $simulatorxpath, $output)) {
+				$ok = false;
+			}
+			if (! $this->checkSources($simu, $simulatorxpath, $datasourcesxpath, $output)) {
+				$ok = false;
+			}
+			if (! $this->checkBusinessRules($simu, $simulatorxpath, $output)) {
+				$ok = false;
+			}
 		}
 		if ($ok) {
 			$this->success($output, "The simulator '%s%' is successfully validated", array('%s%' => $simu));

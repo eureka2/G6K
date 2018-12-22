@@ -30,6 +30,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 use App\G6K\Model\Data;
 use App\G6K\Model\Source;
@@ -41,6 +42,7 @@ use App\G6K\Model\RichText;
 
 use App\G6K\Manager\DOMClient as Client;
 use App\G6K\Manager\ResultFilter;
+use App\G6K\Manager\StreamedOutput;
 
 /**
  *
@@ -49,7 +51,7 @@ use App\G6K\Manager\ResultFilter;
  * @copyright Jacques Archimède
  *
  */
-trait ControllersHelper {
+trait ControllersTrait {
 
 	/**
 	 * Initialization of common directories
@@ -666,28 +668,6 @@ trait ControllersHelper {
 	}
 
 	/**
-	 * Parses a date string to the given format and converts it to a DateTime object
-	 *
-	 * @access  public
-	 * @param   string $format The given format
-	 * @param   string $dateStr The date to be converted
-	 * @return  \DateTime|null The DateTime object
-	 * @throws \Exception
-	 *
-	 */
-	public function parseDate($format, $dateStr) {
-		if (empty($dateStr)) {
-			return null;
-		}
-		$date = \DateTime::createFromFormat($format, $dateStr);
-		$errors = \DateTime::getLastErrors();
-		if ($errors['error_count'] > 0) {
-			throw new \Exception("Error on date '$dateStr', expected format '$format' : " . implode(" ", $errors['errors']));
-		}
-		return $date;
-	}
-
-	/**
 	 * Return a relative path to a file or directory using base directory. 
 	 * 
 	 * @param   String   $base   A base path used to construct relative path. For example /website
@@ -718,6 +698,7 @@ trait ControllersHelper {
 		$application->setAutoExit(false);
 		$command['--no-debug'] = true;
 		$command['--no-interaction'] = true;
+		$command['--html'] = true;
 		$input = new ArrayInput($command);
 		$output = new BufferedOutput(
 			OutputInterface::VERBOSITY_NORMAL, // VERBOSITY_QUIET, VERBOSITY_NORMAL, VERBOSITY_VERBOSE, VERBOSITY_VERY_VERBOSE or VERBOSITY_DEBUG
@@ -737,6 +718,33 @@ trait ControllersHelper {
 			);
 		}
 		return $returnCode == 0;
+	}
+
+	/**
+	 * Run a streamed console command.
+	 *
+	 * @param   array $command The command
+	 * @param   callable $start a callback function to be called at the begining of the stream
+	 * @param   callable $end a callback function to be called at the end of the stream
+	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
+	 *
+	 */
+	private function runStreamedConsoleCommand($command, callable $start, callable $end) {
+		$application = new Application($this->get('kernel'));
+		$application->setAutoExit(false);
+		$command['--no-debug'] = true;
+		$command['--no-interaction'] = true;
+		$command['--html'] = true;
+		$input = new ArrayInput($command);
+		$input->setInteractive(false);
+		$output = new StreamedOutput(fopen('php://stdout', 'w'));
+		$returnCode = 1;
+ 		$response = new StreamedResponse(function() use ($application, $input, $output, $start, $end) {
+			call_user_func($start);
+			$returnCode = $application->run($input, $output);
+			call_user_func($end, $returnCode == 0);
+		});
+		return $response;
 	}
 
 	/**

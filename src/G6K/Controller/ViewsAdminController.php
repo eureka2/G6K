@@ -33,7 +33,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
 
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 
 /**
  *
@@ -54,7 +54,7 @@ use App\G6K\Manager\ControllersHelper;
  */
 class ViewsAdminController extends BaseAdminController {
 
-	use ControllersHelper;
+	use ControllersTrait;
 
 	/**
 	 * @var string      $root The root directory of the view that is either the view directory or the public assets directory
@@ -147,7 +147,7 @@ class ViewsAdminController extends BaseAdminController {
 	protected function runIndex(Request $request, $view, $crud) {
 		$form = $request->request->all();
 		if ($crud == 'docreate-view') {
-			return $this->doCreateView($form, $request->files->all());
+			return $this->doCreateView($request, $form);
 		} elseif ($crud == 'drop-view') {
 			return $this->dropView($view);
 		} elseif ($crud == 'doedit-node') {
@@ -244,6 +244,62 @@ class ViewsAdminController extends BaseAdminController {
 	}
 
 	/**
+	 * Makes the header for an action report
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @param   string $view The name of the view
+	 * @param   string $heading The title of the header
+	 * @return  string
+	 *
+	 */
+	protected function makeReportHeader(Request $request, $view, $heading){
+		$no_js = $request->query->get('no-js') || 0;
+		$script = $no_js == 1 ? 0 : 1;
+		$ua = new \Detection\MobileDetect();
+		return rtrim($this->renderView(
+			'admin/pages/report/views-header.html.twig',
+			array(
+				'ua' => $ua,
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'nav' => 'views',
+				'view' => $view,
+				'heading' => $heading,
+				'simulator' => null,
+				'script' => $script,
+				'dataset' => array(),
+				'steps' => array(),
+				'actions' => array(),
+				'rules' => array(),
+				'datasources' => array(),
+				'views' => array(),
+				'widgets' => array(),
+				'hiddens' => array()
+			)
+		));
+	}
+
+	/**
+	 * Makes the footer for an action report
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @param   string $view The name of the view
+	 * @return  string
+	 *
+	 */
+	protected function makeReportFooter(Request $request, $view){
+		$ua = new \Detection\MobileDetect();
+		return $this->renderView(
+			'admin/pages/report/views-footer.html.twig',
+			array(
+				'ua' => $ua,
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'nav' => 'views',
+				'view' => $view
+			)
+		);
+	}
+
+	/**
 	 * Creates a views and installs its templates and assets
 	 *
 	 * Route path : /admin/views/new/0/docreate-view
@@ -251,13 +307,14 @@ class ViewsAdminController extends BaseAdminController {
 	 * The templates are copied into the views directory and the assets into the public directory
 	 *
 	 * @access  protected
-	 * @param   array $form The form fields
-	 * @param   array $files Compressed files of assets and templates
-	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse The response object
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @return  \Symfony\Component\HttpFoundation\StreamedResponse
 	 *
 	 */
-	protected function doCreateView($form, $files) {
+	protected function doCreateView(Request $request, $form) {
+		$files = $request->files->all();
 		$view = $form['view-name'];
+		$viewurl = $form['view-site'];
 		$fs = new Filesystem();
 		$uploadDir = str_replace("\\", "/", $this->get('kernel')->getContainer()->getParameter('g6k_upload_directory'));
 		$templatesfile = '';
@@ -266,64 +323,45 @@ class ViewsAdminController extends BaseAdminController {
 			if ($file && $file->isValid()) {
 				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
 				if ($fieldname == 'view-templates-file') {
-					$templatesfile = $filePath;
+					$fs->rename($filePath, $uploadDir . "/" . $view . "-templates.zip", true);
+					$templatesfile = $uploadDir . "/" . $view . "-templates.zip";
 				} elseif ($fieldname == 'view-assets-file') {
-					$assetsfile = $filePath;
+					$fs->rename($filePath, $uploadDir . "/" . $view . "-assets.zip", true);
+					$assetsfile = $uploadDir . "/" . $view . "-assets.zip";
 				}
 			}
 		}
-		$zip = new \ZipArchive();
-		if ($templatesfile != '') {
-			$zip->open($templatesfile, \ZipArchive::CHECKCONS);
-			$extract = array();
-			for( $i = 0; $i < $zip->numFiles; $i++ ){
-				$info = $zip->statIndex( $i );
-				if (preg_match("/\.twig$/", $info['name'])) { // keep only twig files
-					array_push($extract, $info['name']);
-				}
+		$translator = $this->get('translator');
+		$heading = $translator->trans('Creating the view « %view% » view', ['%view%' => $view]);
+		$header = $this->makeReportHeader($request, $view, $heading);
+		$footer = $this->makeReportFooter($request, $view);
+		$response = $this->runStreamedConsoleCommand([
+		'command' => 'g6k:view:import',
+		'viewname' => $view,
+		'viewpath' => $templatesfile != '' || $assetsfile != '' ? $uploadDir : '',
+		'viewurl' => $viewurl
+		], function() use ($header) {
+			print $header;
+			flush();
+		}, function($ok) use ($footer, $translator, $view, $templatesfile, $assetsfile, $fs) {
+			if ($ok) {
+				print '<span class="alert-success">' . $translator->trans("The view « %view% » is successfully created.", ['%view%' => $view]) . "</span>\n";
+			} else {
+				print '<span class="alert-danger">' . $translator->trans("The view « %view% » can't be created.", ['%view%' => $view]) . "</span>\n";
 			}
-			$zip->extractTo($this->viewsDir . '/' . $view, $extract);
-			$zip->close();
-			$fs->remove($templatesfile);
-			$this->fixTemplates($view);
-		} else {
+			print $footer . "\n";
+			flush();
 			try {
-				$fs->mkdir($this->viewsDir . '/' . $view);
-				if ($fs->exists($this->viewsDir . '/Default')) {
-					$fs->mirror($this->viewsDir . '/Default', $this->viewsDir . '/' . $view);
+				if ($templatesfile != '') {
+					$fs->remove($templatesfile);
+				}
+				if ($assetsfile != '') {
+					$fs->remove($assetsfile);
 				}
 			} catch (IOExceptionInterface $e) {
 			}
-		}
-		if ($assetsfile != '') {
-			$zip->open($assetsfile, \ZipArchive::CHECKCONS);
-			$zip->extractTo($this->assetsDir . '/' . $view);
-			$zip->close();
-			$fs->remove($assetsfile);
-			$this->refreshManifest();
-		} else {
-			try {
-				$fs->mkdir($this->assetsDir . '/' . $view);
-				if ($fs->exists($this->assetsDir . '/Default')) {
-					$fs->mirror($this->assetsDir . '/Default', $this->assetsDir . '/' . $view);
-					$this->refreshManifest();
-				}
-			} catch (IOExceptionInterface $e) {
-			}
-		}
-		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_view', array('view' => $view)));
-	}
-
-	/**
-	 * Refresh the manifest of assets for versionning.
-	 *
-	 * @return bool
-	 *
-	 */
-	private function refreshManifest() {
-		return $this->runConsoleCommand(array(
-			'command' => 'g6k:assets:manifest:refresh'
-		));
+		});
+		return $response;
 	}
 
 	/**
@@ -381,20 +419,6 @@ class ViewsAdminController extends BaseAdminController {
 			'command' => 'g6k:assets:manifest:rename-asset',
 			'assetpath' => $node,
 			'newassetpath' => $newnode
-		));
-	}
-
-	/**
-	 * Corrects the templates written for Symfony 2 or 3 of the given view.
-	 *
-	 * @param   string $view The view name
-	 * @return bool
-	 *
-	 */
-	private function fixTemplates($view) {
-		return $this->runConsoleCommand(array(
-			'command' => 'g6k:templates:migrate',
-			'viewname' => $view
 		));
 	}
 

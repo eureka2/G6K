@@ -103,8 +103,8 @@ class RefreshAssetManifestCommand extends AssetManifestCommandBase
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
-		$templatesDir = $this->projectDir . DIRECTORY_SEPARATOR . "templates";
-		$this->publicDir = $this->projectDir . DIRECTORY_SEPARATOR . $this->parameters['public_dir'];
+		$templatesDir = $this->projectDir . "/templates";
+		$this->publicDir = $this->projectDir . '/' . $this->parameters['public_dir'];
 		$finder = Finder::create()->files()->in($templatesDir)->name('/\.twig$/');
 		foreach ($finder as $file) {
 			$template = $file->getContents();

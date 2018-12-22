@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 
 use Symfony\Component\HttpFoundation\Request;
 
@@ -39,7 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class IndexController extends BaseController {
 
-	use ControllersHelper;
+	use ControllersTrait;
 
 	/**
 	 * Entry point for the route path /

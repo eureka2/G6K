@@ -129,10 +129,10 @@ class ImportViewCommand extends ViewCommandBase
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
 		$view = $input->getArgument('viewname');
-		$viewpath = $input->getArgument('viewpath');
+		$viewpath = str_replace('\\', '/', $input->getArgument('viewpath'));
 		$viewurl = $input->getArgument('viewurl');
-		$templates = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-templates.zip" : "";
-		$assets = $viewpath ? $viewpath . DIRECTORY_SEPARATOR . $view . "-assets.zip" : "";
+		$templates = $viewpath ? $viewpath . '/' . $view . "-templates.zip" : "";
+		$assets = $viewpath ? $viewpath . '/' . $view . "-assets.zip" : "";
 		if ($templates != '' && ! file_exists($templates)) {
 			$this->error($output, "The compressed templates file '%s%' doesn't exists", array('%s%' => $templates));
 			return 1;
@@ -145,14 +145,14 @@ class ImportViewCommand extends ViewCommandBase
 			$this->error($output, "The url of the website '%s%' isn't valid", array('%s%' => $viewurl));
 			return 1;
 		}
-		if ($viewpath) {
+		if ($viewpath && $viewpath != '') {
 			$this->info($output, "Importing the view '%view%' located in '%viewpath%'", array('%view%' => $view, '%viewpath%' => $viewpath));
 		} else {
 			$this->info($output, "Creating the view '%view%' from the Default view", array('%view%' => $view));
 		}
 		$fsystem = new Filesystem();
-		$templatesDir = $this->projectDir . DIRECTORY_SEPARATOR . "templates";
-		$assetsDir = $this->projectDir . DIRECTORY_SEPARATOR . $this->parameters['public_dir']. DIRECTORY_SEPARATOR . "assets";
+		$templatesDir = $this->projectDir . "/templates";
+		$assetsDir = $this->projectDir . '/' . $this->parameters['public_dir']. "/assets";
 		$archive = new \ZipArchive();
 		if ($templates != '') {
 			$archive->open($templates, \ZipArchive::CHECKCONS);
@@ -163,14 +163,14 @@ class ImportViewCommand extends ViewCommandBase
 					array_push($extract, $info['name']);
 				}
 			}
-			$archive->extractTo($templatesDir . DIRECTORY_SEPARATOR . $view, $extract);
+			$archive->extractTo($templatesDir . '/' . $view, $extract);
 			$archive->close();
 			$this->migrate3To4($view, $output);
 		} else {
 			try {
-				$fsystem->mkdir($templatesDir . DIRECTORY_SEPARATOR . $view);
-				if ($fsystem->exists($templatesDir . DIRECTORY_SEPARATOR . 'Default')) {
-					$fsystem->mirror($templatesDir . DIRECTORY_SEPARATOR . 'Default', $templatesDir . DIRECTORY_SEPARATOR . $view);
+				$fsystem->mkdir($templatesDir . '/' . $view);
+				if ($fsystem->exists($templatesDir . '/Default')) {
+					$fsystem->mirror($templatesDir . '/Default', $templatesDir . '/' . $view);
 				}
 			} catch (IOExceptionInterface $e) {
 				$this->error($output, "Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $templatesDir, '%message%' => $e->getMessage()));
@@ -179,13 +179,13 @@ class ImportViewCommand extends ViewCommandBase
 		}
 		if ($assets != '') {
 			$archive->open($assets, \ZipArchive::CHECKCONS);
-			$archive->extractTo($assetsDir . DIRECTORY_SEPARATOR . $view);
+			$archive->extractTo($assetsDir . '/' . $view);
 			$archive->close();
 		} else {
 			try {
-				$fsystem->mkdir($assetsDir . DIRECTORY_SEPARATOR . $view);
-				if ($fsystem->exists($assetsDir . DIRECTORY_SEPARATOR . 'Default')) {
-					$fsystem->mirror($assetsDir . DIRECTORY_SEPARATOR . 'Default', $assetsDir . DIRECTORY_SEPARATOR . $view);
+				$fsystem->mkdir($assetsDir . '/' . $view);
+				if ($fsystem->exists($assetsDir . '/Default')) {
+					$fsystem->mirror($assetsDir . '/Default', $assetsDir . '/' . $view);
 				}
 			} catch (IOExceptionInterface $e) {
 				$this->error($output, "Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $assetsDir, '%message%' => $e->getMessage()));

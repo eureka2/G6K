@@ -542,6 +542,11 @@ THE SOFTWARE.
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
+		if (name == 'all') {
+			simulatorContainer.find('.error-message').text(Translator.trans("The name of the simulator can't be 'all'"));
+			simulatorContainer.find('.alert').show();
+			return false;
+		}
 		if ($.trim($('#simulator-label').val()) === '') {
 			simulatorContainer.find('.error-message').text(Translator.trans('The simulator label is required'));
 			simulatorContainer.find('.alert').show();

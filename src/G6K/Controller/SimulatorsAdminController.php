@@ -55,7 +55,7 @@ use App\G6K\Model\Profiles;
 use App\G6K\Model\Profile;
 use App\G6K\Model\RichText;
 
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 use App\G6K\Manager\SQLSelectTokenizer;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -83,7 +83,7 @@ use Symfony\Component\Finder\Finder;
  */
 class SimulatorsAdminController extends BaseAdminController {
 
-	use ControllersHelper;
+	use ControllersTrait;
 
 	/**
 	 * @const string
@@ -198,7 +198,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		if ($crud == 'export') {
 			return $this->doExportSimulator($simulator);
 		} elseif ($crud == 'publish') {
-			return $this->doPublishSimulator($simulator);
+			return $this->doPublishSimulator($request, $simulator);
 		} elseif ($crud == 'deploy') {
 			return $this->doDeploySimulator($request, $simulator);
 		}
@@ -265,7 +265,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		} elseif ($crud == 'import') {
 			$hiddens['action'] = 'import';
 		} elseif ($crud == 'doimport') {
-			return $this->doImportSimulator($request->files->all());
+			return $this->doImportSimulator($request);
 		}
 		$views = array();
 		$dirs = scandir($this->viewsDir);
@@ -389,17 +389,14 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 		$valid = true;
 		if ($simulator !== null && $simulator != 'new') {
-			$schema = $this->get('kernel')->getProjectDir()."/var/doc/Simulator.xsd";
-			$dom = new \DOMDocument();
-			$dom->preserveWhiteSpace  = false;
-			$dom->formatOutput = true;
+			$command = [
+				'command' => 'g6k:simulator:validate',
+				'simulatorname' => $simulator
+			];
 			if (file_exists($this->simulatorsDir . '/work/' . $simulator . '.xml')) {
-				$dom->load( $this->simulatorsDir . '/work/' . $simulator . '.xml');
-			} else {
-				$dom->load( $this->simulatorsDir . '/' . $simulator . '.xml');
+				$command['--working-version'] = true;
 			}
-			libxml_use_internal_errors(true);
-			$valid = $dom->schemaValidate($schema);
+			$valid = $this->runConsoleCommand($command);
 		}
 		$ua = new \Detection\MobileDetect();
 		$widgets = $this->getWidgets();
@@ -1430,54 +1427,107 @@ class SimulatorsAdminController extends BaseAdminController {
 	}
 
 	/**
+	 * Makes the header for an action report
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @param   string $simu The name of the simulator
+	 * @param   string $heading The title of the header
+	 * @return  string
+	 *
+	 */
+	protected function makeReportHeader(Request $request, $simu, $heading){
+		$no_js = $request->query->get('no-js') || 0;
+		$script = $no_js == 1 ? 0 : 1;
+		$ua = new \Detection\MobileDetect();
+		return rtrim($this->renderView(
+			'admin/pages/report/simulators-header.html.twig',
+			array(
+				'ua' => $ua,
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'nav' => 'simulators',
+				'view' => null,
+				'heading' => $heading,
+				'simulator' => $simu,
+				'script' => $script,
+				'dataset' => array(),
+				'steps' => array(),
+				'actions' => array(),
+				'rules' => array(),
+				'datasources' => array(),
+				'views' => array(),
+				'widgets' => array(),
+				'hiddens' => array()
+			)
+		));
+	}
+
+	/**
+	 * Makes the footer for an action report
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @param   string $simu The name of the simulator
+	 * @return  string
+	 *
+	 */
+	protected function makeReportFooter(Request $request, $simu){
+		$ua = new \Detection\MobileDetect();
+		return $this->renderView(
+			'admin/pages/report/simulators-footer.html.twig',
+			array(
+				'ua' => $ua,
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'nav' => 'simulators',
+				'simulator' => $simu
+			)
+		);
+	}
+
+	/**
 	 * Publishes a simulator ie copies the xml file of the simulator from the work directory to the main directory of simulators
 	 *
 	 * Route path : /admin/simulators/{simulator}/publish
 	 *
 	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
 	 * @param   string $simu simulator name
-	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\StreamedResponse
+	 * @return  \Symfony\Component\HttpFoundation\StreamedResponse
 	 *
 	 */
-	protected function doPublishSimulator($simu) {
+	protected function doPublishSimulator(Request $request, $simu) {
 		$schema_dir = $this->get('kernel')->getProjectDir()."/var/doc";
+		$translator = $this->get('translator');
+		$heading = $translator->trans('Publishing of the « %simulator% » simulator.', array('%simulator%' => $simu));
+		$header = $this->makeReportHeader($request, $simu, $heading);
+		$footer = $this->makeReportFooter($request, $simu);
 		$fs = new Filesystem();
 		if ($fs->exists($this->simulatorsDir . "/work/" . $simu . ".xml")) {
-			libxml_use_internal_errors(true);
-			$xml = new \DOMDocument();
-			$xml->load($this->simulatorsDir . "/work/" . $simu . ".xml");
-			if (!$xml->schemaValidate($schema_dir . "/Simulator.xsd")) {
-				$libxmlErrors = libxml_get_errors();
-				$response = new StreamedResponse();
-				$response->setCallback(function() use($libxmlErrors) {
-					foreach ($libxmlErrors as $error) {
-						switch ($error->level) {
-							case LIBXML_ERR_WARNING:
-								print "Warning $error->code : ";
-								break;
-							case LIBXML_ERR_ERROR:
-								print "Error $error->code : ";
-								break;
-							case LIBXML_ERR_FATAL:
-								print "Fatal Error $error->code : ";
-								break;
-						}
-						print trim($error->message);
-						if ($error->file) {
-							print " in " . basename($error->file);
-						}
-						print " on line $error->line\n";
-						print "<br>\n";
-						flush();
-					}
-				});
-				libxml_clear_errors();
-				return $response;
-			} else {
-				$fs->copy($this->simulatorsDir . "/work/" . $simu . ".xml", $this->simulatorsDir . "/" . $simu . ".xml");
-				return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
-			}
+			$response = $this->runStreamedConsoleCommand([
+				'command' => 'g6k:simulator:validate',
+				'simulatorname' => $simu,
+				'--working-version' => true
+			], function() use ($header) {
+				print $header;
+				flush();
+			}, function($ok) use ($footer, $translator, $simu, $fs) {
+				if ($ok) {
+					$fs->copy($this->simulatorsDir . "/work/" . $simu . ".xml", $this->simulatorsDir . "/" . $simu . ".xml");
+					print '<span class="alert-success">' . $translator->trans("The simulator « %simulator% » is successfully published.", ['%simulator%' => $simu]) . "</span>\n";
+				} else {
+					print '<span class="alert-danger">' . $translator->trans("The simulator « %simulator% » can't be published.", ['%simulator%' => $simu]) . "</span>\n";
+				}
+				print $footer . "\n";
+				flush();
+			});
+		} else {
+			$response = new StreamedResponse(function() use($header, $footer, $translator) {
+				print $header;
+				flush();
+				print '<span class="alert-danger">' . $translator->trans("Unable to find the working version of the simulator « %simulator% »", ['%simulator%' => $simu]) . "</span>\n";
+				print $footer."\n";
+				flush();
+			});
 		}
+		return $response;
 	}
 
 	/**
@@ -1488,7 +1538,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request
 	 * @param   string $simu The name of the simulator to deploy
-	 * @return  \Symfony\Component\HttpFoundation\Response
+	 * @return  \Symfony\Component\HttpFoundation\StreamedResponse
 	 *
 	 */
 	protected function doDeploySimulator(Request $request, $simu){
@@ -1499,33 +1549,24 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu = new Simulator($this);
 		$this->simu->load($this->simulatorsDir."/".$simu.'.xml');
 		try {
-			$output = $this->get('g6k.deployer')->deploy($this->simu);
+			$report = $this->get('g6k.deployer')->deploy($this->simu);
 		} catch (\Exception $ex) {
 		}
-		$no_js = $request->query->get('no-js') || 0;
-		$script = $no_js == 1 ? 0 : 1;
-		$hiddens = array();
-		$ua = new \Detection\MobileDetect();
-		return $this->render(
-			'admin/pages/deploy-output.html.twig',
-			array(
-				'ua' => $ua,
-				'path' => $request->getScheme().'://'.$request->getHttpHost(),
-				'nav' => 'simulators',
-				'view' => null,
-				'simulator' => $this->simu,
-				'script' => $script,
-				'dataset' => array(),
-				'steps' => array(),
-				'actions' => array(),
-				'rules' => array(),
-				'datasources' => array(),
-				'views' => array(),
-				'widgets' => array(),
-				'log' => $output,
-				'hiddens' => $hiddens
-			)
-		);
+		$heading = $this->get('translator')->trans('Deployment of the « %simulator% » simulator', ['%simulator%' => $this->simu->getName()]);
+		$header = $this->makeReportHeader($request, $this->simu->getName(), $heading);
+		$footer = $this->makeReportFooter($request, $this->simu->getName());
+		$response = new StreamedResponse();
+		$response->setCallback(function() use($header, $report, $footer) {
+			print $header;
+			flush();
+			foreach ($report as $error) {
+				print $error."\n";
+				flush();
+			}
+			print $footer."\n";
+			flush();
+		});
+		return $response;
 	}
 
 	/**
@@ -1538,15 +1579,15 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * Route path : /admin/simulators/{simulator}/doimport
 	 *
 	 * @access  protected
-	 * @param   array $files Uploaded files
-	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse a Response object if there is an error, a RedirectResponse otherwise.
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @return  \Symfony\Component\HttpFoundation\StreamedResponse
 	 *
 	 */
-	protected function doImportSimulator($files) {
+	protected function doImportSimulator(Request $request) {
+		$files = $request->files->all();
 		$fs = new Filesystem();
 		$container = $this->get('kernel')->getContainer();
 		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
-		$schema = $this->get('kernel')->getProjectDir()."/var/doc/Simulator.xsd";
 		$simu = '';
 		$simufile = '';
 		$stylesheet = '';
@@ -1564,78 +1605,58 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 			}
 		}
+		$translator = $this->get('translator');
 		if ($simu != '' && $simufile != '') {
-			$dom = new \DOMDocument();
-			$dom->preserveWhiteSpace  = false;
-			$dom->formatOutput = true;
-			$dom->load($simufile);
-			libxml_use_internal_errors(true);
-			if (!$dom->schemaValidate($schema)) {
-				$errors = libxml_get_errors();
-				$mess = "";
-				foreach ($errors as $error) {
-					$mess .= "Line ".$error->line . '.' .  $error->column . ": " .  $error->message . "\n";
-				}
-				libxml_clear_errors();
-				$response = new Response();
-				$response->setContent("<html><head><title>" . $this->get('translator')->trans("XML Validation errors") . "</title></head><body><pre>".$mess."</pre></body></html>");
-				$response->headers->set('Content-Type', 'text/html');
-				return $response;
-			}
-			$xpath = new \DOMXPath($dom);
-			$simu = $dom->documentElement->getAttribute('name');
-			$view = $dom->documentElement->getAttribute('defaultView');
-			if (! $fs->exists(array($this->viewsDir.'/'.$view, $this->publicDir.'/assets/'.$view))) {
-				$view = 'Demo';
-				$dom->documentElement->setAttribute('defaultView', $view);
-			}
-			$sources = $xpath->query("/Simulator/Sources/Source");
-			$len = $sources->length;
-			for($i = 0; $i < $len; $i++) {
-				$source = $this->getDOMElementItem($sources, $i);
-				$datasource = $source->getAttribute('datasource');
-				if (is_numeric($datasource)) {
-					$source->setAttribute('datasource', $simu);
-				}
-			}
-			$formatted = preg_replace_callback('/^( +)</m', function($a) { 
-				return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
-			}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
-			$fs->dumpFile($this->simulatorsDir.'/'.$simu.'.xml', $formatted);
+			$fs->rename($simufile, $uploadDir . "/" . $simu . ".xml", true);
+			$simufile = $uploadDir . "/" . $simu . ".xml";
 			if ($stylesheet != '') {
-				if (! $fs->exists($this->publicDir.'/assets/'.$view.'/css')) {
-					$fs->mkdir($this->publicDir.'/assets/'.$view.'/css');
-				}
-				$fs->copy($stylesheet, $this->publicDir.'/assets/'.$view.'/css/'.$simu.'.css', true);
-				$this->runConsoleCommand(array(
-					'command' => 'g6k:assets:manifest:add-asset',
-					'assetpath' => 'assets/'.$view.'/css/'.$simu.'.css'
-				));
-			} else if (! $fs->exists($this->publicDir.'/assets/'.$view.'/css/'.$simu.'.css')) {
-				if ($view == 'Demo') {
-					$fs->dumpFile($this->publicDir.'/assets/'.$view.'/css/'.$simu.'.css', '@import "common.css";'."\n");
+				$fs->rename($stylesheet, $uploadDir . "/" . $simu . ".css", true);
+				$stylesheet = $uploadDir . "/" . $simu . ".css";
+			}
+			$heading = $translator->trans('Importing the « %simulator% » simulator', ['%simulator%' => $simu]);
+			$header = $this->makeReportHeader($request, $simu, $heading);
+			$footer = $this->makeReportFooter($request, $simu);
+			$response = $this->runStreamedConsoleCommand([
+				'command' => 'g6k:simulator:import',
+				'simulatorname' => $simu,
+				'simulatorpath' => $uploadDir,
+				'stylesheetpath' => $stylesheet != '' ? $uploadDir : false,
+				'--default-choice-widget' => 'abListbox'
+			], function() use ($header) {
+				print $header;
+				flush();
+			}, function($ok) use ($footer, $translator, $simu, $simufile, $stylesheet, $fs) {
+				if ($ok) {
+					print '<span class="alert-success">' . $translator->trans("The simulator « %simulator% » is successfully imported.", ['%simulator%' => $simu]) . "</span>\n";
 				} else {
-					if (! $fs->exists($this->publicDir.'/assets/'.$view.'/css')) {
-						$fs->mkdir($this->publicDir.'/assets/'.$view.'/css');
-					}
-					$fs->copy($this->publicDir.'/assets/Demo/css/common.css', $this->publicDir.'/assets/'.$view.'/css/'.$simu.'.css');
+					print '<span class="alert-danger">' . $translator->trans("The simulator « %simulator% » can't be imported.", ['%simulator%' => $simu]) . "</span>\n";
 				}
-				$this->runConsoleCommand(array(
-					'command' => 'g6k:assets:manifest:add-asset',
-					'assetpath' => 'assets/'.$view.'/css/'.$simu.'.css'
-				));
-			}
+				print $footer . "\n";
+				flush();
+				try {
+					if ($simufile != '') {
+						$fs->remove($simufile);
+					}
+					if ($stylesheet != '') {
+						$fs->remove($stylesheet);
+					}
+				} catch (IOExceptionInterface $e) {
+				}
+			});
+		} else {
+			$simu = $translator->trans("Unknown");
+			$heading = $translator->trans('Importing the « %simulator% » simulator', ['%simulator%' => $simu]);
+			$header = $this->makeReportHeader($request, $simu, $heading);
+			$footer = $this->makeReportFooter($request, $simu);
+			$response = new StreamedResponse(function() use($header, $footer, $translator) {
+				print $header;
+				flush();
+				print '<span class="alert-danger">' . $translator->trans("The uploaded files of the simulator can't be found.") . "</span>\n";
+				print $footer."\n";
+				flush();
+			});
 		}
-		try {
-			if ($simufile != '') {
-				$fs->remove($simufile);
-			}
-			if ($stylesheet != '') {
-				$fs->remove($stylesheet);
-			}
-		} catch (IOExceptionInterface $e) {
-		}
-		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_simulator', array('simulator' => $simu)));
+		return $response;
 	}
 
 	/**

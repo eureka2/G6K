@@ -1,7 +1,7 @@
 {#
 The MIT License (MIT)
 
-Copyright (c) 2015-2017 Jacques Archimède
+Copyright (c) 2015-2018 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -68,41 +68,18 @@ THE SOFTWARE.
 
 {% block scripts %}
 
-{% block jquery %}
-<!--[if lt IE 9]>
-<script src="{{ asset('assets/base/js/libs/jquery-1.11.1.min.js') }}"></script>
-<![endif]-->
-<!--[if gte IE 9]><!-->
-<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-3.3.1.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-migrate-3.0.0.js') }}"></script>
-<!--<![endif]-->
-{% endblock %} {# jquery #}
-
-<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
+{% include 'admin/sections/scripts.common.html.twig' %}
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/google-code-prettify/run_prettify.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/bootstrap.bundle.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/affix.js') }}"></script>
 <script type="text/javascript">
 $(function(){
 	$('[data-spy="affix"]').on('affixed.bs.affix', function () {
-	$(".affix").css("width",$(".affix").parent().css("width").replace('px','') - 30);
-			})
-	$('body').append('<div id="toTop" class="btn btn-light"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
-	$(window).scroll(function () {
-		if ($(this).scrollTop() != 0) {
-			$('#toTop').fadeIn();
-		} else {
-			$('#toTop').fadeOut();
-		}
-	}); 
-	$('#toTop').click(function(){
-		$("html, body").animate({ scrollTop: 0 }, 600);
-		return false;
+		$(".affix").css("width",$(".affix").parent().css("width").replace('px','') - 30);
 	});
 });
 </script>
+
 {% endblock %} {# scripts #}
 
 {% endblock %} {# body #}

@@ -27,6 +27,7 @@ THE SOFTWARE.
 namespace App\G6K\Manager\Json;
 
 use App\G6K\Model\Database;
+use App\G6K\Manager\SQLConverterBase;
 
 /**
  * This class allows the conversion of a json-schema.org compliant JSON database and exported from G6K to a SQL database
@@ -34,192 +35,22 @@ use App\G6K\Model\Database;
  * @copyright Jacques Archimède
  *
  */
-class JSONToSQLConverter {
-
-	/**
-	 * @var array      $parameters The database parameters
-	 *
-	 * @access  private
-	 *
-	 */
-	private $parameters = array(
-		'database_driver' => 'pdo_sqlite',
-		'database_host' => null,
-		'database_port' => null,
-		'database_name' => null,
-		'database_user' => null,
-		'database_password' => null,
-		'database_path' => null
-	);
-
-	/**
-	 * @var array      $datatypes The SQL datatypes by SQL driver
-	 *
-	 * @access  private
-	 *
-	 */
-	private $datatypes = array(
-		'pdo_sqlite' => array(
-			'boolean' => 'BOOLEAN',
-			'date' => 'DATE',
-			'date-time' => 'DATETIME',
-			'integer' => 'INTEGER',
-			'number' => 'REAL',
-			'string' => 'TEXT',
-			'time' => 'TIME'
-		),
-		'pdo_pgsql' => array(
-			'boolean' => 'SMALLINT',
-			'date' => 'DATE',
-			'date-time' => 'TIMESTAMP',
-			'integer' => 'INTEGER',
-			'number' => 'REAL',
-			'string' => 'TEXT',
-			'time' => 'TIME'
-		),
-		'pdo_mysql' => array(
-			'boolean' => 'TINYINT(1)',
-			'date' => 'DATE',
-			'date-time' => 'DATETIME',
-			'integer' => 'INT',
-			'number' => 'FLOAT',
-			'string' => 'TEXT',
-			'time' => 'TIME'
-		)
-	);
-
-	/**
-	 * @var string      $databasesDir The G6K databases directory
-	 *
-	 * @access  private
-	 *
-	 */
-	private $databasesDir;
-
-	/**
-	 * @var \App\G6K\Model\Database      $database The Database object
-	 *
-	 * @access  private
-	 *
-	 */
-	private $database;
-
-	/**
-	 * Constructor of class JSONToSQLConverter
-	 *
-	 * @access  public
-	 * @param   array $fparameters The database parameters
-	 * @param   string $databasesDir The G6K databases directory
-	 * @return  void
-	 *
-	 */
-	public function __construct($fparameters, $databasesDir) {
-		$this->databasesDir = $databasesDir;
-		$this->parameters = array_merge($this->parameters, $fparameters);
-	}
-
-	/**
-	 * Returns the data type of a database column
-	 *
-	 * @access  private
-	 * @param   \stdClass $coldef The database column definition
-	 * @return  string The data type
-	 *
-	 */
-	private function getType(\stdClass $coldef) {
-		$driver = $this->parameters['database_driver'];
-		if ($coldef->type == 'string') {
-			if(isset($coldef->format)) {
-				return $this->datatypes[$driver][$coldef->format];
-			} elseif(isset($coldef->maxLength)) {
-				return "VARCHAR(".$coldef->maxLength.")";
-			} else {
-				return $this->datatypes[$driver][$coldef->type];
-			} 
-		}
-		$type = $this->datatypes[$driver][$coldef->type];
-		if(isset($coldef->maxLength)) {
-			$type .= "(".$coldef->maxLength.")";
-		}
-		return $type;
-	}
-
-	/**
-	 * Prepares a value according to its type for its insertion in a SQL database
-	 *
-	 * @access  private
-	 * @param   string $type The type of the value
-	 * @param   string $value The value
-	 * @return  string The new value
-	 *
-	 */
-	private function getValue($type, $value) {
-		if ($type == 'string') {
-			$value = $this->database->quote($value, \PDO::PARAM_STR);
-		} elseif ($type == 'integer') {
-			$value = $this->database->quote($value, \PDO::PARAM_INT);
-		} elseif ($type == 'boolean') {
-			$value = $value ? "'1'" : "'0'";
-		}
-		return $value;
-	}
-
-	/**
-	 * Decodes a properties list from JSON schema
-	 *
-	 * @access  private
-	 * @param   string $arg The properties list
-	 * @return  \stdClass The decoded properties
-	 *
-	 */
-	private function properties($arg) {
-		$props = array();
-		$params = array_map(function ($i) { return trim($i); }, str_getcsv($arg, ",", "'"));
-		foreach($params as $prop) {
-			list($property, $value) = explode(':', $prop);
-			$props[$property] = $value;
-		}
-		return (object)$props;
-	}
-
-	/**
-	 * Connects to the database
-	 *
-	 * @access  private
-	 * @param   string $dbschema The database name
-	 * @param   string $dbtype The database type
-	 * @return  void
-	 *
-	 */
-	private function connectDatabase($dbschema, $dbtype) {
-		$this->database = new Database(null, $this->databasesDir, 1, $dbtype, str_replace('-', '_', $dbschema));
-		if ($this->parameters['database_host'] !== null && $this->parameters['database_host'] != "") {
-			$this->database->setHost($this->parameters['database_host']);
-		}
-		if ($this->parameters['database_port'] !== null && $this->parameters['database_port'] != "") {
-			$this->database->setPort((int)$this->parameters['database_port']);
-		}
-		if ($this->parameters['database_user'] !== null && $this->parameters['database_user'] != "") {
-			$this->database->setUser($this->parameters['database_user']);
-		}
-		if ($this->parameters['database_password'] !== null && $this->parameters['database_password'] != "") {
-			$this->database->setPassword($this->parameters['database_password']);
-		}
-		$this->database->connect(false);
-	}
+class JSONToSQLConverter extends SQLConverterBase {
 
 	/**
 	 * Imports a JSON database to a SQL database and returns an array descriptor of the database for the update of DataSources.xml
 	 *
 	 * @access  public
-	 * @param   string $schemafile The JSON schema file
-	 * @param   string $datafile The JSON data file
+	 * @param   array $inputs An associative array containing the schema and data file names
+	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @param   callable|null $fprogress a function receiving the row number that's inserted
 	 * @return  array The array descriptor of the SQL database
 	 * @throws \Exception
 	 *
 	 */
-	public function convert($schemafile, $datafile, $fprogress = null) {
+	public function convert($inputs, $translator = null, $fprogress = null) {
+		$schemafile = $inputs['schemafile'];
+		$datafile = $inputs['datafile'];
 		$schema = file_get_contents($schemafile);
 		if ($schema === false) {
 			throw new \Exception("JSON schema file '$schemafile' schema doesn't exists");

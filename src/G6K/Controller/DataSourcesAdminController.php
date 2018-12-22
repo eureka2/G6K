@@ -32,14 +32,14 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-use App\G6K\Model\Database;
-
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 use App\G6K\Manager\DatasourcesHelper;
+use App\G6K\Manager\DatasourcesTrait;
 use App\G6K\Manager\Json\SQLToJSONConverter;
-use App\G6K\Manager\DOMClient as Client;
-use App\G6K\Manager\ResultFilter;
+use App\G6K\Manager\Json\JsonSQL\Parser;
+use App\G6K\Manager\ExpressionParser\DateFunction;
 
 /**
  *
@@ -65,52 +65,8 @@ use App\G6K\Manager\ResultFilter;
  */
 class DataSourcesAdminController extends BaseAdminController {
 
-	use ControllersHelper;
-
-	/**
-	 * @const string
-	 */
-	const SQL_SELECT_KEYWORD = 'SELECT ';
-
-	/**
-	 * @const string
-	 */
-	const SQL_FROM_KEYWORD = 'FROM ';
-
-	/**
-	 * @const string
-	 */
-	const SQL_WHERE_KEYWORD = 'WHERE ';
-
-	/**
-	 * @const string
-	 */
-	const SQL_ORDER_BY_KEYWORD = 'ORDER BY ';
-
-	/**
-	 * @const string
-	 */
-	const SQL_LIMIT_KEYWORD = 'LIMIT ';
-
-	/**
-	 * @const string
-	 */
-	const SQL_OFFSET_KEYWORD = 'OFFSET ';
-
-	/**
-	 * @const string
-	 */
-	const SQL_UPDATE_KEYWORD = 'UPDATE ';
-
-	/**
-	 * @const string
-	 */
-	const SQL_CREATE_KEYWORD = 'CREATE TABLE ';
-
-	/**
-	 * @const string
-	 */
-	const SQL_DELETE_KEYWORD = 'DELETE FROM ';
+	use ControllersTrait;
+	use DatasourcesTrait;
 
 	/**
 	 * @var \SimpleXMLElement      $datasources DataSources.xml content
@@ -315,7 +271,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		} elseif ($crud == 'import-datasource') {
 			return $this->showDatasources(0, null, "import");
 		} elseif ($crud == 'doimport-datasource') {
-			return $this->doImportDatasource($request->files->all());
+			return $this->doImportDatasource($request);
 		} elseif ($crud == 'export-datasource') {
 			return $this->doExportDatasource($dsid);
 		} elseif ($crud == 'edit-datasource') {
@@ -342,7 +298,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				case 'doedit':
 					return $this->doEditTable ($form, $table, $database);
 				case 'doimport':
-					return $this->doImportTable($form, $dsid, $table, $database, $request->files->all());
+					return $this->doImportTable($request, $form, $dsid, $table, $database);
 				case 'drop':
 					return $this->dropTable ($form, $table, $database);
 				case 'restore':
@@ -351,6 +307,30 @@ class DataSourcesAdminController extends BaseAdminController {
 					throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
 			}
 		}
+	}
+
+	/**
+	 * Checks if a parameter exists.
+	 *
+	 * @access  protected
+	 * @param   string $parameter The parameter name
+	 * @return  bool true if the parameter exists, false if not
+	 *
+	 */
+	protected function hasConfigParameter($parameter) {
+		return $this->get('kernel')->getContainer()->hasParameter($parameter);
+	}
+
+	/**
+	 * Gets a parameter with its name.
+	 *
+	 * @access  protected
+	 * @param   string $parameter The parameter name
+	 * @return  string The parameter value
+	 *
+	 */
+	protected function getConfigParameter($parameter) {
+		return $this->get('kernel')->getContainer()->getParameter($parameter);
 	}
 
 	/**
@@ -433,8 +413,8 @@ class DataSourcesAdminController extends BaseAdminController {
 		if ($dsid !== null) {
 			if ($dsid == 0) {
 				$type = 'jsonsql';
-				if ($this->get('kernel')->getContainer()->hasParameter('database_driver')) {
-					switch ($this->get('kernel')->getContainer()->getParameter('database_driver')) {
+				if ($this->hasConfigParameter('database_driver')) {
+					switch ($this->getConfigParameter('database_driver')) {
 						case 'pdo_sqlite':
 							$type = 'sqlite';
 							break;
@@ -469,9 +449,9 @@ class DataSourcesAdminController extends BaseAdminController {
 							'type' => $type, 
 							'name' => '', 
 							'label' => '', 
-							'host' => $this->get('kernel')->getContainer()->hasParameter('database_host') ? $this->get('kernel')->getContainer()->getParameter('database_host') : '', 
-							'port' => $this->get('kernel')->getContainer()->hasParameter('database_port') ? $this->get('kernel')->getContainer()->getParameter('database_port') : '',
-							'user' => $this->get('kernel')->getContainer()->hasParameter('database_user') ? $this->get('kernel')->getContainer()->getParameter('database_user') : '', 
+							'host' => $this->hasConfigParameter('database_host') ? $this->getConfigParameter('database_host') : '', 
+							'port' => $this->hasConfigParameter('database_port') ? $this->getConfigParameter('database_port') : '',
+							'user' => $this->hasConfigParameter('database_user') ? $this->getConfigParameter('database_user') : '', 
 							'password' => ''
 						),
 						'uri' => '',
@@ -534,7 +514,7 @@ class DataSourcesAdminController extends BaseAdminController {
 								if ($tableinfos[$i]['g6k_type'] == 'choice' && $column !== null && $column->Choices) {
 									if ($column->Choices->Source) {
 										$source = $column->Choices->Source;
-										$result = $this->processSource($source);
+										$result = $this->executeSource($source);
 										$choices = $this->getChoicesFromSource($source, $result);
 										$tableinfos[$i]['choicesource']['id'] = (int)$source['id'];
 										$tableinfos[$i]['choicesource']['datasource'] = (string)$source['datasource'];
@@ -563,7 +543,7 @@ class DataSourcesAdminController extends BaseAdminController {
 										$infos['filtertext'] = $filtertext;
 										if ($filtertext != '') {
 											if ($infos['g6k_type'] == 'date') {
-												$date = $this->parseDate("j/m/Y", $filtertext);
+												$date = DateFunction::parseDate("j/m/Y", $filtertext);
 												$filtertext = $date->format("Y-m-d");
 												$where[] = $infos['name'] . " = '" . $filtertext . "'";
 											} elseif ($infos['g6k_type'] == 'number' || $infos['g6k_type'] == 'integer' || $infos['g6k_type'] == 'money' || $infos['g6k_type'] == 'percent') {
@@ -581,19 +561,19 @@ class DataSourcesAdminController extends BaseAdminController {
 										}
 									}
 								}
-								$where = count($where) > 0? " " . self::SQL_WHERE_KEYWORD . implode(" AND ", $where) : "";
+								$where = count($where) > 0? " " . Parser::SQL_WHERE_KEYWORD . implode(" AND ", $where) : "";
 								$paginator = new \AshleyDawson\SimplePagination\Paginator();
 								$paginator->setItemTotalCallback(function () use ($database, $table, $where) {
-									$rowCount = $database->query(self::SQL_SELECT_KEYWORD . "count(*) as c " . self::SQL_FROM_KEYWORD . $table . $where);
+									$rowCount = $database->query(Parser::SQL_SELECT_KEYWORD . "count(*) as c " . Parser::SQL_FROM_KEYWORD . $table . $where);
 									return $rowCount[0]['c'];
 								});
 								$paginator->setSliceCallback(function ($offset, $length) use ($database, $table, $tableinfos, $where) {
-									$tabledatas = $database->query(self::SQL_SELECT_KEYWORD . "* " . self::SQL_FROM_KEYWORD . $table . $where . " " . self::SQL_LIMIT_KEYWORD . $length . " " . self::SQL_OFFSET_KEYWORD . $offset);
+									$tabledatas = $database->query(Parser::SQL_SELECT_KEYWORD . "* " . Parser::SQL_FROM_KEYWORD . $table . $where . " " . Parser::SQL_LIMIT_KEYWORD . $length . " " . Parser::SQL_OFFSET_KEYWORD . $offset);
 									foreach($tabledatas as $r => $row) {
 										$i = 0;
 										foreach ($row as $c => $cell) {
 											if ($tableinfos[$i]['g6k_type'] == 'date' && $cell !== null) {
-												$date = $this->parseDate('Y-m-d', substr($cell, 0, 10));
+												$date = DateFunction::parseDate('Y-m-d', substr($cell, 0, 10));
 												$tabledatas[$r][$c] = $date->format('d/m/Y');
 											} elseif ($tableinfos[$i]['g6k_type'] == 'money' || $tableinfos[$i]['g6k_type'] == 'percent') {
 												$tabledatas[$r][$c] = number_format ( (float) $cell, 2, ",", "" );
@@ -682,23 +662,22 @@ class DataSourcesAdminController extends BaseAdminController {
 	protected function doExportDatasource($dsid) {
 		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
 		$datasource = $datasources[0];
-		$container = $this->get('kernel')->getContainer();
-		$driver = $container->getParameter('database_driver');
+		$driver = $this->getConfigParameter('database_driver');
 		$parameters = array(
 			'database_driver' => $driver
 		);
 		if ($driver != 'pdo_sqlite') {
-			if ($container->hasParameter('database_host')) {
-				$parameters['database_host'] = $container->getParameter('database_host');
+			if ($this->hasConfigParameter('database_host')) {
+				$parameters['database_host'] = $this->getConfigParameter('database_host');
 			}
-			if ($container->hasParameter('database_port')) {
-				$parameters['database_port'] = $container->getParameter('database_port');
+			if ($this->hasConfigParameter('database_port')) {
+				$parameters['database_port'] = $this->getConfigParameter('database_port');
 			}
-			if ($container->hasParameter('database_user')) {
-				$parameters['database_user'] = $container->getParameter('database_user');
+			if ($this->hasConfigParameter('database_user')) {
+				$parameters['database_user'] = $this->getConfigParameter('database_user');
 			}
-			if ($container->hasParameter('database_password')) {
-				$parameters['database_password'] = $container->getParameter('database_password');
+			if ($this->hasConfigParameter('database_password')) {
+				$parameters['database_password'] = $this->getConfigParameter('database_password');
 			}
 		}
 		$converter = new SQLToJSONConverter($parameters, $this->databasesDir);
@@ -726,6 +705,66 @@ class DataSourcesAdminController extends BaseAdminController {
 	}
 
 	/**
+	 * Makes the header for a datasource action report
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @param   string $datasource The name of the datasource
+	 * @param   string $dsid The id of the datasource
+	 * @param   string $heading The title of the header
+	 * @return  string
+	 *
+	 */
+	protected function makeDatasourceReportHeader(Request $request, $datasource, $heading){
+		$no_js = $request->query->get('no-js') || 0;
+		$script = $no_js == 1 ? 0 : 1;
+		$ua = new \Detection\MobileDetect();
+		return rtrim($this->renderView(
+			'admin/pages/report/datasources-header.html.twig',
+			array(
+				'ua' => $ua,
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'nav' => 'datasources',
+				'view' => null,
+				'heading' => $heading,
+				'datasource' => $datasource,
+				'dsid' => '',
+				'script' => $script,
+				'dataset' => array(),
+				'steps' => array(),
+				'actions' => array(),
+				'rules' => array(),
+				'datasources' => array(),
+				'views' => array(),
+				'widgets' => array(),
+				'hiddens' => array()
+			)
+		));
+	}
+
+	/**
+	 * Makes the footer for a datasource action report
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @param   string $datasource The name of the datasource
+	 * @param   string $dsid The id of the datasource
+	 * @return  string
+	 *
+	 */
+	protected function makeDatasourceReportFooter(Request $request, $datasource, $dsid){
+		$ua = new \Detection\MobileDetect();
+		return $this->renderView(
+			'admin/pages/report/datasources-footer.html.twig',
+			array(
+				'ua' => $ua,
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'nav' => 'datasources',
+				'datasource' => $datasource,
+				'dsid' => $dsid
+			)
+		);
+	}
+
+	/**
 	 * Imports a data source from a JSON data file and a JSON schema file
 	 *
 	 * These files must have been exported from a G6K instance and must conform to the jsonschema.org specification.
@@ -733,14 +772,15 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Route path : /admin/datasources/0/dummy/doimport-datasource
 	 *
 	 * @access  protected
-	 * @param   array $files JSON data file and a JSON schema file
-	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @return  \Symfony\Component\HttpFoundation\StreamedResponse
 	 *
 	 */
-	protected function doImportDatasource($files) {
-		$container = $this->get('kernel')->getContainer();
-		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
-		$name = '';
+	protected function doImportDatasource(Request $request) {
+		$files = $request->files->all();
+		$fs = new Filesystem();
+		$uploadDir = str_replace("\\", "/", $this->getConfigParameter('g6k_upload_directory'));
+		$datasource = '';
 		$schemafile = '';
 		$datafile = '';
 		$dsid = 0;
@@ -751,43 +791,126 @@ class DataSourcesAdminController extends BaseAdminController {
 					$schemafile = $filePath;
 				} elseif ($fieldname == 'datasource-data-file') {
 					$datafile = $filePath;
-					$name = $file->getClientOriginalName();
-					if (preg_match("/^(.+)\.json$/", $name, $m)) {
-						$name = trim($m[1]);
+					$datasource = $file->getClientOriginalName();
+					if (preg_match("/^(.+)\.json$/", $datasource, $m)) {
+						$datasource = trim($m[1]);
 					}
 				}
 			}
 		}
-		if ($name != '' && $schemafile != '' && $datafile != '') {
-			$driver = $container->getParameter('database_driver');
-			$parameters = array(
-				'database_driver' => $driver
-			);
-			if ($driver != 'pdo_sqlite') {
-				if ($container->hasParameter('database_host')) {
-					$parameters['database_host'] = $container->getParameter('database_host');
+		$translator = $this->get('translator');
+		if ($datasource != '' && $schemafile != '' && $datafile != '') {
+			$fs->rename($schemafile, $uploadDir . "/" . $datasource . ".schema.json", true);
+			$schemafile = $uploadDir . "/" . $datasource . ".schema.json";
+			$fs->rename($datafile, $uploadDir . "/" . $datasource . ".json", true);
+			$datafile = $uploadDir . "/" . $datasource . ".json";
+
+			$heading = $translator->trans('Importing the datasource « %datasource% »', ['%datasource%' => $datasource]);
+			$header = $this->makeDatasourceReportHeader($request, $datasource, $heading);
+			$self = $this;
+			$response = $this->runStreamedConsoleCommand([
+				'command' => 'g6k:datasource:import',
+				'datasourcename' => $datasource,
+				'datasourcepath' => $uploadDir
+			], function() use ($header) {
+				print $header;
+				flush();
+			}, function($ok) use ($self, $request, $translator, $datasource, $schemafile, $datafile, $fs) {
+				if ($ok) {
+					print '<span class="alert-success">' . $translator->trans("The datasource « %datasource% » is successfully imported.", ['%datasource%' => $datasource]) . "</span>\n";
+				} else {
+					print '<span class="alert-danger">' . $translator->trans("The datasource « %datasource% » can't be imported.", ['%datasource%' => $datasource]) . "</span>\n";
 				}
-				if ($container->hasParameter('database_port')) {
-					$parameters['database_port'] = $container->getParameter('database_port');
+				$self->datasources = new \SimpleXMLElement($self->databasesDir."/DataSources.xml", LIBXML_NOWARNING, true);
+				$dss = $self->datasources->xpath("/DataSources/DataSource[@name='".$datasource."']");
+				$dsid = $dss[0]['id'];
+				$footer = $self->makeDatasourceReportFooter($request, $datasource, $dsid);
+				print $footer . "\n";
+				flush();
+				try {
+					if ($schemafile != '') {
+						$fs->remove($schemafile);
+					}
+					if ($datafile != '') {
+						$fs->remove($datafile);
+					}
+				} catch (IOExceptionInterface $e) {
 				}
-				if ($container->hasParameter('database_user')) {
-					$parameters['database_user'] = $container->getParameter('database_user');
-				}
-				if ($container->hasParameter('database_password')) {
-					$parameters['database_password'] = $container->getParameter('database_password');
-				}
-			}
-			$helper = new DatasourcesHelper($this->datasources);
-			$dom = $helper->makeDatasourceDom($schemafile, $datafile, $parameters, $this->databasesDir, $dsid);
-			$this->saveDatasources($dom);
+			});
+		} else {
+			$datasource = $datasource ?? $translator->trans("Unknown");
+			$heading = $translator->trans('Importing the datasource « %datasource% »', ['%datasource%' => $datasource]);
+			$header = $this->makeDatasourceReportHeader($request, $datasource, $heading);
+			$footer = $this->makeDatasourceReportFooter($request, $datasource, '');
+			$response = new StreamedResponse(function() use($header, $footer, $translator) {
+				print $header;
+				flush();
+				print '<span class="alert-danger">' . $translator->trans("The uploaded files of the datasource can't be found.") . "</span>\n";
+				print $footer."\n";
+				flush();
+			});
 		}
-		if ($schemafile != '') {
-			unlink($schemafile);
-		}
-		if ($datafile != '') {
-			unlink($datafile);
-		}
-		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource', array('dsid' => $dsid)));
+		return $response;
+	}
+
+	/**
+	 * Makes the header for a table action report
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @param   int $dsid The id of the datasource
+	 * @param   string $table The name of the datasource
+	 * @param   string $heading The title of the header
+	 * @return  string
+	 *
+	 */
+	protected function makeTableReportHeader(Request $request, $dsid, $table, $heading){
+		$no_js = $request->query->get('no-js') || 0;
+		$script = $no_js == 1 ? 0 : 1;
+		$ua = new \Detection\MobileDetect();
+		return rtrim($this->renderView(
+			'admin/pages/report/datasources-table-header.html.twig',
+			array(
+				'ua' => $ua,
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'nav' => 'datasources',
+				'view' => null,
+				'heading' => $heading,
+				'dsid' => $dsid,
+				'table' => $table,
+				'script' => $script,
+				'dataset' => array(),
+				'steps' => array(),
+				'actions' => array(),
+				'rules' => array(),
+				'datasources' => array(),
+				'views' => array(),
+				'widgets' => array(),
+				'hiddens' => array()
+			)
+		));
+	}
+
+	/**
+	 * Makes the footer for a datasource action report
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
+	 * @param   string $dsid The id of the datasource
+	 * @param   string $table The name of the table
+	 * @return  string
+	 *
+	 */
+	protected function makeTableReportFooter(Request $request, $dsid, $table){
+		$ua = new \Detection\MobileDetect();
+		return $this->renderView(
+			'admin/pages/report/datasources-table-footer.html.twig',
+			array(
+				'ua' => $ua,
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'nav' => 'datasources',
+				'dsid' => $dsid,
+				'table' => $table
+			)
+		);
 	}
 
 	/**
@@ -796,24 +919,26 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Route path : /admin/datasources/{dsid}/{table}/doimport
 	 *
 	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request
 	 * @param   array $form The form fields
 	 * @param   int $dsid The datasource ID
 	 * @param   string|null $table The table name
 	 * @param   \App\G6K\Model\Database $database The database object
-	 * @param   array $files The delimited text file
-	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse|mixed
+	 * @return  \Symfony\Component\HttpFoundation\StreamedResponse
 	 * @throws \Exception
 	 *
 	 */
-	protected function doImportTable($form, $dsid, $table, $database, $files) {
-		$container = $this->get('kernel')->getContainer();
-		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
+	protected function doImportTable(Request $request, $form, $dsid, $table, $database) {
+		$files = $request->files->all();
+		$uploadDir = str_replace("\\", "/", $this->getConfigParameter('g6k_upload_directory'));
 		$csvfile = '';
+		$filename = '';
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
 				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
 				if ($fieldname == 'table-data-file') {
 					$csvfile = $filePath;
+					$filename = $file->getClientOriginalName();
 				}
 			}
 		}
@@ -823,496 +948,52 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		$delimiter = $form["table-data-delimiter"]; 
 		$hasheader = isset($form["table-data-has-header"]) && $form["table-data-has-header"] == "1";
+		$fs = new Filesystem();
+		$translator = $this->get('translator');
+		$heading = $translator->trans('Importing the table « %table% »', ['%table%' => $table]);
+		$header = $this->makeTableReportHeader($request, $dsid, $table, $heading);
+		$footer = $this->makeTableReportFooter($request, $dsid, $table);
 		if ($csvfile != '') {
-			if (($handle = fopen($csvfile, 'r')) !== FALSE) {
-				$infosColumns = $this->infosColumns($database, $table);
-				$header = $hasheader ? NULL : array_filter(array_keys($infosColumns), function($k) {
-					return $k != 'id';
-				});
-				while (($row = fgetcsv($handle, 0, $separator, $delimiter)) !== FALSE) {
-					if (!empty($row) && $row[0] !== null) { // hack for csv mac
-						if(!$header) {
-							$header = $row;
-							foreach ($header as $name) {
-								if (!isset($infosColumns[$name])) {
-									throw new \Exception("Unkown column name : {$name}");
-								}
-							}
-						} else {
-							$data = array_combine($header, $row);
-							$data['id'] = '0';
-							if (($result = $this->addDBTableRow($data, $table, $database)) !== true) {
-								return $this->errorResponse($data, $result);
-							}
-						}
-					}
+			if ($filename != '') {
+				$fs->rename($csvfile, $uploadDir . "/" . $filename, true);
+				$csvfile = $uploadDir . "/" . $filename;
+			}
+			$dss = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
+			$datasource = $dss[0]['name'];
+			$response = $this->runStreamedConsoleCommand([
+				'command' => 'g6k:datasource:table:import',
+				'datasourcename' => $datasource,
+				'tablename' => $table,
+				'filepath' => $csvfile,
+				'--separator' => $separator,
+				'--delimiter' => $delimiter,
+				'--no-header' => !$hasheader
+			], function() use ($header) {
+				print $header;
+				flush();
+			}, function($ok) use ($footer, $translator, $table, $csvfile, $fs) {
+				if ($ok) {
+					print '<span class="alert-success">' . $translator->trans("The table « %table% » is successfully imported.", ['%table%' => $table]) . "</span>\n";
+				} else {
+					print '<span class="alert-danger">' . $translator->trans("The table « %table% » can't be imported.", ['%table%' => $table]) . "</span>\n";
 				}
-				fclose($handle);
-			}
-			unlink($csvfile);
-		}
-		return new RedirectResponse($this->generateUrl('eureka_g6k_admin_datasource_table', array('dsid' => $dsid, 'table' => $table)));
-	}
-
-	/**
-	 * Retrieves the choice values of a data in the result list of a query on a data source
-	 *
-	 * @access  protected
-	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
-	 * @param   array|null $result The result list of a query
-	 * @return  array The choices list
-	 *
-	 */
-	protected function getChoicesFromSource($source, $result) {
-		$choices = array();
-		if ($result !== null) {
-			switch ((string)$source['returnType']) {
-				case 'json':
-					$valueColumn = (string)$source['valueColumn'];
-					if (is_numeric($valueColumn)) {
-						$valueColumn = (int)$valueColumn - 1;
-					}
-					$labelColumn = (string)$source['labelColumn'];
-					if (is_numeric($labelColumn)) {
-						$labelColumn = (int)$labelColumn - 1;
-					}
-					foreach ($result as $row) {
-						$choices[$row[$valueColumn]] =  $row[$labelColumn];
-					}
-					break;
-				case 'xml':
-					$valueColumn = (string)$source['valueColumn'];
-					$labelColumn = (string)$source['labelColumn'];
-					foreach ($result as $row) {
-						if (preg_match("/^@(.+)$", $valueColumn, $m1)) {
-							if (preg_match("/^@(.+)$", $labelColumn, $m2)) {
-								$choices[(string)$row[$m1[1]]] = (string)$row[$m2[1]];
-							} else {
-								$choices[(string)$row[$m1[1]]] = $row->$labelColumn;
-							}
-						} elseif (preg_match("/^@(.+)$", $labelColumn, $m2)) {
-							$choices[$row->$valueColumn] = (string)$row[$m2[1]];
-						} else {
-							$choices[$row->$valueColumn] = $row->$labelColumn;
-						}
-					}
-					break;
-				case 'assocArray':
-					$valueColumn = strtolower((string)$source['valueColumn']);
-					$labelColumn = strtolower((string)$source['labelColumn']);
-					foreach ($result as $row) {
-						$choices[$row[$valueColumn]] =  $row[$labelColumn];
-					}
-					break;
-				case 'csv':
-					$valueColumn = (int)$source['valueColumn'] - 1;
-					$labelColumn = (int)$source['labelColumn'] - 1;
-					foreach ($result as $row) {
-						$choices[$row[$valueColumn]] =  $row[$labelColumn];
-					}
-					break;
-			}
-		}
-		return $choices;
-	}
-
-	/**
-	 * Executes the query from a source
-	 *
-	 * @access  protected
-	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
-	 * @return  array|string|null The result set of the query
-	 *
-	 */
-	protected function processSource($source) {
-		$ds = (string)$source['datasource'];
-		if (is_numeric($ds)) {
-			$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$ds."']");
+				print $footer . "\n";
+				flush();
+				try {
+					$fs->remove($csvfile);
+				} catch (IOExceptionInterface $e) {
+				}
+			});
 		} else {
-			$datasources = $this->datasources->xpath("/DataSources/DataSource[@name='".$ds."']");
+			$response = new StreamedResponse(function() use($header, $footer, $translator) {
+				print $header;
+				flush();
+				print '<span class="alert-danger">' . $translator->trans("The uploaded file of the table can't be found.") . "</span>\n";
+				print $footer."\n";
+				flush();
+			});
 		}
-		switch ((string)$datasources[0]['type']) {
-			case 'uri':
-				$uri = (string)$datasources[0]['uri'];
-				$client = Client::createClient();
-				$data = array();
-				if ((string)$datasources[0]['method'] == "" || (string)$datasources[0]['method'] == "GET" || (string)$datasources[0]['method'] == "get") {
-					$result = $client->get($uri);
-				} else {
-					$result = $client->post($uri, $data);
-				}
-				break;
-			case 'database':
-			case 'internal':
-				$databases = $this->datasources->xpath("/DataSources/Databases/Database[@id='".(string)$datasources[0]['database']."']");
-				$database = new Database(null, $this->databasesDir, (int)$databases[0]['id'], (string)$databases[0]['type'], (string)$databases[0]['name']);
-				if ((string)$databases[0]['host'] != "") {
-					$database->setHost((string)$databases[0]['host']);
-				}
-				if ((string)$databases[0]['port'] != "") {
-					$database->setPort((int)$databases[0]['port']);
-				}
-				if ((string)$databases[0]['user'] != "") {
-					$database->setUser((string)$databases[0]['user']);
-				}
-				if ((string)$databases[0]['password'] != "") {
-					$database->setPassword((string)$databases[0]['password']);
-				} elseif ((string)$databases[0]['user'] != "") {
-					try {
-						$host = $this->get('kernel')->getContainer()->getParameter('database_host');
-						$port = $this->get('kernel')->getContainer()->getParameter('database_port');
-						$user = $this->get('kernel')->getContainer()->getParameter('database_user');
-						if ((string)$databases[0]['host'] == $host && (string)$databases[0]['port'] == $port && (string)$databases[0]['user'] == $user) {
-							$database->setPassword($this->get('kernel')->getContainer()->getParameter('database_password'));
-						}
-					} catch (\Exception $e) {
-					}
-				}
-				$query = (string)$source['request'];
-				$database->connect();
-				$result = $database->query($query);
-				break;
-		}
-		return $this->filterResult($result, $source);
-	}
-
-	/**
-	 * Filters the result set of a query on the source return path
-	 *
-	 * @access  protected
-	 * @param   array|string $result The result set of a query
-	 * @param   \SimpleXMLElement $source The source definition extracted from DataSources.xml
-	 * @return  array|null The filtered result set
-	 *
-	 */
-	protected function filterResult($result, $source) {
-		switch ((string)$source['returnType']) {
-			case 'json':
-				$json = json_decode($result, true);
-				return ResultFilter::filter("json", $json, (string)$source['returnPath']);
-			case 'assocArray':
-				return $this->filterResultByLines($result, (string)$source['returnPath']);
-			case 'xml':
-				return ResultFilter::filter("xml", $result, (string)$source['returnPath']);
-			case 'csv':
-				$result = ResultFilter::filter("csv", $result, "", array(), (string)$source['separator'], (string)$source['delimiter']);
-				return $this->filterResultByLines($result, (string)$source['returnPath']);
-		}
-		return null;
-	}
-
-	/**
-	 * Filters the result set of a query on the source return path
-	 *
-	 * @access  protected
-	 * @param   array $result The result set of a query
-	 * @param   string $filter The filter
-	 * @return  array The filtered result set
-	 *
-	 */
-	protected function filterResultByLines($result, $filter) {
-		if ($filter == '') {
-			return $result;
-		}
-		$filtered = array();
-		$ranges = explode("/", $filter);
-		$len = count($result);
-		foreach ($ranges as $range) {
-			$lines = explode("-", trim($range));
-			if (count($lines) == 1) {
-				$line = (int)trim($lines[0]) - 1;
-				if ($line >= 0 && $line < $len) {
-					$filtered[] = $result[$line];
-				}
-			} elseif (count($lines) == 2) {
-				$from = max(0, (int)trim($lines[0]) - 1);
-				$to = (int)trim($lines[1]) - 1;
-				if ($from <= $to) {
-					for ($i = $from; $i <= $to && $i < $len; $i++) {
-						$filtered[] = $result[$i];
-					}
-				}
-			}
-		}
-		return $filtered;
-	}
-
-	/**
-	 * Constructs a Database object 
-	 *
-	 * @access  protected
-	 * @param   int $dsid The datasource ID
-	 * @param   bool $withDbName (default: true) if false, the name of the database will not be inserted in the dsn string.
-	 * @return  \App\G6K\Model\Database The Database object
-	 *
-	 */
-	protected function getDatabase($dsid, $withDbName = true) {
-		$helper = new DatasourcesHelper($this->datasources);
-		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
-		$dbid = (int)$datasources[0]['database'];
-		$parameters = array(
-			'database_user' => $this->get('kernel')->getContainer()->getParameter('database_user'),
-			'database_password' => $this->get('kernel')->getContainer()->getParameter('database_password')
-		);
-		return $helper->getDatabase($parameters, $dbid, $this->databasesDir, $withDbName);
-	}
-
-	/**
-	 * Checks the value of a column
-	 *
-	 * @access  protected
-	 * @param   string $name The column name
-	 * @param   array $info Informations about the column
-	 * @param   string|null $value The value to check
-	 * @return  string|bool An error message or true if no error.
-	 *
-	 */
-	protected function checkValue($name, $info, $value) {
-		if ($value === null || $value == '') {
-			if ($info['notnull'] == 1) { 
-				return $this->get('translator')->trans("The field '%field%' is required", array('%field%' => $info['label']));
-			} else {
-				return true;
-			}
-		}
-		switch ($info['g6k_type']) {
-			case 'date':
-				if (! preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
-					return $this->get('translator')->trans("The field '%field%' is not a valid date", array('%field%' => $info['label']));
-				}
-				break;
-			case 'boolean':
-				if ( ! in_array($value, array('0', '1', 'false', 'true'))) {
-					return $this->get('translator')->trans("The field '%field%' is invalid", array('%field%' => $info['label']));
-				}
-				break;
-			case 'number': 
-				$value = str_replace(",", ".", $value);
-				if (! is_numeric($value)) {
-					return $this->get('translator')->trans("The field '%field%' is not a number", array('%field%' => $info['label']));
-				}
-				break;
-			case 'integer': 
-				if (! ctype_digit ( $value )) {
-					return $this->get('translator')->trans("The field '%field%' is not a number", array('%field%' => $info['label']));
-				}
-				break;
-			case 'day': 
-				if (! ctype_digit ( $value ) || (int)$value > 31) {
-					return $this->get('translator')->trans("The field '%field%' is invalid", array('%field%' => $info['label']));
-				}
-				break;
-			case 'month': 
-				if (! ctype_digit ( $value ) || (int)$value > 12 ) {
-					return $this->get('translator')->trans("The field '%field%' is invalid", array('%field%' => $info['label']));
-				}
-				break;
-			case 'year': 
-				if (! ctype_digit ( $value ) || strlen($value) != 4 ) {
-					return $this->get('translator')->trans("The field '%field%' is not a valid year", array('%field%' => $info['label']));
-				}
-				break;
-			case 'text': 
-			case 'textarea': 
-				break;
-			case 'money': 
-				$value = str_replace(",", ".", $value);
-				if (! preg_match("/^\d+(\.\d{1,2})?$/", $value)) {
-					return $this->get('translator')->trans("The field '%field%' is not a valid currency", array('%field%' => $info['label']));
-				}
-				break;
-			case 'choice':
-				foreach ($info['choices'] as $val => $label) {
-					if ($value == $val) {
-						return true;
-					}
-				}
-				return $this->get('translator')->trans("The field '%field%' is invalid", array('%field%' => $info['label']));
-			case 'percent':
-				$value = str_replace(",", ".", $value);
-				if (! is_numeric($value)) {
-					return $this->get('translator')->trans("The field '%field%' is not numeric", array('%field%' => $info['label']));
-				}
-				break;
-		}
-		return true;
-	}
-
-	/**
-	 * Returns the list of tables of a database
-	 *
-	 * @access  protected
-	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @return  array|string|bool|null The list of tables
-	 *
-	 */
-	protected function tablesList($database) {
-		switch ($database->getType()) {
-			case 'jsonsql':
-				$tableslist = array();
-				foreach($database->getConnection()->schema()->properties as $tbl => $prop) {
-					$tableslist[] = array(
-						'type' => 'table',
-						'name' => $tbl,
-						'tbl_name' => $tbl
-					);
-				}
-				break;
-			case 'sqlite':
-				$tableslist =  $database->query("SELECT * FROM sqlite_master WHERE type='table' AND tbl_name NOT LIKE 'sqlite_%'");
-				break;
-			case 'pgsql':
-				$tableslist = $database->query("SELECT 'table' as type, table_name as name, table_name as tbl_name FROM information_schema.tables where table_schema = 'public' and table_type = 'BASE TABLE' and table_name != 'fos_user'");
-				break;
-			case 'mysql':
-			case 'mysqli':
-				$dbname = str_replace('-', '_', $database->getName());
-				$tableslist = $database->query("SELECT 'table' as type, table_name as name, table_name as tbl_name FROM information_schema.tables where table_schema = '$dbname' and table_name != 'fos_user';");
-				break;
-			default:
-				$tableslist = null;
-		}
-		return $tableslist;
-	}
-
-	/**
-	 * Returns informations about a table of a database
-	 *
-	 * @access  protected
-	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @param   string $table The table name
-	 * @return  array|string|bool|null Informations about a table
-	 *
-	 */
-	protected function tableInfos($database, $table) {
-		switch ($database->getType()) {
-			case 'jsonsql':
-				$tableinfos = array();
-				$cid = 0;
-				foreach($database->getConnection()->schema()->properties->{$table}->items->properties as $name => $column) {
-					$notnull = in_array($name, $database->getConnection()->schema()->properties->{$table}->items->required);
-					$tableinfos[] = array(
-						'cid' => ++$cid,
-						'name' => $name,
-						'type' => strtoupper($column->type),
-						'notnull' => $notnull ? 1 : 0,
-						'dflt_value' => isset($column->default) ? $column->default : ''
-					);
-				}
-				break;
-			case 'sqlite':
-				$tableinfos = $database->query("PRAGMA table_info('".$table."')");
-				foreach($tableinfos as &$info) {
-					$info['filtertext'] = '';
-				}
-				break;
-			case 'pgsql':
-				$tableinfos = $database->query("SELECT ordinal_position as cid, column_name as name, data_type as type, is_nullable, column_default as dflt_value FROM information_schema.columns where table_name = '$table' order by ordinal_position");
-				foreach($tableinfos as &$info) {
-					$info['notnull'] = $info['is_nullable'] == 'NO' ? 1 : 0;
-				}
-				break;
-			case 'mysql':
-			case 'mysqli':
-				$dbname = $database->getName();
-				$tableinfos = $database->query("SELECT ordinal_position as cid, column_name as name, data_type as type, is_nullable, column_default as dflt_value, column_key FROM information_schema.columns where table_schema = '$dbname' and table_name = '$table' order by ordinal_position");
-				foreach($tableinfos as &$info) {
-					$info['notnull'] = $info['is_nullable'] == 'NO' ? 1 : 0;
-					$info['pk'] = $info['column_key'] == 'PRI' ? 1 : 0;
-				}
-				break;
-			default:
-				$tableinfos = null;
-		}
-		return $tableinfos;
-	}
-
-	/**
-	 * Returns informations about the columns of a table
-	 *
-	 * @access  protected
-	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @param   string $table The table name
-	 * @return  array Informations about the columns
-	 *
-	 */
-	protected function infosColumns($database, $table) {
-		$infosColumns = array();
-		$tableinfos = $this->tableInfos($database, $table);
-		foreach($tableinfos as $i => $info) {
-			$infosColumns[$info['name']]['notnull'] = $info['notnull'];
-			$infosColumns[$info['name']]['dflt_value'] = $info['dflt_value'];
-			$datasources = $this->datasources->xpath("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']");
-			$column = null;
-			foreach ($datasources[0]->children() as $child) {
-				if ($child->getName() == 'Table' && strcasecmp((string)$child['name'], $table) == 0) {
-					foreach ($child->children() as $grandson) {
-						if ($grandson->getName() == 'Column' && strcasecmp((string)$grandson['name'], $info['name']) == 0) {
-							$column = $grandson;
-							break;
-						}
-					}
-					break;
-				}
-			}
-			$infosColumns[$info['name']]['g6k_type'] = ($column !== null) ? (string)$column['type'] : $info['type'];
-			$infosColumns[$info['name']]['type'] = $info['type'];
-			$infosColumns[$info['name']]['label'] = ($column !== null) ? (string)$column['label'] : $info['name'];
-			$infosColumns[$info['name']]['description'] = ($column !== null) ? (string)$column->Description : '';
-			if ($infosColumns[$info['name']]['g6k_type'] == 'choice' && $column !== null && $column->Choices) {
-				if ($column->Choices->Source) {
-					$source = $column->Choices->Source;
-					$infosColumns[$info['name']]['choicesource']['datasource'] = (string)$source['datasource'];
-					$infosColumns[$info['name']]['choicesource']['returnType'] = (string)$source['returnType'];
-					$infosColumns[$info['name']]['choicesource']['request'] = (string)$source['request'];
-					$infosColumns[$info['name']]['choicesource']['valueColumn'] = (string)$source['valueColumn'];
-					$infosColumns[$info['name']]['choicesource']['labelColumn'] = (string)$source['labelColumn'];
-					$infosColumns[$info['name']]['choicesource']['returnPath'] = (string)$source['returnPath'];
-					$infosColumns[$info['name']]['choicesource']['separator'] = (string)$source['separator'];
-					$infosColumns[$info['name']]['choicesource']['delimiter'] = (string)$source['delimiter'];
-					$result = $this->processSource($source);
-					$choices = $this->getChoicesFromSource($source, $result);
-				} else {
-					$choices = array();
-					foreach ($column->Choices->Choice as $choice) {
-						$choices[(string)$choice['value']] = (string)$choice['label'];
-					}
-				}
-				$infosColumns[$info['name']]['choices'] = $choices;
-			}
-		}
-		return $infosColumns;
-	}
-
-	/**
-	 * Constructs a form fields with informations about the columns of a table
-	 *
-	 * @access  protected
-	 * @param   string $table The table name
-	 * @param   array $infosColumns Informations about the columns
-	 * @return  array
-	 *
-	 */
-	protected function infosColumnsToForm($table, $infosColumns) {
-		$fields = array();
-		$types = array();
-		$notnulls = array();
-		$defaults = array();
-		foreach($infosColumns as $name => $info) {
-			if ($name != 'id') {
-				$fields[] = $name;
-				$types[] = $info['g6k_type'];
-				$notnulls[] = $info['notnull'];
-				$defaults[] = $info['dflt_value'];
-			}
-		}
-		return array(
-			'table-name' => $table,
-			'field' => $fields,
-			'type' => $types,
-			'notnull' => $notnulls,
-			'default' => $defaults,
-		);
+		return $response;
 	}
 
 	/**
@@ -1363,7 +1044,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					return $result;
 				}
 				$fields = implode(", ", $form['field']);
-				$rows = $fromDatabase->query(self::SQL_SELECT_KEYWORD. $fields . self::SQL_FROM_KEYWORD . $table . " order by id");
+				$rows = $fromDatabase->query(Parser::SQL_SELECT_KEYWORD. $fields . Parser::SQL_FROM_KEYWORD . $table . " order by id");
 				foreach ($rows as $row) {
 					$values = array();
 					foreach ($row as $name => $value) {
@@ -1827,36 +1508,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function addDBTableRow($form, $table, $database, $restore = false) {
-		$infosColumns = $this->infosColumns($database, $table);
-		$insertNames = array();
-		$insertValues = array();
-		foreach($infosColumns as $name => $info) {
-			$value = isset($form[$name]) ? $form[$name] : ($info['g6k_type'] == 'boolean' ? '0' : null);
-			if (($check = $this->checkValue($name, $info, $value)) !== true) {
-				return $check;
-			}
-			if ($restore || $name != 'id') {
-				$insertNames[] = $name;
-				if ($value === null || $value == '') {
-					$insertValues[] = "NULL";
-				} else if ($info['g6k_type'] == 'date') {
-					$insertValues[] = $database->quote($this->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d'));
-				} else if ($info['g6k_type'] == 'multichoice') {
-					$insertValues[] = $database->quote(json_encode($value));
-				} else if ( $info['g6k_type'] == 'text' || preg_match("/^(text|char|varchar)/i", $info['type'])) {
-					$insertValues[] = $database->quote($value);
-				} else  {
-					$insertValues[] = str_replace(",", ".", $value);
-				}
-			}
-		}
-		$sql = "INSERT INTO ".$table." (".implode(', ', $insertNames).") VALUES (".implode(', ', $insertValues).")";
-		try {
-			$database->exec($sql);
-		} catch (\Exception $e) {
-			return $this->get('translator')->trans("Can't insert into %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
-		}
-		return true;
+		return $this->insertRowIntoTable($form, $table, $database, $this->get('translator'), $restore);
 	}
 
 	/**
@@ -1870,35 +1522,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function updateDBTableRow($form, $table, $database) {
-		$infosColumns = $this->infosColumns($database, $table);
-		$updateFields = array();
-		foreach($infosColumns as $name => $info) {
-			$value = isset($form[$name]) ? $form[$name] : ($info['g6k_type'] == 'boolean' ? '0' : null);
-			if (($check = $this->checkValue($name, $info, $value)) !== true) {
-				return $check;
-			}
-			if ($name != 'id') {
-				if ($value === null || $value == '') {
-					$updateFields[] = $name . "=NULL";
-				} else if ($info['g6k_type'] == 'date') {
-					$updateFields[] = $name . "='" . $this->parseDate('d/m/Y', substr($value, 0, 10))->format('Y-m-d') . "'";
-				} else if ($info['g6k_type'] == 'multichoice') {
-					$updateFields[] = $name . "='" . $database->quote(json_encode($value)) . "'";
-				} else if ( $info['g6k_type'] == 'text' || preg_match("/^(text|char|varchar)/i", $info['type'])) {
-					$updateFields[] = $name . "=" . $database->quote($value);
-				} else  {
-					$value = str_replace(",", ".", $value);
-					$updateFields[] = $name . "=" . $value;
-				}
-			}			
-		}
-		$sql = self::SQL_UPDATE_KEYWORD.$table." SET ".implode(', ', $updateFields)." ".self::SQL_WHERE_KEYWORD."id=".$form['id'];
-		try {
-			$database->exec($sql);
-		} catch (\Exception $e) {
-			return $this->get('translator')->trans("Can't update %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
-		}
-		return true;
+		return $this->updateRowInTable($form, $table, $database, $this->get('translator'));
 	}
 
 	/**
@@ -1912,12 +1536,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function deleteDBTableRow($form, $table, $database) {
-		try {
-			$database->exec(self::SQL_DELETE_KEYWORD.$table." WHERE id=".$form['id']);
-		} catch (\Exception $e) {
-			return $this->get('translator')->trans("Can't delete from %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
-		}
-		return true;
+		return $this->deleteRowFromTable($form, $table, $database, $this->get('translator'));
 	}
 
 	/**
