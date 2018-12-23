@@ -29,7 +29,7 @@ namespace App\G6K\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Finder\Finder;
 
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 
 /**
  *
@@ -40,7 +40,7 @@ use App\G6K\Manager\ControllersHelper;
  */
 class HomeAdminController extends BaseAdminController {
 
-	use ControllersHelper;
+	use ControllersTrait;
 
 	/**
 	 * @var \SimpleXMLElement $datasources content of Datasources.xml

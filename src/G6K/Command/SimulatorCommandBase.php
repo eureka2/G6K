@@ -92,14 +92,29 @@ abstract class SimulatorCommandBase extends CommandBase
 		$schema = $this->projectDir."/var/doc/Simulator.xsd";
 		libxml_use_internal_errors(true);
 		if (!$simulator->schemaValidate($schema)) {
+			$this->error($output, "XML Validation errors:");
 			$errors = libxml_get_errors();
-			$mess = "";
 			foreach ($errors as $error) {
-				$mess .= "Line ".$error->line . '.' .  $error->column . ": " .  $error->message . "\n";
+				$mess = trim($error->message);
+				if ($error->file) {
+					$mess .= " in " . basename($error->file);
+				}
+				$mess .= " on line $error->line\n";
+				switch ($error->level) {
+					case LIBXML_ERR_WARNING:
+						$this->warning($output, "Warning $error->code : " .$mess);
+						break;
+					case LIBXML_ERR_ERROR:
+						$this->error($output, "Error $error->code : " .$mess);
+						break;
+					case LIBXML_ERR_FATAL:
+						$this->fatal($output, "Fatal Error $error->code : " .$mess);
+						break;
+					default:
+						$this->info($output, "$error->code : " .$mess);
+				}
 			}
 			libxml_clear_errors();
-			$this->error($output, "XML Validation errors:");
-			$this->error($output, $mess);
 			return false;
 		}
 		return true;
@@ -192,7 +207,8 @@ abstract class SimulatorCommandBase extends CommandBase
 		$input = new ArrayInput(array(
 			'command' => 'g6k:assets:manifest:add-asset',
 			'assetpath' => $assetpath,
-			'--no-interaction' => true
+			'--no-interaction' => true,
+			'--html' => $this->isHtml()
 		));
 		$output->writeln("");
 		$this->info($output, "Adding the stylesheet to the assets manifest");

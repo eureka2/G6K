@@ -127,8 +127,8 @@ class RenameAssetManifestCommand extends AssetManifestCommandBase
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
-		$file = $input->getArgument('assetpath');
-		$newfile = $input->getArgument('newassetpath');
+		$file = str_replace('\\', '/', $input->getArgument('assetpath'));
+		$newfile = str_replace('\\', '/', $input->getArgument('newassetpath'));
 		if (file_exists($this->publicDir . "/" . $file)) {
 			$this->error($output, "The file '%s%' still exists.", array('%s%' => $file));
 			return 1;
@@ -137,12 +137,10 @@ class RenameAssetManifestCommand extends AssetManifestCommandBase
 			$this->error($output, "The file '%s%' doesn't exists", array('%s%' => $newfile));
 			return 1;
 		}
-		$file = str_replace('\\', '/', $file);
 		if (!isset($this->manifest[$file])) {
 			$this->error($output, "The file '%s%' isn't in the manifest.", array('%s%' => $file));
 			return 1;
 		}
-		$newfile = str_replace('\\', '/', $newfile);
 		if (isset($this->manifest[$newfile])) {
 			$this->error($output, "The file '%s%' is already in the manifest.", array('%s%' => $newfile));
 			return 1;

@@ -29,7 +29,7 @@ namespace App\G6K\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 
 /**
  *
@@ -49,7 +49,7 @@ use App\G6K\Manager\ControllersHelper;
  */
 class UsersAdminController extends BaseAdminController {
 
-	use ControllersHelper;
+	use ControllersTrait;
 
 	/**
 	 * Entry point for the route paths begining by /admin/users

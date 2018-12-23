@@ -33,10 +33,9 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 
 /**
- * Copies a view from another instance of G6K.
+ * Copies one or all views from another instance of G6K.
  */
 class CopyViewCommand extends ViewCommandBase
 {
@@ -59,7 +58,7 @@ class CopyViewCommand extends ViewCommandBase
 	 * @inheritdoc
 	 */
 	protected function getCommandDescription() {
-		return $this->translator->trans('Copies a view from another instance of G6K.');
+		return $this->translator->trans('Copies one or all views from another instance of G6K.');
 	}
 
 	/**
@@ -67,13 +66,15 @@ class CopyViewCommand extends ViewCommandBase
 	 */
 	protected function getCommandHelp() {
 		return
-			  $this->translator->trans("This command allows you to copy a view from another instance of G6K after a fresh installation.")."\n"
+			  $this->translator->trans("This command allows you to copy one or all views from another instance of G6K after a fresh installation.")."\n"
 			. "\n"
 			. $this->translator->trans("You must provide:")."\n"
 			. $this->translator->trans("- the name of the view (viewname).")."\n"
 			. $this->translator->trans("- the full path of the directory (anotherg6kpath) where the other instance of G6K is installed.")."\n"
 			. $this->translator->trans("and optionally:")."\n"
 			. $this->translator->trans("- the url (viewurl) of the website where this view is used.")."\n"
+			. "\n"
+			. $this->translator->trans("To copy all views, enter 'all' as view name.")."\n"
 		;
 	}
 
@@ -85,7 +86,7 @@ class CopyViewCommand extends ViewCommandBase
 			array(
 				'viewname',
 				InputArgument::REQUIRED,
-				$this->translator->trans('The name of the view.')
+				$this->translator->trans("The name of the view or 'all'.")
 			),
 			array(
 				'anotherg6kpath',
@@ -127,136 +128,111 @@ class CopyViewCommand extends ViewCommandBase
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
 		$view = $input->getArgument('viewname');
-		$anotherg6kpath = $input->getArgument('anotherg6kpath');
+		$anotherg6kpath = str_replace('\\', '/', $input->getArgument('anotherg6kpath'));
 		$viewurl = $input->getArgument('viewurl');
 		if (! file_exists($anotherg6kpath)) {
 			$this->error($output, "The directory of the other instance '%s%' doesn't exists", array('%s%' => $anotherg6kpath));
 			return 1;
 		}
 		$this->info($output, "Finding the templates directory of the other instance '%s%' in progress", array('%s%' => $anotherg6kpath));
-		$finder = new Finder();
-		$finder->files()->in($anotherg6kpath)->path('/admin/layout')->name('pagelayout.html.twig');
-		if ($finder->count() == 0) {
+		$templatesDir1 = $this->findTemplatesDirectory($anotherg6kpath, $input, $output);
+		if ($templatesDir1 === 1) {
 			$this->error($output, "Can not find the templates directory of the other instance '%s%'", array('%s%' => $anotherg6kpath));
 			return 1;
-		}
-		if ($finder->count() > 1) {
-			if ($input->isInteractive()) {
-				$choices = [];
-				foreach($finder as $file) {
-					$choices[] = dirname(dirname(dirname($file->getRelativePathname())));
-				}
-				$helper = $this->getHelper('question');
-				$question = new ChoiceQuestion(
-					$this->translator->trans($this->name) . ": " . $this->translator->trans("Multiple templates directories were found in the other instance, please choose one :"),
-					$choices,
-					0
-				);
-				$question->setErrorMessage($this->translator->trans('Your choice %s is invalid.'));
-				$choice = $helper->ask($input, $output, $question);
-				$this->info($output, "You have just selected: '%s%'", array('%s%' => $choice));
-				$templatesDir1 = $anotherg6kpath . DIRECTORY_SEPARATOR . $choice;
-			} else {
-				$this->error($output, "Multiple templates directories were found in the other instance '%s%'", array('%s%' => $anotherg6kpath));
-				return 1;
-			}
-		} else {
-			foreach($finder as $file) {
-				$templatesDir1 = dirname(dirname(dirname($file->getRealPath())));
-				break;
-			}
+		} elseif ($templatesDir1 === 2) { 
+			$this->error($output, "Multiple templates directories were found in the other instance '%s%'", array('%s%' => $anotherg6kpath));
+			return 1;
 		}
 		$this->info($output, "Finding the assets directory of the other instance '%s%' in progress", array('%s%' => $anotherg6kpath));
-		$finder = new Finder();
-		$finder->files()->in($anotherg6kpath)->path('/admin/js')->name('g6k.admin.js');
-		if ($finder->count() == 0) {
+		$assetsDir1 = $this->findAssetsDirectory($anotherg6kpath, $input, $output);
+		if ($assetsDir1 === 1) {
 			$this->error($output, "Can not find the assets directory of the other instance '%s%'", array('%s%' => $anotherg6kpath));
 			return 1;
+		} elseif ($assetsDir1 === 2) { 
+			$this->error($output, "Multiple assets directories were found in the other instance '%s%'", array('%s%' => $anotherg6kpath));
+			return 1;
 		}
-		if ($finder->count() > 1) {
-			if ($input->isInteractive()) {
-				$choices = [];
-				foreach($finder as $file) {
-					$choices[] = dirname(dirname(dirname($file->getRelativePathname())));
-				}
-				$helper = $this->getHelper('question');
-				$question = new ChoiceQuestion(
-					$this->translator->trans($this->name) . ": " . $this->translator->trans("Multiple assets directories were found in the other instance, please choose one :"),
-					$choices,
-					0
-				);
-				$question->setErrorMessage($this->translator->trans('Your choice %s is invalid.'));
-				$choice = $helper->ask($input, $output, $question);
-				$this->info($output, "You have just selected: '%s%'", array('%s%' => $choice));
-				$assetsDir1 = $anotherg6kpath . DIRECTORY_SEPARATOR . $choice;
-			} else {
-				$this->error($output, "Multiple assets directories were found in the other instance '%s%'", array('%s%' => $anotherg6kpath));
-				return 1;
+		$otherConfigFile = $anotherg6kpath."/src/EUREKA/G6KBundle/Resources/config/parameters.yml";
+		$otherConfig = null;
+		if (!file_exists($otherConfigFile)) {
+			$otherConfigFile = $anotherg6kpath."/config/packages/g6k.yml";
+			if (! file_exists($otherConfigFile)) {
+				$otherConfigFile = '';
+			}
+		}
+		if ($otherConfigFile != '') {
+			$config = file_get_contents($otherConfigFile);
+			$otherConfig = Yaml::parse($config);
+		}
+		$views = [];
+		if ($view == 'all') {
+			$finder = new Finder();
+			$finder->directories()->in($templatesDir1)->depth('== 0')->exclude(['admin', 'base', 'bundles', 'Default', 'Demo', 'Theme']);
+			foreach ($finder as $dir) {
+				$views[] = $dir->getRelativePathname();
 			}
 		} else {
-			foreach($finder as $file) {
-				$assetsDir1 = dirname(dirname(dirname($file->getRealPath())));
-				break;
+			$views[] = $view;
+		}
+		$oneOk = false;
+		foreach ($views as $view) {
+			$viewpath = $viewurl;
+			if (!$viewpath && $otherConfig !== null) {
+				if (isset($otherConfig['parameters']['viewpath'][$view])) {
+					$viewpath = $otherConfig['parameters']['viewpath'][$view];
+				}
+			}
+			if ($this->copy($view, $anotherg6kpath, $templatesDir1, $assetsDir1, $viewpath, $output)) {
+				$this->success($output, "The view '%s%' is successfully created", array('%s%' => $view));
+				$oneOk = true;
 			}
 		}
-		if (!file_exists($templatesDir1 . DIRECTORY_SEPARATOR . $view)) {
-			$this->error($output, "The view '%view%' doesn't exists in the templates directory '%s%'", array('%view%' => $view, '%s%' => $templatesDir1));
-			return 1;
+		if ($oneOk) {
+			$this->refreshAssetsManifest($output);
 		}
-		if (!file_exists($assetsDir1 . DIRECTORY_SEPARATOR . $view)) {
+		return $oneOk ? 0 : 1;
+	}
+
+	private function copy(string $view, string $anotherg6kpath, string $templatesDir1, string $assetsDir1, string $viewurl, OutputInterface $output) {
+		if (!file_exists($templatesDir1 . '/' . $view)) {
+			$this->error($output, "The view '%view%' doesn't exists in the templates directory '%s%'", array('%view%' => $view, '%s%' => $templatesDir1));
+			return false;
+		}
+		if (!file_exists($assetsDir1 . '/' . $view)) {
 			$this->error($output, "The view '%view%' doesn't exists in the assets directory '%s%'", array('%view%' => $view, '%s%' => $assetsDir1));
-			return 1;
+			return false;
 		}
 		if ($viewurl && ! filter_var($viewurl, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) {
 			$this->error($output, "The url of the website '%s%' isn't valid", array('%s%' => $viewurl));
-			return 1;
+			return false;
 		}
 		$this->info($output, "Copying the view '%view%' from '%anotherg6kpath%'", array('%view%' => $view, '%anotherg6kpath%' => $anotherg6kpath));
-		$templatesDir2 = $this->projectDir . DIRECTORY_SEPARATOR . "templates";
-		$assetsDir2 = $this->projectDir . DIRECTORY_SEPARATOR . $this->parameters['public_dir']. DIRECTORY_SEPARATOR . "assets";
-
+		$templatesDir2 = $this->projectDir . "/templates";
+		$assetsDir2 = $this->projectDir . '/' . $this->parameters['public_dir'] . '/assets';
 		$fsystem = new Filesystem();
 		try {
-			$fsystem->mkdir($templatesDir2 . DIRECTORY_SEPARATOR . $view);
-			$fsystem->mirror($templatesDir1 . DIRECTORY_SEPARATOR . $view, $templatesDir2 . DIRECTORY_SEPARATOR . $view, null, ['delete' => true]);
+			$fsystem->mkdir($templatesDir2 . '/' . $view);
+			$fsystem->mirror($templatesDir1 . '/' . $view, $templatesDir2 . '/' . $view, null, ['delete' => true]);
 		} catch (IOExceptionInterface $e) {
 			$this->error($output, "Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $templatesDir2, '%message%' => $e->getMessage()));
-			return 1;
+			return false;
 		}
 		$this->migrate3To4($view, $output);
 		try {
-			$fsystem->mkdir($assetsDir2 . DIRECTORY_SEPARATOR . $view);
-			$fsystem->mirror($assetsDir1 . DIRECTORY_SEPARATOR . $view, $assetsDir2 . DIRECTORY_SEPARATOR . $view, null, ['delete' => true]);
+			$fsystem->mkdir($assetsDir2 . '/' . $view);
+			$fsystem->mirror($assetsDir1 . '/' . $view, $assetsDir2 . '/' . $view, null, ['delete' => true]);
 		} catch (IOExceptionInterface $e) {
 			$this->error($output, "Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $assetsDir2, '%message%' => $e->getMessage()));
 			$this->comment($output, "The view '%s%' is partially created", array('%s%' => $view));
-			return 1;
-		}
-		if (!$viewurl) {
-			$otherConfigFile = $anotherg6kpath."/src/EUREKA/G6KBundle/Resources/config/parameters.yml";
-			if (!file_exists($otherConfigFile)) {
-				$otherConfigFile = $anotherg6kpath."/config/packages/g6k.yml";
-				if (! file_exists($otherConfigFile)) {
-					$otherConfigFile = '';
-				}
-			}
-			if ($otherConfigFile != '') {
-				$config = file_get_contents($otherConfigFile);
-				$yaml = Yaml::parse($config);
-				if (isset($yaml['parameters']['viewpath'][$view])) {
-					$viewurl = $yaml['parameters']['viewpath'][$view];
-				}
-			}
+			return false;
 		}
 		if ($viewurl) {
 			if (! $this->updateViewParameters($view, $viewurl, $output)) {
 				$this->comment($output, "The view '%s%' is partially created", array('%s%' => $view));
-				return 1;
+				return false;
 			}
 		}
-		$this->refreshAssetsManifest($output);
-		$this->success($output, "The view '%s%' is successfully created", array('%s%' => $view));
-		return 0;
+		return true;
 	}
 
 }

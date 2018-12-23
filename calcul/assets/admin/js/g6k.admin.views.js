@@ -54,6 +54,7 @@ THE SOFTWARE.
 			mess.append('<li>' + value + '</li>');
 		});
 		container.find('.alert').show();
+		$("html, body").animate({ scrollTop: container.find('.alert').offset().top - $('#navbar').outerHeight() }, 500);
 	}
 
 	Views.hideErrors = function(errorContainer) {
@@ -95,24 +96,32 @@ $(function(){
 					errors.push(Translator.trans("This view already exists"));
 					$("#new-view-name").parents('.form-group').first().addClass('has-error');
 				}
+				if ($.inArray(viewName, ['all', 'admin', 'base', 'bundles']) >= 0) {
+					errors.push(Translator.trans("View name can not be 'admin', 'all', 'base' or 'bundles'"));
+					$("#new-view-name").parents('.form-group').first().addClass('has-error');
+				}
 				var templatesinput = $("#view-create-form input[name='view-templates-file']");
 				var templatesfile = templatesinput.val();
 				if (templatesfile != '') {
 					if (! /\.zip$/.test(templatesfile)) {
-					 errors.push(Translator.trans("The file extension of the templates file must be '.zip'"));
-					templatesinput.parents('.form-group').first().addClass('has-error');
+						errors.push(Translator.trans("The file extension of the templates file must be '.zip'"));
+						templatesinput.parents('.form-group').first().addClass('has-error');
 					}
 				}
 				var assetsinput = $("#view-create-form input[name='view-assets-file']");
 				var assetsfile = assetsinput.val();
 				if (assetsfile != '') {
 					if (! /\.zip$/.test(assetsfile)) {
-					 errors.push(Translator.trans("The file extension of the assets file must be '.zip'"));
-					assetsinput.parents('.form-group').first().addClass('has-error');
+						errors.push(Translator.trans("The file extension of the assets file must be '.zip'"));
+						assetsinput.parents('.form-group').first().addClass('has-error');
 					}
 				}
+				var viewSite = $("#view-site").val();
+				if (/[\/\?]/.test(viewSite.replace(/^https?:\/\//, ""))) {
+					errors.push(Translator.trans("The url must not contain '/' or '?'"));
+					$("#view-site").parents('.form-group').first().addClass('has-error');
+				}
 				if (errors.length > 0) {
-					console.log(errors);
 					Views.showErrors(errors);
 					return false;
 				}

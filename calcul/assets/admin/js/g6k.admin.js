@@ -449,14 +449,6 @@ $(function(){
 	$(window).on("resize", function () {
 		$('.modal:visible').each(centerModal);
 	});
-	$('body').append('<div id="toTop" class="btn btn-light"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
-	$(window).scroll(function () {
-		if ($(this).scrollTop() != 0) {
-			$('#toTop').fadeIn();
-		} else {
-			$('#toTop').fadeOut();
-		}
-	}); 
 	$(window).on('beforeunload', function() {
 		var e = $.Event('webapp:page:closing');
 		$(window).trigger(e); // let other modules determine whether to prevent closing
@@ -470,9 +462,5 @@ $(function(){
 			e.preventDefault();
 			e.message = Translator.trans('Your update are not saved. Sure to leave?');
 		}
-	});
-	$('#toTop').on('click', function(){
-		$("html, body").animate({ scrollTop: 0 }, 600);
-		return false;
 	});
 });

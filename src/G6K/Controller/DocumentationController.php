@@ -28,7 +28,7 @@ namespace App\G6K\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 
 /**
  *
@@ -39,7 +39,7 @@ use App\G6K\Manager\ControllersHelper;
  */
 class DocumentationController extends BaseAdminController {
 
-	use ControllersHelper;
+	use ControllersTrait;
 
 	/**
 	 * Entry point for the route path /admin/doc/{document}

@@ -32,12 +32,22 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Copies a data source from another instance of G6K.
+ * Copies one or all data sources from another instance of G6K.
  *
  * Only data source with a SQLite database can be copied with this command
  */
 class CopyDataSourceCommand extends CommandBase
 {
+
+	/**
+	 * @var int
+	 */
+	private $maxDataSourceId;
+
+	/**
+	 * @var int
+	 */
+	private $maxDatabaseId;
 
 	/**
 	 * @inheritdoc
@@ -57,7 +67,7 @@ class CopyDataSourceCommand extends CommandBase
 	 * @inheritdoc
 	 */
 	protected function getCommandDescription() {
-		return $this->translator->trans('Copies a data source from another instance of G6K.');
+		return $this->translator->trans('Copies one or all data sources from another instance of G6K.');
 	}
 
 	/**
@@ -65,13 +75,15 @@ class CopyDataSourceCommand extends CommandBase
 	 */
 	protected function getCommandHelp() {
 		return
-			  $this->translator->trans("This command allows you to copy a data source from another instance of G6K after a fresh installation.")."\n"
+			  $this->translator->trans("This command allows you to copy one or all data sources from another instance of G6K after a fresh installation.")."\n"
 			. "\n"
 			. $this->translator->trans("You must provide:")."\n"
 			. $this->translator->trans("- the name of the data source (datasourcename).")."\n"
 			. $this->translator->trans("- the full path of the directory (anotherg6kpath) where the other instance of G6K is installed.")."\n"
 			. "\n"
-			. $this->translator->trans("CAUTION: Only data source with a SQLite database can be copied with this command.")."\n"
+			. $this->translator->trans("To copy all data sources, enter 'all' as data source name.")."\n"
+			. "\n"
+			. $this->translator->trans("CAUTION: Only SQLite databases can be copied with this command.")."\n"
 		;
 	}
 
@@ -83,7 +95,7 @@ class CopyDataSourceCommand extends CommandBase
 			array(
 				'datasourcename',
 				InputArgument::REQUIRED,
-				$this->translator->trans('The name of the datasource.')
+				$this->translator->trans("The name of the datasource or 'all'.")
 			),
 			array(
 				'anotherg6kpath',
@@ -120,7 +132,7 @@ class CopyDataSourceCommand extends CommandBase
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
 		$datasourcename = $input->getArgument('datasourcename');
-		$anotherg6kpath = $input->getArgument('anotherg6kpath');
+		$anotherg6kpath = str_replace('\\', '/', $input->getArgument('anotherg6kpath'));
 		if (! file_exists($anotherg6kpath)) {
 			$this->error($output, "The directory of the other instance '%s%' doesn't exists", array('%s%' => $anotherg6kpath));
 			return 1;
@@ -132,83 +144,103 @@ class CopyDataSourceCommand extends CommandBase
 		}
 		$datasrc1 = $datasources[0];
 		$databasesDir1 = dirname($datasrc1);
-		$databasesDir2 = $this->projectDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
+		$databasesDir2 = $this->projectDir . '/var/data/databases';
 		$datasrc2 = $databasesDir2 . '/DataSources.xml';
 		$dom1 = new \DOMDocument();
 		$dom1->preserveWhiteSpace  = false;
 		$dom1->formatOutput = true;
 		$dom1->load($datasrc1);
 		$xpath1 = new \DOMXPath($dom1);
-		$datasources = $xpath1->query("//DataSource[@name='" . $datasourcename . "']");
-		if ($datasources->length == 0) {
-			$this->error($output, "The datasource '%datasourcename%' doesn't exists in '%anotherg6kpath%'", array('%datasourcename%' => $datasourcename, '%anotherg6kpath%' => $anotherg6kpath));
-			return 1;
-		}
-		$datasource1 = $this->getDOMElementItem($datasources, 0);
-		if (! in_array($datasource1->getAttribute('type'), ['internal','database'])) {
-			$this->error($output, "The datasource '%datasourcename%' has a wrong type, only internal or database types are supported.", array('%datasourcename%' => $datasourcename));
-			return 1;
-		}
 		$dom2 = new \DOMDocument();
 		$dom2->preserveWhiteSpace  = false;
 		$dom2->formatOutput = true;
 		$dom2->load($datasrc2);
 		$xpath2 = new \DOMXPath($dom2);
+		$ids = $xpath2->query("//DataSource/@id");
+		$this->maxDataSourceId = 0;
+		foreach($ids as $id) {
+			if ((int)($id->nodeValue) > $this->maxDataSourceId) {
+				$this->maxDataSourceId = (int)($id->nodeValue);
+			}
+		}
+		$ids = $xpath2->query("//Database/@id");
+		$this->maxDatabaseId = 0;
+		foreach($ids as $id) {
+			if ((int)($id->nodeValue) > $this->maxDatabaseId) {
+				$this->maxDatabaseId = (int)($id->nodeValue);
+			}
+		}
+		$oneOk = false;
+		if ($datasourcename == 'all') {
+			$names =  $xpath1->query("//DataSource/@name");
+			foreach($names as $name) {
+				if ($this->copy($name->nodeValue, $anotherg6kpath, $xpath1, $databasesDir1, $xpath2, $databasesDir2, $output)) {
+					$this->success($output, "The data source '%s%' is successfully copied", array('%s%' => $name->nodeValue));
+					$oneOk = true;
+				}
+			}
+		} else {
+			if (! $this->copy($datasourcename, $anotherg6kpath, $xpath1, $databasesDir1, $xpath2, $databasesDir2, $output)) {
+				return 1;
+			}
+			$this->success($output, "The data source '%s%' is successfully copied", array('%s%' => $datasourcename));
+			$oneOk = true;
+		}
+		if ($oneOk) {
+			try {
+				$formatted = preg_replace_callback('/^( +)</m', function($a) { 
+					return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
+				}, $dom2->saveXML(null, LIBXML_NOEMPTYTAG));
+				file_put_contents($databasesDir2."/DataSources.xml", $formatted);
+			} catch (\Exception $e) {
+				$this->error($output, "Error while saving DataSources.xml in '%databasedir%' : %message%", array('%databasedir%' => $databasesDir2, '%message%' => $e->getMessage()));
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	private function copy($datasourcename, string $anotherg6kpath, \DOMXPath $xpath1, $databasesDir1, \DOMXPath $xpath2, $databasesDir2, OutputInterface $output) {
+		$datasources = $xpath1->query("//DataSource[@name='" . $datasourcename . "']");
+		if ($datasources->length == 0) {
+			$this->error($output, "The datasource '%datasourcename%' doesn't exists in '%anotherg6kpath%'", array('%datasourcename%' => $datasourcename, '%anotherg6kpath%' => $anotherg6kpath));
+			return false;
+		}
+		$datasource1 = $this->getDOMElementItem($datasources, 0);
 		$datasources = $xpath2->query("//DataSource[@name='" . $datasourcename . "']");
 		if ($datasources->length > 0) {
-			$this->error($output, "The datasource '%datasourcename%' already exists in '%s%'", array('%datasourcename%' => $datasourcename, '%s%' => $datasrc2));
-			return 1;
+			$this->error($output, "The datasource '%datasourcename%' already exists in '%s%'", array('%datasourcename%' => $datasourcename, '%s%' => $databasesDir2 . '/DataSources.xml'));
+			return false;
 		}
 		$databaseId1 = (int)($datasource1->getAttribute('database'));
 		$databases = $xpath1->query("//Database[@id='" . $databaseId1 . "']");
 		$database1 = $this->getDOMElementItem($databases, 0);
-		if ($database1->getAttribute('type') !== 'sqlite') {
-			$this->error($output, "The databses of the datasource '%datasourcename%' has a wrong type, only sqlite is supported.", array('%datasourcename%' => $datasourcename));
-			return 1;
-		}
 		$this->info($output, "Copying the datasource '%datasourcename%' from '%anotherg6kpath%'", array('%datasourcename%' => $datasourcename, '%anotherg6kpath%' => $anotherg6kpath));
-		$ids = $xpath2->query("//DataSource/@id");
-		$maxDataSourceId = 1;
-		foreach($ids as $id) {
-			if ((int)($id->nodeValue) > $maxDataSourceId) {
-				$maxDataSourceId = (int)($id->nodeValue);
-			}
-		}
-		$ids = $xpath2->query("//Database/@id");
-		$maxDatabaseId = 1;
-		foreach($ids as $id) {
-			if ((int)($id->nodeValue) > $maxDatabaseId) {
-				$maxDatabaseId = (int)($id->nodeValue);
-			}
-		}
+		$dom2 = $xpath2->document;
 		$databaseset2 = $this->getDOMElementItem($dom2->getElementsByTagName("Databases"), 0);
 		$datasource2 = $this->castDOMElement($dom2->importNode($datasource1, true));
-		$datasource2->setAttribute('id', (string)($maxDataSourceId + 1));
-		$datasource2->setAttribute('database', (string)($maxDatabaseId + 1));
+		$this->maxDataSourceId++;
+		$datasource2->setAttribute('id', (string)($this->maxDataSourceId));
 		$databaseset2->parentNode->insertBefore($datasource2, $databaseset2);
-		$database2 = $this->castDOMElement($dom2->importNode($database1, true));
-		$database2->setAttribute('id', (string)($maxDatabaseId + 1));
-		$databaseset2->appendChild($database2);
-		$dbname1 = $this->resolvePath($database2->getAttribute('name'), $databasesDir1);
-		$dbname2 = $this->resolvePath($database2->getAttribute('name'), $databasesDir2);
-		$fsystem = new Filesystem();
-		try {
-			$fsystem->copy($dbname1, $dbname2);
-		} catch (\Exception $e) {
-			$this->error($output, "Error while copying the database '%database%' in '%databasedir%' : '%message%'", array('%database%' => $dbname1, '%databasedir%' => $databasesDir2, '%message%' => $e->getMessage()));
-			return 1;
+		if (in_array($datasource1->getAttribute('type') ,['internal', 'database'])) {
+			$this->maxDatabaseId++;
+			$datasource2->setAttribute('database', (string)($this->maxDatabaseId));
+			$database2 = $this->castDOMElement($dom2->importNode($database1, true));
+			$database2->setAttribute('id', (string)($this->maxDatabaseId));
+			$databaseset2->appendChild($database2);
+			if ($database1->getAttribute('type') == 'sqlite') {
+				$dbname1 = $this->resolvePath($database2->getAttribute('name'), $databasesDir1);
+				$dbname2 = $this->resolvePath($database2->getAttribute('name'), $databasesDir2);
+				$fsystem = new Filesystem();
+				try {
+					$fsystem->copy($dbname1, $dbname2);
+				} catch (\Exception $e) {
+					$this->error($output, "Error while copying the database '%database%' in '%databasedir%' : '%message%'", array('%database%' => $dbname1, '%databasedir%' => $databasesDir2, '%message%' => $e->getMessage()));
+					return false;
+				}
+			}
 		}
-		try {
-			$formatted = preg_replace_callback('/^( +)</m', function($a) { 
-				return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
-			}, $dom2->saveXML(null, LIBXML_NOEMPTYTAG));
-			file_put_contents($databasesDir2."/DataSources.xml", $formatted);
-		} catch (\Exception $e) {
-			$this->error($output, "Error while saving DataSources.xml in '%databasedir%' : %message%", array('%databasedir%' => $databasesDir2, '%message%' => $e->getMessage()));
-			return 1;
-		}
-		$this->success($output, "The data source '%s%' is successfully copied", array('%s%' => $datasourcename));
-		return 0;
+		return true;
 	}
 
 }

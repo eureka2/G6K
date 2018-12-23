@@ -37,11 +37,12 @@ use App\G6K\Model\Field;
 use App\G6K\Model\BlockInfo;
 use App\G6K\Model\Step;
 
-use App\G6K\Manager\ControllersHelper;
+use App\G6K\Manager\ControllersTrait;
 
 use App\G6K\Manager\ExpressionParser\Parser;
 use App\G6K\Manager\DOMClient as Client;
 use App\G6K\Manager\ResultFilter;
+use App\G6K\Manager\ExpressionParser\DateFunction;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,7 +56,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BaseController extends Controller {
 
-	use ControllersHelper;
+	use ControllersTrait;
 
 	/**
 	 * @var \App\G6K\Model\Simulator $simu Simulator instance used by this controller
@@ -1279,7 +1280,7 @@ class BaseController extends Controller {
 								$value = $result;
 							}
 							if ($d->getType() == "date" && preg_match("/^\d\d\d\d-\d{1,2}-\d{1,2}$/", $value)) {
-								$value = $this->parseDate("Y-m-d", $value)->format("d/m/Y");
+								$value = DateFunction::parseDate("Y-m-d", $value)->format("d/m/Y");
 							}
 							$oValue = $d->getValue();
 							$d->setValue($value);

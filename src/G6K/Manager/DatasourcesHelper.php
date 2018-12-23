@@ -68,13 +68,14 @@ class DatasourcesHelper {
 	 * @param   array $parameters The database parameters
 	 * @param   string $databasesDir The databases directory
 	 * @param   int &$id The ID of the data source
+	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @param   callable|null $fprogress a function receiving the row number that's inserted
 	 * @return  \DOMDocument The XML DOM document
 	 *
 	 */
-	public function makeDatasourceDom($schemafile, $datafile, $parameters, $databasesDir, &$id, $fprogress = null) {
+	public function makeDatasourceDom($schemafile, $datafile, $parameters, $databasesDir, &$id, $translator = null, $fprogress = null) {
 		$converter = new JSONToSQLConverter($parameters, $databasesDir);
-		$form = $converter->convert($schemafile, $datafile,$fprogress);
+		$form = $converter->convert(['schemafile' => $schemafile, 'datafile' => $datafile], $translator, $fprogress);
 		$datasource = $this->doCreateDatasource($form);
 		$id = $datasource->getAttribute('id');
 		$dom = $datasource->ownerDocument;

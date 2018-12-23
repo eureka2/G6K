@@ -120,12 +120,11 @@ class RemoveAssetManifestCommand extends AssetManifestCommandBase
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		parent::execute($input, $output);
-		$file = $input->getArgument('assetpath');
+		$file = str_replace('\\', '/', $input->getArgument('assetpath'));
 		if (file_exists($this->publicDir . "/" . $file)) {
 			$this->error($output, "The file '%s%' still exists, delete it first.", array('%s%' => $file));
 			return 1;
 		}
-		$file = str_replace('\\', '/', $file);
 		if (!isset($this->manifest[$file])) {
 			$this->error($output, "The file '%s%' isn't in the manifest.", array('%s%' => $file));
 			return 1;

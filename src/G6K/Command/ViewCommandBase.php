@@ -90,7 +90,8 @@ abstract class ViewCommandBase extends CommandBase
 		$command = $this->getApplication()->find('g6k:assets:manifest:refresh');
 		$input = new ArrayInput(array(
 			'command' => 'g6k:assets:manifest:refresh',
-			'--no-interaction' => true
+			'--no-interaction' => true,
+			'--html' => $this->isHtml()
 		));
 		$output->writeln("");
 		$this->info($output, "Refreshing the assets manifest");
@@ -115,7 +116,8 @@ abstract class ViewCommandBase extends CommandBase
 		$input = new ArrayInput(array(
 			'command' => 'g6k:templates:migrate',
 			'viewname' => $view,
-			'--no-interaction' => true
+			'--no-interaction' => true,
+			'--html' => $this->isHtml()
 		));
 		$output->writeln("");
 		$this->info($output, "migration of the templates");
@@ -138,7 +140,7 @@ abstract class ViewCommandBase extends CommandBase
 	 */
 	protected function updateViewParameters(string $view, string $viewurl, OutputInterface $output) {
 		try {
-			$configFile = $this->projectDir . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . "packages". DIRECTORY_SEPARATOR . "g6k.yml";
+			$configFile = $this->projectDir . '/config/packages/g6k.yml';
 			$domain = parse_url ($viewurl, PHP_URL_HOST);
 			$domain = preg_replace("/^www\./", "", $domain);
 			if ($domain !== null) {

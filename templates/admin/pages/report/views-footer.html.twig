@@ -21,19 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 #}
-
-{% extends "admin/layout/pagelayout.html.twig" %}
-
-{% block content %}
-<h2>{{ 'Simulators management'|trans }}</h2>
-
-<a class="float-right" href="{{ path('eureka_g6k_admin_simulator', {'simulator': simulator.name}) }}">{{ 'Return to the definition of the simulator « %simulator% »'|trans({'%simulator%': simulator.name}) }}</a>
-<h3>{{ 'Deployment of the « %simulator% » simulator'|trans({'%simulator%': simulator.name}) }}</h3>
-
-{% for l in log %}
-<p>{{ l|nofilter }}</p>
-{% endfor %}
-
-<a href="{{ path('eureka_g6k_admin_simulator', {'simulator': simulator.name}) }}">{{ 'Return to the definition of the simulator « %simulator% »'|trans({'%simulator%': simulator.name}) }}</a>
-
-{% endblock %}
+				</pre>
+				</div>
+				<br>
+				<a class="float-right" href="{{ path('eureka_g6k_admin_view', {'view': view}) }}">{{ 'Return to the management of the view « %view% »'|trans({'%view%': view}) }}</a>
+				<br><br><br>
+			</div>
+		</div>
+{% include 'admin/sections/scripts.common.html.twig' %}
+	</body>
+</html>
