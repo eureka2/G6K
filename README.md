@@ -75,7 +75,7 @@ Thus, the `admin.php` and` index.php` front-end controllers can be omitted from 
 ### Apache
 You must add the `AllowOverride All` directive in the `VirtualHost` block of the server configuration. 
 
-Assume G6K is installed in the directory `/var/www/html/simulator` :
+Assuming G6K is installed in the directory `/var/www/html/simulator` :
 
 ```
 <VirtualHost *:80>
