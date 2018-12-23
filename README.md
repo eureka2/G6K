@@ -69,7 +69,8 @@ In this case, change `AllowOverride All` to `AllowOverride None` and delete the 
 
 Assume G6K is installed in the directory `/var/www/html/simulator` :
 
-``<VirtualHost *:80>
+```
+<VirtualHost *:80>
     ServerName domain.tld
     ServerAlias www.domain.tld
 
@@ -85,13 +86,15 @@ Assume G6K is installed in the directory `/var/www/html/simulator` :
 
     # other directives
 
-</VirtualHost>``
+</VirtualHost>
+```
 
 For security reasons, the <DOCUMENT_ROOT> can be set to the `calcul/` directory : `DocumentRoot /var/www/html/simulator/calcul`
 
 In this case, `calcul/` should be omitted from the path of the request URL.
 
-``<VirtualHost *:80>
+```
+<VirtualHost *:80>
     ServerName domain.tld
     ServerAlias simulators.domain.tld
 
@@ -105,7 +108,8 @@ In this case, `calcul/` should be omitted from the path of the request URL.
 
     # other directives
 
-</VirtualHost>``
+</VirtualHost>
+```
 
 ### NGinx
 Coming soon ...
