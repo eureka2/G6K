@@ -63,9 +63,7 @@ G6K comes with a `.htaccess` file in the `calcul/` directory that contains the r
 Thus, the `admin.php` and` index.php` front-end controllers can be omitted from the request urls.
 
 ### Apache
-For best performance, rewrite rules can be moved from the `.htaccess` file to the` VirtualHost` block of the server configuration.
-
-In this case, change `AllowOverride All` to `AllowOverride None` and delete the `.htaccees` file.
+You must add the `AllowOverride All` directive in the `VirtualHost` block of the server configuration. 
 
 Assume G6K is installed in the directory `/var/www/html/simulator` :
 
@@ -76,12 +74,33 @@ Assume G6K is installed in the directory `/var/www/html/simulator` :
 
     DocumentRoot /var/www/html/simulator
     <Directory /var/www/html/simulator>
-        AllowOverride All
+        <span style="color:green">AllowOverride All</span>
+        Order Allow,Deny
+        Allow from All
+    </Directory>
+
+    # other directives
+
+</VirtualHost>
+```
+
+For best performance, rewrite rules can be moved from the `.htaccess` file to the `VirtualHost` block of the server configuration.
+
+In this case, change `AllowOverride All` to `AllowOverride None` and delete the `.htaccees` file.
+
+```
+<VirtualHost *:80>
+    ServerName domain.tld
+    ServerAlias www.domain.tld
+
+    DocumentRoot /var/www/html/simulator
+    <Directory /var/www/html/simulator>
+        <span style="color:green">AllowOverride None</span>
         Order Allow,Deny
         Allow from All
     </Directory>
     <Directory /var/www/html/simulator/calcul>
-        # rewrite rules from .htaccess
+        <span style="color:green"># rewrite rules from .htaccess</span>
     </Directory>
 
     # other directives
@@ -100,8 +119,8 @@ In this case, `calcul/` should be omitted from the path of the request URL.
 
     DocumentRoot /var/www/html/simulator/calcul
     <Directory /var/www/html/simulator/calcul>
-        # rewrite rules from .htaccess
-        AllowOverride All
+        <span style="color:green"># rewrite rules from .htaccess</span>
+        <span style="color:green">AllowOverride None</span>
         Order Allow,Deny
         Allow from All
     </Directory>
