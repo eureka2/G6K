@@ -79,6 +79,7 @@ class ScriptHandler
 
 		self::setEnvironmentVariable($params, 'APP_VERSION', $version);
 		self::setEnvironmentVariable($params, 'PUBLIC_DIR', $extras['public-dir'] ?? 'public');
+		self::setEnvironmentVariable($params, 'G6K_LOCALE', 'en');
 		if (isset($params['DATABASE_URL'])) {
 			$url = $params['DATABASE_URL'];
 			if (preg_match("#([^:]+)://(.*)$#", $url, $m)) {

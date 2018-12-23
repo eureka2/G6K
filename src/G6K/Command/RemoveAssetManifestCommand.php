@@ -85,6 +85,13 @@ class RemoveAssetManifestCommand extends AssetManifestCommandBase
 	/**
 	 * @inheritdoc
 	 */
+	protected function getCommandOptions() {
+		return array();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	protected function getCommandArguments() {
 		return array(
 			array(
@@ -93,13 +100,6 @@ class RemoveAssetManifestCommand extends AssetManifestCommandBase
 				$this->translator->trans('The path of the asset relatively to the public directory.')
 			)
 		);
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	protected function getCommandOptions() {
-		return array();
 	}
 
 	/**
