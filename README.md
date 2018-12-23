@@ -10,6 +10,16 @@ A calculation simulator is an online service made available to a user to enable 
 
 [Learn more](http://eureka2.github.io/g6k/documentation/en/learn-more.html)
 
+## Table of contents
+1. [Prerequisites for Symfony](#prerequisites-for-symfony)
+1. [Prerequisites for G6K](#prerequisites-for-g6k)
+1. [Installation](#installation)
+1. [Web server configuration](#web-server-configuration)
+1. [Documentation](#documentation)
+1. [Code quality](#code-quality)
+1. [Innovation Award](#innovation-award)
+1. [Copyright and license](#copyright-and-license)
+
 ## Prerequisites for Symfony
 * PHP Version 7.1.3+
 * JSON enabled
@@ -86,7 +96,7 @@ Assume G6K is installed in the directory `/var/www/html/simulator` :
 
 For best performance, rewrite rules can be moved from the `.htaccess` file to the `VirtualHost` block of the server configuration.
 
-In this case, change `AllowOverride All` to `AllowOverride None` and delete the `.htaccees` file.
+In this case, change `AllowOverride All` to `AllowOverride None` and delete the `.htaccess` file.
 
 ```
 <VirtualHost *:80>
@@ -180,3 +190,4 @@ Coming soon ...
 
 &copy; 2015-2018 Eureka2 - Jacques Archimède. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
 
+**[&uparrow; back to table of contents](#table-of-contents)**
