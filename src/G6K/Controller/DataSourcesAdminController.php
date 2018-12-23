@@ -728,6 +728,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				'heading' => $heading,
 				'datasource' => $datasource,
 				'dsid' => '',
+				'simulator' => null,
 				'script' => $script,
 				'dataset' => array(),
 				'steps' => array(),
@@ -783,7 +784,6 @@ class DataSourcesAdminController extends BaseAdminController {
 		$datasource = '';
 		$schemafile = '';
 		$datafile = '';
-		$dsid = 0;
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
 				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
@@ -878,6 +878,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				'dsid' => $dsid,
 				'table' => $table,
 				'script' => $script,
+				'simulator' => null,
 				'dataset' => array(),
 				'steps' => array(),
 				'actions' => array(),

@@ -738,7 +738,6 @@ trait ControllersTrait {
 		$input = new ArrayInput($command);
 		$input->setInteractive(false);
 		$output = new StreamedOutput(fopen('php://stdout', 'w'));
-		$returnCode = 1;
  		$response = new StreamedResponse(function() use ($application, $input, $output, $start, $end) {
 			call_user_func($start);
 			$returnCode = $application->run($input, $output);

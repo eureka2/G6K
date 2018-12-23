@@ -179,11 +179,10 @@ class ImportDataSourceTableCommand extends CommandBase
 			'table-data-has-header' => $header
 		];
 		$converter = new DelimitedToSQLConverter($this->parameters, $databasesDir);
-		$dsid = 0;
 		$progressBar = null;
 		$isHtml = $this->isHtml();
 		try {
-			$result = $converter->convert($inputs, $this->translator, function($table, $nrows, $rownum) use ($output, $isHtml, &$progressBar) {
+			$converter->convert($inputs, $this->translator, function($table, $nrows, $rownum) use ($output, $isHtml, &$progressBar) {
 				if (! $isHtml){
 					if ($progressBar === null) {
 						$progressBar = new ProgressBar($output, $nrows);

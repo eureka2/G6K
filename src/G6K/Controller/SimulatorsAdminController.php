@@ -1494,7 +1494,6 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function doPublishSimulator(Request $request, $simu) {
-		$schema_dir = $this->get('kernel')->getProjectDir()."/var/doc";
 		$translator = $this->get('translator');
 		$heading = $translator->trans('Publishing of the « %simulator% » simulator.', array('%simulator%' => $simu));
 		$header = $this->makeReportHeader($request, $simu, $heading);
@@ -1657,23 +1656,6 @@ class SimulatorsAdminController extends BaseAdminController {
 			});
 		}
 		return $response;
-	}
-
-	/**
-	 * Retuns the DOMElement at position $index of the DOMNodeList
-	 *
-	 * @access  private
-	 * @param   \DOMNodeList $nodes The DOMNodeList
-	 * @param   int $index The position in the DOMNodeList
-	 * @return  \DOMElement|null The DOMElement.
-	 *
-	 */
-	private function getDOMElementItem($nodes, $index) {
-		$node = $nodes->item($index);
-		if ($node && $node->nodeType === XML_ELEMENT_NODE) {
-			return $node;
-		}
-		return null;
 	}
 
 	/**

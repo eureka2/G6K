@@ -26,6 +26,8 @@ THE SOFTWARE.
  
 namespace App\G6K\Manager;
 
+use Symfony\Component\Translation\TranslatorInterface;
+
 use App\G6K\Model\Database;
 
 use App\G6K\Manager\DatasourcesHelper;
@@ -97,7 +99,7 @@ trait DatasourcesTrait {
 	 * @return  array|string|bool|null The list of tables
 	 *
 	 */
-	protected function tablesList($database) {
+	protected function tablesList(Database $database) {
 		switch ($database->getType()) {
 			case 'jsonsql':
 				$tableslist = array();
@@ -135,7 +137,7 @@ trait DatasourcesTrait {
 	 * @return  array|string|bool|null Informations about a table
 	 *
 	 */
-	protected function tableInfos($database, $table) {
+	protected function tableInfos(Database $database, $table) {
 		switch ($database->getType()) {
 			case 'jsonsql':
 				$tableinfos = array();
@@ -187,7 +189,7 @@ trait DatasourcesTrait {
 	 * @return  array Informations about the columns
 	 *
 	 */
-	protected function infosColumns($database, $table) {
+	protected function infosColumns(Database $database, $table) {
 		$infosColumns = array();
 		$tableinfos = $this->tableInfos($database, $table);
 		foreach($tableinfos as $i => $info) {
@@ -461,13 +463,13 @@ trait DatasourcesTrait {
 	 * @return  string|bool
 	 *
 	 */
-	protected function insertRowIntoTable($row, $table, $database, $translator = null, $restore = false) {
+	protected function insertRowIntoTable($row, $table, Database $database, TranslatorInterface $translator = null, $restore = false) {
 		$infosColumns = $this->infosColumns($database, $table);
 		$insertNames = array();
 		$insertValues = array();
 		foreach($infosColumns as $name => $info) {
 			$value = isset($row[$name]) ? $row[$name] : ($info['g6k_type'] == 'boolean' ? '0' : null);
-			if (($check = $this->checkColumnValue($name, $info, $value, $translator)) !== true) {
+			if (($check = $this->checkColumnValue($info, $value, $translator)) !== true) {
 				return $check;
 			}
 			if ($restore || $name != 'id') {
@@ -509,12 +511,12 @@ trait DatasourcesTrait {
 	 * @return  bool|string
 	 *
 	 */
-	protected function updateRowInTable($row, $table, $database, $translator = null) {
+	protected function updateRowInTable($row, $table, Database $database, TranslatorInterface $translator = null) {
 		$infosColumns = $this->infosColumns($database, $table);
 		$updateFields = array();
 		foreach($infosColumns as $name => $info) {
 			$value = isset($row[$name]) ? $row[$name] : ($info['g6k_type'] == 'boolean' ? '0' : null);
-			if (($check = $this->checkColumnValue($name, $info, $value, $translator)) !== true) {
+			if (($check = $this->checkColumnValue($info, $value, $translator)) !== true) {
 				return $check;
 			}
 			if ($name != 'id') {
@@ -556,7 +558,7 @@ trait DatasourcesTrait {
 	 * @return  string|true
 	 *
 	 */
-	protected function deleteRowFromTable($row, $table, $database, $translator = null) {
+	protected function deleteRowFromTable($row, $table, Database $database, TranslatorInterface $translator = null) {
 		try {
 			$database->exec(Parser::SQL_DELETE_KEYWORD.$table." WHERE id=".$row['id']);
 		} catch (\Exception $e) {
@@ -573,14 +575,13 @@ trait DatasourcesTrait {
 	 * Checks the value of a column
 	 *
 	 * @access  protected
-	 * @param   string $name The column name
 	 * @param   array $info Informations about the column
 	 * @param   string|null $value The value to check
 	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @return  string|bool An error message or true if no error.
 	 *
 	 */
-	protected function checkColumnValue($name, $info, $value, $translator = null) {
+	protected function checkColumnValue($info, $value, TranslatorInterface $translator = null) {
 		if ($value === null || $value == '') {
 			if ($info['notnull'] == 1) {
 				if ($translator !== null) {
