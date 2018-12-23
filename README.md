@@ -6,6 +6,15 @@ A calculation simulator is an online service made available to a user to enable 
 
 [Learn more](http://eureka2.github.io/g6k/documentation/en/learn-more.html)
 
+## Table of contents
+1. [Prerequisites for Symfony 2](#prerequisites-for-symfony-2)
+1. [Prerequisites for G6K](#prerequisites-for-g6k)
+1. [Installation](#installation)
+1. [Web server configuration](#web-server-configuration)
+1. [Documentation](#documentation)
+1. [Innovation Award](#innovation-award)
+1. [Copyright and license](#copyright-and-license)
+
 ## Prerequisites for Symfony 2
 * PHP Version 5.3.9 + (recommended 5.5.9+)
 * JSON enabled
@@ -48,6 +57,86 @@ Normally the installer displays the message 'Installing the users of the adminis
 However, on some platforms, this message does not appear. If so, run the following commands:  
 ``cd simulator``  
 ``php ../composer.phar run-script post-install-cmd``
+
+## Web server configuration
+
+### Adding Rewrite Rules
+G6K comes with a `.htaccess` file in the `calcul/` directory that contains the rewrite rules.
+
+`/admin/...` is rewritten in `/admin.php/...` and all other queries in `/index.php/...`.
+
+Thus, the `admin.php` and` index.php` front-end controllers can be omitted from the request urls.
+
+### Apache
+You must add the `AllowOverride All` directive in the `VirtualHost` block of the server configuration. 
+
+Assuming G6K is installed in the directory `/var/www/html/simulator` :
+
+```
+<VirtualHost *:80>
+    ServerName domain.tld
+    ServerAlias www.domain.tld
+
+    DocumentRoot /var/www/html/simulator
+    <Directory /var/www/html/simulator>
+        AllowOverride All
+        Order Allow,Deny
+        Allow from All
+    </Directory>
+
+    # other directives
+
+</VirtualHost>
+```
+
+For best performance, rewrite rules can be moved from the `.htaccess` file to the `VirtualHost` block of the server configuration.
+
+In this case, change `AllowOverride All` to `AllowOverride None` and delete the `.htaccess` file.
+
+```
+<VirtualHost *:80>
+    ServerName domain.tld
+    ServerAlias www.domain.tld
+
+    DocumentRoot /var/www/html/simulator
+    <Directory /var/www/html/simulator>
+        AllowOverride None
+        Order Allow,Deny
+        Allow from All
+    </Directory>
+    <Directory /var/www/html/simulator/calcul>
+        # rewrite rules from .htaccess
+    </Directory>
+
+    # other directives
+
+</VirtualHost>
+```
+
+For security reasons, the <DOCUMENT_ROOT> can be set to the `calcul/` directory : `DocumentRoot /var/www/html/simulator/calcul`
+
+In this case, `calcul/` should be omitted from the path of the request URL.
+
+```
+<VirtualHost *:80>
+    ServerName domain.tld
+    ServerAlias simulators.domain.tld
+
+    DocumentRoot /var/www/html/simulator/calcul
+    <Directory /var/www/html/simulator/calcul>
+        # rewrite rules from .htaccess
+        AllowOverride None
+        Order Allow,Deny
+        Allow from All
+    </Directory>
+
+    # other directives
+
+</VirtualHost>
+```
+
+### NGinx
+Coming soon ...
 
 ## Documentation
 
@@ -92,3 +181,4 @@ However, on some platforms, this message does not appear. If so, run the followi
 
 &copy; 2015-2018 Eureka2 - Jacques Archimède. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
 
+**[&uparrow; back to table of contents](#table-of-contents)**
