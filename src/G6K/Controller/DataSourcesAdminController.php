@@ -894,7 +894,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * Makes the footer for a datasource action report
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request
-	 * @param   string $dsid The id of the datasource
+	 * @param   int $dsid The id of the datasource
 	 * @param   string $table The name of the table
 	 * @return  string
 	 *
