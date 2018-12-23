@@ -53,6 +53,60 @@ However, on some platforms, this message does not appear. If so, run the followi
 ``cd simulator``  
 ``php ../composer.phar run-script post-install-cmd``
 
+## Web server configuration
+
+### Adding Rewrite Rules
+G6K comes with a `.htaccess` file in the `calcul/` directory that contains the rewrite rules.
+`/admin/...` is rewritten in `/admin.php/...` and all other queries in `/index.php/...`.
+Thus, the `admin.php` and` index.php` front-end controllers can be omitted from the request urls.
+
+### Apache
+For best performance, rewrite rules can be moved from the `.htaccess` file to the` VirtualHost` block of the server configuration.
+In this case, change `AllowOverride All` to `AllowOverride None` and delete the `.htaccees` file.
+Assume G6K is installed in the directory `/var/www/html/simulator` :
+``
+<VirtualHost *:80>
+    ServerName domain.tld
+    ServerAlias www.domain.tld
+
+    DocumentRoot /var/www/html/simulator
+    <Directory /var/www/html/simulator>
+        AllowOverride All
+        Order Allow,Deny
+        Allow from All
+    </Directory>
+    <Directory /var/www/html/simulator/calcul>
+        # rewrite rules from .htaccess
+    </Directory>
+
+    # other directives
+
+</VirtualHost>
+``
+
+For security reasons, the <DOCUMENT_ROOT> can be set to the `calcul/` directory : `DocumentRoot /var/www/html/simulator/calcul`
+In this case, `calcul/` should be omitted from the path of the request URL.
+``
+<VirtualHost *:80>
+    ServerName domain.tld
+    ServerAlias simulators.domain.tld
+
+    DocumentRoot /var/www/html/simulator/calcul
+    <Directory /var/www/html/simulator/calcul>
+        # rewrite rules from .htaccess
+        AllowOverride All
+        Order Allow,Deny
+        Allow from All
+    </Directory>
+
+    # other directives
+
+</VirtualHost>
+``
+
+### NGinx
+Coming soon ...
+
 ## Documentation
 
 ### Administrator's Guide
