@@ -33,7 +33,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 
 /**
  * Copies one or all views from another instance of G6K.
