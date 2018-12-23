@@ -74,7 +74,7 @@ Assume G6K is installed in the directory `/var/www/html/simulator` :
 
     DocumentRoot /var/www/html/simulator
     <Directory /var/www/html/simulator>
-        <span style="color:green">AllowOverride All</span>
+        AllowOverride All
         Order Allow,Deny
         Allow from All
     </Directory>
@@ -95,12 +95,12 @@ In this case, change `AllowOverride All` to `AllowOverride None` and delete the 
 
     DocumentRoot /var/www/html/simulator
     <Directory /var/www/html/simulator>
-        <span style="color:green">AllowOverride None</span>
+        AllowOverride None
         Order Allow,Deny
         Allow from All
     </Directory>
     <Directory /var/www/html/simulator/calcul>
-        <span style="color:green"># rewrite rules from .htaccess</span>
+        # rewrite rules from .htaccess
     </Directory>
 
     # other directives
@@ -119,8 +119,8 @@ In this case, `calcul/` should be omitted from the path of the request URL.
 
     DocumentRoot /var/www/html/simulator/calcul
     <Directory /var/www/html/simulator/calcul>
-        <span style="color:green"># rewrite rules from .htaccess</span>
-        <span style="color:green">AllowOverride None</span>
+        # rewrite rules from .htaccess
+        AllowOverride None
         Order Allow,Deny
         Allow from All
     </Directory>
