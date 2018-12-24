@@ -142,6 +142,12 @@ In this case, `calcul/` should be omitted from the path of the request URL.
 
 ### NGinx
 
+Because NGinx does not have `.htaccess` files, all of the setup has to be managed within the server config file.
+
+The following is fully working. There are probably a number of improvements which can be made, but this should be a good starting-point.
+
+The most important point is that the `/admin` path has to be routed separately to the other app. Please note this is pre-`4.x` so whether it works after the `master` branch update remains to be seen...
+
 ```
 # /etc/nginx/sites-enabled/your-site.com
 
@@ -268,10 +274,10 @@ server {
   access_log /var/log/nginx/g6k_access.log;
 
 }
-```
 
 ##########################################
 ##########################################
+```
 
 ## Documentation
 
