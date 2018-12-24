@@ -141,7 +141,137 @@ In this case, `calcul/` should be omitted from the path of the request URL.
 ```
 
 ### NGinx
-Coming soon ...
+
+```
+# /etc/nginx/sites-enabled/your-site.com
+
+##########################################
+##########################################
+
+##            your-site.com             ##
+
+##########################################
+##########################################
+
+##   General server setup in default    ##
+
+##########################################
+##########################################
+
+## Apex to WWW ##
+## HTTPS ##
+server {
+
+  ## Ports ##
+  ## Uncomment these to accept HTTP inbound requests ##
+  #listen 80; 
+  #listen [::]:80;
+  
+  listen 443 ssl;
+  listen [::]:443 ssl;
+
+  ## Details ##
+  ## Only accept WWW ##
+  server_name your-site.com; # can be subdomain #
+
+  ## Root ##
+  root /var/www/g6k/calcul;
+
+  ## Restrict Access ##
+  ## If you only want certain IP's to access the server ##
+  ## Delete this if you don't care ##
+  allow 23.227.38.32;
+  allow 86.22.27.94;
+  deny all;
+
+  ## G6K App ##
+  rewrite ^/app\.php/?(.*)$ /$1 permanent;
+
+  ## PHP ##
+  try_files $uri @rewriteapp;
+
+  ## Admin ##
+  ## Required for the admin area (this is in .htaccess inside /calcul) ##
+  location /admin {
+    rewrite ^(.*)$ /app_admin.php/$1 last;
+  }
+
+  ## Main ##
+  location @rewriteapp {
+    rewrite ^(.*)$ /app.php/$1 last;
+  }
+
+  ## SSL ##
+  include /etc/nginx/ssl.conf;
+
+  ## Certs ##
+  ssl_certificate     /etc/letsencrypt/live/your-site.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/your-site.com/privkey.pem;
+
+  ## Symfony ##
+  ## PRODUCTION ENV ##
+  location ~ ^/(app|app_admin)\.php(/|$) {
+    fastcgi_pass unix:/var/run/php/php7.2-fpm.sock; #-> this needs to be your php-fpm location
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    include fastcgi_params;
+    # When you are using symlinks to link the document root to the
+    # current version of your application, you should pass the real
+    # application path instead of the path to the symlink to PHP
+    # FPM.
+    # Otherwise, PHP's OPcache may not properly detect changes to
+    # your PHP files (see https://github.com/zendtech/ZendOptimizerPlus/issues/126
+    # for more information).
+    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    fastcgi_param DOCUMENT_ROOT $realpath_root;
+    # Prevents URIs that include the front controller. This will 404:
+    # http://domain.tld/app.php/some-path
+    # Remove the internal directive to allow URIs like this
+    internal;
+  }
+
+  ## Favicons ##
+  location = /favicon.ico {
+    access_log     off;
+    log_not_found  off;
+  }
+
+  # static file 404's aren't logged and expires header is set to maximum age
+  location ~* \.(jpg|jpeg|gif|css|png|js|ico|html)$ {
+    access_log off;
+    expires max;
+  }
+
+  ## PHP ##
+  # return 404 for all other php files not matching the front controller
+  # this prevents access to other php files you don't want to be accessible.
+  location ~ \.php$ {
+    return 404;
+  }
+
+  ## DENY ALL . FILES ##
+  ## Don't need to use Apache's stuff in NGinx ##
+  location ~ /\. {
+    deny  all;
+  }
+
+  ## STATIC ASSETS ##
+  ## Used to store images, CSS/JS etc ##
+  location /(bundles|media) {
+    access_log off;
+    expires 30d;
+
+    try_files $uri @rewriteapp;
+  }
+
+  ## LOGS ##
+  error_log /var/log/nginx/g6k_error.log;
+  access_log /var/log/nginx/g6k_access.log;
+
+}
+```
+
+##########################################
+##########################################
 
 ## Documentation
 
