@@ -189,7 +189,7 @@ trait DatasourcesTrait {
 	 * @return  \App\G6K\Model\Database The Database object
 	 *
 	 */
-	protected function getDatabase($dsid, $datasources, $databasesDir = null, $withDbName = true) {
+	protected function getDatabase($dsid, \SimpleXMLElement $datasources, $databasesDir = null, $withDbName = true) {
 		$helper = new DatasourcesHelper($datasources);
 		$dss = $datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
 		$dbid = (int)$dss[0]['database'];
@@ -299,7 +299,7 @@ trait DatasourcesTrait {
 	 * @return  array Informations about the columns
 	 *
 	 */
-	protected function infosColumns($datasources, Database $database, $table) {
+	protected function infosColumns(\SimpleXMLElement $datasources, Database $database, $table) {
 		$infosColumns = array();
 		$tableinfos = $this->tableInfos($database, $table);
 		$dss = $datasources->xpath("/DataSources/DataSource[(@type='internal' or @type='database') and @database='".$database->getId()."']");
@@ -458,7 +458,7 @@ trait DatasourcesTrait {
 	 * @return  array|string|null The result set of the query
 	 *
 	 */
-	protected function executeSource($source, $datasources, $databasesDir = null) {
+	protected function executeSource(\SimpleXMLElement $source, \SimpleXMLElement $datasources, $databasesDir = null) {
 		$ds = (string)$source['datasource'];
 		if (is_numeric($ds)) {
 			$dss = $datasources->xpath("/DataSources/DataSource[@id='".$ds."']");
@@ -836,6 +836,7 @@ trait DatasourcesTrait {
 	 * @param   int $dsid The datasource ID
 	 * @param   string $dbtype The target database type
 	 * @param   \SimpleXMLElement $datasources The origin DataSources.xml content
+	 * @param   \SimpleXMLElement $fromDatasources The origin DataSources.xml content
 	 * @param   \App\G6K\Model\Database $fromDatabase The origin Database object
 	 * @param   string|null $databasesDir The database directory
 	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
@@ -843,14 +844,13 @@ trait DatasourcesTrait {
 	 * @return  string|true
 	 *
 	 */
-	protected function migrateDatabase($dsid, $dbtype, $datasources, $fromDatasources, $fromDatabase, $databasesDir = null, TranslatorInterface $translator = null, $fprogress = null) {
+	protected function migrateDatabase($dsid, $dbtype, \SimpleXMLElement $datasources, \SimpleXMLElement $fromDatasources, Database $fromDatabase, $databasesDir = null, TranslatorInterface $translator = null, $fprogress = null) {
 		if (($result = $this->createDatabase($dsid, $dbtype, $datasources, $databasesDir, $translator)) !== true) {
 			return $result;
 		}
 		$dss = $datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
 		$datasource = $dss[0];
 		$database = $this->getDatabase($dsid, $datasources, $databasesDir);
-		$dbschema = $database->getName();
 		foreach ($datasource->children() as $child) {
 			if ($child->getName() == 'Table') {
 				$table = (string)$child['name'];
@@ -950,7 +950,7 @@ trait DatasourcesTrait {
 	 * @return  string|true
 	 *
 	 */
-	protected function createDatabaseTable(&$form, $database, TranslatorInterface $translator = null) {
+	protected function createDatabaseTable(&$form, Database $database, TranslatorInterface $translator = null) {
 		$create = "create table " . $form['table-name'] . " (\n";
 		if (!in_array('id', $form['field'])) {
 			switch ($database->getType()) {
@@ -1029,7 +1029,7 @@ trait DatasourcesTrait {
 	 * @return  string|true
 	 *
 	 */
-	protected function dropDatabaseTable($table, $database, TranslatorInterface $translator = null) {
+	protected function dropDatabaseTable($table, Database $database, TranslatorInterface $translator = null) {
 		try {
 			$database->exec("DROP TABLE ".$table);
 		} catch (\Exception $e) {
@@ -1054,7 +1054,7 @@ trait DatasourcesTrait {
 	 * @return  string|true
 	 *
 	 */
-	protected function editTableStructure($form, $table, $database, $datasources, TranslatorInterface $translator = null) {
+	protected function editTableStructure($form, $table, Database $database, \SimpleXMLElement $datasources, TranslatorInterface $translator = null) {
 		$infosColumns = $this->infosColumns($datasources, $database, $table);
 		if (strcasecmp($form['table-name'], $table) != 0) {
 			$rename = "ALTER TABLE $table RENAME TO {$form['table-name']}";
@@ -1274,7 +1274,7 @@ trait DatasourcesTrait {
 	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @return  bool Always true
 	 */
-	protected function alterSQLiteTable($table, $alterdefs, $database, TranslatorInterface $translator = null){
+	protected function alterSQLiteTable($table, $alterdefs, Database $database, TranslatorInterface $translator = null){
 		if ($alterdefs != ''){
 			$stmt = $database->prepare("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = :table ORDER BY type DESC");
 			$database->bindValue($stmt, ':table', $table);
