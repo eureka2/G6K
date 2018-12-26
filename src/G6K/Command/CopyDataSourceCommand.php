@@ -30,6 +30,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Console\Helper\ProgressBar;
+
+use App\G6K\Manager\DatasourcesHelper;
+use App\G6K\Manager\DatasourcesTrait;
 
 /**
  * Copies one or all data sources from another instance of G6K.
@@ -38,6 +42,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class CopyDataSourceCommand extends CommandBase
 {
+	use DatasourcesTrait;
 
 	/**
 	 * @var int
@@ -83,7 +88,7 @@ class CopyDataSourceCommand extends CommandBase
 			. "\n"
 			. $this->translator->trans("To copy all data sources, enter 'all' as data source name.")."\n"
 			. "\n"
-			. $this->translator->trans("CAUTION: Only SQLite databases can be copied with this command.")."\n"
+			. $this->translator->trans("CAUTION: Only internal databases will be copied with this command.")."\n"
 		;
 	}
 
@@ -201,14 +206,14 @@ class CopyDataSourceCommand extends CommandBase
 	}
 
 	private function copy($datasourcename, string $anotherg6kpath, \DOMXPath $xpath1, $databasesDir1, \DOMXPath $xpath2, $databasesDir2, OutputInterface $output) {
-		$datasources = $xpath1->query("//DataSource[@name='" . $datasourcename . "']");
-		if ($datasources->length == 0) {
+		$datasources1 = $xpath1->query("//DataSource[@name='" . $datasourcename . "']");
+		if ($datasources1->length == 0) {
 			$this->error($output, "The datasource '%datasourcename%' doesn't exists in '%anotherg6kpath%'", array('%datasourcename%' => $datasourcename, '%anotherg6kpath%' => $anotherg6kpath));
 			return false;
 		}
-		$datasource1 = $this->getDOMElementItem($datasources, 0);
-		$datasources = $xpath2->query("//DataSource[@name='" . $datasourcename . "']");
-		if ($datasources->length > 0) {
+		$datasource1 = $this->getDOMElementItem($datasources1, 0);
+		$datasources2 = $xpath2->query("//DataSource[@name='" . $datasourcename . "']");
+		if ($datasources2->length > 0) {
 			$this->error($output, "The datasource '%datasourcename%' already exists in '%s%'", array('%datasourcename%' => $datasourcename, '%s%' => $databasesDir2 . '/DataSources.xml'));
 			return false;
 		}
@@ -228,15 +233,58 @@ class CopyDataSourceCommand extends CommandBase
 			$database2 = $this->castDOMElement($dom2->importNode($database1, true));
 			$database2->setAttribute('id', (string)($this->maxDatabaseId));
 			$databaseset2->appendChild($database2);
-			if ($database1->getAttribute('type') == 'sqlite') {
-				$dbname1 = $this->resolvePath($database2->getAttribute('name'), $databasesDir1);
-				$dbname2 = $this->resolvePath($database2->getAttribute('name'), $databasesDir2);
-				$fsystem = new Filesystem();
-				try {
-					$fsystem->copy($dbname1, $dbname2);
-				} catch (\Exception $e) {
-					$this->error($output, "Error while copying the database '%database%' in '%databasedir%' : '%message%'", array('%database%' => $dbname1, '%databasedir%' => $databasesDir2, '%message%' => $e->getMessage()));
-					return false;
+			if ($datasource1->getAttribute('type') == 'internal') {
+				if ($database1->getAttribute('type') == 'sqlite') {
+					if ($this->parameters['database_driver'] == 'pdo_sqlite') {
+						$dbname1 = $this->resolvePath($database2->getAttribute('name'), $databasesDir1);
+						$dbname2 = $this->resolvePath($database2->getAttribute('name'), $databasesDir2);
+						$fsystem = new Filesystem();
+						try {
+							$fsystem->copy($dbname1, $dbname2);
+						} catch (\Exception $e) {
+							$this->error($output, "Error while copying the database '%database%' in '%databasedir%' : '%message%'", array('%database%' => $dbname1, '%databasedir%' => $databasesDir2, '%message%' => $e->getMessage()));
+							return false;
+						}
+					} else {
+						$dbtype = preg_replace("/^pdo_/", "", $this->parameters['database_driver']);
+						$dbname = preg_replace("/^(.+)\.db$/", "$1", $database2->getAttribute('name'));
+						$database2->setAttribute('type', $dbtype);
+						$database2->setAttribute('name', $dbname);
+						$database2->setAttribute('host', $this->parameters['database_host']);
+						$database2->setAttribute('port', $this->parameters['database_port']);
+						$database2->setAttribute('user', $this->parameters['database_user']);
+						$database2->setAttribute('password', $this->parameters['database_password']);
+						$fromDatasources = simplexml_import_dom($xpath1->document);
+						$datasources = simplexml_import_dom($xpath2->document);
+						$helper = new DatasourcesHelper($fromDatasources);
+						$fromDatabase = $helper->getDatabase(['database_user' => '', 'database_password' => ''], (int)$database1->getAttribute('id'), $databasesDir1, false);
+						$currentTable = $progressBar = null;
+						$isHtml = $this->isHtml();
+						$result = $this->migrateDatabase((int)$datasource2->getAttribute('id'), $dbtype, $datasources, $fromDatasources, $fromDatabase, $databasesDir2, $this->translator, function($table, $nrows, $rownum) use ($output, $isHtml, &$currentTable, &$progressBar, $database1, $database2) {
+							if ($currentTable != $table) {
+								if ($progressBar !== null) {
+									$progressBar->finish();
+								}
+								$output->writeln("");
+								$this->info($output, "Copying table %s% from %from% to %to%", array('%s%' => $table, '%from%' => $database1->getAttribute('type'), '%to%' => $database2->getAttribute('type')));
+								$currentTable = $table;
+								if (! $isHtml){
+									$progressBar = new ProgressBar($output, $nrows);
+									$progressBar->start();
+								}
+							} elseif (! $isHtml) {
+								$progressBar->advance();
+							}
+						});
+						if ($progressBar !== null) {
+							$progressBar->finish();
+							$output->writeln("");
+						}
+						if ($result !== true) {
+							$this->error($output, $result);
+							return false;
+						}
+					}
 				}
 			}
 		}

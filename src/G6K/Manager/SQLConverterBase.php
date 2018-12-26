@@ -27,6 +27,7 @@ THE SOFTWARE.
 namespace App\G6K\Manager;
 
 use App\G6K\Manager\DatasourcesTrait;
+use App\G6K\Model\Database;
 
 /**
  * Base class for concrete classes that convert input files of a particular format into SQL database
@@ -52,42 +53,6 @@ abstract class SQLConverterBase {
 		'database_user' => null,
 		'database_password' => null,
 		'database_path' => null
-	);
-
-	/**
-	 * @var array      $datatypes The SQL datatypes by SQL driver
-	 *
-	 * @access  protected
-	 *
-	 */
-	protected $datatypes = array(
-		'pdo_sqlite' => array(
-			'boolean' => 'BOOLEAN',
-			'date' => 'DATE',
-			'date-time' => 'DATETIME',
-			'integer' => 'INTEGER',
-			'number' => 'REAL',
-			'string' => 'TEXT',
-			'time' => 'TIME'
-		),
-		'pdo_pgsql' => array(
-			'boolean' => 'SMALLINT',
-			'date' => 'DATE',
-			'date-time' => 'TIMESTAMP',
-			'integer' => 'INTEGER',
-			'number' => 'REAL',
-			'string' => 'TEXT',
-			'time' => 'TIME'
-		),
-		'pdo_mysql' => array(
-			'boolean' => 'TINYINT(1)',
-			'date' => 'DATE',
-			'date-time' => 'DATETIME',
-			'integer' => 'INT',
-			'number' => 'FLOAT',
-			'string' => 'TEXT',
-			'time' => 'TIME'
-		)
 	);
 
 	/**
@@ -215,6 +180,31 @@ abstract class SQLConverterBase {
 			$props[$property] = $value;
 		}
 		return (object)$props;
+	}
+	/**
+	 * Connects to the database
+	 *
+	 * @access  protected
+	 * @param   string $dbschema The database name
+	 * @param   string $dbtype The database type
+	 * @return  void
+	 *
+	 */
+	protected function connectDatabase($dbschema, $dbtype) {
+		$this->database = new Database(null, $this->databasesDir, 1, $dbtype, str_replace('-', '_', $dbschema));
+		if ($this->parameters['database_host'] !== null && $this->parameters['database_host'] != "") {
+			$this->database->setHost($this->parameters['database_host']);
+		}
+		if ($this->parameters['database_port'] !== null && $this->parameters['database_port'] != "") {
+			$this->database->setPort((int)$this->parameters['database_port']);
+		}
+		if ($this->parameters['database_user'] !== null && $this->parameters['database_user'] != "") {
+			$this->database->setUser($this->parameters['database_user']);
+		}
+		if ($this->parameters['database_password'] !== null && $this->parameters['database_password'] != "") {
+			$this->database->setPassword($this->parameters['database_password']);
+		}
+		$this->database->connect(false);
 	}
 
 	/**

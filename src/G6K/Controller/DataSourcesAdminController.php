@@ -93,110 +93,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	private $script;
 
 	/**
-	 * @var array      $datatypes Conversion table from G6K datatypes to SQL datatypes
-	 *
-	 * @access  private
-	 *
-	 */
-	private $datatypes = array(
-		'sqlite' => array(
-			'array' => 'TEXT',
-			'boolean' => 'BOOLEAN',
-			'choice' => 'INTEGER',
-			'country' => 'INTEGER',
-			'date' => 'DATE',
-			'day' => 'INTEGER',
-			'department' => 'TEXT',
-			'integer' => 'INTEGER',
-			'money' => 'REAL',
-			'month' => 'INTEGER',
-			'multichoice' => 'TEXT',
-			'number' => 'REAL',
-			'percent' => 'REAL',
-			'region' => 'INTEGER',
-			'text' => 'TEXT',
-			'textarea' => 'TEXT',
-			'year' => 'INTEGER'
-		),
-		'pgsql' => array(
-			'array' => 'TEXT',
-			'boolean' => 'SMALLINT',
-			'choice' => 'SMALLINT',
-			'country' => 'SMALLINT',
-			'date' => 'DATE',
-			'day' => 'SMALLINT',
-			'department' => 'VARCHAR(3)',
-			'integer' => 'INTEGER',
-			'money' => 'REAL',
-			'month' => 'SMALLINT',
-			'multichoice' => 'TEXT',
-			'number' => 'REAL',
-			'percent' => 'REAL',
-			'region' => 'SMALLINT',
-			'text' => 'TEXT',
-			'textarea' => 'TEXT',
-			'year' => 'SMALLINT'
-		),
-		'mysql' => array(
-			'array' => 'TEXT',
-			'boolean' => 'TINYINT(1)',
-			'choice' => 'INT',
-			'country' => 'INT',
-			'date' => 'DATE',
-			'day' => 'INT',
-			'department' => 'VARCHAR(3)',
-			'integer' => 'INT',
-			'money' => 'FLOAT',
-			'month' => 'INT',
-			'multichoice' => 'TEXT',
-			'number' => 'FLOAT',
-			'percent' => 'FLOAT',
-			'region' => 'INT',
-			'text' => 'TEXT',
-			'textarea' => 'TEXT',
-			'year' => 'INT'
-		),
-		'mysqli' => array(
-			'array' => 'TEXT',
-			'boolean' => 'TINYINT(1)',
-			'choice' => 'INT',
-			'country' => 'INT',
-			'date' => 'DATE',
-			'day' => 'INT',
-			'department' => 'VARCHAR(3)',
-			'integer' => 'INT',
-			'money' => 'FLOAT',
-			'month' => 'INT',
-			'multichoice' => 'TEXT',
-			'number' => 'FLOAT',
-			'percent' => 'FLOAT',
-			'region' => 'INT',
-			'text' => 'TEXT',
-			'textarea' => 'TEXT',
-			'year' => 'INT'
-		),
-		'jsonsql' => array(
-			'array' => 'array',
-			'boolean' => 'boolean',
-			'choice' => 'integer',
-			'country' => 'integer',
-			'date' => 'string',
-			'day' => 'integer',
-			'department' => 'string',
-			'integer' => 'integer',
-			'money' => 'number',
-			'month' => 'integer',
-			'multichoice' => 'object',
-			'number' => 'number',
-			'percent' => 'number',
-			'region' => 'integer',
-			'text' => 'string',
-			'textarea' => 'string',
-			'year' => 'integer'
-		)
-	);
-
-	/**
 	 * Entry point for the route paths begining by /admin/datasources
 	 *
 	 * These route paths are :
@@ -285,7 +181,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		} elseif ($crud == 'import') {
 			return $this->showDatasources($dsid, $table, 'import-table');
 		} else {
-			$database = $this->getDatabase($dsid);
+			$database = $this->getDatabase($dsid, $this->datasources, $this->databasesDir);
 			switch ($crud) {
 				case 'add':
 					return $this->addTableRow ($form, $table, $database);
@@ -476,7 +372,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					'description' => (string)$dss[0]->Description,
 				);
 				if ($datasource['type'] == 'internal' || $datasource['type'] == 'database') {
-					$database = $this->getDatabase($dsid);
+					$database = $this->getDatabase($dsid, $this->datasources, $this->databasesDir);
 					$dbname = $database->getName();
 					$datasource['label'] = $database->getLabel();
 					$datasource['database']['id'] = $database->getId();
@@ -514,7 +410,7 @@ class DataSourcesAdminController extends BaseAdminController {
 								if ($tableinfos[$i]['g6k_type'] == 'choice' && $column !== null && $column->Choices) {
 									if ($column->Choices->Source) {
 										$source = $column->Choices->Source;
-										$result = $this->executeSource($source);
+										$result = $this->executeSource($source, $this->datasources, $this->databasesDir);
 										$choices = $this->getChoicesFromSource($source, $result);
 										$tableinfos[$i]['choicesource']['id'] = (int)$source['id'];
 										$tableinfos[$i]['choicesource']['datasource'] = (string)$source['datasource'];
@@ -641,7 +537,6 @@ class DataSourcesAdminController extends BaseAdminController {
 				)
 			);
 		} catch (\Exception $e) {
-			echo $e->getMessage();
 			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
 		}
 	}
@@ -709,7 +604,6 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request
 	 * @param   string $datasource The name of the datasource
-	 * @param   string $dsid The id of the datasource
 	 * @param   string $heading The title of the header
 	 * @return  string
 	 *
@@ -1030,47 +924,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function migrateDB($dsid, $dbtype, $fromDatabase) {
-		if (($result = $this->createDB($dsid, $dbtype)) !== true) {
-			return $result;
-		}
-		$datasources = $this->datasources->xpath("/DataSources/DataSource[@id='".$dsid."']");
-		$datasource = $datasources[0];
-		$database = $this->getDatabase($dsid);
-		foreach ($datasource->children() as $child) {
-			if ($child->getName() == 'Table') {
-				$table = (string)$child['name'];
-				$infosColumns = $this->infosColumns($fromDatabase, $table);
-				$form = $this->infosColumnsToForm($table, $infosColumns);
-				if (($result = $this->createDBTable($form, $database)) !== true) {
-					return $result;
-				}
-				$fields = implode(", ", $form['field']);
-				$rows = $fromDatabase->query(Parser::SQL_SELECT_KEYWORD. $fields . Parser::SQL_FROM_KEYWORD . $table . " order by id");
-				foreach ($rows as $row) {
-					$values = array();
-					foreach ($row as $name => $value) {
-						$info = $infosColumns[$name];
-						if ($value === null || $value == '') {
-							$values[] = "NULL";
-						} else if ( $info['g6k_type'] == 'text' || $info['g6k_type'] == 'date' || preg_match("/^(text|char|varchar)/i", $info['type'])) {
-							$values[] = $database->quote($value);
-						} else  {
-							$values[] = str_replace(",", ".", $value);
-						}
-					}
-					$insert = "INSERT INTO " . $table . " (" . $fields . ") values (" . implode(", ", $values) . ")";
-					try {
-						$database->exec($insert);
-					} catch (\Exception $e) {
-						return $this->get('translator')->trans("Can't insert into %table% of database %database% : %error%", array('%table%' => $table, '%database%' => $dbschema, '%error%' => $e->getMessage()));
-					}
-				}
-			}
-		}
-		if ($database->gettype() == 'jsonsql') {
-			$database->getConnection()->commit();
-		}
-		return true;
+		return $this->migrateDatabase($dsid, $dbtype, $this->datasources, $this->datasources, $fromDatabase, $this->databasesDir, $this->get('translator'));
 	}
 
 	/**
@@ -1083,39 +937,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function createDB($dsid, $dbtype) {
-		try {
-			if ($dbtype == 'jsonsql' || $dbtype == 'sqlite') {
-				$database = $this->getDatabase($dsid);
-			} else {
-				$database = $this->getDatabase($dsid, false);
-			}
-		} catch (\Exception $e) {
-			return $this->get('translator')->trans("Can't get database : %error%", array('%error%' => $e->getMessage()));
-		}
-		switch ($database->getType()) {
-			case 'pgsql':
-				$dbschema = str_replace('-', '_', $database->getName());
-				try {
-					$database->exec("CREATE DATABASE " . $dbschema. " encoding 'UTF8'");
-					$database->setConnected(false);
-					$database->connect();
-				} catch (\Exception $e) {
-					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
-				}
-				break;
-			case 'mysql':
-			case 'mysqli':
-				$dbschema = $database->getName();
-				try {
-					$database->exec("CREATE DATABASE IF NOT EXISTS " . $dbschema . " character set utf8");
-					$database->setConnected(false);
-					$database->connect();
-				} catch (\Exception $e) {
-					return $this->get('translator')->trans("Can't create database %database% : %error%", array('%database%' => $dbschema, '%error%' => $e->getMessage()));
-				}
-				break;
-		}
-		return true;
+		return $this->createDatabase($dsid, $dbtype, $this->datasources, $this->databasesDir, $this->get('translator'));
 	}
 
 	/**
@@ -1128,68 +950,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function createDBTable(&$form, $database) {
-		$create = "create table " . $form['table-name'] . " (\n";
-		if (!in_array('id', $form['field'])) {
-			switch ($database->getType()) {
-				case 'jsonsql':
-					$create .= "id integer not null primary key autoincrement,\n";
-					break;
-				case 'sqlite':
-					$create .= "id INTEGER not null primary key autoincrement,\n";
-					break;
-				case 'pgsql':
-					$create .= "id serial primary key,\n";
-					break;
-				case 'mysql':
-				case 'mysqli':
-					$create .= "id INT not null primary key auto_increment,\n";
-					break;
-			}
-		}
-		foreach ($form['field'] as $i => $field) {
-			if ($field != '') {
-				if ($database->getType() == 'jsonsql') {
-					$create .= $field . " " . $form['type'][$i];
-				} else {
-					$create .= $field . " " . $this->datatypes[$database->getType()][$form['type'][$i]];
-				}
-				if ($form['notnull'][$i] == 1) {
-					$create .= " not null";
-				}
-				if ($database->getType() =='jsonsql' && $form['label'][$i] != '') {
-					$create .= " title " . $database->quote($form['label'][$i]);
-				}
-				if ($database->getType() =='jsonsql' && $form['description'][$i] != '') {
-					$create .= " comment " . $database->quote($form['description'][$i]);
-				}
-				if ($i < count($form['field']) - 1 ) {
-					$create .= ",";
-				}
-				$create .= "\n";
-			}
-		}
-		$create .= ")";
-		try {
-			$database->exec($create);
-			if ($form['table-label'] != '' && $database->getType() == 'jsonsql') {
-				$alter = "alter table " . $form['table-name'] . " modify title  " . $database->quote($form['table-label']);
-				$database->exec($alter);
-			}
-			if ($form['table-description'] != '' && $database->getType() == 'jsonsql') {
-				$alter = "alter table " . $form['table-name'] . " modify comment  " . $database->quote($form['table-description']);
-				$database->exec($alter);
-			}
-		} catch (\Exception $e) {
-			return $this->get('translator')->trans("Can't create table %table% : %error%", array('%table%' => $form['table-name'], '%error%' => $e->getMessage()));
-		}
-		if (!in_array('id', $form['field'])) {
-			array_unshift($form['field'], 'id');
-			array_unshift($form['type'], 'integer');
-			array_unshift($form['notnull'], 1);
-			array_unshift($form['label'], 'id');
-			array_unshift($form['description'], 'Identifiant interne');
-		}
-		return true;
+		return $this->createDatabaseTable($form, $database, $this->get('translator'));
 	}
 
 	/**
@@ -1203,298 +964,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function editDBTable($form, $table, $database) {
-		$infosColumns = $this->infosColumns($database, $table);
-		if (strcasecmp($form['table-name'], $table) != 0) {
-			$rename = "ALTER TABLE $table RENAME TO {$form['table-name']}";
-			try {
-				$database->exec($rename);
-			} catch (\Exception $e) {
-				return $this->get('translator')->trans("Can't rename table %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
-			}
-		}
-		$col = 0;
-		$alterdefsSQLite = array();
-		foreach($infosColumns as $name => $info) {
-			$alterSQLite = false;
-			if (strcasecmp($form['field'][$col], $name) != 0) {
-				if ($database->getType() == 'sqlite') {
-					$alterSQLite = true;
-				} else {
-					$rename = "";
-					switch ($database->getType()) {
-						case 'mysql':
-						case 'mysqli':
-							$rename = "ALTER TABLE $table CHANGE COLUMN $name {$form['field'][$col]}";
-							break;
-						case 'jsonsql':
-						case 'pgsql':
-							$rename = "ALTER TABLE $table RENAME COLUMN $name TO {$form['field'][$col]}";
-							break;
-					}
-					try {
-						$database->exec($rename);
-					} catch (\Exception $e) {
-						return $this->get('translator')->trans("Can't rename column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
-					}
-				}
-			}
-			if ($form['type'][$col] != $info['g6k_type']) {
-				if ($database->getType() == 'sqlite') {
-					$alterSQLite = true;
-				} else {
-					$changetype = "";
-					if ($database->getType() == 'jsonsql') {
-						$changetype = "ALTER TABLE $table MODIFY COLUMN $name SET TYPE {$form['type'][$col]}";
-						try {
-							$database->exec($changetype);
-						} catch (\Exception $e) {
-							return $this->get('translator')->trans("Can't modify type of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
-						}
-					} else {
-						$newDBType = $this->datatypes[$database->getType()][$form['type'][$col]];
-						if ($info['type'] != $newDBType) {
-							switch ($database->getType()) {
-								case 'mysql':
-								case 'mysqli':
-									$changetype = "ALTER TABLE $table MODIFY COLUMN $name $newDBType";
-									break;
-								case 'pgsql':
-									$changetype = "ALTER TABLE $table ALTER COLUMN $name SET DATA TYPE $newDBType";
-									break;
-							}
-							try {
-								$database->exec($changetype);
-							} catch (\Exception $e) {
-								return $this->get('translator')->trans("Can't modify type of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
-							}
-						}
-					}
-				}
-			}
-			if ($form['notnull'][$col] != $info['notnull']) {
-				if ($database->getType() == 'sqlite') {
-					$alterSQLite = true;
-				} else {
-					$changenullable = "";
-					switch ($database->getType()) {
-						case 'jsonsql':
-							if ($form['notnull'][$col] == 1) {
-								$changenullable = "ALTER TABLE $table MODIFY COLUMN $name SET NOT NULL";
-							} else {
-								$changenullable = "ALTER TABLE $table MODIFY COLUMN $name REMOVE NOT NULL";
-							}
-							break;
-						case 'mysql':
-						case 'mysqli':
-							$newDBType = $this->datatypes[$database->getType()][$form['type'][$col]];
-							$newNullable = $form['notnull'][$col] == 1 ? 'NOT NULL' : 'NULL';
-							$changenullable = "ALTER TABLE $table MODIFY COLUMN $name $newDBType $newNullable";
-							break;
-						case 'pgsql':
-							if ($form['notnull'][$col] == 1) {
-								$changenullable = "ALTER TABLE $table ALTER COLUMN $name SET NOT NULL";
-							} else {
-								$changenullable = "ALTER TABLE $table ALTER COLUMN $name DROP NOT NULL";
-							}
-							break;
-					}
-					try {
-						$database->exec($changenullable);
-					} catch (\Exception $e) {
-						return $this->get('translator')->trans("Can't alter 'NOT NULL' property of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
-					}
-				}
-			}
-			if ($alterSQLite) {
-				$alterdefs = "CHANGE $name " . $form['field'][$col] . " " . $this->datatypes[$database->getType()][$form['type'][$col]];
-				if ($form['field'][$col] == 'id') {
-					$alterdefs .= " PRIMARY KEY AUTOINCREMENT"; 
-				} elseif ($form['notnull'][$col] == 1) {
-					$alterdefs .= " NOT NULL"; 
-				}
-				$alterdefsSQLite[] = $alterdefs;
-			}
-			if ($form['label'][$col] != $info['label'] && $database->getType() == 'jsonsql') {
-				$changelabel = "ALTER TABLE $table MODIFY COLUMN $name SET TITLE " . $database->quote($form['label'][$col]);
-				try {
-					$database->exec($changelabel);
-				} catch (\Exception $e) {
-					return $this->get('translator')->trans("Can't modify title of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
-				}
-			}
-			if ($form['description'][$col] != $info['description'] && $database->getType() == 'jsonsql') {
-				$changedescription = "ALTER TABLE $table MODIFY COLUMN $name SET COMMENT " . $database->quote($form['description'][$col]);
-				try {
-					$database->exec($changedescription);
-				} catch (\Exception $e) {
-					return $this->get('translator')->trans("Can't modify description of column %column% of table %table% : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
-				}
-			}
-			$col++;
-		}
-		if (count($alterdefsSQLite) > 0) {
-			$this->alterSQLiteTable($table, implode(" ", $alterdefsSQLite), $database);
-		}
-		$fieldsCount = count($form['field']);
-		for ($i = $col; $i < $fieldsCount; $i++) {
-			$name = $form['field'][$i];
-			if ($name !='') {
-				$type = $form['type'][$i];
-				$label = $form['label'][$i];
-				$description = $form['description'][$i];
-				$notnull = isset($form['notnull'][$i]) && $form['notnull'][$i] == 1 ? 'NOT NULL' : '';
-				$dbype = $this->datatypes[$database->getType()][$type];
-				$addcolumn = "";
-				switch ($database->getType()) {
-					case 'jsonsql':
-						$addcolumn = "ALTER TABLE $table ADD COLUMN $name $type $notnull TITLE " . $database->quote($label) . " COMMENT " . $database->quote($description);
-						break;
-					case 'sqlite':
-						$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
-						break;
-					case 'mysql':
-					case 'mysqli':
-						$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
-						break;
-					case 'pgsql':
-						$addcolumn = "ALTER TABLE $table ADD COLUMN $name $dbype $notnull";
-						break;
-				}
-				try {
-					$database->exec($addcolumn);
-				} catch (\Exception $e) {
-					return $this->get('translator')->trans("Can't add the column '%column%' into table '%table%' : %error%", array('%column%' => $name, '%table%' => $table, '%error%' => $e->getMessage()));
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Emulates a 'ALTER TABLE' for columns of a SQLite database.
-	 *
-	 * ALTER TABLE tbl_name alter_specification [, alter_specification] ...
-	 *
-	 * alter_specification:
-	 *   ADD column_definition
-	 * | DROP column_definition
-	 * | CHANGE old_col_name column_definition
-	 *
-	 * column_definition:
-	 *   same as for create table statements
-	 *
-	 * @access  protected
-	 * @param   string $table The table name
-	 * @param   string $alterdefs Comma separated alter specifications
-	 * @param   \App\G6K\Model\Database $database  The Database object
-	 * @return  bool Always true
-	 */
-	protected function alterSQLiteTable($table, $alterdefs, $database){
-		if ($alterdefs != ''){
-			$stmt = $database->prepare("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = :table ORDER BY type DESC");
-			$database->bindValue($stmt, ':table', $table);
-			$result = $database->execute($stmt);
-			if ($result !== false && count($result) > 0) {
-				$row = $result[0];
-				$tmpname = 't'.time();
-				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ", preg_replace("/[\(]/", "( ", $row['sql'], 1))));
-				$createtemptableSQL = 'CREATE TEMPORARY '.substr(trim(preg_replace("'" . $table . "'", $tmpname, $origsql, 1)), 6);
-				$i = 0;
-				$defs = preg_split("/[,]+/", $alterdefs, -1, PREG_SPLIT_NO_EMPTY);
-				$prevword = $table;
-				$oldcols = preg_split("/[,]+/", substr(trim($createtemptableSQL), strpos(trim($createtemptableSQL), '(') + 1), -1, PREG_SPLIT_NO_EMPTY);
-				$newcols = array();
-				$oldcolsSize = sizeof($oldcols);
-				for($i = 0; $i < $oldcolsSize; $i++){
-					$colparts = preg_split("/[\s]+/", $oldcols[$i], -1, PREG_SPLIT_NO_EMPTY);
-					$oldcols[$i] = $colparts[0];
-					$newcols[$colparts[0]] = $colparts[0];
-				}
-				$newcolumns = '';
-				$oldcolumns = '';
-				reset($newcols);
-				foreach($newcols as $key => $val) {
-					$newcolumns .= ($newcolumns ? ', ' : '') . $val;
-					$oldcolumns .= ($oldcolumns ? ', ' : '') . $key;
-				}
-				$copytotempsql = 'INSERT INTO ' . $tmpname . '(' . $newcolumns . ') SELECT ' . $oldcolumns . ' FROM ' . $table;
-				$createtesttableSQL = $createtemptableSQL;
-				foreach ($defs as $def) {
-					$defparts = preg_split("/[\s]+/", $def, -1, PREG_SPLIT_NO_EMPTY);
-					$action = strtolower($defparts[0]);
-					$defpartsSize = sizeof($defparts);
-					switch($action){
-						case 'add':
-							if ($defpartsSize <= 2) {
-								throw new \Exception('near "'.$defparts[0].($defparts[1]?' '.$defparts[1]:'').'": syntax error');
-							}
-							$createtesttableSQL = substr($createtesttableSQL,0,strlen($createtesttableSQL)-1).',';
-							for($i = 1; $i < $defpartsSize; $i++)
-								$createtesttableSQL.=' '.$defparts[$i];
-							$createtesttableSQL.=')';
-							break;
-						case 'change':
-							if ($defpartsSize <= 3) {
-								throw new \Exception('near "'.$defparts[0].($defparts[1]?' '.$defparts[1]:'').($defparts[2]?' '.$defparts[2]:'').'": syntax error');
-							}
-							if($severpos = strpos($createtesttableSQL,' '.$defparts[1].' ')){
-								if($newcols[$defparts[1]] != $defparts[1]){
-									throw new \Exception('unknown column "'.$defparts[1].'" in "'.$table.'"');
-								}
-								$newcols[$defparts[1]] = $defparts[2];
-								$nextcommapos = strpos($createtesttableSQL,',',$severpos);
-								$insertval = '';
-								for ($i = 2; $i < $defpartsSize; $i++) {
-									$insertval .= ' ' . $defparts[$i];
-								}
-								if ($nextcommapos)
-									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos) . $insertval.substr($createtesttableSQL, $nextcommapos);
-								else
-									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos - (strpos($createtesttableSQL, ',') ? 0 : 1)) . $insertval . ')';
-							} else {
-								throw new \Exception('unknown column "' . $defparts[1] . '" in "' . $table . '"');
-							}
-							break;
-						case 'drop':
-							if ($defpartsSize < 2) {
-								throw new \Exception('near "' . $defparts[0] . ($defparts[1] ? ' ' . $defparts[1] : '') . '" : syntax error');
-							}
-							if ($severpos = strpos($createtesttableSQL, ' ' . $defparts[1] . ' ')) {
-								$nextcommapos = strpos($createtesttableSQL, ',', $severpos);
-								if ($nextcommapos)
-									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos) . substr($createtesttableSQL, $nextcommapos + 1);
-								else
-									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos - (strpos($createtesttableSQL, ',') ? 0 : 1) - 1) . ')';
-								unset($newcols[$defparts[1]]);
-							} else {
-								throw new \Exception('unknown column "' . $defparts[1] . '" in "' . $table . '"');
-							}
-							break;
-						default:
-							throw new \Exception('near "' . $prevword . '": syntax error');
-					}
-					$prevword = $defparts[$defpartsSize - 1];
-				}
-				$createnewtableSQL = 'CREATE ' . substr(trim(preg_replace("'" . $tmpname . "'", $table, $createtesttableSQL, 1)), 17);
-				$newcolumns = '';
-				$oldcolumns = '';
-				reset($newcols);
-				foreach($newcols as $key => $val) {
-					$newcolumns .= ($newcolumns ? ', ' : '') . $val;
-					$oldcolumns .= ($oldcolumns ? ', ' : '') . $key;
-				}
-				$copytonewsql = 'INSERT INTO ' . $table . '(' . $newcolumns . ') SELECT ' . $oldcolumns . ' FROM ' . $tmpname;
-				$database->exec($createtemptableSQL); //create temp table
-				$database->exec($copytotempsql); //copy to table
-				$this->dropDBTable($table, $database); //drop old table
-				$database->exec($createnewtableSQL); //recreate original table
-				$database->exec($copytonewsql); //copy back to original table
-				$this->dropDBTable($tmpname, $database); //drop temp table
-			} else {
-				throw new \Exception('no such table: '.$table);
-			}
-			return true;
-		}
+		return $this->editTableStructure($form, $table, $database, $this->datasources, $this->get('translator'));
 	}
 
 	/**
@@ -1509,7 +979,8 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function addDBTableRow($form, $table, $database, $restore = false) {
-		return $this->insertRowIntoTable($form, $table, $database, $this->get('translator'), $restore);
+		$infosColumns = $this->infosColumns($this->datasources, $database, $table);
+		return $this->insertRowIntoTable($form, $table, $infosColumns, $database, $this->get('translator'), $restore);
 	}
 
 	/**
@@ -1523,7 +994,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function updateDBTableRow($form, $table, $database) {
-		return $this->updateRowInTable($form, $table, $database, $this->get('translator'));
+		return $this->updateRowInTable($form, $table, $this->datasources, $database, $this->get('translator'));
 	}
 
 	/**
@@ -1550,12 +1021,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function dropDBTable($table, $database) {
-		try {
-			$database->exec("DROP TABLE ".$table);
-		} catch (\Exception $e) {
-			return $this->get('translator')->trans("Can't drop %table% : %error%", array('%table%' => $table, '%error%' => $e->getMessage()));
-		}
-		return true;
+		return $this->dropDatabaseTable($table, $database, $this->get('translator'));
 	}
 
 	/**
@@ -1920,7 +1386,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 			}
 			if (! $sameDatabase) {
-				$fromDatabase = $this->getDatabase($dsid);
+				$fromDatabase = $this->getDatabase($dsid, $this->datasources, $this->databasesDir);
 			}
 		}
 		switch($type) {
@@ -2045,7 +1511,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						break;
 					case 'pgsql':
 					case 'mysqli':
-						$database = $this->getDatabase($dsid);
+						$database = $this->getDatabase($dsid, $this->datasources, $this->databasesDir);
 						$tables = $datasource->getElementsByTagName('Table');
 						foreach ($tables as $table) {
 							$this->dropDBTable($table->getAttribute("name"), $database);

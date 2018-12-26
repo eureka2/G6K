@@ -149,7 +149,7 @@ class ImportDataSourceCommand extends CommandBase
 					$progressBar->finish();
 				}
 				$output->writeln("");
-				$this->info($output, "Updating table %s%", array('%s%' => $table));
+				$this->info($output, "Importing table %s%", array('%s%' => $table));
 				$currentTable = $table;
 				if (! $isHtml){
 					$progressBar = new ProgressBar($output, $nrows);

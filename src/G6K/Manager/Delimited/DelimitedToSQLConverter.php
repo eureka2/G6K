@@ -57,8 +57,8 @@ class DelimitedToSQLConverter extends SQLConverterBase {
 		}
 		$delimiter = $inputs['table-data-delimiter'] ?? ';';
 		$hasheader = isset($inputs["table-data-has-header"]) && $inputs["table-data-has-header"] == "1";
-		$database = $this->getDatabase($dsid);
-		$infosColumns = $this->infosColumns($database, $table);
+		$database = $this->getDatabase($dsid, $this->datasources, $this->databasesDir);
+		$infosColumns = $this->infosColumns($this->datasources, $database, $table);
 		$descriptor = $this->infosColumnsToForm($table, $infosColumns);
 		if (($handle = fopen($file, 'r')) !== FALSE) {
 			$header = $hasheader ? NULL : array_filter(array_keys($infosColumns), function($k) {
@@ -82,7 +82,7 @@ class DelimitedToSQLConverter extends SQLConverterBase {
 					} else {
 						$data = array_combine($header, $row);
 						$data['id'] = '0';
-						if (($result = $this->insertRowIntoTable($data, $table, $database, $translator)) !== true) {
+						if (($result = $this->insertRowIntoTable($data, $table, $infosColumns, $database, $translator)) !== true) {
 							throw new \Exception($result);
 						}
 						if ($fprogress !== null) {

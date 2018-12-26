@@ -316,12 +316,6 @@ class SQLToJSONConverter {
 			case 'sqlite':
 				$tableinfos = $database->query("PRAGMA table_info('".$table."')");
 				break;
-			case 'pgsql':
-				$tableinfos = $database->query("SELECT ordinal_position as cid, column_name as name, data_type as type, is_nullable, column_default as dflt_value FROM information_schema.columns where table_name = '$table' order by ordinal_position");
-				foreach($tableinfos as &$info) {
-					$info['notnull'] = $info['is_nullable'] == 'NO' ? 1 : 0;
-				}
-				break;
 			case 'mysql':
 			case 'mysqli':
 				$dbname = str_replace('-', '_', $database->getName());
@@ -329,6 +323,12 @@ class SQLToJSONConverter {
 				foreach($tableinfos as &$info) {
 					$info['notnull'] = $info['is_nullable'] == 'NO' ? 1 : 0;
 					$info['pk'] = $info['column_key'] == 'PRI' ? 1 : 0;
+				}
+				break;
+			case 'pgsql':
+				$tableinfos = $database->query("SELECT ordinal_position as cid, column_name as name, data_type as type, is_nullable, column_default as dflt_value FROM information_schema.columns where table_name = '$table' order by ordinal_position");
+				foreach($tableinfos as &$info) {
+					$info['notnull'] = $info['is_nullable'] == 'NO' ? 1 : 0;
 				}
 				break;
 			default:
