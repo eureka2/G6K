@@ -35,7 +35,6 @@ use App\G6K\Manager\Json\JsonSQL;
  *
  *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class Database {
@@ -181,7 +180,7 @@ class Database {
 	 *
 	 * @access  public
 	 * @param   \App\G6K\Model\Simulator|null $simulator The Simulator object that uses this database 
-	 * @param   string      $databasesDir The "databases" directory, specially for SQLite.
+	 * @param   string|null $databasesDir The "databases" directory, specially for SQLite.
 	 * @param   int         $id The ID of the database
 	 * @param   string      $type The type of the database
 	 * @param   string      $name The name of the database
@@ -205,6 +204,17 @@ class Database {
 	 */
 	public function getSimulator() {
 		return $this->simulator;
+	}
+
+	/**
+	 * Returns the database directory
+	 *
+	 * @access  public
+	 * @return  string|null The database directory
+	 *
+	 */
+	public function getDatabasesDir() {
+		return $this->databasesDir;
 	}
 
 	/**

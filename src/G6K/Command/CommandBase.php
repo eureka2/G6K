@@ -149,6 +149,7 @@ abstract class CommandBase extends Command
 			$parameters['database_version'] = $this->getParameterValue('DB_VERSION');
 			$parameters['locale'] = $this->getParameterValue('G6K_LOCALE');
 			$parameters['public_dir'] = $this->getParameterValue('PUBLIC_DIR');
+			$parameters['g6k_upload_directory'] = $this->getParameterValue('G6K_UPLOAD_DIRECTORY');
 			return $parameters;
 		} catch (\Exception $e) {
 			return false;
@@ -168,6 +169,18 @@ abstract class CommandBase extends Command
 		$value = str_replace('%kernel.project_dir%', $this->projectDir, $value);
 		$value = str_replace('%PUBLIC_DIR%', getenv('PUBLIC_DIR'), $value);
 		return $value;
+	}
+
+	/**
+	 * Gets a parameter with its name.
+	 *
+	 * @access  protected
+	 * @param   string $parameter The parameter name
+	 * @return  string The parameter value
+	 *
+	 */
+	protected function getConfigParameter($parameter) {
+		return $this->parameters[$parameter] ?? null;
 	}
 
 	/**

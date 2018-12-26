@@ -233,6 +233,7 @@ class JSONToSQLConverter extends SQLConverterBase {
 			'datasource-database-password' => $this->database->getPassword()
 		);
 	}
+
 }
 
 ?>

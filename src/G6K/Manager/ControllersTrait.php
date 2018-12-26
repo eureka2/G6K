@@ -698,7 +698,9 @@ trait ControllersTrait {
 		$application->setAutoExit(false);
 		$command['--no-debug'] = true;
 		$command['--no-interaction'] = true;
-		$command['--html'] = true;
+		if (preg_match("/^g6k:/", $command['command'])) {
+			$command['--html'] = true;
+		}
 		$input = new ArrayInput($command);
 		$output = new BufferedOutput(
 			OutputInterface::VERBOSITY_NORMAL, // VERBOSITY_QUIET, VERBOSITY_NORMAL, VERBOSITY_VERBOSE, VERBOSITY_VERY_VERBOSE or VERBOSITY_DEBUG
@@ -734,7 +736,9 @@ trait ControllersTrait {
 		$application->setAutoExit(false);
 		$command['--no-debug'] = true;
 		$command['--no-interaction'] = true;
-		$command['--html'] = true;
+		if (preg_match("/^g6k:/", $command['command'])) {
+			$command['--html'] = true;
+		}
 		$input = new ArrayInput($command);
 		$input->setInteractive(false);
 		$output = new StreamedOutput(fopen('php://stdout', 'w'));

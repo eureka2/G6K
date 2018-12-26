@@ -60,10 +60,11 @@ t.add("Can not find the DataSources.xml file from the other instance '%s%'", "Im
 t.add("Can not find the file %name% in '%in%'", "Impossible de trouver le fichier %name% dans '%in%'", "commands", "fr");
 t.add("Can not find the simulators directory of the other instance '%s%'", "Impossible de trouver le r\u00e9pertoire des simulateurs de l'autre instance '%s%'", "commands", "fr");
 t.add("Can not find the templates directory of the other instance '%s%'", "Impossible de trouver le r\u00e9pertoire de mod\u00e8les de page de l'autre instance '%s%'", "commands", "fr");
-t.add("CAUTION: Only SQLite databases can be copied with this command.", "ATTENTION: Seules les bases de donn\u00e9es SQLite peuvent \u00eatre copi\u00e9es avec cette commande.", "commands", "fr");
+t.add("CAUTION: Only internal databases will be copied with this command.", "ATTENTION: Seules les bases de donn\u00e9es internes seront copi\u00e9es avec cette commande.", "commands", "fr");
 t.add("Copies one or all data sources from another instance of G6K.", "Copie une ou toutes les sources de donn\u00e9es depuis une autre instance de G6K.", "commands", "fr");
 t.add("Copies one or all simulators from another instance of G6K.", "Copie un ou tous les simulateurs depuis une autre instance de G6K.", "commands", "fr");
 t.add("Copies one or all views from another instance of G6K.", "Copie une ou toutes les vues depuis une autre instance de G6K.", "commands", "fr");
+t.add("Copying table %s% from %from% to %to%", "Copie de la table %s% de %from% \u00e0 %to%", "commands", "fr");
 t.add("Copying the datasource '%datasourcename%' from '%anotherg6kpath%'", "Copie de la source de donn\u00e9es '%datasourcename%' depuis '%anotherg6kpath%'", "commands", "fr");
 t.add("Copying the simulator '%simulatorname%' located in '%simulatorpath%'", "Copie du simulateur '%simulatorname%' situ\u00e9 dans '%simulatorpath%'", "commands", "fr");
 t.add("Copying the view '%view%' from '%anotherg6kpath%'", "Copie de la vue '%view%' de '%anotherg6kpath%'", "commands", "fr");
@@ -106,6 +107,7 @@ t.add("getCommandDescription method is not implemented", "la m\u00e9thode getCom
 t.add("getCommandHelp method is not implemented", "la m\u00e9thode getCommandHelp n'est pas impl\u00e9ment\u00e9e", "commands", "fr");
 t.add("getCommandName method is not implemented", "la m\u00e9thode getCommandName n'est pas impl\u00e9ment\u00e9e", "commands", "fr");
 t.add("If the name of the simulator is 'all', all simulators will be validated.", "Si le nom du simulateur est 'all', tous les simulateurs seront valid\u00e9s.", "commands", "fr");
+t.add("Importing table %s%", "Import de la table %s%", "commands", "fr");
 t.add("Importing the datasource '%datasourcename%' located in '%datasourcepath%'", "Importation de la source de donn\u00e9es '%datasourcename%' situ\u00e9e dans '%datasourcepath%'", "commands", "fr");
 t.add("Importing the file '%filepath%' into the table '%tablename%'", "Importation du fichier '%filepath%' dans la table '%tablename%'", "commands", "fr");
 t.add("Importing the simulator '%simulatorname%' located in '%simulatorpath%'", "Importation du simulateur '%simulatorname%' situ\u00e9 dans '%simulatorpath%'", "commands", "fr");
@@ -243,7 +245,6 @@ t.add("To copy all simulators, enter 'all' as simulator name.", "Pour copier tou
 t.add("To copy all views, enter 'all' as view name.", "Pour copier toutes les vues, entrez 'all' comme nom de vue.", "commands", "fr");
 t.add("Unable to get parameters: %s%", "Impossible d'obtenir les param\u00e8tres : %s%", "commands", "fr");
 t.add("Updates (or Creates) the manifest.json file for the assets versioning.", "Met \u00e0 jour (ou cr\u00e9e) le fichier manifest.json pour la gestion de version des ressources.", "commands", "fr");
-t.add("Updating table %s%", "Mise \u00e0 jour de la table %s%", "commands", "fr");
 t.add("Validate against the schema only, not the content.", "Valider par rapport au sch\u00e9ma seulement, pas le contenu.", "commands", "fr");
 t.add("Validates a simulator against the Simulator.xsd schema file.", "Valide un simulateur par rapport au fichier de sch\u00e9ma Simulator.xsd.", "commands", "fr");
 t.add("Validate working version.", "Valider la version de travail.", "commands", "fr");
