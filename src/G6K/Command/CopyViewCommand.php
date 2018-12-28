@@ -29,6 +29,7 @@ namespace App\G6K\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
@@ -75,6 +76,7 @@ class CopyViewCommand extends ViewCommandBase
 			. $this->translator->trans("- the url (viewurl) of the website where this view is used.")."\n"
 			. "\n"
 			. $this->translator->trans("To copy all views, enter 'all' as view name.")."\n"
+			. $this->translator->trans("In this case, one or more views can be excluded with the --exclude (-x) option.")."\n"
 		;
 	}
 
@@ -105,7 +107,14 @@ class CopyViewCommand extends ViewCommandBase
 	 * @inheritdoc
 	 */
 	protected function getCommandOptions() {
-		return array();
+		return array(
+			array(
+				'exclude', 
+				'x', 
+				InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 
+				$this->translator->trans("One or more views to exclude when <viewname> is 'all'."),
+			)
+		);
 	}
 
 	/**
@@ -130,6 +139,7 @@ class CopyViewCommand extends ViewCommandBase
 		$view = $input->getArgument('viewname');
 		$anotherg6kpath = str_replace('\\', '/', $input->getArgument('anotherg6kpath'));
 		$viewurl = $input->getArgument('viewurl');
+		$exclude = $input->getOption('exclude') ?? [];
 		if (! file_exists($anotherg6kpath)) {
 			$this->error($output, "The directory of the other instance '%s%' doesn't exists", array('%s%' => $anotherg6kpath));
 			return 1;
@@ -169,7 +179,10 @@ class CopyViewCommand extends ViewCommandBase
 			$finder = new Finder();
 			$finder->directories()->in($templatesDir1)->depth('== 0')->exclude(['admin', 'base', 'bundles', 'Default', 'Demo', 'Theme']);
 			foreach ($finder as $dir) {
-				$views[] = $dir->getRelativePathname();
+				$view = $dir->getRelativePathname();
+				if (!in_array($view, $exclude)) {
+					$views[] = $view;
+				}
 			}
 		} else {
 			$views[] = $view;
@@ -212,7 +225,7 @@ class CopyViewCommand extends ViewCommandBase
 		$fsystem = new Filesystem();
 		try {
 			$fsystem->mkdir($templatesDir2 . '/' . $view);
-			$fsystem->mirror($templatesDir1 . '/' . $view, $templatesDir2 . '/' . $view, null, ['delete' => true]);
+			$fsystem->mirror($templatesDir1 . '/' . $view, $templatesDir2 . '/' . $view, null);
 		} catch (IOExceptionInterface $e) {
 			$this->error($output, "Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $templatesDir2, '%message%' => $e->getMessage()));
 			return false;
@@ -220,7 +233,30 @@ class CopyViewCommand extends ViewCommandBase
 		$this->migrate3To4($view, $output);
 		try {
 			$fsystem->mkdir($assetsDir2 . '/' . $view);
-			$fsystem->mirror($assetsDir1 . '/' . $view, $assetsDir2 . '/' . $view, null, ['delete' => true]);
+			$simulatorsDir1 = $anotherg6kpath."/var/data/simulators";
+			if (! file_exists($simulatorsDir1)) {
+				$simulatorsDir1 = $anotherg6kpath."/src/EUREKA/G6KBundle/Resources/data/simulators";
+			}
+			$simulatorsDir2 = $this->projectDir."/var/data/simulators";
+			$dirIterator = new \RecursiveIteratorIterator(new \RecursiveCallbackFilterIterator(
+				new \RecursiveDirectoryIterator($assetsDir1 . '/' . $view),
+				function (\SplFileInfo $current, $key, \RecursiveIterator $iterator) use ($view, $simulatorsDir1, $simulatorsDir2) {
+					if ($iterator->hasChildren()) {
+						return true;
+					}
+					if ($current->isFile()) {
+						$name = str_replace('\\', '/', $current->getRealPath());
+						if (preg_match("|/".$view."/css/([^/]+).css$|", $name, $m)) {
+							if (file_exists($simulatorsDir1."/".$m[1].".xml") && !file_exists($simulatorsDir2."/".$m[1].".xml")) {
+								return false;
+							}
+						}
+						return true;
+					}
+					return true;
+				}
+			), \RecursiveIteratorIterator::SELF_FIRST);
+			$fsystem->mirror($assetsDir1 . '/' . $view, $assetsDir2 . '/' . $view, $dirIterator);
 		} catch (IOExceptionInterface $e) {
 			$this->error($output, "Error while creating '%view%' in '%viewpath%' : %message%", array('%view%' => $view, '%viewpath%' => $assetsDir2, '%message%' => $e->getMessage()));
 			$this->comment($output, "The view '%s%' is partially created", array('%s%' => $view));

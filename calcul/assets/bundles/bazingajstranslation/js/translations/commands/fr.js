@@ -126,6 +126,9 @@ t.add("In line %line%, the expression must not be used with the operator '%opera
 t.add("In line %line%, the operator '%operator%' used in the element '%element%' of '%simulatorname%' is invalid.", "En ligne %line%, l'op\u00e9rateur '%operator%' utilis\u00e9 dans l'\u00e9l\u00e9ment '%element%' de '%simulatorname%' n'est pas valide.", "commands", "fr");
 t.add("In line %line%, the source '%source%' used by an element '%element%' of '%simulatorname%' doesn't exists.", "En ligne %line%, la source '%source%' utilis\u00e9e par un \u00e9l\u00e9ment '%element%' de '%simulatorname%' n'existe pas.", "commands", "fr");
 t.add("In line %line%, the template '%template%' associated to step %step% of '%simulatorname%' doesn't exists.", "En ligne %line%, le mod\u00e8le de page '%template%' associ\u00e9 \u00e0 l'\u00e9tape %step% de '%simulatorname%' n'existe pas.", "commands", "fr");
+t.add("In this case, one or more data sources can be excluded with the --exclude (-x) option.", "Dans ce cas, une ou plusieurs sources de donn\u00e9es peuvent \u00eatre exclues avec l'option --exclude (-x).", "commands", "fr");
+t.add("In this case, one or more simulators can be excluded with the --exclude (-x) option.", "Dans ce cas, un ou plusieurs simulateurs peuvent \u00eatre exclus avec l'option --exclude (-x).", "commands", "fr");
+t.add("In this case, one or more views can be excluded with the --exclude (-x) option.", "Dans ce cas, une ou plusieurs vues peuvent \u00eatre exclues avec l'option --exclude (-x).", "commands", "fr");
 t.add("Line %line% %column%: %message%", "Ligne %line% %column%: %message%", "commands", "fr");
 t.add("Migrates templates created under Symfony 2 or 3.", "Migre les mod\u00e8les de page cr\u00e9\u00e9s sous Symfony 2 ou 3.", "commands", "fr");
 t.add("migration of the templates", "migration des mod\u00e8les de page", "commands", "fr");
@@ -143,6 +146,9 @@ t.add("Multiple templates directories were found in the other instance '%s%'", "
 t.add("Multiple templates directories were found in the other instance, please choose one :", "Plusieurs r\u00e9pertoires de mod\u00e8les de page ont \u00e9t\u00e9 trouv\u00e9s dans l\u2019autre instance, veuillez en choisir un:", "commands", "fr");
 t.add("No assets from this view were found in the manifest", "\u00c9diteur du registre de ressources : Aucune ressource de cette vue n'a \u00e9t\u00e9 trouv\u00e9e dans le registre", "commands", "fr");
 t.add("No column header in delimited text file.", "Aucun en-t\u00eate de colonne dans le fichier texte d\u00e9limit\u00e9.", "commands", "fr");
+t.add("One or more data sources to exclude when <datasourcename> is 'all'.", "Une ou plusieurs sources de donn\u00e9es \u00e0 exclure lorsque <datasourcename> est 'all'.", "commands", "fr");
+t.add("One or more simulators to exclude when <simulatorname> is 'all'.", "Un ou plusieurs simulateurs \u00e0 exclure lorsque <simulatorname> est 'all'.", "commands", "fr");
+t.add("One or more views to exclude when <viewname> is 'all'.", "Une ou plusieurs vues \u00e0 exclure lorsque <viewname> est 'all'.", "commands", "fr");
 t.add("Optionally, the migration can be restricted to a view (viewname)", "La migration peut optionnellement \u00eatre limit\u00e9e \u00e0 une vue (viewname)", "commands", "fr");
 t.add("Refreshing manifest done!", "La reg\u00e9n\u00e9ration du registre est termin\u00e9e!", "commands", "fr");
 t.add("Refreshing manifest not done!", "La reg\u00e9n\u00e9ration du registre ne s'est pas correctement termin\u00e9e!", "commands", "fr");
