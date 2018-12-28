@@ -240,7 +240,7 @@ class CopyViewCommand extends ViewCommandBase
 			$simulatorsDir2 = $this->projectDir."/var/data/simulators";
 			$dirIterator = new \RecursiveIteratorIterator(new \RecursiveCallbackFilterIterator(
 				new \RecursiveDirectoryIterator($assetsDir1 . '/' . $view),
-				function ($current, $key, $iterator) use ($view, $simulatorsDir1, $simulatorsDir2) {
+				function (\SplFileInfo $current, $key, \RecursiveIterator $iterator) use ($view, $simulatorsDir1, $simulatorsDir2) {
 					if ($iterator->hasChildren()) {
 						return true;
 					}
