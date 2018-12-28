@@ -38,6 +38,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Input\ArrayInput;
 
 /**
  * Base class for all command of the g6k namespace.
@@ -291,6 +292,25 @@ abstract class CommandBase extends Command
 			$io->title($this->translator->trans($this->name));
 		}
 		return 1;
+	}
+
+	/**
+	 * Run an embedded console command.
+	 *
+	 * @param   array $command The command
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @return bool
+	 *
+	 */
+	protected function runEmbeddedCommand($command, InputInterface $input, OutputInterface $output) {
+		$embedded = $this->getApplication()->find($command['command']);
+		$command['--no-debug'] = $input->getOption('no-debug');
+		$command['--no-interaction'] = $input->getOption('no-interaction');
+		$command['--html'] = $input->getOption('html');
+		$ainput = new ArrayInput($command);
+		$returnCode = $embedded->run($ainput, $output);
+		return $returnCode == 0;
 	}
 
 	/**

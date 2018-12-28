@@ -74,6 +74,7 @@ class CopySimulatorCommand extends SimulatorCommandBase
 			. $this->translator->trans("- the full path of the directory (anotherg6kpath) where the other instance of G6K is installed.")."\n"
 			. "\n"
 			. $this->translator->trans("To copy all simulators, enter 'all' as simulator name.")."\n"
+			. $this->translator->trans("In this case, one or more simulators can be excluded with the --exclude (-x) option.")."\n"
 		;
 	}
 
@@ -100,6 +101,12 @@ class CopySimulatorCommand extends SimulatorCommandBase
 	 */
 	protected function getCommandOptions() {
 		return array(
+			array(
+				'exclude', 
+				'x', 
+				InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 
+				$this->translator->trans("One or more simulators to exclude when <simulatorname> is 'all'."),
+			),
 			array(
 				'default-choice-widget', 
 				'c', 
@@ -131,6 +138,7 @@ class CopySimulatorCommand extends SimulatorCommandBase
 		$simulatorname = $input->getArgument('simulatorname');
 		$anotherg6kpath = str_replace('\\', '/', $input->getArgument('anotherg6kpath'));
 		$widget = $input->getOption('default-choice-widget') ?? "";
+		$exclude = $input->getOption('exclude') ?? [];
 		if ($widget != "" && ! file_exists($this->projectDir."/".$this->parameters['public_dir']."/assets/base/widgets/".$widget)) {
 			$this->error($output, "The widget '%s%' doesn't exists", array('%s%' => $widget));
 			return 1;
@@ -162,7 +170,10 @@ class CopySimulatorCommand extends SimulatorCommandBase
 			$finder = new Finder();
 			$finder->files()->in($simulatorsDir1)->depth('== 0')->name('*.xml');
 			foreach ($finder as $file) {
-				$simulators[] = preg_replace("/.xml$/", "", basename($file->getRelativePathname()));
+				$name = preg_replace("/.xml$/", "", basename($file->getRelativePathname()));
+				if (!in_array($name, $exclude)) {
+					$simulators[] = $name;
+				}
 			}
 		} else {
 			$simulators[] = $simulatorname;
@@ -204,13 +215,16 @@ class CopySimulatorCommand extends SimulatorCommandBase
 		$simu = $simulator->documentElement->getAttribute('name');
 		$view = $simulator->documentElement->getAttribute('defaultView');
 		if (! $fsystem->exists(array($viewsDir2.'/'.$view, $assetsDir2.'/'.$view))) {
-			$view = empty($stylesheets) ? 'Demo' : basename(dirname(dirname($stylesheets[0])));
-			$simulator->documentElement->setAttribute('defaultView', $view);
+			if (! $this->runEmbeddedCommand(['command' => 'g6k:view:copy', 'viewname' => $view, 'anotherg6kpath' => $anotherg6kpath], $input, $output)) {
+				$view = empty($stylesheets) ? 'Demo' : basename(dirname(dirname($stylesheets[0])));
+				$simulator->documentElement->setAttribute('defaultView', $view);
+			}
 		}
 		$this->fixDatasourcesReference($simulator, $anotherg6kpath, $input, $output);
 		if ($widget) {
 			$this->setChoiceWidget($simulator, $widget);
 		}
+		$this->copyDatasources($simulator, $anotherg6kpath, $input, $output);
 		$formatted = preg_replace_callback('/^( +)</m', function($a) { 
 			return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 
 		}, $simulator->saveXML(null, LIBXML_NOEMPTYTAG));
@@ -226,6 +240,30 @@ class CopySimulatorCommand extends SimulatorCommandBase
 			}
 		}
 		return true;
+	}
+
+	private function copyDatasources(\DOMDocument $simulator, string $anotherg6kpath, InputInterface $input, OutputInterface $output) {
+		$datasources = new \DOMDocument();
+		$datasources->preserveWhiteSpace  = false;
+		$datasources->formatOutput = true;
+		$datasources->load($this->projectDir."/var/data/databases/DataSources.xml");
+		$xpaths = new \DOMXPath($datasources);
+		$xpath = new \DOMXPath($simulator);
+		$sources = $xpath->query("/Simulator/Sources/Source");
+		$len = $sources->length;
+		$copieds = [];
+		for($i = 0; $i < $len; $i++) {
+			$source = $this->getDOMElementItem($sources, $i);
+			$datasourcename = $source->getAttribute('datasource');
+			if (!in_array($datasourcename, $copieds)) {
+				$dss = $xpaths->query("/DataSources/DataSource[@name='" . $datasourcename . "']");
+				if ($dss->length == 0) {
+					if ($this->runEmbeddedCommand(['command' => 'g6k:datasource:copy', 'datasourcename' => $datasourcename, 'anotherg6kpath' => $anotherg6kpath], $input, $output)) {
+						$copieds[] = $datasourcename;
+					}
+				}
+			}
+		}
 	}
 
 }

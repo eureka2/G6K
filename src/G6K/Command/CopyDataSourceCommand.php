@@ -29,6 +29,7 @@ namespace App\G6K\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -38,7 +39,7 @@ use App\G6K\Manager\DatasourcesTrait;
 /**
  * Copies one or all data sources from another instance of G6K.
  *
- * Only data source with a SQLite database can be copied with this command
+ * Only internal databases will be copied with this command.
  */
 class CopyDataSourceCommand extends CommandBase
 {
@@ -87,6 +88,7 @@ class CopyDataSourceCommand extends CommandBase
 			. $this->translator->trans("- the full path of the directory (anotherg6kpath) where the other instance of G6K is installed.")."\n"
 			. "\n"
 			. $this->translator->trans("To copy all data sources, enter 'all' as data source name.")."\n"
+			. $this->translator->trans("In this case, one or more data sources can be excluded with the --exclude (-x) option.")."\n"
 			. "\n"
 			. $this->translator->trans("CAUTION: Only internal databases will be copied with this command.")."\n"
 		;
@@ -114,7 +116,14 @@ class CopyDataSourceCommand extends CommandBase
 	 * @inheritdoc
 	 */
 	protected function getCommandOptions() {
-		return array();
+		return array(
+			array(
+				'exclude', 
+				'x', 
+				InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 
+				$this->translator->trans("One or more data sources to exclude when <datasourcename> is 'all'."),
+			)
+		);
 	}
 
 	/**
@@ -138,6 +147,7 @@ class CopyDataSourceCommand extends CommandBase
 		parent::execute($input, $output);
 		$datasourcename = $input->getArgument('datasourcename');
 		$anotherg6kpath = str_replace('\\', '/', $input->getArgument('anotherg6kpath'));
+		$exclude = $input->getOption('exclude') ?? [];
 		if (! file_exists($anotherg6kpath)) {
 			$this->error($output, "The directory of the other instance '%s%' doesn't exists", array('%s%' => $anotherg6kpath));
 			return 1;
@@ -179,9 +189,12 @@ class CopyDataSourceCommand extends CommandBase
 		if ($datasourcename == 'all') {
 			$names =  $xpath1->query("//DataSource/@name");
 			foreach($names as $name) {
-				if ($this->copy($name->nodeValue, $anotherg6kpath, $xpath1, $databasesDir1, $xpath2, $databasesDir2, $output)) {
-					$this->success($output, "The data source '%s%' is successfully copied", array('%s%' => $name->nodeValue));
-					$oneOk = true;
+				$datasourcename = $name->nodeValue;
+				if (!in_array($datasourcename, $exclude)) {
+					if ($this->copy($datasourcename, $anotherg6kpath, $xpath1, $databasesDir1, $xpath2, $databasesDir2, $output)) {
+						$this->success($output, "The data source '%s%' is successfully copied", array('%s%' => $datasourcename));
+						$oneOk = true;
+					}
 				}
 			}
 		} else {
