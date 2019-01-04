@@ -285,7 +285,7 @@ class BaseController extends Controller {
 			try {
 				$data = $this->simu->getDataByName($name);
 				if ($data !== null) {
-					$value = $date['day'] . "/" . $date['month'] . "/" . $date['year'];
+					$value = $this->makeDateString($date);
 					$data->setValue($value);
 					$this->variables[''.$data->getId()] = $data->getValue();
 					$this->variables[$name] = $data->getValue();
@@ -666,7 +666,7 @@ class BaseController extends Controller {
 					$data->setError(true);
 					switch ($data->getType()) {
 						case 'date':
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('d/m/Y'))));
+							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans($this->simu->getDateFormat()))));
 							break;
 						case 'number': 
 							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('numbers only'))));
@@ -719,10 +719,6 @@ class BaseController extends Controller {
 				$data->setUsed(true);
 				if ($field->getWidget() != '') {
 					$this->addWidget($field->getWidget());
-				} elseif ($data->getType() == 'date') {
-					$this->addWidget('abDatepicker');
-				} elseif ($data->getType() == 'choice' && ! $field->isExpanded()) {
-					$this->addWidget('abListbox');
 				}
 			}
 			$this->populateChoiceWithSource($data);
@@ -732,10 +728,6 @@ class BaseController extends Controller {
 				$data->setUsed(true);
 				if ($field->getWidget() != '') {
 					$this->addWidget($field->getWidget());
-				} elseif ($data->getType() == 'date') {
-					$this->addWidget('abDatepicker');
-				} elseif ($data->getType() == 'choice' && ! $field->isExpanded()) {
-					$this->addWidget('abListbox');
 				}
 			}
 			$this->populateChoiceWithSource($data);
@@ -1280,7 +1272,7 @@ class BaseController extends Controller {
 								$value = $result;
 							}
 							if ($d->getType() == "date" && preg_match("/^\d\d\d\d-\d{1,2}-\d{1,2}$/", $value)) {
-								$value = DateFunction::parseDate("Y-m-d", $value)->format("d/m/Y");
+								$value = DateFunction::parseDate("Y-m-d", $value)->format($this->simu->getDateFormat());
 							}
 							$oValue = $d->getValue();
 							$d->setValue($value);

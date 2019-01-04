@@ -28,6 +28,7 @@ namespace App\G6K\Manager;
 
 use Symfony\Component\DomCrawler\Crawler;
 use Flow\JSONPath\JSONPath;
+use App\G6K\Manager\ExpressionParser\DateFunction;
 
 /**
  *
@@ -625,7 +626,7 @@ class ResultFilter {
 		$result = null;
 		$dateStr = trim($dateStr);
 		if ($dateStr != '') {
-			$date = \DateTime::createFromFormat($format, $dateStr);
+			$date = \DateTime::createFromFormat($format, $dateStr, DateFunction::$timezone);
 			$errors = \DateTime::getLastErrors();
 			if ($errors['error_count'] > 0) {
 				throw new \Exception($errors['errors'][0]);

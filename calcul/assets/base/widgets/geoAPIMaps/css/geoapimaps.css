@@ -14,11 +14,11 @@
 	cursor: pointer;
 }
 .step-page .geoAPIMaps-gps {
-	background: url(images/geolocation.ico) no-repeat;
+	background: url(images/geolocation.ico?version=4.2.1) no-repeat;
 	background-size: 100%;
 }
 .step-page .geoAPIMaps-loading {
-	background: url(images/ajax-loader.gif) no-repeat;
+	background: url(images/ajax-loader.gif?version=4.2.1) no-repeat;
 	background-size: 100%;
 }
 .step-page .geoAPIMaps-message {

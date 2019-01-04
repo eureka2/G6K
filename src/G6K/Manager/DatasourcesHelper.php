@@ -185,7 +185,7 @@ class DatasourcesHelper {
 				$database->setAttribute('type', $dbtype);
 				$database->setAttribute('name', $dbname);
 				$database->setAttribute('label', $form['datasource-database-label']);
-				if ($dbtype == 'mysqli' || $dbtype == 'pgsql') {
+				if ($dbtype == 'mysql' || $dbtype == 'mysqli' || $dbtype == 'pgsql') {
 					$database->setAttribute('host', $form['datasource-database-host']);
 					$database->setAttribute('port', $form['datasource-database-port']);
 					$database->setAttribute('user', $form['datasource-database-user']);

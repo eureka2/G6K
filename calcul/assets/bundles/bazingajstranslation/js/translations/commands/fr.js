@@ -73,7 +73,7 @@ t.add("Creating the view '%s%' from the Default view", "Cr\u00e9ation de la vue 
 t.add("Datasource Copier", "Copieur de source de donn\u00e9es", "commands", "fr");
 t.add("Datasource Importer", "Importateur de source de donn\u00e9es", "commands", "fr");
 t.add("Datasource Table Importer", "Importateur de table", "commands", "fr");
-t.add("Default widget for unexpanded choice fields.", "Widget par d\u00e9faut pour les champs 'choice' affich\u00e9s en boites \u00e0 liste.", "commands", "fr");
+t.add("Default widget for compatible input fields.", "Widget par d\u00e9faut pour les champs de saisie compatibles.", "commands", "fr");
 t.add("Display messages in HTML.", "Affichage des messages en HTML.", "commands", "fr");
 t.add("Enter the directory where are located the view files : ", "Entrez le r\u00e9pertoire o\u00f9 se trouvent les fichiers de la vue : ", "commands", "fr");
 t.add("Enter the directory where is located the simulator XML file: ", "Entrez le r\u00e9pertoire o\u00f9 se trouve le fichier XML du simulateur : ", "commands", "fr");

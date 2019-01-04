@@ -252,9 +252,9 @@ class Evaluator {
 			return true;
 		} elseif ($arg2->type == Token::T_NUMBER && $arg1->type == Token::T_TEXT && is_numeric($arg1->value)) {
 			return true;
-		} elseif ($arg1->type == Token::T_DATE && $arg2->type == Token::T_TEXT && preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $arg2->value)) {
+		} elseif ($arg1->type == Token::T_DATE && $arg2->type == Token::T_TEXT && DateFunction::isDate($arg2->value)) {
 			return true;
-		} elseif ($arg2->type == Token::T_DATE && $arg1->type == Token::T_TEXT && preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $arg1->value)) {
+		} elseif ($arg2->type == Token::T_DATE && $arg1->type == Token::T_TEXT && DateFunction::isDate($arg1->value)) {
 			return true;
 		} elseif ($arg1->type == Token::T_BOOLEAN && $arg2->type == Token::T_TEXT && ($arg2->value == 'true' || $arg2->value == 'false')) {
 			return true;
@@ -279,15 +279,9 @@ class Evaluator {
 			if (is_numeric($token->value)) {
 				$token->type = Token::T_NUMBER;
 				$token->value = floatval($token->value);
-			} else if (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $token->value)) {
+			} else if (DateFunction::isDate($token->value)) {
 					$token->type = Token::T_DATE;
-					$date = \DateTime::createFromFormat("d/m/Y", $token->value, new \DateTimeZone( 'Europe/Paris' ));
-					$error = \DateTime::getLastErrors();
-					if ($error['error_count'] > 0) {
-						throw new \Exception($error['errors'][0]);
-					}
-					$date->setTime(0, 0, 0);
-					$token->value = $date;
+					$token->value = DateFunction::makeDate($token->value);
 			} else if ($token->value === 'true' || $token->value === 'false') {
 				$token->type = Token::T_BOOLEAN;
 				$token->value = $token->value === 'true';
@@ -340,7 +334,7 @@ class Evaluator {
 			"firstDayOfMonth" => array(1, array(Token::T_DATE), Token::T_DATE, function(\DateTime $a) { return DateFunction::firstDayOfMonth($a); }),
 			"floor" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return floor($a); }),
 			"fullmonth" => array(1, array(Token::T_DATE), Token::T_TEXT, function(\DateTime $a) {
-				$months = array("janvier", "février", "mars", "avril", "mai", "juin",  "juillet", "août", "septembre", "octobre", "novembre", "décembre");
+				$months = DateFunction::getMonthNames();
 				return $months[(int)$a->format('m') - 1].' '.$a->format('Y');
 			}),
 			"get" => array(2, array(Token::T_ARRAY, Token::T_NUMBER), Token::T_TEXT, function($a, $b) { return isset($a[$b - 1]) ? $a[$b - 1] : ""; }),

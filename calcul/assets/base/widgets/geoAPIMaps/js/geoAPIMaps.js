@@ -1,7 +1,7 @@
 (function (global) {
 	"use strict";
 
-	function geoAPIMaps(input, onComplete) {
+	function geoAPIMaps(input, options, onComplete) {
 		var cities = L.layerGroup();
 		var baseLayers = {};
 		// baseLayers['Stamen watercoler'] = L.tileLayer.provider('Stamen.Watercolor');

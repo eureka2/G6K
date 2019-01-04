@@ -1,7 +1,7 @@
 (function (global) {
 	"use strict";
 		
-	function abListbox (input, onComplete) {
+	function abListbox (input, options, onComplete) {
 		input.listbox({
 			onSelected: function (value, text) {
 				onComplete(value, text);

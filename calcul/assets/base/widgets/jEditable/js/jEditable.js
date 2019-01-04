@@ -1,7 +1,7 @@
 (function (global) {
 	"use strict";
 		
-	function jEditable (input, onComplete) {
+	function jEditable (input, options, onComplete) {
 		var editable;
 		if (input.is('select')) {
 			var data = {};

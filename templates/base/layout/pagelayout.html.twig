@@ -99,7 +99,7 @@ if (/no-js=/.test(window.location.search)) {
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery.placeholder.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ language ~ '.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/accounting.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/DefiantJS/defiant.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/JSONPath/jsonpath.js') }}"></script>
@@ -115,24 +115,35 @@ if (/no-js=/.test(window.location.search)) {
 {% endfor %}
 {% endfor %}
 {% endif %}
+{%- if app.environment == 'dev' -%}
+<script type="text/javascript" src="{{ asset('assets/base/js/g6k.js') }}"></script>
+{% else %}
 <script type="text/javascript" src="{{ asset('assets/base/js/g6k.min.js') }}"></script>
+{% endif %}
 <script type="text/javascript">
 $(function(){
-	$('.disposition-classic input.date, .disposition-grid input.date').each(function() {
-		if (! this.hasAttribute('data-widget')) {
-			$(this).attr('data-widget', 'abDatepicker'); {# Temporarily #}
-		}
-	});
 	{% if exception is not defined %}
 	{% if step is not empty %}
-	var g6k = new G6k({%- if step.dynamic or (step.simulator.dynamic and step.id == 0) -%}true{%- else -%}false{%- endif %}, {% if ua.mobile -%}true{%- else -%}false{%- endif -%}, "{{ app.request.locale }}");
+	var options = { 
+		locale: '{{ app.request.locale }}',
+		dynamic: {%- if step.dynamic or (step.simulator.dynamic and step.id == 0) -%}true{%- else -%}false{%- endif %},
+		mobile: {% if ua.mobile -%}true{%- else -%}false{%- endif -%},
+		dateFormat: '{{ step.simulator.dateFormat }}',
+		decimalPoint: '{{ step.simulator.decimalPoint }}',
+		moneySymbol: '{{ step.simulator.moneySymbol }}',
+		symbolPosition: '{{ step.simulator.symbolPosition }}',
+		thousandsSeparator: '{{ step.simulator.thousandsSeparator }}'
+	};
+	var g6k = new G6k(options);
 	g6k.run();
 	$(':input[data-widget]').each(function() {
 		var widget = window[$(this).attr('data-widget')];
 		var that = $(this);
 		that.data('g6k', g6k);
-		widget.call(null, that, function (value, text) {
-			that.val(value);
+		widget.call(null, that, options, function (value, text, preserveVal) {
+			if (!preserveVal) {
+				that.val(value);
+			}
 			that.trigger('change');
 		});
 	});

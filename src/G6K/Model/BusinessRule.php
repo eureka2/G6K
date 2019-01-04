@@ -758,7 +758,7 @@ class BusinessRule {
 						array_push($ops, '#' . $token->value);
 						break;
 					case Token::T_DATE:
-						array_push($ops, $token->value->format('d/m/Y'));
+						array_push($ops, $token->value->format($this->simulator->getDateFormat()));
 						break;
 					case Token::T_NUMBER:
 						array_push($ops, '' . $token->value);

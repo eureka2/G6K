@@ -316,7 +316,7 @@ class ViewsAdminController extends BaseAdminController {
 		$view = $form['view-name'];
 		$viewurl = $form['view-site'];
 		$fs = new Filesystem();
-		$uploadDir = str_replace("\\", "/", $this->get('kernel')->getContainer()->getParameter('g6k_upload_directory'));
+		$uploadDir = str_replace("\\", "/", $this->get('kernel')->getContainer()->getParameter('upload_directory'));
 		$templatesfile = '';
 		$assetsfile = '';
 		foreach ($files as $fieldname => $file) {
@@ -548,7 +548,7 @@ class ViewsAdminController extends BaseAdminController {
 	protected function addViewNode($form, $files, $view) {
 		$fs = new Filesystem();
 		$container = $this->get('kernel')->getContainer();
-		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
+		$uploadDir = str_replace("\\", "/", $container->getParameter('upload_directory'));
 		$nodePath = $this->searchNodePath($view);
 		if ($nodePath != '') {
 			$nodeName = $form['add-node-name'];

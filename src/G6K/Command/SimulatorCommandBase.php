@@ -30,6 +30,9 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\LogicException;
+use Symfony\Component\Yaml\Yaml;
+
+use App\G6K\Model\Data;
 
 /**
 Base class for all command of the g6k:simulator namespace.
@@ -167,27 +170,68 @@ abstract class SimulatorCommandBase extends CommandBase
 	}
 
 	/**
-	 * Sets the widget for all field of type choice 
+	 * Sets the default widgets
 	 *
 	 * @access  protected
 	 * @param   \DOMDocument $simulator The simulator document
-	 * @param   string $widget The widget name
-	 * @return  bool true if widget has been set, false otherwise.
+	 * @param   array $widgets The widget list
+	 * @return  bool true if at least one of the widget has been set, false otherwise.
 	 *
 	 */
-	protected function setChoiceWidget(\DOMDocument $simulator, string $widget) {
+	protected function setWidgets(\DOMDocument $simulator, array $widgets) {
 		$set = false;
+		$config = Yaml::parse(file_get_contents($this->projectDir."/config/packages/g6k.yml"));
+		$config = $config['parameters']['widgets'];
 		$xpath = new \DOMXPath($simulator);
 		$fields = $xpath->query("//FieldSet//Field");
 		for ($i = 0; $i < $fields->length; $i++) {
 			$field = $this->getDOMElementItem($fields, $i);
-			if (! $field->hasAttribute('widget')) {
-				if ($field->parentNode->nodeName != 'FieldRow' && (! $field->hasAttribute('expanded') || $field->getAttribute('expanded') == '0')) {
+			if ($field->getAttribute('usage') == 'input' && ! $field->hasAttribute('widget')) {
+				if ($field->parentNode->nodeName != 'FieldRow') {
 					$dataId = $field->getAttribute('data');
-					$type = $xpath->query("//DataSet//Data[@id='".$dataId."']/@type")->item(0)->nodeValue;
-					if (in_array($type, ['choice', 'department', 'region', 'year', 'month', 'day'])) {
-						$field->setAttribute('widget', $widget);
-						$set = true;
+					$datas = $xpath->query("//DataSet//Data[@id='".$dataId."']");
+					$data = $this->getDOMElementItem($datas, 0);
+					$type = $data->getAttribute('type');
+					$input = 'text';
+					switch ($type) {
+						case 'boolean':
+						case 'multichoice':
+							$input = 'checkbox';
+							break;
+						case 'number':
+						case 'integer':
+							$input = 'number';
+							break;
+						case 'textarea':
+							$input = 'textarea';
+							break;
+						case 'choice':
+						case 'department':
+						case 'region':
+						case 'country':
+						case 'year':
+						case 'month':
+						case 'day':
+							$expanded = $field->hasAttribute('expanded') ? $field->getAttribute('expanded') : '0';
+							$input = ($expanded == '1') ? 'radio' : 'select';
+							break;
+					}
+					foreach($widgets as $widget) {
+						if (isset($config[$widget])) {
+							$targets = $config[$widget]['target'];
+							if ($targets[0] == 'all') {
+								$targets = Data::TYPES;
+							}
+							$inputs = $config[$widget]['input'];
+							if ($inputs[0] == 'all') {
+								$inputs = ['text', 'checkbox', 'number', 'textarea', 'radio', 'select'];
+							}
+							if (in_array($type, $targets) && in_array($input, $inputs)) {
+								$field->setAttribute('widget', $widget);
+								$set = true;
+								break;
+							}
+						}
 					}
 				}
 			}

@@ -147,7 +147,7 @@ abstract class AssetManifestCommandBase extends CommandBase
 				break;
 			case 'js':
 				if (preg_match("|/locales/|", $file) || preg_match("|/bazingajstranslation/js/translations/|", $file)) {
-					if (! preg_match("|[/\.]" . $this->parameters['locale'] . "[^/]*\.js$|", $path) &&
+					if (! preg_match("|[/\.]" . $this->parameters['language'] . "[^/]*\.js$|", $path) &&
 						! preg_match("|/config\.js$|", $path)) {
 						return false;
 					}
@@ -156,7 +156,7 @@ abstract class AssetManifestCommandBase extends CommandBase
 				break;
 			default:
 				if (preg_match("|/documentation/|", $file)) {
-					if (! preg_match("|/documentation/" . $this->parameters['locale'] . "/|", $file)) {
+					if (! preg_match("|/documentation/" . $this->parameters['language'] . "/|", $file)) {
 						return false;
 					}
 				}

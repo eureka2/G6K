@@ -100,7 +100,7 @@ const PATTERN = '/([\s!,\+\-\*\/\^%\(\)\[\]=\<\>\~\&\^\|\?\:°])/u';
 			array($this, 'replaceText'),
 			$infix
 		);
-		$infix = preg_replace("#(\d{1,2})/(\d{1,2})/(\d{4})#", "D$1.$2.$3", $infix);
+		$infix = $this->maskDate($infix);
 		$toks = preg_split(self::PATTERN, $infix, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		$prev = new Token(Token::T_NOOP, 'noop');
 		foreach ($toks as $value) {
@@ -121,7 +121,7 @@ const PATTERN = '/([\s!,\+\-\*\/\^%\(\)\[\]=\<\>\~\&\^\|\?\:°])/u';
 			} else if (preg_match("/^D(\d{1,2})\.(\d{1,2})\.(\d{4})$/", $value, $matches)) {
 				if ($prev->type === Token::T_PCLOSE)
 					$expr->push(new Token(Token::T_TIMES, '*'));
-				$date = \DateTime::createFromFormat("d/m/Y", $matches[1]."/".$matches[2]."/".$matches[3], new \DateTimeZone( 'Europe/Paris' ));
+				$date = \DateTime::createFromFormat("j/n/Y", $matches[1]."/".$matches[2]."/".$matches[3], DateFunction::$timezone);
 				$error = \DateTime::getLastErrors();
 				if ($error['error_count'] > 0) {
 					throw new \Exception($error['errors'][0]);
@@ -228,6 +228,38 @@ const PATTERN = '/([\s!,\+\-\*\/\^%\(\)\[\]=\<\>\~\&\^\|\?\:°])/u';
 		}
 		return $expr;
 	}
+
+
+	private function maskDate($infix) {
+		switch(DateFunction::$dateFormat) {
+			case 'd/m/Y':
+				return preg_replace("/(\d{1,2})\/(\d{1,2})\/(\d{4})/", "D$1.$2.$3", $infix);
+			case 'm/d/Y':
+				return preg_replace("/(\d{1,2})\/(\d{1,2})\/(\d{4})/", "D$2.$1.$3", $infix);
+			case 'd-m-Y':
+				return preg_replace("/(\d{1,2})-(\d{1,2})-(\d{4})/", "D$1.$2.$3", $infix);
+			case 'm-d-Y':
+				return preg_replace("/(\d{1,2})-(\d{1,2})-(\d{4})/", "D$2.$1.$3", $infix);
+			case 'd.m.Y':
+				return preg_replace("/(\d{1,2})\.(\d{1,2})\.(\d{4})/", "D$1.$2.$3", $infix);
+			case 'm.d.Y':
+				return preg_replace("/(\d{1,2})\.(\d{1,2})\.(\d{4})/", "D$2.$1.$3", $infix);
+			case 'Y-m-d':
+				return preg_replace("/(\d{4})-(\d{1,2})-(\d{1,2})/", "D$3.$2.$1", $infix);
+			case 'Y.m.d':
+				return preg_replace("/(\d{4})\.(\d{1,2})\.(\d{1,2})/", "D$3.$2.$1", $infix);
+			case 'Y/m/d':
+				return preg_replace("/(\d{4})\/(\d{1,2})\/(\d{1,2})/", "D$3.$2.$1", $infix);
+			case 'Y-d-m':
+				return preg_replace("/(\d{4})-(\d{1,2})-(\d{1,2})/", "D$2.$3.$1", $infix);
+			case 'Y.d.m':
+				return preg_replace("/(\d{4})\.(\d{1,2})\.(\d{1,2})/", "D$2.$3.$1", $infix);
+			case 'Y/d/m':
+				return preg_replace("/(\d{4})\/(\d{1,2})\/(\d{1,2})/", "D$2.$3.$1", $infix);
+		}
+		return $infix;
+	}
+
 }
 
 ?>

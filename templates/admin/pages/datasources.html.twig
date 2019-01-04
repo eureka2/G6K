@@ -383,7 +383,7 @@ THE SOFTWARE.
 											{% set option = 'JsonSQL' %}
 										{% elseif datasource.database.type == "sqlite" %}
 											{% set option = 'SQLite' %}
-										{% elseif datasource.database.type == "mysqli" %}
+										{% elseif datasource.database.type == "mysql" or datasource.database.type == "mysqli" %}
 											{% set option = 'MySQL' %}
 										{% else %}
 											{% set option = 'PostgreSQL' %}
@@ -403,7 +403,7 @@ THE SOFTWARE.
 										<p data-attribute="database.label" data-value="{{ datasource.database.label }}" class="form-control-plaintext simple-value">{{ datasource.database.label }}</p>
 									</div>
 								</div>
-								{% if datasource.database.type == "mysqli" or datasource.database.type == "pgsql" %}
+								{% if datasource.database.type == "mysql" or datasource.database.type == "mysqli" or datasource.database.type == "pgsql" %}
 								<div class="form-group row">
 									<label class="col-sm-2 col-form-label">{{ 'Database host'|trans }}</label>    
 									<div class="col-sm-10">        
@@ -503,7 +503,7 @@ THE SOFTWARE.
 										<select name="datasource-database-type" id="datasource-database-type" class="form-control" data-attribute="database.type">
 										<option value="jsonsql"{% if datasource.database.type == 'jsonsql' %} selected="selected"{% endif %}>JsonSQL</option>
 										<option value="sqlite"{% if datasource.database.type == 'sqlite' %} selected="selected"{% endif %}>SQLite</option>
-										<option value="mysqli"{% if datasource.database.type == 'mysqli' %} selected="selected"{% endif %}>MySQL</option>
+										<option value="mysqli"{% if datasource.database.type == "mysql" or datasource.database.type == 'mysqli' %} selected="selected"{% endif %}>MySQL</option>
 										<option value="pgsql"{% if datasource.database.type == 'pgsql' %} selected="selected"{% endif %}>PostgreSQL</option>
 										</select>
 									</div>
@@ -618,12 +618,12 @@ THE SOFTWARE.
 {% block scripts %}
 {{ parent() }}<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.datasources.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/json-validator/tv4.min.js') }}"></script>
-{% if app.request.locale == 'de' or  app.request.locale == 'es' or app.request.locale == 'fr' %}<script type="text/javascript" src="{{ asset('assets/admin/js/libs/json-validator/lang/' ~ app.request.locale ~ '.js') }}"></script>{% endif %}{% if table is not empty %}
+{% if language == 'de' or  language == 'es' or language == 'fr' %}<script type="text/javascript" src="{{ asset('assets/admin/js/libs/json-validator/lang/' ~ lang ~ '.js') }}"></script>{% endif %}{% if table is not empty %}
 <script type="text/javascript">
 $(function(){
 	var fields = [{%- for info in tableinfos -%}[{{ loop.index0 }}, '{{ info.name }}', '{{ info.label }}', '{{ info.description }}', '{{ info.notnull }}', '{{ info.g6k_type }}'{%- if info.choices is defined -%}, '{ {%- for value, label in info.choices -%}"{{ value }}": "{{ label }}"{%- if not loop.last -%}, {%- endif -%}{%- endfor -%} }'{%- endif -%}{%- if info.choicesource is defined -%}, '{ "id": {{ info.choicesource.id }}, "datasource": "{{ info.choicesource.datasource }}", "request": "{{ info.choicesource.request }}", "returnType": "{{ info.choicesource.returnType }}", "separator": "{{ info.choicesource.separator }}", "delimiter": "{{ info.choicesource.delimiter }}", "returnPath": "{{ info.choicesource.returnPath }}", "valueColumn": "{{ info.choicesource.valueColumn }}", "labelColumn": "{{ info.choicesource.labelColumn }}" }'{%- endif -%}]{%- if not loop.last -%},{%- endif -%}{%- endfor -%}];
 	var datasources = [{% for datasource in datasources %}{type: "{{ datasource.type }}", name: "{{ datasource.name }}"{%- if datasource.database is defined -%}, dbtype: "{{ datasource.database.type }}"{%- endif -%}}{%- if not loop.last -%}, {%- endif -%}{%- endfor -%}];
-	Datasources.init('{{ table.action }}', '{{ table.name }}', fields, datasources, '{{ app.request.locale }}');
+	Datasources.init('{{ table.action }}', '{{ table.name }}', fields, datasources, '{{ language }}');
 });
 </script>
 {% endif %}

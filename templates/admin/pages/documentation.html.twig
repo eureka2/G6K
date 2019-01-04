@@ -25,5 +25,5 @@ THE SOFTWARE.
 {% extends "admin/layout/documentationlayout.html.twig" %}
 
 {% block content %}
-{{ include( "admin/pages/documentation/"  ~ app.request.locale ~ "/" ~ document ~ ".html.twig") }}
+{{ include( "admin/pages/documentation/"  ~ language ~ "/" ~ document ~ ".html.twig") }}
 {% endblock %}

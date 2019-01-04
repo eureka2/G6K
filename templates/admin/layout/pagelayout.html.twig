@@ -47,22 +47,42 @@ THE SOFTWARE.
 {% block scripts %}
 {% if exception is not defined and simulator is not empty %}
 <script type="text/javascript">
+{% if dataset is defined %}
 var dataset = {{ dataset|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
+{% if steps is defined %}
 var steps = {{ steps|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
+{% if actions is defined %}
 var actions = {{ actions|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
+{% if rules is defined %}
 var rules = {{ rules|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
+{% if views is defined %}
 var views = {{ views|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
+{% if datasources is defined %}
 var datasources = {{ datasources|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
+{% if widgets is defined %}
 var widgets = {{ widgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
+{% if typewidgets is defined %}
+var typewidgets = {{ typewidgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
+{% if inputwidgets is defined %}
+var inputwidgets = {{ inputwidgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
 </script>
-{% endif %}				
+{% endif %}
 {% include 'admin/sections/scripts.common.html.twig' %}
 {% include 'admin/sections/scripts.html.twig' %}
 <script type="text/javascript" src="{{ asset('assets/base/js/g6k.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.js') }}"></script>
 <script type="text/javascript">
-Admin.lang = '{{ app.request.locale }}';
-Admin.locale = '{{ app.request.locale }}-{{ app.request.locale|upper }}';
+Admin.lang = '{{ language }}';
+Admin.locale = '{{ app.request.locale }}';
 Admin.editorCSS = "{{ asset('assets/admin/css/wysiwyg-editor.css') }}";
 </script>
   {% endblock %}

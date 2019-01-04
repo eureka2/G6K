@@ -1,7 +1,7 @@
 (function (global) {
 	"use strict";
 		
-	function geoAPIZipCodeEditable (input, onComplete) {
+	function geoAPIZipCodeEditable (input, options, onComplete) {
 		var initial = input.val();
 		if (/^\d{5}$/.test(initial)) {
 			$.getJSON(

@@ -35,6 +35,9 @@ namespace App\G6K\Manager\ExpressionParser;
  */
 class DateFunction {
 
+	public static $dateFormat = null;
+	public static $timezone = null;
+
 	/**
 	 * Returns the date corresponding of the nth day of a month
 	 *
@@ -141,7 +144,8 @@ class DateFunction {
 		if (empty($dateStr)) {
 			return null;
 		}
-		$date = \DateTime::createFromFormat($format, $dateStr);
+		$format = str_replace(['d', 'm'], ['j', 'n'], $format);
+		$date = \DateTime::createFromFormat($format, $dateStr, self::$timezone);
 		$errors = \DateTime::getLastErrors();
 		if ($errors['error_count'] > 0) {
 			throw new \Exception("Error on date '$dateStr', expected format '$format' : " . implode(" ", $errors['errors']));
@@ -149,6 +153,87 @@ class DateFunction {
 		return $date;
 	}
 
+	/**
+	 * Checks if a date string match a given format
+	 *
+	 * @access  public
+	 * @param   string $format The given format
+	 * @param   string $dateStr The date to be checked
+	 * @return  bool true if the date string has the given format, false if not
+	 * @throws \Exception
+	 *
+	 */
+	public static function hasFormat($format, $dateStr) {
+		if (empty($dateStr)) {
+			return false;
+		}
+		$date = \DateTime::createFromFormat($format, $dateStr, self::$timezone);
+		$errors = \DateTime::getLastErrors();
+		if ($errors['error_count'] > 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public static function makeDate($value) {
+		$date = \DateTime::createFromFormat(self::$dateFormat, $value, self::$timezone);
+		$error = \DateTime::getLastErrors();
+		if ($error['error_count'] > 0) {
+			throw new \Exception($error['errors'][0]);
+		}
+		$date->setTime(0, 0, 0);
+		return $date;
+	}
+
+	public static function isDate($dateStr){
+		$inputFormat = str_replace(['d', 'm'], ['j', 'n'], self::$dateFormat);
+		return self::hasFormat($inputFormat, $dateStr);
+	}
+
+	public static function getMonthNames($locale = null){
+		if ($locale === null) {
+			$locale = \Locale::getDefault();
+		}
+		if (class_exists('\IntlDateFormatter')) {
+			$formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, NULL, NULL, "MMMM");
+			$monthNames = [];
+			for ($i = 1; $i <= 12; $i++) {
+				$monthNames[] = mb_convert_encoding(mb_convert_case(datefmt_format($formatter, mktime(0, 0, 0, $i)), MB_CASE_LOWER, 'UTF-8'), "UTF-8");
+			}
+			return $monthNames;
+		} elseif (preg_match("/^fr/i", $locale)) {
+			return ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+		} else {
+			return ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+		}
+	}
+
+	private static function init() {
+		if (class_exists('\IntlDateFormatter')) {
+			$locale = str_replace('-', '_', getenv('APP_LOCALE'));
+			$formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::SHORT, \IntlDateFormatter::NONE, NULL, \IntlDateFormatter::GREGORIAN);
+			if (self::$dateFormat === null) {
+				self::$dateFormat = preg_replace (['/d+/', '/M+/', '/y+/'], ['d', 'm', 'Y'], $formatter->getPattern());
+			}
+			if (self::$timezone === null) {
+				self::$timezone = $formatter->getTimeZone()->toDateTimeZone();
+			}
+		} else {
+			if (self::$dateFormat === null) {
+				self::$dateFormat = "d/m/Y";
+			}
+			if (self::$timezone === null) {
+				$timezone = ini_get('date.timezone') ?? 'Europe/Paris';
+				self::$timezone = new \DateTimeZone($timezone);
+			}
+		}
+	}
+
 }
+
+(function () {
+	static::init();
+})->bindTo(null, DateFunction::class)();
+
 
 ?>

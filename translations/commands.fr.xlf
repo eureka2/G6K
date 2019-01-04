@@ -295,8 +295,8 @@
                 <target>Importateur de table</target>
             </trans-unit>
             <trans-unit id="74">
-                <source>Default widget for unexpanded choice fields.</source>
-                <target>Widget par défaut pour les champs 'choice' affichés en boites à liste.</target>
+                <source>Default widget for compatible input fields.</source>
+                <target>Widget par défaut pour les champs de saisie compatibles.</target>
             </trans-unit>
             <trans-unit id="75">
                 <source>Display messages in HTML.</source>

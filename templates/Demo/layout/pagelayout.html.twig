@@ -27,8 +27,10 @@
 		{{ parent() }}
 		<script type="text/javascript">
 		$(function(){
-			$('input.date').datepicker('theme', 'blue');
-			$('input.listbox-input').listbox('theme', 'blue');	
+			setTimeout(function() {
+				$('input.date').datepicker('theme', 'blue');
+				$('input.listbox-input').listbox('theme', 'blue');	
+			}, 0);
 		});
 		</script>
 		{% include 'Demo/sections/scripts.html.twig' %}

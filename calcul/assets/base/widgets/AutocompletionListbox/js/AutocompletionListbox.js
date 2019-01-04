@@ -1,7 +1,7 @@
 (function (global) {
 	"use strict";
 		
-	function AutocompletionListbox (select, onComplete) {
+	function AutocompletionListbox (select, options, onComplete) {
 		var id = 'AutocompletionListbox-' + select.attr('name');
 		var input = $('<input>', {id: id, type: 'text' });
 		var attributes = select.prop("attributes");

@@ -26,6 +26,11 @@ THE SOFTWARE.
 
 namespace App\G6K\Model;
 
+use App\G6K\Manager\ExpressionParser\DateFunction;
+use App\G6K\Manager\ExpressionParser\NumberFunction;
+use App\G6K\Manager\ExpressionParser\PercentFunction;
+use App\G6K\Manager\ExpressionParser\MoneyFunction;
+
 /**
  *
  * This class allows the storage and retrieval of the attributes of a data item.
@@ -58,6 +63,30 @@ namespace App\G6K\Model;
  *
  */
 class Data extends DatasetChild {
+
+
+	/**
+	 * @var array
+	 *
+	 * The data item can have one of the following type:
+	 *
+	 * - date: a date stored in the d/m/Y format
+	 * - boolean: the value of the data item can be true or false
+	 * - number: a numeric data with decimal places
+	 * - integer: a numeric value without decimal places.
+	 * - text: a short text
+	 * - textarea: a long text
+	 * - money: a numeric data with decimal places. The value of the data will be displayed with the currency symbol
+	 * - choice: the value of the data is chosen from a list of choices
+	 * - multichoice: the values of the data are chosen from a list of choices
+	 * - percent: a numeric data with decimal places. The display of the value of the data will be followed by the % symbol.
+	 * - table: the data item has an associated Table object
+	 * - department: a departement code
+	 * - region: a region code
+	 * - country: a country code
+	 *
+	 */
+	const TYPES = ['date', 'boolean', 'number', 'integer', 'text', 'textarea', 'money', 'choice', 'multichoice', 'percent', 'table', 'department', 'region', 'country', 'year', 'month', 'day'];
 
 	/**
 	 * @var string     $type date, boolean, number, integer, text, textarea, money, choice, multichoice, percent, table, department region, country, ²
@@ -247,23 +276,6 @@ class Data extends DatasetChild {
 
 	/**
 	 * Sets the type of this data item
-	 *
-	 * The data item can have one of the following type:
-	 *
-	 * - date: a date stored in the d/m/Y format
-	 * - boolean: the value of the data item can be true or false
-	 * - number: a numeric data with decimal places
-	 * - integer: a numeric value without decimal places.
-	 * - text: a short text
-	 * - textarea: a long text
-	 * - money: a numeric data with decimal places. The value of the data will be displayed with the currency symbol
-	 * - choice: the value of the data is chosen from a list of choices
-	 * - multichoice: the values of the data are chosen from a list of choices
-	 * - percent: a numeric data with decimal places. The display of the value of the data will be followed by the % symbol.
-	 * - table: the data item has an associated Table object
-	 * - department: a departement code
-	 * - region: a region code
-	 * - country: a country code
 	 *
 	 * @access  public
 	 * @param    string     $type The type of this data item
@@ -847,8 +859,12 @@ class Data extends DatasetChild {
 			return $this->value;
 		} else {
 			$value = isset($this->value) && $this->value != "" ? $this->value : $this->default;
-			if ($this->type == 'money' || $this->type == 'percent') {
-				$value = is_numeric($value) ? number_format ( (float) $value, 2, ".", "" ) : $value;
+			if ($value !== '' && $this->type == 'money') {
+				$value = MoneyFunction::format($value);
+			} elseif ($value !== '' && $this->type == 'percent') {
+				$value = PercentFunction::format($value);
+			} elseif ($value !== '' && $this->type == 'number') {
+				$value = NumberFunction::format($value);
 			}
 			return $value;
 		}
@@ -862,8 +878,16 @@ class Data extends DatasetChild {
 	 *
 	 */
 	public function getPlainValue() {
-		if ($this->type == 'multichoice' || $this->type == 'array') {
+		if ($this->value == '') {
+			return $this->value;
+		} elseif ($this->type == 'multichoice' || $this->type == 'array') {
 			return json_encode($this->value);
+		} elseif ($this->type == 'money') {
+			return MoneyFunction::toString($this->value);
+		} elseif ($this->type == 'percent') {
+			return PercentFunction::toString($this->value);
+		} elseif ($this->type == 'number') {
+			return NumberFunction::toString($this->value);
 		} else {
 			return $this->value;
 		}
@@ -880,12 +904,15 @@ class Data extends DatasetChild {
 	public function setValue($value) {
 		switch ($this->type) {
 			case 'money': 
+				$value = MoneyFunction::toMoney($value);
+				$value = is_numeric($value) ? ''.round($value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
+				break;
 			case 'percent':
-				$value = str_replace(',', '.', $value);
-				$value = is_numeric($value) ? ''.round((float)$value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
+				$value = PercentFunction::toPercent($value);
+				$value = is_numeric($value) ? ''.round($value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
 				break;
 			case 'number': 
-				$value = str_replace(',', '.', $value);
+				$value = ''.NumberFunction::toNumber($value);
 				break;
 			case 'array': 
 			case 'multichoice': 
@@ -988,20 +1015,14 @@ class Data extends DatasetChild {
 		}
 		switch ($this->type) {
 			case 'date':
-				if (! preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $this->value)) {
-					return false;
-				}
-				break;
+				return DateFunction::isDate($this->value);
 			case 'boolean':
 				if ( ! in_array($this->value, array('0', '1', 'false', 'true'))) {
 					return false;
 				}
 				break;
 			case 'number': 
-				if (! is_numeric($this->value)) {
-					return false;
-				}
-				break;
+				return NumberFunction::isNumber($this->value);
 			case 'integer': 
 				if (! ctype_digit ( $this->value )) {
 					return false;
@@ -1011,10 +1032,9 @@ class Data extends DatasetChild {
 			case 'textarea': 
 				break;
 			case 'money': 
-				if (! preg_match("/^\d+(\.\d{1,2})?$/", $this->value)) {
-					return false;
-				}
-				break;
+				return MoneyFunction::isMoney($this->value);
+			case 'percent':
+				return PercentFunction::isPercent($this->value);
 			case 'choice':
 				if ($this->value == $this->default) {
 					return true;
@@ -1068,11 +1088,6 @@ class Data extends DatasetChild {
 					}
 				}
 				return true;
-				break;
-			case 'percent':
-				if (! is_numeric($this->value)) {
-					return false;
-				}
 				break;
 		}
 		return true;

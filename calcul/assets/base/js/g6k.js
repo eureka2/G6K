@@ -27,7 +27,10 @@ THE SOFTWARE.
 
 	Date.msPERDAY = 1000 * 60 * 60 * 24;
 
-	Date.locale = "en-US";
+	Date.locale = "en-us";
+
+	Date.format = "d/m/Y";
+	Date.inputeFormat = "j/n/Y";
 
 	Date.easter = function(year) {
 		try {
@@ -61,7 +64,7 @@ THE SOFTWARE.
 
 	Date.nthDayOfMonth = function(nth, day, month, year) {
 		var date = Date.createFromFormat("Y-n-j", year + "-" + month + "-01" );
-		while(date.getDay()!=day){      
+		while(date.getDay()!=day){
 			date.setDate(date.getDate()+1) ;
 		}
 		date.setDate(date.getDate() + (nth - 1) * 7);
@@ -113,8 +116,8 @@ THE SOFTWARE.
 		var endDay = endDate.getDay();
 
 		// Remove weekend not previously removed.   
-		if (startDay - endDay > 1)         
-			days = days - 2;      
+		if (startDay - endDay > 1)
+			days = days - 2;
 
 		// Remove start day if span starts on Sunday but ends before Saturday
 		if (startDay == 0 && endDay != 6)
@@ -124,7 +127,7 @@ THE SOFTWARE.
 		if (endDay == 6 && startDay != 0)
 			days = days - 1;  
 
-		var locale = Date.locale ? Date.locale : "en-US";
+		var locale = Date.locale ? Date.locale : "en-us";
 		var startYear = startDate.getFullYear();
 		var endYear = endDate.getFullYear();
 		startDate.setHours(0,0,0,0);
@@ -144,7 +147,7 @@ THE SOFTWARE.
 		if (day == 0 || day == 6) {
 			return false; 
 		}
-		var locale = Date.locale ? Date.locale : "en-US";
+		var locale = Date.locale ? Date.locale : "en-us";
 		var holidays = Date.holidaysOfYear(this.getFullYear(), locale);
 		var isHoliday = false;
 		var self = this;
@@ -182,7 +185,7 @@ THE SOFTWARE.
 		var tmp = d.copy();
 		tmp.setHours(this.getHours(), this.getMinutes(), this.getSeconds(), this.getMilliseconds());
 		var diff = tmp.getTime() - this.getTime();
-		return Math.ceil(diff/this.msPERDAY);        
+		return Math.ceil(diff/this.msPERDAY);
 	};
 
 	Date.prototype.getDayOfYear = function() {
@@ -238,8 +241,8 @@ THE SOFTWARE.
 		var startDay = this.getDay();  //current weekday 0 thru 6
 		var wkEnds = 0;                //# of weekends needed
 		var partialWeek = d % 5;       //# of weekdays for partial week
-		if (d < 0) {                 //subtracting weekdays 
-			wkEnds = Math.ceil(d/5); //negative number weekends
+		if (d < 0) {                   //subtracting weekdays 
+			wkEnds = Math.ceil(d/5);   //negative number weekends
 			switch (startDay) {
 				case 6:                  //start Sat. 1 less weekend
 					if (partialWeek == 0 && wkEnds < 0) 
@@ -467,6 +470,34 @@ THE SOFTWARE.
 
 	Date.locales = {
 		"en": {
+			month_names: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			month_names_short: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+			day_names: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+			day_names_short: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+			date_suffix: function (date) {
+				var day10 = ~~ (date % 100 / 10);
+				var day1 = date % 10;
+				if (day10 === 1) {
+					return "th";
+				} else if (day1 === 1) {
+					return "st";
+				} else if (day1 === 2) {
+					return "nd";
+				} else if (day1 === 3) {
+					return "rd";
+				} else {
+					return "th";
+				}
+			},
+			meridiem : function (hour, minute, isLower) {
+				if (hour < 12) {
+					return isLower ? "am" : "AM";
+				} else {
+					return isLower ? "pm" : "PM";
+				}
+			}
+		},
+		"en-us": {
 			month_names: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 			month_names_short: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 			day_names: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -864,6 +895,18 @@ THE SOFTWARE.
 			}
 		},
 		"fr": {
+			month_names: "janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),
+			month_names_short: "janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.".split("_"),
+			day_names: "dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),
+			day_names_short: "dim._lun._mar._mer._jeu._ven._sam.".split("_"),
+			date_suffix: function (date) {
+				return (date === 1 ? 'er' : '');
+			},
+			meridiem: function (hour, minute, isLower) {
+				return "";
+			}
+		},
+		"fr-fr": {
 			month_names: "janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),
 			month_names_short: "janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.".split("_"),
 			day_names: "dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),
@@ -1923,6 +1966,19 @@ THE SOFTWARE.
 		}
 	};
 
+	Date.hasFormat = function (format, value) {
+		try {
+			Date.createFromFormat(format, value);
+		} catch(err) {
+			return false;
+		}
+		return true;
+	};
+
+	Date.isDate = function(value){
+		return Date.hasFormat(Date.inputFormat, value);
+	};
+
 })();
 
 (function (global) {
@@ -2153,7 +2209,7 @@ THE SOFTWARE.
 		toString: function () {
 			switch (this.type) {
 				case Token.TYPE.T_DATE:
-					return this.value.format("d/m/Y");
+					return this.value.format(Date.format);
 					break;
 				case Token.TYPE.T_BOOLEAN:
 					return this.value ? 'true' : 'false';
@@ -2278,9 +2334,9 @@ THE SOFTWARE.
 					} else if ($.isNumeric(value)) {
 						token.type = Token.TYPE.T_NUMBER;
 						token.value = parseFloat(value);
-					} else if (value.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)) {
+					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
-						token.value = Date.createFromFormat("j/n/Y", value);
+						token.value = Date.createFromFormat(Date.inputFormat, value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2302,9 +2358,9 @@ THE SOFTWARE.
 					} else if ($.isNumeric(value)) {
 						token.type = Token.TYPE.T_NUMBER;
 						token.value = parseFloat(value);
-					} else if (value.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)) {
+					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
-						token.value = Date.createFromFormat("j/n/Y", value);
+						token.value = Date.createFromFormat(Date.inputFormat, value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2329,9 +2385,9 @@ THE SOFTWARE.
 					} else if ($.isNumeric(value)) {
 						token.type = Token.TYPE.T_NUMBER;
 						token.value = parseFloat(value);
-					} else if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(value)) {
+					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
-						token.value = Date.createFromFormat("j/n/Y", value);
+						token.value = Date.createFromFormat(Date.inputFormat, value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2349,9 +2405,9 @@ THE SOFTWARE.
 					} else if ($.isNumeric(value)) {
 						token.type = Token.TYPE.T_NUMBER;
 						token.value = parseFloat(value);
-					} else if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(value)) {
+					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
-						token.value = Date.createFromFormat("j/n/Y", value);
+						token.value = Date.createFromFormat(Date.inputFormat, value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2449,7 +2505,7 @@ THE SOFTWARE.
 							result.value = date;
 						} else if (arg2.type == Token.TYPE.T_TEXT) {
 							result.type = Token.TYPE.T_TEXT;
-							result.value = arg1.value.format("d/m/Y") + arg2.value;
+							result.value = arg1.value.format(Date.format) + arg2.value;
 						} else {
 							throw new Error("Illegal argument '" + arg2 + "' for " + op);
 						}
@@ -2458,7 +2514,7 @@ THE SOFTWARE.
 						if (arg2.type == Token.TYPE.T_NUMBER) {
 							result.value = arg1.value + arg2.value.toString();
 						} else if (arg2.type == Token.TYPE.T_DATE) {
-							result.value = arg1.value + arg2.value.format("d/m/Y");
+							result.value = arg1.value + arg2.value.format(Date.format);
 						} else if (arg2.type == Token.TYPE.T_TEXT) {
 							result.value = arg1.value + arg2.value;
 						} else {
@@ -2732,9 +2788,9 @@ THE SOFTWARE.
 				if ($.isNumeric(token.value)) {
 					token.type = Token.TYPE.T_NUMBER;
 					token.value = parseFloat(token.value);
-				} else if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(token.value)) {
+				} else if (Date.isDate(value)) {
 					token.type = Token.TYPE.T_DATE;
-					token.value = Date.createFromFormat("j/n/Y", token.value);
+					token.value = Date.createFromFormat(Date.format, token.value);
 				} else if (token.value === 'true' || token.value === 'false') {
 					token.type = Token.TYPE.T_BOOLEAN;
 					token.value = token.value === 'true';
@@ -2951,7 +3007,7 @@ THE SOFTWARE.
 				self.text.push(m1.substr(1, m1.length - 2).replace(/`/g, '\"'));
 				return "¤" + self.text.length;
 			});
-			infix = infix.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, "D$1.$2.$3");
+			infix = this.maskDate(infix);
 			var toks = infix.split(PATTERN);
 			var prev = new Token(Token.TYPE.T_NOOP, 'noop');
 			$.each(toks, function( t, value ) {
@@ -3075,7 +3131,38 @@ THE SOFTWARE.
 				}
 			});
 			return expr;
+		},
+
+		maskDate: function (infix) {
+			switch(Date.format) {
+				case 'd/m/Y':
+					return infix.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, "D$1.$2.$3");
+				case 'm/d/Y':
+					return infix.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, "D$2.$1.$3");
+				case 'd-m-Y':
+					return infix.replace(/(\d{1,2})-(\d{1,2})-(\d{4})/g, "D$1.$2.$3");
+				case 'm-d-Y':
+					return infix.replace(/(\d{1,2})-(\d{1,2})-(\d{4})/g, "D$2.$1.$3");
+				case 'd.m.Y':
+					return infix.replace(/(\d{1,2})\.(\d{1,2})\.(\d{4})/g, "D$1.$2.$3");
+				case 'm.d.Y':
+					return infix.replace(/(\d{1,2})\.(\d{1,2})\.(\d{4})/g, "D$2.$1.$3");
+				case 'Y-m-d':
+					return infix.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/g, "D$3.$2.$1");
+				case 'Y.m.d':
+					return infix.replace(/(\d{4})\.(\d{1,2})\.(\d{1,2})/g, "D$3.$2.$1");
+				case 'Y/m/d':
+					return infix.replace(/(\d{4})\/(\d{1,2})\/(\d{1,2})/g, "D$3.$2.$1");
+				case 'Y-d-m':
+					return infix.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/g, "D$2.$3.$1");
+				case 'Y.d.m':
+					return infix.replace(/(\d{4})\.(\d{1,2})\.(\d{1,2})/g, "D$2.$3.$1");
+				case 'Y/d/m':
+					return infix.replace(/(\d{4})\/(\d{1,2})\/(\d{1,2})/g, "D$2.$3.$1");
+			}
+			return infix;
 		}
+
 	};
 
 	global.ExpressionParser = ExpressionParser;
@@ -3206,10 +3293,20 @@ THE SOFTWARE.
 (function (global) {
 	'use strict';
 
-	function G6k(isDynamic, isMobile, locale) {
-		this.isDynamic = isDynamic;
-		this.isMobile = isMobile;
+	function G6k(options) {
+		this.isDynamic = options.dynamic;
+		this.isMobile = options.mobile;
+		var locale = options.locale.toLowerCase();
+		if (! Date.locales[locale]) {
+			locale = locale.substr(0, 2);
+		}
 		this.locale = Date.locale = locale;
+		this.dateFormat = Date.format = options.dateFormat;
+		this.inputDateFormat = Date.inputFormat = this.dateFormat.replace('d', 'j').replace('m', 'n');
+		this.decimalPoint = options.decimalPoint;
+		this.moneySymbol = options.moneySymbol;
+		this.symbolPosition = options.symbolPosition;
+		this.thousandsSeparator = options.thousandsSeparator;
 		this.parser = new ExpressionParser();
 		this.rulesengine = null;
 		this.simu = null;
@@ -3361,11 +3458,8 @@ THE SOFTWARE.
 			}
 			switch (data.type) {
 				case 'date':
-					if (! /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(data.value)) {
-						return false;
-					}
 					try {
-						var d = Date.createFromFormat('j/n/Y', data.value);
+						var d = Date.createFromFormat(this.inputDateFormat, data.value);
 					} catch (e) {
 						return false;
 					}
@@ -3669,7 +3763,7 @@ THE SOFTWARE.
 			var self = this;
 			var data = this.getData(name);
 			if (value && (data.type === "money" || data.type === "percent")) {
-				value = value.toFixed(2).replace(/\./g, ',');
+				value = accounting.formatNumber(value, 2, this.thousandsSeparator, this.decimalPoint)
 			}
 			if (data.type === "multichoice") {
 				$("input[type=checkbox]").each(function (index) {
@@ -3756,10 +3850,11 @@ THE SOFTWARE.
 				});
 			}
 			if (value && (data.type === "money" || data.type === "percent")) {
-				value = value.toString().replace(/,/g, '.');
+				value = self.unFormatValue(value);
 				value = Math.round(parseFloat(value) * 100)/100;
-			}
-			if (value && data.type === "multichoice" && ! $.isArray(value)) {
+			} else if (value && (data.type === "number")) {
+				value = self.unFormatValue(value);
+			} else if (value && data.type === "multichoice" && ! $.isArray(value)) {
 				if (/\[\]$/.test(value)) {
 					value = JSON.parse(value);
 				} else {
@@ -3967,7 +4062,7 @@ THE SOFTWARE.
 				case "date":
 					var format = param.format;
 					if (format != "" && value != "") {
-						var date = Date.createFromFormat("j/n/Y", value);
+						var date = Date.createFromFormat(this.inputFormat, value);
 						value = date.format(format);
 					}
 					break;
@@ -4349,8 +4444,8 @@ THE SOFTWARE.
 				var data = self.getData(name);
 				if (data) {
 					var value = $(this).val();
-					if ($(this).attr('type') === "money" || $(this).attr('type') === "percent") {
-						value = value.replace(/,/g, '.');
+					if (value && (data.type === "money" || data.type === "percent" || data.type === "number")) {
+						value = self.unFormatValue(value);
 					}
 					if (data.type === 'multichoice') {
 						if ($(this).attr('type') === 'checkbox') {
@@ -4851,6 +4946,8 @@ THE SOFTWARE.
 							} else {
 								content = [content];
 							}
+						} else if (content && (data.type === "money" || data.type === "percent" || data.type === "number")) {
+							content = self.unFormatValue(content);
 						}
 						self.variables[name] = data.value = content;
 					} else if (data.value !== '') {
@@ -4908,11 +5005,18 @@ THE SOFTWARE.
 		formatValue: function(data) {
 			var value = data.value;
 			if (value && $.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
-				value = accounting.formatNumber(parseFloat(value), 2, " ", ",");
+				value = accounting.formatNumber(parseFloat(value), 2, this.thousandsSeparator, this.decimalPoint);
 			}
 			if ($.isArray(value)) {
 				value = value.join(", ");
 			}
+			return value;
+		},
+
+		unFormatValue: function(value) {
+			var ts = new RegExp(this.thousandsSeparator, 'g');
+			var dp = new RegExp(this.decimalPoint, 'g');
+			value = value.replace(ts, '').replace(dp, '.');
 			return value;
 		},
 

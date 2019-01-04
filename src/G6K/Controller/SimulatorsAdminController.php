@@ -400,6 +400,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 		$ua = new \Detection\MobileDetect();
 		$widgets = $this->getWidgets();
+		$typewidgets = $this->getWidgetsByType();
+		$inputwidgets = $this->getWidgetsByInputType();
 		$deployment = 	$this->container->hasParameter('deployment') && 
 						$this->get('security.authorization_checker')->isGranted('ROLE_MANAGER') && 
 						$simulator !== null && $simulator != 'new' && $valid &&
@@ -424,6 +426,8 @@ class SimulatorsAdminController extends BaseAdminController {
 					'script' => $script,
 					'view' => null,
 					'widgets' => $widgets,
+					'typewidgets' => $typewidgets,
+					'inputwidgets' => $inputwidgets,
 					'deployment' => $deployment
 				)
 			);
@@ -1586,7 +1590,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$files = $request->files->all();
 		$fs = new Filesystem();
 		$container = $this->get('kernel')->getContainer();
-		$uploadDir = str_replace("\\", "/", $container->getParameter('g6k_upload_directory'));
+		$uploadDir = str_replace("\\", "/", $container->getParameter('upload_directory'));
 		$simu = '';
 		$simufile = '';
 		$stylesheet = '';
