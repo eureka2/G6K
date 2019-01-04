@@ -167,7 +167,7 @@ class DateFunction {
 		if (empty($dateStr)) {
 			return false;
 		}
-		$date = \DateTime::createFromFormat($format, $dateStr, self::$timezone);
+		\DateTime::createFromFormat($format, $dateStr, self::$timezone);
 		$errors = \DateTime::getLastErrors();
 		if ($errors['error_count'] > 0) {
 			return false;
@@ -208,7 +208,7 @@ class DateFunction {
 		}
 	}
 
-	private static function init() {
+	protected static function init() {
 		if (class_exists('\IntlDateFormatter')) {
 			$locale = str_replace('-', '_', getenv('APP_LOCALE'));
 			$formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::SHORT, \IntlDateFormatter::NONE, NULL, \IntlDateFormatter::GREGORIAN);

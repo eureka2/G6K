@@ -63,7 +63,7 @@ class PercentFunction {
 		return preg_match("/^\d+(\.\d{1,2})?$/", $numeric);
 	}
 
-	private static function init() {
+	protected static function init() {
 		$locale = str_replace('-', '_', getenv('APP_LOCALE'));
 		if (class_exists('\NumberFormatter')) {
 			$formatter = new \NumberFormatter($locale, \NumberFormatter::PERCENT );
