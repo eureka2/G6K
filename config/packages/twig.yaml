@@ -3,4 +3,5 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     globals:
-        language: '%language%'
+        app_locale: '%app_locale%'
+        app_language: '%app_language%'

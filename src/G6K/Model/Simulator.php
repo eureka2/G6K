@@ -267,8 +267,7 @@ class Simulator {
 	 */
 	public function __construct($controller) {
 		$this->controller = $controller;
-		$this->setThousandsSeparator(" "); // temporary
-		// $this->thousandsSeparator = MoneyFunction::$thousandsSeparator;
+		$this->thousandsSeparator = MoneyFunction::$thousandsSeparator;
 	}
 
 	/**

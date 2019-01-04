@@ -81,8 +81,8 @@ var inputwidgets = {{ inputwidgets|json_encode(constant('JSON_PRETTY_PRINT') b-o
 <script type="text/javascript" src="{{ asset('assets/base/js/g6k.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.js') }}"></script>
 <script type="text/javascript">
-Admin.lang = '{{ language }}';
-Admin.locale = '{{ app.request.locale }}';
+Admin.lang = '{{ app_language }}';
+Admin.locale = '{{ app_locale }}';
 Admin.editorCSS = "{{ asset('assets/admin/css/wysiwyg-editor.css') }}";
 </script>
   {% endblock %}

@@ -26,7 +26,7 @@ parameters:
             css: 
                 - css/datepicker.css
             js: 
-                - js/locales/%language%.js
+                - js/locales/%app_locale%.js
                 - js/datepicker.js
                 - js/abDatepicker.js
         AutoMoneyFormat:

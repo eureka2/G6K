@@ -232,7 +232,7 @@ class DateFunction {
 }
 
 (function () {
-	static::init();
+	DateFunction::init();
 })->bindTo(null, DateFunction::class)();
 
 

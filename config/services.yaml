@@ -5,7 +5,8 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: '%env(APP_LOCALE)%'
-    language: '%env(APP_LANGUAGE)%'
+    app_locale: '%env(APP_LOCALE)%'
+    app_language: '%env(APP_LANGUAGE)%'
     public_dir: '%env(resolve:PUBLIC_DIR)%'
 
 services:

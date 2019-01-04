@@ -423,8 +423,8 @@ class ScriptHandler
 		}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
 		file_put_contents($databasesDir."/DataSources.xml", $formatted);
 		$parameters = (object)$parameters;
-		if (file_exists($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->language . '.xml')) {
-			rename($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->language . '.xml', $simusDir . DIRECTORY_SEPARATOR . 'demo.xml');
+		if (file_exists($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->app_language . '.xml')) {
+			rename($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->app_language . '.xml', $simusDir . DIRECTORY_SEPARATOR . 'demo.xml');
 		}
 		foreach (glob($simusDir . DIRECTORY_SEPARATOR . "demo-*.xml") as $filename) {
 			unlink($filename);
@@ -454,8 +454,8 @@ class ScriptHandler
 			$parameters['database_password'] = self::getParameterValue($symfonyDir, 'DB_PASSWORD');
 			$parameters['database_path'] = self::getParameterValue($symfonyDir, 'DB_PATH');
 			$parameters['database_version'] = self::getParameterValue($symfonyDir, 'DB_VERSION');
-			$parameters['locale'] = self::getParameterValue($symfonyDir, 'APP_LOCALE');
-			$parameters['language'] = self::getParameterValue($symfonyDir, 'APP_LANGUAGE');
+			$parameters['app_locale'] = self::getParameterValue($symfonyDir, 'APP_LOCALE');
+			$parameters['app_language'] = self::getParameterValue($symfonyDir, 'APP_LANGUAGE');
 			return $parameters;
 			 
 		} catch (\Exception $e) {

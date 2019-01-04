@@ -72,6 +72,7 @@ class PercentFunction {
 			}
 			if (self::$thousandsSeparator === null) {
 				self::$thousandsSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+				self::$thousandsSeparator = str_replace("\xc2\xa0", ' ', self::$thousandsSeparator);
 			}
 			if (self::$percentSymbol === null) {
 				self::$percentSymbol = normalizer_normalize($formatter->getSymbol(\NumberFormatter::PERCENT_SYMBOL));
@@ -92,7 +93,7 @@ class PercentFunction {
 }
 
 (function () {
-	static::init();
+	PercentFunction::init();
 })->bindTo(null, PercentFunction::class)();
 
 

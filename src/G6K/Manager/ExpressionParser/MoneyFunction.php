@@ -73,6 +73,7 @@ class MoneyFunction {
 			}
 			if (self::$thousandsSeparator === null) {
 				self::$thousandsSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL));
+				self::$thousandsSeparator = str_replace("\xc2\xa0", ' ', self::$thousandsSeparator);
 			}
 			if (self::$moneySymbol === null) {
 				$currencyCode = $formatter->getTextAttribute(\NumberFormatter::CURRENCY_CODE);
@@ -104,7 +105,7 @@ class MoneyFunction {
 }
 
 (function () {
-	static::init();
+	MoneyFunction::init();
 })->bindTo(null, MoneyFunction::class)();
 
 

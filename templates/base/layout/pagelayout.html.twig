@@ -99,7 +99,7 @@ if (/no-js=/.test(window.location.search)) {
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery.placeholder.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ language ~ '.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app_language ~ '.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/accounting.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/DefiantJS/defiant.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/JSONPath/jsonpath.js') }}"></script>
@@ -125,7 +125,7 @@ $(function(){
 	{% if exception is not defined %}
 	{% if step is not empty %}
 	var options = { 
-		locale: '{{ app.request.locale }}',
+		locale: '{{ app_locale }}',
 		dynamic: {%- if step.dynamic or (step.simulator.dynamic and step.id == 0) -%}true{%- else -%}false{%- endif %},
 		mobile: {% if ua.mobile -%}true{%- else -%}false{%- endif -%},
 		dateFormat: '{{ step.simulator.dateFormat }}',

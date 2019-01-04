@@ -115,11 +115,11 @@ abstract class CommandBase extends Command
 			$this->parameters = $this->getParameters();
 			if ($this->parameters !== false) {
 				$this->version = $this->parameters['app_version'] ?? '4.x';
-				$translations = $this->projectDir . "/translations/commands." . $this->parameters['language'] . ".xlf";
-				$this->translator = new Translator($this->parameters['language']);
+				$translations = $this->projectDir . "/translations/commands." . $this->parameters['app_language'] . ".xlf";
+				$this->translator = new Translator($this->parameters['app_language']);
 				if (file_exists($translations)) {
 					$this->translator->addLoader('xliff', new XliffFileLoader());
-					$this->translator->addResource('xliff', $translations, $this->parameters['language']);
+					$this->translator->addResource('xliff', $translations, $this->parameters['app_language']);
 				}
 			}
 			$this->initialized = true;
@@ -148,8 +148,8 @@ abstract class CommandBase extends Command
 			$parameters['database_password'] = $this->getParameterValue('DB_PASSWORD');
 			$parameters['database_path'] = $this->getParameterValue('DB_PATH');
 			$parameters['database_version'] = $this->getParameterValue('DB_VERSION');
-			$parameters['locale'] = $this->getParameterValue('APP_LOCALE');
-			$parameters['language'] = $this->getParameterValue('APP_LANGUAGE');
+			$parameters['app_locale'] = $this->getParameterValue('APP_LOCALE');
+			$parameters['app_language'] = $this->getParameterValue('APP_LANGUAGE');
 			$parameters['public_dir'] = $this->getParameterValue('PUBLIC_DIR');
 			$parameters['upload_directory'] = $this->getParameterValue('APP_UPLOAD_DIRECTORY');
 			return $parameters;

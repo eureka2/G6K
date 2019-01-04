@@ -72,6 +72,7 @@ class NumberFunction {
 			}
 			if (self::$thousandsSeparator === null) {
 				self::$thousandsSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+				self::$thousandsSeparator = str_replace("\xc2\xa0", ' ', self::$thousandsSeparator);
 			}
 			if (self::$fractionDigit === null) {
 				self::$fractionDigit = $formatter->getAttribute(\NumberFormatter::FRACTION_DIGITS);
@@ -92,7 +93,7 @@ class NumberFunction {
 }
 
 (function () {
-	static::init();
+	NumberFunction::init();
 })->bindTo(null, NumberFunction::class)();
 
 

@@ -99,18 +99,18 @@ trait ControllersTrait {
 	 *
 	 */
 	public function getLocale() {
-		return $this->getParameter('locale');
+		return $this->getParameter('app_locale');
 	}
 
 	/**
-	 * Returns the 'language' from config parameters
+	 * Returns the 'app_language' from config parameters
 	 *
 	 * @access  public
-	 * @return  string The language
+	 * @return  string The app_language
 	 *
 	 */
 	public function getLanguage() {
-		return $this->getParameter('language');
+		return $this->getParameter('app_language');
 	}
 
 	/**
