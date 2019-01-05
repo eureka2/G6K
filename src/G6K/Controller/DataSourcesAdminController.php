@@ -439,7 +439,7 @@ class DataSourcesAdminController extends BaseAdminController {
 										$infos['filtertext'] = $filtertext;
 										if ($filtertext != '') {
 											if ($infos['g6k_type'] == 'date') {
-												$date = DateFunction::parseDate("j/m/Y", $filtertext);
+												$date = DateFunction::parseDate("j/n/Y", $filtertext);
 												$filtertext = $date->format("Y-m-d");
 												$where[] = $infos['name'] . " = '" . $filtertext . "'";
 											} elseif ($infos['g6k_type'] == 'number' || $infos['g6k_type'] == 'integer' || $infos['g6k_type'] == 'money' || $infos['g6k_type'] == 'percent') {
@@ -674,7 +674,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	protected function doImportDatasource(Request $request) {
 		$files = $request->files->all();
 		$fs = new Filesystem();
-		$uploadDir = str_replace("\\", "/", $this->getConfigParameter('g6k_upload_directory'));
+		$uploadDir = str_replace("\\", "/", $this->getConfigParameter('upload_directory'));
 		$datasource = '';
 		$schemafile = '';
 		$datafile = '';
@@ -825,7 +825,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 */
 	protected function doImportTable(Request $request, $form, $dsid, $table, $database) {
 		$files = $request->files->all();
-		$uploadDir = str_replace("\\", "/", $this->getConfigParameter('g6k_upload_directory'));
+		$uploadDir = str_replace("\\", "/", $this->getConfigParameter('upload_directory'));
 		$csvfile = '';
 		$filename = '';
 		foreach ($files as $fieldname => $file) {
@@ -1376,7 +1376,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				$sameDatabase = false;
 			} else if ($database->getAttribute('name') != $form['datasource-database-name']) {
 				$sameDatabase = false;
-			} else if ($database->getAttribute('type') == 'mysqli' || $database->getAttribute('type') == 'pgsql') {
+			} else if ($database->getAttribute('type') == 'mysql' || $database->getAttribute('type') == 'mysqli' || $database->getAttribute('type') == 'pgsql') {
 				if ($database->getAttribute('host') != $form['datasource-database-host']) {
 					$sameDatabase = false;
 				} else if ($database->getAttribute('port') != $form['datasource-database-port']) {
@@ -1411,7 +1411,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$database->setAttribute('type', $dbtype);
 					$database->setAttribute('name', $form['datasource-database-name']);
 					$database->setAttribute('label', $form['datasource-database-label']);
-					if ($dbtype == 'mysqli' || $dbtype == 'pgsql') {
+					if ($dbtype == 'mysql' || $dbtype == 'mysqli' || $dbtype == 'pgsql') {
 						$database->setAttribute('host', $form['datasource-database-host']);
 						$database->setAttribute('port', $form['datasource-database-port']);
 						$database->setAttribute('user', $form['datasource-database-user']);
@@ -1427,7 +1427,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					$database->setAttribute('type', $dbtype);
 					$database->setAttribute('name', $form['datasource-database-name']);
 					$database->setAttribute('label', $form['datasource-database-label']);
-					if ($dbtype == 'mysqli' || $dbtype == 'pgsql') {
+					if ($dbtype == 'mysql' || $dbtype == 'mysqli' || $dbtype == 'pgsql') {
 						$database->setAttribute('host', $form['datasource-database-host']);
 						$database->setAttribute('port', $form['datasource-database-port']);
 						$database->setAttribute('user', $form['datasource-database-user']);
@@ -1437,7 +1437,7 @@ class DataSourcesAdminController extends BaseAdminController {
 							$database->removeAttribute ('password');
 						}
 					} else {
-						if ($oldDbtype == 'mysqli' || $oldDbtype == 'pgsql') {
+						if ($oldDbtype == 'mysql' || $oldDbtype == 'mysqli' || $oldDbtype == 'pgsql') {
 							$database->removeAttribute ('host');
 							$database->removeAttribute ('port');
 							$database->removeAttribute ('user');
@@ -1510,6 +1510,7 @@ class DataSourcesAdminController extends BaseAdminController {
 						}
 						break;
 					case 'pgsql':
+					case 'mysql':
 					case 'mysqli':
 						$database = $this->getDatabase($dsid, $this->datasources, $this->databasesDir);
 						$tables = $datasource->getElementsByTagName('Table');

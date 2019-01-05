@@ -874,7 +874,7 @@ THE SOFTWARE.
 					errors.push(Translator.trans("The database label is required"));
 				}
 				var dbtype = $("#datasource-database-type").val();
-				if (dbtype == 'mysqli' || dbtype == 'pgsl') {
+				if (dbtype == 'mysql' || dbtype == 'mysqli' || dbtype == 'pgsl') {
 					if ($("#datasource-database-host").val() == '') {
 						errors.push(Translator.trans("The database host is required"));
 					} 
@@ -990,6 +990,12 @@ $(function(){
 					e.preventDefault();
 					Datasources.showErrors(errors);
 					return false;
+				}
+				if ($("#datasource-database-type").val() == 'sqlite') {
+					var dbname = $("#datasource-database-name").val();
+					if (! /\.db$/.test(dbname)) {
+						$("#datasource-database-name").val(dbname + '.db');
+					}
 				}
 				Datasources.hideErrors();
 				Admin.updated = false;

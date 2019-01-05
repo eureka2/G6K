@@ -73,7 +73,7 @@ class Operation {
 				$result->value = $date;
 			} else if ($arg2->type == Token::T_TEXT) {
 				$result->type = Token::T_TEXT;
-				$result->value = $arg1->value->format("d/m/Y").$arg2->value;
+				$result->value = $arg1->value->format(DateFunction::$dateFormat).$arg2->value;
 			} else {
 				throw new \Exception("Illegal argument '".$arg2);
 			}
@@ -82,7 +82,7 @@ class Operation {
 			if ($arg2->type == Token::T_NUMBER) {
 				$result->value = $arg1->value.(string)$arg2->value;
 			} else if ($arg2->type == Token::T_DATE) {
-				$result->value = $arg1->value.$arg2->value->format("d/m/Y");
+				$result->value = $arg1->value.$arg2->value->format(DateFunction::$dateFormat);
 			} else if ($arg2->type == Token::T_TEXT) {
 				$result->value = $arg1->value.$arg2->value;
 			} else {

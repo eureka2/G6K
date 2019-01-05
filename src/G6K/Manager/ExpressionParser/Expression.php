@@ -260,7 +260,7 @@ class Expression {
 		} elseif (is_numeric($value)) {
 			$token->type = Token::T_NUMBER;
 			$token->value = $value;
-		} elseif (preg_match("/^\d{1,2}\/\d{1,2}\/\d{4}$/", $value)) {
+		} elseif (DateFunction::isDate($value)) {
 			$this->setDateToken($token, $value);
 		} elseif (in_array($value, array('true', 'false'))) {
 			$token->type = Token::T_BOOLEAN;
@@ -283,13 +283,7 @@ class Expression {
 	 */
 	protected function setDateToken(Token &$token, $value) {
 		$token->type = Token::T_DATE;
-		$date = \DateTime::createFromFormat("d/m/Y", $value, new \DateTimeZone( 'Europe/Paris' ));
-		$error = \DateTime::getLastErrors();
-		if ($error['error_count'] > 0) {
-			throw new \Exception($error['errors'][0]);
-		}
-		$date->setTime(0, 0, 0);
-		$token->value = $date;
+		$token->value = DateFunction::makeDate($value);
 	}
 
 	/**

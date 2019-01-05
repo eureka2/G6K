@@ -43,6 +43,7 @@ use App\G6K\Model\RichText;
 use App\G6K\Manager\DOMClient as Client;
 use App\G6K\Manager\ResultFilter;
 use App\G6K\Manager\StreamedOutput;
+use App\G6K\Manager\ExpressionParser\DateFunction;
 
 /**
  *
@@ -91,6 +92,28 @@ trait ControllersTrait {
 	}
 
 	/**
+	 * Returns the 'locale' from config parameters
+	 *
+	 * @access  public
+	 * @return  string The locale
+	 *
+	 */
+	public function getLocale() {
+		return $this->getParameter('app_locale');
+	}
+
+	/**
+	 * Returns the 'app_language' from config parameters
+	 *
+	 * @access  public
+	 * @return  string The app_language
+	 *
+	 */
+	public function getLanguage() {
+		return $this->getParameter('app_language');
+	}
+
+	/**
 	 * Formats a source parameter value
 	 *
 	 * @access  protected
@@ -108,7 +131,8 @@ trait ControllersTrait {
 			case "date":
 				$format = $param->getFormat();
 				if ($format != "" && $value != "") {
-					$date = \DateTime::createFromFormat("j/n/Y", $value);
+					$dateFormat = str_replace(['d', 'm'], ['j', 'n'], $this->simu->getDateFormat());
+					$date = \DateTime::createFromFormat($dateFormat, $value, DateFunction::$timezone);
 					if ($date === false) {
 						return null;
 					}
@@ -438,10 +462,10 @@ trait ControllersTrait {
 			$value = $data->getValue();
 			switch ($data->getType()) {
 				case 'money': 
-					$value = number_format ( (float)$value , 2 , "." , " "); 
+					$value = number_format ( (float)$value , 2 , $this->simu->getDecimalPoint() , $this->simu->getThousandsSeparator()); 
 				case 'percent':
 				case 'number': 
-					$value = str_replace('.', ',', $value);
+					$value = str_replace('.', $this->simu->getDecimalPoint(), $value);
 					break;
 				case 'array': 
 				case 'multichoice': 
@@ -591,6 +615,66 @@ trait ControllersTrait {
 	}
 
 	/**
+	 * Returns the list of available widgets by type (g6k type).
+	 *
+	 * @access  public
+	 * @return  array The list of available widgets
+	 *
+	 */
+	public function getWidgetsByType() {
+		$types = array();
+		if ($this->container->hasParameter('widgets')) {
+			foreach ($this->container->getParameter('widgets') as $name => $widget) {
+				$targets = $widget['target'];
+				foreach($targets as $target) {
+					if ($target == 'all') {
+						$list = Data::TYPES;
+					} else {
+						$list = [$target];
+					}
+					foreach ($list as $type) {
+						if (! isset($types[$type])) {
+							$types[$type] = array();
+						}
+						$types[$type][] = $name;
+					}
+				}
+			}
+		}
+		return $types;
+	}
+
+	/**
+	 * Returns the list of available widgets by form input type.
+	 *
+	 * @access  public
+	 * @return  array The list of available widgets
+	 *
+	 */
+	public function getWidgetsByInputType() {
+		$types = array();
+		if ($this->container->hasParameter('widgets')) {
+			foreach ($this->container->getParameter('widgets') as $name => $widget) {
+				$inputs = $widget['input'];
+				foreach($inputs as $input) {
+					if ($input == 'all') {
+						$list = ['select', 'checkbox', 'color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'radio', 'range', 'search', 'tel', 'text', 'time', 'url', 'week'];
+					} else {
+						$list = [$input];
+					}
+					foreach ($list as $type) {
+						if (! isset($types[$type])) {
+							$types[$type] = array();
+						}
+						$types[$type][] = $name;
+					}
+				}
+			}
+		}
+		return $types;
+	}
+
+	/**
 	 * Retrieves the Data object of a data item of the current simulator by its ID.
 	 *
 	 * @access  public
@@ -665,6 +749,44 @@ trait ControllersTrait {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Makes a date string from an array [year, month, day], according to the date format.
+	 *
+	 * @access  protected
+	 * @param   array $dateArray The given array
+	 * @return  string|null The date string
+	 *
+	 */
+	protected function makeDateString($dateArray) {
+			switch ($this->simu->getDateFormat()) {
+				case 'd/m/Y':
+					return $dateArray['day'] . "/" . $dateArray['month'] . "/" . $dateArray['year'];
+				case 'm/d/Y':
+					return $dateArray['month'] . "/" . $dateArray['day'] . "/" . $dateArray['year'];
+				case 'd-m-Y':
+					return $dateArray['day'] . "-" . $dateArray['month'] . "-" . $dateArray['year'];
+				case 'm-d-Y':
+					return $dateArray['month'] . "-" . $dateArray['day'] . "-" . $dateArray['year'];
+				case 'd.m.Y':
+					return $dateArray['day'] . "." . $dateArray['month'] . "." . $dateArray['year'];
+				case 'm.d.Y':
+					return $dateArray['month'] . "." . $dateArray['day'] . "." . $dateArray['year'];
+				case 'Y-m-d':
+					return $dateArray['year'] . "-" . $dateArray['month'] . "-" . $dateArray['day'];
+				case 'Y.m.d':
+					return $dateArray['year'] . "." . $dateArray['month'] . "." . $dateArray['day'];
+				case 'Y/m/d':
+					return $dateArray['year'] . "/" . $dateArray['month'] . "/" . $dateArray['day'];
+				case 'Y-d-m':
+					return $dateArray['year'] . "-" . $dateArray['day'] . "-" . $dateArray['month'];
+				case 'Y.d.m':
+					return $dateArray['year'] . "." . $dateArray['day'] . "." . $dateArray['month'];
+				case 'Y/d/m':
+					return $dateArray['year'] . "/" . $dateArray['day'] . "/" . $dateArray['month'];
+			}
+			return null;
 	}
 
 	/**

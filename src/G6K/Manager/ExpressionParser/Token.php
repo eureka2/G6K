@@ -369,7 +369,7 @@ class Token {
 	public function __toString() {
 		switch ($this->type) {
 			case self::T_DATE:
-				return $this->value->format("d/m/Y");
+				return $this->value->format(DateFunction::$dateFormat);
 				break;
 			case self::T_BOOLEAN:
 				return $this->value ? 'true' : 'false';

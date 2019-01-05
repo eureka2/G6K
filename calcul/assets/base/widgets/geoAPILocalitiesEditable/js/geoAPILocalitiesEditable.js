@@ -1,7 +1,7 @@
 (function (global) {
 	"use strict";
 		
-	function geoAPILocalitiesEditable (input, onComplete) {
+	function geoAPILocalitiesEditable (input, options, onComplete) {
 		var initial = input.val();
 		if (/^\d{5}$/.test(initial)) {
 			var codeDepartement = initial.substr(0,2);

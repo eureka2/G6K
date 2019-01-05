@@ -1,5 +1,5 @@
 parameters:
-    g6k_upload_directory: '%env(resolve:G6K_UPLOAD_DIRECTORY)%'
+    upload_directory: '%env(resolve:APP_UPLOAD_DIRECTORY)%'
 
     domainview: 
         localhost: Demo
@@ -12,6 +12,8 @@ parameters:
     widgets:
         abListbox:
             label: Accessible and customizable listbox
+            target: [ choice, department, region, country, year, month, day ]
+            input: [ select ]
             css:
                 - css/listbox.css
             js: 
@@ -19,14 +21,99 @@ parameters:
                 - js/abListbox.js
         abDatepicker:
             label: Accessible and customizable datepicker
+            target: [ date ]
+            input: [ text ]
             css: 
                 - css/datepicker.css
             js: 
-                - js/locales/%locale%.js
+                - js/locales/%app_locale%.js
                 - js/datepicker.js
                 - js/abDatepicker.js
+        AutoMoneyFormat:
+            label:  Live Amount Formatting
+            target: [ money ]
+            input: [ text ]
+            css: 
+            js: 
+                - lib/autoNumeric.min.js
+                - js/AutoMoneyFormat.js
+        AutoDateFormat:
+            label:  Live Date Formatting
+            target: [ date ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/AutoDateFormat.js
+        AutocompletionListbox:
+            label: List box with auto-completion
+            target: [ choice, department, region, country, year, month, day ]
+            input: [ select ]
+            css: 
+                - lib/jquery.auto-complete.css
+            js: 
+                - lib/jquery.auto-complete.min.js
+                - js/AutocompletionListbox.js
+        geoAPILocalities:
+            label: Insee code obtained by autocompletion on the name of the commune or its postal code
+            target: [ text ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+            css: 
+                - css/geoAPILocalities.css
+            js: 
+                - js/geoAPILocalities.js
+        geoAPILocalitiesEditable:
+            label: Insee code obtained by autocompletion on the name of the commune or its postal code (In place mode)
+            target: [ text ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+                - jEditable
+            css: 
+            js: 
+                - js/jquery.jeditable.geoAPILocalities.js
+                - js/geoAPILocalitiesEditable.js
+        geoAPIZipCode:
+            label: Postal code obtained by autocompletion on the name of the commune or its postal code
+            target: [ number, integer ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+            css: 
+            js: 
+                - js/geoAPIZipCode.js
+        geoAPIZipCodeEditable:
+            label: Postal code obtained by autocompletion on the name of the commune or its postal code (In place mode)
+            target: [ number, integer ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+                - jEditable
+            css: 
+            js: 
+                - js/jquery.jeditable.geoAPIZipCode.js
+                - js/geoAPIZipCodeEditable.js
+        geoAPIMaps:
+            label: Insee code obtained from a France map
+            target: [ text ]
+            input: [ text ]
+            deps:
+                - geoAPILocalities
+            css: 
+                - lib/leaflet.css
+                - css/geoapimaps.css
+            js:
+                - https://maps.googleapis.com/maps/api/js?key=<YOUR API KEY> async defer
+                - lib/leaflet.js
+                - lib/leaflet-color-markers.js
+                - lib/leaflet-providers.js
+                - lib/Leaflet.GoogleMutant.js
+                - js/geoAPIMaps.js
         jEditable:
             label: In place form field editor
+            target: [ all ]
+            input: [ all ]
             css: 
             js: 
                 - lib/jquery.auto-grow-input.min.js
@@ -38,60 +125,6 @@ parameters:
                 - js/jquery.jeditable.money.js
                 - js/jquery.jeditable.percent.js
                 - js/jEditable.js
-        AutocompletionListbox:
-            label: List box with auto-completion
-            css: 
-                - lib/jquery.auto-complete.css
-            js: 
-                - lib/jquery.auto-complete.min.js
-                - js/AutocompletionListbox.js
-        geoAPILocalities:
-            label: Insee code obtained by autocompletion on the name of the commune or its postal code
-            deps:
-                - AutocompletionListbox
-            css: 
-                - css/geoAPILocalities.css
-            js: 
-                - js/geoAPILocalities.js
-        geoAPILocalitiesEditable:
-            label: Insee code obtained by autocompletion on the name of the commune or its postal code (In place mode)
-            deps:
-                - AutocompletionListbox
-                - jEditable
-            css: 
-            js: 
-                - js/jquery.jeditable.geoAPILocalities.js
-                - js/geoAPILocalitiesEditable.js
-        geoAPIZipCode:
-            label: Postal code obtained by autocompletion on the name of the commune or its postal code
-            deps:
-                - AutocompletionListbox
-            css: 
-            js: 
-                - js/geoAPIZipCode.js
-        geoAPIZipCodeEditable:
-            label: Postal code obtained by autocompletion on the name of the commune or its postal code (In place mode)
-            deps:
-                - AutocompletionListbox
-                - jEditable
-            css: 
-            js: 
-                - js/jquery.jeditable.geoAPIZipCode.js
-                - js/geoAPIZipCodeEditable.js
-        geoAPIMaps:
-            label: Insee code obtained from a France map
-            deps:
-                - geoAPILocalities
-            css: 
-                - lib/leaflet.css
-                - css/geoapimaps.css
-            js:
-                - https://maps.googleapis.com/maps/api/js?key=AIzaSyCF348BNxRwRtYPqLLHbP5CqPVun40h3Yc async defer
-                - lib/leaflet.js
-                - lib/leaflet-color-markers.js
-                - lib/leaflet-providers.js
-                - lib/Leaflet.GoogleMutant.js
-                - js/geoAPIMaps.js
 
     # api configuration
     # api:
@@ -117,7 +150,7 @@ services:
 
     g6k.file_uploader:
         class: App\G6K\Services\FileUploader
-        arguments: ['%g6k_upload_directory%']
+        arguments: ['%upload_directory%']
 
     g6k.deployer:
         class: App\G6K\Services\Deployer

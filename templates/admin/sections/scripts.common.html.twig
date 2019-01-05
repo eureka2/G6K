@@ -26,7 +26,7 @@ THE SOFTWARE.
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-migrate-3.0.0.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app.request.locale ~ '.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app_language ~ '.js') }}"></script>
 <script>
 $(function(){
 	$('body').append('<div id="toTop" class="btn btn-light"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');

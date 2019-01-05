@@ -114,7 +114,7 @@
 		geoAPIClearInput(input);
 	}
 
-	function geoAPILocalities (input, onComplete) {
+	function geoAPILocalities (input, options, onComplete) {
 		var id = 'geoAPILocalities' + input.attr('name');
 		var input2 = $('<input>', { id: id, type: 'text' });
 //		input2.attr('placeholder', Translator.trans('Enter a locality or a zipcode'));

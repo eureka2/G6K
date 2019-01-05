@@ -108,10 +108,10 @@ class CopySimulatorCommand extends SimulatorCommandBase
 				$this->translator->trans("One or more simulators to exclude when <simulatorname> is 'all'."),
 			),
 			array(
-				'default-choice-widget', 
-				'c', 
-				InputOption::VALUE_OPTIONAL, 
-				$this->translator->trans('Default widget for unexpanded choice fields.'),
+				'default-widget', 
+				'w', 
+				InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 
+				$this->translator->trans('Default widget for compatible input fields.'),
 			)
 		);
 	}
@@ -137,11 +137,13 @@ class CopySimulatorCommand extends SimulatorCommandBase
 		parent::execute($input, $output);
 		$simulatorname = $input->getArgument('simulatorname');
 		$anotherg6kpath = str_replace('\\', '/', $input->getArgument('anotherg6kpath'));
-		$widget = $input->getOption('default-choice-widget') ?? "";
+		$widgets = $input->getOption('default-widget') ?? [];
 		$exclude = $input->getOption('exclude') ?? [];
-		if ($widget != "" && ! file_exists($this->projectDir."/".$this->parameters['public_dir']."/assets/base/widgets/".$widget)) {
-			$this->error($output, "The widget '%s%' doesn't exists", array('%s%' => $widget));
-			return 1;
+		foreach($widgets as $widget) {
+			if (! file_exists($this->projectDir."/".$this->parameters['public_dir']."/assets/base/widgets/".$widget)) {
+				$this->error($output, "The widget '%s%' doesn't exists", array('%s%' => $widget));
+				return 1;
+			}
 		}
 		if (! file_exists($anotherg6kpath)) {
 			$this->error($output, "The directory of the other instance '%s%' doesn't exists", array('%s%' => $anotherg6kpath));
@@ -180,7 +182,7 @@ class CopySimulatorCommand extends SimulatorCommandBase
 		}
 		$oneOk = false;
 		foreach ($simulators as $simulatorname) {
-			if ($this->copy($simulatorname, $anotherg6kpath, $simulatorsDir1, $assetsDir1, $widget, $input, $output)) {
+			if ($this->copy($simulatorname, $anotherg6kpath, $simulatorsDir1, $assetsDir1, $widgets, $input, $output)) {
 				$this->success($output, "The simulator '%s%' is successfully copied", array('%s%' => $simulatorname));
 				$oneOk = true;
 			}
@@ -188,7 +190,7 @@ class CopySimulatorCommand extends SimulatorCommandBase
 		return $oneOk ? 0 : 1;
 	}
 
-	private function copy(string $simulatorname, string $anotherg6kpath, string $simulatorsDir1, string $assetsDir1, string $widget, InputInterface $input, OutputInterface $output) {
+	private function copy(string $simulatorname, string $anotherg6kpath, string $simulatorsDir1, string $assetsDir1, array $widgets, InputInterface $input, OutputInterface $output) {
 		$simufile = $simulatorsDir1.'/'.$simulatorname.'.xml';
 		if (!file_exists($simufile)) {
 			$this->error($output, "The simulator XML file '%s%' doesn't exists", array('%s%' => $simufile));
@@ -221,8 +223,8 @@ class CopySimulatorCommand extends SimulatorCommandBase
 			}
 		}
 		$this->fixDatasourcesReference($simulator, $anotherg6kpath, $input, $output);
-		if ($widget) {
-			$this->setChoiceWidget($simulator, $widget);
+		if (!empty($widgets)) {
+			$this->setWidgets($simulator, $widgets);
 		}
 		$this->copyDatasources($simulator, $anotherg6kpath, $input, $output);
 		$formatted = preg_replace_callback('/^( +)</m', function($a) { 

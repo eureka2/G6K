@@ -26,6 +26,11 @@ THE SOFTWARE.
 
 namespace App\G6K\Model;
 
+use App\G6K\Manager\ExpressionParser\DateFunction;
+use App\G6K\Manager\ExpressionParser\MoneyFunction;
+use App\G6K\Manager\ExpressionParser\NumberFunction;
+use App\G6K\Manager\ExpressionParser\PercentFunction;
+
 /**
  *
  * This class allows the storage and retrieval of the attributes of a simulator.
@@ -115,6 +120,14 @@ class Simulator {
 	 *
 	 */
 	private $decimalPoint = "";
+
+	/**
+	 * @var string     $thousandsSeparator The current thousands separator in the display language of this simulator
+	 *
+	 * @access  private
+	 *
+	 */
+	private $thousandsSeparator = " ";
 
 	/**
 	 * @var string     $moneySymbol The current currency symbol in the country of use of this simulator
@@ -254,6 +267,7 @@ class Simulator {
 	 */
 	public function __construct($controller) {
 		$this->controller = $controller;
+		$this->thousandsSeparator = MoneyFunction::$thousandsSeparator;
 	}
 
 	/**
@@ -484,6 +498,7 @@ class Simulator {
 	 */
 	public function setDateFormat($dateFormat) {
 		$this->dateFormat = $dateFormat;
+		DateFunction::$dateFormat = $dateFormat;
 	}
 
 	/**
@@ -507,6 +522,35 @@ class Simulator {
 	 */
 	public function setDecimalPoint($decimalPoint) {
 		$this->decimalPoint = $decimalPoint;
+		NumberFunction::$decimalPoint = $decimalPoint;
+		PercentFunction::$decimalPoint = $decimalPoint;
+		MoneyFunction::$decimalPoint = $decimalPoint;
+	}
+
+	/**
+	 * Returns the thousands separator in the display language of this simulator
+	 *
+	 * @access  public
+	 * @return  string The thousands separator
+	 *
+	 */
+	public function getThousandsSeparator() {
+		return $this->thousandsSeparator;
+	}
+
+	/**
+	 * Sets the thousands separator in the display language of this simulator
+	 *
+	 * @access  public
+	 * @param   string $thousandsSeparator The thousands separator
+	 * @return  void
+	 *
+	 */
+	public function setThousandsSeparator($thousandsSeparator) {
+		$this->thousandsSeparator = $thousandsSeparator;
+		NumberFunction::$thousandsSeparator = $thousandsSeparator;
+		PercentFunction::$thousandsSeparator = $thousandsSeparator;
+		MoneyFunction::$thousandsSeparator = $thousandsSeparator;
 	}
 
 	/**
@@ -530,6 +574,7 @@ class Simulator {
 	 */
 	public function setMoneySymbol($moneySymbol) {
 		$this->moneySymbol = $moneySymbol;
+		MoneyFunction::$moneySymbol = $moneySymbol;
 	}
 
 	/**
@@ -553,6 +598,7 @@ class Simulator {
 	 */
 	public function setSymbolPosition($symbolPosition) {
 		$this->symbolPosition = $symbolPosition;
+		MoneyFunction::$symbolPosition = $symbolPosition;
 	}
 
 	/**
@@ -1735,6 +1781,10 @@ class Simulator {
 			$simulator = new \SimpleXMLElement($url, LIBXML_NOWARNING, true);
 			$datasources = new \SimpleXMLElement($datasrc, LIBXML_NOWARNING, true);
 		}
+		$this->setDateFormat((string)($simulator->DataSet['dateFormat']));
+		$this->setDecimalPoint((string)($simulator->DataSet['decimalPoint']));
+		$this->setMoneySymbol((string)($simulator->DataSet['moneySymbol']));
+		$this->setSymbolPosition((string)($simulator->DataSet['symbolPosition']));
 		foreach ($datasources->DataSource as $datasource) {
 			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
 			$datasourceObj->setUri((string)$datasource['uri']);

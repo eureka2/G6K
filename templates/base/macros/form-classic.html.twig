@@ -42,7 +42,7 @@ THE SOFTWARE.
 		{% set prompt = field.prompt ? field.prompt : '---------' %}
 		{% set widget = field.widget ? ' data-widget="' ~ field.widget ~ '"' : '' %}
 		{%- if type == 'money' or type == 'percent' -%}
-		{% set value = value|replace({".": ","}) %}
+		{% set value = value|replace({".": simu.decimalPoint}) %}
 		{% elseif type == 'number' %}
 		{% elseif type == 'integer' %}
 		{% set type = 'number' %}
@@ -239,7 +239,7 @@ THE SOFTWARE.
 	{%- elseif type == 'money' -%}
 		{%- if data.value == '' -%}
 		{%- else -%}
-		{{ data.value|number_format(2, simu.decimalPoint, ' ') }}
+		{{ plainValue }}
 		{%- endif -%}
 	{%- else -%}
 		{{ value }}

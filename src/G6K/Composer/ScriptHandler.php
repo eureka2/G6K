@@ -42,7 +42,31 @@ use App\G6K\Manager\DatasourcesHelper;
 class ScriptHandler
 {
 
+	const CHARSET = [
+		"mysql" => ["ARMSCII8", "ASCII", "BIG5", "BINARY", "CP1250", "CP1251", "CP1256", "CP1257", "CP850", "CP852", "CP866", "CP932", "DEC8", "EUCJPMS", "EUCKR", "GB18030", "GB2312", "GBK", "GEOSTD8", "GREEK", "HEBREW", "HP8", "KEYBCS2", "KOI8R", "KOI8U", "LATIN1", "LATIN2", "LATIN5", "LATIN7", "MACCE", "MACROMAN", "SJIS", "SWE7", "TIS620", "UCS2", "UJIS", "UTF16", "UTF16LE", "UTF32", "UTF8", "UTF8MB4"],
+		"pgsql" => ["BIG5", "EUC_CN", "EUC_JP", "EUC_JIS_2004", "EUC_KR", "EUC_TW", "GB18030", "GBK", "ISO_8859_5", "ISO_8859_6", "ISO_8859_7", "ISO_8859_8", "JOHAB", "KOI8R", "KOI8U", "LATIN1", "LATIN2", "LATIN3", "LATIN4", "LATIN5", "LATIN6", "LATIN7", "LATIN8", "LATIN9", "LATIN10", "MULE_INTERNAL", "SJIS", "SHIFT_JIS_2004", "SQL_ASCII", "UHC", "UTF8", "WIN866", "WIN874", "WIN1250", "WIN1251", "WIN1252", "WIN1253", "WIN1254", "WIN1255", "WIN1256", "WIN1257", "WIN1258"]
+	];
 
+	const LABEL = [
+		"APP_ENV" => "application environment [dev or prod]",
+		"APP_DEBUG" => "debug mode [0 or 1]",
+		"APP_LOCALE" => "locale [en-GB, en-US, fr-FR, ...]",
+		"APP_UPLOAD_DIRECTORY" => "upload directory",
+		"APP_VERSION" => "G6K version",
+		"APP_SECRET" => "application secret",
+		"MAILER_URL" => "mailer URL",
+		"DB_ENGINE" => "database engine [sqlite, mysql or pgsql]",
+		"DB_NAME" => "database name",
+		"DB_HOST" => "database host [localhost, ...]",
+		"DB_PORT" => "database port",
+		"DB_USER" => "database user",
+		"DB_PASSWORD" => "database password",
+		"DB_VERSION" => "database version",
+		"DB_PATH" => "database path",
+		"DB_CHARSET" => "database character set [UTF8, LATIN1, ...]"
+	];
+	
+	private static $locales = null;
 	/**
 	 * Builds environment variables
 	 *
@@ -78,7 +102,9 @@ class ScriptHandler
 		$params = self::getEnvironmentVariables($event, $variables);
 
 		self::setEnvironmentVariable($params, 'APP_VERSION', $version);
+		self::setEnvironmentVariable($params, 'APP_SECRET', self::generateRandomSecret());
 		self::setEnvironmentVariable($params, 'PUBLIC_DIR', $extras['public-dir'] ?? 'public');
+		self::setEnvironmentVariable($params, 'APP_LANGUAGE', substr($params['APP_LOCALE'], 0, 2));
 		if (isset($params['DATABASE_URL'])) {
 			$url = $params['DATABASE_URL'];
 			if (preg_match("#([^:]+)://(.*)$#", $url, $m)) {
@@ -120,27 +146,115 @@ class ScriptHandler
 	}
 
 	private static function getEnvironmentVariables(Event $event, array $variables) {
+		self::$locales = array_map(function ($locale) {
+			return str_replace("_", "-", $locale);
+		}, array_filter(\ResourceBundle::getLocales(''), function($locale) {
+			return preg_match("/^\w\w+[-_]\w\w+$/", $locale);
+		}));
 		$params = array();
 		if (!$event->getIO()->isInteractive()) {
 			foreach($variables as $variable => $value) {
 				$params[$variable] = getenv($variable);
 			}
 		} else {
+			$engine = '';
 			foreach($variables as $variable => $value) {
 				$default = getenv($variable);
 				$default = str_replace('%PUBLIC_DIR%', getenv('PUBLIC_DIR'), $default);
+				$question = "Enter the " . (self::LABEL[$variable] ?? $variable);
 				switch ($variable) {
 					case 'APP_ENV':
-						$value = $event->getIO()->ask(sprintf('<question>%s</question> (<comment>%s</comment>): ', $variable, $default), $default);
+						$value = $event->getIO()->askAndValidate(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), function($rep) {
+							if (in_array($rep, ['dev', 'prod'])){
+								return $rep;
+							} else {
+								throw new \Exception("Only dev or prod are allowed !");
+							}
+						}, null, $default);
+						break;
+					case 'APP_DEBUG':
+						$value = $event->getIO()->askAndValidate(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), function($rep) {
+							if (in_array($rep, ['0', '1'])){
+								return $rep;
+							} else {
+								throw new \Exception("Only 0 or 1 are allowed !");
+							}
+						}, null, $default);
 						break;
 					case 'APP_VERSION':
 						$value = $default;
 						break;
 					case 'DB_ENGINE':
-						$value = $event->getIO()->ask(sprintf('<question>%s</question> (<comment>%s</comment>): ', $variable, $default), $default);
+						$value = $event->getIO()->askAndValidate(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), function($rep) use (&$engine) {
+							if (in_array($rep, ['sqlite', 'mysql', 'pgsql'])){
+								return $rep;
+							} else {
+								throw new \Exception("Only sqlite, mysql, pgsql  are allowed !");
+							}
+						}, null, $default);
+						$engine = $value;
+						break;
+					case 'DB_PORT':
+						if ($engine == 'sqlite') {
+							$value = '~';
+						} else {
+							$value = $event->getIO()->askAndValidate(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), function($rep) {
+								if (preg_match("/^\d+$/", $rep)){
+									return $rep;
+								} else {
+									throw new \Exception("The database port must be an integer !");
+								}
+							}, null, $default);
+							$value = str_replace('_', '-',$value);
+						}
+						break;
+					case 'DB_NAME':
+					case 'DB_HOST':
+					case 'DB_USER':
+					case 'DB_PASSWORD':
+						if ($engine == 'sqlite') {
+							$value = '~';
+						} else {
+							$value = $event->getIO()->ask(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), $default);
+						}
+						break;
+					case 'DB_PATH':
+					case 'DB_VERSION':
+						if ($engine == 'mysql' || $engine == 'pgsql') {
+							$value = $default;
+						} else {
+							$value = $event->getIO()->ask(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), $default);
+						}
+						break;
+					case 'DB_CHARSET':
+						if ($engine == 'sqlite') {
+							$value = 'UTF8';
+						} else {
+							$charset = self::CHARSET[$engine];
+							$value = $event->getIO()->askAndValidate(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), function($rep) use ($engine, $charset) {
+								if (in_array($rep, $charset)){
+									return $rep;
+								} else {
+									throw new \Exception(sprintf("This character set is not supported by %s !", $engine));
+								}
+							}, null, $default);
+						}
+						break;
+					case 'APP_LOCALE':
+						$value = $event->getIO()->askAndValidate(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), function($rep) {
+							if (in_array($rep, self::$locales)){
+								return $rep;
+							} else {
+								throw new \Exception("Invalide locale!");
+							}
+						}, null, $default);
+						$value = str_replace('_', '-',$value);
+						break;
+					case 'APP_LANGUAGE':
+					case 'APP_SECRET':
 						break;
 					default:
-						$value = $event->getIO()->ask(sprintf('<question>%s</question> (<comment>%s</comment>): ', $variable, $default), $default);
+						$value = $event->getIO()->ask(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), $default);
 				}
 				$params[$variable] = $value;
 			}
@@ -309,8 +423,8 @@ class ScriptHandler
 		}, $dom->saveXML(null, LIBXML_NOEMPTYTAG));
 		file_put_contents($databasesDir."/DataSources.xml", $formatted);
 		$parameters = (object)$parameters;
-		if (file_exists($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->locale . '.xml')) {
-			rename($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->locale . '.xml', $simusDir . DIRECTORY_SEPARATOR . 'demo.xml');
+		if (file_exists($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->app_language . '.xml')) {
+			rename($simusDir . DIRECTORY_SEPARATOR . 'demo-' . $parameters->app_language . '.xml', $simusDir . DIRECTORY_SEPARATOR . 'demo.xml');
 		}
 		foreach (glob($simusDir . DIRECTORY_SEPARATOR . "demo-*.xml") as $filename) {
 			unlink($filename);
@@ -340,7 +454,8 @@ class ScriptHandler
 			$parameters['database_password'] = self::getParameterValue($symfonyDir, 'DB_PASSWORD');
 			$parameters['database_path'] = self::getParameterValue($symfonyDir, 'DB_PATH');
 			$parameters['database_version'] = self::getParameterValue($symfonyDir, 'DB_VERSION');
-			$parameters['locale'] = self::getParameterValue($symfonyDir, 'G6K_LOCALE');
+			$parameters['app_locale'] = self::getParameterValue($symfonyDir, 'APP_LOCALE');
+			$parameters['app_language'] = self::getParameterValue($symfonyDir, 'APP_LANGUAGE');
 			return $parameters;
 			 
 		} catch (\Exception $e) {
@@ -355,6 +470,13 @@ class ScriptHandler
 		$value = str_replace('%PUBLIC_DIR%', getenv('PUBLIC_DIR'), $value);
 		return $value;
 	}
+
+	protected static function generateRandomSecret() {
+        if (function_exists('openssl_random_pseudo_bytes')) {
+            return hash('sha1', openssl_random_pseudo_bytes(23));
+        }
+        return hash('sha1', uniqid(mt_rand(), true));
+    }
 
 }
 

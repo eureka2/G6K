@@ -4,7 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: '%env(G6K_LOCALE)%'
+    locale: '%env(APP_LOCALE)%'
+    app_locale: '%env(APP_LOCALE)%'
+    app_language: '%env(APP_LANGUAGE)%'
     public_dir: '%env(resolve:PUBLIC_DIR)%'
 
 services:

@@ -3644,7 +3644,7 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'emphasize', Translator.trans('Emphasize the text label ?'), field.emphasize, field.emphasize, false, Translator.trans('Emphasize the text label ?')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'checkbox', 'expanded', Translator.trans('Show choices as radio buttons ?'), field.expanded, field.expanded, false, Translator.trans('Show choices as radio buttons ?')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'text', 'explanation', Translator.trans('Explanation'), field.explanation, field.explanation, false, Translator.trans('Explanation')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'select', 'widget', Translator.trans('Widget'), field.widget, field.widget, false, Translator.trans('Select a widget'), JSON.stringify(widgets)));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldElementId, 'select', 'widget', Translator.trans('Widget'), field.widget, field.widget, false, Translator.trans('Select a widget'), JSON.stringify(Simulators.makeWidgetsList(field))));
 		attributesContainer.append(requiredAttributes);
 		fieldContainerBody.append(attributesContainer);
 		fieldContainer.append(fieldContainerBody);
@@ -3654,6 +3654,41 @@ THE SOFTWARE.
 			fieldContainerBody.append('<div class="card bg-light note-panel elements-container" id="' + fieldElementId + '-note-panel"><div class="card-header"><span class="note-position float-right">' + Translator.trans('Note position') + ' : ' + position + '</span>' + Translator.trans('Note') + '</div><div class="card-body field-note rich-text">' + field.Note.text.content + '</div></div>');
 		}
 		return fieldPanelContainer;
+	}
+
+	Simulators.makeWidgetsList = function(field) {
+		var data = Simulators.findDataById(field.data);
+		var input = 'text';
+		switch (data.type) {
+			case 'boolean':
+			case 'multichoice':
+				input = 'checkbox';
+				break;
+			case 'number':
+			case 'integer':
+				input = 'number';
+				break;
+			case 'textarea':
+				input = 'textarea';
+				break;
+			case 'choice':
+			case 'department':
+			case 'region':
+			case 'country':
+			case 'year':
+			case 'month':
+			case 'day':
+				input = (field.expanded == '1') ? 'radio' : 'select';
+				break;
+		}
+		var widgs = typewidgets[data.type].filter(function(w) {
+			return inputwidgets[input] && inputwidgets[input].indexOf(w) > -1;
+		});
+		var list = {};
+		for (var i = 0; i < widgs.length; i++) {
+			list[widgs[i]] = widgets[widgs[i]];
+		}
+		return list;
 	}
 
 	Simulators.drawFieldForInput = function(field) {
@@ -3756,10 +3791,10 @@ THE SOFTWARE.
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-explanation', 'text', 'explanation', Translator.trans('Explanation'), field.explanation, false, Translator.trans('Explanation')));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="select" data-name="widget" data-placeholder="' + Translator.trans('Select a widget') + '" data-options="' + encodeURI(JSON.stringify(widgets)) + '">' + Translator.trans('Widget') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="select" data-name="widget" data-placeholder="' + Translator.trans('Select a widget') + '" data-options="' + encodeURI(JSON.stringify(Simulators.makeWidgetsList(field))) + '">' + Translator.trans('Widget') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (field.widget) {
-			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-widget', 'select', 'widget', Translator.trans('Widget'), field.widget, false, Translator.trans('Select a widget'), JSON.stringify(widgets)));
+			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-widget', 'select', 'widget', Translator.trans('Widget'), field.widget, false, Translator.trans('Select a widget'), JSON.stringify(Simulators.makeWidgetsList(field))));
 			optionalAttribute.hide();
 		} 
 		optionalAttributesPanel.append(optionalAttributes);

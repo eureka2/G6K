@@ -109,10 +109,10 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 	protected function getCommandOptions() {
 		return array(
 			array(
-				'default-choice-widget', 
-				'c', 
-				InputOption::VALUE_OPTIONAL, 
-				$this->translator->trans('Default widget for unexpanded choice fields.'),
+				'default-widget', 
+				'w', 
+				InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 
+				$this->translator->trans('Default widget for compatible input fields.'),
 			)
 		);
 	}
@@ -151,10 +151,12 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 			$this->error($output, "The stylesheet file '%s%' doesn't exists", array('%s%' => $stylesheet));
 			return 1;
 		}
-		$widget = $input->getOption('default-choice-widget');
-		if ($widget && ! file_exists($assetsDir . '/base/widgets/' . $widget)) {
-			$this->error($output, "The widget '%s%' doesn't exists", array('%s%' => $widget));
-			return 1;
+		$widgets = $input->getOption('default-widget') ?? [];
+		foreach($widgets as $widget) {
+			if ($widget && ! file_exists($assetsDir . '/base/widgets/' . $widget)) {
+				$this->error($output, "The widget '%s%' doesn't exists", array('%s%' => $widget));
+				return 1;
+			}
 		}
 		$this->info($output, "Importing the simulator '%simulatorname%' located in '%simulatorpath%'", array('%simulatorname%' => $input->getArgument('simulatorname'), '%simulatorpath%' => $input->getArgument('simulatorpath')));
 		$simulator = new \DOMDocument();
@@ -172,8 +174,8 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 			$simulator->documentElement->setAttribute('defaultView', $view);
 		}
 		$this->fixDatasourcesReference($simulator, $this->projectDir."/var/data/databases", $input, $output);
-		if ($widget) {
-			$this->setChoiceWidget($simulator, $widget);
+		if (!empty($widgets)) {
+			$this->setWidgets($simulator, $widgets);
 		}
 		$formatted = preg_replace_callback('/^( +)</m', function($a) { 
 			return str_repeat("\t", intval(strlen($a[1]) / 2)).'<'; 

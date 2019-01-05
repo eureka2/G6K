@@ -1,10 +1,10 @@
 (function (global) {
 	"use strict";
 		
-	function abDatepicker (input, onComplete) {
+	function abDatepicker (input, options, onComplete) {
 		input.datepicker({
 			weekDayFormat: 'narrow',
-			inputFormat: 'd/M/y',
+			inputFormat: options.dateFormat,
 			theme: 'default',
 			onUpdate: function (value) {
 				onComplete(value, value);

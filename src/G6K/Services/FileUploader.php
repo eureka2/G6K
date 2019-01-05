@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  *
  *    g6k.file_uploader:
  *        class: App\G6K\Services\FileUploader
- *        arguments: ['%g6k_upload_directory%']
+ *        arguments: ['%upload_directory%']
  *
  * @copyright Jacques Archimède
  *
