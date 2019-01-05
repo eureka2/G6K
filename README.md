@@ -141,7 +141,40 @@ In this case, `calcul/` should be omitted from the path of the request URL.
 ```
 
 ### NGinx
-Coming soon ...
+Because NGinx does not have `.htaccess` files, all of the setup has to be managed within the server config file.
+
+The following is fully working. There are probably a number of improvements which can be made, but this should be a good starting-point.
+
+The most important point is that the `/admin` path has to be routed separately to the other app.
+
+```
+server {
+
+  rewrite ^/index\.php/?(.*)$ /$1 permanent;
+
+  ## Admin ##
+  ## Required for the admin area (this is in .htaccess inside /calcul) ##
+  location /admin {
+    rewrite ^(.*)$ /admin.php/$1 last;
+  }
+  ## Main ##
+  location @rewriteapp {
+    rewrite ^(.*)$ /index.php/$1 last;
+  }
+
+  ## Symfony ##
+  ## PRODUCTION ENV ##
+  location ~ ^/(index|admin)\.php(/|$) {
+    fastcgi_pass unix:/var/run/php/php7.2-fpm.sock; #-> this needs to be your php-fpm location
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    include fastcgi_params;
+    internal;
+  }
+
+  # other directives
+
+}
+```
 
 ## Documentation
 
