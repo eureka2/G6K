@@ -113,7 +113,7 @@
 			});
 		});
 
-		geoAPILocalities (input, function (insee, name, zipcode, departement, region, surface, population, latitude, longitude, contour) {
+		geoAPILocalities (input, options, function (insee, name, preserveVal, zipcode, departement, region, surface, population, latitude, longitude, contour) {
 			if (contourPolygon) {
 				map.removeLayer(contourPolygon);
 			}
