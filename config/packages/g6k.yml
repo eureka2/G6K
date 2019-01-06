@@ -53,6 +53,14 @@ parameters:
             js: 
                 - lib/jquery.auto-complete.min.js
                 - js/AutocompletionListbox.js
+        SquareRadioButton:
+            label: Choice list in the form of square block
+            target: [ choice ]
+            input: [ radio ]
+            css: 
+                - css/SquareRadioButton.css
+            js: 
+                - js/SquareRadioButton.js
         geoAPILocalities:
             label: Insee code obtained by autocompletion on the name of the commune or its postal code
             target: [ text ]

@@ -80,7 +80,6 @@ t.add("This value does not match the expected {{ charset }} charset.", "Dieser W
 t.add("This is not a valid Business Identifier Code (BIC).", "Dieser Wert ist kein g\u00fcltiger BIC.", "validators", "de");
 t.add("Error", "Fehler", "validators", "de");
 t.add("This is not a valid UUID.", "Dies ist keine g\u00fcltige UUID.", "validators", "de");
-t.add("This value should be a multiple of {{ compared_value }}.", "Dieser Wert sollte ein Vielfaches von {{ compared_value }} sein.", "validators", "de");
 t.add("This form should not contain extra fields.", "Dieses Formular sollte keine zus\u00e4tzlichen Felder enthalten.", "validators", "de");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Die hochgeladene Datei ist zu gro\u00df. Versuchen Sie bitte eine kleinere Datei hochzuladen.", "validators", "de");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "Der CSRF-Token ist ung\u00fcltig. Versuchen Sie bitte das Formular erneut zu senden.", "validators", "de");
