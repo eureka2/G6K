@@ -223,7 +223,7 @@
 			$('#' + id + 'localities-confirm').remove();
 			if (isSelected && selected) {
 				geoAPIRemoveError(input, input2);
-				onComplete(selected.value, selected.text, selected.zipcode, selected.departement, selected.region, selected.surface, selected.population, selected.latitude, selected.longitude, selected.contour);
+				onComplete(selected.value, selected.text, false, selected.zipcode, selected.departement, selected.region, selected.surface, selected.population, selected.latitude, selected.longitude, selected.contour);
 				geoAPIDetectError(input, input2);
 			} else {
 				var inputVal = $.trim(input2.val());
@@ -255,7 +255,7 @@
 							input2.val(val);
 							geoAPIFromInseeCode (temp[0].code, function(items) {
 								if (items.length > 0) {
-									onComplete(temp[0].code, temp[0].nom, temp[0].codePostal, items[0].departement, items[0].region, items[0].surface, items[0].population, items[0].latitude, items[0].longitude, items[0].contour);
+									onComplete(temp[0].code, temp[0].nom, false, temp[0].codePostal, items[0].departement, items[0].region, items[0].surface, items[0].population, items[0].latitude, items[0].longitude, items[0].contour);
 									geoAPIDetectError(input, input2);
 								}
 							});
@@ -286,7 +286,7 @@
 									container.remove();
 									geoAPIFromInseeCode (selected.attr('data-value'), function(items) {
 										if (items.length > 0) {
-											onComplete(items[0].code, items[0].nom, items[0].codePostal, items[0].departement, items[0].region, items[0].surface, items[0].population, items[0].latitude, items[0].longitude, items[0].contour);
+											onComplete(items[0].code, items[0].nom, false, items[0].codePostal, items[0].departement, items[0].region, items[0].surface, items[0].population, items[0].latitude, items[0].longitude, items[0].contour);
 											geoAPIDetectError(input, input2);
 										}
 									});
