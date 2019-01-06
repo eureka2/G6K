@@ -8,7 +8,8 @@
 			currencySymbol: '',
 			currencySymbolPlacement: options.symbolPosition == 'before' ? 'p' : 's',
 			decimalCharacter: options.decimalPoint,
-			digitGroupSeparator: options.thousandsSeparator
+			digitGroupSeparator: options.thousandsSeparator,
+			formulaMode: true
 		});
 		input[0].addEventListener("autoNumeric:formatted", function(event) {
 			onComplete(event.detail.newRawValue, event.detail.newValue, true);
