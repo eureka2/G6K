@@ -69,11 +69,11 @@ THE SOFTWARE.
 				{%- if choice.class == 'ChoiceGroup' -%}
 				{%- for gchoice in choice.choices -%}
 				{%- if gchoice.selected -%}
-				<label class="choice{%- if gchoice.value == value %} checked{% endif %}" for="{{ name }}_{{ gchoice.id }}"><input id="{{ name }}_{{ gchoice.id }}" type="radio" name="{{ name }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} checked="checked"{% endif %} />{{ gchoice.label|fnref }}</label>
+				<label class="choice{%- if gchoice.value == value %} checked{% endif %}" for="{{ name }}_{{ gchoice.id }}"><input id="{{ name }}_{{ gchoice.id }}" type="radio" name="{{ name }}" value="{{ gchoice.value }}"{%- if gchoice.value == value %} checked="checked"{% endif %}{{ widget|jscode }} />{{ gchoice.label|fnref }}</label>
 				{% endif %}
 				{% endfor %}
 				{%- elseif choice.class == 'Choice' and choice.selected -%}
-				<label class="choice{%- if choice.value == value %} checked{% endif %}" for="{{ name }}_{{ choice.id }}"><input id="{{ name }}_{{ choice.id }}" type="radio" name="{{ name }}" value="{{ choice.value }}"{%- if choice.value == value %} checked="checked"{% endif %} />{{ choice.label|fnref }}</label>
+				<label class="choice{%- if choice.value == value %} checked{% endif %}" for="{{ name }}_{{ choice.id }}"><input id="{{ name }}_{{ choice.id }}" type="radio" name="{{ name }}" value="{{ choice.value }}"{%- if choice.value == value %} checked="checked"{% endif %}{{ widget|jscode }} />{{ choice.label|fnref }}</label>
 				{% endif %}
 				{% endfor %}
 			</fieldset>
