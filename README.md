@@ -71,12 +71,15 @@ for mysql or pgsql database:
 ## Migration
 If you want to transfer simulators, their data sources and style sheets from a previous installation, 
 do not copy them manually, use the following console command:
-``php bin/console php bin/console g6k:simulator:copy -w abDatepicker -w abListbox -w AutoMoneyFormat all``
+
+``php bin/console php bin/console g6k:simulator:copy -w abDatepicker -w abListbox -w AutoMoneyFormat all /var/www/html/simulator-old``
+
+assuming `/var/www/html/simulator-old` is the installation directory of the previous version.
 
 This command performs all the necessary conversions to enable their use with this new version.
 
 Note that in this command, the -w option sets widgets. 
-abDatepicker, abListbox, and AutoMoneyFormat are widgets that will automatically apply to 'date', choice (select), and money fields, respectively. 
+`abDatepicker`, `abListbox` and `AutoMoneyFormat` are widgets that will automatically apply to 'date', choice (select), and money fields, respectively. 
 You can omit those you do not want to use.
 
 ## Web server configuration
