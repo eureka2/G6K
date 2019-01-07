@@ -74,7 +74,7 @@ for mysql or pgsql database:
 If you want to transfer simulators, their data sources and style sheets from a previous installation, 
 do not copy them manually, use the following console command:
 
-``php bin/console php bin/console g6k:simulator:copy -w abDatepicker -w abListbox -w AutoMoneyFormat all /var/www/html/simulator-old``
+``php bin/console g6k:simulator:copy -w abDatepicker -w abListbox -w AutoMoneyFormat all /var/www/html/simulator-old``
 
 assuming `/var/www/html/simulator-old` is the installation directory of the previous version.
 
