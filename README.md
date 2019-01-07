@@ -14,6 +14,7 @@ A calculation simulator is an online service made available to a user to enable 
 1. [Prerequisites for Symfony](#prerequisites-for-symfony)
 1. [Prerequisites for G6K](#prerequisites-for-g6k)
 1. [Installation](#installation)
+1. [Migration](#migration)
 1. [Web server configuration](#web-server-configuration)
 1. [Documentation](#documentation)
 1. [Code quality](#code-quality)
@@ -38,30 +39,50 @@ A calculation simulator is an online service made available to a user to enable 
 
 ## Prerequisites for G6K
 * PDO enabled
-* pdo_pgsql and / or pdo_sqlite activated
-* pgsql and / or sqlite3 activated
+* pdo_pgsql and/or pdo_sqlite and/or pdo_mysql activated
+* pgsql and/or sqlite3 activated
 * SimpleXML enabled
-* serialize_precision = -1
+* serialize_precision = -1 in php.ini
+* intl installed and activated
 
 ## Installation
 1. If you plan to use MySQL or PostgreSQL, create a user with "CREATE DATABASE" and "CREATE TABLE" privileges using the administration tool of your RDBMS.
 2. Be placed in the <DOCUMENT_ROOT> Web Server
 3. Download composer.phar (https://getcomposer.org/download/) in <DOCUMENT_ROOT>. composer 1.7.2+ is required.
-4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/ 3.4.*`` 
+4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/ 4.*`` 
 5. Enter the parameter values required by the installer, including:
-  * database_driver => pdo_pgsl, pdo_mysql or pdo_sqlite
-  * database_host => name or IP address of your database server (simply &lt;Enter&gt; in case of SQLite)
-  * database_port => port of the database server (simply &lt;Enter&gt; in case of SQLite)
-  * database_name => name of the database where the users of the administration interface will be installed 1. (simply &lt;Enter&gt; in case of SQLite)
-  * database_user => User name for connecting to the database (simply &lt;Enter&gt; in case of SQLite)
-  * database_password => this user's password (simply &lt;Enter&gt; in case of SQLite)
-  * database_path => used in the case of SQLite and ignored in other cases, so make &lt;Enter&gt;
-  * locale => en 
+  * application environment [dev or prod] (prod) :
+  * debug mode [0 or 1] (0) :
+  * locale [en-GB, en-US, fr-FR, ...] (en-US) :
+  * upload directory (%kernel.project_dir%/var/uploads) :
+  * mailer URL (null://localhost) : 
+  * database engine [sqlite, mysql or pgsql] (sqlite) :
+  * database name (g6k) :
 
-Normally the installer displays the message 'Installing the users of the administration interface'  
-However, on some platforms, this message does not appear. If so, run the following commands:  
-``cd simulator``  
-``php ../composer.phar run-script post-install-cmd``
+for sqlite database only:
+  * database version (3.15) : 
+  * database path (%kernel.project_dir%/var/data/databases/g6k.db) :
+
+for mysql or pgsql database:
+  * database host [localhost, ...] :
+  * database port :
+  * database user :
+  * database password :
+  * database character set [UTF8, LATIN1, ...] (UTF8) :
+
+## Migration
+If you want to transfer simulators, their data sources and style sheets from a previous installation, 
+do not copy them manually, use the following console command:
+
+``php bin/console g6k:simulator:copy -w abDatepicker -w abListbox -w AutoMoneyFormat all /var/www/html/simulator-old``
+
+assuming `/var/www/html/simulator-old` is the installation directory of the previous version.
+
+This command performs all the necessary conversions to enable their use with this new version.
+
+Note that in this command, the -w option sets widgets. 
+`abDatepicker`, `abListbox` and `AutoMoneyFormat` are widgets that will automatically apply to 'date', choice (select), and money fields, respectively. 
+You can omit those you do not want to use.
 
 ## Web server configuration
 
