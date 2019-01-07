@@ -30,7 +30,27 @@ THE SOFTWARE.
 	Date.locale = "en-us";
 
 	Date.format = "d/m/Y";
-	Date.inputeFormat = "j/n/Y";
+	Date.inputFormat = "j/n/Y";
+
+	Date.makeRegExp = function() {
+		var matches = Date.inputFormat.match(/(j|n|Y)(.)(j|n|Y)(.)(j|n|Y)/);
+		var regPart = [];
+		var replacePart = [];
+		for (var i = 1; i <= 5; i += 2) {
+			if (matches[i] == 'j') {
+				regPart.push('(\\d{1,2})');
+				replacePart.push('$1');
+			} else if (matches[i] == 'n') {
+				regPart.push('(\\d{1,2})');
+				replacePart.push('$2');
+			} else {
+				regPart.push('(\\d{4})');
+				replacePart.push('$3');
+			}
+		}
+		Date.regexp = regPart.join(matches[2]);
+		Date.replacement = replacePart.join('.');
+	}
 
 	Date.easter = function(year) {
 		try {
@@ -1966,17 +1986,9 @@ THE SOFTWARE.
 		}
 	};
 
-	Date.hasFormat = function (format, value) {
-		try {
-			Date.createFromFormat(format, value);
-		} catch(err) {
-			return false;
-		}
-		return true;
-	};
-
 	Date.isDate = function(value){
-		return Date.hasFormat(Date.inputFormat, value);
+		var re = new RegExp("^" + Date.regexp + "$");
+		return re.test(value);
 	};
 
 })();
@@ -3134,33 +3146,8 @@ THE SOFTWARE.
 		},
 
 		maskDate: function (infix) {
-			switch(Date.format) {
-				case 'd/m/Y':
-					return infix.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, "D$1.$2.$3");
-				case 'm/d/Y':
-					return infix.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, "D$2.$1.$3");
-				case 'd-m-Y':
-					return infix.replace(/(\d{1,2})-(\d{1,2})-(\d{4})/g, "D$1.$2.$3");
-				case 'm-d-Y':
-					return infix.replace(/(\d{1,2})-(\d{1,2})-(\d{4})/g, "D$2.$1.$3");
-				case 'd.m.Y':
-					return infix.replace(/(\d{1,2})\.(\d{1,2})\.(\d{4})/g, "D$1.$2.$3");
-				case 'm.d.Y':
-					return infix.replace(/(\d{1,2})\.(\d{1,2})\.(\d{4})/g, "D$2.$1.$3");
-				case 'Y-m-d':
-					return infix.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/g, "D$3.$2.$1");
-				case 'Y.m.d':
-					return infix.replace(/(\d{4})\.(\d{1,2})\.(\d{1,2})/g, "D$3.$2.$1");
-				case 'Y/m/d':
-					return infix.replace(/(\d{4})\/(\d{1,2})\/(\d{1,2})/g, "D$3.$2.$1");
-				case 'Y-d-m':
-					return infix.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/g, "D$2.$3.$1");
-				case 'Y.d.m':
-					return infix.replace(/(\d{4})\.(\d{1,2})\.(\d{1,2})/g, "D$2.$3.$1");
-				case 'Y/d/m':
-					return infix.replace(/(\d{4})\/(\d{1,2})\/(\d{1,2})/g, "D$2.$3.$1");
-			}
-			return infix;
+			var re = new RegExp(Date.regexp, "g");
+			return infix.replace(re, "D"+Date.replacement);
 		}
 
 	};
@@ -3307,6 +3294,7 @@ THE SOFTWARE.
 		this.moneySymbol = options.moneySymbol;
 		this.symbolPosition = options.symbolPosition;
 		this.thousandsSeparator = options.thousandsSeparator;
+		Date.makeRegExp();
 		this.parser = new ExpressionParser();
 		this.rulesengine = null;
 		this.simu = null;
@@ -3459,7 +3447,7 @@ THE SOFTWARE.
 			switch (data.type) {
 				case 'date':
 					try {
-						var d = Date.createFromFormat(this.inputDateFormat, data.value);
+						var d = Date.createFromFormat(Date.inputFormat, data.value);
 					} catch (e) {
 						return false;
 					}
@@ -3537,7 +3525,7 @@ THE SOFTWARE.
 						ok = false;
 						switch (data.type) {
 							case 'date':
-								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("d/m/Y") }, 'messages'));
+								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans(Date.format) }, 'messages'));
 								break;
 							case 'number': 
 								this.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("numbers only") }, 'messages'));
@@ -4062,7 +4050,7 @@ THE SOFTWARE.
 				case "date":
 					var format = param.format;
 					if (format != "" && value != "") {
-						var date = Date.createFromFormat(this.inputFormat, value);
+						var date = Date.createFromFormat(Date.inputFormat, value);
 						value = date.format(format);
 					}
 					break;
@@ -4822,7 +4810,7 @@ THE SOFTWARE.
 				if (!self.check(data)) {
 					switch (data.type) {
 						case 'date':
-							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("d/m/Y") }, 'messages'));
+							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans(Date.format) }, 'messages'));
 							break;
 						case 'number': 
 							self.setError(name, Translator.trans("This value is not in the expected format (%format%)",  { "format": Translator.trans("numbers only") }, 'messages'));
