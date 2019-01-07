@@ -58,9 +58,11 @@ A calculation simulator is an online service made available to a user to enable 
   * mailer URL (null://localhost) : 
   * database engine [sqlite, mysql or pgsql] (sqlite) :
   * database name (g6k) :
+
 for sqlite database only:
   * database version (3.15) : 
   * database path (%kernel.project_dir%/var/data/databases/g6k.db) :
+
 for mysql or pgsql database:
   * database host [localhost, ...] :
   * database port :
