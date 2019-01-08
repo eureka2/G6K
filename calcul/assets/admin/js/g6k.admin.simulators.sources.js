@@ -235,12 +235,10 @@ THE SOFTWARE.
 		functions: Simulators.SQLFunctions,
 		operators: ['+', '-', '*', '%', '/', '&', '|'],
 		onCompleted: function(type, expression) {
-			// console.log('Expression being completed'); 
 		},
 		onEditing: function(expression) { 
-			// console.log('Expression being changed'); 
 		},
-		onError: function(error) { console.log('error : ' + error); },
+		onError: function(error) { console && console.log('error : ' + error); },
 		language: Admin.lang,
 		operandHolder: { classes: ['button', 'button-default'] },
 		operatorHolder: { classes: ['button', 'button-default'] },
@@ -1666,7 +1664,7 @@ THE SOFTWARE.
 						sourcePanelContainer.find('input[data-attribute=nbresult]').val(tokens.limit);
 						sourcePanelContainer.find('input[data-attribute=from]').val(tokens.offset);
 					} catch (e) {
-						console.log(e.message);
+						console && console.log(e.message);
 					}
 				}
 				sourcePanelContainer.find('input[data-attribute=request]').parent().parent().hide();
