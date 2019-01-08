@@ -985,7 +985,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: stepPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1003,7 +1003,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: stepContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1038,7 +1038,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1279,7 +1279,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: footnotesPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1299,7 +1299,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: footnotesContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1322,7 +1322,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1496,7 +1496,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: footnotePanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1516,7 +1516,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: footnoteContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1557,7 +1557,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1834,7 +1834,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: panelActionButtonContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1854,7 +1854,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: actionContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1885,7 +1885,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -2202,7 +2202,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: panelPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -2222,7 +2222,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: panelContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -2258,7 +2258,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -2642,7 +2642,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: fieldsetPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -2664,7 +2664,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: fieldsetContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -2701,7 +2701,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -3021,7 +3021,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: columnPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -3045,7 +3045,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: columnContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -3084,7 +3084,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -3471,7 +3471,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: fieldrowPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -3495,7 +3495,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: fieldrowContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -3533,7 +3533,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -3656,8 +3656,7 @@ THE SOFTWARE.
 		return fieldPanelContainer;
 	}
 
-	Simulators.makeWidgetsList = function(field) {
-		var data = Simulators.findDataById(field.data);
+	Simulators.getFieldInputType = function(field, data) {
 		var input = 'text';
 		switch (data.type) {
 			case 'boolean':
@@ -3681,6 +3680,12 @@ THE SOFTWARE.
 				input = (field.expanded == '1') ? 'radio' : 'select';
 				break;
 		}
+		return input;
+	}
+
+	Simulators.makeWidgetsList = function(field) {
+		var data = Simulators.findDataById(field.data);
+		var input = Simulators.getFieldInputType(field, data);
 		var widgs = typewidgets[data.type].filter(function(w) {
 			return inputwidgets[input] && inputwidgets[input].indexOf(w) > -1;
 		});
@@ -3689,6 +3694,18 @@ THE SOFTWARE.
 			list[widgs[i]] = widgets[widgs[i]];
 		}
 		return list;
+	}
+
+	Simulators.checkFieldWidget = function(field) {
+		var data = Simulators.findDataById(field.data);
+		if (! typewidgets[data.type]) {
+			return false;
+		}
+		if (typewidgets[data.type].indexOf(field.widget) <= -1) {
+			return false;
+		}
+		var input = Simulators.getFieldInputType(field, data);
+		return inputwidgets[input] && inputwidgets[input].indexOf(field.widget) > -1;
 	}
 
 	Simulators.drawFieldForInput = function(field) {
@@ -3849,6 +3866,9 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
+		fieldPanelContainer.find('select[data-attribute=data]').on('change', function() {
+			Simulators.changeFieldWidgetList(fieldPanelContainer);
+		});
 		fieldPanelContainer.find('.cancel-edit-field').on('click', function() {
 			fieldPanelContainer.replaceWith(Simulators.fieldBackup);
 			Simulators.fieldBackup.find('button.edit-field').on('click', function(e) {
@@ -3973,7 +3993,43 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newFieldPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		Simulators.bindOptionalAttributes(fieldPanelContainer);
+		Simulators.bindOptionalAttributes(fieldPanelContainer, function(optionalAttr) {
+			if (optionalAttr.attr('data-name') == 'expanded') {
+				fieldPanelContainer.find('.attributes-container input[data-attribute=expanded]').on('change', function() {
+					Simulators.changeFieldWidgetList(fieldPanelContainer);
+				});
+			}
+		},
+		function(optionalAttr) {
+			if (optionalAttr == 'expanded') {
+				Simulators.changeFieldWidgetList(fieldPanelContainer);
+			}
+		});
+	}
+
+	Simulators.changeFieldWidgetList = function(fieldPanelContainer) {
+		var widgetsOptAttr = fieldPanelContainer.find('.optional-attributes li[data-name=widget]');
+		var expandedAttr = fieldPanelContainer.find('.attributes-container input[data-attribute=expanded]:checked');
+		var dataAttr = fieldPanelContainer.find('.attributes-container select[data-attribute=data] option:selected');
+		var field = {
+			data: dataAttr.val(),
+			expanded: expandedAttr.length == 0 ? '0' : '1'
+		}
+		var widgetAttr = fieldPanelContainer.find('.attributes-container select[data-attribute=widget] option:selected');
+		var widget = widgetAttr.length == 0 ? '' : widgetAttr.val();
+		var widgetsList =  Simulators.makeWidgetsList(field);
+		widgetsOptAttr.attr('data-options', JSON.stringify(widgetsList));
+		var widgetsAttr = fieldPanelContainer.find('.attributes-container select[data-attribute=widget]');
+		if (widgetsAttr.length) {
+			widgetsAttr.empty();
+			$.each(widgetsList, function(v, t) {
+				var option = $('<option>', { value: v, text: t});
+				if (v == widget) {
+					option.attr('selected', true);
+				}
+				widgetsAttr.append(option);
+			});
+		}
 	}
 
 	Simulators.checkField = function(fieldContainer) {
@@ -4046,7 +4102,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: fieldPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -4075,7 +4131,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: fieldPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -4117,7 +4173,7 @@ THE SOFTWARE.
 				Simulators.doDeleteField(fieldContainerGroup, fieldset.disposition, stepId, panelId, fieldsetId, fieldrowId, position);
 			}
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -4382,7 +4438,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: blockinfoPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -4404,7 +4460,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: blockinfoContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -4441,7 +4497,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -4784,7 +4840,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: chapterPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -4808,7 +4864,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: chapterContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -4846,7 +4902,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -5207,7 +5263,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: sectionPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -5239,7 +5295,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: sectionPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -5278,7 +5334,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 

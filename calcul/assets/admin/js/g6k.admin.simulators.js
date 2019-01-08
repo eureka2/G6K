@@ -137,12 +137,10 @@ THE SOFTWARE.
 		functions: Simulators.functions,
 		operators: ['+', '-', '*', '%', '/', '&', '|'],
 		onCompleted: function(type, expression) { 
-			// console.log('Expression complete, type = ' + type); 
 			},
 		onEditing: function(expression) { 
-			// console.log('Expression being changed'); 
 		},
-		onError: function(error) { console.log('error : ' + error); },
+		onError: function(error) { console && console.log('error : ' + error); },
 		language: Admin.lang,
 		operandHolder: { classes: ['button', 'button-default'] },
 		operatorHolder: { classes: ['button', 'button-default'] },
@@ -377,7 +375,7 @@ THE SOFTWARE.
 		attr.parent('label').parent('div.form-group').remove();
 	}
 
-	Simulators.dropAttribute = function(ui, target) {
+	Simulators.dropAttribute = function(ui, target, onDelete) {
 		var element = ui.attr('data-element');
 		var name = ui.attr('data-name');
 		var id = element + '-' + name;
@@ -405,13 +403,17 @@ THE SOFTWARE.
 			});
 			attribute.find('span.delete-attribute')
 				.on('click', function() {
+					var attr = $(this).parent().parent().find('[data-attribute]').attr('data-attribute');
 					Simulators.removeAttribute($(this));
+					onDelete && onDelete(attr);
 				})
 				.on('keydown', function(e) {
 					var key = e.keyCode || e.which || e.key;
 					if (key == 13) {
 						e.preventDefault();
+						var attr = $(this).parent().parent().find('[data-attribute]').attr('data-attribute');
 						Simulators.removeAttribute($(this));
+						onDelete && onDelete(attr);
 					} else if (key == 32) {
 						e.preventDefault();
 					}
@@ -664,15 +666,19 @@ THE SOFTWARE.
 		Simulators.bindOptionalAttributes(simulatorContainer);
 	}
 
-	Simulators.bindOptionalAttributes = function(container, onSelect) {
+	Simulators.bindOptionalAttributes = function(container, onSelect, onDelete) {
 		container.find('.delete-attribute')
 			.on('click', function() {
+				var attr = $(this).parent().parent().find('[data-attribute]').attr('data-attribute');
 				Simulators.removeAttribute($(this));
+				onDelete && onDelete(attr);
 			}).on('keydown', function(e) {
 				var key = e.keyCode || e.which || e.key;
 				if (key == 13) {
 					e.preventDefault();
+					var attr = $(this).parent().parent().find('[data-attribute]').attr('data-attribute');
 					Simulators.removeAttribute($(this));
+					onDelete && onDelete(attr);
 				} else if (key == 32) {
 					e.preventDefault();
 				}
@@ -688,7 +694,7 @@ THE SOFTWARE.
 			});
 		});
 		container.find('.optional-attributes li' ).on("dblclick", function() {
-			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
+			Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'), onDelete);
 			onSelect && onSelect($(this));
 		});
 		container.find('.optional-attributes li' ).on("keydown", function(e) {
@@ -697,7 +703,7 @@ THE SOFTWARE.
 				case 13:
 					e.preventDefault();
 					e.stopPropagation();
-					Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'));
+					Simulators.dropAttribute($(this), $(this).parents('.attributes-container').children('div:first-child'), onDelete);
 					onSelect && onSelect($(this));
 					break;
 				case 35: // end
@@ -732,7 +738,7 @@ THE SOFTWARE.
 			accept: ".optional-attributes li",
 			drop: function( event, ui ) {
 				var target = ui.draggable.parents('.attributes-container').children('div:first-child');
-				Simulators.dropAttribute(ui.draggable, target);
+				Simulators.dropAttribute(ui.draggable, target, onDelete);
 				onSelect && onSelect(ui.draggable);
 			}
 		});
