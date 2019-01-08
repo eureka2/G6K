@@ -82,6 +82,7 @@ class ScriptHandler
 		$package = $event->getComposer()->getPackage();
 		$version = $package->getPrettyVersion();
 		$version = preg_replace("/\s+/", "-", $version);
+		$isdev = $package->isDev();
 		putenv('APP_VERSION=' . $version);
 		$installPath = $installationManager->getInstallPath($package);
 		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
@@ -98,6 +99,10 @@ class ScriptHandler
 
 		// Find the expected params
 		$variables = $dotenvdist->parse(file_get_contents($symfonyDir  . DIRECTORY_SEPARATOR . '.env.dist'), '.env.dist');
+
+		if ($isdev) {
+			self::setEnvironmentVariable($params, 'APP_ENV', 'dev');
+		}
 
 		$params = self::getEnvironmentVariables($event, $variables);
 
