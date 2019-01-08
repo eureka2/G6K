@@ -101,7 +101,7 @@ class ScriptHandler
 		$variables = $dotenvdist->parse(file_get_contents($symfonyDir  . DIRECTORY_SEPARATOR . '.env.dist'), '.env.dist');
 
 		if ($isdev) {
-			self::setEnvironmentVariable($params, 'APP_ENV', 'dev');
+			putenv("APP_ENV=dev");
 		}
 
 		$params = self::getEnvironmentVariables($event, $variables);
