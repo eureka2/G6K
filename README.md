@@ -14,8 +14,8 @@ A calculation simulator is an online service made available to a user to enable 
 1. [Prerequisites for Symfony](#prerequisites-for-symfony)
 1. [Prerequisites for G6K](#prerequisites-for-g6k)
 1. [Installation](#installation)
-1. [Migration](#migration)
 1. [Web server configuration](#web-server-configuration)
+1. [Migration](#migration)
 1. [Documentation](#documentation)
 1. [Code quality](#code-quality)
 1. [Innovation Award](#innovation-award)
@@ -69,20 +69,6 @@ for mysql or pgsql database:
   * database user :
   * database password :
   * database character set [UTF8, LATIN1, ...] (UTF8) :
-
-## Migration
-If you want to transfer simulators, their data sources and style sheets from a previous installation, 
-do not copy them manually, use the following console command:
-
-``php bin/console g6k:simulator:copy -w abDatepicker -w abListbox -w AutoMoneyFormat all /var/www/html/simulator-old``
-
-assuming `/var/www/html/simulator-old` is the installation directory of the previous version.
-
-This command performs all the necessary conversions to enable their use with this new version.
-
-Note that in this command, the -w option sets widgets. 
-`abDatepicker`, `abListbox` and `AutoMoneyFormat` are widgets that will automatically apply to 'date', choice (select), and money fields, respectively. 
-You can omit those you do not want to use.
 
 ## Web server configuration
 
@@ -197,6 +183,22 @@ server {
 }
 ```
 
+## Migration
+If you want to transfer simulators, their data sources and style sheets from a previous installation, 
+do not copy them manually, use the following console command:
+
+``php bin/console g6k:simulator:copy -w abDatepicker -w abListbox -w AutoMoneyFormat all /var/www/html/simulator-old``
+
+assuming `/var/www/html/simulator-old` is the installation directory of the previous version.
+
+This command performs all the necessary conversions to enable their use with this new version.
+
+Note that in this command, the -w option sets widgets. 
+`abDatepicker`, `abListbox` and `AutoMoneyFormat` are widgets that will automatically apply to 'date', choice (select), and money fields, respectively. 
+You can omit those you do not want to use.
+
+At the end of the copy, go to the administration interface to clear the development and production caches.
+
 ## Documentation
 
 ### Administrator's Guide
@@ -242,6 +244,6 @@ server {
 
 ## Copyright and license
 
-&copy; 2015-2018 Eureka2 - Jacques Archimède. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
+&copy; 2015-2019 Eureka2 - Jacques Archimède. Code released under the [MIT license](https://github.com/eureka2/G6K/blob/master/LICENSE).
 
 **[&uparrow; back to table of contents](#table-of-contents)**
