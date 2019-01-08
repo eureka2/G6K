@@ -878,7 +878,9 @@ class Data extends DatasetChild {
 	 *
 	 */
 	public function getPlainValue() {
-		if ($this->value == '') {
+		if ($this->value === null) {
+			return '';
+		} elseif ($this->value == '') {
 			return $this->value;
 		} elseif ($this->type == 'multichoice' || $this->type == 'array') {
 			return json_encode($this->value);
@@ -902,28 +904,30 @@ class Data extends DatasetChild {
 	 *
 	 */
 	public function setValue($value) {
-		switch ($this->type) {
-			case 'money': 
-				$value = MoneyFunction::toMoney($value);
-				$value = is_numeric($value) ? ''.round($value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
-				break;
-			case 'percent':
-				$value = PercentFunction::toPercent($value);
-				$value = is_numeric($value) ? ''.round($value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
-				break;
-			case 'number': 
-				$value = ''.NumberFunction::toNumber($value);
-				break;
-			case 'array': 
-			case 'multichoice': 
-				if (! is_array($value)) {
-					if (preg_match("/^\[.*\]$/", $value)) {
-						$value = json_decode($value);
-					} else {
-						$value = array_merge($this->value, array($value));
+		if ($value !== null && $value != '') {
+			switch ($this->type) {
+				case 'money': 
+					$value = MoneyFunction::toMoney($value);
+					$value = is_numeric($value) ? ''.round($value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
+					break;
+				case 'percent':
+					$value = PercentFunction::toPercent($value);
+					$value = is_numeric($value) ? ''.round($value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
+					break;
+				case 'number': 
+					$value = ''.NumberFunction::toNumber($value);
+					break;
+				case 'array': 
+				case 'multichoice': 
+					if (! is_array($value)) {
+						if (preg_match("/^\[.*\]$/", $value)) {
+							$value = json_decode($value);
+						} else {
+							$value = array_merge($this->value, array($value));
+						}
 					}
-				}
-				break;
+					break;
+			}
 		}
 		$this->value = $value;
 	}
