@@ -1624,7 +1624,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'simulatorname' => $simu,
 				'simulatorpath' => $uploadDir,
 				'stylesheetpath' => $stylesheet != '' ? $uploadDir : false,
-				'--default-choice-widget' => 'abListbox'
+				'--default-widget' => ['abDatepicker', 'abListbox', 'AutoMoneyFormat']
 			], function() use ($header) {
 				print $header;
 				flush();
