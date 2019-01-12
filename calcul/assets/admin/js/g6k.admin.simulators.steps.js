@@ -725,6 +725,7 @@ THE SOFTWARE.
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'text', 'label', Translator.trans('Step Label'), step.label, step.label, true, Translator.trans('Step Label')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'text', 'template', Translator.trans('Step Template'), step.template, step.template, true, Translator.trans('Step Template')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'select', 'output', Translator.trans('Output'), step.output, step.output, false, Translator.trans('Select an output'), JSON.stringify(Simulators.outputTypes)));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'checkbox', 'pdfFooter', Translator.trans('Footer in PDF'), step.pdfFooter, step.pdfFooter, false, Translator.trans('Footer in PDF')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(stepElementId, 'checkbox', 'dynamic', Translator.trans('Interactive UI'), step.dynamic, step.dynamic, false, Translator.trans('Interactive UI')));
 		attributesContainer.append(requiredAttributes);
 		stepContainerBody.append(attributesContainer);
@@ -762,12 +763,18 @@ THE SOFTWARE.
 			requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-output', 'select', 'output', Translator.trans('Output'), step.output, false, Translator.trans('Select an output'), JSON.stringify( Simulators.outputTypes )));
 			optionalAttribute.hide();
 		} 
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + stepElementId + '" data-type="checkbox" data-name="pdfFooter" data-placeholder="' + Translator.trans('Footer in PDF') + '">' + Translator.trans('Footer in PDF') + '</li>');
+		optionalAttributes.append(optionalAttribute);
+		if (step.pdfFooter) {
+			requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-pdfFooter', 'checkbox', 'pdfFooter', Translator.trans('Footer in PDF'), step.pdfFooter, false, Translator.trans('Footer in PDF')));
+			optionalAttribute.hide();
+		}
 		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + stepElementId + '" data-type="checkbox" data-name="dynamic" data-placeholder="' + Translator.trans('Interactive UI') + '">' + Translator.trans('Interactive UI') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (step.dynamic) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(stepElementId + '-dynamic', 'checkbox', 'dynamic', Translator.trans('Interactive UI'), step.dynamic, false, Translator.trans('Interactive UI')));
 			optionalAttribute.hide();
-		} 
+		}
 		optionalAttributesPanel.append(optionalAttributes);
 		attributesContainer.append(optionalAttributesPanel);
 		stepContainerBody.append(attributesContainer);

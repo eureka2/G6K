@@ -258,17 +258,20 @@ class DefaultController extends BaseController {
 		);
 
 		$mpdf = new \Mpdf\Mpdf();
+		$mpdf->autoLangToFont  = true;
 		$mpdf->PDFA = true;
 		$mpdf->PDFAauto = true;
 		$mpdf->ignore_invalid_utf8 = true;
-  
+		$mpdf->Bookmark($this->get('translator')->trans("Beginning of the document")); 
 		$mpdf->SetDisplayMode('fullwidth');
-		$footer = '<table class="pdf-footer"><tr><td>';
-		$footer .= $this->get('translator')->trans("Simulation performed on %host% on %date%", array('%host%' => $request->getHttpHost(), '%date%' => '{DATE j-m-Y}'));
-		$footer .= '</td><td>';
-		$footer .= $this->get('translator')->trans("Page %pageno% of %numberofpages%", array('%pageno%' => '{PAGENO}', '%numberofpages%' => '{nbpg}'));
-		$footer .= '</td></tr></table>';
-		$mpdf->SetHTMLFooter ( $footer, 'BLANK', true);
+		if ($step->hasPdfFooter()) {
+			$footer = '<table class="pdf-footer"><tr><td>';
+			$footer .= $this->get('translator')->trans("Simulation performed on %host% on %date%", array('%host%' => $request->getHttpHost(), '%date%' => '{DATE j-m-Y}'));
+			$footer .= '</td><td>';
+			$footer .= $this->get('translator')->trans("Page %pageno% of %numberofpages%", array('%pageno%' => '{PAGENO}', '%numberofpages%' => '{nbpg}'));
+			$footer .= '</td></tr></table>';
+			$mpdf->SetHTMLFooter ( $footer, 'BLANK', true);
+		}
 		$mpdf->WriteHTML($page);
 
 		$mpdf->Output($this->simu->getName().".pdf", $step->getOutput() == 'inlinePDF' ? 'I' : 'D'); // I = inline, D = download

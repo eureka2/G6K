@@ -93,6 +93,11 @@ eureka_g6k_admin_simulator_calcul:
     methods: [ get, post ]
     defaults: { _controller: App\G6K\Controller\DefaultController::tryItAction }
 
+eureka_g6k_admin_simulator_regional_settings:
+    path:     /admin/regional-settings/{locale}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\SimulatorsAdminController::regionalSettingsAction }
+
 eureka_g6k_admin_simulator_validate:
     path:     /admin/validate
     methods: [ get, post ]

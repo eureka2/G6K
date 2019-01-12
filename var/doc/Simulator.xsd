@@ -26,6 +26,7 @@
 						</xs:sequence>
 						<xs:attribute name="dateFormat" type="xs:string" use="required"/>
 						<xs:attribute name="decimalPoint" type="xs:string" use="required"/>
+						<xs:attribute name="thousandsSeparator" type="xs:string" use="optional" default=" "/>
 						<xs:attribute name="moneySymbol" type="xs:string" use="required"/>
 						<xs:attribute name="symbolPosition" use="required">
 							<xs:simpleType>
@@ -228,6 +229,7 @@
 										</xs:simpleType>
 									</xs:attribute>
 									<xs:attribute name="dynamic" type="xs:boolean" default="0"/>
+									<xs:attribute name="pdfFooter" type="xs:boolean" default="0"/>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
@@ -365,6 +367,8 @@
 			<xs:attribute name="dynamic" type="xs:boolean" default="0"/>
 			<xs:attribute name="referer"/>
 			<xs:attribute name="memo" type="xs:boolean"/>
+			<xs:attribute name="locale" type="xs:string" default="fr-FR"/>
+			<xs:attribute name="timezone" type="xs:string" default="Europe/Paris"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="ColumnType">

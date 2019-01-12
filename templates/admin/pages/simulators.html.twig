@@ -115,9 +115,12 @@ THE SOFTWARE.
 										{{ page.showAttribute('simulator', 'text', 'label', 'Label'|trans, simulator.label, simulator.label, true, 'label') }}
 										{{ page.showAttribute('simulator', 'text', 'defaultView', 'Default view'|trans, simulator.defaultView, simulator.defaultView, true, 'defaultView') }}
 										{{ page.showAttribute('simulator', 'text', 'referer', 'Main referer'|trans, simulator.referer, simulator.referer, true, 'referer') }}
+										{{ page.showAttribute('simulator', 'select', 'locale', 'Locale'|trans, simulator.locale, simulator.locale, true, 'Locale'|trans, simulator.controller.languages) }}
 										{{ page.showAttribute('simulator', 'select', 'dateFormat', 'Date format'|trans, simulator.dateFormat, simulator.dateFormat|trans, true, 'Select a format'|trans, { 'd/m/Y':'d/m/Y'|trans, 'm/d/Y':'m/d/Y'|trans, 'd-m-Y':'d-m-Y'|trans, 'm-d-Y':'m-d-Y'|trans, 'Y-m-d':'Y-m-d'|trans }) }}
+										{{ page.showAttribute('simulator', 'text', 'timezone', 'Time zone'|trans, simulator.timezone, simulator.timezone, true, 'Time zone'|trans) }}
 										{{ page.showAttribute('simulator', 'text', 'decimalPoint', 'Decimal point'|trans, simulator.decimalPoint, simulator.decimalPoint, true, 'Decimal point'|trans) }}
-										{{ page.showAttribute('simulator', 'select', 'moneySymbol', 'Currency symbol'|trans, simulator.moneySymbol, simulator.moneySymbol, true, 'Select a symbol'|trans, {'฿':'฿', 'B/.':'B/.', '₵':'₵', '¢':'¢', '₡':'₡', 'Kč':'Kč', '$':'$', '₫':'₫', '€':'€', 'ƒ':'ƒ', 'Ft':'Ft', '₲':'₲', '₴':'₴', '₭':'₭', 'L':'L', '£ / ₤':'£ / ₤', '₺':'₺', '₥':'₥', '₦':'₦', 'S/.':'S/.', '₱':'₱', 'P':'P', 'R':'R', 'RM':'RM', '₹ / ₨':'₹ / ₨', '৲':'৲', '৳':'৳', 'R$':'R$', '₪':'₪', '₮':'₮', '₩':'₩', '¥':'¥', 'Ұ':'Ұ', 'zł':'zł' }) }}
+										{{ page.showAttribute('simulator', 'text', 'thousandsSeparator', 'Thousands separator'|trans, simulator.thousandsSeparator, simulator.thousandsSeparator, true, 'Thousands separator'|trans) }}
+										{{ page.showAttribute('simulator', 'select', 'moneySymbol', 'Currency symbol'|trans, simulator.moneySymbol, simulator.moneySymbol, true, 'Select a symbol'|trans, simulator.controller.currencySymbols) }}
 										{{ page.showAttribute('simulator', 'select', 'symbolPosition', 'Symbol position'|trans, simulator.symbolPosition, simulator.symbolPosition, true, 'Select a position'|trans, {'before':'before currency'|trans, 'after':'after currency'|trans}) }}
 										{{ page.showAttribute('simulator', 'checkbox', 'dynamic', 'Interactive UI'|trans, simulator.dynamic, simulator.dynamic, true, 'dynamic') }}
 										{{ page.showAttribute('simulator', 'checkbox', 'memo', 'Data memo ?'|trans, simulator.memo, simulator.memo, true, 'memo') }}
@@ -429,6 +432,7 @@ THE SOFTWARE.
 				{{ page.showAttribute('step-'~step.id, 'text', 'label', 'Step Label'|trans, step.label, step.label, true, 'Step Label'|trans) }}
 				{{ page.showAttribute('step-'~step.id, 'text', 'template', 'Step Template'|trans, step.template, step.template, true, 'Step Template'|trans) }}
 				{{ page.showAttribute('step-'~step.id, 'select', 'output', 'Output'|trans, step.output, step.output, false, 'Select an output', {'normal':'Normal'|trans, 'inlinePDF':'Inline PDF'|trans, 'downloadablePDF':'Downloadable PDF'|trans, 'html':'html'}) }}
+				{{ page.showAttribute('step-'~step.id, 'checkbox', 'pdfFooter', 'Footer in PDF'|trans, step.pdfFooter, step.pdfFooter, false, 'pdfFooter') }}
 				{{ page.showAttribute('step-'~step.id, 'checkbox', 'dynamic', 'Interactive UI'|trans, step.dynamic, step.dynamic, false, 'dynamic') }}
 				</div>
 			</div>

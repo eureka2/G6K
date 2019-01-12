@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2019 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ THE SOFTWARE.
 	Date.inputFormat = "j/n/Y";
 
 	Date.makeRegExp = function() {
-		var matches = Date.inputFormat.match(/(j|n|Y)(.)(j|n|Y)(.)(j|n|Y)/);
+		var matches = Date.inputFormat.match(/(j|n|Y)([^jnY]+)(j|n|Y)([^jnY]+)(j|n|Y)/);
 		var regPart = [];
 		var replacePart = [];
 		for (var i = 1; i <= 5; i += 2) {
@@ -48,7 +48,7 @@ THE SOFTWARE.
 				replacePart.push('$3');
 			}
 		}
-		Date.regexp = regPart.join(matches[2]);
+		Date.regexp = regPart[0] + matches[2] + regPart[1] + matches[4] + regPart[2];
 		Date.replacement = replacePart.join('.');
 	}
 
