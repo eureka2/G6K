@@ -784,7 +784,7 @@ THE SOFTWARE.
 
 	Simulators.getRegionalSettings = function(locale, callback) {
 		var path = $(location).attr('pathname').replace(/\/simulators.+$/, "") + "/regional-settings/" + locale;
-		$.post(path,
+		$.get(path,
 			function(result){
 				callback(result);
 			},
