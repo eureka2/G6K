@@ -223,6 +223,7 @@ class CopySimulatorCommand extends SimulatorCommandBase
 			}
 		}
 		$this->fixDatasourcesReference($simulator, $anotherg6kpath, $input, $output);
+		$this->fixNewAttributes($simulator);
 		if (!empty($widgets)) {
 			$this->setWidgets($simulator, $widgets);
 		}

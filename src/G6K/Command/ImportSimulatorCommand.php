@@ -174,6 +174,7 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 			$simulator->documentElement->setAttribute('defaultView', $view);
 		}
 		$this->fixDatasourcesReference($simulator, $this->projectDir."/var/data/databases", $input, $output);
+		$this->fixNewAttributes($simulator);
 		if (!empty($widgets)) {
 			$this->setWidgets($simulator, $widgets);
 		}
