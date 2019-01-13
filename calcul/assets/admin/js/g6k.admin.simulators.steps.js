@@ -968,6 +968,7 @@ THE SOFTWARE.
 				label: '',
 				template: 'pages:article.html.twig',
 				output: 'normal',
+				pdfFooter: '0',
 				dynamic: '1',
 				description: {
 					content: '',

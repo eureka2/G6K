@@ -845,7 +845,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function makeStep($step) {
 		$stepObj = new Step($this->simu, (int)$step['id'], $step['name'], $step['label'], $step['template']);
 		$stepObj->setOutput($step['output']);
-		$stepObj->setPdfFooter($step['pdfFooter'] == '1');
+		$stepObj->setPdfFooter(isset($step['pdfFooter']) && $step['pdfFooter'] == '1');
 		$stepObj->setDescription(
 			new RichText(
 				trim($this->replaceSpecialTags($step['description']['content'])),
@@ -2031,6 +2031,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'label' => $step->getLabel(),
 					'template' => $step->getTemplate(),
 					'output' => $step->getOutput(),
+					'pdfFooter' => $step->getPdfFooter(),
 					'dynamic' => $step->isDynamic() ? '1' : '0',
 					'description' => array(
 						'content' => $description->getContent(),
