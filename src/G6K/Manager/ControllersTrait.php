@@ -462,7 +462,7 @@ trait ControllersTrait {
 			$value = $data->getValue();
 			switch ($data->getType()) {
 				case 'money': 
-					$value = number_format ( (float)$value , 2 , $this->simu->getDecimalPoint() , $this->simu->getThousandsSeparator()); 
+					$value = number_format ( (float)$value , 2 , $this->simu->getDecimalPoint() , $this->simu->getGroupingSeparator()); 
 				case 'percent':
 				case 'number': 
 					$value = str_replace('.', $this->simu->getDecimalPoint(), $value);

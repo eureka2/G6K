@@ -239,7 +239,7 @@ THE SOFTWARE.
 	{%- elseif type == 'money' -%}
 		{%- if data.value == '' -%}
 		{%- else -%}
-		{{ data.value|number_format(2, simu.decimalPoint, simu.thousandsSeparator) }}
+		{{ data.value|number_format(2, simu.decimalPoint, simu.groupingSeparator) }}
 		{%- endif -%}
 	{%- else -%}
 		{{ value }}

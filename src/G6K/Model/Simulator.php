@@ -98,6 +98,14 @@ class Simulator {
 	private $memo = false;
 
 	/**
+	 * @var string       $locale The locale language used by this simulator
+	 *
+	 * @access  private
+	 *
+	 */
+	private $locale = 'fr-FR';
+
+	/**
 	 * @var \App\G6K\Model\RichText     $description The description of this simulator
 	 *
 	 * @access  private
@@ -114,6 +122,14 @@ class Simulator {
 	private $dateFormat = "";
 
 	/**
+	 * @var string     $timezone The current timezone for the locale used in this simulator
+	 *
+	 * @access  private
+	 *
+	 */
+	private $timezone = "Europe/Paris";
+
+	/**
 	 * @var string     $decimalPoint The current decimal point in the display language of this simulator
 	 *
 	 * @access  private
@@ -122,12 +138,20 @@ class Simulator {
 	private $decimalPoint = "";
 
 	/**
-	 * @var string     $thousandsSeparator The current thousands separator in the display language of this simulator
+	 * @var string     $groupingSeparator The current grouping separator in the display language of this simulator
 	 *
 	 * @access  private
 	 *
 	 */
-	private $thousandsSeparator = " ";
+	private $groupingSeparator = "";
+
+	/**
+	 * @var string     $groupingSize The current grouping size in the display language of this simulator
+	 *
+	 * @access  private
+	 *
+	 */
+	private $groupingSize = 3;
 
 	/**
 	 * @var string     $moneySymbol The current currency symbol in the country of use of this simulator
@@ -267,7 +291,10 @@ class Simulator {
 	 */
 	public function __construct($controller) {
 		$this->controller = $controller;
-		$this->thousandsSeparator = MoneyFunction::$thousandsSeparator;
+		$this->groupingSeparator = MoneyFunction::$groupingSeparator;
+		$this->groupingSize = MoneyFunction::$groupingSize;
+		$this->locale = getenv('APP_LOCALE');
+		$this->timezone = DateFunction::$timezone->getName();
 	}
 
 	/**
@@ -453,6 +480,29 @@ class Simulator {
 	}
 
 	/**
+	 * Returns the locale attribute of this simulator.
+	 *
+	 * @access  public
+	 * @return  string true The locale attribute.
+	 *
+	 */
+	public function getLocale() {
+		return $this->locale;
+	}
+
+	/**
+	 * Sets the locale attribute of this simulator.
+	 *
+	 * @access  public
+	 * @param   string $locale The locale attribute (en-US, en-GB, fr-FR, fr-CA, ...).
+	 * @return  void
+	 *
+	 */
+	public function setLocale($locale) {
+		$this->locale = $locale;
+	}
+
+	/**
 	 * Returns the description of this simulator
 	 *
 	 * @access  public
@@ -502,10 +552,34 @@ class Simulator {
 	}
 
 	/**
-	 * Returns the decimal point in the display language of this simulator
+	 * Returns the timezone for the locale used in this simulator
 	 *
 	 * @access  public
-	 * @return  string The decimal point
+	 * @return  string The value of timezone
+	 *
+	 */
+	public function getTimezone() {
+		return $this->timezone;
+	}
+
+	/**
+	 * Sets the timezone for the locale used in this simulator
+	 *
+	 * @access  public
+	 * @param   string $timezone The timezone
+	 * @return  void
+	 *
+	 */
+	public function setTimezone($timezone) {
+		$this->timezone = $timezone;
+		DateFunction::$timezone = new \DateTimeZone($timezone);
+	}
+
+	/**
+	 * Returns the timezone for the locale used in this simulator
+	 *
+	 * @access  public
+	 * @return  string The timezone
 	 *
 	 */
 	public function getDecimalPoint() {
@@ -528,29 +602,55 @@ class Simulator {
 	}
 
 	/**
-	 * Returns the thousands separator in the display language of this simulator
+	 * Returns the grouping separator in the display language of this simulator
 	 *
 	 * @access  public
-	 * @return  string The thousands separator
+	 * @return  string The grouping separator
 	 *
 	 */
-	public function getThousandsSeparator() {
-		return $this->thousandsSeparator;
+	public function getGroupingSeparator() {
+		return $this->groupingSeparator;
 	}
 
 	/**
-	 * Sets the thousands separator in the display language of this simulator
+	 * Sets the grouping separator in the display language of this simulator
 	 *
 	 * @access  public
-	 * @param   string $thousandsSeparator The thousands separator
+	 * @param   string $groupingSeparator The grouping separator
 	 * @return  void
 	 *
 	 */
-	public function setThousandsSeparator($thousandsSeparator) {
-		$this->thousandsSeparator = $thousandsSeparator;
-		NumberFunction::$thousandsSeparator = $thousandsSeparator;
-		PercentFunction::$thousandsSeparator = $thousandsSeparator;
-		MoneyFunction::$thousandsSeparator = $thousandsSeparator;
+	public function setGroupingSeparator($groupingSeparator) {
+		$this->groupingSeparator = $groupingSeparator;
+		NumberFunction::$groupingSeparator = $groupingSeparator;
+		PercentFunction::$groupingSeparator = $groupingSeparator;
+		MoneyFunction::$groupingSeparator = $groupingSeparator;
+	}
+
+	/**
+	 * Returns the grouping size in the display language of this simulator
+	 *
+	 * @access  public
+	 * @return  string The grouping size
+	 *
+	 */
+	public function getGroupingSize() {
+		return $this->groupingSize;
+	}
+
+	/**
+	 * Sets the grouping size in the display language of this simulator
+	 *
+	 * @access  public
+	 * @param   string $groupingSize The grouping size
+	 * @return  void
+	 *
+	 */
+	public function setGroupingSize($groupingSize) {
+		$this->groupingSize = $groupingSize;
+		NumberFunction::$groupingSize = $groupingSize;
+		PercentFunction::$groupingSize = $groupingSize;
+		MoneyFunction::$groupingSize = $groupingSize;
 	}
 
 	/**
@@ -1423,10 +1523,22 @@ class Simulator {
 		$this->setReferer((string)$simulator["referer"]);
 		$this->setDynamic((string)$simulator['dynamic'] == '1');
 		$this->setMemo((string)$simulator['memo'] == '1');
+		if ((string)($simulator['locale']) != '') {
+			$this->setLocale((string)($simulator['locale']));
+		}
+		if ((string)($simulator['timezone']) != '') {
+			$this->setTimezone((string)($simulator['timezone']));
+		}
 		$this->setDescription(new RichText((string)$simulator->Description, (string)$simulator->Description['edition']));
 		$this->setRelatedInformations(new RichText((string)$simulator->RelatedInformations, (string)$simulator->RelatedInformations['edition']));
 		$this->setDateFormat((string)($simulator->DataSet['dateFormat']));
 		$this->setDecimalPoint((string)($simulator->DataSet['decimalPoint']));
+		if ((string)($simulator->DataSet['groupingSeparator']) != '') {
+			$this->setGroupingSeparator((string)($simulator->DataSet['groupingSeparator']));
+		}
+		if ((string)($simulator->DataSet['groupingSize']) != '') {
+			$this->setGroupingSize((int)($simulator->DataSet['groupingSize']));
+		}
 		$this->setMoneySymbol((string)($simulator->DataSet['moneySymbol']));
 		$this->setSymbolPosition((string)($simulator->DataSet['symbolPosition']));
 		if ($simulator->DataSet) {
@@ -1468,6 +1580,7 @@ class Simulator {
 				$stepObj->setOutput((string)$step['output']);
 				$stepObj->setDescription(new RichText((string)$step->Description, (string)$step->Description['edition']));
 				$stepObj->setDynamic((string)$step['dynamic'] == '1');
+				$stepObj->setPdfFooter((string)$step['pdfFooter'] == '1');
 				foreach ($step->Panels->Panel as $panel) {
 					$panelObj = new Panel($stepObj, (int)$panel['id']);
 					$panelObj->setName((string)$panel['name']);
@@ -1783,8 +1896,20 @@ class Simulator {
 		}
 		$this->setDateFormat((string)($simulator->DataSet['dateFormat']));
 		$this->setDecimalPoint((string)($simulator->DataSet['decimalPoint']));
+		if ((string)($simulator->DataSet['groupingSeparator']) != '') {
+			$this->setGroupingSeparator((string)($simulator->DataSet['groupingSeparator']));
+		}
+		if ((string)($simulator->DataSet['groupingSize']) != '') {
+			$this->setGroupingSize((int)($simulator->DataSet['groupingSize']));
+		}
 		$this->setMoneySymbol((string)($simulator->DataSet['moneySymbol']));
 		$this->setSymbolPosition((string)($simulator->DataSet['symbolPosition']));
+		if ((string)($simulator['locale']) != '') {
+			$this->setLocale((string)($simulator['locale']));
+		}
+		if ((string)($simulator['timezone']) != '') {
+			$this->setTimezone((string)($simulator['timezone']));
+		}
 		foreach ($datasources->DataSource as $datasource) {
 			$datasourceObj = new DataSource($this, (int)$datasource['id'], (string)$datasource['name'], (string)$datasource['type']);
 			$datasourceObj->setUri((string)$datasource['uri']);
@@ -2783,11 +2908,11 @@ class Simulator {
 	public function save($file) {
 		$xml = array();
 		$xml[] = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $this->getLabel()) . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '">';
+		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $this->getLabel()) . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '" locale="' . $this->getLocale() . '" timezone="' . $this->getTimezone() . '">';
 		$xml[] = '	<Description edition="' . $this->getDescription()->getEdition() . '"><![CDATA[';
 		$xml[] = $this->cleanRichText($this->getDescription());
 		$xml[] = '	]]></Description>';
-		$xml[] = '	<DataSet dateFormat="' . $this->getDateFormat() . '" decimalPoint="' . $this->getDecimalPoint() . '" moneySymbol="' . $this->getMoneySymbol() . '" symbolPosition="' . $this->getSymbolPosition() . '">';
+		$xml[] = '	<DataSet dateFormat="' . $this->getDateFormat() . '" decimalPoint="' . $this->getDecimalPoint() . '" groupingSeparator="' . $this->getGroupingSeparator() . '" groupingSize="' . $this->getGroupingSize() . '" moneySymbol="' . $this->getMoneySymbol() . '" symbolPosition="' . $this->getSymbolPosition() . '">';
 		foreach ($this->getDatas() as $data) {
 			if ($data instanceof DataGroup) {
 				$xml[] = '		<DataGroup id="' . $data->getId() . '" name="' . $data->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $data->getLabel()) . '">';
@@ -2972,6 +3097,9 @@ class Simulator {
 				}
 				if ($step->isDynamic()) {
 					$attrs .= ' dynamic="1"'; 
+				}
+				if (($step->getOutput() == 'inlinePDF' || $step->getOutput() == 'downloadablePDF') && $step->hasPdfFooter()) {
+					$attrs .= ' pdfFooter="1"'; 
 				}
 				$xml[] = '		<Step ' . $attrs . '>';
 				$description = $this->cleanRichText($step->getDescription());
@@ -3453,11 +3581,19 @@ class Simulator {
 		$simusrc .= $this->controller->getTranslator()->trans("new");
 		$simusrc .= '" label="';
 		$simusrc .= $this->controller->getTranslator()->trans("Simulator of calculation of ...");
-		$simusrc .= '" defaultView="Default">' .PHP_EOL;
+		$simusrc .= '" defaultView="Default';
+		$simusrc .= '" locale="'.getenv('APP_LOCALE');
+		$simusrc .= '" timezone="'.DateFunction::$timezone->getName().'">' .PHP_EOL;
+		$dateFormat = DateFunction::$dateFormat;
+		$decimalPoint = MoneyFunction::$decimalPoint;
+		$groupingSeparator = MoneyFunction::$groupingSeparator;
+		$groupingSize = MoneyFunction::$groupingSize;
+		$moneySymbol = MoneyFunction::$moneySymbol;
+		$symbolPosition = MoneyFunction::$symbolPosition;
 		$simusrc .= <<<EOT
 	<Description><![CDATA[
 	]]></Description>
-	<DataSet dateFormat="d/m/Y" decimalPoint="," moneySymbol="€" symbolPosition="after">
+	<DataSet dateFormat="{$dateFormat}" decimalPoint="{$decimalPoint}" groupingSeparator="{$groupingSeparator}" groupingSize="{$groupingSize}" moneySymbol="{$moneySymbol}" symbolPosition="{$symbolPosition}">
 	</DataSet>
 	<Steps>
 	</Steps>

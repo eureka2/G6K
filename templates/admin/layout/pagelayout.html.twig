@@ -65,6 +65,9 @@ var views = {{ views|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JS
 {% if datasources is defined %}
 var datasources = {{ datasources|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
 {% endif %}
+{% if languages is defined %}
+var languages = {{ languages|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
 {% if widgets is defined %}
 var widgets = {{ widgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
 {% endif %}

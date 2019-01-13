@@ -32,6 +32,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Yaml\Yaml;
 
+use App\G6K\Manager\ExpressionParser\DateFunction;
+use App\G6K\Manager\ExpressionParser\MoneyFunction;
+
 use App\G6K\Model\Data;
 
 /**
@@ -167,6 +170,41 @@ abstract class SimulatorCommandBase extends CommandBase
 			$source->setAttribute('datasource', $name);
 		}
 		return true;
+	}
+
+	/**
+	 * Sets the missing new attributes of the schema: 
+	 * - regionale settings (locale, timezone and grouping separator) by those of this platform
+	 * - pdfFooter flag
+	 *
+	 * @access  protected
+	 * @param   \DOMDocument $simulator The simulator document
+	 * @return  void
+	 *
+	 */
+	protected function fixNewAttributes(\DOMDocument $simulator) {
+		if (! $simulator->documentElement->hasAttribute('locale')) {
+			$simulator->documentElement->setAttribute('locale', $this->parameters['app_locale']);
+		}
+		if (! $simulator->documentElement->hasAttribute('timezone')) {
+			$simulator->documentElement->setAttribute('timezone', (DateFunction::$timezone)->getName());
+		}
+		$dataset = $this->getDOMElementItem($simulator->documentElement->getElementsByTagName("DataSet"), 0);
+		if (! $dataset->hasAttribute('groupingSeparator')) {
+			$dataset->setAttribute('groupingSeparator', MoneyFunction::$groupingSeparator);
+		}
+		if (! $dataset->hasAttribute('groupingSize')) {
+			$dataset->setAttribute('groupingSize', MoneyFunction::$groupingSize);
+		}
+		$steps = $simulator->documentElement->getElementsByTagName("Step");
+		foreach ($steps as $stepNode) {
+			$step = $this->castDOMElement($stepNode);
+			if ($step->hasAttribute('output') && in_array($step->getAttribute('output'), ['inlinePDF', 'downloadablePDF'])) {
+				if (! $step->hasAttribute('pdfFooter')) {
+					$step->setAttribute('pdfFooter', '0');
+				}
+			}
+		}
 	}
 
 	/**

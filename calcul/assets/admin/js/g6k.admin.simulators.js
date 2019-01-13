@@ -98,7 +98,13 @@ THE SOFTWARE.
 		'm/d/Y': Translator.trans('m/d/Y') + ' (' +( new Date).format('m/d/Y') + ')', 
 		'd-m-Y': Translator.trans('d-m-Y') + ' (' +( new Date).format('d-m-Y') + ')', 
 		'm-d-Y': Translator.trans('m-d-Y') + ' (' +( new Date).format('m-d-Y') + ')', 
-		'Y-m-d': Translator.trans('Y-m-d') + ' (' +( new Date).format('Y-m-d') + ')'
+		'd.m.Y': Translator.trans('d.m.Y') + ' (' +( new Date).format('d.m.Y') + ')', 
+		'd.m.Y.': Translator.trans('d.m.Y.') + ' (' +( new Date).format('d.m.Y.') + ')', 
+		'd/m Y': Translator.trans('d/m Y') + ' (' +( new Date).format('d/m Y') + ')', 
+		'd. m. Y': Translator.trans('d. m. Y') + ' (' +( new Date).format('d. m. Y') + ')', 
+		'Y-m-d': Translator.trans('Y-m-d') + ' (' +( new Date).format('Y-m-d') + ')',
+		'Y/m/d': Translator.trans('Y/m/d') + ' (' +( new Date).format('Y/m/d') + ')',
+		'Y. m. d.': Translator.trans('Y. m. d.') + ' (' +( new Date).format('Y. m. d.') + ')'
 	};
 
 	Simulators.parameterDateFormats = { 
@@ -556,8 +562,18 @@ THE SOFTWARE.
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
-		if ($.trim($('#simulator-decimalPoint').val()) === '') {
-			simulatorContainer.find('.error-message').text(Translator.trans('The simulator decimal point is required'));
+		if ($('#simulator-groupingSeparator').val() === '') {
+			simulatorContainer.find('.error-message').text(Translator.trans('The simulator grouping separator is required'));
+			simulatorContainer.find('.alert').show();
+			return false;
+		}
+		if ($('#simulator-groupingSize').val() === '') {
+			simulatorContainer.find('.error-message').text(Translator.trans('The simulator grouping size is required'));
+			simulatorContainer.find('.alert').show();
+			return false;
+		}
+		if ($.trim($('#simulator-timezone').val()) === '') {
+			simulatorContainer.find('.error-message').text(Translator.trans('The simulator time zone is required'));
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
@@ -597,6 +613,27 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
+		$('#simulator-locale').on('change', function() {
+			Simulators.getRegionalSettings($(this).val(), function(settings) {
+				if (settings) {
+					$('#simulator-dateFormat').val(settings.date_input_format);
+					$('#simulator-decimalPoint').val(settings.currency_decimal_point);
+					$('#simulator-moneySymbol').val(settings.currency_symbol);
+					$('#simulator-groupingSeparator').val(settings.currency_grouping_separator);
+					$('#simulator-groupingSize').val(settings.currency_grouping_size);
+					var currentTimezone = $('#simulator-timezone').val();
+					$('#simulator-timezone').find('option').remove();
+					$.each(settings.date_timezones, function(timezone) {
+						var option = $('<option>', {value: timezone, text: timezone });
+						if (timezone == currentTimezone || timezone == settings.date_timezone) {
+							option.attr('selected', true);
+						}
+						$('#simulator-timezone').append(option);
+					});
+					$('#simulator-symbolPosition').val(settings.currency_symbol_position);
+				}
+			});
+		});
 		simulatorContainer.find('.validate-edit-simulator').on('click', function() {
 			if (Simulators.checkSimulatorOptions(simulatorContainer)) {
 				simulatorContainer.find('.alert').hide();
@@ -606,13 +643,21 @@ THE SOFTWARE.
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='label']").text($('#simulator-label').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='referer']").attr('data-value', $('#simulator-referer').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='referer']").text($('#simulator-referer').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='locale']").attr('data-value', $('#simulator-locale').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='locale']").text($('#simulator-locale option:selected').text());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").attr('data-value', $('#simulator-defaultView').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").text($('#simulator-defaultView').val());
 				$('#simulator-options-panel.card-header h4.card-title').text($('#simulator-label').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").attr('data-value', $('#simulator-dateFormat').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").text($('#simulator-dateFormat option:selected').text());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='timezone']").attr('data-value', $('#simulator-timezone').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='timezone']").text($('#simulator-timezone').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").attr('data-value', $('#simulator-decimalPoint').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").text($('#simulator-decimalPoint').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSeparator']").attr('data-value', $('#simulator-groupingSeparator').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSeparator']").text($('#simulator-groupingSeparator').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSize']").attr('data-value', $('#simulator-groupingSize').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSize']").text($('#simulator-groupingSize').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='moneySymbol']").attr('data-value', $('#simulator-moneySymbol').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='moneySymbol']").text($('#simulator-moneySymbol option:selected').text());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='symbolPosition']").attr('data-value', $('#simulator-symbolPosition').val());
@@ -664,6 +709,7 @@ THE SOFTWARE.
 			Simulators.updating = false;
 		});
 		Simulators.bindOptionalAttributes(simulatorContainer);
+		$('#simulator-locale').trigger('change');
 	}
 
 	Simulators.bindOptionalAttributes = function(container, onSelect, onDelete) {
@@ -744,6 +790,18 @@ THE SOFTWARE.
 		});
 	}
 
+	Simulators.getRegionalSettings = function(locale, callback) {
+		var path = $(location).attr('pathname').replace(/\/simulators.+$/, "") + "/regional-settings/" + locale;
+		$.get(path,
+			function(result){
+				callback(result);
+			},
+			"json"
+		).fail(function(jqXHR, textStatus, errorThrown) {
+			callback(false);
+		});
+	}
+
 	Simulators.drawSimulatorOptionsForInput = function(simulator) {
 		var simulatorAttributesPanel = $('<div class="card bg-light" id="simulator-attributes-panel"></div>');
 		var simulatorAttributesPanelBody = $('<div class="card-body"></div>');
@@ -753,8 +811,14 @@ THE SOFTWARE.
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-label', 'text', 'label', Translator.trans('Label'), simulator.label, true, Translator.trans('Simulator label')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-defaultView', 'select', 'defaultView', Translator.trans('Default view'), simulator.defaultView, true, Translator.trans('Default view'), JSON.stringify(views)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-referer', 'text', 'referer', Translator.trans('Main referer'), simulator.referer, false, Translator.trans('referer URL')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-locale', 'select', 'locale', Translator.trans('Locale'), simulator.locale, true, Translator.trans('Locale'), JSON.stringify(languages)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-dateFormat', 'select', 'dateFormat', Translator.trans('Date format'), simulator.dateFormat, true, Translator.trans('Select a format'), JSON.stringify(Simulators.dateFormats)));
+		var timezones = {};
+		timezones[simulator.timezone] = simulator.timezone;
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-timezone', 'select', 'timezone', Translator.trans('Time zone'), simulator.timezone, true, Translator.trans('Time zone'), JSON.stringify(timezones)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'text', 'decimalPoint', Translator.trans('Decimal point'), simulator.decimalPoint, true, Translator.trans('Decimal point')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSeparator', 'text', 'groupingSeparator', Translator.trans('Grouping separator'), simulator.groupingSeparator, true, Translator.trans('Grouping separator')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSize', 'number', 'groupingSize', Translator.trans('Grouping size'), simulator.groupingSeparator, true, Translator.trans('Grouping size')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-moneySymbol', 'select', 'moneySymbol', Translator.trans('Currency symbol'), simulator.moneySymbol, true, Translator.trans('Select a symbol'), JSON.stringify(Simulators.moneySymbols)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-symbolPosition', 'select', 'symbolPosition', Translator.trans('Symbol position'), simulator.symbolPosition, true, Translator.trans('Select a position'), JSON.stringify({ 'before': Translator.trans('before currency'), 'after': Translator.trans('after currency') })));
 		if (simulator.dynamic == 1) {
@@ -821,8 +885,12 @@ $(function(){
 				label: attributesPanel.find("p[data-attribute='label']").attr('data-value'),
 				defaultView: attributesPanel.find("p[data-attribute='defaultView']").attr('data-value'),
 				referer: attributesPanel.find("p[data-attribute='referer']").attr('data-value'),
+				locale: attributesPanel.find("p[data-attribute='locale']").attr('data-value'),
 				dateFormat: attributesPanel.find("p[data-attribute='dateFormat']").attr('data-value'),
+				timezone: attributesPanel.find("p[data-attribute='timezone']").attr('data-value'),
 				decimalPoint: attributesPanel.find("p[data-attribute='decimalPoint']").attr('data-value'),
+				groupingSeparator: attributesPanel.find("p[data-attribute='groupingSeparator']").attr('data-value'),
+				groupingSize: attributesPanel.find("p[data-attribute='groupingSize']").attr('data-value'),
 				moneySymbol: attributesPanel.find("p[data-attribute='moneySymbol']").attr('data-value'),
 				symbolPosition: attributesPanel.find("p[data-attribute='symbolPosition']").attr('data-value'),
 				dynamic: attributesPanel.find("p[data-attribute='dynamic']").attr('data-value'),
@@ -894,8 +962,12 @@ $(function(){
 				label: $('#simulator-attributes-panel-holder').find("p[data-attribute='label']").attr('data-value'),
 				defaultView: $('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").attr('data-value'),
 				referer: $('#simulator-attributes-panel-holder').find("p[data-attribute='referer']").attr('data-value'),
+				locale: $('#simulator-attributes-panel-holder').find("p[data-attribute='locale']").attr('data-value'),
 				dateFormat: $('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").attr('data-value'),
+				timezone: $('#simulator-attributes-panel-holder').find("p[data-attribute='timezone']").attr('data-value'),
 				decimalPoint: $('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").attr('data-value'),
+				groupingSeparator: $('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSeparator']").attr('data-value'),
+				groupingSize: $('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSize']").attr('data-value'),
 				moneySymbol: $('#simulator-attributes-panel-holder').find("p[data-attribute='moneySymbol']").attr('data-value'),
 				symbolPosition: $('#simulator-attributes-panel-holder').find("p[data-attribute='symbolPosition']").attr('data-value'),
 				dynamic: $('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").attr('data-value'),

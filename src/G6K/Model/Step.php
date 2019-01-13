@@ -99,6 +99,14 @@ class Step {
 	private $dynamic = false;
 
 	/**
+	 * @var bool       $pdfFooter if true, a footer is added to the PDF outputs 
+	 *
+	 * @access  private
+	 *
+	 */
+	private $pdfFooter = false;
+
+	/**
 	 * @var array      $panels The list of panels of this step.
 	 *
 	 * @access  private
@@ -351,6 +359,46 @@ class Step {
 	 */
 	public function setDynamic($dynamic) {
 		$this->dynamic = $dynamic;
+	}
+
+	/**
+	 * Returns the pdfFooter attribute of this Step object 
+	 *
+	 * if true, a footer will be added to the PDF outputs 
+	 *
+	 * @access  public
+	 * @return  bool true if a footer will be added, false otherwise
+	 *
+	 */
+	public function hasPdfFooter() {
+		return $this->pdfFooter;
+	}
+
+	/**
+	 * Returns the pdfFooter attribute of this Step object 
+	 *
+	 * if true, a footer will be added to the PDF outputs 
+	 *
+	 * @access  public
+	 * @return  bool true if a footer will be added, false otherwise
+	 *
+	 */
+	public function getPdfFooter() {
+		return $this->pdfFooter;
+	}
+
+	/**
+	 * Determine whether or not a footer will be added to PDF output
+	 *
+	 * if true, a footer will be added to the PDF outputs 
+	 *
+	 * @access  public
+	 * @param   bool   $pdfFooter true if a footer will be added, false otherwise
+	 * @return  void
+	 *
+	 */
+	public function setPdfFooter($pdfFooter) {
+		$this->pdfFooter = $pdfFooter;
 	}
 
 	/**

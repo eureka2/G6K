@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2019 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ THE SOFTWARE.
 	Date.inputFormat = "j/n/Y";
 
 	Date.makeRegExp = function() {
-		var matches = Date.inputFormat.match(/(j|n|Y)(.)(j|n|Y)(.)(j|n|Y)/);
+		var matches = Date.inputFormat.match(/(j|n|Y)([^jnY]+)(j|n|Y)([^jnY]+)(j|n|Y)/);
 		var regPart = [];
 		var replacePart = [];
 		for (var i = 1; i <= 5; i += 2) {
@@ -48,7 +48,7 @@ THE SOFTWARE.
 				replacePart.push('$3');
 			}
 		}
-		Date.regexp = regPart.join(matches[2]);
+		Date.regexp = regPart[0] + matches[2] + regPart[1] + matches[4] + regPart[2];
 		Date.replacement = replacePart.join('.');
 	}
 
@@ -3293,7 +3293,8 @@ THE SOFTWARE.
 		this.decimalPoint = options.decimalPoint;
 		this.moneySymbol = options.moneySymbol;
 		this.symbolPosition = options.symbolPosition;
-		this.thousandsSeparator = options.thousandsSeparator;
+		this.groupingSeparator = options.groupingSeparator;
+		this.groupingSize = options.groupingSize;
 		Date.makeRegExp();
 		this.parser = new ExpressionParser();
 		this.rulesengine = null;
@@ -3751,7 +3752,7 @@ THE SOFTWARE.
 			var self = this;
 			var data = this.getData(name);
 			if (value && (data.type === "money" || data.type === "percent")) {
-				value = accounting.formatNumber(value, 2, this.thousandsSeparator, this.decimalPoint)
+				value = accounting.formatNumber(value, 2, this.groupingSeparator, this.decimalPoint)
 			}
 			if (data.type === "multichoice") {
 				$("input[type=checkbox]").each(function (index) {
@@ -4993,7 +4994,7 @@ THE SOFTWARE.
 		formatValue: function(data) {
 			var value = data.value;
 			if (value && $.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
-				value = accounting.formatNumber(parseFloat(value), 2, this.thousandsSeparator, this.decimalPoint);
+				value = accounting.formatNumber(parseFloat(value), 2, this.groupingSeparator, this.decimalPoint);
 			}
 			if ($.isArray(value)) {
 				value = value.join(", ");
@@ -5002,7 +5003,7 @@ THE SOFTWARE.
 		},
 
 		unFormatValue: function(value) {
-			var ts = new RegExp(this.thousandsSeparator, 'g');
+			var ts = new RegExp(this.groupingSeparator, 'g');
 			var dp = new RegExp(this.decimalPoint, 'g');
 			value = value.replace(ts, '').replace(dp, '.');
 			return value;

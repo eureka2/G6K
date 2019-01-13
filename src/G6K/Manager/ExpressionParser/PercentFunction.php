@@ -36,21 +36,22 @@ namespace App\G6K\Manager\ExpressionParser;
 class PercentFunction {
 
 	public static $decimalPoint = null;
-	public static $thousandsSeparator = null;
+	public static $groupingSeparator = null;
+	public static $groupingSize = null;
 	public static $percentSymbol = null;
 
 	public static function toString($percent) {
 		if (is_float($percent)) {
-			return number_format($percent, 2, self::$decimalPoint, self::$thousandsSeparator);
+			return number_format($percent, 2, self::$decimalPoint, self::$groupingSeparator);
 		} elseif (is_numeric($percent) || is_int($percent)) {
-			return number_format((float)$percent, 2, self::$decimalPoint, self::$thousandsSeparator);
+			return number_format((float)$percent, 2, self::$decimalPoint, self::$groupingSeparator);
 		} else {
 			return $percent;
 		}
 	}
 
 	public static function toPercent(string $percent) {
-		$value = str_replace([self::$thousandsSeparator, self::$decimalPoint], ['', '.'], $percent);
+		$value = str_replace([self::$groupingSeparator, self::$decimalPoint], ['', '.'], $percent);
 		return is_numeric($value) ? (float)$value : $percent;
 	}
 
@@ -59,7 +60,7 @@ class PercentFunction {
 	}
 
 	public static function isPercent(string $percent) {
-		$numeric = str_replace([self::$thousandsSeparator, self::$decimalPoint], ['', '.'], $percent);
+		$numeric = str_replace([self::$groupingSeparator, self::$decimalPoint], ['', '.'], $percent);
 		return preg_match("/^\d+(\.\d{1,2})?$/", $numeric);
 	}
 
@@ -70,9 +71,12 @@ class PercentFunction {
 			if (self::$decimalPoint === null) {
 				self::$decimalPoint = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 			}
-			if (self::$thousandsSeparator === null) {
-				self::$thousandsSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
-				self::$thousandsSeparator = str_replace("\xc2\xa0", ' ', self::$thousandsSeparator);
+			if (self::$groupingSeparator === null) {
+				self::$groupingSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+				self::$groupingSeparator = str_replace("\xc2\xa0", ' ', self::$groupingSeparator);
+			}
+			if (self::$groupingSize === null) {
+				self::$groupingSize = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 			}
 			if (self::$percentSymbol === null) {
 				self::$percentSymbol = normalizer_normalize($formatter->getSymbol(\NumberFormatter::PERCENT_SYMBOL));
@@ -81,8 +85,11 @@ class PercentFunction {
 			if (self::$decimalPoint === null) {
 				self::$decimalPoint = preg_match("/^fr/", $locale) ? "," : ".";
 			}
-			if (self::$thousandsSeparator === null) {
-				self::$thousandsSeparator = preg_match("/^fr/", $locale) ? " " : ",";
+			if (self::$groupingSeparator === null) {
+				self::$groupingSeparator = preg_match("/^fr/", $locale) ? " " : ",";
+			}
+			if (self::$groupingSize === null) {
+				self::$groupingSize = 3;
 			}
 			if (self::$percentSymbol === null) {
 				self::$percentSymbol = "%";

@@ -422,6 +422,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'rules' => $this->rules,
 					'datasources' => $datasources,
 					'views' => $views,
+					'languages' => $this->getLanguages(),
 					'hiddens' => $hiddens,
 					'script' => $script,
 					'view' => null,
@@ -435,6 +436,25 @@ class SimulatorsAdminController extends BaseAdminController {
 			echo $e->getMessage();
 			throw $e;
 		}
+	}
+
+	/**
+	 * Entry point for the route path /admin/regional-settings/{locale}
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string $locale 
+	 * @return  \Symfony\Component\HttpFoundation\Response The regional settings in json format
+	 *
+	 */
+	public function regionalSettingsAction(Request $request, $locale)
+	{
+		$this->initialize();
+		$settings = $this->getRegionalSettings($locale);
+		$response = new Response();
+		$response->setContent(json_encode($settings, JSON_UNESCAPED_UNICODE));
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
 	}
 
 	/**
@@ -533,6 +553,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->setLabel($simulatorData["label"]);
 		$this->simu->setDefaultView($simulatorData["defaultView"]);
 		$this->simu->setReferer($simulatorData["referer"]);
+		$this->simu->setLocale($simulatorData["locale"]);
+		$this->simu->setTimezone($simulatorData["timezone"]);
 		$this->simu->setDynamic($simulatorData['dynamic'] == '1');
 		$this->simu->setMemo($simulatorData['memo'] == '1');
 		$this->simu->setDescription(
@@ -549,6 +571,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		);
 		$this->simu->setDateFormat($simulatorData['dateFormat']);
 		$this->simu->setDecimalPoint($simulatorData['decimalPoint']);
+		$this->simu->setGroupingSeparator($simulatorData['groupingSeparator']);
+		$this->simu->setGroupingSize($simulatorData['groupingSize']);
 		$this->simu->setMoneySymbol($simulatorData['moneySymbol']);
 		$this->simu->setSymbolPosition($simulatorData['symbolPosition']);
 		if (isset($form['create'])) {
@@ -821,6 +845,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function makeStep($step) {
 		$stepObj = new Step($this->simu, (int)$step['id'], $step['name'], $step['label'], $step['template']);
 		$stepObj->setOutput($step['output']);
+		$stepObj->setPdfFooter(isset($step['pdfFooter']) && $step['pdfFooter'] == '1');
 		$stepObj->setDescription(
 			new RichText(
 				trim($this->replaceSpecialTags($step['description']['content'])),
@@ -2006,6 +2031,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'label' => $step->getLabel(),
 					'template' => $step->getTemplate(),
 					'output' => $step->getOutput(),
+					'pdfFooter' => $step->getPdfFooter(),
 					'dynamic' => $step->isDynamic() ? '1' : '0',
 					'description' => array(
 						'content' => $description->getContent(),
@@ -3744,6 +3770,174 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 		return null;
 	}
+
+	/**
+	 * Returns the available locales of the server
+	 *
+	 * @access  private
+	 * @return  array The available locales
+	 *
+	 */
+	private function getLocales() {
+		$currencyPerLocale = array_reduce(
+			\ResourceBundle::getLocales(''),
+			function (array $currencies, string $locale) {
+				$currencies[$locale] = \NumberFormatter::create(
+					$locale,
+					\NumberFormatter::CURRENCY
+				)->getTextAttribute(\NumberFormatter::CURRENCY_CODE);
+
+				return $currencies;
+			},
+			[]
+		);
+		return array_filter($currencyPerLocale, function($curr) { return !empty($curr); });
+	}
+
+	/**
+	 * Returns the languages for the current locale
+	 *
+	 * @access  public
+	 * @return  array The available languages
+	 *
+	 */
+	public function getLanguages() {
+		$locale = $this->get('kernel')->getContainer()->getParameter('app_locale');
+		$locales = $this->getLocales();
+		$inlocale = substr($locale, 0, 2);
+		$languages = array();
+		foreach($locales as $lang => $c) {
+			$loc = str_replace('_', '-', $lang);
+			if ($loc != 'en-US-POSIX') {
+				$middle = '';
+				if (preg_match("/^\w+-(\w+)-\w+$/", $loc, $m)) {
+					$middle = " - " . $m[1];
+				}
+				$country = \Locale::getDisplayRegion($loc, $inlocale);
+				$dialect = \Locale::getDisplayLanguage($loc, $inlocale);
+				$dialect = mb_strtoupper(mb_substr($dialect, 0, 1)) . mb_substr($dialect, 1);
+				$language = $dialect . $middle . " (" . $country . ")";
+				$languages[$loc] = $language;
+			}
+		}
+		$undlocale = str_replace('-', '_', $locale);
+		setlocale(LC_ALL, $undlocale);
+		asort($languages, SORT_LOCALE_STRING);
+		return $languages;
+	}
+
+	/**
+	 * Returns the time zones for the given locale
+	 *
+	 * @access  public
+	 * @param   string $locale The given locale
+	 * @return  array The time zones
+	 *
+	 */
+	public function getTimezones($locale) {
+		$timezones = array();
+		$country = substr($locale, -2);
+		$zones = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $country);
+		foreach($zones as $tz) {
+			$timezones[$tz] = $tz;
+		}
+		return $timezones;
+	}
+
+	/**
+	 * Returns all the currency symbols
+	 *
+	 * @access  public
+	 * @return  array The currency symbols
+	 *
+	 */
+	public function getCurrencySymbols() {
+		$symbols = array();
+		$locales = $this->getLocales();
+		foreach($locales as $locale => $currencyCode) {
+			$undlocale = str_replace('-', '_', $locale);
+			$formatter = new \NumberFormatter($undlocale . '@currency=' . $currencyCode , \NumberFormatter::CURRENCY);
+			$symbol = normalizer_normalize($formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL));
+			$symbols[$symbol] = $symbol;
+		}
+		return $symbols;
+	}
+
+	/**
+	 * Returns the regional settings for the given locale
+	 *
+	 * @access  public
+	 * @param   string $locale The given locale
+	 * @return  array The regional settings
+	 *
+	 */
+	public function getRegionalSettings($locale) {
+		function utf8($text) {
+			return mb_convert_encoding($text, "UTF-8");
+		}
+		function capitalize($text) {
+			return  mb_strtoupper(mb_substr($text, 0, 1)) . mb_substr($text, 1);
+		}
+		$undlocale = str_replace('-', '_', $locale);
+		$inlocale = substr($locale, 0, 2);
+		$settings = array();
+		$settings['language'] = capitalize(\Locale::getDisplayLanguage($locale, 'en'));
+		$settings['native-language'] = capitalize(\Locale::getDisplayLanguage($locale, $inlocale));
+		$settings['region'] = \Locale::getDisplayRegion($locale, 'en');
+		$settings['native-region'] = \Locale::getDisplayRegion($locale, $inlocale);
+		$formatter = new \IntlDateFormatter($undlocale, \IntlDateFormatter::FULL, \IntlDateFormatter::FULL, NULL, NULL, "MMMM");
+		$monthNames = array();
+		for ($i = 1; $i <= 12; $i++) {
+			$monthNames[] = capitalize(utf8(mb_convert_case (datefmt_format($formatter, mktime(0, 0, 0, $i)), MB_CASE_LOWER, 'UTF-8')));
+		}
+		$settings['month_names'] = implode("|", $monthNames);
+		$formatter->setPattern("MMM");
+		$monthNames = array();
+		for ($i = 1; $i <= 12; $i++) {
+			$monthNames[] = capitalize(utf8(mb_convert_case(datefmt_format($formatter, mktime(0, 0, 0, $i)), MB_CASE_LOWER, 'UTF-8')));
+		}
+		$settings['month_names_short'] = implode("|", $monthNames);
+		$formatter->setPattern("cccc");
+		$dayNames = array();
+		for ($i = 0; $i < 7; $i++) {
+			$dayNames[] = capitalize(utf8(mb_convert_case(datefmt_format($formatter, mktime(0, 0, 0, 12, 30 + $i, 2018)), MB_CASE_LOWER, 'UTF-8')));
+		}
+		$settings['day_names'] = implode("|", $dayNames);
+		$formatter->setPattern("ccc");
+		$dayNames = array();
+		for ($i = 0; $i < 7; $i++) {
+			$dayNames[] = capitalize(utf8(mb_convert_case(datefmt_format($formatter, mktime(0, 0, 0, 12, 30 + $i, 2018)), MB_CASE_LOWER, 'UTF-8')));
+		}
+		$settings['day_names_short'] = implode("|", $dayNames);
+		$settings['date_timezone'] = $formatter->getTimeZone()->getID();
+		$formatter = new \IntlDateFormatter($undlocale, \IntlDateFormatter::SHORT, \IntlDateFormatter::NONE, NULL, \IntlDateFormatter::GREGORIAN);
+		$settings['date_input_format'] = preg_replace (['/d+/', '/M+/', '/y+/', '/\s*G+\s*/'], ['d', 'm', 'Y', ''], $formatter->getPattern());
+		$timezones = $this->getTimezones($locale);
+		$settings['date_timezones'] = $timezones;
+		$currencyCode = \NumberFormatter::create($locale, \NumberFormatter::CURRENCY)->getTextAttribute(\NumberFormatter::CURRENCY_CODE);
+		$formatter = new \NumberFormatter($undlocale . '@currency=' . $currencyCode , \NumberFormatter::CURRENCY);
+		$settings['currency_grouping_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL));
+		$settings['currency_grouping_size'] = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
+		$settings['currency_decimal_point'] = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+		$settings['currency_symbol'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL));
+		$settings['currency_symbols'] = $this->getCurrencySymbols();
+		$formatter = new \NumberFormatter($inlocale, \NumberFormatter::CURRENCY);
+		$moneySymbol = $formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL);
+		$pattern = $formatter->getPattern();
+		$settings['currency_symbol_position'] = preg_match("/^".$moneySymbol."/", $pattern) ? 'before' : 'after';
+		$formatter = new \NumberFormatter($undlocale, \NumberFormatter::DECIMAL);
+		$settings['number_grouping_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+		$settings['number_grouping_size'] = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
+		$settings['number_decimal_point'] = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+		$settings['number_fraction_digit'] = $formatter->getAttribute(\NumberFormatter::FRACTION_DIGITS);
+		$formatter = new \NumberFormatter($undlocale, \NumberFormatter::PERCENT);
+		$settings['percent_grouping_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+		$settings['percent_grouping_size'] = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
+		$settings['percent_decimal_point'] = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+		$settings['percent_symbol'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::PERCENT_SYMBOL));
+		return $settings;
+	}
+
 }
 
 ?>

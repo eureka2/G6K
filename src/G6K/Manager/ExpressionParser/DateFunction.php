@@ -213,7 +213,7 @@ class DateFunction {
 			$locale = str_replace('-', '_', getenv('APP_LOCALE'));
 			$formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::SHORT, \IntlDateFormatter::NONE, NULL, \IntlDateFormatter::GREGORIAN);
 			if (self::$dateFormat === null) {
-				self::$dateFormat = preg_replace (['/d+/', '/M+/', '/y+/'], ['d', 'm', 'Y'], $formatter->getPattern());
+				self::$dateFormat = preg_replace (['/d+/', '/M+/', '/y+/', '/\s*G+\s*/'], ['d', 'm', 'Y', ''], $formatter->getPattern());
 			}
 			if (self::$timezone === null) {
 				self::$timezone = $formatter->getTimeZone()->toDateTimeZone();
