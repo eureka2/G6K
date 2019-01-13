@@ -72,7 +72,10 @@ class G6KExceptionListener
 	protected function htmlResponse(Request $request, \Exception $exception) {
 		$domainview = $this->kernel->getContainer()->getParameter('domainview');
 		$domain = $request->getHost();
-		$view = $request->get("view", "");
+		$view = $request->request->get("view", "", true);
+		if ($view == "") {
+			$view = $request->query->get("view", "", true);
+		}
 		if ($view == "") {
 			foreach ($domainview as $d => $v) {
 				if (preg_match("/".$d."$/", $domain)) {
@@ -184,7 +187,10 @@ class G6KExceptionListener
 	 *
 	 */
 	protected function jsonResponse(Request $request, \Exception $exception) {
-		$simu = $request->get("simu", "");
+		$simu = $request->request->get("simu", "", true);
+		if ($simu == "") {
+			$simu = $request->query->get("simu", "", true);
+		}
 		$errors = array();
 		$errors[] = array(
 			'status' => "" . Response::HTTP_UNPROCESSABLE_ENTITY,
