@@ -8,7 +8,8 @@
 			currencySymbol: '',
 			currencySymbolPlacement: options.symbolPosition == 'before' ? 'p' : 's',
 			decimalCharacter: options.decimalPoint,
-			digitGroupSeparator: options.thousandsSeparator,
+			digitGroupSeparator: options.groupingSeparator,
+			digitalGroupSpacing: options.groupingSize,
 			formulaMode: true
 		});
 		if (! input[0].hasAttribute('autocomplete') || input[0].getAttribute('autocomplete') !== 'off') {

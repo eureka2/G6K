@@ -36,21 +36,24 @@ namespace App\G6K\Manager\ExpressionParser;
 class NumberFunction {
 
 	public static $decimalPoint = null;
-	public static $thousandsSeparator = null;
+	public static $groupingSeparator = null;
+	public static $groupingSize = null;
 	public static $fractionDigit = null;
 
 	public static function toString($number) {
 		if (is_float($number)) {
-			return number_format($number, self::$fractionDigit, self::$decimalPoint, self::$thousandsSeparator);
+			// use \NumberFormatter format method instead
+			return number_format($number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator);
 		} elseif (is_numeric($number) || is_int($number)) {
-			return number_format((float)$number, self::$fractionDigit, self::$decimalPoint, self::$thousandsSeparator);
+			// use \NumberFormatter format method instead
+			return number_format((float)$number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator);
 		} else {
 			return $number;
 		}
 	}
 
 	public static function toNumber(string $number) {
-		$value = str_replace([self::$thousandsSeparator, self::$decimalPoint], ['', '.'], $number);
+		$value = str_replace([self::$groupingSeparator, self::$decimalPoint], ['', '.'], $number);
 		return is_numeric($value) ? (float)$value : $number;
 	}
 
@@ -59,7 +62,7 @@ class NumberFunction {
 	}
 
 	public static function isNumber(string $number) {
-		$numeric = str_replace([self::$thousandsSeparator, self::$decimalPoint], ['', '.'], $number);
+		$numeric = str_replace([self::$groupingSeparator, self::$decimalPoint], ['', '.'], $number);
 		return is_numeric($numeric);
 	}
 
@@ -70,9 +73,12 @@ class NumberFunction {
 			if (self::$decimalPoint === null) {
 				self::$decimalPoint = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 			}
-			if (self::$thousandsSeparator === null) {
-				self::$thousandsSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
-				self::$thousandsSeparator = str_replace("\xc2\xa0", ' ', self::$thousandsSeparator);
+			if (self::$groupingSeparator === null) {
+				self::$groupingSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+				self::$groupingSeparator = str_replace("\xc2\xa0", ' ', self::$groupingSeparator);
+			}
+			if (self::$groupingSize === null) {
+				self::$groupingSize = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 			}
 			if (self::$fractionDigit === null) {
 				self::$fractionDigit = $formatter->getAttribute(\NumberFormatter::FRACTION_DIGITS);
@@ -81,8 +87,11 @@ class NumberFunction {
 			if (self::$decimalPoint === null) {
 				self::$decimalPoint = preg_match("/^fr/", $locale) ? "," : ".";
 			}
-			if (self::$thousandsSeparator === null) {
-				self::$thousandsSeparator = preg_match("/^fr/", $locale) ? " " : ",";
+			if (self::$groupingSeparator === null) {
+				self::$groupingSeparator = preg_match("/^fr/", $locale) ? " " : ",";
+			}
+			if (self::$groupingSize === null) {
+				self::$groupingSize = 3;
 			}
 			if (self::$fractionDigit === null) {
 				self::$fractionDigit = preg_match("/^fr/", $locale) ? 2 : 2;

@@ -26,7 +26,8 @@
 						</xs:sequence>
 						<xs:attribute name="dateFormat" type="xs:string" use="required"/>
 						<xs:attribute name="decimalPoint" type="xs:string" use="required"/>
-						<xs:attribute name="thousandsSeparator" type="xs:string" use="optional" default=" "/>
+						<xs:attribute name="groupingSeparator" type="xs:string" use="optional" default=" "/>
+						<xs:attribute name="groupingSize" type="xs:positiveInteger" use="optional" default="3"/>
 						<xs:attribute name="moneySymbol" type="xs:string" use="required"/>
 						<xs:attribute name="symbolPosition" use="required">
 							<xs:simpleType>

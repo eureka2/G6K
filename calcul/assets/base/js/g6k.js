@@ -3293,7 +3293,8 @@ THE SOFTWARE.
 		this.decimalPoint = options.decimalPoint;
 		this.moneySymbol = options.moneySymbol;
 		this.symbolPosition = options.symbolPosition;
-		this.thousandsSeparator = options.thousandsSeparator;
+		this.groupingSeparator = options.groupingSeparator;
+		this.groupingSize = options.groupingSize;
 		Date.makeRegExp();
 		this.parser = new ExpressionParser();
 		this.rulesengine = null;
@@ -3751,7 +3752,7 @@ THE SOFTWARE.
 			var self = this;
 			var data = this.getData(name);
 			if (value && (data.type === "money" || data.type === "percent")) {
-				value = accounting.formatNumber(value, 2, this.thousandsSeparator, this.decimalPoint)
+				value = accounting.formatNumber(value, 2, this.groupingSeparator, this.decimalPoint)
 			}
 			if (data.type === "multichoice") {
 				$("input[type=checkbox]").each(function (index) {
@@ -4993,7 +4994,7 @@ THE SOFTWARE.
 		formatValue: function(data) {
 			var value = data.value;
 			if (value && $.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
-				value = accounting.formatNumber(parseFloat(value), 2, this.thousandsSeparator, this.decimalPoint);
+				value = accounting.formatNumber(parseFloat(value), 2, this.groupingSeparator, this.decimalPoint);
 			}
 			if ($.isArray(value)) {
 				value = value.join(", ");
@@ -5002,7 +5003,7 @@ THE SOFTWARE.
 		},
 
 		unFormatValue: function(value) {
-			var ts = new RegExp(this.thousandsSeparator, 'g');
+			var ts = new RegExp(this.groupingSeparator, 'g');
 			var dp = new RegExp(this.decimalPoint, 'g');
 			value = value.replace(ts, '').replace(dp, '.');
 			return value;

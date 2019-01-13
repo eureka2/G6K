@@ -174,7 +174,7 @@ abstract class SimulatorCommandBase extends CommandBase
 
 	/**
 	 * Sets the missing new attributes of the schema: 
-	 * - regionale settings (locale, timezone and thousands separator) by those of this platform
+	 * - regionale settings (locale, timezone and grouping separator) by those of this platform
 	 * - pdfFooter flag
 	 *
 	 * @access  protected
@@ -190,8 +190,11 @@ abstract class SimulatorCommandBase extends CommandBase
 			$simulator->documentElement->setAttribute('timezone', (DateFunction::$timezone)->getName());
 		}
 		$dataset = $this->getDOMElementItem($simulator->documentElement->getElementsByTagName("DataSet"), 0);
-		if (! $dataset->hasAttribute('thousandsSeparator')) {
-			$dataset->setAttribute('thousandsSeparator', MoneyFunction::$thousandsSeparator);
+		if (! $dataset->hasAttribute('groupingSeparator')) {
+			$dataset->setAttribute('groupingSeparator', MoneyFunction::$groupingSeparator);
+		}
+		if (! $dataset->hasAttribute('groupingSize')) {
+			$dataset->setAttribute('groupingSize', MoneyFunction::$groupingSize);
 		}
 		$steps = $simulator->documentElement->getElementsByTagName("Step");
 		foreach ($steps as $stepNode) {

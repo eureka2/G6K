@@ -571,7 +571,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		);
 		$this->simu->setDateFormat($simulatorData['dateFormat']);
 		$this->simu->setDecimalPoint($simulatorData['decimalPoint']);
-		$this->simu->setThousandsSeparator($simulatorData['thousandsSeparator']);
+		$this->simu->setGroupingSeparator($simulatorData['groupingSeparator']);
+		$this->simu->setGroupingSize($simulatorData['groupingSize']);
 		$this->simu->setMoneySymbol($simulatorData['moneySymbol']);
 		$this->simu->setSymbolPosition($simulatorData['symbolPosition']);
 		if (isset($form['create'])) {
@@ -3914,7 +3915,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		$settings['date_timezones'] = $timezones;
 		$currencyCode = \NumberFormatter::create($locale, \NumberFormatter::CURRENCY)->getTextAttribute(\NumberFormatter::CURRENCY_CODE);
 		$formatter = new \NumberFormatter($undlocale . '@currency=' . $currencyCode , \NumberFormatter::CURRENCY);
-		$settings['currency_thousands_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL));
+		$settings['currency_grouping_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL));
+		$settings['currency_grouping_size'] = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 		$settings['currency_decimal_point'] = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 		$settings['currency_symbol'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL));
 		$settings['currency_symbols'] = $this->getCurrencySymbols();
@@ -3923,11 +3925,13 @@ class SimulatorsAdminController extends BaseAdminController {
 		$pattern = $formatter->getPattern();
 		$settings['currency_symbol_position'] = preg_match("/^".$moneySymbol."/", $pattern) ? 'before' : 'after';
 		$formatter = new \NumberFormatter($undlocale, \NumberFormatter::DECIMAL);
-		$settings['number_thousands_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+		$settings['number_grouping_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+		$settings['number_grouping_size'] = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 		$settings['number_decimal_point'] = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 		$settings['number_fraction_digit'] = $formatter->getAttribute(\NumberFormatter::FRACTION_DIGITS);
 		$formatter = new \NumberFormatter($undlocale, \NumberFormatter::PERCENT);
-		$settings['percent_thousands_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+		$settings['percent_grouping_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+		$settings['percent_grouping_size'] = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 		$settings['percent_decimal_point'] = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 		$settings['percent_symbol'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::PERCENT_SYMBOL));
 		return $settings;

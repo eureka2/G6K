@@ -36,22 +36,25 @@ namespace App\G6K\Manager\ExpressionParser;
 class MoneyFunction {
 
 	public static $decimalPoint = null;
-	public static $thousandsSeparator = null;
+	public static $groupingSeparator = null;
+	public static $groupingSize = null;
 	public static $moneySymbol = null;
 	public static $symbolPosition = null;
 
 	public static function toString($money) {
 		if (is_float($money)) {
-			return number_format($money, 2, self::$decimalPoint, self::$thousandsSeparator);
+			// use \NumberFormatter formatCurrency method instead
+			return number_format($money, 2, self::$decimalPoint, self::$groupingSeparator);
 		} elseif (is_numeric($money) || is_int($money)) {
-			return number_format((float)$money, 2, self::$decimalPoint, self::$thousandsSeparator);
+			// use \NumberFormatter formatCurrency method instead
+			return number_format((float)$money, 2, self::$decimalPoint, self::$groupingSeparator);
 		} else {
 			return $money;
 		}
 	}
 
 	public static function toMoney(string $money) {
-		$value = str_replace([self::$thousandsSeparator, self::$decimalPoint], ['', '.'], $money);
+		$value = str_replace([self::$groupingSeparator, self::$decimalPoint], ['', '.'], $money);
 		return is_numeric($value) ? (float)$value : $money;
 	}
 
@@ -60,7 +63,7 @@ class MoneyFunction {
 	}
 
 	public static function isMoney(string $money) {
-		$numeric = str_replace([self::$thousandsSeparator, self::$decimalPoint], ['', '.'], $money);
+		$numeric = str_replace([self::$groupingSeparator, self::$decimalPoint], ['', '.'], $money);
 		return preg_match("/^\d+(\.\d{1,2})?$/", $numeric);
 	}
 
@@ -71,9 +74,12 @@ class MoneyFunction {
 			if (self::$decimalPoint === null) {
 				self::$decimalPoint = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 			}
-			if (self::$thousandsSeparator === null) {
-				self::$thousandsSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL));
-				self::$thousandsSeparator = str_replace("\xc2\xa0", ' ', self::$thousandsSeparator);
+			if (self::$groupingSeparator === null) {
+				self::$groupingSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL));
+				self::$groupingSeparator = str_replace("\xc2\xa0", ' ', self::$groupingSeparator);
+			}
+			if (self::$groupingSize === null) {
+				self::$groupingSize = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 			}
 			if (self::$moneySymbol === null) {
 				$currencyCode = $formatter->getTextAttribute(\NumberFormatter::CURRENCY_CODE);
@@ -90,8 +96,11 @@ class MoneyFunction {
 			if (self::$decimalPoint === null) {
 				self::$decimalPoint = preg_match("/^fr/", $locale) ? "," : ".";
 			}
-			if (self::$thousandsSeparator === null) {
-				self::$thousandsSeparator = preg_match("/^fr/", $locale) ? " " : ",";
+			if (self::$groupingSeparator === null) {
+				self::$groupingSeparator = preg_match("/^fr/", $locale) ? " " : ",";
+			}
+			if (self::$groupingSize === null) {
+				self::$groupingSize = 3;
 			}
 			if (self::$moneySymbol === null) {
 				self::$moneySymbol = preg_match("/^fr/", $locale) ? "€" : "$";

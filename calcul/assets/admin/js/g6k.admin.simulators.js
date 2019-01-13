@@ -562,8 +562,13 @@ THE SOFTWARE.
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
-		if ($('#simulator-thousandsSeparator').val() === '') {
-			simulatorContainer.find('.error-message').text(Translator.trans('The simulator thousands separator is required'));
+		if ($('#simulator-groupingSeparator').val() === '') {
+			simulatorContainer.find('.error-message').text(Translator.trans('The simulator grouping separator is required'));
+			simulatorContainer.find('.alert').show();
+			return false;
+		}
+		if ($('#simulator-groupingSize').val() === '') {
+			simulatorContainer.find('.error-message').text(Translator.trans('The simulator grouping size is required'));
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
@@ -614,7 +619,8 @@ THE SOFTWARE.
 					$('#simulator-dateFormat').val(settings.date_input_format);
 					$('#simulator-decimalPoint').val(settings.currency_decimal_point);
 					$('#simulator-moneySymbol').val(settings.currency_symbol);
-					$('#simulator-thousandsSeparator').val(settings.currency_thousands_separator);
+					$('#simulator-groupingSeparator').val(settings.currency_grouping_separator);
+					$('#simulator-groupingSize').val(settings.currency_grouping_size);
 					var currentTimezone = $('#simulator-timezone').val();
 					$('#simulator-timezone').find('option').remove();
 					$.each(settings.date_timezones, function(timezone) {
@@ -648,8 +654,10 @@ THE SOFTWARE.
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='timezone']").text($('#simulator-timezone').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").attr('data-value', $('#simulator-decimalPoint').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").text($('#simulator-decimalPoint').val());
-				$('#simulator-attributes-panel-holder').find("p[data-attribute='thousandsSeparator']").attr('data-value', $('#simulator-thousandsSeparator').val());
-				$('#simulator-attributes-panel-holder').find("p[data-attribute='thousandsSeparator']").text($('#simulator-thousandsSeparator').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSeparator']").attr('data-value', $('#simulator-groupingSeparator').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSeparator']").text($('#simulator-groupingSeparator').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSize']").attr('data-value', $('#simulator-groupingSize').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSize']").text($('#simulator-groupingSize').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='moneySymbol']").attr('data-value', $('#simulator-moneySymbol').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='moneySymbol']").text($('#simulator-moneySymbol option:selected').text());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='symbolPosition']").attr('data-value', $('#simulator-symbolPosition').val());
@@ -809,7 +817,8 @@ THE SOFTWARE.
 		timezones[simulator.timezone] = simulator.timezone;
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-timezone', 'select', 'timezone', Translator.trans('Time zone'), simulator.timezone, true, Translator.trans('Time zone'), JSON.stringify(timezones)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'text', 'decimalPoint', Translator.trans('Decimal point'), simulator.decimalPoint, true, Translator.trans('Decimal point')));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-thousandsSeparator', 'text', 'thousandsSeparator', Translator.trans('Thousands separator'), simulator.thousandsSeparator, true, Translator.trans('Thousands separator')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSeparator', 'text', 'groupingSeparator', Translator.trans('Grouping separator'), simulator.groupingSeparator, true, Translator.trans('Grouping separator')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSize', 'number', 'groupingSize', Translator.trans('Grouping size'), simulator.groupingSeparator, true, Translator.trans('Grouping size')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-moneySymbol', 'select', 'moneySymbol', Translator.trans('Currency symbol'), simulator.moneySymbol, true, Translator.trans('Select a symbol'), JSON.stringify(Simulators.moneySymbols)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-symbolPosition', 'select', 'symbolPosition', Translator.trans('Symbol position'), simulator.symbolPosition, true, Translator.trans('Select a position'), JSON.stringify({ 'before': Translator.trans('before currency'), 'after': Translator.trans('after currency') })));
 		if (simulator.dynamic == 1) {
@@ -880,7 +889,8 @@ $(function(){
 				dateFormat: attributesPanel.find("p[data-attribute='dateFormat']").attr('data-value'),
 				timezone: attributesPanel.find("p[data-attribute='timezone']").attr('data-value'),
 				decimalPoint: attributesPanel.find("p[data-attribute='decimalPoint']").attr('data-value'),
-				thousandsSeparator: attributesPanel.find("p[data-attribute='thousandsSeparator']").attr('data-value'),
+				groupingSeparator: attributesPanel.find("p[data-attribute='groupingSeparator']").attr('data-value'),
+				groupingSize: attributesPanel.find("p[data-attribute='groupingSize']").attr('data-value'),
 				moneySymbol: attributesPanel.find("p[data-attribute='moneySymbol']").attr('data-value'),
 				symbolPosition: attributesPanel.find("p[data-attribute='symbolPosition']").attr('data-value'),
 				dynamic: attributesPanel.find("p[data-attribute='dynamic']").attr('data-value'),
@@ -956,7 +966,8 @@ $(function(){
 				dateFormat: $('#simulator-attributes-panel-holder').find("p[data-attribute='dateFormat']").attr('data-value'),
 				timezone: $('#simulator-attributes-panel-holder').find("p[data-attribute='timezone']").attr('data-value'),
 				decimalPoint: $('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").attr('data-value'),
-				thousandsSeparator: $('#simulator-attributes-panel-holder').find("p[data-attribute='thousandsSeparator']").attr('data-value'),
+				groupingSeparator: $('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSeparator']").attr('data-value'),
+				groupingSize: $('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSize']").attr('data-value'),
 				moneySymbol: $('#simulator-attributes-panel-holder').find("p[data-attribute='moneySymbol']").attr('data-value'),
 				symbolPosition: $('#simulator-attributes-panel-holder').find("p[data-attribute='symbolPosition']").attr('data-value'),
 				dynamic: $('#simulator-attributes-panel-holder').find("p[data-attribute='dynamic']").attr('data-value'),
