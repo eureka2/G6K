@@ -43,11 +43,9 @@ class MoneyFunction {
 
 	public static function toString($money) {
 		if (is_float($money)) {
-			// use \NumberFormatter formatCurrency method instead
-			return number_format($money, 2, self::$decimalPoint, self::$groupingSeparator);
+			return NumberFunction::number_format($money, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} elseif (is_numeric($money) || is_int($money)) {
-			// use \NumberFormatter formatCurrency method instead
-			return number_format((float)$money, 2, self::$decimalPoint, self::$groupingSeparator);
+			return NumberFunction::number_format((float)$money, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} else {
 			return $money;
 		}

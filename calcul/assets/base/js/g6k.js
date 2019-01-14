@@ -2856,7 +2856,16 @@ THE SOFTWARE.
 				"match": [2, [Token.TYPE.T_TEXT, Token.TYPE.T_TEXT], Token.TYPE.T_BOOLEAN, function(a, b) { return b.match(a) != null; }],
 				"max": [-1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.max.apply(null, a); }],
 				"min": [-1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.min.apply(null, a); }],
-				"money": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_TEXT, function(a) { return accounting.formatNumber(a, 2, " ", ",").toString(); }],
+				"money": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_TEXT, function(a) { 
+					return AutoNumeric.format(a, {
+						currencySymbol: '',
+						currencySymbolPlacement: this.symbolPosition == 's',
+						decimalCharacter: ',',
+						decimalPlaces: 2,
+						digitGroupSeparator: ' ',
+						digitalGroupSpacing: 3
+					});
+				}],
 				"month": [1, [Token.TYPE.T_DATE], Token.TYPE.T_NUMBER, function(a) { return a.getMonth() + 1; }],
 				"nextWorkDay": [1, [Token.TYPE.T_DATE], Token.TYPE.T_DATE, function(a) { return a.nextWorkingDay(); }],
 				"pow": [2, [Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a, b) { return Math.pow(a, b); }],
@@ -3752,7 +3761,14 @@ THE SOFTWARE.
 			var self = this;
 			var data = this.getData(name);
 			if (value && (data.type === "money" || data.type === "percent")) {
-				value = accounting.formatNumber(value, 2, this.groupingSeparator, this.decimalPoint)
+				value = AutoNumeric.format(value, {
+					currencySymbol: '',
+					currencySymbolPlacement: self.symbolPosition == 'before' ? 'p' : 's',
+					decimalCharacter: self.decimalPoint,
+					decimalPlaces: 2,
+					digitGroupSeparator: self.groupingSeparator,
+					digitalGroupSpacing: self.groupingSize
+				});
 			}
 			if (data.type === "multichoice") {
 				$("input[type=checkbox]").each(function (index) {
@@ -4994,7 +5010,14 @@ THE SOFTWARE.
 		formatValue: function(data) {
 			var value = data.value;
 			if (value && $.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
-				value = accounting.formatNumber(parseFloat(value), 2, this.groupingSeparator, this.decimalPoint);
+				value = AutoNumeric.format(parseFloat(value), {
+					currencySymbol: '',
+					currencySymbolPlacement: this.symbolPosition == 'before' ? 'p' : 's',
+					decimalCharacter: this.decimalPoint,
+					decimalPlaces: 2,
+					digitGroupSeparator: this.groupingSeparator,
+					digitalGroupSpacing: this.groupingSize
+				});
 			}
 			if ($.isArray(value)) {
 				value = value.join(", ");

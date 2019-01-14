@@ -3916,7 +3916,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$settings['date_timezones'] = $timezones;
 		$currencyCode = \NumberFormatter::create($locale, \NumberFormatter::CURRENCY)->getTextAttribute(\NumberFormatter::CURRENCY_CODE);
 		$formatter = new \NumberFormatter($undlocale . '@currency=' . $currencyCode , \NumberFormatter::CURRENCY);
-		$settings['currency_grouping_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL));
+		$settings['currency_grouping_separator'] = str_replace("\xc2\xa0", ' ',  normalizer_normalize($formatter->getSymbol(\NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL)));
 		$settings['currency_grouping_size'] = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 		$settings['currency_decimal_point'] = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 		$settings['currency_symbol'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL));
@@ -3926,12 +3926,12 @@ class SimulatorsAdminController extends BaseAdminController {
 		$pattern = $formatter->getPattern();
 		$settings['currency_symbol_position'] = preg_match("/^".$moneySymbol."/", $pattern) ? 'before' : 'after';
 		$formatter = new \NumberFormatter($undlocale, \NumberFormatter::DECIMAL);
-		$settings['number_grouping_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+		$settings['number_grouping_separator'] = str_replace("\xc2\xa0", ' ',  normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL)));
 		$settings['number_grouping_size'] = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 		$settings['number_decimal_point'] = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 		$settings['number_fraction_digit'] = $formatter->getAttribute(\NumberFormatter::FRACTION_DIGITS);
 		$formatter = new \NumberFormatter($undlocale, \NumberFormatter::PERCENT);
-		$settings['percent_grouping_separator'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
+		$settings['percent_grouping_separator'] = str_replace("\xc2\xa0", ' ',  normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL)));
 		$settings['percent_grouping_size'] = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 		$settings['percent_decimal_point'] = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 		$settings['percent_symbol'] = normalizer_normalize($formatter->getSymbol(\NumberFormatter::PERCENT_SYMBOL));
