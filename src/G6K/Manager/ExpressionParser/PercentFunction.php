@@ -42,9 +42,9 @@ class PercentFunction {
 
 	public static function toString($percent) {
 		if (is_float($percent)) {
-			return NumberFunction::number_format($percent, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
+			return NumberFunction::formatNumber($percent, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} elseif (is_numeric($percent) || is_int($percent)) {
-			return NumberFunction::number_format((float)$percent, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
+			return NumberFunction::formatNumber((float)$percent, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} else {
 			return $percent;
 		}

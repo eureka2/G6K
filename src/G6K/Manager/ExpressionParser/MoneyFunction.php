@@ -43,9 +43,9 @@ class MoneyFunction {
 
 	public static function toString($money) {
 		if (is_float($money)) {
-			return NumberFunction::number_format($money, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
+			return NumberFunction::formatNumber($money, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} elseif (is_numeric($money) || is_int($money)) {
-			return NumberFunction::number_format((float)$money, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
+			return NumberFunction::formatNumber((float)$money, 2, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} else {
 			return $money;
 		}

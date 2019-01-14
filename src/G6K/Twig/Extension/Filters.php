@@ -180,7 +180,7 @@ class Filters extends \Twig_Extension {
 
 	public function numberFormat($number , $decimals = 0 , $dec_point = "." , $thousands_sep = "," , $thousands_size = 3 )
 	{
-		return NumberFunction::number_format($number , $decimals, $dec_point, $thousands_sep, $thousands_size);
+		return NumberFunction::formatNumber($number , $decimals, $dec_point, $thousands_sep, $thousands_size);
 	}
 
 }

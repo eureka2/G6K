@@ -348,7 +348,7 @@ class Evaluator {
 			"match" => array(2, array(Token::T_TEXT, Token::T_TEXT), Token::T_BOOLEAN, function($a, $b) { return preg_match($a, $b); }),
 			"max" => array(-1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return count($a) > 0 ? max($a) : ''; }),
 			"min" => array(-1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return count($a) > 0 ? min($a) : ''; }),
-			"money" => array(1, array(Token::T_NUMBER), Token::T_TEXT, function($a) { return (string)number_format($a , 2 , "," , " "); }),
+			"money" => array(1, array(Token::T_NUMBER), Token::T_TEXT, function($a) { return MoneyFunction::toString($a); }),
 			"month" => array(1, array(Token::T_DATE), Token::T_NUMBER, function(\DateTime $a) { return (float)$a->format('m'); }),
 			"nextWorkDay" => array(1, array(Token::T_DATE), Token::T_DATE, function(\DateTime $a) { return Holidays::nextWorkingDay($a); }),
 			"pow" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { return pow($a, $b); }),

@@ -42,9 +42,9 @@ class NumberFunction {
 
 	public static function toString($number) {
 		if (is_float($number)) {
-			return self::number_format($number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
+			return self::formatNumber($number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} elseif (is_numeric($number) || is_int($number)) {
-			return self::number_format((float)$number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
+			return self::formatNumber((float)$number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} else {
 			return $number;
 		}
@@ -64,7 +64,7 @@ class NumberFunction {
 		return is_numeric($numeric);
 	}
 
-	public static function number_format($number , $decimals = 0 , $dec_point = "." , $thousands_sep = "," , $thousands_size = 3 )
+	public static function formatNumber($number , $decimals = 0 , $dec_point = "." , $thousands_sep = "," , $thousands_size = 3 )
 	{
 		$formatter = new \NumberFormatter(getenv('APP_LOCALE'), \NumberFormatter::DECIMAL );
 		$formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $decimals);
