@@ -1996,6 +1996,22 @@ THE SOFTWARE.
 (function (global) {
 	'use strict';
 
+	function MoneyFunction() {
+	};
+
+	MoneyFunction.decimalPoint = '.';
+	MoneyFunction.moneySymbol = '$';
+	MoneyFunction.symbolPosition = 'before';
+	MoneyFunction.groupingSeparator = ',';
+	MoneyFunction.groupingSize = 3;
+
+	global.MoneyFunction = MoneyFunction;
+
+}(this));
+
+(function (global) {
+	'use strict';
+
 	function Token(type, value) {
 		this.type  = type;
 		this.arity = 0;
@@ -2859,11 +2875,11 @@ THE SOFTWARE.
 				"money": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_TEXT, function(a) { 
 					return AutoNumeric.format(a, {
 						currencySymbol: '',
-						currencySymbolPlacement: this.symbolPosition == 's',
-						decimalCharacter: ',',
+						currencySymbolPlacement: MoneyFunction.symbolPosition == 'before' ? 'p' :'s',
+						decimalCharacter: MoneyFunction.decimalPoint,
 						decimalPlaces: 2,
-						digitGroupSeparator: ' ',
-						digitalGroupSpacing: 3
+						digitGroupSeparator: MoneyFunction.groupingSeparator,
+						digitalGroupSpacing: MoneyFunction.groupingSize
 					});
 				}],
 				"month": [1, [Token.TYPE.T_DATE], Token.TYPE.T_NUMBER, function(a) { return a.getMonth() + 1; }],
@@ -3299,11 +3315,11 @@ THE SOFTWARE.
 		this.locale = Date.locale = locale;
 		this.dateFormat = Date.format = options.dateFormat;
 		this.inputDateFormat = Date.inputFormat = this.dateFormat.replace('d', 'j').replace('m', 'n');
-		this.decimalPoint = options.decimalPoint;
-		this.moneySymbol = options.moneySymbol;
-		this.symbolPosition = options.symbolPosition;
-		this.groupingSeparator = options.groupingSeparator;
-		this.groupingSize = options.groupingSize;
+		this.decimalPoint = MoneyFunction.decimalPoint = options.decimalPoint;
+		this.moneySymbol = MoneyFunction.moneySymbol = options.moneySymbol;
+		this.symbolPosition = MoneyFunction.symbolPosition = options.symbolPosition;
+		this.groupingSeparator = MoneyFunction.groupingSeparator = options.groupingSeparator;
+		this.groupingSize = MoneyFunction.groupingSize = options.groupingSize;
 		Date.makeRegExp();
 		this.parser = new ExpressionParser();
 		this.rulesengine = null;
