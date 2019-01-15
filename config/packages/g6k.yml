@@ -35,7 +35,6 @@ parameters:
             input: [ text ]
             css: 
             js: 
-                - lib/autoNumeric.min.js
                 - js/AutoMoneyFormat.js
         AutoDateFormat:
             label:  Live Date Formatting

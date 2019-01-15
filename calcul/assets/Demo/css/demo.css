@@ -411,3 +411,24 @@ body.iOS .step-page .form-group[data-type=date] .input-group  ~ button.btn-help 
 #totalMA-container {
 	font-size: 1.5em;
 }
+
+/* uncomment for SquareRadioButton
+.step-page .step-panel-container > fieldset {
+	float: left;
+}
+.step-page .step-panel-container > div:first-of-type {
+	float: right;
+}
+*/
+
+/* checked radio colors */
+.field-container.SquareRadioButton-field fieldset label.checked,
+.field-container.SquareRadioButton-field fieldset label.checked:after {
+	color: #fff;
+	background-color: #2B4E6B;
+}
+
+/* checked radio colors */
+.field-container.SquareRadioButton-field .input-group {
+	width: 80%;
+}

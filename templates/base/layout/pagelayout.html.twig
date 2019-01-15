@@ -26,12 +26,12 @@ THE SOFTWARE.
 
 {% block doctype %}<!DOCTYPE html>{% endblock %}
 {% block html %}<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
-<!--[if lt IE 7 ]> <html lang="fr" class="no-js ie ie6" dir="ltr"> <![endif]-->
-<!--[if IE 7 ]>    <html lang="fr" class="no-js ie ie7" dir="ltr"> <![endif]-->
-<!--[if IE 8 ]>    <html lang="fr" class="no-js ie ie8" dir="ltr"> <![endif]-->
-<!--[if IE 9 ]>    <html lang="fr" class="no-js ie ie9" dir="ltr"> <![endif]-->
+<!--[if lt IE 7 ]> <html lang="{{ app_language }}" class="no-js ie ie6" dir="ltr"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="{{ app_language }}" class="no-js ie ie7" dir="ltr"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="{{ app_language }}" class="no-js ie ie8" dir="ltr"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="{{ app_language }}" class="no-js ie ie9" dir="ltr"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!-->
-<html xmlns:esi="http://www.edge-delivery.org/esi/1.0" lang="fr"><!--<![endif]-->
+<html xmlns:esi="http://www.edge-delivery.org/esi/1.0" lang="{{ app_language }}"><!--<![endif]-->
 {% endblock %}
 <head>
 {% if exception is not defined %}
@@ -100,7 +100,7 @@ if (/no-js=/.test(window.location.search)) {
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app_language ~ '.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/base/js/libs/accounting.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/autoNumeric/autoNumeric.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/DefiantJS/defiant.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/JSONPath/jsonpath.js') }}"></script>
 {% if exception is not defined %}

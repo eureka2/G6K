@@ -42,11 +42,9 @@ class NumberFunction {
 
 	public static function toString($number) {
 		if (is_float($number)) {
-			// use \NumberFormatter format method instead
-			return number_format($number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator);
+			return self::formatNumber($number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} elseif (is_numeric($number) || is_int($number)) {
-			// use \NumberFormatter format method instead
-			return number_format((float)$number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator);
+			return self::formatNumber((float)$number, self::$fractionDigit, self::$decimalPoint, self::$groupingSeparator, self::$groupingSize);
 		} else {
 			return $number;
 		}
@@ -64,6 +62,16 @@ class NumberFunction {
 	public static function isNumber(string $number) {
 		$numeric = str_replace([self::$groupingSeparator, self::$decimalPoint], ['', '.'], $number);
 		return is_numeric($numeric);
+	}
+
+	public static function formatNumber($number , $decimals = 0 , $dec_point = "." , $thousands_sep = "," , $thousands_size = 3 )
+	{
+		$formatter = new \NumberFormatter(getenv('APP_LOCALE'), \NumberFormatter::DECIMAL );
+		$formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $decimals);
+		$formatter->setSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $dec_point);
+		$formatter->setSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $thousands_sep);
+		$formatter->setAttribute(\NumberFormatter::GROUPING_SIZE, $thousands_size);
+		return $formatter->format($number);
 	}
 
 	protected static function init() {

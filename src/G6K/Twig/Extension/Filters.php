@@ -28,6 +28,7 @@ namespace App\G6K\Twig\Extension;
 
 use Symfony\Component\Translation\TranslatorInterface;
 use App\G6K\Model\RichText;
+use App\G6K\Manager\ExpressionParser\NumberFunction;
 
 /**
  * This class is a Twig extension custom filter that implements 'jscode' to replace the deprecated raw filter
@@ -82,6 +83,7 @@ class Filters extends \Twig_Extension {
 			new \Twig_SimpleFilter('fnref', array($this, 'replaceFootnotesReference'), array('is_safe' => array('html'))),
 			new \Twig_SimpleFilter('nofnref', array($this, 'removeFootnotesReference'), array('is_safe' => array('html'))),
 			new \Twig_SimpleFilter('nofilter', array($this, 'noFilter'), array('is_safe' => array('html'))),
+			new \Twig_SimpleFilter('intl_number_format', array($this, 'numberFormat')),
 		);
 	}
 
@@ -174,6 +176,11 @@ class Filters extends \Twig_Extension {
 		$text = preg_replace("/\[([^\^]+)\^(\d+)\(([^\]]+)\)\]/", '$1', $text);
 		$text = preg_replace("/\[([^\^]+)\^(\d+)\]/", '$1', $text);
 		return $text;
+	}
+
+	public function numberFormat($number , $decimals = 0 , $dec_point = "." , $thousands_sep = "," , $thousands_size = 3 )
+	{
+		return NumberFunction::formatNumber($number , $decimals, $dec_point, $thousands_sep, $thousands_size);
 	}
 
 }

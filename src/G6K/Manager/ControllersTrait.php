@@ -44,6 +44,7 @@ use App\G6K\Manager\DOMClient as Client;
 use App\G6K\Manager\ResultFilter;
 use App\G6K\Manager\StreamedOutput;
 use App\G6K\Manager\ExpressionParser\DateFunction;
+use App\G6K\Manager\ExpressionParser\NumberFunction;
 
 /**
  *
@@ -462,7 +463,7 @@ trait ControllersTrait {
 			$value = $data->getValue();
 			switch ($data->getType()) {
 				case 'money': 
-					$value = number_format ( (float)$value , 2 , $this->simu->getDecimalPoint() , $this->simu->getGroupingSeparator()); 
+					$value = NumberFunction::formatNumber((float)$value, 2, $this->simu->getDecimalPoint(), $this->simu->getGroupingSeparator(), $this->simu->getGroupingSize()); 
 				case 'percent':
 				case 'number': 
 					$value = str_replace('.', $this->simu->getDecimalPoint(), $value);

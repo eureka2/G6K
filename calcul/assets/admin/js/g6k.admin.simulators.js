@@ -126,6 +126,22 @@ THE SOFTWARE.
 
 	Simulators.moneySymbols = {'฿':'฿', 'B/.':'B/.', '₵':'₵', '¢':'¢', '₡':'₡', 'Kč':'Kč', '$':'$', '₫':'₫', '€':'€', 'ƒ':'ƒ', 'Ft':'Ft', '₲':'₲', '₴':'₴', '₭':'₭', 'L':'L', '£ / ₤':'£ / ₤', '₺':'₺', '₥':'₥', '₦':'₦', 'S/.':'S/.', '₱':'₱', 'P':'P', 'R':'R', 'RM':'RM', '₹ / ₨':'₹ / ₨', '৲':'৲', '৳':'৳', 'R$':'R$', '₪':'₪', '₮':'₮', '₩':'₩', '¥':'¥', 'Ұ':'Ұ', 'zł':'zł' };
 
+	Simulators.decimalPoints = {
+		",": Translator.trans('Comma'),
+		".": Translator.trans('Dot'),
+		"٫": Translator.trans('Arabic decimal point')
+	};
+
+	Simulators.groupingSeparators = {
+		"": Translator.trans('None'),
+		" ": Translator.trans('Space'),
+		",": Translator.trans('Comma'),
+		"٬": Translator.trans('Arabic thousands separator'),
+		".": Translator.trans('Dot'),
+		"'": Translator.trans('Apostrophe'),
+		"’": Translator.trans('Private use 2')
+	};
+
 	Simulators.optionalAttributes = {
 		'default': { type : 'expression', label: Translator.trans('default'), placeholder: Translator.trans('default value')},
 		'min': { type : 'expression', label: Translator.trans('min'), placeholder: Translator.trans('min value')},
@@ -562,8 +578,8 @@ THE SOFTWARE.
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
-		if ($('#simulator-groupingSeparator').val() === '') {
-			simulatorContainer.find('.error-message').text(Translator.trans('The simulator grouping separator is required'));
+		if ($('#simulator-groupingSeparator').val() === $('#simulator-decimalPoint').val()) {
+			simulatorContainer.find('.error-message').text(Translator.trans("The simulator grouping separator and the decimal point can't be the same"));
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
@@ -653,9 +669,9 @@ THE SOFTWARE.
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='timezone']").attr('data-value', $('#simulator-timezone').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='timezone']").text($('#simulator-timezone').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").attr('data-value', $('#simulator-decimalPoint').val());
-				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").text($('#simulator-decimalPoint').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='decimalPoint']").text($('#simulator-decimalPoint option:selected').text());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSeparator']").attr('data-value', $('#simulator-groupingSeparator').val());
-				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSeparator']").text($('#simulator-groupingSeparator').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSeparator']").text($('#simulator-groupingSeparator option:selected').text());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSize']").attr('data-value', $('#simulator-groupingSize').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='groupingSize']").text($('#simulator-groupingSize').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='moneySymbol']").attr('data-value', $('#simulator-moneySymbol').val());
@@ -816,8 +832,8 @@ THE SOFTWARE.
 		var timezones = {};
 		timezones[simulator.timezone] = simulator.timezone;
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-timezone', 'select', 'timezone', Translator.trans('Time zone'), simulator.timezone, true, Translator.trans('Time zone'), JSON.stringify(timezones)));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'text', 'decimalPoint', Translator.trans('Decimal point'), simulator.decimalPoint, true, Translator.trans('Decimal point')));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSeparator', 'text', 'groupingSeparator', Translator.trans('Grouping separator'), simulator.groupingSeparator, true, Translator.trans('Grouping separator')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'select', 'decimalPoint', Translator.trans('Decimal point'), simulator.decimalPoint, true, Translator.trans('Decimal point'), JSON.stringify(Simulators.decimalPoints)));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSeparator', 'select', 'groupingSeparator', Translator.trans('Grouping separator'), simulator.groupingSeparator, true, Translator.trans('Grouping separator'), JSON.stringify(Simulators.groupingSeparators)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSize', 'number', 'groupingSize', Translator.trans('Grouping size'), simulator.groupingSeparator, true, Translator.trans('Grouping size')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-moneySymbol', 'select', 'moneySymbol', Translator.trans('Currency symbol'), simulator.moneySymbol, true, Translator.trans('Select a symbol'), JSON.stringify(Simulators.moneySymbols)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-symbolPosition', 'select', 'symbolPosition', Translator.trans('Symbol position'), simulator.symbolPosition, true, Translator.trans('Select a position'), JSON.stringify({ 'before': Translator.trans('before currency'), 'after': Translator.trans('after currency') })));
@@ -908,6 +924,8 @@ $(function(){
 			descriptionPanel.hide();
 			relatedInformationsPanel.hide();
 			descriptionPanel.after(Simulators.drawSimulatorOptionsForInput(simulator).children());
+			$('#simulator-groupingSize').attr('min', '2');
+			$('#simulator-groupingSize').attr('max', '4');
 			descriptionPanel.after(relatedInformationsPanel);
 			Simulators.bindSimulatorOptions(attributesPanel.parent());
 			$('.update-button').hide();
