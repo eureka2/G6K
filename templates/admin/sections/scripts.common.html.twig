@@ -26,7 +26,9 @@ THE SOFTWARE.
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-migrate-3.0.0.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
+{% if asset_exists(asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app_language ~ '.js')) %}
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app_language ~ '.js') }}"></script>
+{% endif %}
 <script>
 $(function(){
 	$('body').append('<div id="toTop" class="btn btn-light"><i class="fa fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
@@ -43,5 +45,3 @@ $(function(){
 	});
 });
 </script>
-	</body>
-</html>
