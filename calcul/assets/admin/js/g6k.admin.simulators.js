@@ -206,7 +206,9 @@ THE SOFTWARE.
 	Simulators.init = function() {
 		Admin.wysihtml5Options.toolbar.insertData = true;
 		Admin.wysihtml5Options.toolbar.insertFootnoteReference = true;
-		Simulators.setRegionalSettings();
+		if ( $( "#simulator-attributes-panel-holder" ).length ) {
+			Simulators.setRegionalSettings();
+		}
 		Simulators.collectDataset();
 		$('.save-simulator').hide();
 	}
