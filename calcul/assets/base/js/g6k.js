@@ -52,6 +52,17 @@ THE SOFTWARE.
 		Date.replacement = replacePart.join('.');
 	}
 
+	Date.setRegionalSettings = function(settings) {
+		var locale = settings.locale.toLowerCase();
+		if (! Date.locales[locale]) {
+			locale = locale.substr(0, 2);
+		}
+		Date.locale = locale;
+		Date.format = settings.dateFormat;
+		Date.inputFormat = settings.dateFormat.replace('d', 'j').replace('m', 'n');
+		Date.makeRegExp();
+	}
+
 	Date.easter = function(year) {
 		try {
 			year = Number( year );
@@ -1996,6 +2007,30 @@ THE SOFTWARE.
 (function (global) {
 	'use strict';
 
+	function MoneyFunction() {
+	};
+
+	MoneyFunction.decimalPoint = '.';
+	MoneyFunction.moneySymbol = '$';
+	MoneyFunction.symbolPosition = 'before';
+	MoneyFunction.groupingSeparator = ',';
+	MoneyFunction.groupingSize = 3;
+
+	MoneyFunction.setRegionalSettings = function(settings) {
+		MoneyFunction.decimalPoint = settings.decimalPoint;
+		MoneyFunction.moneySymbol = settings.moneySymbol;
+		MoneyFunction.symbolPosition = settings.symbolPosition;
+		MoneyFunction.groupingSeparator = settings.groupingSeparator;
+		MoneyFunction.groupingSize = settings.groupingSize;
+	}
+
+	global.MoneyFunction = MoneyFunction;
+
+}(this));
+
+(function (global) {
+	'use strict';
+
 	function Token(type, value) {
 		this.type  = type;
 		this.arity = 0;
@@ -2856,7 +2891,16 @@ THE SOFTWARE.
 				"match": [2, [Token.TYPE.T_TEXT, Token.TYPE.T_TEXT], Token.TYPE.T_BOOLEAN, function(a, b) { return b.match(a) != null; }],
 				"max": [-1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.max.apply(null, a); }],
 				"min": [-1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.min.apply(null, a); }],
-				"money": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_TEXT, function(a) { return accounting.formatNumber(a, 2, " ", ",").toString(); }],
+				"money": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_TEXT, function(a) { 
+					return AutoNumeric.format(a, {
+						currencySymbol: '',
+						currencySymbolPlacement: MoneyFunction.symbolPosition == 'before' ? 'p' :'s',
+						decimalCharacter: MoneyFunction.decimalPoint,
+						decimalPlaces: 2,
+						digitGroupSeparator: MoneyFunction.groupingSeparator,
+						digitalGroupSpacing: MoneyFunction.groupingSize
+					});
+				}],
 				"month": [1, [Token.TYPE.T_DATE], Token.TYPE.T_NUMBER, function(a) { return a.getMonth() + 1; }],
 				"nextWorkDay": [1, [Token.TYPE.T_DATE], Token.TYPE.T_DATE, function(a) { return a.nextWorkingDay(); }],
 				"pow": [2, [Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a, b) { return Math.pow(a, b); }],
@@ -3283,19 +3327,16 @@ THE SOFTWARE.
 	function G6k(options) {
 		this.isDynamic = options.dynamic;
 		this.isMobile = options.mobile;
-		var locale = options.locale.toLowerCase();
-		if (! Date.locales[locale]) {
-			locale = locale.substr(0, 2);
-		}
-		this.locale = Date.locale = locale;
-		this.dateFormat = Date.format = options.dateFormat;
-		this.inputDateFormat = Date.inputFormat = this.dateFormat.replace('d', 'j').replace('m', 'n');
-		this.decimalPoint = options.decimalPoint;
-		this.moneySymbol = options.moneySymbol;
-		this.symbolPosition = options.symbolPosition;
-		this.groupingSeparator = options.groupingSeparator;
-		this.groupingSize = options.groupingSize;
-		Date.makeRegExp();
+		Date.setRegionalSettings(options);
+		MoneyFunction.setRegionalSettings(options);
+		this.locale = Date.locale;
+		this.dateFormat = Date.format;
+		this.inputDateFormat = Date.inputFormat;
+		this.decimalPoint = MoneyFunction.decimalPoint;
+		this.moneySymbol = MoneyFunction.moneySymbol;
+		this.symbolPosition = MoneyFunction.symbolPosition;
+		this.groupingSeparator = MoneyFunction.groupingSeparator;
+		this.groupingSize = MoneyFunction.groupingSize;
 		this.parser = new ExpressionParser();
 		this.rulesengine = null;
 		this.simu = null;
@@ -3752,7 +3793,14 @@ THE SOFTWARE.
 			var self = this;
 			var data = this.getData(name);
 			if (value && (data.type === "money" || data.type === "percent")) {
-				value = accounting.formatNumber(value, 2, this.groupingSeparator, this.decimalPoint)
+				value = AutoNumeric.format(value, {
+					currencySymbol: '',
+					currencySymbolPlacement: self.symbolPosition == 'before' ? 'p' : 's',
+					decimalCharacter: self.decimalPoint,
+					decimalPlaces: 2,
+					digitGroupSeparator: self.groupingSeparator,
+					digitalGroupSpacing: self.groupingSize
+				});
 			}
 			if (data.type === "multichoice") {
 				$("input[type=checkbox]").each(function (index) {
@@ -4994,7 +5042,14 @@ THE SOFTWARE.
 		formatValue: function(data) {
 			var value = data.value;
 			if (value && $.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
-				value = accounting.formatNumber(parseFloat(value), 2, this.groupingSeparator, this.decimalPoint);
+				value = AutoNumeric.format(parseFloat(value), {
+					currencySymbol: '',
+					currencySymbolPlacement: this.symbolPosition == 'before' ? 'p' : 's',
+					decimalCharacter: this.decimalPoint,
+					decimalPlaces: 2,
+					digitGroupSeparator: this.groupingSeparator,
+					digitalGroupSpacing: this.groupingSize
+				});
 			}
 			if ($.isArray(value)) {
 				value = value.join(", ");
