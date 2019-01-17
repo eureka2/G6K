@@ -472,7 +472,7 @@
             </trans-unit>
             <trans-unit id="118">
                 <source>In line %line%, the column '%column%' of '%attribute%' in '%element%' isn't returned by the source %source% of '%simulatorname%'.</source>
-                <target>En la línea %línea%, la columna '%column%' de '%attribute%' en '%element%' no es devuelta por la fuente %fuente% de '%simulatorname%'.</target>
+                <target>En la línea %line%, la columna '%column%' de '%attribute%' en '%element%' no es devuelta por la fuente %source% de '%simulatorname%'.</target>
             </trans-unit>
             <trans-unit id="119">
                 <source>In line %line%, the data '%data%' referenced by an element '%element%' of '%simulatorname%' doesn't exists.</source>
@@ -488,11 +488,11 @@
             </trans-unit>
             <trans-unit id="122">
                 <source>In line %line%, the expression is required when the operator '%operator%' is used in the element '%element%' of '%simulatorname%'</source>
-                <target>En la línea %línea%, la expresión se requiere cuando el operador '%operador%' se usa en el elemento '%elemento%' de '%simulatorname%'</target>
+                <target>En la línea %line%, la expresión se requiere cuando el operador '%operator%' se usa en el elemento '%element%' de '%simulatorname%'</target>
             </trans-unit>
             <trans-unit id="123">
                 <source>In line %line%, the expression must not be used with the operator '%operator%' in the element '%element%' of '%simulatorname%'</source>
-                <target>En la línea %línea%, la expresión no debe usarse con el operador '%operador%' en el elemento '%elemento%' de '%simulatorname%'</target>
+                <target>En la línea %line%, la expresión no debe usarse con el operador '%operator%' en el elemento '%element%' de '%simulatorname%'</target>
             </trans-unit>
             <trans-unit id="124">
                 <source>In line %line%, the operator '%operator%' used in the element '%element%' of '%simulatorname%' is invalid.</source>
@@ -504,7 +504,7 @@
             </trans-unit>
             <trans-unit id="126">
                 <source>In line %line%, the template '%template%' associated to step %step% of '%simulatorname%' doesn't exists.</source>
-                <target>En la línea %línea%, la plantilla '%plantilla%' asociada al paso %paso% de '%simulatorname%' no existe.</target>
+                <target>En la línea %line%, la plantilla '%template%' asociada al paso %step% de '%simulatorname%' no existe.</target>
             </trans-unit>
             <trans-unit id="127">
                 <source>In this case, one or more data sources can be excluded with the --exclude (-x) option.</source>
@@ -520,7 +520,7 @@
             </trans-unit>
             <trans-unit id="130">
                 <source>Line %line% %column%: %message%</source>
-                <target>Línea %línea% %column%: %message%</target>
+                <target>Línea %line% %column%: %message%</target>
             </trans-unit>
             <trans-unit id="131">
                 <source>Migrates templates created under Symfony 2 or 3.</source>

@@ -1852,7 +1852,7 @@
             </trans-unit>
             <trans-unit id="463">
                 <source>format: %format%</source>
-                <target>formato: %formato%</target>
+                <target>formato: %format%</target>
             </trans-unit>
             <trans-unit id="464">
                 <source>From</source>
@@ -4740,7 +4740,7 @@
             </trans-unit>
             <trans-unit id="1185">
                 <source>This value is not in the expected format (%format%)</source>
-                <target>Este valor no está en el formato esperado ( %formato%)</target>
+                <target>Este valor no está en el formato esperado (%format%)</target>
             </trans-unit>
             <trans-unit id="1186">
                 <source>This view already exists</source>
