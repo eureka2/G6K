@@ -187,9 +187,26 @@ THE SOFTWARE.
 
 	Simulators.updating = false;
 
+	Simulators.setRegionalSettings = function() {
+		var attributesPanel = $('#simulator-attributes-panel-holder');
+		var settings = {
+			locale: attributesPanel.find("p[data-attribute='locale']").attr('data-value'),
+			dateFormat: attributesPanel.find("p[data-attribute='dateFormat']").attr('data-value'),
+			timezone: attributesPanel.find("p[data-attribute='timezone']").attr('data-value'),
+			decimalPoint: attributesPanel.find("p[data-attribute='decimalPoint']").attr('data-value'),
+			groupingSeparator: attributesPanel.find("p[data-attribute='groupingSeparator']").attr('data-value'),
+			groupingSize: attributesPanel.find("p[data-attribute='groupingSize']").attr('data-value'),
+			moneySymbol: attributesPanel.find("p[data-attribute='moneySymbol']").attr('data-value'),
+			symbolPosition: attributesPanel.find("p[data-attribute='symbolPosition']").attr('data-value'),
+		}
+		Date.setRegionalSettings(settings);
+		MoneyFunction.setRegionalSettings(settings);
+	}
+
 	Simulators.init = function() {
 		Admin.wysihtml5Options.toolbar.insertData = true;
 		Admin.wysihtml5Options.toolbar.insertFootnoteReference = true;
+		Simulators.setRegionalSettings();
 		Simulators.collectDataset();
 		$('.save-simulator').hide();
 	}
@@ -703,6 +720,7 @@ THE SOFTWARE.
 				$('#simulator-attributes-panel-holder').show();
 				$('#simulator-description-panel-holder').show();
 				$('#simulator-related-informations-panel-holder').show();
+				Simulators.setRegionalSettings();
 				Admin.updated = true;
 				$('.update-button').show();
 				$('.toggle-collapse-all').show();

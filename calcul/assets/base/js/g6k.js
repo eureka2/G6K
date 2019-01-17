@@ -52,6 +52,17 @@ THE SOFTWARE.
 		Date.replacement = replacePart.join('.');
 	}
 
+	Date.setRegionalSettings = function(settings) {
+		var locale = settings.locale.toLowerCase();
+		if (! Date.locales[locale]) {
+			locale = locale.substr(0, 2);
+		}
+		Date.locale = locale;
+		Date.format = settings.dateFormat;
+		Date.inputFormat = settings.dateFormat.replace('d', 'j').replace('m', 'n');
+		Date.makeRegExp();
+	}
+
 	Date.easter = function(year) {
 		try {
 			year = Number( year );
@@ -2005,6 +2016,14 @@ THE SOFTWARE.
 	MoneyFunction.groupingSeparator = ',';
 	MoneyFunction.groupingSize = 3;
 
+	MoneyFunction.setRegionalSettings = function(settings) {
+		MoneyFunction.decimalPoint = settings.decimalPoint;
+		MoneyFunction.moneySymbol = settings.moneySymbol;
+		MoneyFunction.symbolPosition = settings.symbolPosition;
+		MoneyFunction.groupingSeparator = settings.groupingSeparator;
+		MoneyFunction.groupingSize = settings.groupingSize;
+	}
+
 	global.MoneyFunction = MoneyFunction;
 
 }(this));
@@ -3308,19 +3327,16 @@ THE SOFTWARE.
 	function G6k(options) {
 		this.isDynamic = options.dynamic;
 		this.isMobile = options.mobile;
-		var locale = options.locale.toLowerCase();
-		if (! Date.locales[locale]) {
-			locale = locale.substr(0, 2);
-		}
-		this.locale = Date.locale = locale;
-		this.dateFormat = Date.format = options.dateFormat;
-		this.inputDateFormat = Date.inputFormat = this.dateFormat.replace('d', 'j').replace('m', 'n');
-		this.decimalPoint = MoneyFunction.decimalPoint = options.decimalPoint;
-		this.moneySymbol = MoneyFunction.moneySymbol = options.moneySymbol;
-		this.symbolPosition = MoneyFunction.symbolPosition = options.symbolPosition;
-		this.groupingSeparator = MoneyFunction.groupingSeparator = options.groupingSeparator;
-		this.groupingSize = MoneyFunction.groupingSize = options.groupingSize;
-		Date.makeRegExp();
+		Date.setRegionalSettings(options);
+		MoneyFunction.setRegionalSettings(options);
+		this.locale = Date.locale;
+		this.dateFormat = Date.format;
+		this.inputDateFormat = Date.inputFormat;
+		this.decimalPoint = MoneyFunction.decimalPoint;
+		this.moneySymbol = MoneyFunction.moneySymbol;
+		this.symbolPosition = MoneyFunction.symbolPosition;
+		this.groupingSeparator = MoneyFunction.groupingSeparator;
+		this.groupingSize = MoneyFunction.groupingSize;
 		this.parser = new ExpressionParser();
 		this.rulesengine = null;
 		this.simu = null;
