@@ -1,15 +1,22 @@
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/bootstrap.bundle.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap-datepicker/locales/bootstrap-datepicker.' ~ app_language ~ '.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/admin/js/libs/Tabledit/jquery.tabledit.js') }}"></script>
 
+{% if asset_exists(asset('assets/admin/js/libs/bootstrap-datepicker/locales/bootstrap-datepicker.' ~ app_language ~ '.js')) %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap-datepicker/locales/bootstrap-datepicker.' ~ app_language ~ '.js') }}"></script>
+{% else %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap-datepicker/locales/bootstrap-datepicker.en.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/Tabledit/jquery.tabledit.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap-datatable/js/vendor/jquery.sortelements.js') }}"></script>
 
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery-resizable-columns/store.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery-resizable-columns/jquery.resizableColumns.min.js') }}"></script>
 
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/select2/select2.min.js') }}"></script>
+{% if asset_exists(asset('assets/admin/js/libs/select2/select2_locale_' ~ app_language ~ '.js')) %}
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/select2/select2_locale_' ~ app_language ~ '.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap-wysihtml/js/bootstrap4-wysihtml5.all.js') }}"></script>
 
@@ -27,8 +34,12 @@
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery.hotkeys/jquery.hotkeys.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery-ui/jquery-ui.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
+{% if asset_exists(asset('assets/admin/js/libs/bootstrap-datepicker/locales/bootstrap-datepicker.' ~ app_language ~ '.js')) %}
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap-datepicker/locales/bootstrap-datepicker.' ~ app_language ~ '.js') }}"></script>
+{% endif %}
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery.expressionbuilder/jquery.expressionbuilder.js') }}"></script>
+{% if asset_exists(asset('assets/admin/js/libs/jquery.expressionbuilder/lang/' ~ app_language ~ '.js')) %}
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery.expressionbuilder/lang/' ~ app_language ~ '.js') }}"></script>
+{% endif %}
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/sqltokenizer/sqltokenizer.js') }}"></script>
 {% endif %}

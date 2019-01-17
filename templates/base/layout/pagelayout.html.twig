@@ -99,7 +99,9 @@ if (/no-js=/.test(window.location.search)) {
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery.placeholder.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
+{% if asset_exists(asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app_language ~ '.js')) %}
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app_language ~ '.js') }}"></script>
+{% endif %}
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/autoNumeric/autoNumeric.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/DefiantJS/defiant.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/base/js/libs/JSONPath/jsonpath.js') }}"></script>
