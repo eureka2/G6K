@@ -462,7 +462,7 @@ t.add("For", "por", "messages", "es");
 t.add("Forest Green", "Bosque verde", "messages", "es");
 t.add("Forgot password?", "\u00bfHas olvidado su contrase\u00f1a?", "messages", "es");
 t.add("Format", "Formato", "messages", "es");
-t.add("format: %format%", "formato: %formato%", "messages", "es");
+t.add("format: %format%", "formato: %format%", "messages", "es");
 t.add("From", "Desde", "messages", "es");
 t.add("from start", "desde el principio", "messages", "es");
 t.add("Fuchsia", "Fucsia", "messages", "es");
@@ -1184,7 +1184,7 @@ t.add("This username already exists !", "Este nombre de usuario ya existe !", "m
 t.add("This value can not be greater than %max%", "Este valor no puede ser mayor que %max%", "messages", "es");
 t.add("This value can not be less than %min%", "Este valor no puede ser inferior a %min%", "messages", "es");
 t.add("This value is not in the expected format", "Este valor no est\u00e1 en el formato esperado", "messages", "es");
-t.add("This value is not in the expected format (%format%)", "Este valor no est\u00e1 en el formato esperado ( %formato%)", "messages", "es");
+t.add("This value is not in the expected format (%format%)", "Este valor no est\u00e1 en el formato esperado (%format%)", "messages", "es");
 t.add("This view already exists", "Esta vista ya existe.", "messages", "es");
 t.add("Timeout !", "Se acab\u00f3 el tiempo !", "messages", "es");
 t.add("Times New Roman", "Times New Roman", "messages", "es");
