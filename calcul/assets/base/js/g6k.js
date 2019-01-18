@@ -4918,6 +4918,15 @@ THE SOFTWARE.
 					$label.addClass('checked');
 				}
 			});
+			$("#g6k_form fieldset input[type=checkbox][name]").change(function(event) {
+				var id = $(this).attr('id');
+				var label = $(this).closest('fieldset').find("label[for='" + id + "']");
+				if ($(this).is(':checked')) {
+					label.addClass('checked');
+				} else {
+					label.removeClass('checked');
+				}
+			});
 			$("#g6k_form fieldset label.choice input[type=radio][name]").focus(function(event) {
 				var $label = $(this).parent('label.choice');
 				$label.parent('fieldset').addClass('focused');
