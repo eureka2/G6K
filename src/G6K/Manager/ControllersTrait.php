@@ -676,6 +676,23 @@ trait ControllersTrait {
 	}
 
 	/**
+	 * Returns the list of available functions.
+	 *
+	 * @access  public
+	 * @return  array The list of available functions
+	 *
+	 */
+	public function getFunctions() {
+		$functions = array();
+		if ($this->container->hasParameter('functions')) {
+			foreach ($this->container->getParameter('functions') as $name => $function) {
+				$functions[$name] = $this->getTranslator()->trans($function['label']);
+			}
+		}
+		return $functions;
+	}
+
+	/**
 	 * Retrieves the Data object of a data item of the current simulator by its ID.
 	 *
 	 * @access  public

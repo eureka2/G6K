@@ -148,7 +148,7 @@ THE SOFTWARE.
 							<div class="card bg-light" id="simulator-elements-panel">
 							{{ page.showSources ( simulator ) }}
 							{{ page.showDatas ( simulator ) }}
-							{{ page.showSteps ( simulator ) }}
+							{{ page.showSteps ( simulator, _context ) }}
 							{{ page.showBusinessRules ( simulator, _context ) }}
 							{{ page.showProfiles ( simulator ) }}
 							</div>
@@ -413,7 +413,7 @@ THE SOFTWARE.
 </div>
 {% endmacro %}
 
-{% macro showSteps(simulator) %}
+{% macro showSteps(simulator, context) %}
 {% import _self as page %}
 {{ page.openCollapsiblePanel('steps' , 'Steps'|trans, 'primary', '', 'sortable', [{ 'class': 'add-step', 'label': 'Add'|trans, 'icon': 'fa-plus-circle' }] ) }}
 {% for step in simulator.steps %}
@@ -454,7 +454,7 @@ THE SOFTWARE.
 		{% endfor %}
 		</div>
 	</div>
-	{{ page.showActionButtons(step) }}  
+	{{ page.showActionButtons(step, context) }}  
 	{% if step.footNotes %}
 	{{ page.showFootNotes(step) }}  
 	{% endif %}
@@ -495,30 +495,103 @@ THE SOFTWARE.
 {{ page.closeCollapsiblePanel() }}  
 {% endmacro %}
 
-{% macro showActionButtons(step) %}
+{% macro showActionButtons(step, context) %}
 {% import _self as page %}
 <div class="actions-buttons-panel">
 {{ page.openCollapsiblePanel('step-' ~ step.id ~ '-action-buttons' , 'Actions Buttons'|trans, 'success', '', 'sortable', [{ 'class': 'add-action-button', 'label': 'Add action button'|trans, 'icon': 'fa-plus-circle' }] ) }}
 {% for action in step.actions %}
-{{ page.showActionButton(step, action) }}
+{{ page.showActionButton(step, action, context) }}
 {% endfor %}
 {{ page.closeCollapsiblePanel() }}  
 </div>
 {% endmacro %}
 
-{% macro showActionButton(step, action) %}
+{% macro showActionButton(step, action, context) %}
 {% import _self as page %}
 {{ page.openCollapsiblePanel('step-' ~ step.id ~ '-action-button-' ~ action.name , 'Action Button'|trans ~ ' : ' ~ action.label, 'light', '', '', [{ 'class': 'delete-action-button', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-action-button', 'label': 'Edit'|trans, 'icon': 'fa-pencil' }] ) }}
 <div class="card bg-light action-button-container" id="step-{{ step.id }}-action-button-{{ action.name }}-attributes-panel" data-step="{{ step.id }}" data-id="{{ action.name }}">
 	<div class="card-body">
 		<div class="attributes-container">
 			<div>
-			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'name', 'Name'|trans, action.name, action.name, true, 'Button name'|trans) }}
-			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'label', 'Label'|trans, action.label, action.label, true, 'Button label'|trans) }}
-			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'what', 'What'|trans, action.what, action.what, true, 'Select an action'|trans, { 'submit':'Submit'|trans, 'reset':'Reset'|trans } ) }}
-			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'for', 'For'|trans, action.for, action.for, true, 'Select a target step'|trans, { 'priorStep':'Prior step'|trans, 'currentStep':'Current step'|trans, 'nextStep':'Next step'|trans, 'jumpToStep':'Jump to step'|trans, 'newSimulation':'New simulation'|trans, 'externalPage':'External page'|trans } ) }}
-			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'text', 'uri', 'URI / Step'|trans, action.uri, action.uri, false, 'Button uri'|trans) }}
-			{{ page.showAttribute('step-'~step.id~ '-action-button-' ~ action.name, 'select', 'class', 'Class'|trans, action.class, action.class, false, 'Button class'|trans, { 'btn-primary':'Primary'|trans, 'btn-secondary':'Secondary'|trans } ) }}
+			{%set actionElementId = 'step-'~step.id~ '-action-button-' ~ action.name %}
+			{{ page.showAttribute(actionElementId, 'text', 'name', 'Name'|trans, action.name, action.name, true, 'Button name'|trans) }}
+			{{ page.showAttribute(actionElementId, 'text', 'label', 'Label'|trans, action.label, action.label, true, 'Button label'|trans) }}
+			{{ page.showAttribute(actionElementId, 'select', 'what', 'What'|trans, action.what, action.what, true, 'Select an action'|trans, { 'submit':'Submit'|trans, 'reset':'Reset'|trans, 'execute':'Execute'|trans } ) }}
+			{% if action.what == 'submit' %}
+				{{ page.showAttribute(actionElementId, 'select', 'for', 'For'|trans, action.for, action.for, true, 'Select a target step'|trans, { 'priorStep': 'Prior step'|trans, 'currentStep': 'Current step'|trans, 'nextStep': 'Next step'|trans, 'jumpToStep': 'Jump to step'|trans, 'newSimulation': 'New simulation'|trans, 'externalPage': 'External page'|trans } ) }}
+				{% if action.for == 'jumpToStep' %}
+					{% set stepobj = step.simulator.getStepById(action.uri) %}
+					{% set steplabel = stepobj.label != '' ? stepobj.label : 'Step %id% (nolabel)'|trans({'%id%': stepobj.id }) %}
+					{{ page.showAttribute(actionElementId, 'text', 'uri', 'Target step'|trans, action.uri, steplabel, true, 'Select a target step'|trans) }}
+				{% elseif action.for == 'externalPage' %}
+					{{ page.showAttribute(actionElementId, 'text', 'uri', 'External page URL'|trans, action.uri, action.uri, true, 'External page URL'|trans ) }}
+				{% endif %}
+			{% elseif action.what == 'execute' %}
+				{{ page.showAttribute(actionElementId , 'select', 'for', 'What?'|trans, action.for, action.for, true, 'Select a target step'|trans, { 'function': 'Function'|trans } ) }}
+				{% if action.for == 'function' %}
+					{% set functs = action.uriDecoded %}
+					{{ page.showAttribute(actionElementId, 'select', 'function', 'Function'|trans, functs.function, functs.function, true, 'Select a function'|trans, context.functions) }}
+					{{ page.showAttribute(actionElementId, 'select', 'appliedto', 'Applied to'|trans, functs.appliedto, functs.appliedto, true, 'Select a target'|trans, { 'data': 'Data'|trans, 'datagroup': 'Datagroup'|trans, 'step': 'Step'|trans, 'panel': 'Panel'|trans, 'fieldset': 'FieldSet'|trans, 'fieldrow': 'Fieldrow'|trans, 'field': 'Field'|trans, 'prenote': 'PreNote'|trans, 'postnote': 'PostNote'|trans, 'blockinfo': 'BlockInfo'|trans, 'chapter': 'Chapter'|trans, 'section': 'Section'|trans, 'content': 'Section content'|trans, 'annotations': 'Section annotations'|trans, 'footnote': 'FootNote'|trans } ) }}
+					{% if functs.arguments.data is defined %}
+						{% set datalabel =  step.simulator.getDataById(functs.arguments.data).label %}
+						{{ page.showAttribute(actionElementId, 'text', 'data', 'Data'|trans, functs.arguments.data, datalabel, true, 'Select a data'|trans) }}
+					{% elseif functs.arguments.datagroup is defined %}
+						{% set datagrouplabel =  step.simulator.getDataGroupById(functs.arguments.datagroup).label %}
+						{{ page.showAttribute(actionElementId, 'select', 'datagroup', 'Datagroup'|trans, functs.arguments.datagroup, datagrouplabel, true, 'Select a datagroup'|trans) }}
+					{% elseif functs.arguments.step is defined %}
+						{% set stepobj = step.simulator.getStepByName(functs.arguments.step) %}
+						{% set steplabel = stepobj.label != '' ? stepobj.label : 'Step %id% (nolabel)'|trans({'%id%': stepobj.id }) %}
+						{{ page.showAttribute(actionElementId, 'text', 'step', 'Step'|trans, functs.arguments.step, steplabel, true, 'Select a step'|trans) }}
+						{% if functs.arguments.footnote is defined %}
+							{{ page.showAttribute(actionElementId, 'text', 'footnote', 'Footnote'|trans, functs.arguments.footnote, functs.arguments.footnote, true, 'Select a footnote'|trans) }}
+						{% elseif functs.arguments.panel is defined %}
+							{% set panelobj = stepobj.getPanelById(functs.arguments.panel) %}
+							{% set panellabel = panelobj.label != '' ? panelobj.label : 'Panel %id% (nolabel)'|trans({'%id%': panelobj.id }) %}
+							{{ page.showAttribute(actionElementId, 'text', 'panel', 'Panel'|trans, functs.arguments.panel, panellabel, true, 'Select a panel'|trans) }}
+							{% if functs.arguments.fieldset is defined %}
+								{% set fieldsetobj = panelobj.getFieldSetById(functs.arguments.fieldset) %}
+								{% set fieldsetlegend = fieldsetobj.legend and fieldsetobj.legend.content != '' ? fieldsetobj.legend.content : 'Fieldset %id% (nolegend)'|trans({'%id%': fieldsetobj.id }) %}
+								{{ page.showAttribute(actionElementId, 'text', 'fieldset', 'FieldSet'|trans, functs.arguments.fieldset, fieldsetlegend, true, 'Select a fieldset'|trans) }}
+								{% if functs.arguments.fieldrow is defined %}
+									{% set fieldrowobj = fieldsetobj.getFieldRowById(functs.arguments.fieldrow) %}
+									{% set fieldrowlabel = fieldrowobj.label != '' ? fieldrowobj.label : 'Fieldrow %id% (nolabel)'|trans({'%id%': fieldrowobj.id }) %}
+									{{ page.showAttribute(actionElementId, 'text', 'fieldrow', 'Fieldrow'|trans, functs.arguments.fieldrow, fieldrowlabel, true, 'Select a fieldrow'|trans) }}
+								{% endif %}
+								{% if functs.arguments.field is defined %}
+									{{ page.showAttribute(actionElementId, 'text', 'field', 'Field'|trans, functs.arguments.field, functs.arguments.field, true, 'Select a field'|trans) }}
+								{% elseif functs.arguments.prenote is defined %}
+									{{ page.showAttribute(actionElementId, 'text', 'field', 'Field'|trans, functs.arguments.prenote, functs.arguments.prenote, true, 'Select a field'|trans) }}
+								{% elseif functs.arguments.postnote is defined %}
+									{{ page.showAttribute(actionElementId, 'text', 'field', 'Field'|trans, functs.arguments.postnote, functs.arguments.postnote, true, 'Select a field'|trans) }}
+								{% endif %}
+							{% elseif functs.arguments.blockinfo is defined %}
+								{% set blockinfoobj = panelobj.getBlockInfoById(functs.arguments.blockinfo) %}
+								{% set blockinfolabel = blockinfoobj.label != '' ? blockinfoobj.label : 'Blockinfo %id% (nolabel)'|trans({'%id%': blockinfoobj.id }) %}
+								{{ page.showAttribute(actionElementId, 'text', 'blockinfo', 'BlockInfo'|trans, functs.arguments.blockinfo, blockinfolabel, true, 'Select a blockinfo'|trans) }}
+								{% if functs.arguments.chapter is defined %}
+									{% set chapterobj = blockinfoobj.getChapterById(functs.arguments.chapter) %}
+									{% set chapterlabel = chapterobj.label != '' ? chapterobj.label : 'Chapter %id% (nolabel)'|trans({'%id%': chapterobj.id }) %}
+									{{ page.showAttribute(actionElementId, 'text', 'chapter', 'Chapter'|trans, functs.arguments.chapter, chapterlabel, true, 'Select a chapter'|trans) }}
+									{% if functs.arguments.section is defined %}
+										{% set sectionobj = chapterobj.getSectionById(functs.arguments.section) %}
+										{% set sectionlabel = sectionobj.label != '' ? sectionobj.label : 'Section %id% (nolabel)'|trans({'%id%': sectionobj.id }) %}
+										{{ page.showAttribute(actionElementId, 'text', 'section', 'Section'|trans, functs.arguments.section, sectionlabel, true, 'Select a section'|trans) }}
+									{% elseif functs.arguments.content is defined %}
+										{% set sectionobj = chapterobj.getSectionById(functs.arguments.content) %}
+										{% set sectionlabel = sectionobj.label != '' ? sectionobj.label : 'Section %id% (nolabel)'|trans({'%id%': sectionobj.id }) %}
+										{{ page.showAttribute(actionElementId, 'text', 'section', 'Section'|trans, functs.arguments.content, sectionlabel, true, 'Select a section'|trans) }}
+									{% elseif functs.arguments.annotations is defined %}
+										{% set sectionobj = chapterobj.getSectionById(functs.arguments.annotations) %}
+										{% set sectionlabel = sectionobj.label != '' ? sectionobj.label : 'Section %id% (nolabel)'|trans({'%id%': sectionobj.id }) %}
+										{{ page.showAttribute(actionElementId, 'text', 'section', 'Section'|trans, functs.arguments.annotations, sectionlabel, true, 'Select a section'|trans) }}
+									{% endif %}
+								{% endif %}
+							{% endif %}
+						{% endif %}
+					{% endif %}
+				{% endif %}
+			{% endif %}
+			{{ page.showAttribute(actionElementId, 'select', 'class', 'Class'|trans, action.class, action.class, false, 'Button class'|trans, { 'btn-primary':'Primary'|trans, 'btn-secondary':'Secondary'|trans } ) }}
 			</div>
 		</div>
 	</div>

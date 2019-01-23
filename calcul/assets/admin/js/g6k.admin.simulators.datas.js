@@ -1381,7 +1381,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: dataPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1453,7 +1453,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: dataPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1524,7 +1524,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1579,7 +1579,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: dataPanelContainer.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1608,7 +1608,7 @@ THE SOFTWARE.
 			$("html, body").animate({ scrollTop: dataContainerGroup.offset().top - $('#navbar').height() }, 500);
 			Simulators.updating = true;
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 
@@ -1664,7 +1664,7 @@ THE SOFTWARE.
 				}
 			}); 
 		} catch (e) {
-			console.log(e.message);
+			console && console.log(e.message);
 		}
 	}
 

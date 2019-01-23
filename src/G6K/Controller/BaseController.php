@@ -99,6 +99,14 @@ class BaseController extends Controller {
 	protected $simuWidgets = array('abListbox', 'abDatepicker');
 
 	/**
+	 * @var array      $simuFunctions array of functions name
+	 *
+	 * @access  protected
+	 *
+	 */
+	protected $simuFunctions = array();
+
+	/**
 	 * @var array      $variables value of variables for the expression parser
 	 *
 	 * @access  protected
@@ -495,6 +503,14 @@ class BaseController extends Controller {
 				}
 				$footnotes->setDisplayable($disp);
 			}
+			foreach ($step->getActions() as $action) {
+				if ($action->getFor() == 'function') {
+					$function = str_replace("'", '"', $action->getUri());
+					$function = json_decode($function);
+					$this->addFunction($function->function);
+				}
+				break;
+			}
 			$istep += $direction;
 		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
 		$step->setDescription($this->replaceVariables($step->getDescription()));
@@ -531,6 +547,41 @@ class BaseController extends Controller {
 				if (isset($availWidgets[$dep]) && ! isset($widgets[$dep])) {
 					$this->widgetDeps($dep, $widgets, $availWidgets);
 					$widgets[$dep] = $availWidgets[$dep];
+				}
+			}
+		}
+	}
+
+	/**
+	 * Adds a function to the list of functions
+	 *
+	 * @access  protected
+	 * @param   string $function The function name
+	 * @return  void
+	 *
+	 */
+	protected function addFunction($function) {
+		if (! in_array($function, $this->simuWidgets)) {
+			$this->simuFunctions[] = $function;
+		}
+	}
+
+	/**
+	 * Adds functions that depend on a function in the list of functions
+	 *
+	 * @access  protected
+	 * @param   string $function The function name
+	 * @param   array &$functions the list of functions
+	 * @param   array &$availFunctions the list of available functions
+	 * @return  void
+	 *
+	 */
+	protected function functionDeps($function, &$functions, &$availFunctions) {
+		if (isset($availFunctions[$function]['deps'])) {
+			foreach ($availFunctions[$function]['deps'] as $dep) {
+				if (isset($availFunctions[$dep]) && ! isset($functions[$dep])) {
+					$this->functionDeps($dep, $functions, $availFunctions);
+					$functions[$dep] = $availFunctions[$dep];
 				}
 			}
 		}

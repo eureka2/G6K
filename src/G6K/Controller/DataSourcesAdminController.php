@@ -631,6 +631,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				'datasources' => array(),
 				'views' => array(),
 				'widgets' => array(),
+				'functions' => array(),
 				'hiddens' => array()
 			)
 		));
@@ -780,6 +781,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				'datasources' => array(),
 				'views' => array(),
 				'widgets' => array(),
+				'functions' => array(),
 				'hiddens' => array()
 			)
 		));

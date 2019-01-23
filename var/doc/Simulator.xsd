@@ -172,6 +172,7 @@
 																	<xs:restriction base="xs:NMTOKEN">
 																		<xs:enumeration value="submit"/>
 																		<xs:enumeration value="reset"/>
+																		<xs:enumeration value="execute"/>
 																	</xs:restriction>
 																</xs:simpleType>
 															</xs:attribute>
@@ -184,6 +185,7 @@
 																		<xs:enumeration value="jumpToStep"/>
 																		<xs:enumeration value="newSimulation"/>
 																		<xs:enumeration value="externalPage"/>
+																		<xs:enumeration value="function"/>
 																	</xs:restriction>
 																</xs:simpleType>
 															</xs:attribute>

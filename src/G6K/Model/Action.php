@@ -30,7 +30,6 @@ namespace App\G6K\Model;
  * This class allows the stockage and the retrieval of the attributes of an action button for a step
  *
  * @author    Jacques Archimède
- * @author    Yann Toqué
  *
  */
 class Action {
@@ -253,6 +252,19 @@ class Action {
 	 */
 	public function getUri() {
 		return $this->uri;
+	}
+
+	/**
+	 * Returns the decoded uri attribute of this action button
+	 *
+	 * The uri attribute is a step number or the URL of a page or a JSON string.
+	 *
+	 * @access  public
+	 * @return  string the value of decoded uri
+	 *
+	 */
+	public function getUriDecoded() {
+		return json_decode(str_replace("'", '"', $this->uri));
 	}
 
 	/**

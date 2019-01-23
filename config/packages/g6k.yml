@@ -133,6 +133,13 @@ parameters:
                 - js/jquery.jeditable.percent.js
                 - js/jEditable.js
 
+    functions:
+        copyToClipboard:
+            label: Copy the content of en element to clipboard
+            css: 
+            js: 
+                - js/copyToClipboard.js
+
     # api configuration
     # api:
         # <simulator-name>:
