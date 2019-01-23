@@ -167,7 +167,7 @@ THE SOFTWARE.
 {% set simu = step.simulator %}
 <div class="action_buttons">
 {%- for action in step.actions -%}
-	 <button class="btn {{ action.class }}" type="{{ action.what }}" name="{{ action.name }}"{% if action.for == 'externalPage' %} formaction="{{ action.uri }}"{% endif %}>{% if action.for == 'priorStep' %}<span class="glyphicon glyphicon-menu-left"> </span>{% endif %}{{ action.label|nofnref }}{%if action.for == 'nextStep' %}<span class="glyphicon glyphicon-menu-right"> </span>{% endif %}</button>
+	 <button class="btn {{ action.class }}" type="{{ action.what }}" name="{{ action.name }}"{% if action.for == 'externalPage' %} formaction="{{ action.uri }}"{% endif %}{% if action.for == 'function' %} data-function="{{ action.uri }}"{% endif %}>{% if action.for == 'priorStep' %}<span class="glyphicon glyphicon-menu-left"> </span>{% endif %}{{ action.label|nofnref }}{%if action.for == 'nextStep' %}<span class="glyphicon glyphicon-menu-right"> </span>{% endif %}</button>
 {% endfor %}
 </div>
 {% endmacro %}

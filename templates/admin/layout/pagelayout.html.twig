@@ -77,6 +77,9 @@ var typewidgets = {{ typewidgets|json_encode(constant('JSON_PRETTY_PRINT') b-or 
 {% if inputwidgets is defined %}
 var inputwidgets = {{ inputwidgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
 {% endif %}
+{% if functions is defined %}
+var functions = {{ functions|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
 </script>
 {% endif %}
 {% include 'admin/sections/scripts.common.html.twig' %}

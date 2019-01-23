@@ -83,6 +83,7 @@ class IndexController extends BaseController {
 		}
 		$ua = new \Detection\MobileDetect();
 		$widgets = $this->getWidgets();
+		$functions = $this->getFunctions();
 		try {
 			return $this->render(
 				'base/pages/index.html.twig',
@@ -99,7 +100,8 @@ class IndexController extends BaseController {
 					'script' => $script,
 					'views' => array(),
 					'view' => null,
-					'widgets' => $widgets
+					'widgets' => $widgets,
+					'functions' => $functions
 				)
 			);
 		} catch (\Exception $e) {

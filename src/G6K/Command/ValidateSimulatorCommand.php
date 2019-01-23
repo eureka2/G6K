@@ -205,9 +205,9 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 			}
 		}
 		if ($ok) {
-			$this->success($output, "The simulator '%s%' is successfully validated", array('%s%' => $simu));
+			$this->success($output, "The simulator '%s%' is successfully validated", array('%s%' => $simulatorname));
 		} else {
-			$this->failure($output, "The simulator xml file of '%s%' has some errors.", array('%s%' => $simu));
+			$this->failure($output, "The simulator xml file of '%s%' has some errors.", array('%s%' => $simulatorname));
 		}
 		return $ok;
 	}

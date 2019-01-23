@@ -915,6 +915,23 @@ class Simulator {
 	}
 
 	/**
+	 * Retrieves a Step object by its name
+	 *
+	 * @access  public
+	 * @param   string $name <parameter description>
+	 * @return  \App\G6K\Model\Step|null the value of stepById
+	 *
+	 */
+	public function getStepByName($name) {
+		foreach ($this->steps as $step) {
+			if ($step->getName() == $name) {
+				return $step;
+			}
+		}
+		throw new \Exception("Unable to find the step whose name is '" . $name . "'");
+	}
+
+	/**
 	 * Returns the list of used sources by this simulator.
 	 *
 	 * @access  public

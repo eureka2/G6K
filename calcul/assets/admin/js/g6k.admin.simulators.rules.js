@@ -407,24 +407,34 @@ THE SOFTWARE.
 	Simulators.isStepInRules = function(id) {
 		var found = false;
 		$.each(rules, function(r, rule) {
-			var rstep = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: id }]);
-			if (rstep) {
-				found = rule.id;
+			$.each(rule.ifdata, function(a, action) {
+				var rstep = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: id }]);
+				if (rstep) {
+					found = rule.id;
+					return false;
+				}
+				rstep = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: id }]);
+				if (rstep) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
-			rstep = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: id }]);
-			if (rstep) {
-				found = rule.id;
-				return false;
-			}
-			rstep = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: id }]);
-			if (rstep) {
-				found = rule.id;
-				return false;
-			}
-			rstep = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: id }]);
-			if (rstep) {
-				found = rule.id;
+			$.each(rule.elsedata, function(a, action) {
+				var rstep = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: id }]);
+				if (rstep) {
+					found = rule.id;
+					return false;
+				}
+				rstep = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: id }]);
+				if (rstep) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
 		});
@@ -450,22 +460,26 @@ THE SOFTWARE.
 			}
 		});
 		$.each(rules, function(r, rule) {
-			var rstep = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: oldId }]);
-			if (rstep) {
-				rstep.value = id;
-			}
-			rstep = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: oldId }]);
-			if (rstep) {
-				rstep.value = id;
-			}
-			rstep = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: oldId }]);
-			if (rstep) {
-				rstep.value = id;
-			}
-			rstep = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: oldId }]);
-			if (rstep) {
-				rstep.value = id;
-			}
+			$.each(rule.ifdata, function(a, action) {
+				var rstep = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: oldId }]);
+				if (rstep) {
+					rstep.value = id;
+				}
+				rstep = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: oldId }]);
+				if (rstep) {
+					rstep.value = id;
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				var rstep = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: oldId }]);
+				if (rstep) {
+					rstep.value = id;
+				}
+				rstep = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: oldId }]);
+				if (rstep) {
+					rstep.value = id;
+				}
+			});
 		});
 	}
 
@@ -575,24 +589,34 @@ THE SOFTWARE.
 	Simulators.isFootNoteInRules = function(stepId, id) {
 		var found = false;
 		$.each(rules, function(r, rule) {
-			var rfootnote = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
-			if (rfootnote) {
-				found = rule.id;
+			$.each(rule.ifdata, function(a, action) {
+				var rfootnote = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
+				if (rfootnote) {
+					found = rule.id;
+					return false;
+				}
+				rfootnote = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id } ]);
+				if (rfootnote) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
-			rfootnote = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id } ]);
-			if (rfootnote) {
-				found = rule.id;
-				return false;
-			}
-			rfootnote = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
-			if (rfootnote) {
-				found = rule.id;
-				return false;
-			}
-			rfootnote = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
-			if (rfootnote) {
-				found = rule.id;
+			$.each(rule.elsedata, function(a, action) {
+				var rfootnote = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
+				if (rfootnote) {
+					found = rule.id;
+					return false;
+				}
+				rfootnote = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
+				if (rfootnote) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
 		});
@@ -623,22 +647,26 @@ THE SOFTWARE.
 			}
 		});
 		$.each(rules, function(r, rule) {
-			var rfootnote = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
-			if (rfootnote) {
-				rfootnote.value = id;
-			}
-			rfootnote = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId } ]);
-			if (rfootnote) {
-				rfootnote.value = id;
-			}
-			rfootnote = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
-			if (rfootnote) {
-				rfootnote.value = id;
-			}
-			rfootnote = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
-			if (rfootnote) {
-				rfootnote.value = id;
-			}
+			$.each(rule.ifdata, function(a, action) {
+				var rfootnote = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
+				if (rfootnote) {
+					rfootnote.value = id;
+				}
+				rfootnote = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId } ]);
+				if (rfootnote) {
+					rfootnote.value = id;
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				var rfootnote = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
+				if (rfootnote) {
+					rfootnote.value = id;
+				}
+				rfootnote = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'footnote', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
+				if (rfootnote) {
+					rfootnote.value = id;
+				}
+			});
 		});
 	}
 
@@ -733,22 +761,26 @@ THE SOFTWARE.
 			}
 		});
 		$.each(rules, function(r, rule) {
-			var raction = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName }]);
-			if (raction) {
-				raction.value = name;
-			}
-			raction = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName } ]);
-			if (raction) {
-				raction.value = name;
-			}
-			raction = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName }]);
-			if (raction) {
-				raction.value = name;
-			}
-			raction = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName }]);
-			if (raction) {
-				raction.value = name;
-			}
+			$.each(rule.ifdata, function(a, action) {
+				var raction = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName }]);
+				if (raction) {
+					raction.value = name;
+				}
+				raction = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName } ]);
+				if (raction) {
+					raction.value = name;
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				var raction = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName }]);
+				if (raction) {
+					raction.value = name;
+				}
+				raction = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldName }]);
+				if (raction) {
+					raction.value = name;
+				}
+			});
 		});
 	}
 
@@ -854,24 +886,34 @@ THE SOFTWARE.
 	Simulators.isActionButtonInRules = function(stepId, name) {
 		var found = false;
 		$.each(rules, function(r, rule) {
-			var ractionbutton = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: name }]);
-			if (ractionbutton) {
-				found = rule.id;
+			$.each(rule.ifdata, function(a, action) {
+				var ractionbutton = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: name }]);
+				if (ractionbutton) {
+					found = rule.id;
+					return false;
+				}
+				ractionbutton = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: name } ]);
+				if (ractionbutton) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
-			ractionbutton = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: name } ]);
-			if (ractionbutton) {
-				found = rule.id;
-				return false;
-			}
-			ractionbutton = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: name }]);
-			if (ractionbutton) {
-				found = rule.id;
-				return false;
-			}
-			ractionbutton = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: name }]);
-			if (ractionbutton) {
-				found = rule.id;
+			$.each(rule.elsedata, function(a, action) {
+				var ractionbutton = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: name }]);
+				if (ractionbutton) {
+					found = rule.id;
+					return false;
+				}
+				ractionbutton = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'action', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: name }]);
+				if (ractionbutton) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
 		});
@@ -883,24 +925,34 @@ THE SOFTWARE.
 		var found = false;
 		$.each(rules, function(r, rule) {
 			$.each(objects, function(o, obj) {
-				var rpanel = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
-				if (rpanel) {
-					found = rule.id;
+				$.each(rule.ifdata, function(a, action) {
+					var rpanel = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
+					if (rpanel) {
+						found = rule.id;
+						return false;
+					}
+					rpanel = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, {  key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id } ]);
+					if (rpanel) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
-				rpanel = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, {  key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id } ]);
-				if (rpanel) {
-					found = rule.id;
-					return false;
-				}
-				rpanel = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, {  key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
-				if (rpanel) {
-					found = rule.id;
-					return false;
-				}
-				rpanel = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, {  key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
-				if (rpanel) {
-					found = rule.id;
+				$.each(rule.elsedata, function(a, action) {
+					var rpanel = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, {  key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
+					if (rpanel) {
+						found = rule.id;
+						return false;
+					}
+					rpanel = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, {  key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: id }]);
+					if (rpanel) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
 			});
@@ -931,22 +983,26 @@ THE SOFTWARE.
 		});
 		$.each(rules, function(r, rule) {
 			$.each(objects, function(o, obj) {
-				var rpanel = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
-				if (rpanel) {
-					rpanel.value = id;
-				}
-				rpanel = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId } ]);
-				if (rpanel) {
-					rpanel.value = id;
-				}
-				rpanel = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
-				if (rpanel) {
-					rpanel.value = id;
-				}
-				rpanel = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
-				if (rpanel) {
-					rpanel.value = id;
-				}
+				$.each(rule.ifdata, function(a, action) {
+					var rpanel = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
+					if (rpanel) {
+						rpanel.value = id;
+					}
+					rpanel = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId } ]);
+					if (rpanel) {
+						rpanel.value = id;
+					}
+				});
+				$.each(rule.elsedata, function(a, action) {
+					var rpanel = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
+					if (rpanel) {
+						rpanel.value = id;
+					}
+					rpanel = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: oldId }]);
+					if (rpanel) {
+						rpanel.value = id;
+					}
+				});
 			});
 		});
 	}
@@ -1069,24 +1125,34 @@ THE SOFTWARE.
 		var found = false;
 		$.each(rules, function(r, rule) {
 			$.each(objects, function(o, obj) {
-				var rfieldset = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' }]);
-				if (rfieldset && rfieldset.value == id) {
-					found = rule.id;
+				$.each(rule.ifdata, function(a, action) {
+					var rfieldset = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' }]);
+					if (rfieldset && rfieldset.value == id) {
+						found = rule.id;
+						return false;
+					}
+					rfieldset = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' } ]);
+					if (rfieldset && rfieldset.value == id) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
-				rfieldset = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' } ]);
-				if (rfieldset && rfieldset.value == id) {
-					found = rule.id;
-					return false;
-				}
-				rfieldset = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' }]);
-				if (rfieldset && rfieldset.value == id) {
-					found = rule.id;
-					return false;
-				}
-				rfieldset = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' }]);
-				if (rfieldset && rfieldset.value == id) {
-					found = rule.id;
+				$.each(rule.elsedata, function(a, action) {
+					var rfieldset = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' }]);
+					if (rfieldset && rfieldset.value == id) {
+						found = rule.id;
+						return false;
+					}
+					rfieldset = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' }]);
+					if (rfieldset && rfieldset.value == id) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
 			});
@@ -1117,22 +1183,26 @@ THE SOFTWARE.
 		});
 		$.each(rules, function(r, rule) {
 			$.each(objects, function(o, obj) {
-				var rfieldset = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' }]);
-				if (rfieldset && rfieldset.value == oldId) {
-					rfieldset.value = id;
-				}
-				rfieldset = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' } ]);
-				if (rfieldset && rfieldset.value == oldId) {
-					rfieldset.value = id;
-				}
-				rfieldset = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' }]);
-				if (rfieldset && rfieldset.value == oldId) {
-					rfieldset.value = id;
-				}
-				rfieldset = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' }]);
-				if (rfieldset && rfieldset.value == oldId) {
-					rfieldset.value = id;
-				}
+				$.each(rule.ifdata, function(a, action) {
+					var rfieldset = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' } ]);
+					if (rfieldset && rfieldset.value == oldId) {
+						rfieldset.value = id;
+					}
+					rfieldset = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' } ]);
+					if (rfieldset && rfieldset.value == oldId) {
+						rfieldset.value = id;
+					}
+				});
+				$.each(rule.elsedata, function(a, action) {
+					var rfieldset = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' } ]);
+					if (rfieldset && rfieldset.value == oldId) {
+						rfieldset.value = id;
+					}
+					rfieldset = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'fieldsetId' } ]);
+					if (rfieldset && rfieldset.value == oldId) {
+						rfieldset.value = id;
+					}
+				});
 			});
 		});
 	}
@@ -1275,24 +1345,34 @@ THE SOFTWARE.
 	Simulators.isFieldSetColumnInRules = function(stepId, panelId, fieldsetId, id) {
 		var found = false;
 		$.each(rules, function(r, rule) {
-			var rcolumn = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
-			if (rcolumn && rcolumn.value == id) {
-				found = rule.id;
+			$.each(rule.ifdata, function(a, action) {
+				var rcolumn = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+				if (rcolumn && rcolumn.value == id) {
+					found = rule.id;
+					return false;
+				}
+				rcolumn = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' } ]);
+				if (rcolumn && rcolumn.value == id) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
-			rcolumn = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' } ]);
-			if (rcolumn && rcolumn.value == id) {
-				found = rule.id;
-				return false;
-			}
-			rcolumn = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
-			if (rcolumn && rcolumn.value == id) {
-				found = rule.id;
-				return false;
-			}
-			rcolumn = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
-			if (rcolumn && rcolumn.value == id) {
-				found = rule.id;
+			$.each(rule.elsedata, function(a, action) {
+				var rcolumn = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+				if (rcolumn && rcolumn.value == id) {
+					found = rule.id;
+					return false;
+				}
+				rcolumn = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+				if (rcolumn && rcolumn.value == id) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
 		});
@@ -1318,22 +1398,26 @@ THE SOFTWARE.
 			}
 		});
 		$.each(rules, function(r, rule) {
-			var rcolumn = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
-			if (rcolumn && rcolumn.value == oldId) {
-				rcolumn.value = id;
-			}
-			rcolumn = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' } ]);
-			if (rcolumn && rcolumn.value == oldId) {
-				rcolumn.value = id;
-			}
-			rcolumn = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
-			if (rcolumn && rcolumn.value == oldId) {
-				rcolumn.value = id;
-			}
-			rcolumn = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
-			if (rcolumn && rcolumn.value == oldId) {
-				rcolumn.value = id;
-			}
+			$.each(rule.ifdata, function(a, action) {
+				var rcolumn = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+				if (rcolumn && rcolumn.value == oldId) {
+					rcolumn.value = id;
+				}
+				rcolumn = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' } ]);
+				if (rcolumn && rcolumn.value == oldId) {
+					rcolumn.value = id;
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				var rcolumn = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+				if (rcolumn && rcolumn.value == oldId) {
+					rcolumn.value = id;
+				}
+				rcolumn = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'column', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'columnId' }]);
+				if (rcolumn && rcolumn.value == oldId) {
+					rcolumn.value = id;
+				}
+			});
 		});
 	}
 
@@ -1502,24 +1586,34 @@ THE SOFTWARE.
 		var found = false;
 		$.each(rules, function(r, rule) {
 			$.each(objects, function(o, obj) {
-				var rfieldrow = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
-				if (rfieldrow && rfieldrow.value == id) {
-					found = rule.id;
+				$.each(rule.ifdata, function(a, action) {
+					var rfieldrow = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+					if (rfieldrow && rfieldrow.value == id) {
+						found = rule.id;
+						return false;
+					}
+					rfieldrow = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' } ]);
+					if (rfieldrow && rfieldrow.value == id) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
-				rfieldrow = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' } ]);
-				if (rfieldrow && rfieldrow.value == id) {
-					found = rule.id;
-					return false;
-				}
-				rfieldrow = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
-				if (rfieldrow && rfieldrow.value == id) {
-					found = rule.id;
-					return false;
-				}
-				rfieldrow = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
-				if (rfieldrow && rfieldrow.value == id) {
-					found = rule.id;
+				$.each(rule.elsedata, function(a, action) {
+					var rfieldrow = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+					if (rfieldrow && rfieldrow.value == id) {
+						found = rule.id;
+						return false;
+					}
+					rfieldrow = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+					if (rfieldrow && rfieldrow.value == id) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
 			});
@@ -1550,22 +1644,26 @@ THE SOFTWARE.
 		});
 		$.each(rules, function(r, rule) {
 			$.each(objects, function(o, obj) {
-				var rfieldrow = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
-				if (rfieldrow && rfieldrow.value == oldId) {
-					rfieldrow.value = id;
-				}
-				rfieldrow = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' } ]);
-				if (rfieldrow && rfieldrow.value == oldId) {
-					rfieldrow.value = id;
-				}
-				rfieldrow = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
-				if (rfieldrow && rfieldrow.value == oldId) {
-					rfieldrow.value = id;
-				}
-				rfieldrow = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
-				if (rfieldrow && rfieldrow.value == oldId) {
-					rfieldrow.value = id;
-				}
+				$.each(rule.ifdata, function(a, action) {
+					var rfieldrow = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+					if (rfieldrow && rfieldrow.value == oldId) {
+						rfieldrow.value = id;
+					}
+					rfieldrow = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' } ]);
+					if (rfieldrow && rfieldrow.value == oldId) {
+						rfieldrow.value = id;
+					}
+				});
+				$.each(rule.elsedata, function(a, action) {
+					var rfieldrow = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+					if (rfieldrow && rfieldrow.value == oldId) {
+						rfieldrow.value = id;
+					}
+					rfieldrow = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldrowId' }]);
+					if (rfieldrow && rfieldrow.value == oldId) {
+						rfieldrow.value = id;
+					}
+				});
 			});
 		});
 	}
@@ -1734,40 +1832,50 @@ THE SOFTWARE.
 		var found = false;
 		$.each(rules, function(r, rule) {
 			var rfield;
-			if (fieldrowId === '') {
-				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			} else {
-				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			}
-			if (rfield && rfield.value == id) {
-				found = rule.id;
+			$.each(rule.ifdata, function(a, action) {
+				if (fieldrowId === '') {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				} else {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				}
+				if (rfield && rfield.value == id) {
+					found = rule.id;
+					return false;
+				}
+				if (fieldrowId === '') {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				} else {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				}
+				if (rfield && rfield.value == id) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
-			if (fieldrowId === '') {
-				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			} else {
-				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			}
-			if (rfield && rfield.value == id) {
-				found = rule.id;
-				return false;
-			}
-			if (fieldrowId === '') {
-				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			} else {
-				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			}
-			if (rfield && rfield.value == id) {
-				found = rule.id;
-				return false;
-			}
-			if (fieldrowId === '') {
-				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			} else {
-				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			}
-			if (rfield && rfield.value == id) {
-				found = rule.id;
+			$.each(rule.elsedata, function(a, action) {
+				if (fieldrowId === '') {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				} else {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				}
+				if (rfield && rfield.value == id) {
+					found = rule.id;
+					return false;
+				}
+				if (fieldrowId === '') {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				} else {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				}
+				if (rfield && rfield.value == id) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
 		});
@@ -1803,38 +1911,42 @@ THE SOFTWARE.
 		});
 		$.each(rules, function(r, rule) {
 			var rfield;
-			if (fieldrowId === '') {
-				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			} else {
-				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			}
-			if (rfield && rfield.value == oldId) {
-				rfield.value = id;
-			}
-			if (fieldrowId === '') {
-				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			} else {
-				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			}
-			if (rfield && rfield.value == oldId) {
-				rfield.value = id;
-			}
-			if (fieldrowId === '') {
-				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			} else {
-				rfield = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			}
-			if (rfield && rfield.value == oldId) {
-				rfield.value = id;
-			}
-			if (fieldrowId === '') {
-				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			} else {
-				rfield = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
-			}
-			if (rfield && rfield.value == oldId) {
-				rfield.value = id;
-			}
+			$.each(rule.ifdata, function(a, action) {
+				if (fieldrowId === '') {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				} else {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				}
+				if (rfield && rfield.value == oldId) {
+					rfield.value = id;
+				}
+				if (fieldrowId === '') {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				} else {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				}
+				if (rfield && rfield.value == oldId) {
+					rfield.value = id;
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				if (fieldrowId === '') {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				} else {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				}
+				if (rfield && rfield.value == oldId) {
+					rfield.value = id;
+				}
+				if (fieldrowId === '') {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				} else {
+					rfield = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'field', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: fieldsetId, list: 'fields' }, { key: 'value', val: fieldrowId, list: 'fields' }, { key: 'name', val: 'fieldId' }]);
+				}
+				if (rfield && rfield.value == oldId) {
+					rfield.value = id;
+				}
+			});
 		});
 	}
 
@@ -2160,24 +2272,34 @@ THE SOFTWARE.
 		var found = false;
 		$.each(rules, function(r, rule) {
 			$.each(objects, function (k, obj) {
-				var rblockinfo = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
-				if (rblockinfo && rblockinfo.value == id) {
-					found = rule.id;
+				$.each(rule.ifdata, function(a, action) {
+					var rblockinfo = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
+					if (rblockinfo && rblockinfo.value == id) {
+						found = rule.id;
+						return false;
+					}
+					rblockinfo = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' } ]);
+					if (rblockinfo && rblockinfo.value == id) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
-				rblockinfo = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' } ]);
-				if (rblockinfo && rblockinfo.value == id) {
-					found = rule.id;
-					return false;
-				}
-				rblockinfo = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
-				if (rblockinfo && rblockinfo.value == id) {
-					found = rule.id;
-					return false;
-				}
-				rblockinfo = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
-				if (rblockinfo && rblockinfo.value == id) {
-					found = rule.id;
+				$.each(rule.elsedata, function(a, action) {
+					var rblockinfo = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
+					if (rblockinfo && rblockinfo.value == id) {
+						found = rule.id;
+						return false;
+					}
+					rblockinfo = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
+					if (rblockinfo && rblockinfo.value == id) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
 			});
@@ -2208,22 +2330,26 @@ THE SOFTWARE.
 		});
 		$.each(rules, function(r, rule) {
 			$.each(objects, function (k, obj) {
-				var rblockinfo = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
-				if (rblockinfo && rblockinfo.value == oldId) {
-					rblockinfo.value = id;
-				}
-				rblockinfo = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' } ]);
-				if (rblockinfo && rblockinfo.value == oldId) {
-					rblockinfo.value = id;
-				}
-				rblockinfo = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
-				if (rblockinfo && rblockinfo.value == oldId) {
-					rblockinfo.value = id;
-				}
-				rblockinfo = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
-				if (rblockinfo && rblockinfo.value == oldId) {
-					rblockinfo.value = id;
-				}
+				$.each(rule.ifdata, function(a, action) {
+					var rblockinfo = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
+					if (rblockinfo && rblockinfo.value == oldId) {
+						rblockinfo.value = id;
+					}
+					rblockinfo = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' } ]);
+					if (rblockinfo && rblockinfo.value == oldId) {
+						rblockinfo.value = id;
+					}
+				});
+				$.each(rule.elsedata, function(a, action) {
+					var rblockinfo = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
+					if (rblockinfo && rblockinfo.value == oldId) {
+						rblockinfo.value = id;
+					}
+					rblockinfo = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'name', val: 'blockinfoId' }]);
+					if (rblockinfo && rblockinfo.value == oldId) {
+						rblockinfo.value = id;
+					}
+				});
 			});
 		});
 	}
@@ -2368,24 +2494,34 @@ THE SOFTWARE.
 		var found = false;
 		$.each(rules, function(r, rule) {
 			$.each(objects, function (k, obj) {
-				var rchapter = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
-				if (rchapter && rchapter.value == id) {
-					found = rule.id;
+				$.each(rule.ifdata, function(a, action) {
+					var rchapter = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
+					if (rchapter && rchapter.value == id) {
+						found = rule.id;
+						return false;
+					}
+					rchapter = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' } ]);
+					if (rchapter && rchapter.value == id) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
-				rchapter = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' } ]);
-				if (rchapter && rchapter.value == id) {
-					found = rule.id;
-					return false;
-				}
-				rchapter = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
-				if (rchapter && rchapter.value == id) {
-					found = rule.id;
-					return false;
-				}
-				rchapter = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
-				if (rchapter && rchapter.value == id) {
-					found = rule.id;
+				$.each(rule.elsedata, function(a, action) {
+					var rchapter = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
+					if (rchapter && rchapter.value == id) {
+						found = rule.id;
+						return false;
+					}
+					rchapter = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: obj, list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
+					if (rchapter && rchapter.value == id) {
+						found = rule.id;
+						return false;
+					}
+				});
+				if (found !== false) {
 					return false;
 				}
 			});
@@ -2415,22 +2551,26 @@ THE SOFTWARE.
 			}
 		});
 		$.each(rules, function(r, rule) {
-			var rchapter = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
-			if (rchapter && rchapter.value == oldId) {
-				rchapter.value = id;
-			}
-			rchapter = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' } ]);
-			if (rchapter && rchapter.value == oldId) {
-				rchapter.value = id;
-			}
-			rchapter = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
-			if (rchapter && rchapter.value == oldId) {
-				rchapter.value = id;
-			}
-			rchapter = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
-			if (rchapter && rchapter.value == oldId) {
-				rchapter.value = id;
-			}
+			$.each(rule.ifdata, function(a, action) {
+				var rchapter = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
+				if (rchapter && rchapter.value == oldId) {
+					rchapter.value = id;
+				}
+				rchapter = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' } ]);
+				if (rchapter && rchapter.value == oldId) {
+					rchapter.value = id;
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				var rchapter = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
+				if (rchapter && rchapter.value == oldId) {
+					rchapter.value = id;
+				}
+				rchapter = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'name', val: 'objectId', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'name', val: 'chapterId' }]);
+				if (rchapter && rchapter.value == oldId) {
+					rchapter.value = id;
+				}
+			});
 		});
 	}
 
@@ -2597,24 +2737,34 @@ THE SOFTWARE.
 	Simulators.isSectionInRules = function(stepId, panelId, blockinfoId, chapterId, id) {
 		var found = false;
 		$.each(rules, function(r, rule) {
-			var rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
-			if (rsection && rsection.value == id) {
-				found = rule.id;
+			$.each(rule.ifdata, function(a, action) {
+				var rsection = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+				if (rsection && rsection.value == id) {
+					found = rule.id;
+					return false;
+				}
+				rsection = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' } ]);
+				if (rsection && rsection.value == id) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
-			rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' } ]);
-			if (rsection && rsection.value == id) {
-				found = rule.id;
-				return false;
-			}
-			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
-			if (rsection && rsection.value == id) {
-				found = rule.id;
-				return false;
-			}
-			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
-			if (rsection && rsection.value == id) {
-				found = rule.id;
+			$.each(rule.elsedata, function(a, action) {
+				var rsection = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+				if (rsection && rsection.value == id) {
+					found = rule.id;
+					return false;
+				}
+				rsection = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+				if (rsection && rsection.value == id) {
+					found = rule.id;
+					return false;
+				}
+			});
+			if (found !== false) {
 				return false;
 			}
 		});
@@ -2640,22 +2790,26 @@ THE SOFTWARE.
 			}
 		});
 		$.each(rules, function(r, rule) {
-			var rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
-			if (rsection && rsection.value == oldId) {
-				rsection.value = id;
-			}
-			rsection = Simulators.findInArray(rule.ifdata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' } ]);
-			if (rsection && rsection.value == oldId) {
-				rsection.value = id;
-			}
-			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
-			if (rsection && rsection.value == oldId) {
-				rsection.value = id;
-			}
-			rsection = Simulators.findInArray(rule.elsedata, [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
-			if (rsection && rsection.value == oldId) {
-				rsection.value = id;
-			}
+			$.each(rule.ifdata, function(a, action) {
+				var rsection = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+				if (rsection && rsection.value == oldId) {
+					rsection.value = id;
+				}
+				rsection = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' } ]);
+				if (rsection && rsection.value == oldId) {
+					rsection.value = id;
+				}
+			});
+			$.each(rule.elsedata, function(a, action) {
+				var rsection = Simulators.findInArray([action], [{ key: 'value', val: 'hideObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+				if (rsection && rsection.value == oldId) {
+					rsection.value = id;
+				}
+				rsection = Simulators.findInArray([action], [{ key: 'value', val: 'showObject', list: 'fields' }, { key: 'value', val: 'section', list: 'fields' }, { key: 'value', val: stepId, list: 'fields' }, { key: 'value', val: panelId, list: 'fields' }, { key: 'value', val: blockinfoId, list: 'fields' }, { key: 'value', val: chapterId, list: 'fields' }, { key: 'name', val: 'sectionId' }]);
+				if (rsection && rsection.value == oldId) {
+					rsection.value = id;
+				}
+			});
 		});
 	}
 

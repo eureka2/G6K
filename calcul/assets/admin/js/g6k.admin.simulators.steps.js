@@ -661,10 +661,12 @@ THE SOFTWARE.
 						$(this).attr('aria-labelledby', attr);
 					}
 				});
+				Simulators.changeStepIdInActionButtons(oldId, 'X' + id);
 				Simulators.changeStepIdInRules(oldId, 'X' + id)
 			}
 		});
 		$.each(steps, function(index, step) {
+			Simulators.changeStepIdInActionButtons('X' + step.id, step.id);
 			Simulators.changeStepIdInRules('X' + step.id, step.id);
 		});
 	}
@@ -1026,6 +1028,14 @@ THE SOFTWARE.
 				bootbox.alert({
 					title: Translator.trans('Deleting step'),
 					message: Translator.trans("This step is used in rule #%id%. You must modify this rule before you can delete this step", { 'id': rule }) 
+				});
+				return;
+			}
+			var actionButton;
+			if ((actionButton = Simulators.isStepIdInActionButtons(id)) !== false) {
+				bootbox.alert({
+					title: Translator.trans('Deleting step'),
+					message: Translator.trans("This step is used in action button « %label% ». You must modify this action button before you can delete this step", { 'label': actionButton }) 
 				});
 				return;
 			}
@@ -1591,6 +1601,40 @@ THE SOFTWARE.
 		});
 	}
 
+	Simulators.changeStepIdInActionButtons = function(oldId, id) {
+		$.each(steps, function(s, step) {
+			$.each(step.actions, function(a, action) {
+				if (action.for == 'jumpToStep') {
+					if (action.uri == oldId) {
+						action.uri = id;
+						$('#step-' + step.id + '-action-button-' + action.name)
+						.find("p[data-attribute='uri']")
+						.attr('data-value', id).text(id);
+					}
+				}
+			});
+		});
+	}
+
+
+	Simulators.isStepIdInActionButtons = function(id) {
+		var found = false;
+		$.each(steps, function(s, step) {
+			$.each(step.actions, function(a, action) {
+				if (action.for == 'jumpToStep') {
+					if (action.uri == id) {
+						found = action.label;
+						return false;
+					}
+				}
+			});
+			if (found !== false) {
+				return false;
+			}
+		});
+		return found;
+	}
+
 	Simulators.drawActionButtonsForDisplay = function(step) {
 		var actionsElementId = 'step-' + step.id + '-action-buttons';
 		var actionsPanelContainer = Simulators.openCollapsiblePanel(actionsElementId, Translator.trans('Actions Buttons'), 'success', 'in', 'sortable', [{ 'class': 'add-action-button', 'label': Translator.trans('Add action button'), 'icon': 'fa-plus-circle' }] );
@@ -1612,15 +1656,373 @@ THE SOFTWARE.
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'name', Translator.trans('Name'), action.name, action.name, true, Translator.trans('Button name')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'label', Translator.trans('Label'), action.label, action.label, true, Translator.trans('Button label')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'what', Translator.trans('What'), action.what, action.what, true, Translator.trans('Select an action'), JSON.stringify( { 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset') } )));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'for', Translator.trans('For'), action.for, action.for, true, Translator.trans('Select a target step'), JSON.stringify( { 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'uri', Translator.trans('URI / Step'), action.uri, action.uri, false, Translator.trans('Button uri')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'what', Translator.trans('What'), action.what, action.what, true, Translator.trans('Select an action'), JSON.stringify( { 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset'), 'execute': Translator.trans('Execute') } )));
+		switch (action.what) {
+			case 'submit':
+				requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'for', Translator.trans('For'), action.for, action.for, true, Translator.trans('Select a target step'), JSON.stringify({ 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
+				if (action.for == 'jumpToStep') {
+					var targetSteps = Simulators.makeTargetSteps(Simulators.findStepById(action.stepId).name, true);
+					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'uri', Translator.trans('Target step'), action.uri, action.uri, true, Translator.trans('Select a target step'), JSON.stringify(targetSteps)));
+				} else if (action.for == 'externalPage') {
+					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'uri', Translator.trans('External page URL'), action.uri, action.uri, true, Translator.trans('External page URL')));
+				}
+				break;
+			case 'execute':
+				requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId , 'select', 'for', Translator.trans('What?'), action.for, action.for, true, Translator.trans('Select a target step'), JSON.stringify({ 'function': Translator.trans('Function') } )));
+				if (action.for == 'function') { // always true
+					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
+					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'function', Translator.trans('Function'), functs.function, functs.function, true, Translator.trans('Select a function'), JSON.stringify(functions)));
+					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'appliedto', Translator.trans('Applied to'), functs.appliedto, functs.appliedto, true, Translator.trans('Select a target'), JSON.stringify({ 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'step': Translator.trans('Step'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') })));
+					if (functs.arguments.data) {
+						var datasList = {};
+						$.each(Simulators.dataset, function( name, data) {
+							datasList[data.id] = data.label;
+						});
+						requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'data', Translator.trans('Data'), functs.arguments.data, functs.arguments.data, true, Translator.trans('Select a data'), JSON.stringify(datasList)));
+					} else if (functs.arguments.datagroup) {
+						var datagroupsList = {};
+						$.each(Simulators.datagroups, function( name, datagroup) {
+							datagroupsList[datagroup.id] = datagroup.label;
+						});
+						requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'datagroup', Translator.trans('Datagroup'), functs.arguments.datagroup, functs.arguments.datagroup, true, Translator.trans('Select a datagroup'), JSON.stringify(datagroupsList)));
+					} else if (functs.arguments.step) {
+						var targetSteps = Simulators.makeTargetSteps('');
+						requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'step', Translator.trans('Step'), functs.arguments.step, functs.arguments.step, true, Translator.trans('Select a step'), JSON.stringify(targetSteps)));
+						if (functs.arguments.footnote) {
+							var targetFootnotes = Simulators.makeTargetFootnotes(functs.arguments.step);
+							requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'footnote', Translator.trans('Footnote'), functs.arguments.footnote, functs.arguments.footnote, true, Translator.trans('Select a footnote'), JSON.stringify(targetFootnotes)));
+						} else if (functs.arguments.panel) {
+							var targetPanels = Simulators.makeTargetPanels(functs.arguments.step);
+							requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'panel', Translator.trans('Panel'), functs.arguments.panel, functs.arguments.panel, true, Translator.trans('Select a panel'), JSON.stringify(targetPanels)));
+							if (functs.arguments.fieldset) {
+								var targetFieldsets = Simulators.makeTargetFieldsets(functs.arguments.step, functs.arguments.panel);
+								requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'fieldset', Translator.trans('FieldSet'), functs.arguments.fieldset, functs.arguments.fieldset, true, Translator.trans('Select a fieldset'), JSON.stringify(targetFieldsets)));
+								if (functs.arguments.fieldrow) {
+									var targetFieldrows = Simulators.makeTargetFieldrows(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset);
+									requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'fieldrow', Translator.trans('Fieldrow'), functs.arguments.fieldrow, functs.arguments.fieldrow, true, Translator.trans('Select a fieldrow'), JSON.stringify(targetFieldrows)));
+								}
+								if (functs.arguments.field) {
+									var targetFields = Simulators.makeTargetFields(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset, functs.arguments.fieldrow);
+									requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'field', Translator.trans('Field'), functs.arguments.field, functs.arguments.field, true, Translator.trans('Select a field'), JSON.stringify(targetFields)));
+								} else if (functs.arguments.prenote) {
+									var targetPrenotes = Simulators.makeTargetPrenotes(functs.arguments.step, functs.arguments.panel, functs.arguments.prenote);
+									requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'field', Translator.trans('Field'), functs.arguments.prenote, functs.arguments.prenote, true, Translator.trans('Select a field'), JSON.stringify(targetPrenotes)));
+								} else  if (functs.arguments.postnote) {
+									var targetPostnotes = Simulators.makeTargetPostnotes(functs.arguments.step, functs.arguments.panel, functs.arguments.postnote);
+									requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'field', Translator.trans('Field'), functs.arguments.postnote, functs.arguments.postnote, true, Translator.trans('Select a field'), JSON.stringify(targetPostnotes)));
+								}
+							} else if (functs.arguments.blockinfo) {
+								var targetBlockinfos = Simulators.makeTargetBlockinfos(functs.arguments.step, functs.arguments.panel);
+								requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'blockinfo', Translator.trans('BlockInfo'), functs.arguments.blockinfo, functs.arguments.blockinfo, true, Translator.trans('Select a blockinfo'), JSON.stringify(targetBlockinfos)));
+								if (functs.arguments.chapter) {
+									var targetChapters = Simulators.makeTargetChapters(functs.arguments.step, functs.arguments.panel, functs.arguments.blockinfo);
+									requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'chapter', Translator.trans('Chapter'), functs.arguments.chapter, functs.arguments.chapter, true, Translator.trans('Select a chapter'), JSON.stringify(targetChapters)));
+									if (functs.arguments.section) {
+										var targetSections = Simulators.makeTargetSections(functs.arguments.step, functs.arguments.panel, functs.arguments.blockinfo, functs.arguments.chapter);
+										requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'section', Translator.trans('Section'), functs.arguments.section, functs.arguments.section, true, Translator.trans('Select a section'), JSON.stringify(targetSections)));
+									} else if (functs.arguments.content) {
+										var targetSections = Simulators.makeTargetSections(functs.arguments.step, functs.arguments.panel, functs.arguments.blockinfo, functs.arguments.chapter);
+										requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'section', Translator.trans('Section'), functs.arguments.content, functs.arguments.content, true, Translator.trans('Select a section'), JSON.stringify(targetSections)));
+									} else if (functs.arguments.annotations) {
+										var targetSections = Simulators.makeTargetSections(functs.arguments.step, functs.arguments.panel, functs.arguments.blockinfo, functs.arguments.chapter);
+										requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'section', Translator.trans('Section'), functs.arguments.annotations, functs.arguments.annotations, true, Translator.trans('Select a section'), JSON.stringify(targetSections)));
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+		}
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'class', Translator.trans('Class'), action.class, action.class, false, Translator.trans('Button class'), JSON.stringify({ 'btn-primary': Translator.trans('Primary'), 'btn-secondary': Translator.trans('Secondary') } )));
 		attributesContainer.append(requiredAttributes);
 		actionContainerBody.append(attributesContainer);
 		actionContainer.append(actionContainerBody);
 		actionPanelBody.append(actionContainer);
 		return actionPanelContainer;
+	}
+
+	Simulators.findStepById = function(id) {
+		var step = null;
+		$.each(steps, function(s, st) {
+			if (st.id == id) {
+				step = st;
+				return false;
+			}
+		});
+		return step;
+	}
+
+	Simulators.makeTargetSteps = function(excludeStep, withId) {
+		var targetSteps = {};
+		$.each(steps, function(s, step) {
+			if (step.name != excludeStep) {
+				var label = step.label ? step.label : Translator.trans('Step %id% (nolabel)', { id: step.id });
+				if (withId) {
+					targetSteps[step.id] = label;
+				} else {
+					targetSteps[step.name] = label;
+				}
+			}
+		});
+		return targetSteps;
+	}
+
+	Simulators.makeTargetFootnotes = function(stepName) {
+		var targetFootnotes = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName && step.footNotes && step.footNotes.footNotes) {
+				$.each(step.footNotes.footNotes, function(f, footNote) {
+					var label = Translator.trans('FootNote #%id%', { id: footNote.id });
+					targetFootnotes[footNote.id] = label;
+				});
+				return false;
+			}
+		});
+		return targetFootnotes;
+	}
+
+	Simulators.makeTargetPanels = function(stepName) {
+		var targetPanels = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				$.each(step.panels, function(p, panel) {
+					var label = panel.label ? panel.label : Translator.trans('Panel %id% (nolabel)', { id: panel.id });
+					targetPanels[panel.id] = label;
+				});
+				return false;
+			}
+		});
+		return targetPanels;
+	}
+
+	Simulators.makeTargetFieldsets = function(stepName, panelId) {
+		var targetFieldsets = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				$.each(step.panels, function(p, panel) {
+					if (panel.id == panelId) {
+						$.each(panel.blocks, function(b, block) {
+							if (block.type == 'fieldset') {
+								var label = block.legend.content ? block.legend.content : Translator.trans('Fieldset %id% (nolegend)', { id: block.id });
+								targetFieldsets[block.id] = label;
+							}
+						});
+						return false;
+					}
+				});
+				return false;
+			}
+		});
+		return targetFieldsets;
+	}
+
+	Simulators.makeTargetFieldrows = function(stepName, panelId, fieldsetId) {
+		var targetFieldrows = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				$.each(step.panels, function(p, panel) {
+					if (panel.id == panelId) {
+						$.each(panel.blocks, function(b, block) {
+							if (block.type == 'fieldset' && block.id == fieldsetId && block.fieldrows) {
+								$.each(block.fieldrows, function(fr, fieldrow) {
+									var label = fieldrow.label ? fieldrow.label : Translator.trans('Fieldrow %id% (nolabel)', { id: fieldrow.id });
+									targetFieldrows[fieldrow.id] = label;
+								});
+								return false;
+							}
+						});
+						return false;
+					}
+				});
+				return false;
+			}
+		});
+		return targetFieldrows;
+	}
+
+	Simulators.makeTargetFields = function(stepName, panelId, fieldsetId, fieldrowId) {
+		var targetFields = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				$.each(step.panels, function(p, panel) {
+					if (panel.id == panelId) {
+						$.each(panel.blocks, function(b, block) {
+							if (block.type == 'fieldset' && block.id == fieldsetId) {
+								if (fieldrowId && fieldrowId != '') {
+									if (block.fieldrows) {
+										$.each(block.fieldrows, function(fr, fieldrow) {
+											if (fieldrow.id == fieldrowId) {
+												$.each(fieldrow.fields, function(f, field) {
+													var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+													targetFields[field.position] = label;
+												});
+												return false;
+											}
+										});
+									}
+								} else {
+									$.each(block.fields, function(f, field) {
+										var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+										targetFields[field.position] = label;
+									});
+									return false;
+								}
+							}
+						});
+						return false;
+					}
+				});
+				return false;
+			}
+		});
+		return targetFields;
+	}
+
+	Simulators.makeTargetPrenotes = function(stepName, panelId, fieldsetId) {
+		var targetPrenotes = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				$.each(step.panels, function(p, panel) {
+					if (panel.id == panelId) {
+						$.each(panel.blocks, function(b, block) {
+							if (block.type == 'fieldset' && block.id == fieldsetId) {
+								$.each(block.fields, function(f, field) {
+									if (field.Note && field.Note.position == 'beforeField') {
+										var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+										targetPrenotes[field.position] = label;
+									}
+								});
+								if (block.fieldrows) {
+									$.each(block.fieldrows, function(fr, fieldrow) {
+										$.each(fieldrow.fields, function(f, field) {
+											if (field.Note && field.Note.position == 'beforeField') {
+												var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+												targetPrenotes[field.position] = label;
+											}
+										});
+									});
+								}
+								return false;
+							}
+						});
+						return false;
+					}
+				});
+				return false;
+			}
+		});
+		return targetPrenotes;
+	}
+
+	Simulators.makeTargetPostnotes = function(stepName, panelId, fieldsetId) {
+		var targetPostnotes = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				$.each(step.panels, function(p, panel) {
+					if (panel.id == panelId) {
+						$.each(panel.blocks, function(b, block) {
+							if (block.type == 'fieldset' && block.id == fieldsetId) {
+								$.each(block.fields, function(f, field) {
+									if (field.Note && field.Note.position == 'afterField') {
+										var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+										targetPostnotes[field.position] = label;
+									}
+								});
+								if (block.fieldrows) {
+									$.each(block.fieldrows, function(fr, fieldrow) {
+										$.each(fieldrow.fields, function(f, field) {
+											if (field.Note && field.Note.position == 'afterField') {
+												var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+												targetPostnotes[field.position] = label;
+											}
+										});
+									});
+								}
+								return false;
+							}
+						});
+						return false;
+					}
+				});
+				return false;
+			}
+		});
+		return targetPostnotes;
+	}
+
+	Simulators.makeTargetBlockinfos = function(stepName, panelId) {
+		var targetBlockinfos = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				$.each(step.panels, function(p, panel) {
+					if (panel.id == panelId) {
+						$.each(panel.blocks, function(b, block) {
+							if (block.type == 'blockinfo') {
+								var label = block.label ? block.label: Translator.trans('Blockinfo %id% (nolabel)', { id: block.id });
+								targetBlockinfos[block.id] = label;
+							}
+						});
+						return false;
+					}
+				});
+				return false;
+			}
+		});
+		return targetBlockinfos;
+	}
+
+	Simulators.makeTargetChapters = function(stepName, panelId, blockinfoId) {
+		var targetChapters = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				$.each(step.panels, function(p, panel) {
+					if (panel.id == panelId) {
+						$.each(panel.blocks, function(b, block) {
+							if (block.type == 'blockinfo' && block.id == blockinfoId) {
+								$.each(block.chapters, function(c, chapter) {
+									var label = chapter.label ? chapter.label : Translator.trans('Chapter %id% (nolabel)', { id: chapter.id });
+									targetChapters[chapter.id] = label;
+								});
+								return false;
+							}
+						});
+						return false;
+					}
+				});
+				return false;
+			}
+		});
+		return targetChapters;
+	}
+
+	Simulators.makeTargetSections = function(stepName, panelId, blockinfoId, chapterId) {
+		var targetSections = {};
+		$.each(steps, function(s, step) {
+			if (step.name == stepName) {
+				$.each(step.panels, function(p, panel) {
+					if (panel.id == panelId) {
+						$.each(panel.blocks, function(b, block) {
+							if (block.type == 'blockinfo' && block.id == blockinfoId) {
+								$.each(block.chapters, function(c, chapter) {
+									if (chapter.id == chapterId) {
+										$.each(chapter.sections, function(s, section) {
+											var label = section.label ? section.label : Translator.trans('Section %id% (nolabel)', { id: section.id });
+											targetSections[section.id] = label;
+										});
+										return false;
+									}
+								});
+								return false;
+							}
+						});
+						return false;
+					}
+				});
+				return false;
+			}
+		});
+		return targetSections;
 	}
 
 	Simulators.drawActionButtonForInput = function(action) {
@@ -1633,19 +2035,96 @@ THE SOFTWARE.
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-name', 'text', 'name', Translator.trans('Name'), action.name, true, Translator.trans('Action button name without spaces or special characters')));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-label', 'text', 'label', Translator.trans('Label'), action.label, true, Translator.trans('Action button label')));
-		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-what', 'select', 'what', Translator.trans('What'), action.what, true, Translator.trans('Select an action'), JSON.stringify({ 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset') })));
-		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-for', 'select', 'for', Translator.trans('For'), action.for, true, Translator.trans('Select a target step'), JSON.stringify({ 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
+		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-what', 'select', 'what', Translator.trans('What'), action.what, true, Translator.trans('Select an action'), JSON.stringify({ 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset'), 'execute': Translator.trans('Execute') })));
+		switch (action.what) {
+			case 'submit':
+				requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-for', 'select', 'for', Translator.trans('For'), action.for, true, Translator.trans('Select a target step'), JSON.stringify({ 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
+				if (action.for == 'jumpToStep') {
+					var targetSteps = Simulators.makeTargetSteps(Simulators.findStepById(action.stepId).name, true);
+					requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-uri', 'select', 'uri', Translator.trans('Target step'), action.uri, true, Translator.trans('Select a target step'), JSON.stringify(targetSteps)));
+				} else if (action.for == 'externalPage') {
+					requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-uri', 'text', 'uri', Translator.trans('External page URL'), action.uri, true, Translator.trans('External page URL')));
+				}
+				break;
+			case 'execute':
+				requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-for', 'select', 'for', Translator.trans('What?'), action.for, true, Translator.trans('Select a target step'), JSON.stringify({ 'function': Translator.trans('Function') } )));
+				if (action.for == 'function') { // always true
+					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
+					requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-function', 'select', 'function', Translator.trans('Function'), functs.function, true, Translator.trans('Select a function'), JSON.stringify(functions)));
+					var appliedto = { 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'step': Translator.trans('Step'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
+					if (Object.keys(Simulators.dataset).length == 0) {
+						delete appliedto['data'];
+					}
+					if (Object.keys(Simulators.datagroups).length == 0) {
+						delete appliedto['datagroup'];
+					}
+					requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-appliedto', 'select', 'appliedto', Translator.trans('Applied to'), functs.appliedto, true, Translator.trans('Select a target'), JSON.stringify(appliedto)));
+					if (functs.arguments.data) {
+						var datasList = {};
+						$.each(Simulators.dataset, function( name, data) {
+							datasList[data.id] = data.label;
+						});
+						requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-data', 'select', 'data', Translator.trans('Data'), functs.arguments.data, true, Translator.trans('Select a data'), JSON.stringify(datasList)));
+					} else if (functs.arguments.datagroup) {
+						var datagroupsList = {};
+						$.each(Simulators.datagroups, function( name, datagroup) {
+							datagroupsList[datagroup.id] = datagroup.label;
+						});
+						requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-datagroup', 'select', 'datagroup', Translator.trans('Datagroup'), functs.arguments.datagroup, true, Translator.trans('Select a datagroup'), JSON.stringify(datagroupsList)));
+					} else if (functs.arguments.step) {
+						var targetSteps = Simulators.makeTargetSteps('');
+						requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-step', 'select', 'step', Translator.trans('Step'), functs.arguments.step, true, Translator.trans('Select a step'), JSON.stringify(targetSteps)));
+						if (functs.arguments.footnote) {
+							var targetFootnotes = Simulators.makeTargetFootnotes(functs.arguments.step);
+							requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-footnote', 'select', 'footnote', Translator.trans('Footnote'), functs.arguments.footnote, true, Translator.trans('Select a footnote'), JSON.stringify(targetFootnotes)));
+						} else if (functs.arguments.panel) {
+							var targetPanels = Simulators.makeTargetPanels(functs.arguments.step);
+							requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-panel', 'select', 'panel', Translator.trans('Panel'), functs.arguments.panel, true, Translator.trans('Select a panel'), JSON.stringify(targetPanels)));
+							if (functs.arguments.fieldset) {
+								var targetFieldsets = Simulators.makeTargetFieldsets(functs.arguments.step, functs.arguments.panel);
+								requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-fieldset', 'select', 'fieldset', Translator.trans('FieldSet'), functs.arguments.fieldset, true, Translator.trans('Select a fieldset'), JSON.stringify(targetFieldsets)));
+								if (functs.arguments.fieldrow) {
+									var targetFieldrows = Simulators.makeTargetFieldrows(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset);
+									requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-fieldrow', 'select', 'fieldrow', Translator.trans('Fieldrow'), functs.arguments.fieldrow, true, Translator.trans('Select a fieldrow'), JSON.stringify(targetFieldrows)));
+								}
+								if (functs.arguments.field) {
+									var targetFields = Simulators.makeTargetFields(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset, functs.arguments.fieldrow);
+									requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-field', 'select', 'field', Translator.trans('Field'), functs.arguments.field, true, Translator.trans('Select a field'), JSON.stringify(targetFields)));
+								} else if (functs.arguments.prenote) {
+									var targetPrenotes = Simulators.makeTargetPrenotes(functs.arguments.step, functs.arguments.panel, functs.arguments.prenote);
+									requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-field', 'select', 'field', Translator.trans('Field'), functs.arguments.prenote, true, Translator.trans('Select a field'), JSON.stringify(targetPrenotes)));
+								} else  if (functs.arguments.postnote) {
+									var targetPostnotes = Simulators.makeTargetPostnotes(functs.arguments.step, functs.arguments.panel, functs.arguments.postnote);
+									requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-field', 'select', 'field', Translator.trans('Field'), functs.arguments.postnote, true, Translator.trans('Select a field'), JSON.stringify(targetPostnotes)));
+								}
+							} else if (functs.arguments.blockinfo) {
+								var targetBlockinfos = Simulators.makeTargetBlockinfos(functs.arguments.step, functs.arguments.panel);
+								requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-blockinfo', 'select', 'blockinfo', Translator.trans('BlockInfo'), functs.arguments.blockinfo, true, Translator.trans('Select a blockinfo'), JSON.stringify(targetBlockinfos)));
+								if (functs.arguments.chapter) {
+									var targetChapters = Simulators.makeTargetChapters(functs.arguments.step, functs.arguments.panel, functs.arguments.blockinfo);
+									requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-chapter', 'select', 'chapter', Translator.trans('Chapter'), functs.arguments.chapter, true, Translator.trans('Select a chapter'), JSON.stringify(targetChapters)));
+									if (functs.arguments.section) {
+										var targetSections = Simulators.makeTargetSections(functs.arguments.step, functs.arguments.panel, functs.arguments.blockinfo, functs.arguments.chapter);
+										requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-section', 'select', 'section', Translator.trans('Section'), functs.arguments.section, true, Translator.trans('Select a section'), JSON.stringify(targetSections)));
+									} else if (functs.arguments.content) {
+										var targetSections = Simulators.makeTargetSections(functs.arguments.step, functs.arguments.panel, functs.arguments.blockinfo, functs.arguments.chapter);
+										requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-section', 'select', 'section', Translator.trans('Section'), functs.arguments.content, true, Translator.trans('Select a section'), JSON.stringify(targetSections)));
+									} else if (functs.arguments.annotations) {
+										var targetSections = Simulators.makeTargetSections(functs.arguments.step, functs.arguments.panel, functs.arguments.blockinfo, functs.arguments.chapter);
+										requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-section', 'select', 'section', Translator.trans('Section'), functs.arguments.annotations, true, Translator.trans('Select a section'), JSON.stringify(targetSections)));
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+		}
 		attributesContainer.append(requiredAttributes);
 		var optionalAttributesPanel = $('<div class="optional-attributes card bg-light"></div>');
 		optionalAttributesPanel.append('<div class="card-header"><h4 class="card-title">' + Translator.trans('Optional attributes') + '</h4></div>');
 		var optionalAttributes = $('<ul class="list-group"></ul>');
 		var optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + actionElementId + '" data-type="text" data-name="uri" data-placeholder="' + Translator.trans('Button uri') + '">' + Translator.trans('URI / Step') + '</li>');
-		optionalAttributes.append(optionalAttribute);
-		if (action.uri) {
-			var attribute = Simulators.simpleAttributeForInput(actionElementId + '-uri', 'text', 'uri', Translator.trans('URI / Step'), action.uri, false, Translator.trans('Button uri'));
-			requiredAttributes.append(attribute);
-			optionalAttribute.hide();
-		} 
 		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + actionElementId + '" data-type="select" data-name="class" data-placeholder="' + Translator.trans('Button class') + '" data-options="' + encodeURI(JSON.stringify( { 'btn-primary': Translator.trans('Primary'), 'btn-secondary': Translator.trans('Secondary') } )) + '">' + Translator.trans('Class') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (action.class) {
@@ -1682,11 +2161,335 @@ THE SOFTWARE.
 		});
 	}
 
+	Simulators.bindActionButtonWhat = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=what]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+			var parent = $(this).closest('.form-group').parent();
+			switch($(this).val()) {
+				case 'submit':
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-for', 'select', 'for', Translator.trans('For'), '', true, Translator.trans('Select a step'), JSON.stringify({ 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
+					Simulators.bindActionButtonFor(actionPanelContainer);
+					break;
+				case 'reset':
+					break;
+				case 'execute':
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-for', 'select', 'for', Translator.trans('What?'), '', true, Translator.trans('Select a function'), JSON.stringify({ 'function': Translator.trans('Function') } )));
+					Simulators.bindActionButtonFor(actionPanelContainer);
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-function', 'select', 'function', Translator.trans('Function'), '', true, Translator.trans('Select a function'), JSON.stringify(functions)));
+					Simulators.bindActionButtonFunction(actionPanelContainer);
+					var appliedto = { 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'step': Translator.trans('Step'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
+					if (Object.keys(Simulators.dataset).length == 0) {
+						delete appliedto['data'];
+					}
+					if (Object.keys(Simulators.datagroups).length == 0) {
+						delete appliedto['datagroup'];
+					}
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-appliedto', 'select', 'appliedto', Translator.trans('Applied to'), '', true, Translator.trans('Select a target'), JSON.stringify(appliedto)));
+					Simulators.bindActionButtonAppliedto(actionPanelContainer);
+					actionPanelContainer.find('select[data-attribute=appliedto]').trigger('change');
+					break;
+			}
+		});
+	}
+
+	Simulators.bindActionButtonFor = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=for]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+			var parent = $(this).closest('.form-group').parent();
+			switch($(this).val()) {
+				case 'priorStep':
+				case 'currentStep':
+				case 'nextStep':
+				case 'newSimulation':
+					break;
+				case 'jumpToStep':
+					var stepId = actionElementId.match(/^step\-(\d+)\-/)[1];
+					var targetSteps = Simulators.makeTargetSteps(Simulators.findStepById(stepId).name, true);
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-uri', 'select', 'uri', Translator.trans('Target step'), '', true, Translator.trans('Select a target step'), JSON.stringify(targetSteps)));
+					break;
+				case 'externalPage':
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-uri', 'text', 'uri', Translator.trans('External page URL'), '', true, Translator.trans('External page URL')));
+					break;
+				case 'function':
+					var appliedto = { 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'step': Translator.trans('Step'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
+					if (Object.keys(Simulators.dataset).length == 0) {
+						delete appliedto['data'];
+					}
+					if (Object.keys(Simulators.datagroups).length == 0) {
+						delete appliedto['datagroup'];
+					}
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-appliedto', 'select', 'appliedto', Translator.trans('Applied to'), '', true, Translator.trans('Select a target'), JSON.stringify(appliedto)));
+					Simulators.bindActionButtonAppliedto(actionPanelContainer);
+					actionPanelContainer.find('select[data-attribute=appliedto]').trigger('change');
+					break;
+			}
+		});
+	}
+
+	Simulators.bindActionButtonFunction = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=function]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+		});
+	}
+
+	Simulators.bindActionButtonAppliedto = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=appliedto]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+			var parent = $(this).closest('.form-group').parent();
+			switch($(this).val()) {
+				case 'data':
+					var datasList = {};
+					$.each(Simulators.dataset, function( name, data) {
+						datasList[data.id] = data.label;
+					});
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-data', 'select', 'data', Translator.trans('Data'), '', true, Translator.trans('Select a data'), JSON.stringify(datasList)));
+					break;
+				case 'datagroup':
+					var datagroupsList = {};
+					$.each(Simulators.datagroups, function( name, datagroup) {
+						datagroupsList[datagroup.id] = datagroup.label;
+					});
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-datagroup', 'select', 'datagroup', Translator.trans('Datagroup'), '', true, Translator.trans('Select a datagroup'), JSON.stringify(datagroupsList)));
+					break;
+				default:
+					var targetSteps = Simulators.makeTargetSteps('');
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-step', 'select', 'step', Translator.trans('Step'), '', true, Translator.trans('Select a step'), JSON.stringify(targetSteps)));
+					Simulators.bindActionButtonStep(actionPanelContainer);
+					actionPanelContainer.find('select[data-attribute=step]').trigger('change');
+					break;
+			}
+		});
+	}
+
+	Simulators.bindActionButtonStep = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=step]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+			var parent = $(this).closest('.form-group').parent();
+			var appliedTo = actionPanelContainer.find('select[data-attribute=appliedto]').val();
+			switch(appliedTo) {
+				case 'step':
+					break;
+				case 'footnote':
+					var stepName = actionPanelContainer.find('select[data-attribute=step]').val();
+					var targetFootnotes = Simulators.makeTargetFootnotes(stepName);
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-footnote', 'select', 'footnote', Translator.trans('Footnote'), '', true, Translator.trans('Select a footnote'), JSON.stringify(targetFootnotes)));
+					break;
+				default:
+					var stepName = actionPanelContainer.find('select[data-attribute=step]').val();
+					var targetPanels = Simulators.makeTargetPanels(stepName);
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-panel', 'select', 'panel', Translator.trans('Panel'), '', true, Translator.trans('Select a panel'), JSON.stringify(targetPanels)));
+					Simulators.bindActionButtonPanel(actionPanelContainer);
+					actionPanelContainer.find('select[data-attribute=panel]').trigger('change');
+					break;
+			}
+		});
+	}
+
+	Simulators.bindActionButtonPanel = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=panel]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+			var parent = $(this).closest('.form-group').parent();
+			var appliedTo = actionPanelContainer.find('select[data-attribute=appliedto]').val();
+			switch(appliedTo) {
+				case 'step':
+				case 'panel':
+					break;
+				case 'blockinfo':
+				case 'chapter':
+				case 'section':
+				case 'content':
+				case 'annotations':
+					var stepName = actionPanelContainer.find('select[data-attribute=step]').val();
+					var panelId = actionPanelContainer.find('select[data-attribute=panel]').val();
+					var targetBlockinfos = Simulators.makeTargetBlockinfos(stepName, panelId);
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-blockinfo', 'select', 'blockinfo', Translator.trans('BlockInfo'), '', true, Translator.trans('Select a blockinfo'), JSON.stringify(targetBlockinfos)));
+					Simulators.bindActionButtonBlockinfo(actionPanelContainer);
+					actionPanelContainer.find('select[data-attribute=blockinfo]').trigger('change');
+					break;
+				default:
+					var stepName = actionPanelContainer.find('select[data-attribute=step]').val();
+					var panelId = actionPanelContainer.find('select[data-attribute=panel]').val();
+					var targetFieldsets = Simulators.makeTargetFieldsets(stepName, panelId);
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-fieldset', 'select', 'fieldset', Translator.trans('FieldSet'), '', true, Translator.trans('Select a fieldset'), JSON.stringify(targetFieldsets)));
+					Simulators.bindActionButtonFieldset(actionPanelContainer);
+					actionPanelContainer.find('select[data-attribute=fieldset]').trigger('change');
+					break;
+			}
+		});
+	}
+
+	Simulators.bindActionButtonBlockinfo = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=blockinfo]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'blockinfo']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+			var parent = $(this).closest('.form-group').parent();
+			var appliedTo = actionPanelContainer.find('select[data-attribute=appliedto]').val();
+			switch(appliedTo) {
+				case 'step':
+				case 'panel':
+				case 'blockinfo':
+					break;
+				default:
+					var stepName = actionPanelContainer.find('select[data-attribute=step]').val();
+					var panelId = actionPanelContainer.find('select[data-attribute=panel]').val();
+					var blockinfoId = actionPanelContainer.find('select[data-attribute=blockinfo]').val();
+					var targetChapters = Simulators.makeTargetChapters(stepName, panelId, blockinfoId);
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-chapter', 'select', 'chapter', Translator.trans('Chapter'), '', true, Translator.trans('Select a chapter'), JSON.stringify(targetChapters)));
+					Simulators.bindActionButtonChapter(actionPanelContainer);
+					actionPanelContainer.find('select[data-attribute=chapter]').trigger('change');
+					break;
+			}
+		});
+	}
+
+	Simulators.bindActionButtonChapter = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=chapter]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'blockinfo', 'chapter']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+			var parent = $(this).closest('.form-group').parent();
+			var appliedTo = actionPanelContainer.find('select[data-attribute=appliedto]').val();
+			switch(appliedTo) {
+				case 'step':
+				case 'panel':
+				case 'blockinfo':
+				case 'chapter':
+					break;
+				default:
+					var stepName = actionPanelContainer.find('select[data-attribute=step]').val();
+					var panelId = actionPanelContainer.find('select[data-attribute=panel]').val();
+					var blockinfoId = actionPanelContainer.find('select[data-attribute=blockinfo]').val();
+					var chapterId = actionPanelContainer.find('select[data-attribute=chapter]').val();
+					var targetSections = Simulators.makeTargetSections(stepName, panelId, blockinfoId, chapterId);
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-section', 'select', 'section', Translator.trans('Section'), '', true, Translator.trans('Select a section'), JSON.stringify(targetSections)));
+					break;
+			}
+		});
+	}
+
+	Simulators.bindActionButtonFieldset = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=fieldset]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'fieldset']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+			var parent = $(this).closest('.form-group').parent();
+			var appliedTo = actionPanelContainer.find('select[data-attribute=appliedto]').val();
+			switch(appliedTo) {
+				case 'step':
+				case 'panel':
+				case 'fieldset':
+					break;
+				default:
+					var stepName = actionPanelContainer.find('select[data-attribute=step]').val();
+					var panelId = actionPanelContainer.find('select[data-attribute=panel]').val();
+					var fieldsetId = actionPanelContainer.find('select[data-attribute=fieldset]').val();
+					var targetFieldrows = Simulators.makeTargetFieldrows(stepName, panelId, fieldsetId);
+					if (Object.keys(targetFieldrows).length > 0) {
+						parent.append(Simulators.simpleAttributeForInput(actionElementId + '-fieldrow', 'select', 'fieldrow', Translator.trans('Fieldrow'), '', true, Translator.trans('Select a fieldrow'), JSON.stringify(targetFieldrows)));
+						Simulators.bindActionButtonFieldrow(actionPanelContainer);
+						actionPanelContainer.find('select[data-attribute=fieldrow]').trigger('change');
+					} else {
+						var targetFields = Simulators.makeTargetFields(stepName, panelId, fieldsetId);
+						parent.append(Simulators.simpleAttributeForInput(actionElementId + '-field', 'select', 'field', Translator.trans('Field'), '', true, Translator.trans('Select a field'), JSON.stringify(targetFields)));
+					}
+					break;
+			}
+		});
+	}
+
+	Simulators.bindActionButtonFieldrow = function(actionPanelContainer) {
+		var actionElementId = actionPanelContainer.attr('id');
+		actionPanelContainer.find('select[data-attribute=fieldrow]').on('change', function() {
+			actionPanelContainer.find(':input[data-attribute]').each(function() {
+				var attr = $(this).attr('data-attribute');
+				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'fieldset', 'fieldrow']) < 0) {
+					$(this).closest('.form-group').remove();
+				}
+			});
+			var parent = $(this).closest('.form-group').parent();
+			var appliedTo = actionPanelContainer.find('select[data-attribute=appliedto]').val();
+			switch(appliedTo) {
+				case 'step':
+				case 'panel':
+				case 'fieldset':
+				case 'fieldrow':
+					break;
+				default:
+					var stepName = actionPanelContainer.find('select[data-attribute=step]').val();
+					var panelId = actionPanelContainer.find('select[data-attribute=panel]').val();
+					var fieldsetId = actionPanelContainer.find('select[data-attribute=fieldset]').val();
+					var fieldrowId = actionPanelContainer.find('select[data-attribute=fieldrow]').val();
+					var targetFields = Simulators.makeTargetFields(stepName, panelId, fieldsetId, fieldrowId);
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-field', 'select', 'field', Translator.trans('Field'), '', true, Translator.trans('Select a field'), JSON.stringify(targetFields)));
+					break;
+			}
+		});
+	}
+
 	Simulators.bindActionButton = function(actionPanelContainer) {
 		actionPanelContainer.find('.sortable' ).sortable({
 			cursor: "move",
 			axis: "y"
 		});
+		Simulators.bindActionButtonWhat(actionPanelContainer);
+		Simulators.bindActionButtonFor(actionPanelContainer);
+		Simulators.bindActionButtonFunction(actionPanelContainer);
+		Simulators.bindActionButtonAppliedto(actionPanelContainer);
+		Simulators.bindActionButtonStep(actionPanelContainer);
+		Simulators.bindActionButtonPanel(actionPanelContainer);
+		Simulators.bindActionButtonBlockinfo(actionPanelContainer);
+		Simulators.bindActionButtonChapter(actionPanelContainer);
+		Simulators.bindActionButtonFieldset(actionPanelContainer);
+		Simulators.bindActionButtonFieldrow(actionPanelContainer);
 		actionPanelContainer.find('.cancel-edit-action').on('click', function() {
 			actionPanelContainer.find('.action-button-container').replaceWith(Simulators.actionButtonBackup);
 			Simulators.actionButtonBackup.find('button.edit-action-button').on('click', function(e) {
@@ -1731,6 +2534,80 @@ THE SOFTWARE.
 			});
 			if (action['name']) {
 				action['name'] = $.trim(action['name']);
+			}
+			switch(action.what) {
+				case 'reset':
+					break;
+				case 'submit':
+					break;
+				case 'execute':
+					var uri = {
+						'function': action.function,
+						'appliedto': action.appliedto,
+						'arguments': {}
+					};
+					delete action['function'];
+					switch(action.appliedto) {
+						case 'data':
+							uri.arguments.data = action.data;
+							delete action['data'];
+							break;
+						case 'datagroup':
+							uri.arguments.datagroup = action.datagroup;
+							delete action['datagroup'];
+							break;
+						case 'field':
+						case 'prenote':
+						case 'postnote':
+							if (action.field) {
+								uri.arguments[action.appliedto] = action.field;
+								delete action['field'];
+							}
+						case 'fieldrow':
+							if (action.fieldrow) {
+								uri.arguments.fieldrow = action.fieldrow;
+								delete action['fieldrow'];
+							}
+						case 'fieldset':
+							if (action.fieldset) {
+								uri.arguments.fieldset = action.fieldset;
+								delete action['fieldset'];
+							}
+						case 'section':
+						case 'content':
+						case 'annotations':
+							if (action.section) {
+								uri.arguments[action.appliedto] = action.section;
+								delete action['section'];
+							}
+						case 'chapter':
+							if (action.chapter) {
+								uri.arguments.chapter = action.chapter;
+								delete action['chapter'];
+							}
+						case 'blockinfo':
+							if (action.blockinfo) {
+								uri.arguments.blockinfo = action.blockinfo;
+								delete action['blockinfo'];
+							}
+						case 'panel':
+							if (action.panel) {
+								uri.arguments.panel = action.panel;
+								delete action['panel'];
+							}
+						case 'footnote':
+							if (action.footnote) {
+								uri.arguments.footnote = action.footnote;
+								delete action['footnote'];
+							}
+						case 'step':
+							uri.arguments.step = action.step;
+							delete action['step'];
+							break;
+					}
+					delete action['appliedto'];
+					action.uri = JSON.stringify(uri).replace(/"/g, "'");;
+					break;
 			}
 			var newActionButtonPanel = Simulators.drawActionButtonForDisplay(action);
 			if ($(this).hasClass('validate-edit-action')) {
@@ -1800,14 +2677,37 @@ THE SOFTWARE.
 			actionContainer.find('.alert').show();
 			return false;
 		}
-		var actionFor = $('#' + actionElementId + '-for').val();
-		var actionUri = $.trim($('#' + actionElementId + '-uri').val());
-		if (actionFor === 'jumpToStep' || actionFor === 'externalPage') {
-			if (actionUri === '') {
-				actionContainer.find('.error-message').text(Translator.trans('The action button uri is required in this context'));
-				actionContainer.find('.alert').show();
-				return false;
-			}
+		var actionWhat = $('#' + actionElementId + '-what').val();
+		switch (actionWhat) {
+			case 'reset':
+				break;
+			case 'submit':
+				var actionFor = $('#' + actionElementId + '-for').val();
+				if (actionFor === 'jumpToStep' || actionFor === 'externalPage') {
+					var actionUri = $.trim($('#' + actionElementId + '-uri').val());
+					if (actionUri === '') {
+						actionContainer.find('.error-message').text(Translator.trans('The action button uri is required in this context'));
+						actionContainer.find('.alert').show();
+						return false;
+					}
+				}
+				break;
+			case 'execute':
+				var appliedto = $('#' + actionElementId + '-appliedto');
+				var target = appliedto.val();
+				if (target == 'prenote' || target == 'postnote') {
+					target = 'field';
+				} else if (target == 'content' || target == 'annotations') {
+					target = 'section';
+				}
+				target = $('#' + actionElementId + '-' + target);
+				var targetval = target.val();
+				if (! targetval) {
+					actionContainer.find('.error-message').text(Translator.trans('The searched element « %element% » that applies to this function does not exist.', { 'element': appliedto.find('option:selected').text() } ));
+					actionContainer.find('.alert').show();
+					return false;
+				}
+				break;
 		}
 		return true;
 	}
@@ -2285,7 +3185,7 @@ THE SOFTWARE.
 				if (block.type == 'fieldset') {
 					a.text(' ' + Translator.trans('FieldSet') + ' #' + id + ' : ' + block.legend.content + ' ');
 				} else {
-					a.text(' ' + Translator.trans('BlockInfo') + ' #' + id + ' : ' + block.label.content + ' ');
+					a.text(' ' + Translator.trans('BlockInfo') + ' #' + id + ' : ' + block.label + ' ');
 				}
 				var container =  panelGroup.find('.block-container');
 				container.attr('data-id', id);
@@ -5347,4 +6247,3 @@ THE SOFTWARE.
 	}
 
 }(this));
-

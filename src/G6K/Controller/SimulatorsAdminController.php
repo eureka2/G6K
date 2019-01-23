@@ -402,6 +402,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$widgets = $this->getWidgets();
 		$typewidgets = $this->getWidgetsByType();
 		$inputwidgets = $this->getWidgetsByInputType();
+		$functions = $this->getFunctions();
 		$deployment = 	$this->container->hasParameter('deployment') && 
 						$this->get('security.authorization_checker')->isGranted('ROLE_MANAGER') && 
 						$simulator !== null && $simulator != 'new' && $valid &&
@@ -429,6 +430,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'widgets' => $widgets,
 					'typewidgets' => $typewidgets,
 					'inputwidgets' => $inputwidgets,
+					'functions' => $functions,
 					'deployment' => $deployment
 				)
 			);
@@ -1485,6 +1487,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'datasources' => array(),
 				'views' => array(),
 				'widgets' => array(),
+				'functions' => array(),
 				'hiddens' => array()
 			)
 		));

@@ -10,7 +10,7 @@ t.add("Invalid CSRF token.", "M\u00e3 CSRF kh\u00f4ng h\u1ee3p l\u1ec7.", "secur
 t.add("No authentication provider found to support the authentication token.", "Kh\u00f4ng t\u00ecm th\u1ea5y nh\u00e0 cung c\u1ea5p d\u1ecbch v\u1ee5 x\u00e1c th\u1ef1c n\u00e0o cho m\u00e3 x\u00e1c th\u1ef1c m\u00e0 b\u1ea1n s\u1eed d\u1ee5ng.", "security", "vi");
 t.add("No session available, it either timed out or cookies are not enabled.", "Kh\u00f4ng t\u00ecm th\u1ea5y phi\u00ean l\u00e0m vi\u1ec7c. Phi\u00ean l\u00e0m vi\u1ec7c ho\u1eb7c cookie c\u00f3 th\u1ec3 b\u1ecb t\u1eaft.", "security", "vi");
 t.add("No token could be found.", "Kh\u00f4ng t\u00ecm th\u1ea5y m\u00e3 token.", "security", "vi");
-t.add("Username could not be found.", "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00ean ng\u01b0\u1eddi d\u00f9ng.", "security", "vi");
+t.add("Username could not be found.", "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00ean ng\u01b0\u1eddi d\u00f9ng username.", "security", "vi");
 t.add("Account has expired.", "T\u00e0i kho\u1ea3n \u0111\u00e3 h\u1ebft h\u1ea1n.", "security", "vi");
 t.add("Credentials have expired.", "Th\u00f4ng tin x\u00e1c th\u1ef1c \u0111\u00e3 h\u1ebft h\u1ea1n.", "security", "vi");
 t.add("Account is disabled.", "T\u00e0i kho\u1ea3n b\u1ecb t\u1ea1m ng\u1eebng.", "security", "vi");

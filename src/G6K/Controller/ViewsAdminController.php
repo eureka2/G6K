@@ -273,6 +273,7 @@ class ViewsAdminController extends BaseAdminController {
 				'datasources' => array(),
 				'views' => array(),
 				'widgets' => array(),
+				'functions' => array(),
 				'hiddens' => array()
 			)
 		));

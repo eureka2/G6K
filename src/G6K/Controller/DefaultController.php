@@ -207,6 +207,14 @@ class DefaultController extends BaseController {
 				$widgets[$widget] = $availWidgets[$widget];
 			}
 		}
+		$availFunctions = $this->container->getParameter('functions');
+		$functions = array();
+		foreach ($this->simuFunctions as $function) {
+			if (isset($availFunctions[$function]) && ! isset($functions[$function])) {
+				$this->functionDeps($function, $functions, $availFunctions);
+				$functions[$function] = $availFunctions[$function];
+			}
+		}
 		try {
 			$response =  $this->render(
 				$view.'/'.str_replace(':', '/', $step->getTemplate()),
@@ -219,7 +227,8 @@ class DefaultController extends BaseController {
 					'step' => $step,
 					'data' => $datas,
 					'hiddens' => $hiddens,
-					'widgets' => $widgets
+					'widgets' => $widgets,
+					'functions' => $functions
 				)
 			);
 			foreach($this->memo as $name => $value) {
