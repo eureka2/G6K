@@ -695,12 +695,12 @@
                 <target>Centrar el contenido</target>
             </trans-unit>
             <trans-unit id="174">
-                <source>chapter</source>
-                <target>capítulo</target>
-            </trans-unit>
-            <trans-unit id="175">
                 <source>Chapter</source>
                 <target>Capítulo</target>
+            </trans-unit>
+            <trans-unit id="175">
+                <source>chapter</source>
+                <target>capítulo</target>
             </trans-unit>
             <trans-unit id="176">
                 <source>Chapter #%id% : %label%</source>
@@ -1755,12 +1755,12 @@
                 <target>Campos</target>
             </trans-unit>
             <trans-unit id="439">
-                <source>FieldSet</source>
-                <target>Conjunto de campo</target>
-            </trans-unit>
-            <trans-unit id="440">
                 <source>fieldset</source>
                 <target>conjunto de campo</target>
+            </trans-unit>
+            <trans-unit id="440">
+                <source>FieldSet</source>
+                <target>Conjunto de campo</target>
             </trans-unit>
             <trans-unit id="441">
                 <source>Fieldset %id% (nolegend)</source>
@@ -2207,12 +2207,12 @@
                 <target>en conjunto de campos « %fieldset% »</target>
             </trans-unit>
             <trans-unit id="552">
-                <source>Inline</source>
-                <target>En línea</target>
-            </trans-unit>
-            <trans-unit id="553">
                 <source>inline</source>
                 <target>en línea</target>
+            </trans-unit>
+            <trans-unit id="553">
+                <source>Inline</source>
+                <target>En línea</target>
             </trans-unit>
             <trans-unit id="554">
                 <source>Inline PDF</source>
@@ -2615,12 +2615,12 @@
                 <target>max no puede referirse a los propios datos</target>
             </trans-unit>
             <trans-unit id="654">
-                <source>maximum</source>
-                <target>máximo</target>
-            </trans-unit>
-            <trans-unit id="655">
                 <source>Maximum</source>
                 <target>Máximo</target>
+            </trans-unit>
+            <trans-unit id="655">
+                <source>maximum</source>
+                <target>máximo</target>
             </trans-unit>
             <trans-unit id="656">
                 <source>Maximum value</source>
@@ -3311,12 +3311,12 @@
                 <target>Datos POST</target>
             </trans-unit>
             <trans-unit id="828">
-                <source>postnote</source>
-                <target>nota despues</target>
+                <source>PostNote</source>
+                <target>Nota post-campo</target>
             </trans-unit>
             <trans-unit id="829">
-                <source>PostNote</source>
-                <target>Nota despues</target>
+                <source>postnote</source>
+                <target>nota post-campo</target>
             </trans-unit>
             <trans-unit id="830">
                 <source>pow</source>
@@ -3328,11 +3328,11 @@
             </trans-unit>
             <trans-unit id="832">
                 <source>prenote</source>
-                <target>nota previa</target>
+                <target>nota de pre-campo</target>
             </trans-unit>
             <trans-unit id="833">
                 <source>PreNote</source>
-                <target>Nota previa</target>
+                <target>Nota de pre-campo</target>
             </trans-unit>
             <trans-unit id="834">
                 <source>Previous</source>
@@ -3595,12 +3595,12 @@
                 <target>Secundario</target>
             </trans-unit>
             <trans-unit id="899">
-                <source>Section</source>
-                <target>Sección</target>
-            </trans-unit>
-            <trans-unit id="900">
                 <source>section</source>
                 <target>sección</target>
+            </trans-unit>
+            <trans-unit id="900">
+                <source>Section</source>
+                <target>Sección</target>
             </trans-unit>
             <trans-unit id="901">
                 <source>Section #%id%</source>

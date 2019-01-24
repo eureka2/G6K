@@ -53,19 +53,32 @@ THE SOFTWARE.
 							element += '-section-' + parameters.annotations + '-annotations';
 						}
 					}
+					element = document.getElementById(element);
 				} else if (parameters.fieldset) {
+					element += '-fieldset-' + parameters.fieldset;
 					if (parameters.fieldrow) {
 						element += '-fieldrow-' + parameters.fieldrow;
 					}
 					if (parameters.field) {
-						var elementObj = $(element).find("[data-field-position='" + parameters.field + "']");
-						element = elementObj.attr('id');
+						var elementObj = $('#' + element).find("[data-field-position='" + parameters.field + "']");
+						element = elementObj[0];
+					} else if (parameters.prenote) {
+						var elementObj = $('#' + element).find("[data-field-position='" + parameters.prenote + "']");
+						element = elementObj.find('.pre-note')[0];
+					} else if (parameters.postnote) {
+						var elementObj = $('#' + element).find("[data-field-position='" + parameters.postnote + "']");
+						element = elementObj.find('.post-note')[0];
+					} else {
+						element = document.getElementById(element);
 					}
+				} else {
+					element = document.getElementById(element);
 				}
 			} else if (parameters.footnote) {
-				element = 'foot-note-' + parameters.footnote;
+				element = document.getElementById('foot-note-' + parameters.footnote);
+			} else {
+				element = document.getElementById(element);
 			}
-			element = document.getElementById(element);
 			clickable.on('click', function(event) {
 				event.preventDefault();
 				copyElementToClipboard(element);
