@@ -1705,10 +1705,10 @@ THE SOFTWARE.
 									var targetFields = Simulators.makeTargetFields(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset, functs.arguments.fieldrow);
 									requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'field', Translator.trans('Field'), functs.arguments.field, functs.arguments.field, true, Translator.trans('Select a field'), JSON.stringify(targetFields)));
 								} else if (functs.arguments.prenote) {
-									var targetPrenotes = Simulators.makeTargetPrenotes(functs.arguments.step, functs.arguments.panel, functs.arguments.prenote);
+									var targetPrenotes = Simulators.makeTargetPrenotes(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset, functs.arguments.fieldrow);
 									requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'field', Translator.trans('Field'), functs.arguments.prenote, functs.arguments.prenote, true, Translator.trans('Select a field'), JSON.stringify(targetPrenotes)));
 								} else  if (functs.arguments.postnote) {
-									var targetPostnotes = Simulators.makeTargetPostnotes(functs.arguments.step, functs.arguments.panel, functs.arguments.postnote);
+									var targetPostnotes = Simulators.makeTargetPostnotes(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset, functs.arguments.fieldrow);
 									requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'field', Translator.trans('Field'), functs.arguments.postnote, functs.arguments.postnote, true, Translator.trans('Select a field'), JSON.stringify(targetPostnotes)));
 								}
 							} else if (functs.arguments.blockinfo) {
@@ -1879,7 +1879,7 @@ THE SOFTWARE.
 		return targetFields;
 	}
 
-	Simulators.makeTargetPrenotes = function(stepName, panelId, fieldsetId) {
+	Simulators.makeTargetPrenotes = function(stepName, panelId, fieldsetId, fieldrowId) {
 		var targetPrenotes = {};
 		$.each(steps, function(s, step) {
 			if (step.name == stepName) {
@@ -1887,23 +1887,29 @@ THE SOFTWARE.
 					if (panel.id == panelId) {
 						$.each(panel.blocks, function(b, block) {
 							if (block.type == 'fieldset' && block.id == fieldsetId) {
-								$.each(block.fields, function(f, field) {
-									if (field.Note && field.Note.position == 'beforeField') {
-										var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
-										targetPrenotes[field.position] = label;
-									}
-								});
-								if (block.fieldrows) {
-									$.each(block.fieldrows, function(fr, fieldrow) {
-										$.each(fieldrow.fields, function(f, field) {
-											if (field.Note && field.Note.position == 'beforeField') {
-												var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
-												targetPrenotes[field.position] = label;
+								if (fieldrowId && fieldrowId != '') {
+									if (block.fieldrows) {
+										$.each(block.fieldrows, function(fr, fieldrow) {
+											if (fieldrow.id == fieldrowId) {
+												$.each(fieldrow.fields, function(f, field) {
+													if (field.Note && field.Note.position == 'beforeField') {
+														var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+														targetPrenotes[field.position] = label;
+													}
+												});
+												return false;
 											}
 										});
+									}
+								} else {
+									$.each(block.fields, function(f, field) {
+										if (field.Note && field.Note.position == 'beforeField') {
+											var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+											targetPrenotes[field.position] = label;
+										}
 									});
+									return false;
 								}
-								return false;
 							}
 						});
 						return false;
@@ -1915,7 +1921,7 @@ THE SOFTWARE.
 		return targetPrenotes;
 	}
 
-	Simulators.makeTargetPostnotes = function(stepName, panelId, fieldsetId) {
+	Simulators.makeTargetPostnotes = function(stepName, panelId, fieldsetId, fieldrowId) {
 		var targetPostnotes = {};
 		$.each(steps, function(s, step) {
 			if (step.name == stepName) {
@@ -1923,23 +1929,29 @@ THE SOFTWARE.
 					if (panel.id == panelId) {
 						$.each(panel.blocks, function(b, block) {
 							if (block.type == 'fieldset' && block.id == fieldsetId) {
-								$.each(block.fields, function(f, field) {
-									if (field.Note && field.Note.position == 'afterField') {
-										var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
-										targetPostnotes[field.position] = label;
-									}
-								});
-								if (block.fieldrows) {
-									$.each(block.fieldrows, function(fr, fieldrow) {
-										$.each(fieldrow.fields, function(f, field) {
-											if (field.Note && field.Note.position == 'afterField') {
-												var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
-												targetPostnotes[field.position] = label;
+								if (fieldrowId && fieldrowId != '') {
+									if (block.fieldrows) {
+										$.each(block.fieldrows, function(fr, fieldrow) {
+											if (fieldrow.id == fieldrowId) {
+												$.each(fieldrow.fields, function(f, field) {
+													if (field.Note && field.Note.position == 'afterField') {
+														var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+														targetPostnotes[field.position] = label;
+													}
+												});
+												return false;
 											}
 										});
+									}
+								} else {
+									$.each(block.fields, function(f, field) {
+										if (field.Note && field.Note.position == 'afterField') {
+											var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { id: field.position });
+											targetPostnotes[field.position] = label;
+										}
 									});
+									return false;
 								}
-								return false;
 							}
 						});
 						return false;
@@ -2091,10 +2103,10 @@ THE SOFTWARE.
 									var targetFields = Simulators.makeTargetFields(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset, functs.arguments.fieldrow);
 									requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-field', 'select', 'field', Translator.trans('Field'), functs.arguments.field, true, Translator.trans('Select a field'), JSON.stringify(targetFields)));
 								} else if (functs.arguments.prenote) {
-									var targetPrenotes = Simulators.makeTargetPrenotes(functs.arguments.step, functs.arguments.panel, functs.arguments.prenote);
+									var targetPrenotes = Simulators.makeTargetPrenotes(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset, functs.arguments.fieldrow);
 									requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-field', 'select', 'field', Translator.trans('Field'), functs.arguments.prenote, true, Translator.trans('Select a field'), JSON.stringify(targetPrenotes)));
 								} else  if (functs.arguments.postnote) {
-									var targetPostnotes = Simulators.makeTargetPostnotes(functs.arguments.step, functs.arguments.panel, functs.arguments.postnote);
+									var targetPostnotes = Simulators.makeTargetPostnotes(functs.arguments.step, functs.arguments.panel, functs.arguments.fieldset, functs.arguments.fieldrow);
 									requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-field', 'select', 'field', Translator.trans('Field'), functs.arguments.postnote, true, Translator.trans('Select a field'), JSON.stringify(targetPostnotes)));
 								}
 							} else if (functs.arguments.blockinfo) {

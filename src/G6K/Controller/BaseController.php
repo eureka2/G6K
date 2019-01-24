@@ -503,17 +503,16 @@ class BaseController extends Controller {
 				}
 				$footnotes->setDisplayable($disp);
 			}
-			foreach ($step->getActions() as $action) {
-				if ($action->getFor() == 'function') {
-					$function = str_replace("'", '"', $action->getUri());
-					$function = json_decode($function);
-					$this->addFunction($function->function);
-				}
-				break;
-			}
 			$istep += $direction;
 		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
 		$step->setDescription($this->replaceVariables($step->getDescription()));
+		foreach ($step->getActions() as $action) {
+			if ($action->getFor() == 'function') {
+				$function = str_replace("'", '"', $action->getUri());
+				$function = json_decode($function);
+				$this->addFunction($function->function);
+			}
+		}
 		return $step;
 	}
 
@@ -561,7 +560,7 @@ class BaseController extends Controller {
 	 *
 	 */
 	protected function addFunction($function) {
-		if (! in_array($function, $this->simuWidgets)) {
+		if (! in_array($function, $this->simuFunctions)) {
 			$this->simuFunctions[] = $function;
 		}
 	}

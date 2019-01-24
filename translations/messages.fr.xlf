@@ -695,12 +695,12 @@
                 <target>Centrer le contenu</target>
             </trans-unit>
             <trans-unit id="174">
-                <source>chapter</source>
-                <target>chapitre</target>
-            </trans-unit>
-            <trans-unit id="175">
                 <source>Chapter</source>
                 <target>Chapitre</target>
+            </trans-unit>
+            <trans-unit id="175">
+                <source>chapter</source>
+                <target>chapitre</target>
             </trans-unit>
             <trans-unit id="176">
                 <source>Chapter #%id% : %label%</source>
@@ -1755,12 +1755,12 @@
                 <target>Champs</target>
             </trans-unit>
             <trans-unit id="439">
-                <source>FieldSet</source>
-                <target>Groupe de champs</target>
-            </trans-unit>
-            <trans-unit id="440">
                 <source>fieldset</source>
                 <target>groupe de champs</target>
+            </trans-unit>
+            <trans-unit id="440">
+                <source>FieldSet</source>
+                <target>Groupe de champs</target>
             </trans-unit>
             <trans-unit id="441">
                 <source>Fieldset %id% (nolegend)</source>
@@ -2207,12 +2207,12 @@
                 <target>dans le groupe de champs «%fieldset%»</target>
             </trans-unit>
             <trans-unit id="552">
-                <source>Inline</source>
-                <target>En ligne</target>
-            </trans-unit>
-            <trans-unit id="553">
                 <source>inline</source>
                 <target>en ligne</target>
+            </trans-unit>
+            <trans-unit id="553">
+                <source>Inline</source>
+                <target>En ligne</target>
             </trans-unit>
             <trans-unit id="554">
                 <source>Inline PDF</source>
@@ -2615,12 +2615,12 @@
                 <target>max ne peut pas se référer à la donnée elle-même</target>
             </trans-unit>
             <trans-unit id="654">
-                <source>maximum</source>
-                <target>valeur maximale</target>
-            </trans-unit>
-            <trans-unit id="655">
                 <source>Maximum</source>
                 <target>Maximum</target>
+            </trans-unit>
+            <trans-unit id="655">
+                <source>maximum</source>
+                <target>valeur maximale</target>
             </trans-unit>
             <trans-unit id="656">
                 <source>Maximum value</source>
@@ -3311,12 +3311,12 @@
                 <target>Données de la requête en mode POST</target>
             </trans-unit>
             <trans-unit id="828">
-                <source>postnote</source>
-                <target>post note</target>
+                <source>PostNote</source>
+                <target>Note post-champ</target>
             </trans-unit>
             <trans-unit id="829">
-                <source>PostNote</source>
-                <target>Post Note</target>
+                <source>postnote</source>
+                <target>note post-champ</target>
             </trans-unit>
             <trans-unit id="830">
                 <source>pow</source>
@@ -3328,11 +3328,11 @@
             </trans-unit>
             <trans-unit id="832">
                 <source>prenote</source>
-                <target>pre note</target>
+                <target>note pré-champ</target>
             </trans-unit>
             <trans-unit id="833">
                 <source>PreNote</source>
-                <target>Pre Note</target>
+                <target>Note pré-champ</target>
             </trans-unit>
             <trans-unit id="834">
                 <source>Previous</source>
@@ -3595,12 +3595,12 @@
                 <target>Secondaire</target>
             </trans-unit>
             <trans-unit id="899">
-                <source>Section</source>
-                <target>Section</target>
-            </trans-unit>
-            <trans-unit id="900">
                 <source>section</source>
                 <target>section</target>
+            </trans-unit>
+            <trans-unit id="900">
+                <source>Section</source>
+                <target>Section</target>
             </trans-unit>
             <trans-unit id="901">
                 <source>Section #%id%</source>

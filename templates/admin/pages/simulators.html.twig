@@ -556,13 +556,9 @@ THE SOFTWARE.
 									{% set fieldrowobj = fieldsetobj.getFieldRowById(functs.arguments.fieldrow) %}
 									{% set fieldrowlabel = fieldrowobj.label != '' ? fieldrowobj.label : 'Fieldrow %id% (nolabel)'|trans({'%id%': fieldrowobj.id }) %}
 									{{ page.showAttribute(actionElementId, 'text', 'fieldrow', 'Fieldrow'|trans, functs.arguments.fieldrow, fieldrowlabel, true, 'Select a fieldrow'|trans) }}
-								{% endif %}
-								{% if functs.arguments.field is defined %}
-									{{ page.showAttribute(actionElementId, 'text', 'field', 'Field'|trans, functs.arguments.field, functs.arguments.field, true, 'Select a field'|trans) }}
-								{% elseif functs.arguments.prenote is defined %}
-									{{ page.showAttribute(actionElementId, 'text', 'field', 'Field'|trans, functs.arguments.prenote, functs.arguments.prenote, true, 'Select a field'|trans) }}
-								{% elseif functs.arguments.postnote is defined %}
-									{{ page.showAttribute(actionElementId, 'text', 'field', 'Field'|trans, functs.arguments.postnote, functs.arguments.postnote, true, 'Select a field'|trans) }}
+									{{ page.showActionButtonField(actionElementId, functs, fieldrowobj) }}
+								{% else %}
+									{{ page.showActionButtonField(actionElementId, functs, fieldsetobj) }}
 								{% endif %}
 							{% elseif functs.arguments.blockinfo is defined %}
 								{% set blockinfoobj = panelobj.getBlockInfoById(functs.arguments.blockinfo) %}
@@ -572,19 +568,7 @@ THE SOFTWARE.
 									{% set chapterobj = blockinfoobj.getChapterById(functs.arguments.chapter) %}
 									{% set chapterlabel = chapterobj.label != '' ? chapterobj.label : 'Chapter %id% (nolabel)'|trans({'%id%': chapterobj.id }) %}
 									{{ page.showAttribute(actionElementId, 'text', 'chapter', 'Chapter'|trans, functs.arguments.chapter, chapterlabel, true, 'Select a chapter'|trans) }}
-									{% if functs.arguments.section is defined %}
-										{% set sectionobj = chapterobj.getSectionById(functs.arguments.section) %}
-										{% set sectionlabel = sectionobj.label != '' ? sectionobj.label : 'Section %id% (nolabel)'|trans({'%id%': sectionobj.id }) %}
-										{{ page.showAttribute(actionElementId, 'text', 'section', 'Section'|trans, functs.arguments.section, sectionlabel, true, 'Select a section'|trans) }}
-									{% elseif functs.arguments.content is defined %}
-										{% set sectionobj = chapterobj.getSectionById(functs.arguments.content) %}
-										{% set sectionlabel = sectionobj.label != '' ? sectionobj.label : 'Section %id% (nolabel)'|trans({'%id%': sectionobj.id }) %}
-										{{ page.showAttribute(actionElementId, 'text', 'section', 'Section'|trans, functs.arguments.content, sectionlabel, true, 'Select a section'|trans) }}
-									{% elseif functs.arguments.annotations is defined %}
-										{% set sectionobj = chapterobj.getSectionById(functs.arguments.annotations) %}
-										{% set sectionlabel = sectionobj.label != '' ? sectionobj.label : 'Section %id% (nolabel)'|trans({'%id%': sectionobj.id }) %}
-										{{ page.showAttribute(actionElementId, 'text', 'section', 'Section'|trans, functs.arguments.annotations, sectionlabel, true, 'Select a section'|trans) }}
-									{% endif %}
+									{{ page.showActionButtonSection(actionElementId, functs, chapterobj) }}
 								{% endif %}
 							{% endif %}
 						{% endif %}
@@ -597,6 +581,40 @@ THE SOFTWARE.
 	</div>
 </div>
 {{ page.closeCollapsiblePanel() }}  
+{% endmacro %}
+
+{% macro showActionButtonField(actionElementId, functs, parentobj) %}
+{% import _self as page %}
+{% set fieldPosition = '' %}
+{% if functs.arguments.prenote is defined %}
+	{% set fieldPosition = functs.arguments.prenote %}
+{% elseif functs.arguments.postnote is defined %}
+	{% set fieldPosition = functs.arguments.postnote %}
+{% elseif functs.arguments.field is defined %}
+	{% set fieldPosition = functs.arguments.field %}
+{% endif %}
+{% if fieldPosition != '' %}
+{% set fieldobj = parentobj.getFieldByPosition(fieldPosition) %}
+{% set fieldlabel = fieldobj.label != '' ? fieldobj.label : 'Field %id% (nolabel)'|trans({'%id%': fieldobj.id }) %}
+{{ page.showAttribute(actionElementId, 'text', 'field', 'Field'|trans, fieldPosition, fieldlabel, true, 'Select a field'|trans) }}
+{% endif %}
+{% endmacro %}
+
+{% macro showActionButtonSection(actionElementId, functs, parentobj) %}
+{% import _self as page %}
+{% set sectionId = '' %}
+{% if functs.arguments.content is defined %}
+	{% set sectionId = functs.arguments.content %}
+{% elseif functs.arguments.annotations is defined %}
+	{% set sectionId = functs.arguments.annotations %}
+{% elseif functs.arguments.section is defined %}
+	{% set sectionId = functs.arguments.section %}
+{% endif %}
+{% if sectionId != '' %}
+{% set sectionobj = parentobj.getSectionById(sectionId) %}
+{% set sectionlabel = sectionobj.label != '' ? sectionobj.label : 'Section %id% (nolabel)'|trans({'%id%': sectionobj.id }) %}
+{{ page.showAttribute(actionElementId, 'text', 'section', 'Section'|trans, sectionId, sectionlabel, true, 'Select a section'|trans) }}
+{% endif %}
 {% endmacro %}
 
 {% macro showSources(simulator) %}
