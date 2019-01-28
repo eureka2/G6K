@@ -25,65 +25,43 @@ THE SOFTWARE.
 (function (global) {
 	'use strict';
 
-	function copyToClipboard(clickable, parameters, callback) {
+	function copyToClipboard(clickable, func, callback) {
+		var parameters = func.arguments;
+		var message = 'The text is copied, click (ctrl/cmd + v) to paste it on your text editor.';
 		var g6k = clickable.data('g6k');
-		if (parameters.data) {
+		if (func.appliedto == 'data'){
 			var name = g6k.getDataNameById(parameters.data);
 			clickable.on('click', function(event) {
 				event.preventDefault();
 				var data = g6k.getData(name);
 				copyTextToClipboard(data.value);
 				if (callback) {
-					callback(true, 'The text is copied, click (ctrl/cmd + v) to paste it on your text editor.');
+					callback(true, message);
+				}
+			});
+		} else if (func.appliedto == 'page') {
+			clickable.on('click', function(event) {
+				event.preventDefault();
+				copyHtmlToClipboard($('body').html());
+				if (callback) {
+					callback(true, message);
+				}
+			});
+		} else if (func.appliedto == 'article') {
+			clickable.on('click', function(event) {
+				event.preventDefault();
+				copyHtmlToClipboard($('.main-container article').html());
+				if (callback) {
+					callback(true, message);
 				}
 			});
 		} else {
-			var element = parameters.step;
-			if (parameters.panel) {
-				element += '-panel-' + parameters.panel;
-				if (parameters.blockinfo) {
-					element += '-blockinfo-' + parameters.blockinfo;
-					if (parameters.chapter) {
-						element += '-chapter-' + parameters.chapter;
-						if (parameters.section) {
-							element += '-section-' + parameters.section;
-						} else if (parameters.content) {
-							element += '-section-' + parameters.content + '-content';
-						} else if (parameters.annotations) {
-							element += '-section-' + parameters.annotations + '-annotations';
-						}
-					}
-					element = document.getElementById(element);
-				} else if (parameters.fieldset) {
-					element += '-fieldset-' + parameters.fieldset;
-					if (parameters.fieldrow) {
-						element += '-fieldrow-' + parameters.fieldrow;
-					}
-					if (parameters.field) {
-						var elementObj = $('#' + element).find("[data-field-position='" + parameters.field + "']");
-						element = elementObj[0];
-					} else if (parameters.prenote) {
-						var elementObj = $('#' + element).find("[data-field-position='" + parameters.prenote + "']");
-						element = elementObj.find('.pre-note')[0];
-					} else if (parameters.postnote) {
-						var elementObj = $('#' + element).find("[data-field-position='" + parameters.postnote + "']");
-						element = elementObj.find('.post-note')[0];
-					} else {
-						element = document.getElementById(element);
-					}
-				} else {
-					element = document.getElementById(element);
-				}
-			} else if (parameters.footnote) {
-				element = document.getElementById('foot-note-' + parameters.footnote);
-			} else {
-				element = document.getElementById(element);
-			}
+			var element = g6k.getStepChildElement(parameters);
 			clickable.on('click', function(event) {
 				event.preventDefault();
 				copyElementToClipboard(element);
 				if (callback) {
-					callback(true, 'The text is copied, click (ctrl/cmd + v) to paste it on your text editor.');
+					callback(true, message);
 				}
 			});
 		}
@@ -140,6 +118,38 @@ THE SOFTWARE.
 				}
 			}
 		}
+
+		function copyHtmlToClipboard(html) {
+			var clipboardDiv = document.createElement('div');
+			clipboardDiv.style.fontSize = '12pt'; // Prevent zooming on iOS
+			// Reset box model
+			clipboardDiv.style.border = '0';
+			clipboardDiv.style.padding = '0';
+			clipboardDiv.style.margin = '0';
+			// Move element out of screen 
+			clipboardDiv.style.position = 'fixed';
+			clipboardDiv.style['right'] = '-9999px';
+			clipboardDiv.style.top = (window.pageYOffset || document.documentElement.scrollTop) + 'px';
+			// more hiding
+			clipboardDiv.setAttribute('readonly', '');
+			clipboardDiv.style.opacity = 0;
+			clipboardDiv.style.pointerEvents = 'none';
+			clipboardDiv.style.zIndex = -1;
+			clipboardDiv.setAttribute('tabindex', '0'); // so it can be focused
+			clipboardDiv.innerHTML = '';
+			document.body.appendChild(clipboardDiv);
+			clipboardDiv.innerHTML=html;
+			var focused = document.activeElement;
+			clipboardDiv.focus();
+			window.getSelection().removeAllRanges();  
+			var range = document.createRange(); 
+			range.setStartBefore(clipboardDiv.firstChild);
+			range.setEndAfter(clipboardDiv.lastChild);
+			window.getSelection().addRange(range);  
+			document.execCommand('copy');
+			clipboardDiv.parentNode.removeChild(clipboardDiv);
+		}
+
 	}
 
 	global.copyToClipboard = copyToClipboard;

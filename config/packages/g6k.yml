@@ -139,6 +139,19 @@ parameters:
             css: 
             js: 
                 - js/copyToClipboard.js
+        printElement:
+            label: Prints the contents of an element
+            css: 
+            js: 
+                - js/printElement.js
+                - lib/printThis.js
+        printToPDF:
+            label: Prints the contents of an element in PDF format
+            css: 
+            js: 
+                - js/printToPDF.js
+                - lib/jspdf.min.js
+                - lib/html2canvas.min.js
 
     # api configuration
     # api:

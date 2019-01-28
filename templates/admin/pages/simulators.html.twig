@@ -204,6 +204,15 @@ THE SOFTWARE.
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.sources.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.datas.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.actionbuttons.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.footnotes.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.panels.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.fieldsets.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.fieldrows.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.fields.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.blockinfos.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.chapters.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.sections.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.rules.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.profiles.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/css-validator/csslint.min.js') }}"></script>
@@ -531,44 +540,41 @@ THE SOFTWARE.
 				{% if action.for == 'function' %}
 					{% set functs = action.uriDecoded %}
 					{{ page.showAttribute(actionElementId, 'select', 'function', 'Function'|trans, functs.function, functs.function, true, 'Select a function'|trans, context.functions) }}
-					{{ page.showAttribute(actionElementId, 'select', 'appliedto', 'Applied to'|trans, functs.appliedto, functs.appliedto, true, 'Select a target'|trans, { 'data': 'Data'|trans, 'datagroup': 'Datagroup'|trans, 'step': 'Step'|trans, 'panel': 'Panel'|trans, 'fieldset': 'FieldSet'|trans, 'fieldrow': 'Fieldrow'|trans, 'field': 'Field'|trans, 'prenote': 'PreNote'|trans, 'postnote': 'PostNote'|trans, 'blockinfo': 'BlockInfo'|trans, 'chapter': 'Chapter'|trans, 'section': 'Section'|trans, 'content': 'Section content'|trans, 'annotations': 'Section annotations'|trans, 'footnote': 'FootNote'|trans } ) }}
+					{{ page.showAttribute(actionElementId, 'select', 'appliedto', 'Applied to'|trans, functs.appliedto, functs.appliedto, true, 'Select a target'|trans, { 'page': 'Full page'|trans, 'article': 'Simulation block'|trans, 'data': 'Data'|trans, 'datagroup': 'Datagroup'|trans, 'step': 'Step'|trans, 'panel': 'Panel'|trans, 'fieldset': 'FieldSet'|trans, 'fieldrow': 'Fieldrow'|trans, 'field': 'Field'|trans, 'prenote': 'PreNote'|trans, 'postnote': 'PostNote'|trans, 'blockinfo': 'BlockInfo'|trans, 'chapter': 'Chapter'|trans, 'section': 'Section'|trans, 'content': 'Section content'|trans, 'annotations': 'Section annotations'|trans, 'footnote': 'FootNote'|trans } ) }}
 					{% if functs.arguments.data is defined %}
 						{% set datalabel =  step.simulator.getDataById(functs.arguments.data).label %}
-						{{ page.showAttribute(actionElementId, 'text', 'data', 'Data'|trans, functs.arguments.data, datalabel, true, 'Select a data'|trans) }}
+						{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'data', 'Data'|trans, functs.arguments.data, datalabel, true, 'Select a data'|trans) }}
 					{% elseif functs.arguments.datagroup is defined %}
 						{% set datagrouplabel =  step.simulator.getDataGroupById(functs.arguments.datagroup).label %}
-						{{ page.showAttribute(actionElementId, 'select', 'datagroup', 'Datagroup'|trans, functs.arguments.datagroup, datagrouplabel, true, 'Select a datagroup'|trans) }}
+						{{ page.showAttribute(actionElementId ~ '-argument', 'select', 'datagroup', 'Datagroup'|trans, functs.arguments.datagroup, datagrouplabel, true, 'Select a datagroup'|trans) }}
 					{% elseif functs.arguments.step is defined %}
-						{% set stepobj = step.simulator.getStepByName(functs.arguments.step) %}
-						{% set steplabel = stepobj.label != '' ? stepobj.label : 'Step %id% (nolabel)'|trans({'%id%': stepobj.id }) %}
-						{{ page.showAttribute(actionElementId, 'text', 'step', 'Step'|trans, functs.arguments.step, steplabel, true, 'Select a step'|trans) }}
 						{% if functs.arguments.footnote is defined %}
-							{{ page.showAttribute(actionElementId, 'text', 'footnote', 'Footnote'|trans, functs.arguments.footnote, functs.arguments.footnote, true, 'Select a footnote'|trans) }}
+							{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'footnote', 'Footnote'|trans, functs.arguments.footnote, functs.arguments.footnote, true, 'Select a footnote'|trans) }}
 						{% elseif functs.arguments.panel is defined %}
-							{% set panelobj = stepobj.getPanelById(functs.arguments.panel) %}
+							{% set panelobj = step.getPanelById(functs.arguments.panel) %}
 							{% set panellabel = panelobj.label != '' ? panelobj.label : 'Panel %id% (nolabel)'|trans({'%id%': panelobj.id }) %}
-							{{ page.showAttribute(actionElementId, 'text', 'panel', 'Panel'|trans, functs.arguments.panel, panellabel, true, 'Select a panel'|trans) }}
+							{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'panel', 'Panel'|trans, functs.arguments.panel, panellabel, true, 'Select a panel'|trans) }}
 							{% if functs.arguments.fieldset is defined %}
 								{% set fieldsetobj = panelobj.getFieldSetById(functs.arguments.fieldset) %}
 								{% set fieldsetlegend = fieldsetobj.legend and fieldsetobj.legend.content != '' ? fieldsetobj.legend.content : 'Fieldset %id% (nolegend)'|trans({'%id%': fieldsetobj.id }) %}
-								{{ page.showAttribute(actionElementId, 'text', 'fieldset', 'FieldSet'|trans, functs.arguments.fieldset, fieldsetlegend, true, 'Select a fieldset'|trans) }}
+								{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'fieldset', 'FieldSet'|trans, functs.arguments.fieldset, fieldsetlegend, true, 'Select a fieldset'|trans) }}
 								{% if functs.arguments.fieldrow is defined %}
 									{% set fieldrowobj = fieldsetobj.getFieldRowById(functs.arguments.fieldrow) %}
 									{% set fieldrowlabel = fieldrowobj.label != '' ? fieldrowobj.label : 'Fieldrow %id% (nolabel)'|trans({'%id%': fieldrowobj.id }) %}
-									{{ page.showAttribute(actionElementId, 'text', 'fieldrow', 'Fieldrow'|trans, functs.arguments.fieldrow, fieldrowlabel, true, 'Select a fieldrow'|trans) }}
-									{{ page.showActionButtonField(actionElementId, functs, fieldrowobj) }}
+									{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'fieldrow', 'Fieldrow'|trans, functs.arguments.fieldrow, fieldrowlabel, true, 'Select a fieldrow'|trans) }}
+									{{ page.showActionButtonField(actionElementId ~ '-argument', functs, fieldrowobj) }}
 								{% else %}
-									{{ page.showActionButtonField(actionElementId, functs, fieldsetobj) }}
+									{{ page.showActionButtonField(actionElementId ~ '-argument', functs, fieldsetobj) }}
 								{% endif %}
 							{% elseif functs.arguments.blockinfo is defined %}
 								{% set blockinfoobj = panelobj.getBlockInfoById(functs.arguments.blockinfo) %}
 								{% set blockinfolabel = blockinfoobj.label != '' ? blockinfoobj.label : 'Blockinfo %id% (nolabel)'|trans({'%id%': blockinfoobj.id }) %}
-								{{ page.showAttribute(actionElementId, 'text', 'blockinfo', 'BlockInfo'|trans, functs.arguments.blockinfo, blockinfolabel, true, 'Select a blockinfo'|trans) }}
+								{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'blockinfo', 'BlockInfo'|trans, functs.arguments.blockinfo, blockinfolabel, true, 'Select a blockinfo'|trans) }}
 								{% if functs.arguments.chapter is defined %}
 									{% set chapterobj = blockinfoobj.getChapterById(functs.arguments.chapter) %}
 									{% set chapterlabel = chapterobj.label != '' ? chapterobj.label : 'Chapter %id% (nolabel)'|trans({'%id%': chapterobj.id }) %}
-									{{ page.showAttribute(actionElementId, 'text', 'chapter', 'Chapter'|trans, functs.arguments.chapter, chapterlabel, true, 'Select a chapter'|trans) }}
-									{{ page.showActionButtonSection(actionElementId, functs, chapterobj) }}
+									{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'chapter', 'Chapter'|trans, functs.arguments.chapter, chapterlabel, true, 'Select a chapter'|trans) }}
+									{{ page.showActionButtonSection(actionElementId ~ '-argument', functs, chapterobj) }}
 								{% endif %}
 							{% endif %}
 						{% endif %}

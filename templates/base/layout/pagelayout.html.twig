@@ -158,46 +158,6 @@ $(function(){
 	};
 	var g6k = new G6k(options);
 	g6k.run();
-	$(':input[data-widget]').each(function() {
-		var widget = window[$(this).attr('data-widget')];
-		var that = $(this);
-		that.data('g6k', g6k);
-		widget.call(null, that, options, function (value, text, preserveVal) {
-			if (!preserveVal) {
-				that.val(value);
-			}
-			that.trigger('change');
-		});
-	});
-	
-	$('div.action_buttons > button[data-function]').each(function() {
-		var func = $(this).attr('data-function');
-		func = func.replace(/'/g, '"');
-		func = $.parseJSON(func);
-		var funct = window[func.function];
-		var that = $(this);
-		that.data('g6k', g6k);
-		funct.call(null, that, func.arguments, function(ok, message) {
-			if (message) {
-				if (ok) {
-					var mess = $('<div>', { 
-						'class': func.function.toLowerCase() + '-function-status', 
-						'aria-live': 'assertive', 
-						'html': '<p>' + Translator.trans(message) + '</p>'
-					});
-					that.parent().after(mess);
-						mess.fadeOut(7000, function() {
-						setTimeout(function() {
-							mess.remove();
-						}, 10);
-					});
-				} else {
-					g6k.setGlobalError(message);
-				}
-			}
-		});
-	});
-	
 	{% endif %}
 	{% endif %}
 });

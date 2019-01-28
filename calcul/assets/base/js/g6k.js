@@ -3421,6 +3421,8 @@ THE SOFTWARE.
 					function(simu){
 						self.simu = simu;
 						self.processFields();
+						self.initializeWidgets();
+						self.initializeExternalFunctions();
 					},
 					"json"
 				).fail(function(jqXHR, textStatus, errorThrown) {
@@ -3472,6 +3474,55 @@ THE SOFTWARE.
 				}
 			});
 			return dataName;
+		},
+
+		getStep: function() {
+			return this.simu.step;
+		},
+
+		getStepChildElement: function(parameters) {
+			var element = this.simu.step.name;
+			if (parameters.panel) {
+				element += '-panel-' + parameters.panel;
+				if (parameters.blockinfo) {
+					element += '-blockinfo-' + parameters.blockinfo;
+					if (parameters.chapter) {
+						element += '-chapter-' + parameters.chapter;
+						if (parameters.section) {
+							element += '-section-' + parameters.section;
+						} else if (parameters.content) {
+							element += '-section-' + parameters.content + '-content';
+						} else if (parameters.annotations) {
+							element += '-section-' + parameters.annotations + '-annotations';
+						}
+					}
+					element = document.getElementById(element);
+				} else if (parameters.fieldset) {
+					element += '-fieldset-' + parameters.fieldset;
+					if (parameters.fieldrow) {
+						element += '-fieldrow-' + parameters.fieldrow;
+					}
+					if (parameters.field) {
+						var elementObj = $('#' + element).find("[data-field-position='" + parameters.field + "']");
+						element = elementObj[0];
+					} else if (parameters.prenote) {
+						var elementObj = $('#' + element).find("[data-field-position='" + parameters.prenote + "']");
+						element = elementObj.find('.pre-note')[0];
+					} else if (parameters.postnote) {
+						var elementObj = $('#' + element).find("[data-field-position='" + parameters.postnote + "']");
+						element = elementObj.find('.post-note')[0];
+					} else {
+						element = document.getElementById(element);
+					}
+				} else {
+					element = document.getElementById(element);
+				}
+			} else if (parameters.footnote) {
+				element = document.getElementById('foot-note-' + parameters.footnote);
+			} else {
+				element = document.getElementById(element);
+			}
+			return element;
 		},
 
 		isVisible: function (name) {
@@ -5017,6 +5068,62 @@ THE SOFTWARE.
 			} else {
 				self.hideObject($("div.foot-notes"));
 			}
+		},
+
+		initializeWidgets: function() {
+			var self = this;
+			var options = { 
+				locale: self.locale,
+				mobile: self.isMobile,
+				dateFormat: self.dateFormat,
+				decimalPoint: self.decimalPoint,
+				moneySymbol: self.moneySymbol,
+				symbolPosition: self.symbolPosition,
+				groupingSeparator: self.groupingSeparator,
+				groupingSize: self.groupingSize
+			};
+			$(':input[data-widget]').each(function() {
+				var widget = window[$(this).attr('data-widget')];
+				var that = $(this);
+				that.data('g6k', self);
+				widget.call(null, that, options, function (value, text, preserveVal) {
+					if (!preserveVal) {
+						that.val(value);
+					}
+					that.trigger('change');
+				});
+			});
+		},
+
+		initializeExternalFunctions: function() {
+			var self = this;
+			$('div.action_buttons > button[data-function]').each(function() {
+				var func = $(this).attr('data-function');
+				func = func.replace(/'/g, '"');
+				func = $.parseJSON(func);
+				var funct = window[func.function];
+				var that = $(this);
+				that.data('g6k', self);
+				funct.call(null, that, func, function(ok, message) {
+					if (message) {
+						if (ok) {
+							var mess = $('<div>', { 
+								'class': func.function.toLowerCase() + '-function-status', 
+								'aria-live': 'assertive', 
+								'html': '<p>' + Translator.trans(message) + '</p>'
+							});
+							that.parent().after(mess);
+								mess.fadeOut(7000, function() {
+								setTimeout(function() {
+									mess.remove();
+								}, 10);
+							});
+						} else {
+							g6k.setGlobalError(message);
+						}
+					}
+				});
+			});
 		},
 
 		hideObject: function(obj) {
