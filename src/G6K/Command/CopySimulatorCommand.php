@@ -222,6 +222,7 @@ class CopySimulatorCommand extends SimulatorCommandBase
 				$simulator->documentElement->setAttribute('defaultView', $view);
 			}
 		}
+		$this->copyTemplates($simulator, $anotherg6kpath, $fsystem, $input, $output);
 		$this->fixDatasourcesReference($simulator, $anotherg6kpath, $input, $output);
 		$this->fixNewAttributes($simulator);
 		if (!empty($widgets)) {
@@ -265,6 +266,23 @@ class CopySimulatorCommand extends SimulatorCommandBase
 						$copieds[] = $datasourcename;
 					}
 				}
+			}
+		}
+	}
+
+	private function copyTemplates(\DOMDocument $simulator, string $anotherg6kpath, Filesystem $fsystem, InputInterface $input, OutputInterface $output) {
+		$xpath = new \DOMXPath($simulator);
+		$steps = $xpath->query("/Simulator/Steps/Step");
+		$len = $steps->length;
+		$copieds = [];
+		$viewsDir1 = $this->findTemplatesDirectory($anotherg6kpath, $input, $output);
+		$viewsDir2 = $this->projectDir."/templates";
+		$view = $simulator->documentElement->getAttribute('defaultView');
+		for($i = 0; $i < $len; $i++) {
+			$step = $this->getDOMElementItem($steps, $i);
+			$template = str_replace(':', '/', $step->getAttribute('template'));
+			if (! $fsystem->exists($viewsDir2.'/'.$view.'/'.$template)) {
+				$fsystem->copy($viewsDir1.'/'.$view.'/'.$template, $viewsDir2.'/'.$view.'/'.$template);
 			}
 		}
 	}
