@@ -3410,18 +3410,17 @@ THE SOFTWARE.
 				e.stopPropagation();
 				return false;
 			});
+			this.initializeWidgets();
 			if (this.isDynamic) {
 				var view = $('input[name=view]').eq(0).val();
 				var step = $('input[name=step]').eq(0).val();
 				var token = $('input[name=_csrf_token]').eq(0).val();
 				var path = $(location).attr('pathname').replace("/"+view, "").replace(/\/+$/, "") + "/Default/fields";
-				var self = this;
 				$.post(path,
 					{stepId: step, _csrf_token: token },
 					function(simu){
 						self.simu = simu;
 						self.processFields();
-						self.initializeWidgets();
 						self.initializeExternalFunctions();
 					},
 					"json"
