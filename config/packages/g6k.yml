@@ -146,7 +146,7 @@ parameters:
                 - js/printElement.js
                 - lib/printThis.js
         printToPDF:
-            label: Prints the contents of an element in PDF format
+            label: Takes a screenshot of part of the page in PDF format
             css: 
             js: 
                 - js/printToPDF.js
