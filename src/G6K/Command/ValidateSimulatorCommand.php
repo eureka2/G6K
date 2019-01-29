@@ -257,9 +257,11 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 	 */
 	private function checkDataReferences(string $simu, \DOMXPath $simulatorxpath, OutputInterface $output) {
 		$ok = true;
-		$dataRefs = $simulatorxpath->query("//Field/@data|//Parameter/@data|//Profile/Data/@id");
+		$usedData = array();
+		$dataRefs = $simulatorxpath->query("//Field/@data|//Parameter/@data|//Profile/Data/@id|//BusinessRule//Action/@data");
 		foreach($dataRefs as $ref) {
 			$data = $ref->nodeValue;
+			$usedData[$data] = true;
 			$datas = $simulatorxpath->query("//DataSet//Data[@id='".$data."']");
 			if ($datas->length == 0) {
 				$this->error($output, "In line %line%, the data '%data%' referenced by an element '%element%' of '%simulatorname%' doesn't exists.", array('%line%' => $ref->getLineNo(), '%data%' => $data, '%element%' => $ref->ownerElement->getNodePath(), '%simulatorname%' => $simu));
@@ -270,11 +272,23 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 		foreach($texts as $text) {
 			if (preg_match_all("|\#(\d+)|",  $text->nodeValue, $m) !== false) {
 				foreach($m[1] as $data) {
+					$usedData[$data] = true;
 					$datas = $simulatorxpath->query("//DataSet//Data[@id='".$data."']");
 					if ($datas->length == 0) {
 						$this->error($output, "In line %line%, the data '%data%' referenced in the element '%element%' text of '%simulatorname%' doesn't exists.", array('%line%' => $text->getLineNo(), '%data%' => $data, '%element%' => $text->getNodePath(), '%simulatorname%' => $simu));
 						$ok = false;
 					}
+				}
+			}
+		}
+		$datas = $simulatorxpath->query("//DataSet//Data");
+		$len = $datas->length;
+		if ($len > 0) {
+			for($i = 0; $i < $len; $i++) {
+				$data = $this->getDOMElementItem($datas, $i);
+				$id = $data->getAttribute('id');
+				if (!isset($usedData[$id])) {
+					$this->info($output, "NOTICE: The data #%id%: %name% isn't used.", array('%id%' => $id, '%name%' => $data->getAttribute('name')));
 				}
 			}
 		}
