@@ -79,6 +79,7 @@ t.add("This value does not match the expected {{ charset }} charset.", "Deze waa
 t.add("This is not a valid Business Identifier Code (BIC).", "Dit is geen geldige bedrijfsidentificatiecode (BIC\/SWIFT).", "validators", "nl");
 t.add("Error", "Fout", "validators", "nl");
 t.add("This is not a valid UUID.", "Dit is geen geldige UUID.", "validators", "nl");
+t.add("This value should be a multiple of {{ compared_value }}.", "Deze waarde moet een veelvoud zijn van {{ compared_value }}.", "validators", "nl");
 t.add("This form should not contain extra fields.", "Dit formulier mag geen extra velden bevatten.", "validators", "nl");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Het ge\u00fcploade bestand is te groot. Probeer een kleiner bestand te uploaden.", "validators", "nl");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "De CSRF-token is ongeldig. Probeer het formulier opnieuw te versturen.", "validators", "nl");

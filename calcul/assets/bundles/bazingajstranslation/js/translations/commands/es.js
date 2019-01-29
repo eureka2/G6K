@@ -146,6 +146,7 @@ t.add("Multiple templates directories were found in the other instance '%s%'", "
 t.add("Multiple templates directories were found in the other instance, please choose one :", "Se encontraron varios directorios de plantillas en la otra instancia, elija una:", "commands", "es");
 t.add("No assets from this view were found in the manifest", "No se encontraron recursos de esta vista en el manifiesto.", "commands", "es");
 t.add("No column header in delimited text file.", "No hay encabezado de columna en el archivo de texto delimitado.", "commands", "es");
+t.add("NOTICE: The data #%id%: %name% isn't used.", "AVISO: El dato #%id%: %name% no se usa.", "commands", "es");
 t.add("One or more data sources to exclude when &lt;datasourcename&gt; is 'all'.", "Una o m\u00e1s fuentes de datos para excluir cuando &lt; datasourcename &gt; es all'.", "commands", "es");
 t.add("One or more simulators to exclude when &lt;simulatorname&gt; is 'all'.", "Uno o m\u00e1s simuladores para excluir cuando &lt; simulatorname &gt; es all'.", "commands", "es");
 t.add("One or more views to exclude when &lt;viewname&gt; is 'all'.", "Una o m\u00e1s vistas para excluir cuando &lt; viewname &gt; es all'.", "commands", "es");

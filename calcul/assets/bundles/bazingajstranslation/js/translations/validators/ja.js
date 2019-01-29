@@ -81,6 +81,7 @@ t.add("This is not a valid Business Identifier Code (BIC).", "\u6709\u52b9\u306a
 t.add("Error", "\u30a8\u30e9\u30fc", "validators", "ja");
 t.add("This is not a valid UUID.", "\u6709\u52b9\u306aUUID\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "validators", "ja");
 t.add("This value should be a multiple of {{ compared_value }}.", "{{ compared_value }}\u306e\u500d\u6570\u3067\u306a\u3051\u308c\u3070\u306a\u308a\u307e\u305b\u3093\u3002", "validators", "ja");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "\u3053\u306eSWIFT\u30b3\u30fc\u30c9\u306fIBAN\u30b3\u30fc\u30c9\uff08{{ iban }}\uff09\u306b\u95a2\u9023\u4ed8\u3051\u3089\u308c\u3066\u3044\u307e\u305b\u3093\u3002", "validators", "ja");
 t.add("This form should not contain extra fields.", "\u30d5\u30a3\u30fc\u30eb\u30c9\u30b0\u30eb\u30fc\u30d7\u306b\u8ffd\u52a0\u306e\u30d5\u30a3\u30fc\u30eb\u30c9\u3092\u542b\u3093\u3067\u306f\u306a\u308a\u307e\u305b\u3093\u3002", "validators", "ja");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "\u30a2\u30c3\u30d7\u30ed\u30fc\u30c9\u3055\u308c\u305f\u30d5\u30a1\u30a4\u30eb\u304c\u5927\u304d\u3059\u304e\u307e\u3059\u3002\u5c0f\u3055\u306a\u30d5\u30a1\u30a4\u30eb\u3067\u518d\u5ea6\u30a2\u30c3\u30d7\u30ed\u30fc\u30c9\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "validators", "ja");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF\u30c8\u30fc\u30af\u30f3\u304c\u7121\u52b9\u3067\u3059\u3001\u518d\u9001\u4fe1\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "validators", "ja");
