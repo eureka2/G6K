@@ -2989,8 +2989,11 @@
 
 	$.fn.datepicker = function (option, value) {
 		if (typeof option == 'string' && $(this).length == 1) {
-			var data = $(this).eq(0).data('ab.datepicker');
-			if (data) return data[option](value);
+			var $this = $(this);
+			setTimeout(function() {
+				var data = $this.eq(0).data('ab.datepicker');
+				if (data) return data[option](value);
+			}, 0);
 		} else {
 			return this.each(function () {
 				var $this   = $(this);
