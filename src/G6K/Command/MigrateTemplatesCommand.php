@@ -122,7 +122,7 @@ class MigrateTemplatesCommand extends CommandBase
 				$content = preg_replace("|asset\('assets/admin/js/libs/g6k\.|m", "asset('assets/admin/js/g6k.", $content);
 				$content = preg_replace("|asset\('bundles/eurekag6k/|m", "asset('assets/", $content);
 				$content = preg_replace("|\\\$\([\"']input\.listbox\-input[\"']\)\.listbox|m", "$(\":input[data-widget='abListbox']\").listbox", $content);
-				$content = preg_replace("|\\\$\([\"']input\.date[\"']\)\.datepicker|m", "$(\":input[data-widget='abDatepicker]\").datepicker", $content);
+				$content = preg_replace("|\\\$\([\"']input\.date[\"']\)\.datepicker|m", "$(\":input[data-widget='abDatepicker']\").datepicker", $content);
 				$fsystem->dumpFile($path, $content);
 			} 
 		} catch (\Exception $e) {
