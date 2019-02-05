@@ -246,8 +246,13 @@ class SimulatorsAdminController extends BaseAdminController {
 			$this->simu = new Simulator($this);
 			$this->simu->loadEmptySimulator();
 			$this->loadBusinessRules();
+		} elseif ($crud == 'clone') {
+			$hiddens['action'] = 'clone';
+			$hiddens['cloned'] = $simulator;
+			$this->simu->setName($this->getTranslator()->trans("new"));
+			$this->simu->setLabel($this->getTranslator()->trans("Simulator of calculation of ..."));
 		} elseif ($crud == 'save') {
-			if (isset($form['create'])) {
+			if (isset($form['create']) || isset($form['clone'])) {
 				return $this->doCreate($simulator, $form);
 			} elseif (isset($form['update'])) {
 				$this->update($simulator, $form);
@@ -577,7 +582,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$this->simu->setGroupingSize($simulatorData['groupingSize']);
 		$this->simu->setMoneySymbol($simulatorData['moneySymbol']);
 		$this->simu->setSymbolPosition($simulatorData['symbolPosition']);
-		if (isset($form['create'])) {
+		if (isset($form['create']) || isset($form['clone'])) {
 			$simulator = $simulatorData["name"];
 		}
 
@@ -620,14 +625,16 @@ class SimulatorsAdminController extends BaseAdminController {
 		$profiles = json_decode($form['profiles'], true);
 		$this->simu->setProfiles($this->makeProfiles($profiles));
 
-		if (isset($form['create'])) {
+		if (isset($form['create']) || isset($form['clone'])) {
 			$this->simu->save($this->simulatorsDir."/".$simulator.".xml");
 		} else {
 			$this->simu->save($this->simulatorsDir."/work/".$simulator.".xml");
 		}
 		$view = $this->simu->getDefaultView();
 		if ($view != '' && ! $fs->exists($this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css')) {
-			if ($fs->exists($this->publicDir.'/assets/'.$view.'/css/common.css')) {
+			if (isset($form['clone']) && $fs->exists($this->publicDir.'/assets/'.$view.'/css/'.$form['cloned'].'.css')) {
+				$fs->copy($this->publicDir.'/assets/'.$view.'/css/'.$form['cloned'].'.css', $this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css');
+			} elseif ($fs->exists($this->publicDir.'/assets/'.$view.'/css/common.css', $this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css')) {
 				$fs->dumpFile($this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css', '@import "common.css";'."\n");
 				$this->runConsoleCommand(array(
 					'command' => 'g6k:assets:manifest:add-asset',

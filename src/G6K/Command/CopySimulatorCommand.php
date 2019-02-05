@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2018 Jacques Archimède
+Copyright (c) 2018-2019 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -282,7 +282,16 @@ class CopySimulatorCommand extends SimulatorCommandBase
 			$step = $this->getDOMElementItem($steps, $i);
 			$template = str_replace(':', '/', $step->getAttribute('template'));
 			if (! $fsystem->exists($viewsDir2.'/'.$view.'/'.$template)) {
-				$fsystem->copy($viewsDir1.'/'.$view.'/'.$template, $viewsDir2.'/'.$view.'/'.$template);
+				$contents = file_get_contents($viewsDir1.'/'.$view.'/'.$template);
+				$contents = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $contents);
+				$contents = preg_replace("|asset\('bundles/eurekag6k/base/js/|m", "asset('assets/base/js/libs/", $contents);
+				$contents = preg_replace("|asset\('assets/base/js/libs/g6k\.|m", "asset('assets/base/js/g6k.", $contents);
+				$contents = preg_replace("|asset\('bundles/eurekag6k/admin/js/|m", "asset('assets/admin/js/libs/", $contents);
+				$contents = preg_replace("|asset\('assets/admin/js/libs/g6k\.|m", "asset('assets/admin/js/g6k.", $contents);
+				$contents = preg_replace("|asset\('bundles/eurekag6k/|m", "asset('assets/", $contents);
+				$contents = preg_replace("|\\\$\([\"']input\.listbox\-input[\"']\)\.listbox|m", "$(\":input[data-widget='abListbox']\").listbox", $contents);
+				$contents = preg_replace("|\\\$\([\"']input\.date[\"']\)\.datepicker|m", "$(\":input[data-widget='abDatepicker']\").datepicker", $contents);
+				$fsystem->dumpFile($viewsDir2.'/'.$view.'/'.$template, $contents);
 			}
 		}
 	}

@@ -587,6 +587,17 @@ THE SOFTWARE.
 			simulatorContainer.find('.alert').show();
 			return false;
 		}
+		if ($("input[name='clone']").length > 0 || $("input[name='create']").length > 0) {
+			var simulators = [];
+			$('#simulators ul.nav li.nav-item a').each(function() {
+				simulators.push($(this).attr('href').replace(/^.*\/([^\/]+)$/, '$1'));
+			});
+			if (simulators.indexOf(name) >= 0) {
+				simulatorContainer.find('.error-message').text(Translator.trans("The simulator « %simulator% » already exists.", { 'simulator': name}));
+				simulatorContainer.find('.alert').show();
+				return false;
+			}
+		}
 		if (name == 'all') {
 			simulatorContainer.find('.error-message').text(Translator.trans("The name of the simulator can't be 'all'"));
 			simulatorContainer.find('.alert').show();
@@ -1067,7 +1078,7 @@ $(function(){
 				$(this).addClass('expand-all').removeClass('collapse-all');
 			}
 		});
-		if ( $("#save-form input[name='create']" ).length) {
+		if ( $("#save-form input[name='create']" ).length || $("#save-form input[name='clone']" ).length) {
 			$('#simulator button.edit-simulator').trigger('click');
 			$('#simulator-name').val('');
 		}
