@@ -86,6 +86,7 @@ THE SOFTWARE.
 							{% endif %}
 							<button class="btn btn-primary float-right update-button edit-simulator" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="fa fa-pencil"></span></button>
 							{% if hiddens.action != 'create' %}
+							<a class="btn btn-primary float-right link-button export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'clone'}) }}" title="{{ 'Clone simulator'|trans }}"><span class="button-label">{{ 'Clone simulator'|trans }}</span> <span class="fa fa-copy"></span></a>
 							<a class="btn btn-primary float-right link-button export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'export'}) }}" title="{{ 'Export simulator'|trans }}"><span class="button-label">{{ 'Export simulator'|trans }}</span> <span class="fa fa-upload"></span></a>
 							{% if hiddens.updated %}
 							<a class="btn btn-primary float-right link-button publish-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'publish'}) }}" title="{{ 'Publish simulator'|trans }}"><span class="button-label">{{ 'Publish simulator'|trans }}</span> <span class="fa fa-share-square-o"></span></a>
@@ -103,6 +104,10 @@ THE SOFTWARE.
 							<input type="hidden" name="profiles" value="" />
 							<input type="hidden" name="update" value="true" />
 							{% if hiddens.action == 'create' -%}<input type="hidden" name="create" value="true" />{%- endif %}
+							{% if hiddens.action == 'clone' -%}
+							<input type="hidden" name="clone" value="true" />
+							<input type="hidden" name="cloned" value="{{ hiddens.cloned }}" />
+							{%- endif %}
 							<h4 class="card-title">{{ simulator.label }}</h4>
 							</form>
 						</div>

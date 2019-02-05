@@ -691,7 +691,7 @@ THE SOFTWARE.
 			case 'submit':
 				requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'for', Translator.trans('For'), action.for, action.for, true, Translator.trans('Select a target step'), JSON.stringify({ 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
 				if (action.for == 'jumpToStep') {
-					var targetSteps = Simulators.makeTargetSteps(stepId);
+					var targetSteps = Simulators.makeTargetSteps(action.stepId);
 					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'uri', Translator.trans('Target step'), action.uri, action.uri, true, Translator.trans('Select a target step'), JSON.stringify(targetSteps)));
 				} else if (action.for == 'externalPage') {
 					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'uri', Translator.trans('External page URL'), action.uri, action.uri, true, Translator.trans('External page URL')));
