@@ -29,6 +29,14 @@ THE SOFTWARE.
 		var parameters = func.arguments;
 		var message = 'The text is copied, click (ctrl/cmd + v) to paste it on your text editor.';
 		var g6k = clickable.data('g6k');
+		if (clickable.is('a')) {
+			clickable.attr('href', '');
+			clickable.attr('title', clickable.text());
+			clickable.attr('rel', 'noopener noreferrer');
+			clickable.html('');
+			clickable.addClass('email-share-button');
+			clickable.append($('<span>', { 'class': 'far fa-clipboard'}));
+		}
 		if (func.appliedto == 'data'){
 			var name = g6k.getDataNameById(parameters.data);
 			clickable.on('click', function(event) {

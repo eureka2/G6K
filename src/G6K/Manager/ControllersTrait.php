@@ -676,17 +676,26 @@ trait ControllersTrait {
 	}
 
 	/**
-	 * Returns the list of available functions.
+	 * Returns the label of available functions.
 	 *
 	 * @access  public
-	 * @return  array The list of available functions
+	 * @return  array The label of available functions
 	 *
 	 */
 	public function getFunctions() {
-		$functions = array();
+		$functions = array(
+			'labels' => array(),
+			'targets' => array()
+		);
 		if ($this->container->hasParameter('functions')) {
 			foreach ($this->container->getParameter('functions') as $name => $function) {
-				$functions[$name] = $this->getTranslator()->trans($function['label']);
+				$functions['labels'][$name] = $this->getTranslator()->trans($function['label']);
+				$targetsList = $function['target'];
+				if (in_array('all', $targetsList)) {
+					$functions['targets'][$name] = ['data', 'datagroup', 'page', 'article', 'step', 'panel', 'fieldset', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section', 'content', 'annotations', 'footnote'];
+				} else {
+					$functions['targets'][$name] = $targetsList;
+				}
 			}
 		}
 		return $functions;

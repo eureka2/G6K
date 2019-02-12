@@ -8,229 +8,228 @@
  * http://eternicode.github.io/bootstrap-datepicker
  */
 
-/** 
+/**
  *	Description:
- *	=========== 
- *	This DatePicker widget allows the user to select a date. 
- *	The DatePicker shows one month at least. 
- *	
- *	The calendar portion of the date picker follows a table structure 
- *	where days of the week and calendar day numbers are layed out in HTML table cells where WAI-ARIA semantics for a grid are applied. 
- *	This provides context so an assistive technology can render the day of the week; 
- *	its corresponding numeric calendar day, and week number if necessary. 
- *	
- *	The calendar portion can be displayed in a numbers of ways, including as a popup associated with another widget, 
+ *	===========
+ *	This DatePicker widget allows the user to select a date.
+ *	The DatePicker shows one month at least.
+ *
+ *	The calendar portion of the date picker follows a table structure
+ *	where days of the week and calendar day numbers are layed out in HTML table cells where WAI-ARIA semantics for a grid are applied.
+ *	This provides context so an assistive technology can render the day of the week;
+ *	its corresponding numeric calendar day, and week number if necessary.
+ *
+ *	The calendar portion can be displayed in a numbers of ways, including as a popup associated with another widget,
  *	or as a static region of a page.
  *
  * 	This component complies with the recommendations of the guide http://www.w3.org/TR/wai-aria-practices/#datepicker of W3C, namely :
  *
- *	Keyboard Interaction: 	
- *	===================== 
- *	
+ *	Keyboard Interaction:
+ *	=====================
+ *
  *	Keyboard navigation on days that are not included the currently displayed month should move to the month automatically and lead to the day in the next or previous month.
- *	
- *	    - Tab - Like other widgets, the date picker widget receives focus by tabbing into it. Once focus is received, focus is repositioned on today's date in a grid of days and weeks. A second tab will take the user out of the date picker widget. Focus initially is placed on today's date.
- *	    - Shift+Tab - reverses the direction of the tab order. Once in the widget, a Shift+Tab will take the user to the previous focusable element in the tab order.
- *	    - Up Arrow and Down Arrow - goes to the same day of the week in the previous or next week respectively. If the user advances past the end of the month they continue into the next or previous month as appropriate.
- *	    - Left Arrow and Right Arrow - advances one day to the next, also in a continuum. Visually focus is moved from day to day and wraps from row to row in a grid of days and weeks.
- *	    - Control+Page Up - Moves to the same date in the previous year.
- *	    - Control+Page Down - Moves to the same date in the next year.
- *	    - Space -
- *	        Singleton Mode: acts as a toggle either selecting or deselecting the date.
- *	        Contiguous Mode: Similar to selecting a range of text. Space selects the first date. Shift+Arrows add to the selection. Pressing Space again deselects the previous selections and selects the current focused date.
- *	    - Home - Moves to the first day of the current month.
- *	    - End - Moves to the last day of the current month.
- *	    - Page Up - Moves to the same date in the previous month.
- *	    - Page Down - Moves to the same date in the next month.
- *	    - Enter -
- *	        If the the calendar is a popup attached to some other widget (e.g., a text field), then Enter dismisses the popup, and the selected date(s) are shown in the associated widget.
- *	        If the calendar is a static region on the page, then Enter confirms the selected date(s). 
- *	    - Escape - in the case of a popup date picker, closes the widget without any action.
- *	
- *	
- *	WAI-ARIA Roles, States, and Properties: 	
- *	====================================== 
- *	
- *	    The current month has a label representing the month and year. It is advisable to use a role heading but is not essential. This "label" should have a unique ID.
- *	    If the author would like to ensure that a label is announced by a screen reader, as the label changes, include live region properties with the label element: aria-live="assertive" and aria-atomic="true".
- *	    The container for the day of week headers and numeric days of the week has a role of grid.
- *	    The grid has an aria-labelledby property with a value equivalent to the id of the label for the grid.
- *	    Each name for the day of the week has a role columnheader and is not navigable via the keyboard.
- *	    Each numeric day of the week has the role gridcell.
- *	    When a day is selected its aria-selected is set to true, otherwise it is set to false or removed.
- *	    Changes in aria states, identified here, as well as focus, are clearly styled to show the user where their point of regard is and what days are selected.
- *	
- *	When the datepicker is active a calender day of the week always has focus. 
- *	This can be achieved by setting the tabindex on that day as appropriate and then using script to give it focus. 
- *	The grid container set aria-activedescendant to the id of the currently focused gridcell. 
- *	 
+ *
+ *		- Tab - Like other widgets, the date picker widget receives focus by tabbing into it. Once focus is received, focus is repositioned on today's date in a grid of days and weeks. A second tab will take the user out of the date picker widget. Focus initially is placed on today's date.
+ *		- Shift+Tab - reverses the direction of the tab order. Once in the widget, a Shift+Tab will take the user to the previous focusable element in the tab order.
+ *		- Up Arrow and Down Arrow - goes to the same day of the week in the previous or next week respectively. If the user advances past the end of the month they continue into the next or previous month as appropriate.
+ *		- Left Arrow and Right Arrow - advances one day to the next, also in a continuum. Visually focus is moved from day to day and wraps from row to row in a grid of days and weeks.
+ *		- Control+Page Up - Moves to the same date in the previous year.
+ *		- Control+Page Down - Moves to the same date in the next year.
+ *		- Space -
+ *			Singleton Mode: acts as a toggle either selecting or deselecting the date.
+ *			Contiguous Mode: Similar to selecting a range of text. Space selects the first date. Shift+Arrows add to the selection. Pressing Space again deselects the previous selections and selects the current focused date.
+ *		- Home - Moves to the first day of the current month.
+ *		- End - Moves to the last day of the current month.
+ *		- Page Up - Moves to the same date in the previous month.
+ *		- Page Down - Moves to the same date in the next month.
+ *		- Enter -
+ *			If the the calendar is a popup attached to some other widget (e.g., a text field), then Enter dismisses the popup, and the selected date(s) are shown in the associated widget.
+ *			If the calendar is a static region on the page, then Enter confirms the selected date(s).
+ *		- Escape - in the case of a popup date picker, closes the widget without any action.
+ *
+ *
+ *	WAI-ARIA Roles, States, and Properties:
+ *	======================================
+ *
+ *		The current month has a label representing the month and year. It is advisable to use a role heading but is not essential. This "label" should have a unique ID.
+ *		If the author would like to ensure that a label is announced by a screen reader, as the label changes, include live region properties with the label element: aria-live="assertive" and aria-atomic="true".
+ *		The container for the day of week headers and numeric days of the week has a role of grid.
+ *		The grid has an aria-labelledby property with a value equivalent to the id of the label for the grid.
+ *		Each name for the day of the week has a role columnheader and is not navigable via the keyboard.
+ *		Each numeric day of the week has the role gridcell.
+ *		When a day is selected its aria-selected is set to true, otherwise it is set to false or removed.
+ *		Changes in aria states, identified here, as well as focus, are clearly styled to show the user where their point of regard is and what days are selected.
+ *
+ *	When the datepicker is active a calender day of the week always has focus.
+ *	This can be achieved by setting the tabindex on that day as appropriate and then using script to give it focus.
+ *	The grid container set aria-activedescendant to the id of the currently focused gridcell.
+ *
  */
 
 (function () {
 	"use strict";
-
 	if (typeof Date.dp_locales === 'undefined') {
 		Date.dp_locales = {
-		    "texts": {
-		        "buttonTitle": "Select date ...",
-		        "buttonLabel": "Click or press the Enter key or the spacebar to open the calendar",
-		        "prevButtonLabel": "Go to previous month",
-		        "prevMonthButtonLabel": "Go to the previous year",
-		        "prevYearButtonLabel": "Go to the previous twenty years",
-		        "nextButtonLabel": "Go to next month",
-		        "nextMonthButtonLabel": "Go to the next year",
-		        "nextYearButtonLabel": "Go to the next twenty years",
-		        "changeMonthButtonLabel": "Click or press the Enter key or the spacebar to change the month",
-		        "changeYearButtonLabel": "Click or press the Enter key or the spacebar to change the year",
-		        "changeRangeButtonLabel": "Click or press the Enter key or the spacebar to go to the next twenty years",
-		        "closeButtonTitle": "Close",
-		        "closeButtonLabel": "Close the calendar",
-		        "calendarHelp": "- Up Arrow and Down Arrow - goes to the same day of the week in the previous or next week respectively. If the end of the month is reached, continues into the next or previous month as appropriate.\r\n- Left Arrow and Right Arrow - advances one day to the next, also in a continuum. Visually focus is moved from day to day and wraps from row to row in the grid of days.\r\n- Control+Page Up - Moves to the same date in the previous year.\r\n- Control+Page Down - Moves to the same date in the next year.\r\n- Home - Moves to the first day of the current month.\r\n- End - Moves to the last day of the current month.\r\n- Page Up - Moves to the same date in the previous month.\r\n- Page Down - Moves to the same date in the next month.\r\n- Enter or Espace - closes the calendar, and the selected date is shown in the associated text box.\r\n- Escape - closes the calendar without any action."
-		    },
-		    "directionality": "LTR",
-		    "month_names": [
-		        "January",
-		        "February",
-		        "March",
-		        "April",
-		        "May",
-		        "June",
-		        "July",
-		        "August",
-		        "September",
-		        "October",
-		        "November",
-		        "December"
-		    ],
-		    "month_names_abbreviated": [
-		        "Jan",
-		        "Feb",
-		        "Mar",
-		        "Apr",
-		        "May",
-		        "Jun",
-		        "Jul",
-		        "Aug",
-		        "Sep",
-		        "Oct",
-		        "Nov",
-		        "Dec"
-		    ],
-		    "month_names_narrow": [
-		        "J",
-		        "F",
-		        "M",
-		        "A",
-		        "M",
-		        "J",
-		        "J",
-		        "A",
-		        "S",
-		        "O",
-		        "N",
-		        "D"
-		    ],
-		    "day_names": [
-		        "Sunday",
-		        "Monday",
-		        "Tuesday",
-		        "Wednesday",
-		        "Thursday",
-		        "Friday",
-		        "Saturday"
-		    ],
-		    "day_names_abbreviated": [
-		        "Sun",
-		        "Mon",
-		        "Tue",
-		        "Wed",
-		        "Thu",
-		        "Fri",
-		        "Sat"
-		    ],
-		    "day_names_short": [
-		        "Su",
-		        "Mo",
-		        "Tu",
-		        "We",
-		        "Th",
-		        "Fr",
-		        "Sa"
-		    ],
-		    "day_names_narrow": [
-		        "S",
-		        "M",
-		        "T",
-		        "W",
-		        "T",
-		        "F",
-		        "S"
-		    ],
-		    "day_periods": {
-		        "am": "AM",
-		        "noon": "noon",
-		        "pm": "PM"
-		    },
-		    "day_periods_abbreviated": {
-		        "am": "AM",
-		        "noon": "noon",
-		        "pm": "PM"
-		    },
-		    "day_periods_narrow": {
-		        "am": "a",
-		        "noon": "n",
-		        "pm": "p"
-		    },
-		    "quarter_names": [
-		        "1st quarter",
-		        "2nd quarter",
-		        "3rd quarter",
-		        "4th quarter"
-		    ],
-		    "quarter_names_abbreviated": [
-		        "Q1",
-		        "Q2",
-		        "Q3",
-		        "Q4"
-		    ],
-		    "quarter_names_narrow": [
-		        "1",
-		        "2",
-		        "3",
-		        "4"
-		    ],
-		    "era_names": [
-		        "Before Christ",
-		        "Anno Domini"
-		    ],
-		    "era_names_abbreviated": [
-		        "BC",
-		        "AD"
-		    ],
-		    "era_names_narrow": [
-		        "B",
-		        "A"
-		    ],
-		    "full_format": "EEEE, MMMM d, y",
-		    "long_format": "MMMM d, y",
-		    "medium_format": "MMM d, y",
-		    "short_format": "M/d/yy",
-		    "firstday_of_week": 0
+			"texts": {
+				"buttonTitle": "Select date ...",
+				"buttonLabel": "Click or press the Enter key or the spacebar to open the calendar",
+				"prevButtonLabel": "Go to previous month",
+				"prevMonthButtonLabel": "Go to the previous year",
+				"prevYearButtonLabel": "Go to the previous twenty years",
+				"nextButtonLabel": "Go to next month",
+				"nextMonthButtonLabel": "Go to the next year",
+				"nextYearButtonLabel": "Go to the next twenty years",
+				"changeMonthButtonLabel": "Click or press the Enter key or the spacebar to change the month",
+				"changeYearButtonLabel": "Click or press the Enter key or the spacebar to change the year",
+				"changeRangeButtonLabel": "Click or press the Enter key or the spacebar to go to the next twenty years",
+				"closeButtonTitle": "Close",
+				"closeButtonLabel": "Close the calendar",
+				"calendarHelp": "- Up Arrow and Down Arrow - goes to the same day of the week in the previous or next week respectively. If the end of the month is reached, continues into the next or previous month as appropriate.\r\n- Left Arrow and Right Arrow - advances one day to the next, also in a continuum. Visually focus is moved from day to day and wraps from row to row in the grid of days.\r\n- Control+Page Up - Moves to the same date in the previous year.\r\n- Control+Page Down - Moves to the same date in the next year.\r\n- Home - Moves to the first day of the current month.\r\n- End - Moves to the last day of the current month.\r\n- Page Up - Moves to the same date in the previous month.\r\n- Page Down - Moves to the same date in the next month.\r\n- Enter or Espace - closes the calendar, and the selected date is shown in the associated text box.\r\n- Escape - closes the calendar without any action."
+			},
+			"directionality": "LTR",
+			"month_names": [
+				"January",
+				"February",
+				"March",
+				"April",
+				"May",
+				"June",
+				"July",
+				"August",
+				"September",
+				"October",
+				"November",
+				"December"
+			],
+			"month_names_abbreviated": [
+				"Jan",
+				"Feb",
+				"Mar",
+				"Apr",
+				"May",
+				"Jun",
+				"Jul",
+				"Aug",
+				"Sep",
+				"Oct",
+				"Nov",
+				"Dec"
+			],
+			"month_names_narrow": [
+				"J",
+				"F",
+				"M",
+				"A",
+				"M",
+				"J",
+				"J",
+				"A",
+				"S",
+				"O",
+				"N",
+				"D"
+			],
+			"day_names": [
+				"Sunday",
+				"Monday",
+				"Tuesday",
+				"Wednesday",
+				"Thursday",
+				"Friday",
+				"Saturday"
+			],
+			"day_names_abbreviated": [
+				"Sun",
+				"Mon",
+				"Tue",
+				"Wed",
+				"Thu",
+				"Fri",
+				"Sat"
+			],
+			"day_names_short": [
+				"Su",
+				"Mo",
+				"Tu",
+				"We",
+				"Th",
+				"Fr",
+				"Sa"
+			],
+			"day_names_narrow": [
+				"S",
+				"M",
+				"T",
+				"W",
+				"T",
+				"F",
+				"S"
+			],
+			"day_periods": {
+				"am": "AM",
+				"noon": "noon",
+				"pm": "PM"
+			},
+			"day_periods_abbreviated": {
+				"am": "AM",
+				"noon": "noon",
+				"pm": "PM"
+			},
+			"day_periods_narrow": {
+				"am": "a",
+				"noon": "n",
+				"pm": "p"
+			},
+			"quarter_names": [
+				"1st quarter",
+				"2nd quarter",
+				"3rd quarter",
+				"4th quarter"
+			],
+			"quarter_names_abbreviated": [
+				"Q1",
+				"Q2",
+				"Q3",
+				"Q4"
+			],
+			"quarter_names_narrow": [
+				"1",
+				"2",
+				"3",
+				"4"
+			],
+			"era_names": [
+				"Before Christ",
+				"Anno Domini"
+			],
+			"era_names_abbreviated": [
+				"BC",
+				"AD"
+			],
+			"era_names_narrow": [
+				"B",
+				"A"
+			],
+			"full_format": "EEEE, MMMM d, y",
+			"long_format": "MMMM d, y",
+			"medium_format": "MMM d, y",
+			"short_format": "M/d/yy",
+			"firstday_of_week": 0
 		};
 	}
 })();
 
 (function(factory){
-    if (typeof define === "function" && define.amd) {
-        define(["jquery"], factory);
-    } else if (typeof exports === 'object') {
-        factory(require('jquery'));
-    } else {
+	if (typeof define === "function" && define.amd) {
+		define(["jquery"], factory);
+	} else if (typeof exports === 'object') {
+		factory(require('jquery'));
+	} else {
 		if (typeof jQuery === 'undefined') {
 			throw new Error('Datepicker\'s JavaScript requires jQuery')
 		}
-        factory(jQuery);
-    }
+		factory(jQuery);
+	}
 }(function($, undefined){
 	'use strict';
 
@@ -321,11 +320,9 @@
 		this.$target.attr('aria-autocomplete', 'none')
 		this.$target.css('min-width', '7em')
 		this.$target.addClass('form-control');
-		
 		if (! this.$target.attr('placeholder')) {
 			this.$target.attr('placeholder', this.options.inputFormat[0]);
 		}
-		
 		var button = datepickerButton.join("");
 		button = button.replace(/CALENDARID/g, this.id + '');
 		this.$button = $(button);
@@ -333,7 +330,7 @@
 		this.$calendar = $(calendar);
 		this.$calendar.addClass(this.options.theme);
 		this.$target.after(this.$button);
-		
+
 		if (this.options.inline != false) {
 			this.hideObject(this.$button);
 			var $container = typeof this.options.inline === 'string' ? $('#' + this.options.inline) : this.options.inline;
@@ -389,7 +386,7 @@
 			right: 39,
 			down: 40
 		};
-	
+
 		this.bindHandlers();
 		this.$button.click(function(e) {
 			if (self.$calendar.attr('aria-hidden') === 'true') {
@@ -408,15 +405,15 @@
 				$(this).trigger('click');
 				return false;
 			}
-		}); 
+		});
 		this.$calendar.on('blur', function(e) {
 			if (self.$calendar.attr('aria-hidden') === 'false') {
 				self.hide();
 			}
-			
+
 		});
 	}
-	
+
 	Datepicker.VERSION  = '2.1.1'
 
 	Datepicker.DEFAULTS = {
@@ -520,8 +517,8 @@
 		}
 	} // end setDate()
 
-	/** 
-	 *	drawCalendarHeader() is a member function to populate the calendar header with the days name. 
+	/**
+	 *	drawCalendarHeader() is a member function to populate the calendar header with the days name.
 	 *
 	 *	@return N/A
 	 */
@@ -551,8 +548,8 @@
 		this.$calendar.find('.datepicker-bn-next-label').html(this.options.nextButtonLabel);
 		this.$calendar.find('.datepicker-bn-fast-prev-label').html(this.options.prevMonthButtonLabel);
 		this.$calendar.find('.datepicker-bn-fast-next-label').html(this.options.nextMonthButtonLabel);
-		if (this.options.min != null && 
-			(	this.year - 1 < this.options.min.getFullYear() || 
+		if (this.options.min != null &&
+			(	this.year - 1 < this.options.min.getFullYear() ||
 				(this.year - 1 == this.options.min.getFullYear() && this.month < this.options.min.getMonth()))) {
 			this.$fastprev.attr('title', '');
 			this.$fastprev.addClass('disabled');
@@ -563,8 +560,8 @@
 			this.$fastprev.removeClass('disabled');
 		}
 		var previousMonth = this.previousMonth(this.year, this.month);
-		if (this.options.min != null && 
-			(	previousMonth.year < this.options.min.getFullYear() || 
+		if (this.options.min != null &&
+			(	previousMonth.year < this.options.min.getFullYear() ||
 				(previousMonth.year == this.options.min.getFullYear() && previousMonth.month < this.options.min.getMonth()))) {
 			this.$prev.attr('title', '');
 			this.$prev.addClass('disabled');
@@ -576,8 +573,8 @@
 		}
 		this.$monthObj.attr('title', this.options.changeMonthButtonLabel);
 		var nextMonth = this.nextMonth(this.year, this.month);
-		if (this.options.max != null && 
-			(	nextMonth.year > this.options.max.getFullYear() || 
+		if (this.options.max != null &&
+			(	nextMonth.year > this.options.max.getFullYear() ||
 				(nextMonth.year == this.options.max.getFullYear() && nextMonth.month > this.options.max.getMonth()))) {
 			this.$next.attr('title', '');
 			this.$next.addClass('disabled');
@@ -587,8 +584,8 @@
 			this.$next.addClass('enabled');
 			this.$next.removeClass('disabled');
 		}
-		if (this.options.max != null && 
-			(	this.year + 1 > this.options.max.getFullYear() || 
+		if (this.options.max != null &&
+			(	this.year + 1 > this.options.max.getFullYear() ||
 				(this.year + 1 == this.options.max.getFullYear() && this.month > this.options.max.getMonth()))) {
 			this.$fastnext.attr('title', '');
 			this.$fastnext.addClass('disabled');
@@ -626,13 +623,13 @@
 			var longdate = this.formatDate(date, this.options.titleFormat);
 			var curDayClass = curDay == this.date && this.month == this.curMonth && this.year == this.curYear ? ' curDay' : '';
 			if ($.inArray(weekday, this.options.daysOfWeekDisabled) > -1) {
-				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"'; 
+				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"';
 			} else if (this.options.min != null && date < this.options.min) {
-				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"'; 
+				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"';
 			} else if (this.options.max != null && date > this.options.max) {
-				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"'; 
+				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"';
 			} else {
-				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day selectable' + curDayClass + '"'; 
+				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day selectable' + curDayClass + '"';
 			}
 			gridCells += ' data-value="' + curDay + '"';
 			gridCells += ' title="' + longdate + '"';
@@ -706,11 +703,11 @@
 			if (curMonth == this.month && this.year == this.curYear) {
 				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month curMonth selectable"';
 			} else if (this.options.min != null && (this.year < this.options.min.getFullYear() || (this.year == this.options.min.getFullYear() && curMonth < this.options.min.getMonth()))) {
-				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month unselectable"'; 
+				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month unselectable"';
 			} else if (this.options.max != null && (this.year > this.options.max.getFullYear() || (this.year == this.options.max.getFullYear() && curMonth > this.options.max.getMonth()))) {
-				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month unselectable"'; 
+				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month unselectable"';
 			} else {
-				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month selectable"'; 
+				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month selectable"';
 			}
 			gridCells += ' data-value="' + curMonth + '"';
 			gridCells += ' title="' + this.locales.month_names[curMonth] + ' ' + this.year + '"';
@@ -773,11 +770,11 @@
 			if (curYear == this.year) {
 				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year curYear selectable"';
 			} else if (this.options.min != null && (curYear < this.options.min.getFullYear())) {
-				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year unselectable"'; 
+				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year unselectable"';
 			} else if (this.options.max != null && (curYear > this.options.max.getFullYear())) {
-				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year unselectable"'; 
+				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year unselectable"';
 			} else {
-				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year selectable"'; 
+				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year selectable"';
 			}
 			gridCells += ' data-value="' + curYear + '"';
 			gridCells += ' title="' + curYear + '"';
@@ -794,18 +791,18 @@
 		this.gridType = 2; // 0 = days grid, 1 = months grid, 2 = years Grid
 	} // end populateYearsCalendar()
 
-	/** 
+	/**
 	 *	showDaysOfPrevMonth() is a member function to show the days of the previous month
 	 *
 	 *	@param	(offset int) offset may be used to specify an offset for setting
 	 *			focus on a day the specified number of days from the end of the month.
-	 *	@return true if the previous month is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the previous month is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showDaysOfPrevMonth = function(offset) {
 		// show the previous month
 		var previousMonth = this.previousMonth(this.year, this.month);
-		if (this.options.min != null && 
-			(	previousMonth.year < this.options.min.getFullYear() || 
+		if (this.options.min != null &&
+			(	previousMonth.year < this.options.min.getFullYear() ||
 				(previousMonth.year == this.options.min.getFullYear() && previousMonth.month < this.options.min.getMonth()))) {
 			return false;
 		}
@@ -824,20 +821,20 @@
 		return true;
 	} // end showDaysOfPrevMonth()
 
-	/** 
+	/**
 	 *	showDaysOfMonth() is a member function to show the days of the specified month
 	 *
 	 *	@param	(month int) the month to show.
-	 *	@return true if the  month is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the  month is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showDaysOfMonth = function(month) {
-		if (this.options.min != null && 
+		if (this.options.min != null &&
 			(	this.year < this.options.min.getFullYear() || 
 				(this.year == this.options.min.getFullYear() && month < this.options.min.getMonth()))) {
 			return false;
 		}
-		if (this.options.max != null && 
-			(	this.year > this.options.max.getFullYear() || 
+		if (this.options.max != null &&
+			(	this.year > this.options.max.getFullYear() ||
 				(this.year == this.options.max.getFullYear() && month > this.options.max.getMonth()))) {
 			return false;
 		}
@@ -850,13 +847,12 @@
 		return true;
 	} // end showDaysOfMonth()
 
-
-	/** 
+	/**
 	 *	showMonthsOfPrevYear() is a member function to show the months of the previous year
 	 *
 	 *	@param	(offset int) offset may be used to specify an offset for setting
 	 *			focus on a month the specified number of months from the end of the year.
-	 *	@return true if the previous year is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the previous year is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showMonthsOfPrevYear = function(offset) {
 		if (this.options.min != null && this.year - 1 < this.options.min.getFullYear()) {
@@ -876,11 +872,11 @@
 		return true;
 	} // end showMonthsOfPrevYear()
 
-	/** 
+	/**
 	 *	showMonthsOfYear() is a member function to show the months of the specified year
 	 *
 	 *	@param	(year int) the year to show.
-	 *	@return true if the year is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the year is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showMonthsOfYear = function(year) {
 		if (this.options.min != null && year < this.options.min.getFullYear()) {
@@ -898,8 +894,7 @@
 		return true;
 	} // end showMonthsOfYear()
 
-
-	/** 
+	/**
 	 *	showYearsOfPrevRange() is a member function to show the years of the previous range of twenty years
 	 *
 	 *	@param	(offset int) offset may be used to specify an offset for setting
@@ -924,7 +919,7 @@
 		return true;
 	} // end showYearsOfPrevRange()
 
-	/** 
+	/**
 	 * showDaysOfNextMonth() is a member function to show the next month
 	 *
 	 *	@param	(offset int) offset may be used to specify an offset for setting
@@ -954,7 +949,7 @@
 		return true;
 	} // end showDaysOfNextMonth()
 
-	/** 
+	/**
 	 * showMonthsOfNextYear() is a member function to show the months of next year
 	 *
 	 *	@param	(offset int) offset may be used to specify an offset for setting
@@ -980,7 +975,7 @@
 		return true;
 	} // end showMonthsOfNextYear()
 
-	/** 
+	/**
 	 * showYearsOfNextRange() is a member function to show the years of next range of years
 	 *
 	 *	@param	(offset int) offset may be used to specify an offset for setting
@@ -1006,7 +1001,7 @@
 		return true;
 	} // end showYearsOfNextRange()
 
-	/** 
+	/**
 	 *	showDaysOfPrevYear() is a member function to show the previous year
 	 *
 	 *	@return true if the previous year is between the minimum and the maximum date otherwise return false 
@@ -1025,7 +1020,7 @@
 		return true;
 	} // end showDaysOfPrevYear()
 
-	/** 
+	/**
 	 *	showDaysOfNextYear() is a member function to show the next year
 	 *
 	 *	@return true if the next year is between the minimum and the maximum date otherwise return false 
@@ -1110,7 +1105,7 @@
 		});
 	} // end bindHandlers();
 
-	/** 	
+	/**
 	 *	handleFastPrevClick() is a member function to process click events for the fast prev month button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1132,7 +1127,7 @@
 		return false;
 	} // end handleFastPrevClick()
 
-	/** 	
+	/**
 	 *	handlePrevClick() is a member function to process click events for the prev month button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1181,7 +1176,7 @@
 		return false;
 	} // end handlePrevClick()
 
-	/** 	
+	/**
 	 *	handleMonthClick() is a member function to process click events for the month header
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1194,7 +1189,7 @@
 		return false;
 	} // end handleMonthClick()
 
-	/** 	
+	/**
 	 *	handleNextClick() is a member function to process click events for the next month button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1244,7 +1239,7 @@
 
 	} // end handleNextClick()
 
-	/** 	
+	/**
 	 *	handleFastNextClick() is a member function to process click events for the fast next month button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1267,7 +1262,7 @@
 
 	} // end handleFastNextClick()
 
-	/** 	
+	/**
 	 *	handleCloseClick() is a member function to process click events for the close button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1281,7 +1276,7 @@
 		return false;
 	} // end handleCloseClick()
 
-	/** 	
+	/**
 	 *	handleFastPrevKeyDown() is a member function to process keydown events for the fast prev month button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1328,7 +1323,7 @@
 		return true;
 	} // end handleFastPrevKeyDown()
 
-	/** 	
+	/**
 	 *	handlePrevKeyDown() is a member function to process keydown events for the prev month button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1393,7 +1388,7 @@
 		return true;
 	} // end handlePrevKeyDown()
 
-	/** 	
+	/**
 	 *	handleMonthKeyDown() is a member function to process keydown events for the month title
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1437,7 +1432,7 @@
 		return true;
 	} // end handleMonthKeyDown()
 
-	/** 
+	/**
 	 *	handleNextKeyDown() is a member function to process keydown events for the next month button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1498,7 +1493,7 @@
 		return true;
 	} // end handleNextKeyDown()
 
-	/** 
+	/**
 	 *	handleFastNextKeyDown() is a member function to process keydown events for the fast next month button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1540,8 +1535,8 @@
 		}
 		return true;
 	} // end handleFastNextKeyDown()
-	
-	/** 	
+
+	/**
 	 *	handleCloseKeyDown() is a member function to process keydown events for the close button
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1587,7 +1582,7 @@
 		return true;
 	} // end handlePrevKeyDown()
 
-	/** 
+	/**
 	 *	handleGridKeyDown() is a member function to process keydown events for the Datepicker grid
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1875,7 +1870,7 @@
 		return true;
 	} // end handleGridKeyDown()
 
-	/** 
+	/**
 	 *	handleGridKeyPress() is a member function to consume keypress events for browsers that
 	 *	use keypress to scroll the screen and manipulate tabs
 	 *
@@ -1908,7 +1903,7 @@
 		return true;
 	} // end handleGridKeyPress()
 
-	/** 
+	/**
 	 *	handleGridClick() is a member function to process mouse click events for the Datepicker grid
 	 *
 	 *	@param (id string) id is the id of the object triggering the event
@@ -1943,7 +1938,7 @@
 		return false;
 	} // end handleGridClick()
 
-	/** 
+	/**
 	 *	handleGridFocus() is a member function to process focus events for the Datepicker grid
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -1963,7 +1958,7 @@
 		return true;
 	} // end handleGridFocus()
 
-	/** 
+	/**
 	 *	handleGridBlur() is a member function to process blur events for the Datepicker grid
 	 *	@param (e obj) e is the event object associated with the event
 	 *
@@ -1974,7 +1969,7 @@
 		return true;
 	} // end handleGridBlur()
 
-	/** 
+	/**
 	 *	handleTabOut() is a member function to process tab key in Datepicker grid
 	 *
 	 * @param (e obj) e is the event object associated with the event
@@ -1982,8 +1977,8 @@
 	 */
 	Datepicker.prototype.handleTabOut = function(e) {
 		var fields = $('body').find('input:visible,textarea:visible,select:visible');
-        var index = fields.index( this.$target );
-        if ( index > -1 && index < fields.length ) {
+		var index = fields.index( this.$target );
+		if ( index > -1 && index < fields.length ) {
 			if (e.shiftKey) { 
 				if (index > 0) {
 					index--;
@@ -1993,12 +1988,12 @@
 					index++;
 				}
 			}
-            fields.eq( index ).focus();
-        }
+			fields.eq( index ).focus();
+		}
 		return true;
 	} // end handleTabOut()
 
-	/** 	
+	/**
 	 *	changeGrid() is a member function to change the calendar after click or enter into the calendar title
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -2037,8 +2032,8 @@
 		}
 		return true;
 	} // end changeGrid()
-	
-	/** 
+
+	/**
 	 *	selectGridCell() is a member function to put focus on the current cell of the grid. 
 	 *
 	 *	@return N/A
@@ -2046,8 +2041,8 @@
 	Datepicker.prototype.selectGridCell = function(cellId) {
 		$('#' + cellId).addClass('focus').attr('aria-selected', 'true').attr('tabindex', 0).focus();
 	} // end focusCurrentDay()
-	
-	/** 
+
+	/**
 	 *	selectGridCell() is a member function to put focus on the current cell of the grid. 
 	 *
 	 *	@return N/A
@@ -2055,8 +2050,8 @@
 	Datepicker.prototype.unSelectGridCell = function(cellId) {
 		$('#' + cellId).removeClass('focus').attr('aria-selected', 'false').attr('tabindex', -1);
 	} // end focusCurrentDay()
-	
-	/** 
+
+	/**
 	 *	update() is a member function to update the target textbox. 
 	 *
 	 *	@return N/A
@@ -2073,8 +2068,8 @@
 			this.options.onUpdate(val);
 		}
 	} // end update()
-	
-	/** 
+
+	/**
 	 *	hideObject() is a member function to hide an element of the datepicker. 
 	 *
 	 *	@param ($element jQuery object) the element to hide
@@ -2084,8 +2079,8 @@
 		$element.attr('aria-hidden', true);
 		$element.hide();
 	} // end hideObject()
-	
-	/** 
+
+	/**
 	 *	showObject() is a member function to show an element of the datepicker. 
 	 *
 	 *	@param ($element jQuery object) the element to show
@@ -2095,8 +2090,8 @@
 		$element.attr('aria-hidden', false);
 		$element.show();
 	} // end showObject()
-	
-	/** 
+
+	/**
 	 *	show() is a member function to show the Datepicker and give it focus. 
 	 *
 	 *	@return N/A
@@ -2160,14 +2155,14 @@
 				left: (groupOffsetLeft + parentPaddingLeft) + 'px'
 			});
 		}
-		
+
 		// show the dialog
 		this.$calendar.attr('aria-hidden', 'false');
 		this.$calendar.fadeIn();
 		$('.datepicker-calendar').trigger('ab.datepicker.opened', [self.id]);
 	} // end show()
-	
-	/** 
+
+	/**
 	 *	refresh() is a member function to refesh the datepicker content when an option change. 
 	 *
 	 *	@return N/A
@@ -2187,7 +2182,7 @@
 		}
 	} // end refresh()
 
-	/** 
+	/**
 	 *	handleDocumentClick() is a member function to handle click on document. 
 	 *
 	 *	@param (e obj) e is the event object associated with the event
@@ -2207,7 +2202,7 @@
 		}
 	} // end handleDocumentClick()
 
-	/** 
+	/**
 	 *	hide() is a member function to hide the Datepicker and remove focus. 
 	 *
 	 *	@return N/A
@@ -2234,8 +2229,8 @@
 			}
 		}
 	} // end hide()
-	
-	/** 
+
+	/**
 	 *	greyOut() is a member function to grey out the document background. 
 	 *
 	 *	@return N/A
@@ -2260,8 +2255,8 @@
 			$overlay.fadeOut(500);
 		}
 	} // end greyOut()
-	
-	/** 
+
+	/**
 	 *	absolutePosition() is a member function that compute the absolute position 
 	 *	of some element within document. 
 	 *
@@ -2270,27 +2265,27 @@
 	 */
 	Datepicker.prototype.absolutePosition = function (element) {
 		var top = 0, left = 0;
-	    if (element.getBoundingClientRect) {
-		    var box = element.getBoundingClientRect();
-		    var body = document.body;
-		    var docElem = document.documentElement;
-		    var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-		    var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
-		    var clientTop = docElem.clientTop || body.clientTop || 0;
-		    var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-		    top  = Math.round(box.top +  scrollTop - clientTop);
-		    left = Math.round(box.left + scrollLeft - clientLeft);
-	    } else {
+		if (element.getBoundingClientRect) {
+			var box = element.getBoundingClientRect();
+			var body = document.body;
+			var docElem = document.documentElement;
+			var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+			var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+			var clientTop = docElem.clientTop || body.clientTop || 0;
+			var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+			top  = Math.round(box.top +  scrollTop - clientTop);
+			left = Math.round(box.left + scrollLeft - clientLeft);
+		} else {
 			while(element) {
 				top = top + parseInt(element.offsetTop, 10);
 				left = left + parseInt(element.offsetLeft, 10);
-				element = element.offsetParent;       
+				element = element.offsetParent;	   
 			}   
-	    }
+		}
 		return {top: top, left: left};
 	} // end absolutePosition()
-	
-	/** 
+
+	/**
 	 *	getDaysInMonth() is a member function to calculate the number of days in a given month
 	 *	
 	 *	@param (year int) the year
@@ -2301,8 +2296,8 @@
 	Datepicker.prototype.getDaysInMonth = function(year, month) {
 		return 32 - new Date(year, month, 32).getDate();
 	} // end getDaysInMonth()
-	
-	/** 
+
+	/**
 	 *	previousMonth() is a member function that compute the month 
 	 *	preceding a given month. 
 	 *
@@ -2319,8 +2314,8 @@
 		}
 		return {year: year, month: month};
 	} // end previousMonth()
-	
-	/** 
+
+	/**
 	 *	nextMonth() is a member function that compute the month 
 	 *	following a given month. 
 	 *
@@ -2338,7 +2333,7 @@
 		return {year: year, month: month};
 	} // end nextMonth()
 
-	/** 
+	/**
 	 *	formatDate (date_object, format)
 	 *	The format string uses the same abbreviations as in createDateFromFormat()
 	 *
@@ -2463,7 +2458,7 @@
 		);
 	} // end formatDate()
 
-	/** 
+	/**
 	 *	createDateFromFormat( format_string, date_string )
 	 *
 	 *	This function takes a date string and a format string. It matches
@@ -2502,7 +2497,7 @@
 		var ss = 0;
 		var ampm = "";
 		var self = this;
-		
+
 		$.each(format.match(/(.).*?\1*/g), function(k, token) {
 			// Extract contents of value based on format token
 			switch (token) {
@@ -2695,8 +2690,8 @@
 		}
 		return new Date(year, month - 1, date, hh, mm, ss);
 	} // end createDateFromFormat()
-	
-	/** 
+
+	/**
 	 *	parseDate() is a member function which parse a date string. 
 	 *
 	 *	This function takes a date string and try to parse it with the input formats.
@@ -2720,8 +2715,8 @@
 		}
 		return date;
 	} // end parseDate()
-	
-	/** 
+
+	/**
 	 *	min() is a public member function which allow change the smallest selectable date. 
 	 *
 	 *	@param (value string) the new date
@@ -2741,8 +2736,8 @@
 		}
 		return this.options.min;
 	} // end min()
-	
-	/** 
+
+	/**
 	 *	max() is a public member function which allow change the biggest selectable date. 
 	 *
 	 *	@param (value string) the new date
@@ -2763,7 +2758,7 @@
 		return this.options.max;
 	} // end max()
 
-	/** 
+	/**
 	 *	theme() is a public member function which allow change the datepicker theme. 
 	 *
 	 *	@param (value string) the new theme
@@ -2779,8 +2774,8 @@
 		}
 		return this.options.theme;
 	} // end theme()
-	
-	/** 
+
+	/**
 	 *	firstDayOfWeek() is a public member function which allow change the first Day Of Week. 
 	 *
 	 *	@param (value integer) the new first Day Of Week
@@ -2797,8 +2792,8 @@
 		}
 		return this.options.firstDayOfWeek;
 	} // end firstDayOfWeek()
-	
-	/** 
+
+	/**
 	 *	daysOfWeekDisabled() is a public member function which allow disabling of some weekdays. 
 	 *
 	 *	@param (value string) the new disabled week days
@@ -2821,8 +2816,8 @@
 		}
 		return this.options.daysOfWeekDisabled;
 	} // end daysOfWeekDisabled()
-	
-	/** 
+
+	/**
 	 *	weekDayFormat() is a public member function which allow change the format of weekdays name. 
 	 *
 	 *	@param (value string) the new format. Allowed : 'short' or 'narrow'
@@ -2835,8 +2830,8 @@
 		}
 		return this.options.weekDayFormat;
 	} // end weekDayFormat()
-	
-	/** 
+
+	/**
 	 *	inputFormat() is a public member function which allow change the input format. 
 	 *
 	 *	@param (value string) the new format
@@ -2854,8 +2849,8 @@
 		}
 		return this.options.inputFormat;
 	} // end inputFormat()
-	
-	/** 
+
+	/**
 	 *	outputFormat() is a public member function which allow change the output format. 
 	 *
 	 *	@param (value string) the new format
@@ -2867,8 +2862,8 @@
 		}
 		return this.options.outputFormat;
 	} // end outputFormat()
-	
-	/** 
+
+	/**
 	 *	modal() is a public member function which allow to set or unset the modal mode. 
 	 *
 	 *	@param (value boolean) the new modal mode
@@ -2900,7 +2895,7 @@
 		return this.options.modal;
 	} // end modal()
 
-	/** 
+	/**
 	 *	inline() is a public member function which allow to set or unset the inline mode. 
 	 *
 	 *	@param (value string or false) the id or jquery object of the datepicker container, false otherwise (not inline)
@@ -2935,9 +2930,8 @@
 		}
 		return this.options.inline;
 	} // end inline()
-	
-	
-	/** 
+
+	/**
 	 *	format() is a public member function to format a date according the output format. 
 	 *
 	 *	@param (value date object) the date 
@@ -2947,7 +2941,7 @@
 		return this.formatDate(date, this.options.outputFormat);
 	} // end format()
 
-	/** 
+	/**
 	 *	setLocales() is a public member function which allow change the locales. 
 	 *
 	 *	@param (value obj) the new locales
@@ -2981,7 +2975,7 @@
 			this.$grid.removeClass('rtl');
 		}
 	} // end outputFormat()
-	
+
 	// DATEPICKER PLUGIN DEFINITION
 	// ==========================
 
@@ -3014,5 +3008,5 @@
 		$.fn.datepicker = old
 		return this
 	}
-  
+
 }));

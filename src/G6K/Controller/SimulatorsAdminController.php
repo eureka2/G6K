@@ -1335,6 +1335,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		$actionObj->setWhat($action['what']);
 		$actionObj->setFor($action['for']);
 		$actionObj->setUri($action['uri']);
+		$actionObj->setLocation($action['location']);
+		$actionObj->setShape($action['shape']);
 		return $actionObj;
 	}
 
@@ -2801,6 +2803,8 @@ class SimulatorsAdminController extends BaseAdminController {
 					$tactionbutton = array(
 						'name' => $action->getName(),
 						'label' => $action->getLabel(),
+						'location' => $action->getLocation(),
+						'shape' => $action->getShape(),
 						'what' => $action->getWhat(),
 						'for' => $action->getFor(),
 						'uri' => $action->getUri(),

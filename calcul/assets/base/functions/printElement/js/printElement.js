@@ -28,6 +28,14 @@ THE SOFTWARE.
 	function printElement(clickable, func, callback) {
 		var parameters = func.arguments;
 		var g6k = clickable.data('g6k');
+		if (clickable.is('a')) {
+			clickable.attr('href', '');
+			clickable.attr('title', clickable.text());
+			clickable.attr('rel', 'noopener noreferrer');
+			clickable.html('');
+			clickable.addClass('element-print-button');
+			clickable.append($('<span>', { 'class': 'fas fa-print'}));
+		}
 		if (func.appliedto == 'data'){
 			clickable.on('click', function(event) {
 				event.preventDefault();

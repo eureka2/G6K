@@ -686,6 +686,8 @@ THE SOFTWARE.
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'name', Translator.trans('Name'), action.name, action.name, true, Translator.trans('Button name')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'label', Translator.trans('Label'), action.label, action.label, true, Translator.trans('Button label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'shape', Translator.trans('Action shape'), action.shape, action.shape, true, Translator.trans('Select an action shape'), JSON.stringify({ 'button': Translator.trans('Button'), 'link': Translator.trans('Link') } )));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'location', Translator.trans('Location'), action.location, action.location, true, Translator.trans('Select a location'), JSON.stringify( { 'top': Translator.trans('At the top of the simulation form'), 'right': Translator.trans('On the right of the simulation form'), 'bottom': Translator.trans('At the bottom of the simulation form'), 'left': Translator.trans('On the left of the simulation form') } )));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'what', Translator.trans('What'), action.what, action.what, true, Translator.trans('Select an action'), JSON.stringify( { 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset'), 'execute': Translator.trans('Execute') } )));
 		switch (action.what) {
 			case 'submit':
@@ -701,7 +703,7 @@ THE SOFTWARE.
 				requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId , 'select', 'for', Translator.trans('What?'), action.for, action.for, true, Translator.trans('Select a target step'), JSON.stringify({ 'function': Translator.trans('Function') } )));
 				if (action.for == 'function') { // always true
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
-					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'function', Translator.trans('Function'), functs.function, functs.function, true, Translator.trans('Select a function'), JSON.stringify(functions)));
+					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'function', Translator.trans('Function'), functs.function, functs.function, true, Translator.trans('Select a function'), JSON.stringify(functions.labels)));
 					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'appliedto', Translator.trans('Applied to'), functs.appliedto, functs.appliedto, true, Translator.trans('Select a target'), JSON.stringify({ 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'step': Translator.trans('Step'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') })));
 					if (functs.arguments.data) {
 						var datasList = {};
@@ -1122,6 +1124,8 @@ THE SOFTWARE.
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-name', 'text', 'name', Translator.trans('Name'), action.name, true, Translator.trans('Action button name without spaces or special characters')));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-label', 'text', 'label', Translator.trans('Label'), action.label, true, Translator.trans('Action button label')));
+		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-shape', 'select', 'shape', Translator.trans('Action shape'), action.shape, true, Translator.trans('Select an action shape'), JSON.stringify({ 'button': Translator.trans('Button'), 'link': Translator.trans('Link') })));
+		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-location', 'select', 'location', Translator.trans('Location'), action.location, true, Translator.trans('Select a location'), JSON.stringify({ 'top': Translator.trans('At the top of the simulation form'), 'right': Translator.trans('On the right of the simulation form'), 'bottom': Translator.trans('At the bottom of the simulation form'), 'left': Translator.trans('On the left of the simulation form') })));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-what', 'select', 'what', Translator.trans('What'), action.what, true, Translator.trans('Select an action'), JSON.stringify({ 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset'), 'execute': Translator.trans('Execute') })));
 		switch (action.what) {
 			case 'submit':
@@ -1137,8 +1141,11 @@ THE SOFTWARE.
 				requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-for', 'select', 'for', Translator.trans('What?'), action.for, true, Translator.trans('Select a target step'), JSON.stringify({ 'function': Translator.trans('Function') } )));
 				if (action.for == 'function') { // always true
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
-					requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-function', 'select', 'function', Translator.trans('Function'), functs.function, true, Translator.trans('Select a function'), JSON.stringify(functions)));
-					var appliedto = { 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'step': Translator.trans('Step'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
+					requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-function', 'select', 'function', Translator.trans('Function'), functs.function, true, Translator.trans('Select a function'), JSON.stringify(functions.labels)));
+					var appliedto = { 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
+					$.each(appliedto, function(k, v) {
+						if ($.inArray(k, functions.targets[functs.function]) < 0) delete appliedto[k];
+					});
 					if (Object.keys(Simulators.dataset).length == 0) {
 						delete appliedto['data'];
 					}
@@ -1252,7 +1259,7 @@ THE SOFTWARE.
 			Simulators.hideActionButtonError(actionPanelContainer);
 			actionPanelContainer.find(':input[data-attribute]').each(function() {
 				var attr = $(this).attr('data-attribute');
-				if ($.inArray(attr, ['name', 'label', 'class', 'what']) < 0) {
+				if ($.inArray(attr, ['name', 'label', 'shape', 'location', 'class', 'what']) < 0) {
 					$(this).closest('.form-group').remove();
 				}
 			});
@@ -1261,8 +1268,8 @@ THE SOFTWARE.
 				case 'submit':
 					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-for', 'select', 'for', Translator.trans('For'), '', true, Translator.trans('Select a step'), JSON.stringify({ 'priorStep': Translator.trans('Prior step'), 'currentStep': Translator.trans('Current step'), 'nextStep': Translator.trans('Next step'), 'jumpToStep': Translator.trans('Jump to step'), 'newSimulation': Translator.trans('New simulation'), 'externalPage': Translator.trans('External page') } )));
 					Simulators.bindActionButtonFor(actionPanelContainer);
-					break;
 				case 'reset':
+					actionPanelContainer.find('select[data-attribute=shape]').val('button');
 					break;
 				case 'execute':
 					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-for', 'select', 'for', Translator.trans('What?'), '', true, Translator.trans('Select a function'), JSON.stringify({ 'function': Translator.trans('Function') } )));
@@ -1279,7 +1286,7 @@ THE SOFTWARE.
 			Simulators.hideActionButtonError(actionPanelContainer);
 			actionPanelContainer.find(':input[data-attribute]').each(function() {
 				var attr = $(this).attr('data-attribute');
-				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for']) < 0) {
+				if ($.inArray(attr, ['name', 'label', 'shape', 'location', 'class', 'what', 'for']) < 0) {
 					$(this).closest('.form-group').remove();
 				}
 			});
@@ -1299,7 +1306,7 @@ THE SOFTWARE.
 					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-uri', 'text', 'uri', Translator.trans('External page URL'), '', true, Translator.trans('External page URL')));
 					break;
 				case 'function':
-					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-function', 'select', 'function', Translator.trans('Function'), '', true, Translator.trans('Select a function'), JSON.stringify(functions)));
+					parent.append(Simulators.simpleAttributeForInput(actionElementId + '-function', 'select', 'function', Translator.trans('Function'), '', true, Translator.trans('Select a function'), JSON.stringify(functions.labels)));
 					Simulators.bindActionButtonFunction(actionPanelContainer);
 					actionPanelContainer.find('select[data-attribute=function]').trigger('change');
 					break;
@@ -1313,12 +1320,16 @@ THE SOFTWARE.
 			Simulators.hideActionButtonError(actionPanelContainer);
 			actionPanelContainer.find(':input[data-attribute]').each(function() {
 				var attr = $(this).attr('data-attribute');
-				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function']) < 0) {
+				if ($.inArray(attr, ['name', 'label', 'shape', 'location', 'class', 'what', 'for', 'function']) < 0) {
 					$(this).closest('.form-group').remove();
 				}
 			});
+			var funct = $(this).val();
 			var parent = $(this).closest('.form-group').parent();
 			var appliedto = { 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
+			$.each(appliedto, function(k, v) {
+				if ($.inArray(k, functions.targets[funct]) < 0) delete appliedto[k];
+			});
 			if (Object.keys(Simulators.dataset).length == 0) {
 				delete appliedto['data'];
 			}
@@ -1337,7 +1348,7 @@ THE SOFTWARE.
 			Simulators.hideActionButtonError(actionPanelContainer);
 			actionPanelContainer.find(':input[data-attribute]').each(function() {
 				var attr = $(this).attr('data-attribute');
-				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto']) < 0) {
+				if ($.inArray(attr, ['name', 'label', 'shape', 'location', 'class', 'what', 'for', 'function', 'appliedto']) < 0) {
 					$(this).closest('.form-group').remove();
 				}
 			});
@@ -1398,7 +1409,7 @@ THE SOFTWARE.
 			Simulators.hideActionButtonError(actionPanelContainer);
 			actionPanelContainer.find(':input[data-attribute]').each(function() {
 				var attr = $(this).attr('data-attribute');
-				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel']) < 0) {
+				if ($.inArray(attr, ['name', 'label', 'shape', 'location', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel']) < 0) {
 					$(this).closest('.form-group').remove();
 				}
 			});
@@ -1446,7 +1457,7 @@ THE SOFTWARE.
 			Simulators.hideActionButtonError(actionPanelContainer);
 			actionPanelContainer.find(':input[data-attribute]').each(function() {
 				var attr = $(this).attr('data-attribute');
-				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'blockinfo']) < 0) {
+				if ($.inArray(attr, ['name', 'label', 'shape', 'location', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'blockinfo']) < 0) {
 					$(this).closest('.form-group').remove();
 				}
 			});
@@ -1480,7 +1491,7 @@ THE SOFTWARE.
 			Simulators.hideActionButtonError(actionPanelContainer);
 			actionPanelContainer.find(':input[data-attribute]').each(function() {
 				var attr = $(this).attr('data-attribute');
-				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'blockinfo', 'chapter']) < 0) {
+				if ($.inArray(attr, ['name', 'label', 'shape', 'location', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'blockinfo', 'chapter']) < 0) {
 					$(this).closest('.form-group').remove();
 				}
 			});
@@ -1521,7 +1532,7 @@ THE SOFTWARE.
 			Simulators.hideActionButtonError(actionPanelContainer);
 			actionPanelContainer.find(':input[data-attribute]').each(function() {
 				var attr = $(this).attr('data-attribute');
-				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'fieldset']) < 0) {
+				if ($.inArray(attr, ['name', 'label', 'shape', 'location', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'fieldset']) < 0) {
 					$(this).closest('.form-group').remove();
 				}
 			});
@@ -1569,7 +1580,7 @@ THE SOFTWARE.
 			Simulators.hideActionButtonError(actionPanelContainer);
 			actionPanelContainer.find(':input[data-attribute]').each(function() {
 				var attr = $(this).attr('data-attribute');
-				if ($.inArray(attr, ['name', 'label', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'fieldset', 'fieldrow']) < 0) {
+				if ($.inArray(attr, ['name', 'label', 'shape', 'location', 'class', 'what', 'for', 'function', 'appliedto', 'step', 'panel', 'fieldset', 'fieldrow']) < 0) {
 					$(this).closest('.form-group').remove();
 				}
 			});
@@ -1665,6 +1676,7 @@ THE SOFTWARE.
 			}
 			switch(action.what) {
 				case 'reset':
+					action.for = 'currentStep';
 					break;
 				case 'submit':
 					break;
@@ -1805,8 +1817,6 @@ THE SOFTWARE.
 		}
 		var actionWhat = $('#' + actionElementId + '-what').val();
 		switch (actionWhat) {
-			case 'reset':
-				break;
 			case 'submit':
 				var actionFor = $('#' + actionElementId + '-for').val();
 				if (actionFor === 'jumpToStep' || actionFor === 'externalPage') {
@@ -1816,6 +1826,13 @@ THE SOFTWARE.
 						actionContainer.find('.alert').show();
 						return false;
 					}
+				}
+			case 'reset':
+				var actionShape = $('#' + actionElementId + '-shape').val();
+				if (actionShape == 'link') {
+					actionContainer.find('.error-message').text(Translator.trans("The action shape 'link' is not allowed in this context"));
+					actionContainer.find('.alert').show();
+					return false;
 				}
 				break;
 			case 'execute':
@@ -1870,6 +1887,8 @@ THE SOFTWARE.
 				stepId: stepId,
 				name: '',
 				label: '',
+				shape: 'button',
+				location: 'bottom',
 				what: 'submit',
 				for: 'nextStep',
 				uri: '',

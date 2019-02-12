@@ -1672,6 +1672,12 @@ class Simulator {
 						$actionObj->setWhat((string)$action['what']);
 						$actionObj->setFor((string)$action['for']);
 						$actionObj->setUri((string)$action['uri']);
+						if ((string)$action['location'] != "") {
+							$actionObj->setLocation((string)$action['location']);
+						}
+						if ((string)$action['shape'] != "") {
+							$actionObj->setShape((string)$action['shape']);
+						}
 						$stepObj->addAction($actionObj);
 					}
 				}
@@ -2730,9 +2736,12 @@ class Simulator {
 							$this->name = (string)$action['name'];
 							$this->dependencies = 'actionDependencies';
 							$naction = array(
-								'label'	 => (string)$action['label'],
-								'what'	 => (string)$action['what'],
-								'for'	 => (string)$action['for']
+								'label'		 => (string)$action['label'],
+								'what'		 => (string)$action['what'],
+								'for'		 => (string)$action['for'],
+								'uri'		 => (string)$action['uri'],
+								'location'	 => (string)$action['location'],
+								'shape'		 => (string)$action['shape']
 							);
 							$actions[$this->name] = $naction;
 						}
@@ -3328,10 +3337,11 @@ class Simulator {
 				if (count($step->getActions()) > 0) {
 					$xml[] = '			<ActionList>';
 					foreach ($step->getActions() as $action) {
-						$attrs = 'name="' . $action->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $action->getLabel()) . '" what="' . $action->getWhat() . '" for="' . $action->getFor() . '"';
+						$attrs = 'name="' . $action->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $action->getLabel()) . '" shape="' . $action->getShape() . '" what="' . $action->getWhat() . '" for="' . $action->getFor() . '"';
 						if ($action->getUri() != '') {
 							$attrs .= ' uri="' . $action->getUri() . '"'; 
 						}
+						$attrs .= ' location="' . $action->getLocation() . '"'; 
 						if ($action->getClass() != '') {
 							$attrs .= ' class="' . $action->getClass() . '"'; 
 						}

@@ -215,6 +215,9 @@ class DefaultController extends BaseController {
 				$functions[$function] = $availFunctions[$function];
 			}
 		}
+		if ($this->container->hasParameter('recaptcha')) {
+			$hiddens['recaptcha'] = $this->container->getParameter('recaptcha')['site_key'];
+		}
 		try {
 			$response =  $this->render(
 				$view.'/'.str_replace(':', '/', $step->getTemplate()),

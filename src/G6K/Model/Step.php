@@ -477,6 +477,19 @@ class Step {
 	}
 
 	/**
+	 * Returns the list of action buttons of this step, placed at location given as parameter.
+	 *
+	 * @access  public
+	 * @return  array The list of action buttons
+	 *
+	 */
+	public function getActionsOfShapeAt($shape, $location) {
+		return array_filter($this->actions, function (Action $action) use ($shape, $location) {
+			return $action->getShape() == $shape && $action->getLocation() == $location;
+		});
+	}
+
+	/**
 	 * Sets the list of action buttons of this step.
 	 *
 	 * @access  public

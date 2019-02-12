@@ -3,7 +3,7 @@
 {#
 The MIT License (MIT)
 
-Copyright (c) 2015 Jacques Archimède
+Copyright (c) 2015-2019 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,13 @@ THE SOFTWARE.
 {% set panels = 0 %}
 {% set blocks = 0 %}
 {% set fieldsets = 0 %}
+
+{{ form.actions(context, 'button', 'left') }}
+{{ form.actions(context, 'link', 'left') }}
+
+{{ form.actions(context, 'button', 'top') }}
+{{ form.actions(context, 'link', 'top') }}
+
 {%- for panel in step.panels -%}
 		{%- if panel.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
 			{% set panels = panels + 1 %}
@@ -130,7 +137,11 @@ THE SOFTWARE.
 {{ form.footnotes(context) }}
 {% endif %}
 
-{{ form.actions(context) }}
+{{ form.actions(context, 'button', 'right') }}
+{{ form.actions(context, 'link', 'right') }}
+
+{{ form.actions(context, 'button', 'bottom') }}
+{{ form.actions(context, 'link', 'bottom') }}
 
 {%- if step.footNotes and step.footNotes.position == "afterActions" %}
 {{ form.footnotes(context) }}
@@ -162,15 +173,22 @@ THE SOFTWARE.
 </div>
 {% endmacro %}
 
-{% macro actions(context) %}
+{% macro actions(context, shape, location) %}
 {% set step = context.step %}
 {% set simu = step.simulator %}
-<div class="action_buttons">
-{%- for action in step.actions -%}
-	 {% set buttontype = action.what == 'execute' ? 'button' : action.what %}
-	 <button class="btn {{ action.class }}" type="{{ buttontype }}" name="{{ action.name }}"{% if action.for == 'externalPage' %} formaction="{{ action.uri }}"{% endif %}{% if action.for == 'function' %} data-function="{{ action.uri }}"{% endif %}>{% if action.for == 'priorStep' %}<span class="glyphicon glyphicon-menu-left"> </span>{% endif %}{{ action.label|nofnref }}{%if action.for == 'nextStep' %}<span class="glyphicon glyphicon-menu-right"> </span>{% endif %}</button>
+{% set actionsOfShapeAt = step.actionsOfShapeAt(shape, location) %}
+{% if actionsOfShapeAt|length > 0 %}
+<div class="action_buttons {{ shape }} {{ location }}">
+{%- for action in actionsOfShapeAt -%}
+	{% if shape == 'button' %}
+	{% set buttontype = action.what == 'execute' ? 'button' : action.what %}
+	<button class="btn {{ action.class }}" type="{{ buttontype }}" name="{{ action.name }}"{% if action.for == 'externalPage' %} formaction="{{ action.uri }}"{% endif %}{% if action.for == 'function' %} data-function="{{ action.uri }}"{% endif %}>{% if action.for == 'priorStep' %}<span class="fas fa-chevron-left"> </span>{% endif %}{{ action.label|nofnref }}{%if action.for == 'nextStep' %}<span class="fas fa-chevron-right"> </span>{% endif %}</button>
+	{% else %}
+	<a class="btn" name="{{ action.name }}"{% if action.for == 'externalPage' %} formaction="{{ action.uri }}"{% endif %}{% if action.for == 'function' %} data-function="{{ action.uri }}"{% endif %}>{% if action.for == 'priorStep' %}<span class="fas fa-chevron-left"> </span>{% endif %}{{ action.label|nofnref }}{%if action.for == 'nextStep' %}<span class="fas fa-chevron-right"> </span>{% endif %}</a>
+	{% endif %}
 {% endfor %}
 </div>
+{% endif %}
 {% endmacro %}
 
 {% macro footnotes(context) %}

@@ -2,7 +2,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2018 Jacques Archimède
+Copyright (c) 2015-2019 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -90,6 +90,22 @@ class Action {
 	 *
 	 */
 	private $uri = "";  
+
+	/**
+	 * @var string     $location location of the button container (top|right|bottom|left)
+	 *
+	 * @access  private
+	 *
+	 */
+	private $location = "bottom";  
+
+	/**
+	 * @var string     $shape shape of action (button|link)
+	 *
+	 * @access  private
+	 *
+	 */
+	private $shape = "button";  
 
 	/**
 	 * @var bool       $displayable Button displayable or not
@@ -210,7 +226,7 @@ class Action {
 	 * Sets the "what to do" of this action button
 	 *
 	 * @access  public
-	 * @param   string     $what Button action eg "Submit" or "Reset"
+	 * @param   string     $what Button action eg "submit", "reset", "execute"
 	 * @return  void
 	 *
 	 */
@@ -279,6 +295,52 @@ class Action {
 	 */
 	public function setUri($uri) {
 		$this->uri = $uri;
+	}
+
+	/**
+	 * Returns the "location" of this action button
+	 *
+	 * @access  public
+	 * @return  string the value of location
+	 *
+	 */
+	public function getLocation() {
+		return $this->location;
+	}
+
+	/**
+	 * Sets the "location" of this action button
+	 *
+	 * @access  public
+	 * @param   string     $location location of the container of this action button
+	 * @return  void
+	 *
+	 */
+	public function setLocation($location) {
+		$this->location = $location;
+	}
+
+	/**
+	 * Returns the "shape" of this action button
+	 *
+	 * @access  public
+	 * @return  string the value of shape
+	 *
+	 */
+	public function getShape() {
+		return $this->shape;
+	}
+
+	/**
+	 * Sets the "shape" of this action button
+	 *
+	 * @access  public
+	 * @param   string     $shape shape of this action button
+	 * @return  void
+	 *
+	 */
+	public function setShape($shape) {
+		$this->shape = $shape;
 	}
 
 	/**
