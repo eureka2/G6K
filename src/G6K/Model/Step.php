@@ -484,7 +484,7 @@ class Step {
 	 *
 	 */
 	public function getActionsOfShapeAt($shape, $location) {
-		return array_filter($this->actions, function ($action) use ($shape, $location) {
+		return array_filter($this->actions, function (Action $action) use ($shape, $location) {
 			return $action->getShape() == $shape && $action->getLocation() == $location;
 		});
 	}

@@ -274,7 +274,6 @@ class CopySimulatorCommand extends SimulatorCommandBase
 		$xpath = new \DOMXPath($simulator);
 		$steps = $xpath->query("/Simulator/Steps/Step");
 		$len = $steps->length;
-		$copieds = [];
 		$viewsDir1 = $this->findTemplatesDirectory($anotherg6kpath, $input, $output);
 		$viewsDir2 = $this->projectDir."/templates";
 		$view = $simulator->documentElement->getAttribute('defaultView');

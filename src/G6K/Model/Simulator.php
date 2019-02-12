@@ -1672,8 +1672,12 @@ class Simulator {
 						$actionObj->setWhat((string)$action['what']);
 						$actionObj->setFor((string)$action['for']);
 						$actionObj->setUri((string)$action['uri']);
-						$actionObj->setLocation((string)$action['location']);
-						$actionObj->setShape((string)$action['shape']);
+						if ((string)$action['location'] != "") {
+							$actionObj->setLocation((string)$action['location']);
+						}
+						if ((string)$action['shape'] != "") {
+							$actionObj->setShape((string)$action['shape']);
+						}
 						$stepObj->addAction($actionObj);
 					}
 				}
