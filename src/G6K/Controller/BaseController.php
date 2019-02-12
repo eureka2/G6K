@@ -431,7 +431,7 @@ class BaseController extends Controller {
 							$istep = $toStep;
 						} elseif ($action->getFor() == 'newSimulation') {
 							$route = $request->get('_route');
-							if ($route == 'eureka_g6k_calcul_view' || $route == 'eureka_g6k_calcul_view_try') {
+							if ($route == 'eureka_g6k_calcul_view' || $route == 'eureka_g6k_calcul_view_try' || $route == 'eureka_g6k_admin_simulator_calcul') {
 								return $this->redirect($this->generateUrl($route, array('simu' => $simu, 'view' => $view)));
 							} else {
 								return $this->redirect($this->generateUrl($route, array('simu' => $simu)));
