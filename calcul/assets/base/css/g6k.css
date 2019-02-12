@@ -10,3 +10,19 @@
 }
 .g6k-date legend { display: none; width: 0;}
 .g6k-date label { display: none; }
+
+.action_buttons.top.link {
+	display: block;
+	float: right;
+}
+.action_buttons.top.link .btn {
+	padding: .15em .3em;
+	margin: 0;
+	background: #f0f0f0;
+}
+.action_buttons.top.link .btn:after {
+	content: "";
+}
+.action_buttons.top.link + div {
+	clear: both;
+}

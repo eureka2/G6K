@@ -204,6 +204,18 @@ abstract class SimulatorCommandBase extends CommandBase
 					$step->setAttribute('pdfFooter', '0');
 				}
 			}
+			$actionList = $this->getDOMElementItem($step->getElementsByTagName("ActionList"), 0);
+			if ($actionList) {
+				$actions = $actionList->getElementsByTagName("Action");
+				foreach ($actions as $action) {
+					if (! $action->hasAttribute('shape')) {
+						$action->setAttribute('shape', 'button');
+					}
+					if (! $action->hasAttribute('location')) {
+						$action->setAttribute('location', 'bottom');
+					}
+				}
+			}
 		}
 	}
 

@@ -5096,7 +5096,7 @@ THE SOFTWARE.
 
 		initializeExternalFunctions: function() {
 			var self = this;
-			$('div.action_buttons > button[data-function]').each(function() {
+			$('div.action_buttons > [data-function]').each(function() {
 				var func = $(this).attr('data-function');
 				func = func.replace(/'/g, '"');
 				func = $.parseJSON(func);

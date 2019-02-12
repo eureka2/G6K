@@ -190,6 +190,24 @@
 																</xs:simpleType>
 															</xs:attribute>
 															<xs:attribute name="uri" type="xs:string"/>
+															<xs:attribute name="location" default="bottom">
+																<xs:simpleType>
+																	<xs:restriction base="xs:NMTOKEN">
+																		<xs:enumeration value="top"/>
+																		<xs:enumeration value="right"/>
+																		<xs:enumeration value="bottom"/>
+																		<xs:enumeration value="left"/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:attribute>
+															<xs:attribute name="shape" default="button">
+																<xs:simpleType>
+																	<xs:restriction base="xs:NMTOKEN">
+																		<xs:enumeration value="button"/>
+																		<xs:enumeration value="link"/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:attribute>
 															<xs:attribute name="class" type="xs:string"/>
 														</xs:complexType>
 													</xs:element>

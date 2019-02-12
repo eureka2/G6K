@@ -9,6 +9,10 @@ parameters:
 
     page404: /404.html
 
+    recaptcha:
+        site_key: <YOUR GOOGLE SITE KEY>
+        secret_key: <YOUR GOOGLE SECRET KEY>
+
     widgets:
         abListbox:
             label: Accessible and customizable listbox
@@ -136,22 +140,96 @@ parameters:
     functions:
         copyToClipboard:
             label: Copy the content of en element to clipboard
+            target: [ all ]
             css: 
             js: 
                 - js/copyToClipboard.js
         printElement:
             label: Prints the contents of an element
+            target: [ all ]
             css: 
             js: 
                 - js/printElement.js
                 - lib/printThis.js
         printToPDF:
             label: Takes a screenshot of part of the page in PDF format
+            target: [ all ]
             css: 
             js: 
                 - js/printToPDF.js
                 - lib/jspdf.min.js
                 - lib/html2canvas.min.js
+        shareByEmail:
+            label: Share by email
+            target: [ page ]
+            css: 
+                - css/shareByEmail.css
+            js:
+                - https://www.google.com/recaptcha/api.js async defer
+                - js/shareByEmail.js
+        shareOnTwitter:
+            label: Share on Twitter
+            target: [ page ]
+            css:
+                - css/shareOnTwitter.css
+            js:
+                - js/shareOnTwitter.js
+        shareOnFacebook:
+            label: Share on Facebook
+            target: [ page ]
+            css:
+                - css/shareOnFacebook.css
+            js:
+                - js/shareOnFacebook.js
+        shareOnLinkedin:
+            label: Share on Linkedin
+            target: [ page ]
+            css:
+                - css/shareOnLinkedin.css
+            js:
+                - js/shareOnLinkedin.js
+        shareOnPinterest:
+            label: Share on Pinterest
+            target: [ page ]
+            css:
+                - css/shareOnPinterest.css
+            js:
+                - js/shareOnPinterest.js
+        shareOnVk:
+            label: Share on Vk
+            target: [ page ]
+            css:
+                - css/shareOnVk.css
+            js:
+                - js/shareOnVk.js
+        shareOnXing:
+            label: Share on Xing
+            target: [ page ]
+            css:
+                - css/shareOnXing.css
+            js:
+                - js/shareOnXing.js
+        shareOnTumblr:
+            label: Share on Tumblr
+            target: [ page ]
+            css:
+                - css/shareOnTumblr.css
+            js:
+                - js/shareOnTumblr.js
+        shareOnReddit:
+            label: Share on Reddit
+            target: [ page ]
+            css:
+                - css/shareOnReddit.css
+            js:
+                - js/shareOnReddit.js
+        shareOnViadeo:
+            label: Share on Viadeo
+            target: [ page ]
+            css:
+                - css/shareOnViadeo.css
+            js:
+                - js/shareOnViadeo.js
 
     # api configuration
     # api:

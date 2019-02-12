@@ -154,3 +154,8 @@ eureka_g6k_calcul_view_try:
     methods: [ get, post ]
     defaults: { _controller: App\G6K\Controller\DefaultController::tryItAction }
 
+eureka_g6k_mail_send:
+    path:     /{template}/{view}/mail
+    methods: [ post ]
+    defaults: { _controller: App\G6K\Controller\MailController::sendMailAction }
+

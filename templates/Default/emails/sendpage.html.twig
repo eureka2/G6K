@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ 'Send a page'|trans }}</title>
+</head>
+<body>
+	<section class="section">
+		<div class="container">
+			<div class="columns">
+				<div class="column is-half">
+					<p>{{ 'Hello,'|trans }}</p>
+					<p>{{ 'A page of %host% has been advised by %sender%'|trans({ '%host%': host, '%sender%': sender }) }}</p>
+					<h1 class="title">
+						{{ subject }}
+					</h1>
+					<p>{{ 'Link: %link%'|trans({ '%link%': link }) }}</p>
+					<p>{{ 'Warning: %host% can not guarantee the identity of the sender'|trans({ '%host%': host }) }}</p>
+					<p>{{ 'The %host% team'|trans({ '%host%': host }) }}</p>
+					<div class="field">
+						<label class="label">Message</label>
+						<div class="control">
+							{{ message }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<p>{{ 'This message has been sent automatically. We thank you for not answering.'|trans }}</p>
+		</footer>
+	</section>
+</body>
+
+</html>

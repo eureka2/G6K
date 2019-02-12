@@ -530,6 +530,8 @@ THE SOFTWARE.
 			{%set actionElementId = 'step-'~step.id~ '-action-button-' ~ action.name %}
 			{{ page.showAttribute(actionElementId, 'text', 'name', 'Name'|trans, action.name, action.name, true, 'Button name'|trans) }}
 			{{ page.showAttribute(actionElementId, 'text', 'label', 'Label'|trans, action.label, action.label, true, 'Button label'|trans) }}
+			{{ page.showAttribute(actionElementId, 'select', 'shape', 'Action shape'|trans, action.shape, action.shape, true, 'Select an action shape'|trans, { 'button':'Button'|trans, 'link':'Link'|trans } ) }}
+			{{ page.showAttribute(actionElementId, 'select', 'location', 'Location'|trans, action.location, action.location, true, 'Select a location'|trans, { 'top':'At the top of the simulation form'|trans, 'left':'On the left of the simulation form'|trans, 'bottom':'At the bottom of the simulation form'|trans, 'right':'On the right of the simulation form'|trans } ) }}
 			{{ page.showAttribute(actionElementId, 'select', 'what', 'What'|trans, action.what, action.what, true, 'Select an action'|trans, { 'submit':'Submit'|trans, 'reset':'Reset'|trans, 'execute':'Execute'|trans } ) }}
 			{% if action.what == 'submit' %}
 				{{ page.showAttribute(actionElementId, 'select', 'for', 'For'|trans, action.for, action.for, true, 'Select a target step'|trans, { 'priorStep': 'Prior step'|trans, 'currentStep': 'Current step'|trans, 'nextStep': 'Next step'|trans, 'jumpToStep': 'Jump to step'|trans, 'newSimulation': 'New simulation'|trans, 'externalPage': 'External page'|trans } ) }}
@@ -544,7 +546,7 @@ THE SOFTWARE.
 				{{ page.showAttribute(actionElementId , 'select', 'for', 'What?'|trans, action.for, action.for, true, 'Select a target step'|trans, { 'function': 'Function'|trans } ) }}
 				{% if action.for == 'function' %}
 					{% set functs = action.uriDecoded %}
-					{{ page.showAttribute(actionElementId, 'select', 'function', 'Function'|trans, functs.function, functs.function, true, 'Select a function'|trans, context.functions) }}
+					{{ page.showAttribute(actionElementId, 'select', 'function', 'Function'|trans, functs.function, functs.function, true, 'Select a function'|trans, context.functions.labels) }}
 					{{ page.showAttribute(actionElementId, 'select', 'appliedto', 'Applied to'|trans, functs.appliedto, functs.appliedto, true, 'Select a target'|trans, { 'page': 'Full page'|trans, 'article': 'Simulation block'|trans, 'data': 'Data'|trans, 'datagroup': 'Datagroup'|trans, 'step': 'Step'|trans, 'panel': 'Panel'|trans, 'fieldset': 'FieldSet'|trans, 'fieldrow': 'Fieldrow'|trans, 'field': 'Field'|trans, 'prenote': 'PreNote'|trans, 'postnote': 'PostNote'|trans, 'blockinfo': 'BlockInfo'|trans, 'chapter': 'Chapter'|trans, 'section': 'Section'|trans, 'content': 'Section content'|trans, 'annotations': 'Section annotations'|trans, 'footnote': 'FootNote'|trans } ) }}
 					{% if functs.arguments.data is defined %}
 						{% set datalabel =  step.simulator.getDataById(functs.arguments.data).label %}

@@ -28,6 +28,14 @@ THE SOFTWARE.
 	function printToPDF(clickable, func, callback) {
 		var parameters = func.arguments;
 		var g6k = clickable.data('g6k');
+		if (clickable.is('a')) {
+			clickable.attr('href', '');
+			clickable.attr('title', clickable.text());
+			clickable.attr('rel', 'noopener noreferrer');
+			clickable.html('');
+			clickable.addClass('pdf-print-button');
+			clickable.append($('<span>', { 'class': 'far fa-file-pdf'}));
+		}
 		var message = null;
 		if (func.appliedto == 'data' || func.appliedto == 'datagroup'){
 			clickable.on('click', function(event) {
