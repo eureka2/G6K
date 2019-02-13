@@ -3177,7 +3177,7 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => 'dataset',
+								'label' => $this->get('translator')->trans('the dataset'),
 								'name' => 'dataset'
 							)
 						)
