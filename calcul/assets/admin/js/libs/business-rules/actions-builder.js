@@ -126,7 +126,7 @@ THE SOFTWARE.
 				for (var i = 0; i < fieldaction.options.length; i++) {
 					if (fieldaction.options[i].name == field.value) {
 						input.text(fieldaction.options[i].label);
-						if (field.fields) {
+						if (field.fields && field.fields.length > 0) {
 							field = field.fields[0];
 							fieldDiv.find("div.subfields").replaceWith(this.buildSubfields(field, fieldaction.options[i].fields[0]));
 						}
@@ -350,8 +350,6 @@ THE SOFTWARE.
 					var key = e.keyCode || e.which || e.key;
 					if (key == 13) {
 						$editable.trigger('click');
-					} else if (key == 32) {
-						e.preventDefault();
 					}
 				});
 				fieldDiv.append($editable);
