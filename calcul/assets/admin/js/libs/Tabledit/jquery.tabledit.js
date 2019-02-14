@@ -43,12 +43,12 @@ if (typeof jQuery === 'undefined') {
 			buttons: {
 				edit: {
 					class: 'btn btn-sm btn-secondary',
-					html: '<span class="fa fa-pencil"></span>',
+					html: '<span class="fas fa-pencil-alt"></span>',
 					action: 'edit'
 				},
 				delete: {
 					class: 'btn btn-sm btn-secondary',
-					html: '<span class="fa fa-trash"></span>',
+					html: '<span class="fas fa-trash-alt"></span>',
 					action: 'delete'
 				},
 				save: {

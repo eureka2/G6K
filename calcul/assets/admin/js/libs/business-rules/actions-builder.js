@@ -59,7 +59,7 @@ THE SOFTWARE.
 			if (this.addButton == null) {
 				var buttons = $("<div>", {"class": "action-buttons"});
 				this.addButton = $("<button>", {
-					"class": "add btn-primary fa fa-plus-square", 
+					"class": "add btn-primary fas fa-plus-square", 
 					"text": "  " + Translator.trans("Add Action")
 				});
 				buttons.append(this.addButton);
@@ -197,7 +197,7 @@ THE SOFTWARE.
 				}
 			});
 			var removeLink = $("<button>", {
-				"class": "btn btn-light remove fa fa-remove float-left", 
+				"class": "btn btn-light remove fas fa-times float-left", 
 				"text": " ",
 				"title": Translator.trans("Remove this Action")
 			});

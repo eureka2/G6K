@@ -559,7 +559,7 @@ THE SOFTWARE.
 				}
 			});
 			var addRuleLink = $("<button>", {
-				"class": "add-condition btn btn-primary fa fa-plus-square",
+				"class": "add-condition btn btn-primary fas fa-plus-square",
 				"text": " ",
 				"title": Translator.trans("Add Condition")
 			});
@@ -573,7 +573,7 @@ THE SOFTWARE.
 			div.append(addRuleLink);
 
 			var addConditionLink = $("<button>", {
-				"class": "add-sub-condition btn btn-info fa fa-plus-circle",
+				"class": "add-sub-condition btn btn-info fas fa-plus-circle",
 				"text": " ",
 				"title": Translator.trans("Add Sub-Condition")
 			});
@@ -586,7 +586,7 @@ THE SOFTWARE.
 			div.append(addConditionLink);
 
 			var removeLink = $("<button>", {
-				"class": "remove btn btn-danger fa fa-remove",
+				"class": "remove btn btn-danger fas fa-times",
 				"text": " ",
 				"title": Translator.trans("Remove this Sub-Condition")
 			});
@@ -703,7 +703,7 @@ THE SOFTWARE.
 
 	function removeLink() {
 		var removeLink = $("<button>", {
-			"class": "remove btn btn-danger fa fa-remove",
+			"class": "remove btn btn-danger fas fa-times",
 			"text": " ",
 			"title": Translator.trans("Remove this Condition")
 		});

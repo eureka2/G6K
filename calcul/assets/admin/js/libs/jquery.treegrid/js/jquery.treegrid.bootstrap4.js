@@ -1,4 +1,4 @@
 $.extend($.fn.treegrid.defaults, {
-    expanderExpandedClass: 'fa fa-chevron-down',
-    expanderCollapsedClass: 'fa fa-chevron-right'
+    expanderExpandedClass: 'fas fa-chevron-down',
+    expanderCollapsedClass: 'fas fa-chevron-right'
 });

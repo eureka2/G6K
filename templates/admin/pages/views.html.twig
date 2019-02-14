@@ -35,7 +35,7 @@ THE SOFTWARE.
 			<div class="card-body">
 				<div>
 					<form action="{{ path('eureka_g6k_admin_view_node_crud', {'view': 'new', 'node': 'dummy', 'crud': 'create'}) }}">
-					<button id="btnAddNewView" class="btn btn-secondary pull-right">{{ 'Create view'|trans }} <span class="fa fa-plus-circle"></span></button>
+					<button id="btnAddNewView" class="btn btn-secondary pull-right">{{ 'Create view'|trans }} <span class="fas fa-plus-circle"></span></button>
 					</form>
 				</div>
 				<ul class="nav nav-pills flex-column">
@@ -61,7 +61,7 @@ THE SOFTWARE.
 					<div class="card-body">
 						{% if hiddens.action == 'edit' %}
 						<div class="alert alert-danger" role="alert">
-							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="fas fa-exclamation-circle" aria-hidden="true"></span>
 							<span class="sr-only">{{ 'Error'|trans }} :</span>
 							<span class="error-message"></span>
 							<ul></ul>
@@ -82,13 +82,13 @@ THE SOFTWARE.
 				{% elseif view is not empty %}
 				<div id="table" class="card bg-primary">
 					<div class="card-header">
-						<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fa fa-book"></span></a> 
-						<a class="btn btn-primary pull-right drop-view-button" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': 'dummy', 'crud': 'drop-view'}) }}" data-confirm="{{ 'Are you sure you want to drop the view %view% ?'|trans({ '%view%': view.name }) }}'">{{ 'Drop view'|trans }} <span class="fa fa-minus-circle"></span></a>
+						<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
+						<a class="btn btn-primary pull-right drop-view-button" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': 'dummy', 'crud': 'drop-view'}) }}" data-confirm="{{ 'Are you sure you want to drop the view %view% ?'|trans({ '%view%': view.name }) }}'">{{ 'Drop view'|trans }} <span class="fas fa-minus-circle"></span></a>
 						<h4 class="card-title">{{ 'View «%view%»'|trans({ '%view%': view.name }) }}</h4>
 					</div>
 					<div class="card-body">
 						<div class="alert alert-danger" role="alert">
-							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="fas fa-exclamation-circle" aria-hidden="true"></span>
 							<span class="sr-only">{{ 'Error'|trans }} :</span>
 							<span class="error-message"></span>
 							<ul></ul>
@@ -126,12 +126,12 @@ THE SOFTWARE.
 				{% elseif hiddens.action == 'create' %}
 				<div id="view" class="card bg-primary">
 					<div class="card-header">
-					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fa fa-book"></span></a> 
+					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
 					<h4 class="card-title">{{ 'New view'|trans }}</h4>
 					</div>
 					<div class="card-body">
 						<div class="alert alert-danger" role="alert">
-							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="fas fa-exclamation-circle" aria-hidden="true"></span>
 							<span class="sr-only">{{ 'Error'|trans }} :</span>
 							<span class="error-message"></span>
 							<ul></ul>
@@ -226,11 +226,11 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 	</td>
 	<td class="view-tree-buttons">
 		{% if not node.isdir and (node.mode == 'javascript' or node.mode == 'css' or node.mode == 'twig') %}
-		<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'edit-node'}) }}" class="btn btn-sm btn-secondary edit-tree-node" alt="{{ 'Edit this file'|trans }}" title="{{ 'Edit this file'|trans }}"> <span class="fa fa-pencil"></span></a>
+		<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'edit-node'}) }}" class="btn btn-sm btn-secondary edit-tree-node" alt="{{ 'Edit this file'|trans }}" title="{{ 'Edit this file'|trans }}"> <span class="fas fa-pencil-alt"></span></a>
 		{% endif %}
 		{% if node.isdir %}
 		<form class="add-folder-or-file-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'add-node'}) }}" enctype="multipart/form-data">
-		{{ page.popinheader(viewname ~ node.num, 'popin-add-tree-node', 'Add a sub-folder or a file into «%folder%»'|trans({'%folder%': node.name}), '<span class="fa fa-download"></span>'|nofilter, 'btn btn-sm btn-secondary add-tree-node' ) }}
+		{{ page.popinheader(viewname ~ node.num, 'popin-add-tree-node', 'Add a sub-folder or a file into «%folder%»'|trans({'%folder%': node.name}), '<span class="fas fa-download"></span>'|nofilter, 'btn btn-sm btn-secondary add-tree-node' ) }}
 		<div class="add-node-container" data-node-type="{{ node.type }}">
 			<fieldset id="add-folder-or-file-{{ node.num }}">
 				<div class="form-group radio"><label class="col-form-label"><input type="radio" id="add-folder-{{ node.num }}" name="add-folder-or-file" value="folder" />{{ 'sub-folder'|trans }}</label></div>
@@ -243,14 +243,14 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 		{% endif %}
 		<form class="rename-node-form" method="post" action="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'rename-node'}) }}" enctype="multipart/form-data">
 		<input type="hidden" name="node-name" value="{{ node.name }}" />
-		{{ page.popinheader('rename-' ~ viewname ~ node.num, 'popin-rename-tree-node', 'Rename «%node%»'|trans({'%node%': node.name}), '<span class="fa fa-edit"></span>'|nofilter, 'btn btn-sm btn-secondary rename-tree-node' ) }}
+		{{ page.popinheader('rename-' ~ viewname ~ node.num, 'popin-rename-tree-node', 'Rename «%node%»'|trans({'%node%': node.name}), '<span class="fas fa-edit"></span>'|nofilter, 'btn btn-sm btn-secondary rename-tree-node' ) }}
 		<div class="rename-node-container" data-node-type="{% if node.isdir -%}folder{% else %}file{% endif %}">
 			<div class="form-group"><label class="col-form-label">{{ 'New name'|trans }}<input type="text" id="rename-node-name-{{ node.num }}" name="rename-node-name" value="{{ node.name }}" class="form-control form-control-sm" required="required"/></label></div>
 		</div>
 		{{ page.popinfooter() }}
 		</form>
 		{% if parent > 0 %}
-		<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'remove-node'}) }}" class="btn btn-sm btn-secondary remove-tree-node" alt="{{ 'Remove this element'|trans }}" title="{{ 'Remove this element'|trans }}" data-confirm="{{ 'Are you sure you want to drop this element ?'|trans }}"> <span class="fa fa-trash"></span></a>
+		<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': viewname, 'node': node.num, 'crud': 'remove-node'}) }}" class="btn btn-sm btn-secondary remove-tree-node" alt="{{ 'Remove this element'|trans }}" title="{{ 'Remove this element'|trans }}" data-confirm="{{ 'Are you sure you want to drop this element ?'|trans }}"> <span class="fas fa-trash-alt"></span></a>
 		{% endif %}
 		</td>
 </tr>
@@ -272,7 +272,7 @@ var views = [{%- for view in views -%}'{{ view.name }}'{%- if not loop.last -%},
 			</div>
 			<div class="modal-body">
 				<div class="alert alert-danger" role="alert">
-					<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+					<span class="fas fa-exclamation-circle" aria-hidden="true"></span>
 					<span class="sr-only">{{ 'Error'|trans }} :</span>
 					<span class="error-message"></span>
 					<ul></ul>

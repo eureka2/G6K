@@ -465,7 +465,7 @@
 		'undo':
 			`<div class="btn-group">
 				<a title="Undo" class="btn btn-light" data-wysihtml-command="undo"><span class="fa fa-undo"></span></a>
-				<a title="Redo" class="btn btn-light" data-wysihtml-command="redo"><span class="fa fa-repeat"></span></a>
+				<a title="Redo" class="btn btn-light" data-wysihtml-command="redo"><span class="fa fa-redo"></span></a>
 			</div>`,
 
 		'html':

@@ -72,9 +72,9 @@ THE SOFTWARE.
 		blockinfoPanelBody.append(blockinfoContainer);
 		var blockinfoButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + blockinfoElementId + '-buttons-panel"></div>');
 		var blockinfoButtonsBody = $('<div class="card-body blockinfo-buttons"></div>');
-		blockinfoButtonsBody.append('<button class="btn btn-success float-right validate-edit-blockinfo">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		blockinfoButtonsBody.append('<button class="btn btn-success float-right validate-edit-blockinfo">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		blockinfoButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-blockinfo">' + Translator.trans('Cancel') + '</span></button>');
-		blockinfoButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		blockinfoButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		blockinfoButtonsPanel.append(blockinfoButtonsBody);
 		blockinfoContainerBody.append(blockinfoButtonsPanel);
 		blockinfoPanelCollapse.append(blockinfoPanelBody);

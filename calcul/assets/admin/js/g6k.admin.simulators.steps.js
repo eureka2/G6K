@@ -785,9 +785,9 @@ THE SOFTWARE.
 		stepContainerBody.append('<div class="card bg-light description-panel elements-container" id="' + stepElementId + '-description-panel"><div class="card-header">' + Translator.trans('Description') + '</div><div class="card-body"><textarea rows="5" name="' + stepElementId + '-description" id="' + stepElementId + '-description" wrap="hard" class="form-control step-description">' + Simulators.paragraphs(step.description).content + '</textarea></div></div>');
 		var stepButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + stepElementId + '-buttons-panel"></div>');
 		var stepButtonsBody = $('<div class="card-body step-buttons"></div>');
-		stepButtonsBody.append('<button class="btn btn-success float-right validate-edit-step">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		stepButtonsBody.append('<button class="btn btn-success float-right validate-edit-step">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		stepButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-step">' + Translator.trans('Cancel') + '</span></button>');
-		stepButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		stepButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		stepButtonsPanel.append(stepButtonsBody);
 		stepContainerBody.append(stepButtonsPanel);
 		return stepPanelContainer;

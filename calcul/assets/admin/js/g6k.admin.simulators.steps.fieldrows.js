@@ -153,7 +153,7 @@ THE SOFTWARE.
 		var deleteFieldrowButtons = fieldsetGridPanel.find('.delete-fieldrow');
 		deleteFieldrowButtons.each(function(index) {
 			if (! $(this).next().hasClass('add-field')) {
-				var button = $('<button class="btn btn-success float-right update-button add-field" title="' + Translator.trans('Add field') + '" data-parent="' +  $(this).attr('data-parent') + '"><span class="button-label">' + Translator.trans('Add field') + '</span> <span class="fa fa-plus-circle"></span></button>');
+				var button = $('<button class="btn btn-success float-right update-button add-field" title="' + Translator.trans('Add field') + '" data-parent="' +  $(this).attr('data-parent') + '"><span class="button-label">' + Translator.trans('Add field') + '</span> <span class="fas fa-plus-circle"></span></button>');
 				$(this).after(button);
 				button.on('click', function(e) {
 					e.preventDefault();
@@ -223,9 +223,9 @@ THE SOFTWARE.
 		fieldrowPanelBody.append(fieldrowContainer);
 		var fieldrowButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + fieldrowElementId + '-buttons-panel"></div>');
 		var fieldrowButtonsBody = $('<div class="card-body fieldrow-buttons"></div>');
-		fieldrowButtonsBody.append('<button class="btn btn-success float-right validate-edit-fieldrow">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		fieldrowButtonsBody.append('<button class="btn btn-success float-right validate-edit-fieldrow">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		fieldrowButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-fieldrow">' + Translator.trans('Cancel') + '</span></button>');
-		fieldrowButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		fieldrowButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		fieldrowButtonsPanel.append(fieldrowButtonsBody);
 		fieldrowContainerBody.append(fieldrowButtonsPanel);
 		fieldrowPanelCollapse.append(fieldrowPanelBody);

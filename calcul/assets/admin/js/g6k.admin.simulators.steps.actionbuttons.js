@@ -1231,9 +1231,9 @@ THE SOFTWARE.
 		actionPanelBody.append(actionContainer);
 		var actionButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + actionElementId + '-buttons-panel"></div>');
 		var actionButtonsBody = $('<div class="card-body action-buttons"></div>');
-		actionButtonsBody.append('<button class="btn btn-success float-right validate-edit-action">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		actionButtonsBody.append('<button class="btn btn-success float-right validate-edit-action">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		actionButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-action">' + Translator.trans('Cancel') + '</span></button>');
-		actionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		actionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		actionButtonsPanel.append(actionButtonsBody);
 		actionContainer.append(actionButtonsPanel);
 		return actionPanelContainer;

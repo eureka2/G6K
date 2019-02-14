@@ -402,7 +402,7 @@ THE SOFTWARE.
 		var sourceElementId = 'source-' + source.id;
 		var sourcePanelContainer = $('<div>', { 'class': 'panel-group', id: sourceElementId, role: 'tablist', 'aria-multiselectable': 'true' });
 		var sourcePanel = $('<div>', { 'class': 'card bg-info' });
-		sourcePanel.append('<div class="card-header" role="tab" id="' + sourceElementId + '-panel"><button class="btn btn-info float-right update-button delete-source" title="' + Translator.trans('Delete') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button><button class="btn btn-info float-right update-button edit-source" title="' + Translator.trans('Edit') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fa fa-pencil"></span></button><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + ' ' + source.label + '</a></h4></div>');
+		sourcePanel.append('<div class="card-header" role="tab" id="' + sourceElementId + '-panel"><button class="btn btn-info float-right update-button delete-source" title="' + Translator.trans('Delete') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fas fa-minus-circle"></span></button><button class="btn btn-info float-right update-button edit-source" title="' + Translator.trans('Edit') + '" data-parent="#' + sourceElementId + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fas fa-pencil-alt"></span></button><h4 class="card-title"><a data-toggle="collapse" data-parent="#' + sourceElementId + '" href="#collapse' + sourceElementId + '" aria-expanded="true" aria-controls="collapse' + sourceElementId + '">#' + source.id + ' ' + source.label + '</a></h4></div>');
 		var sourcePanelCollapse = $('<div id="collapse' + sourceElementId + '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="' + sourceElementId + '-panel"></div>');
 		var sourcePanelBody = $('<div class="card-body"></div>');
 		var sourceContainer = $('<div class="card bg-light source-container" id="' + sourceElementId + '-attributes-panel" data-id="' + source.id + '"></div>');
@@ -627,7 +627,7 @@ THE SOFTWARE.
 		var bracket = parenthesis == '(' ? '[' : ']';
 		var attribute = '<li class="request-expression-token-wrap request-parenthesis-container">';
 		attribute    += '    <div href="#" class="request-expression-token request-bracket" data-value="' + parenthesis + '">';
-		attribute    += '    ' + bracket + '<a href="#" class="fa fa-remove request-expression-delete-token"></a>';
+		attribute    += '    ' + bracket + '<a href="#" class="fas fa-times request-expression-delete-token"></a>';
 		attribute    += '    </div>';
 		attribute    += '</li>';
 		return $(attribute);
@@ -835,9 +835,9 @@ THE SOFTWARE.
 		sourcePanelBody.append(sourceContainer);
 		var sourceButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + sourceElementId + '-buttons-panel"></div>');
 		var sourceButtonsBody = $('<div class="card-body source-buttons"></div>');
-		sourceButtonsBody.append('<button class="btn btn-success float-right validate-edit-source">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		sourceButtonsBody.append('<button class="btn btn-success float-right validate-edit-source">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		sourceButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-source">' + Translator.trans('Cancel') + '</span></button>');
-		sourceButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		sourceButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		sourceButtonsPanel.append(sourceButtonsBody);
 		sourcePanelBody.append(sourceButtonsPanel);
 		sourcePanelCollapse.append(sourcePanelBody);
@@ -1819,7 +1819,7 @@ THE SOFTWARE.
 
 	Simulators.drawSourceParametersForInput = function(sourceId) {
 		var parametersPanel = $('<div>', { 'class': 'card bg-light source-parameters-panel', id: 'source-' + sourceId + '-source-parameters-panel' });
-		parametersPanel.append('<div class="card-header"><button class="btn btn-secondary float-right update-button add-source-parameter" title="' + Translator.trans('Add parameter') + '"><span class="button-label">' + Translator.trans('Add parameter') + '</span> <span class="fa fa-plus-circle"></span></button>' + Translator.trans('Parameters') + '</div>');
+		parametersPanel.append('<div class="card-header"><button class="btn btn-secondary float-right update-button add-source-parameter" title="' + Translator.trans('Add parameter') + '"><span class="button-label">' + Translator.trans('Add parameter') + '</span> <span class="fas fa-plus-circle"></span></button>' + Translator.trans('Parameters') + '</div>');
 		var parametersPanelBody = $('<div class="card-body"></div>');
 		parametersPanel.append(parametersPanelBody);
 		return parametersPanel;
@@ -1827,7 +1827,7 @@ THE SOFTWARE.
 
 	Simulators.drawSourceParameterForInput = function(datasource, parameter) {
 		var parameterPanel = $('<div>', { 'class': 'card bg-light source-parameter-panel',  'data-id': parameter.id,  'data-name': parameter.name  });
-		parameterPanel.append('<div class="card-header"><button class="btn btn-secondary float-right update-button delete-source-parameter" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
+		parameterPanel.append('<div class="card-header"><button class="btn btn-secondary float-right update-button delete-source-parameter" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fas fa-minus-circle"></span></button>' + Translator.trans('Parameter %id%', {'id': parameter.id}) + '</div>');
 		var parameterPanelBody = $('<div>', { 'class': 'card-body', id: 'data-' + parameter.sourceId + '-source-parameter-' + parameter.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');

@@ -33,18 +33,18 @@ THE SOFTWARE.
 			<div class="col-md-12">
 				<div id="table" class="card bg-primary">
 					<div class="card-header">{{ 'Users list'|trans }}
-					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'users-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fa fa-book"></span></a> 
+					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'users-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
 					</div>
 					<div class="card-body">
 						<div class="alert alert-danger" role="alert">
-							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="fas fa-exclamation-circle" aria-hidden="true"></span>
 							<span class="sr-only">{{ 'Error'|trans }}:</span>
 							<ul></ul>
 						</div>
 						<form id="users-table-form" method="post" action="{{ path('eureka_g6k_admin_users') }}" enctype="multipart/form-data">
 						<input type="hidden" name="page" value="{{ pagination.currentPageNumber }}">
 						<div class="table-responsive">
-							<button id="btnAddNewRow" class="btn btn-secondary" title="{{ 'Add user'|trans }}"><span class="button-label">{{ 'Add user'|trans }}</span> <span class="fa fa-plus-circle"></span></button>
+							<button id="btnAddNewRow" class="btn btn-secondary" title="{{ 'Add user'|trans }}"><span class="button-label">{{ 'Add user'|trans }}</span> <span class="fas fa-plus-circle"></span></button>
 							<div class="pull-left">
 								<label class="pull-left col-form-label">{{ 'Lines per page'|trans }}</label>
 								<div class="pull-left">

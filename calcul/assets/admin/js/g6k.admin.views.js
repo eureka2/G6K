@@ -72,8 +72,8 @@ $(function(){
 	if ( $( "#page-views" ).length ) {
 		if ( $( ".tree" ).length ) {
 			$('.tree').treegrid({
-				expanderExpandedClass: 'fa fa-folder-open',
-				expanderCollapsedClass: 'fa fa-folder'
+				expanderExpandedClass: 'fas fa-folder-open',
+				expanderCollapsedClass: 'fas fa-folder'
 			});
 		}
 		if ( $( "#view-create-form" ).length ) {

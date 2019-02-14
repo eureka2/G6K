@@ -182,7 +182,7 @@ if (typeof jQuery === 'undefined') {
 			container: 'choices-container',
 			button: 'choices-button',
 			buttonText: 'choice-text',
-			buttonIcon: 'fa fa-angle-down',
+			buttonIcon: 'fas fa-angle-down',
 			choices: 'choices',
 			itemGroup: 'choices-group'
 		}
@@ -373,7 +373,7 @@ if (typeof jQuery === 'undefined') {
 					container: 'field-choices-container',
 					button: 'field-choices-button',
 					buttonText: 'field-choice',
-					buttonIcon: 'fa fa-angle-down',
+					buttonIcon: 'fas fa-angle-down',
 					choices: 'field-choices',
 					itemGroup: 'field-choices-group'
 				}

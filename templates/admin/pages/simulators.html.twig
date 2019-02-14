@@ -29,7 +29,7 @@ THE SOFTWARE.
 {% block content %}
 <h2>{{ 'Simulators definition'|trans }}</h2>
 {% if simulator is not empty %}
-<button class="btn btn-warning update-button save-simulator">{{ 'Save'|trans }} <span class="fa fa-save"></span></button>
+<button class="btn btn-warning update-button save-simulator">{{ 'Save'|trans }} <span class="far fa-save"></span></button>
 {% endif %}
 <div class="navbar-light navbar-side" role="navigation">
 	<div class="sidebar-collapse">
@@ -38,12 +38,12 @@ THE SOFTWARE.
 			<div class="card-body">
 				<div>
 					<form action="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': 'new', 'crud': 'create'}) }}">
-					<button id="btnAddNewSimulator" class="btn btn-secondary float-right">{{ 'Create simulator'|trans }} <span class="fa fa-plus-circle"></span></button>
+					<button id="btnAddNewSimulator" class="btn btn-secondary float-right">{{ 'Create simulator'|trans }} <span class="fas fa-plus-circle"></span></button>
 					</form>
 				</div>
 				<div>
 					<form action="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': 'new', 'crud': 'import'}) }}">
-					<button id="btnImportSimulator" class="btn btn-secondary float-right">{{ 'Import simulator'|trans }} <span class="fa fa-download"></span></button>
+					<button id="btnImportSimulator" class="btn btn-secondary float-right">{{ 'Import simulator'|trans }} <span class="fas fa-download"></span></button>
 					</form>
 				</div>
 				<ul class="nav nav-pills flex-column">
@@ -65,11 +65,11 @@ THE SOFTWARE.
 				<div class="panel-group" id="simulator" role="tablist" aria-multiselectable="true">
 					<div class="card bg-primary">
 						<div id="simulator-options-panel" class="card-header" role="tab">
-							<a class="btn btn-primary float-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'simulators-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fa fa-book"></span></a> 
+							<a class="btn btn-primary float-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'simulators-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
 							{% if hiddens.action != 'create'%}
 							<div class="btn-group float-right update-button">
 								<button class="btn btn-primary dropdown-toggle" title="{{ 'Delete'|trans }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<span class="button-label">{{ 'Delete'|trans }}</span> <span class="fa fa-minus-circle"></span>
+								<span class="button-label">{{ 'Delete'|trans }}</span> <span class="fas fa-minus-circle"></span>
 								</button>
 								<ul class="dropdown-menu">
 									<li>
@@ -82,17 +82,17 @@ THE SOFTWARE.
 							</div>
 							{% endif %}
 							{% if hiddens.action != 'create' and valid %}
-							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name, 'view': simulator.defaultView }) }}" class="btn btn-primary float-right view-button" title="{{ 'Try it'|trans }}" target="_blank"><span class="button-label">{{ 'Try it'|trans }}</span> <span class="fa fa-eye"></span></a>
+							<a href="{{ path('eureka_g6k_admin_simulator_calcul', {'simu': simulator.name, 'view': simulator.defaultView }) }}" class="btn btn-primary float-right view-button" title="{{ 'Try it'|trans }}" target="_blank"><span class="button-label">{{ 'Try it'|trans }}</span> <span class="far fa-eye"></span></a>
 							{% endif %}
-							<button class="btn btn-primary float-right update-button edit-simulator" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="fa fa-pencil"></span></button>
+							<button class="btn btn-primary float-right update-button edit-simulator" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="fas fa-pencil-alt"></span></button>
 							{% if hiddens.action != 'create' %}
-							<a class="btn btn-primary float-right link-button export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'clone'}) }}" title="{{ 'Clone simulator'|trans }}"><span class="button-label">{{ 'Clone simulator'|trans }}</span> <span class="fa fa-copy"></span></a>
-							<a class="btn btn-primary float-right link-button export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'export'}) }}" title="{{ 'Export simulator'|trans }}"><span class="button-label">{{ 'Export simulator'|trans }}</span> <span class="fa fa-upload"></span></a>
+							<a class="btn btn-primary float-right link-button export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'clone'}) }}" title="{{ 'Clone simulator'|trans }}"><span class="button-label">{{ 'Clone simulator'|trans }}</span> <span class="far fa-copy"></span></a>
+							<a class="btn btn-primary float-right link-button export-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'export'}) }}" title="{{ 'Export simulator'|trans }}"><span class="button-label">{{ 'Export simulator'|trans }}</span> <span class="fas fa-upload"></span></a>
 							{% if hiddens.updated %}
-							<a class="btn btn-primary float-right link-button publish-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'publish'}) }}" title="{{ 'Publish simulator'|trans }}"><span class="button-label">{{ 'Publish simulator'|trans }}</span> <span class="fa fa-share-square-o"></span></a>
+							<a class="btn btn-primary float-right link-button publish-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'publish'}) }}" title="{{ 'Publish simulator'|trans }}"><span class="button-label">{{ 'Publish simulator'|trans }}</span> <span class="far fa-share-square"></span></a>
 							{% endif %}
 							{% if deployment %}
-							<a class="btn btn-primary float-right link-button deploy-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'deploy'}) }}" title="{{ 'Deploy simulator'|trans }}" data-confirm="{{ 'Are you sure you want to deploy the simulator %simulator% on the front servers?'|trans({ '%simulator%': simulator.name }) }}"><span class="button-label">{{ 'Deploy simulator'|trans }}</span> <span class="fa fa-share-square-o"></span></a>
+							<a class="btn btn-primary float-right link-button deploy-simulator" href="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'deploy'}) }}" title="{{ 'Deploy simulator'|trans }}" data-confirm="{{ 'Are you sure you want to deploy the simulator %simulator% on the front servers?'|trans({ '%simulator%': simulator.name }) }}"><span class="button-label">{{ 'Deploy simulator'|trans }}</span> <span class="far fa-share-square"></span></a>
 							{% endif %}
 							{% endif %}
 							<form id="save-form" action="{{ path('eureka_g6k_admin_simulator_crud', {'simulator': simulator.name, 'crud': 'save'}) }}" method="post">
@@ -163,12 +163,12 @@ THE SOFTWARE.
 				{% elseif hiddens.action == 'import' %}
 				<div id="simulator" class="card bg-primary">
 					<div class="card-header">
-					<a class="btn btn-primary float-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'simulators-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fa fa-book"></span></a> 
+					<a class="btn btn-primary float-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'simulators-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
 					<h4 class="card-title">{{ 'Simulator : import'|trans }}</h4>
 					</div>
 					<div class="card-body">
 						<div class="alert alert-danger" role="alert">
-							<span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="fas fa-exclamation-circle" aria-hidden="true"></span>
 							<span class="sr-only">{{ 'Error'|trans }} :</span>
 							<span class="error-message"></span>
 							<ul></ul>
@@ -230,7 +230,7 @@ THE SOFTWARE.
 {{ page.openCollapsiblePanel('datas' , 'Datas'|trans, 'primary', '', 'sortable', [{ 'label': 'Add'|trans, 'icon': 'fa-plus-circle', 'dropdown': [{ 'class': 'add-data', 'label': 'Add data'|trans }, { 'class': 'add-datagroup', 'label': 'Add datagroup'|trans} ] }] ) }}
 {% for data in simulator.datas %}
 	{% if data.class == "DataGroup" %}
-	{{ page.openCollapsiblePanel('datagroup-' ~ data.id , 'Group'|trans ~ ' ' ~ data.label, 'success', loop.index == 1 ? 'in' : '', 'sortable', [{ 'class': 'delete-datagroup', 'label': 'Delete'|trans , 'icon': 'fa-minus-circle' }, { 'class': 'add-data', 'label': 'Add data'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-datagroup', 'label': 'Edit datagroup'|trans, 'icon': 'fa-pencil' }] ) }}
+	{{ page.openCollapsiblePanel('datagroup-' ~ data.id , 'Group'|trans ~ ' ' ~ data.label, 'success', loop.index == 1 ? 'in' : '', 'sortable', [{ 'class': 'delete-datagroup', 'label': 'Delete'|trans , 'icon': 'fa-minus-circle' }, { 'class': 'add-data', 'label': 'Add data'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-datagroup', 'label': 'Edit datagroup'|trans, 'icon': 'fa-pencil-alt' }] ) }}
 	<div class="card bg-light data-container datagroup" id="datagroup-{{ data.id }}-attributes-panel" data-id="{{ data.id }}">
 		<div class="card-body">
 			<div class="attributes-container">
@@ -271,8 +271,8 @@ THE SOFTWARE.
 {% for rule in simulator.businessRules %}
 	<div id="{{ rule.elementId }}" class="card bg-info sortable rule-container">
 		<div class="card-header" role="tab">
-			<button class="btn btn-info float-right update-button delete-rule" data-parent="#{{ rule.elementId }}" title="{{ 'Delete'|trans }}"><span class="button-label">{{ 'Delete'|trans }}</span> <span class="fa fa-minus-circle"></span></button>
-			<button class="btn btn-info float-right update-button edit-rule" data-parent="#{{ rule.elementId }}" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="fa fa-pencil"></span></button>
+			<button class="btn btn-info float-right update-button delete-rule" data-parent="#{{ rule.elementId }}" title="{{ 'Delete'|trans }}"><span class="button-label">{{ 'Delete'|trans }}</span> <span class="fas fa-minus-circle"></span></button>
+			<button class="btn btn-info float-right update-button edit-rule" data-parent="#{{ rule.elementId }}" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="fas fa-pencil-alt"></span></button>
 			<h4 class="card-title">
 				<a data-toggle="collapse" data-parent="#business-rules" href="#collapse{{ rule.elementId }}" aria-expanded="true" aria-controls="collapse{{ rule.elementId }}">{{ 'Rule'|trans }} #<span class="rule-id">{{ rule.id }}</span> <span class="rule-name">{{ rule.name }}</span> : <span class="rule-label">{{ rule.label }}</span></a>
 			</h4>
@@ -437,7 +437,7 @@ THE SOFTWARE.
 	{% else %}
 	{% set buttons = buttons|merge([{ 'class': 'add-panel', 'label': 'Add panel'|trans, 'icon': 'fa-plus-circle' }]) %}
 	{% endif %}
-	{% set buttons = buttons|merge([{ 'class': 'edit-step', 'label': 'Edit'|trans, 'icon': 'fa-pencil' }]) %}
+	{% set buttons = buttons|merge([{ 'class': 'edit-step', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' }]) %}
 	{{ page.openCollapsiblePanel('step-' ~ step.id, 'Step'|trans ~ ' #'~step.id~' : ' ~ step.simulator.replaceBySpecialTags(step.label)|striptags, 'info', loop.index == 1 ? 'in' : '', '', buttons ) }}
 	<div class="card bg-light step-container" id="step-{{ step.id }}-attributes-panel" data-id="{{ step.id }}">
 		<div class="card-body">
@@ -479,7 +479,7 @@ THE SOFTWARE.
 
 {% macro showFootNotes(step) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-footnotes' , 'FootNotes'|trans, 'success', '', '', [{ 'class': 'delete-footnotes', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-footnote', 'label': 'Add footnote'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-footnotes', 'label': 'Edit'|trans, 'icon': 'fa-pencil' }] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-footnotes' , 'FootNotes'|trans, 'success', '', '', [{ 'class': 'delete-footnotes', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-footnote', 'label': 'Add footnote'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-footnotes', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' }] ) }}
 <div class="card bg-light footnotes-container" id="step-{{ step.id }}-footnotes-attributes-panel" data-step="{{ step.id }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -494,8 +494,8 @@ THE SOFTWARE.
 {% set footnoteElementId = 'step-'~step.id~'-footnotes-footnote-'~footnote.id %}
 <div class="card bg-light footnote-container" id="{{ footnoteElementId }}-panel" data-step="{{ step.id }}" data-id="{{ footnote.id}}">
 	<div class="card-header">
-		<button class="btn btn-secondary float-right update-button delete-footnote" data-parent="#{{ footnoteElementId }}-panel" title="{{ 'Delete'|trans }}"><span class="button-label">{{ 'Delete'|trans }}</span> <span class="fa fa-minus-circle"></span></button>
-		<button class="btn btn-secondary float-right update-button edit-footnote" data-parent="#{{ footnoteElementId }}-panel" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="fa fa-plus-circle"></span></button>
+		<button class="btn btn-secondary float-right update-button delete-footnote" data-parent="#{{ footnoteElementId }}-panel" title="{{ 'Delete'|trans }}"><span class="button-label">{{ 'Delete'|trans }}</span> <span class="fas fa-minus-circle"></span></button>
+		<button class="btn btn-secondary float-right update-button edit-footnote" data-parent="#{{ footnoteElementId }}-panel" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="fas fa-plus-circle"></span></button>
 		<h4 class="card-title">
 			{{ 'FootNote #%id%'|trans({'%id%': footnote.id }) }}
 		</h4>
@@ -522,7 +522,7 @@ THE SOFTWARE.
 
 {% macro showActionButton(step, action, context) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-action-button-' ~ action.name , 'Action Button'|trans ~ ' : ' ~ action.label, 'light', '', '', [{ 'class': 'delete-action-button', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-action-button', 'label': 'Edit'|trans, 'icon': 'fa-pencil' }] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-action-button-' ~ action.name , 'Action Button'|trans ~ ' : ' ~ action.label, 'light', '', '', [{ 'class': 'delete-action-button', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-action-button', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' }] ) }}
 <div class="card bg-light action-button-container" id="step-{{ step.id }}-action-button-{{ action.name }}-attributes-panel" data-step="{{ step.id }}" data-id="{{ action.name }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -642,7 +642,7 @@ THE SOFTWARE.
 {% macro showSource(simulator, source, containerType, inClass) %}
 {% import _self as page %}
 {% set datasource = simulator.datasourceByName(source.datasource) %}
-{{ page.openCollapsiblePanel('source-' ~ source.id , '#' ~ source.id ~ ' ' ~ source.label, 'info', inClass, '', [{ 'class': 'delete-source', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-source', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('source-' ~ source.id , '#' ~ source.id ~ ' ' ~ source.label, 'info', inClass, '', [{ 'class': 'delete-source', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-source', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 <div class="card bg-light {{ containerType }}-container" id="source-{{ source.id }}-attributes-panel" data-id="{{ source.id }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -770,7 +770,7 @@ THE SOFTWARE.
 
 {% macro showPanel(step, panel, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id , 'Panel'|trans ~ ' #' ~ panel.id ~ ' : ' ~ step.simulator.replaceBySpecialTags(panel.label)|striptags, 'success', inClass, '', [{ 'class': 'delete-panel', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'label': 'Add'|trans, 'icon': 'fa-plus-circle', 'dropdown': [{ 'class': 'add-fieldset', 'label': 'Add fieldset'|trans }, { 'class': 'add-blockinfo', 'label': 'Add blockinfo'|trans} ] }, { 'class': 'edit-panel', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id , 'Panel'|trans ~ ' #' ~ panel.id ~ ' : ' ~ step.simulator.replaceBySpecialTags(panel.label)|striptags, 'success', inClass, '', [{ 'class': 'delete-panel', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'label': 'Add'|trans, 'icon': 'fa-plus-circle', 'dropdown': [{ 'class': 'add-fieldset', 'label': 'Add fieldset'|trans }, { 'class': 'add-blockinfo', 'label': 'Add blockinfo'|trans} ] }, { 'class': 'edit-panel', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 <div class="card bg-light panel-container" id="step-{{ step.id }}-panel-{{ panel.id }}-attributes-panel" data-step="{{ step.id }}" data-id="{{ panel.id }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -798,9 +798,9 @@ THE SOFTWARE.
 {% macro showFieldSet(step, panel, fieldset, inClass) %}
 {% import _self as page %}
 {% if fieldset.disposition == "grid" %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~ step.simulator.replaceBySpecialTags(fieldset.legend).content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~ step.simulator.replaceBySpecialTags(fieldset.legend).content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 {% else %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~ step.simulator.replaceBySpecialTags(fieldset.legend).content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id , 'FieldSet'|trans ~ ' #' ~ fieldset.id ~ ' : ' ~ step.simulator.replaceBySpecialTags(fieldset.legend).content|striptags, 'info', inClass, '', [{ 'class': 'delete-fieldset', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-fieldset', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 {% endif %}
 <div class="card bg-light block-container fieldset" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-id="{{ fieldset.id }}">
 	<div class="card-body">
@@ -824,8 +824,8 @@ THE SOFTWARE.
 {% if fieldset.disposition == "grid" %}
 <div class="card bg-light fieldset-grid-panel" id="fieldset-{{ fieldset.id }}-fieldset-grid-panel">
 	<div class="card-header">
-		<button class="btn btn-secondary float-right update-button add-column" data-parent="#fieldset-{{ fieldset.id }}-fieldset-grid-panel" title="{{ 'Add column'|trans }}"><span class="button-label">{{ 'Add column'|trans }}</span> <span class="fa fa-plus-circle"></span></button>
-		<button class="btn btn-secondary float-right update-button add-fieldrow" data-parent="#fieldset-{{ fieldset.id }}-fieldset-grid-panel" title="{{ 'Add fieldrow'|trans }}"><span class="button-label">{{ 'Add fieldrow'|trans }}</span> <span class="fa fa-plus-circle"></span></button>
+		<button class="btn btn-secondary float-right update-button add-column" data-parent="#fieldset-{{ fieldset.id }}-fieldset-grid-panel" title="{{ 'Add column'|trans }}"><span class="button-label">{{ 'Add column'|trans }}</span> <span class="fas fa-plus-circle"></span></button>
+		<button class="btn btn-secondary float-right update-button add-fieldrow" data-parent="#fieldset-{{ fieldset.id }}-fieldset-grid-panel" title="{{ 'Add fieldrow'|trans }}"><span class="button-label">{{ 'Add fieldrow'|trans }}</span> <span class="fas fa-plus-circle"></span></button>
 		<h4 class="card-title">
 			{{ 'Grid'|trans }}
 		</h4>
@@ -861,7 +861,7 @@ THE SOFTWARE.
 
 {% macro showFieldSetColumn(step, panel, fieldset, column, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id , 'Column #%id% : %label%'|trans({ '%id%': column.id, '%label%': step.simulator.replaceBySpecialTags(column.label)|striptags }), 'warning', inClass, '', [{ 'class': 'delete-column', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-column', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-column-' ~ column.id , 'Column #%id% : %label%'|trans({ '%id%': column.id, '%label%': step.simulator.replaceBySpecialTags(column.label)|striptags }), 'warning', inClass, '', [{ 'class': 'delete-column', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-column', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 <div class="card bg-light column-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-column-{{ column.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-fieldset="{{ fieldset.id }}" data-id="{{ column.id }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -879,9 +879,9 @@ THE SOFTWARE.
 {% macro showFieldrow(step, panel, fieldset, fieldrow, inClass) %}
 {% import _self as page %}
 {% if fieldrow.fields|length < fieldset.columns|length %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id , 'Fieldrow #%id% : %label%'|trans({ '%id%': fieldrow.id, '%label%': step.simulator.replaceBySpecialTags(fieldrow.label)|striptags }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-fieldrow', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id , 'Fieldrow #%id% : %label%'|trans({ '%id%': fieldrow.id, '%label%': step.simulator.replaceBySpecialTags(fieldrow.label)|striptags }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-field', 'label': 'Add field'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-fieldrow', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 {% else %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id , 'Fieldrow #%id% : %label%'|trans({ '%id%': fieldrow.id, '%label%': step.simulator.replaceBySpecialTags(fieldrow.label)|striptags }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-fieldrow', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-fieldrow-' ~ fieldrow.id , 'Fieldrow #%id% : %label%'|trans({ '%id%': fieldrow.id, '%label%': step.simulator.replaceBySpecialTags(fieldrow.label)|striptags }), 'success', inClass, '', [{ 'class': 'delete-fieldrow', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-fieldrow', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 {% endif %}
 <div class="card bg-light fieldrow-container" id="step-{{ step.id }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}-fieldrow-{{ fieldrow.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-fieldset="{{ fieldset.id }}" data-id="{{ fieldrow.id }}">
 	<div class="card-body">
@@ -915,7 +915,7 @@ THE SOFTWARE.
 {% set elementId = 'step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id ~ '-field-' ~ field.position %}
 {% set fieldrowId = '' %}
 {% endif %}
-{{ page.openCollapsiblePanel(elementId , 'Field'|trans ~ ' #' ~ field.position ~ ' : ' ~ step.simulator.replaceBySpecialTags(field.label)|striptags, 'warning', inClass, '', [{ 'class': 'delete-field', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-field', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel(elementId , 'Field'|trans ~ ' #' ~ field.position ~ ' : ' ~ step.simulator.replaceBySpecialTags(field.label)|striptags, 'warning', inClass, '', [{ 'class': 'delete-field', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-field', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 <div class="card bg-light field-container" id="{{ elementId }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-fieldset="{{ fieldset.id }}" data-fieldrow="{{ fieldrowId }}" data-id="{{ field.position }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -964,7 +964,7 @@ THE SOFTWARE.
 
 {% macro showBlockInfo(step, panel, blockinfo, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id , 'Blockinfo #%id% : %label%'|trans({'%id%': blockinfo.id, '%label%': step.simulator.replaceBySpecialTags(blockinfo.label)|striptags }), 'info', inClass, '', [{ 'class': 'delete-blockinfo', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-chapter', 'label': 'Add chapter'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-blockinfo', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id , 'Blockinfo #%id% : %label%'|trans({'%id%': blockinfo.id, '%label%': step.simulator.replaceBySpecialTags(blockinfo.label)|striptags }), 'info', inClass, '', [{ 'class': 'delete-blockinfo', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-chapter', 'label': 'Add chapter'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-blockinfo', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 <div class="card bg-light block-container blockinfo" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-id="{{ blockinfo.id }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -987,7 +987,7 @@ THE SOFTWARE.
 
 {% macro showChapter(step, panel, blockinfo, chapter, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id , 'Chapter #%id% : %label%'|trans({'%id%': chapter.id, '%label%': step.simulator.replaceBySpecialTags(chapter.label)|striptags }), 'warning', inClass, '', [{ 'class': 'delete-chapter', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-section', 'label': 'Add section'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-chapter', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id , 'Chapter #%id% : %label%'|trans({'%id%': chapter.id, '%label%': step.simulator.replaceBySpecialTags(chapter.label)|striptags }), 'warning', inClass, '', [{ 'class': 'delete-chapter', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'add-section', 'label': 'Add section'|trans, 'icon': 'fa-plus-circle' }, { 'class': 'edit-chapter', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 <div class="card bg-light chapter-container" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-blockinfo="{{ blockinfo.id }}" data-id="{{ chapter.id }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -1013,7 +1013,7 @@ THE SOFTWARE.
 
 {% macro showSection(step, panel, blockinfo, chapter, section, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id , 'Section #%id% : %label%'|trans({ '%id%': section.id, '%label%': step.simulator.replaceBySpecialTags(section.label)|striptags }), 'info', inClass, '', [{ 'class': 'delete-section', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-section', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id ~ '-chapter-' ~ chapter.id ~ '-section-' ~ section.id , 'Section #%id% : %label%'|trans({ '%id%': section.id, '%label%': step.simulator.replaceBySpecialTags(section.label)|striptags }), 'info', inClass, '', [{ 'class': 'delete-section', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-section', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 <div class="card bg-light section-container" id="step-{{ step.id }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-attributes-panel" data-step="{{ step.id }}" data-panel="{{ panel.id }}" data-blockinfo="{{ blockinfo.id }}" data-chapter="{{ chapter.id }}" data-id="{{ section.id }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -1100,7 +1100,7 @@ THE SOFTWARE.
 			{% endfor %}
 			{% endif %}
 			{% if style == 'primary' %}
-			<button class="btn btn-{{ style }} float-right expand-all toggle-collapse-all" data-parent="#{{ id }}" title="{{ 'Expand all'|trans }}"><span class="button-label">{{'Expand all'|trans }}</span> <span class="fa fa-caret-square-o-right"></span></button>
+			<button class="btn btn-{{ style }} float-right expand-all toggle-collapse-all" data-parent="#{{ id }}" title="{{ 'Expand all'|trans }}"><span class="button-label">{{'Expand all'|trans }}</span> <span class="far fa-caret-square-right"></span></button>
 			{% endif %}
 			<h4 class="card-title">
 				<a data-toggle="collapse" data-parent="#{{ id }}" href="#collapse{{ id }}" aria-expanded="true" aria-controls="collapse{{ id }}">
@@ -1121,7 +1121,7 @@ THE SOFTWARE.
 
 {% macro showData(data, datagroup, containerType, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('data-' ~ data.id, '#'~data.id~' : '~data.label, 'info', inClass, '', [{ 'class': 'delete-data', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-data', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('data-' ~ data.id, '#'~data.id~' : '~data.label, 'info', inClass, '', [{ 'class': 'delete-data', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-data', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 <div class="card bg-light {{ containerType }}-container" id="data-{{ data.id }}-attributes-panel" data-datagroup="{{ datagroup }}" data-id="{{ data.id }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -1246,7 +1246,7 @@ THE SOFTWARE.
 					<p data-attribute="label" data-value="{{ profilesLabel }}" class="form-control-plaintext simple-value">{{ profilesLabel }}</p>
 				</div>
 			</div>
-			<button class="btn btn-secondary float-right update-button edit-profiles-label" data-parent="#profiles-attributes-panel" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="fa fa-pencil"></span></button>
+			<button class="btn btn-secondary float-right update-button edit-profiles-label" data-parent="#profiles-attributes-panel" title="{{ 'Edit'|trans }}"><span class="button-label">{{ 'Edit'|trans }}</span> <span class="fas fa-pencil-alt"></span></button>
 		</div>
 	</div>
 </div>
@@ -1264,7 +1264,7 @@ THE SOFTWARE.
 
 {% macro showProfile(simulator, profile, containerType, inClass) %}
 {% import _self as page %}
-{{ page.openCollapsiblePanel('profile-' ~ profile.id , '#'~profile.id~' : '~profile.label, 'info', inClass, '', [{ 'class': 'delete-profile', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-profile', 'label': 'Edit'|trans, 'icon': 'fa-pencil' } ] ) }}
+{{ page.openCollapsiblePanel('profile-' ~ profile.id , '#'~profile.id~' : '~profile.label, 'info', inClass, '', [{ 'class': 'delete-profile', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-profile', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' } ] ) }}
 <div class="card bg-light {{ containerType }}-container" id="profile-{{ profile.id }}-attributes-panel" data-id="{{ profile.id }}">
 	<div class="card-body">
 		<div class="attributes-container">
@@ -1286,7 +1286,7 @@ THE SOFTWARE.
 {% if profile.datas is not empty %}
 <div class="card bg-success profile-datas-panel" id="profile-{{ profile.id }}-profile-datas-panel">
 	<div class="card-header">
-		<button class="btn btn-success float-right update-button add-profile-data" data-parent="#profile-{{ profile.id }}-profile-datas-panel" title="{{ 'Add'|trans }}"><span class="button-label">{{ 'Add'|trans }}</span> <span class="fa fa-plus-circle"></span></button>
+		<button class="btn btn-success float-right update-button add-profile-data" data-parent="#profile-{{ profile.id }}-profile-datas-panel" title="{{ 'Add'|trans }}"><span class="button-label">{{ 'Add'|trans }}</span> <span class="fas fa-plus-circle"></span></button>
 		<h4 class="card-title">
 			{{ 'Datas'|trans }}
 		</h4>
@@ -1306,7 +1306,7 @@ THE SOFTWARE.
 {% set data = simulator.dataById(pdata[0]) %}
 {% set deflt = pdata[1] %}
 {% set profileDataElementId = 'profile-'~profileId~'-profile-data-'~id %}
-{{ page.openCollapsiblePanel(profileDataElementId , 'Data %id%'|trans({ '%id%' : id }) ~ ' : ' ~ data.label, 'light', '', '', [{ 'class': 'delete-profile-data', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-profile-data', 'label': 'Edit'|trans, 'icon': 'fa-pencil' }] ) }}
+{{ page.openCollapsiblePanel(profileDataElementId , 'Data %id%'|trans({ '%id%' : id }) ~ ' : ' ~ data.label, 'light', '', '', [{ 'class': 'delete-profile-data', 'label': 'Delete'|trans, 'icon': 'fa-minus-circle' }, { 'class': 'edit-profile-data', 'label': 'Edit'|trans, 'icon': 'fa-pencil-alt' }] ) }}
 <div class="card bg-light profile-data-container" id="{{ profileDataElementId }}-attributes-panel" data-profile="{{ profileId }}" data-id="{{ id }}">
 	<div class="card-body">
 		<div class="attributes-container">

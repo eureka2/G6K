@@ -216,7 +216,7 @@ THE SOFTWARE.
 		attribute    += '</div>';
 		attributes.append(attribute);
 		attributesContainer.append(attributes);
-		attributesContainer.append('<button class="btn btn-secondary float-right update-button edit-profiles-label" data-parent="#profiles-attributes-panel" title="' + profiles.label + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fa fa-pencil"></span></button>');
+		attributesContainer.append('<button class="btn btn-secondary float-right update-button edit-profiles-label" data-parent="#profiles-attributes-panel" title="' + profiles.label + '"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fas fa-pencil-alt"></span></button>');
 		profilesContainerBody.append(attributesContainer);
 		profilesContainer.append(profilesContainerBody);
 		return profilesContainer;
@@ -232,9 +232,9 @@ THE SOFTWARE.
 		profilesContainerBody.append(attributesContainer);
 		var profilesButtonsPanel = $('<div class="card bg-light buttons-panel" id="profiles-buttons-panel"></div>');
 		var profilesButtonsBody = $('<div class="card-body profiles-buttons"></div>');
-		profilesButtonsBody.append('<button class="btn btn-success float-right validate-edit-profiles-label">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		profilesButtonsBody.append('<button class="btn btn-success float-right validate-edit-profiles-label">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		profilesButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-profiles-label">' + Translator.trans('Cancel') + '</span></button>');
-		profilesButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		profilesButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		profilesButtonsPanel.append(profilesButtonsBody);
 		profilesContainerBody.append(profilesButtonsPanel);
 		profilesContainer.append(profilesContainerBody);
@@ -339,9 +339,9 @@ THE SOFTWARE.
 		profileContainerBody.append('<div class="card bg-light description-panel elements-container" id="' + profileElementId + '-description-panel"><div class="card-header">' + Translator.trans('Description') + '</div><div class="card-body"><textarea rows="5" name="' + profileElementId + '-description" id="' + profileElementId + '-description" wrap="hard" class="form-control profile-description">' + profile.description.content + '</textarea></div></div>');
 		var profileButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + profileElementId + '-buttons-panel"></div>');
 		var profileButtonsBody = $('<div class="card-body profile-buttons"></div>');
-		profileButtonsBody.append('<button class="btn btn-success float-right validate-edit-profile">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		profileButtonsBody.append('<button class="btn btn-success float-right validate-edit-profile">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		profileButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-profile">' + Translator.trans('Cancel') + '</span></button>');
-		profileButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		profileButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		profileButtonsPanel.append(profileButtonsBody);
 		profileContainerBody.append(profileButtonsPanel);
 		return profilePanelContainer;
@@ -420,7 +420,7 @@ THE SOFTWARE.
 				profileContainer.replaceWith(newProfilePanel.find('.profile-container'));
 				newProfilePanel = profilePanelContainer;
 			} else {
-				var datasPanel = $('<div class="card bg-success profile-datas-panel" id="profile-' + profile.id + '-profile-datas-panel"><div class="card-header"><button class="btn btn-success float-right update-button add-profile-data" title="' + Translator.trans('Add') + '" data-parent="#profile-' + profile.id + '-profile-datas-panel"><span class="button-label">' + Translator.trans('Add') + '</span> <span class="fa fa-plus-circle"></span></button><h4 class="card-title">' + Translator.trans('Datas') + '</h4></div><div class="card-body sortable"></div></div>');
+				var datasPanel = $('<div class="card bg-success profile-datas-panel" id="profile-' + profile.id + '-profile-datas-panel"><div class="card-header"><button class="btn btn-success float-right update-button add-profile-data" title="' + Translator.trans('Add') + '" data-parent="#profile-' + profile.id + '-profile-datas-panel"><span class="button-label">' + Translator.trans('Add') + '</span> <span class="fas fa-plus-circle"></span></button><h4 class="card-title">' + Translator.trans('Datas') + '</h4></div><div class="card-body sortable"></div></div>');
 				newProfilePanel.find('.profile-container').after(datasPanel);
 				profilePanelContainer.replaceWith(newProfilePanel);
 				Simulators.bindProfileButtons(newProfilePanel);
@@ -703,9 +703,9 @@ THE SOFTWARE.
 		dataPanelBody.append(dataContainer);
 		var dataButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + profileDataElementId + '-buttons-panel"></div>');
 		var dataButtonsBody = $('<div class="card-body data-buttons"></div>');
-		dataButtonsBody.append('<button class="btn btn-success float-right validate-edit-profile-data">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		dataButtonsBody.append('<button class="btn btn-success float-right validate-edit-profile-data">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		dataButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-profile-data">' + Translator.trans('Cancel') + '</span></button>');
-		dataButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		dataButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		dataButtonsPanel.append(dataButtonsBody);
 		dataContainer.append(dataButtonsPanel);
 		return dataPanelContainer;

@@ -57,9 +57,9 @@
 				{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} <span class="caret"></span>&nbsp;
 				 </a>
 				<ul class="dropdown-menu">
-					<li><a class="dropdown-item" href="{{ path('fos_user_security_logout') }}"><i class="fa fa-sign-out" aria-hidden="true"></i> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
+					<li><a class="dropdown-item" href="{{ path('fos_user_security_logout') }}"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
 					<li class="dropdown-divider"></li>
-					<li><a class="dropdown-item" href="{{ path('fos_user_change_password') }}"><i class="fa fa-lock" aria-hidden="true"></i> {{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}</a></li>
+					<li><a class="dropdown-item" href="{{ path('fos_user_change_password') }}"><i class="fas fa-lock" aria-hidden="true"></i> {{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}</a></li>
 				</ul>
 			</li>
 			{% else %}

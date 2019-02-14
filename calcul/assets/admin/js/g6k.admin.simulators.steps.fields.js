@@ -333,9 +333,9 @@ THE SOFTWARE.
 		}
 		var fieldButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + fieldElementId + '-buttons-panel"></div>');
 		var fieldButtonsBody = $('<div class="card-body field-buttons"></div>');
-		fieldButtonsBody.append('<button class="btn btn-success float-right validate-edit-field">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		fieldButtonsBody.append('<button class="btn btn-success float-right validate-edit-field">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		fieldButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-field">' + Translator.trans('Cancel') + '</span></button>');
-		fieldButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		fieldButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		fieldButtonsPanel.append(fieldButtonsBody);
 		fieldPanelBody.append(fieldButtonsPanel);
 		fieldPanelCollapse.append(fieldPanelBody);
