@@ -64,7 +64,7 @@ THE SOFTWARE.
 					{%- if field.usage == 'input' -%}
 					<td headers="{{ step.name }}-panel-{{ fieldset.panel.id }}-grid-{{ fieldset.id }}-col{{ loop.index }} {{ step.name }}-panel-{{ fieldset.panel.id }}-fieldset-{{ fieldset.id }}-fieldrow-{{ row.id }}-head" data-label="{{ fieldset.columns[loop.index0].label|nofnref }}">
 						<div id="{{ name }}-container" data-type="{{ type }}"{%- if type == 'choice' and field.usage == 'input' and field.expanded == 1 %} data-expanded="true"{% endif %} data-field-position="{{ field.position }}" class="field-container {{ fieldContainerClass }}">
-						{%- if type == 'money' and simu.symbolPosition == 'before' %}<span id="{{ name }}-money-symbol" class="money-symbol">{{ simu.moneySymbol }}</span> {% endif %}
+						{%- if type == 'money' and simu.symbolPosition == 'before' %}<span id="{{ name }}-money-symbol" class="money-symbol before">{{ simu.moneySymbol }}</span> {% endif %}
 						<div class="{{ fieldGroupClass }}">
 							{%- if type == 'choice' -%}
 								{%- if field.expanded == 1 -%}
@@ -175,7 +175,7 @@ THE SOFTWARE.
 							{% endif %}
 						</div>
 						{%- if type == 'money' and simu.symbolPosition == 'after' %}
-							<span id="{{ name }}-money-symbol" class="money-symbol">{{ simu.moneySymbol }}</span>
+							<span id="{{ name }}-money-symbol" class="money-symbol after">{{ simu.moneySymbol }}</span>
 						{% endif %}
 						{%- if type == 'percent' -%}<span id="{{ name }}-percent-symbol" class="percent-symbol">%</span>{%- endif %}
 						{%- if data.unit -%}<span class="unit"> {{ data.unit }}</span>{%- endif -%}
@@ -223,7 +223,7 @@ THE SOFTWARE.
 						{%- endif -%}
 						</span>
 						{%- if type == 'money' and simu.symbolPosition == 'after' %}
-							<span id="{{ name }}-money-symbol" class="money-symbol{%- if field.emphasized %} emphasized{%- endif %}">&#xA0;{{ simu.moneySymbol }}</span>
+							<span id="{{ name }}-money-symbol" class="money-symbol after{%- if field.emphasized %} emphasized{%- endif %}">&#xA0;{{ simu.moneySymbol }}</span>
 						{%- endif -%}
 						{%- if type == 'percent' -%}<span id="{{ name }}-percent-symbol" class="percent-symbol{%- if field.emphasized %} emphasized{%- endif -%}">%</span>{%- endif -%}
 						{%- if data.unit -%}<span class="unit{%- if field.emphasized %} emphasized{%- endif -%}"> {{ data.unit }}</span>{%- endif -%}

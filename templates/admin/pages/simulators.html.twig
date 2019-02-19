@@ -530,7 +530,7 @@ THE SOFTWARE.
 			{%set actionElementId = 'step-'~step.id~ '-action-button-' ~ action.name %}
 			{{ page.showAttribute(actionElementId, 'text', 'name', 'Name'|trans, action.name, action.name, true, 'Button name'|trans) }}
 			{{ page.showAttribute(actionElementId, 'text', 'label', 'Label'|trans, action.label, action.label, true, 'Button label'|trans) }}
-			{{ page.showAttribute(actionElementId, 'select', 'shape', 'Action shape'|trans, action.shape, action.shape, true, 'Select an action shape'|trans, { 'button':'Button'|trans, 'link':'Link'|trans } ) }}
+			{{ page.showAttribute(actionElementId, 'select', 'shape', 'Action shape'|trans, action.shape, action.shape, true, 'Select an action shape'|trans, { 'button':'Button'|trans, 'link':'Text link or icon'|trans } ) }}
 			{{ page.showAttribute(actionElementId, 'select', 'location', 'Location'|trans, action.location, action.location, true, 'Select a location'|trans, { 'top':'At the top of the simulation form'|trans, 'left':'On the left of the simulation form'|trans, 'bottom':'At the bottom of the simulation form'|trans, 'right':'On the right of the simulation form'|trans } ) }}
 			{{ page.showAttribute(actionElementId, 'select', 'what', 'What'|trans, action.what, action.what, true, 'Select an action'|trans, { 'submit':'Submit'|trans, 'reset':'Reset'|trans, 'execute':'Execute'|trans } ) }}
 			{% if action.what == 'submit' %}
