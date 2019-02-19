@@ -5173,8 +5173,8 @@ THE SOFTWARE.
 		},
 
 		unFormatValue: function(value) {
-			var ts = new RegExp(this.groupingSeparator, 'g');
-			var dp = new RegExp(this.decimalPoint, 'g');
+			var ts = new RegExp(this.groupingSeparator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+			var dp = new RegExp(this.decimalPoint.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
 			value = value.replace(ts, '').replace(dp, '.');
 			return value;
 		},
