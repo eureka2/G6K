@@ -332,7 +332,7 @@ THE SOFTWARE.
 			attribute    += '    <label for="' + id + '" class="col-sm-4 col-form-label">';
 		}
 		if (! required) {
-			attribute    += '    <span tabindex="0" class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span tabindex="0" class="delete-attribute fas fa-times text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		if (type === 'checkbox') {
@@ -369,7 +369,7 @@ THE SOFTWARE.
 		var attribute = '<div class="form-group row">';
 		attribute    += '    <label class="col-form-label">';
 		if (! required) {
-			attribute+= '    <span tabindex="0" class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
+			attribute+= '    <span tabindex="0" class="delete-attribute fas fa-times text-danger"></span>&nbsp;';
 		}
 		attribute    += '    <span class="col-sm-4">' + label + '</span>';
 		attribute    += '    <div style="display: inline-block;" class="col-sm-8 input-group checkbox-slider--b-flat checkbox-slider-primary">';
@@ -397,7 +397,7 @@ THE SOFTWARE.
 		var attribute = '<div class="form-group row">';
 		attribute    += '    <label for="' + id + '" class="col-sm-4 col-form-label">';
 		if (! required) {
-			attribute    += '    <span tabindex="0" class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span tabindex="0" class="delete-attribute fas fa-times text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		attribute    += '    <span id="' + id + '" data-attribute="' + name + '" class="attribute-expression" data-placeholder="' + placeholder + '"  data-value="' + value + '" />'; 
@@ -513,7 +513,7 @@ THE SOFTWARE.
 			var span1 = $('<span>', { class: 'button-label' } );
 			span1.append(Translator.trans('Expand all'));
 			button2.append(span1);
-			var span2 = $('<span>', { class: 'fa fa-caret-square-o-right' } );
+			var span2 = $('<span>', { class: 'far fa-caret-square-right' } );
 			button2.append(' ');
 			button2.append(span2);
 			panelHeading.append(button2);
@@ -905,9 +905,9 @@ THE SOFTWARE.
 		simulatorRelatedInformationsPanel.append(simulatorRelatedInformationsBody);
 		var simulatorButtonsPanel = $('<div class="card bg-light" id="simulator-buttons-panel"></div>');
 		var simulatorButtonsBody = $('<div class="card-body simulator-buttons"></div>');
-		simulatorButtonsBody.append('<button class="btn btn-success float-right validate-edit-simulator">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		simulatorButtonsBody.append('<button class="btn btn-success float-right validate-edit-simulator">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		simulatorButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-simulator">' + Translator.trans('Cancel') + '</span></button>');
-		simulatorButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		simulatorButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		simulatorButtonsPanel.append(simulatorButtonsBody);
 		var simulatorOptions = $('<div class="card-body"></div>');
 		simulatorOptions.append(simulatorAttributesPanel);
@@ -1041,12 +1041,12 @@ $(function(){
 		});
 		$('.panel-collapse').on('hidden.bs.collapse', function () {
 			var butt = $(this).parent().find('button.toggle-collapse-all');
-			butt.html(Translator.trans('Expand all') + ' <span class="fa fa-caret-square-o-right"></span>');
+			butt.html(Translator.trans('Expand all') + ' <span class="far fa-caret-square-right"></span>');
 			butt.addClass('expand-all').removeClass('collapse-all');
 		});
 		$('.panel-collapse').on('shown.bs.collapse', function () {
 			var butt = $(this).parent().find('button.toggle-collapse-all');
-			butt.html(Translator.trans('Collapse all') + ' <span class="fa fa-caret-square-o-up"></span>');
+			butt.html(Translator.trans('Collapse all') + ' <span class="far fa-caret-square-up"></span>');
 			butt.addClass('collapse-all').removeClass('expand-all');
 		});
 		$('.panel-collapse').on('hide.bs.collapse show.bs.collapse', function () {
@@ -1067,14 +1067,14 @@ $(function(){
 						$(objectID).collapse('show');
 					}
 				});
-				$(this).html(Translator.trans('Collapse all') + ' <span class="fa fa-caret-square-o-up"></span>');
+				$(this).html(Translator.trans('Collapse all') + ' <span class="far fa-caret-square-up"></span>');
 				$(this).addClass('collapse-all').removeClass('expand-all');
 			} else if ($(this).hasClass('collapse-all')) {
 				$(this).parent().find('a[data-toggle="collapse"]').each(function(){
 					var objectID=$(this).attr('href');
 					$(objectID).collapse('hide');
 				});
-				$(this).html(Translator.trans('Expand all') + ' <span class="fa fa-caret-square-o-right"></span>');
+				$(this).html(Translator.trans('Expand all') + ' <span class="far fa-caret-square-right"></span>');
 				$(this).addClass('expand-all').removeClass('collapse-all');
 			}
 		});

@@ -686,7 +686,7 @@ THE SOFTWARE.
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'name', Translator.trans('Name'), action.name, action.name, true, Translator.trans('Button name')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'text', 'label', Translator.trans('Label'), action.label, action.label, true, Translator.trans('Button label')));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'shape', Translator.trans('Action shape'), action.shape, action.shape, true, Translator.trans('Select an action shape'), JSON.stringify({ 'button': Translator.trans('Button'), 'link': Translator.trans('Link') } )));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'shape', Translator.trans('Action shape'), action.shape, action.shape, true, Translator.trans('Select an action shape'), JSON.stringify({ 'button': Translator.trans('Button'), 'link': Translator.trans('Text link or icon') } )));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'location', Translator.trans('Location'), action.location, action.location, true, Translator.trans('Select a location'), JSON.stringify( { 'top': Translator.trans('At the top of the simulation form'), 'right': Translator.trans('On the right of the simulation form'), 'bottom': Translator.trans('At the bottom of the simulation form'), 'left': Translator.trans('On the left of the simulation form') } )));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'what', Translator.trans('What'), action.what, action.what, true, Translator.trans('Select an action'), JSON.stringify( { 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset'), 'execute': Translator.trans('Execute') } )));
 		switch (action.what) {
@@ -1124,7 +1124,7 @@ THE SOFTWARE.
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-name', 'text', 'name', Translator.trans('Name'), action.name, true, Translator.trans('Action button name without spaces or special characters')));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-label', 'text', 'label', Translator.trans('Label'), action.label, true, Translator.trans('Action button label')));
-		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-shape', 'select', 'shape', Translator.trans('Action shape'), action.shape, true, Translator.trans('Select an action shape'), JSON.stringify({ 'button': Translator.trans('Button'), 'link': Translator.trans('Link') })));
+		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-shape', 'select', 'shape', Translator.trans('Action shape'), action.shape, true, Translator.trans('Select an action shape'), JSON.stringify({ 'button': Translator.trans('Button'), 'link': Translator.trans('Text link or icon') })));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-location', 'select', 'location', Translator.trans('Location'), action.location, true, Translator.trans('Select a location'), JSON.stringify({ 'top': Translator.trans('At the top of the simulation form'), 'right': Translator.trans('On the right of the simulation form'), 'bottom': Translator.trans('At the bottom of the simulation form'), 'left': Translator.trans('On the left of the simulation form') })));
 		requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-what', 'select', 'what', Translator.trans('What'), action.what, true, Translator.trans('Select an action'), JSON.stringify({ 'submit': Translator.trans('Submit'), 'reset': Translator.trans('Reset'), 'execute': Translator.trans('Execute') })));
 		switch (action.what) {
@@ -1231,9 +1231,9 @@ THE SOFTWARE.
 		actionPanelBody.append(actionContainer);
 		var actionButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + actionElementId + '-buttons-panel"></div>');
 		var actionButtonsBody = $('<div class="card-body action-buttons"></div>');
-		actionButtonsBody.append('<button class="btn btn-success float-right validate-edit-action">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		actionButtonsBody.append('<button class="btn btn-success float-right validate-edit-action">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		actionButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-action">' + Translator.trans('Cancel') + '</span></button>');
-		actionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		actionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		actionButtonsPanel.append(actionButtonsBody);
 		actionContainer.append(actionButtonsPanel);
 		return actionPanelContainer;

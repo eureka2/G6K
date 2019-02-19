@@ -18,11 +18,11 @@
 				<form id="loginform" action="{{ path("fos_user_security_check") }}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
 					<input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
 					<div class="input-group mb-3">
-						<div class="input-group-prepend"><i class="input-group-text pt-2 fa fa-user"></i></div>
+						<div class="input-group-prepend"><i class="input-group-text pt-2 fas fa-user"></i></div>
 						<input id="login-username" type="text" class="form-control" name="_username" value="{{ last_username }}" placeholder="{{ 'security.login.username'|trans }}" required="required">
 					</div>
 					<div class="input-group mb-3">
-						<div class="input-group-prepend"><i class="input-group-text pt-2 fa fa-lock"></i></div>
+						<div class="input-group-prepend"><i class="input-group-text pt-2 fas fa-lock"></i></div>
 						 <input id="login-password" type="password" class="form-control" name="_password" placeholder="{{ 'security.login.password'|trans }}" required="required">
 					</div>
 					 <div class="input-group">

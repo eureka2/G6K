@@ -253,12 +253,18 @@ h4.card-title {
 .btn {
 	font-size: 0.875rem !important;
 }
+.buttons-panel button {
+	margin: 0 .25rem;
+}
 #btnAddNewRow, #btnAddNewTable {
 	float: right;
 }
 
 #data-sources ul, #simulators ul {
 	margin-top: 6em;
+}
+#data-sources .btn {
+	padding: .375rem .50rem !important;
 }
 
 #views ul {

@@ -136,6 +136,14 @@ parameters:
                 - js/jquery.jeditable.money.js
                 - js/jquery.jeditable.percent.js
                 - js/jEditable.js
+        ChoiceSlider:
+            label: List of choices in the form of a slider
+            target: [ choice, month ]
+            input: [ select ]
+            css: 
+                - css/ChoiceSlider.css
+            js: 
+                - js/ChoiceSlider.js
 
     functions:
         copyToClipboard:
@@ -157,8 +165,7 @@ parameters:
             css: 
             js: 
                 - js/printToPDF.js
-                - lib/jspdf.min.js
-                - lib/html2canvas.min.js
+                - lib/html2js/html2pdf.bundle.min.js
         shareByEmail:
             label: Share by email
             target: [ page ]

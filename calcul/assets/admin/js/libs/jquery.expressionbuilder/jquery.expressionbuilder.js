@@ -178,7 +178,7 @@ var ExpressionBuilder_I18N = {
 							container: 'expression-operand-choices-container',
 							button: 'expression-operand-choices-button',
 							buttonText: 'expression-operand-choice',
-							buttonIcon: 'fa fa-angle-down',
+							buttonIcon: 'fas fa-angle-down',
 							choices: 'expression-operand-choices',
 							itemGroup: 'expression-operand-choices-group'
 						}
@@ -227,7 +227,7 @@ var ExpressionBuilder_I18N = {
 					inputContainer.append(input);
 
 					var inputOk = jQuery('<button>', { 'class': 'expression-input-ok btn text-success'});
-					inputOk.append(jQuery('<span>', { 'class': 'fa fa-check'}));
+					inputOk.append(jQuery('<span>', { 'class': 'fas fa-check'}));
 					inputContainer.append(inputOk);
 					// put inputContainer in wrapper element
 					operandWrapper.append(inputContainer);

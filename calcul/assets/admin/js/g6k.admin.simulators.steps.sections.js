@@ -156,9 +156,9 @@ THE SOFTWARE.
 		sectionPanelBody.append('<div class="card bg-light annotations-panel" id="' + sectionElementId + '-annotations-panel"><div class="card-header">' + Translator.trans('Annotations') + '</div><div class="card-body"><textarea rows="5" name="' + sectionElementId + '-annotations" id="' + sectionElementId + '-annotations" wrap="hard" class="form-control section-annotations">' + Simulators.paragraphs(section.annotations).content + '</textarea></div></div>');
 		var sectionButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + sectionElementId + '-buttons-panel"></div>');
 		var sectionButtonsBody = $('<div class="card-body section-buttons"></div>');
-		sectionButtonsBody.append('<button class="btn btn-success float-right validate-edit-section">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		sectionButtonsBody.append('<button class="btn btn-success float-right validate-edit-section">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		sectionButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-section">' + Translator.trans('Cancel') + '</span></button>');
-		sectionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		sectionButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		sectionButtonsPanel.append(sectionButtonsBody);
 		sectionPanelBody.append(sectionButtonsPanel);
 		sectionPanelCollapse.append(sectionPanelBody);

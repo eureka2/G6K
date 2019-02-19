@@ -167,9 +167,9 @@ THE SOFTWARE.
 		chapterPanelBody.append(chapterContainer);
 		var chapterButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + chapterElementId + '-buttons-panel"></div>');
 		var chapterButtonsBody = $('<div class="card-body chapter-buttons"></div>');
-		chapterButtonsBody.append('<button class="btn btn-success float-right validate-edit-chapter">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		chapterButtonsBody.append('<button class="btn btn-success float-right validate-edit-chapter">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		chapterButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-chapter">' + Translator.trans('Cancel') + '</span></button>');
-		chapterButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		chapterButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		chapterButtonsPanel.append(chapterButtonsBody);
 		chapterContainerBody.append(chapterButtonsPanel);
 		chapterPanelCollapse.append(chapterPanelBody);

@@ -230,7 +230,7 @@ THE SOFTWARE.
 		var attribute = '<div class="form-group row" data-attribute="' + name + '">';
 		attribute    += '	<label for="' + id + '" class="col-sm-2 col-form-label">';
 		if (! required) {
-			attribute    += '    <span class="delete-attribute fa fa-remove text-danger"></span>&nbsp;';
+			attribute    += '    <span class="delete-attribute fas fa-times text-danger"></span>&nbsp;';
 		}
 		attribute    += '    ' + label + '</label>';
 		attribute    += '    <div class="col-sm-10">';
@@ -287,7 +287,7 @@ THE SOFTWARE.
 
 	Datasources.drawChoicesForInput = function(fieldId) {
 		var choicesPanel = $('<div>', { 'class': 'card bg-light choices-panel', id: 'field-' + fieldId + '-choices-panel' });
-		choicesPanel.append('<div class="card-header"><button class="btn btn-secondary pull-right update-button delete-choice-source" title="' + Translator.trans('Delete source') + '"><span class="button-label">' + Translator.trans('Delete source') + '</span><span class="fa fa-minus-circle"></span></button><button class="btn btn-secondary pull-right update-button add-choice-source" title="' + Translator.trans('Add source') + '"><span class="button-label">' + Translator.trans('Add source') + '</span><span class="fa fa-plus-circle"></span></button><button class="btn btn-secondary pull-right update-button add-choice" title="' + Translator.trans('Add choice') + '"><span class="button-label">' + Translator.trans('Add choice') + '</span><span class="fa fa-plus-circle"></span></button>' + Translator.trans('Choices') + '</div>');
+		choicesPanel.append('<div class="card-header"><button class="btn btn-secondary pull-right update-button delete-choice-source" title="' + Translator.trans('Delete source') + '"><span class="button-label">' + Translator.trans('Delete source') + '</span><span class="fas fa-minus-circle"></span></button><button class="btn btn-secondary pull-right update-button add-choice-source" title="' + Translator.trans('Add source') + '"><span class="button-label">' + Translator.trans('Add source') + '</span><span class="fas fa-plus-circle"></span></button><button class="btn btn-secondary pull-right update-button add-choice" title="' + Translator.trans('Add choice') + '"><span class="button-label">' + Translator.trans('Add choice') + '</span><span class="fas fa-plus-circle"></span></button>' + Translator.trans('Choices') + '</div>');
 		var choicesPanelBody = $('<div class="card-body"></div>');
 		choicesPanel.append(choicesPanelBody);
 		return choicesPanel;
@@ -345,7 +345,7 @@ THE SOFTWARE.
 
 	Datasources.drawChoiceForInput = function(choice) {
 		var choicePanel = $('<div>', { 'class': 'card bg-light choice-panel',  'data-id': choice.id  });
-		choicePanel.append('<div class="card-header"><button class="btn btn-secondary pull-right update-button delete-choice" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span><span class="fa fa-minus-circle"></span></button>' + Translator.trans('Choice %id%', { 'id' : choice.id }) + '</div>');
+		choicePanel.append('<div class="card-header"><button class="btn btn-secondary pull-right update-button delete-choice" title="' + Translator.trans('Delete') + '"><span class="button-label">' + Translator.trans('Delete') + '</span><span class="fas fa-minus-circle"></span></button>' + Translator.trans('Choice %id%', { 'id' : choice.id }) + '</div>');
 		var choicePanelBody = $('<div>', { 'class': 'card-body', id: 'field-' + choice.fieldId + '-choice-' + choice.id + '-panel' });
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var attributes = $('<div></div>');
@@ -739,7 +739,7 @@ THE SOFTWARE.
 				return; 
 			},
 		});
-		$('#page-datasources #' + tablename).find('thead tr:eq(1)').append('<th class="tabledit-toolbar-column"><button name="btnFilter" class="btn btn-secondary" style="white-space: nowrap; margin:0;padding:0.3em;width:100%"><span class="button-label" style="font-size: 0.8em;">' + Translator.trans('Filtrate') + '</span> <span style="float:none;" class="fa fa-filter"></span></button></th>');
+		$('#page-datasources #' + tablename).find('thead tr:eq(1)').append('<th class="tabledit-toolbar-column"><button name="btnFilter" class="btn btn-secondary" style="white-space: nowrap; margin:0;padding:0.3em;width:100%"><span class="button-label" style="font-size: 0.8em;">' + Translator.trans('Filtrate') + '</span> <span style="float:none;" class="fas fa-filter"></span></button></th>');
 
 	}
 

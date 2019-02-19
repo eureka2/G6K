@@ -60,7 +60,7 @@ THE SOFTWARE.
 		<label id="{{ name }}-label" for="{{ name }}">{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{{ label|fnref }}{% if field.required or field.visibleRequired %}<span class="asterisk"> * </span>{% endif %}{% if field.hasColon %} : {% endif %}</label>
 		{% endif %}
 		<div>
-		{%- if type == 'money' and simu.symbolPosition == 'before' %}<span id="{{ name }}-money-symbol" class="money-symbol">{{ simu.moneySymbol }}</span> {% endif %}
+		{%- if type == 'money' and simu.symbolPosition == 'before' %}<span id="{{ name }}-money-symbol" class="money-symbol before">{{ simu.moneySymbol }}</span> {% endif %}
 		{%- if type == 'choice' -%}
 		{%- if field.expanded == 1 -%}
 			<fieldset id="{{ name }}">
@@ -173,7 +173,7 @@ THE SOFTWARE.
 	{% endif %}
 	</div>
 	{%- if type == 'money' and simu.symbolPosition == 'after' %}
-	<span id="{{ name }}-money-symbol" class="money-symbol">{{ simu.moneySymbol }}</span>
+	<span id="{{ name }}-money-symbol" class="money-symbol after">{{ simu.moneySymbol }}</span>
 	{% endif %}
 	{%- if type == 'percent' -%}<span id="{{ name }}-percent-symbol" class="percent-symbol">%</span>{%- endif %}
 		{%- if data.unit -%}<span class="unit"> {{ data.unit }}</span>{%- endif -%}
@@ -246,7 +246,7 @@ THE SOFTWARE.
 	{%- endif -%}
 		</span>
 	{%- if type == 'money' and simu.symbolPosition == 'after' %}
-		<span id="{{ name }}-money-symbol" class="money-symbol{%- if field.emphasized %} emphasized{%- endif %}">&#xA0;{{ simu.moneySymbol }}</span>
+		<span id="{{ name }}-money-symbol" class="money-symbol after{%- if field.emphasized %} emphasized{%- endif %}">&#xA0;{{ simu.moneySymbol }}</span>
 	{%- endif -%}
 	{%- if type == 'percent' -%}<span id="{{ name }}-percent-symbol" class="percent-symbol{%- if field.emphasized %} emphasized{%- endif -%}">%</span>{%- endif -%}
 	{%- if data.unit -%}<span class="unit{%- if field.emphasized %} emphasized{%- endif -%}"> {{ data.unit }}</span>{%- endif -%}

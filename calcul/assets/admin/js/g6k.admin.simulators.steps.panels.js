@@ -151,9 +151,9 @@ THE SOFTWARE.
 		panelPanelBody.append(panelContainer);
 		var panelButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + panelElementId + '-buttons-panel"></div>');
 		var panelButtonsBody = $('<div class="card-body panel-buttons"></div>');
-		panelButtonsBody.append('<button class="btn btn-success float-right validate-edit-panel">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		panelButtonsBody.append('<button class="btn btn-success float-right validate-edit-panel">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		panelButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-panel">' + Translator.trans('Cancel') + '</span></button>');
-		panelButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		panelButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		panelButtonsPanel.append(panelButtonsBody);
 		panelContainerBody.append(panelButtonsPanel);
 		panelPanelCollapse.append(panelPanelBody);

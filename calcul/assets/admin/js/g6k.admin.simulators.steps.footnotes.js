@@ -139,9 +139,9 @@ THE SOFTWARE.
 		footnotesPanelBody.append(footnotesContainer);
 		var footnotesButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + footnotesElementId + '-buttons-panel"></div>');
 		var footnotesButtonsBody = $('<div class="card-body footnotes-buttons"></div>');
-		footnotesButtonsBody.append('<button class="btn btn-success float-right validate-edit-footnotes">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		footnotesButtonsBody.append('<button class="btn btn-success float-right validate-edit-footnotes">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		footnotesButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-footnotes">' + Translator.trans('Cancel') + '</span></button>');
-		footnotesButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		footnotesButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		footnotesButtonsPanel.append(footnotesButtonsBody);
 		footnotesContainerBody.append(footnotesButtonsPanel);
 		footnotesPanelCollapse.append(footnotesPanelBody);
@@ -313,8 +313,8 @@ THE SOFTWARE.
 		var footnoteElementId = 'step-' + footnote.stepId + '-footnotes-footnote' + footnote.id;
 		var footnoteContainer = $('<div class="card bg-light footnote-container" id="' +  footnoteElementId + '-panel" data-step="' + footnote.stepId + '" data-id="' + footnote.id + '">');
 		var footnoteContainerHeading = $('<div class="card-header">');
-		footnoteContainerHeading.append('<button class="btn btn-secondary float-right update-button delete-footnote" title="' + Translator.trans('Delete') + '" data-parent="#' +  footnoteElementId + '-panel"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fa fa-minus-circle"></span></button>');
-		footnoteContainerHeading.append('<button class="btn btn-secondary float-right update-button edit-footnote" title="' + Translator.trans('Edit') + '" data-parent="#' +  footnoteElementId + '-panel"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fa fa-pencil"></span></button>');
+		footnoteContainerHeading.append('<button class="btn btn-secondary float-right update-button delete-footnote" title="' + Translator.trans('Delete') + '" data-parent="#' +  footnoteElementId + '-panel"><span class="button-label">' + Translator.trans('Delete') + '</span> <span class="fas fa-minus-circle"></span></button>');
+		footnoteContainerHeading.append('<button class="btn btn-secondary float-right update-button edit-footnote" title="' + Translator.trans('Edit') + '" data-parent="#' +  footnoteElementId + '-panel"><span class="button-label">' + Translator.trans('Edit') + '</span> <span class="fas fa-pencil-alt"></span></button>');
 		footnoteContainerHeading.append('<h4 class="card-title">' + Translator.trans('FootNote #%id%', { 'id': footnote.id }) + '</h4>');
 		footnoteContainer.append(footnoteContainerHeading);
 		var footnoteContainerBody = $('<div class="card-body step-footnote rich-text"></div>');
@@ -333,9 +333,9 @@ THE SOFTWARE.
 		footnoteContainerBody.append('<textarea rows="5" name="' + footnoteElementId + '-text" id="' + footnoteElementId + '-text" wrap="hard" class="form-control footnote-text">' + Simulators.paragraphs(footnote.text).content + '</textarea>');
 		var footnoteButtonsPanel = $('<div class="card bg-light buttons-panel" id="' + footnoteElementId + '-buttons-panel"></div>');
 		var footnoteButtonsBody = $('<div class="card-body footnote-buttons"></div>');
-		footnoteButtonsBody.append('<button class="btn btn-success float-right validate-edit-footnote">' + Translator.trans('Validate') + ' <span class="fa fa-check"></span></button>');
+		footnoteButtonsBody.append('<button class="btn btn-success float-right validate-edit-footnote">' + Translator.trans('Validate') + ' <span class="fas fa-check"></span></button>');
 		footnoteButtonsBody.append('<button class="btn btn-secondary float-right cancel-edit-footnote">' + Translator.trans('Cancel') + '</span></button>');
-		footnoteButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
+		footnoteButtonsBody.append('<div class="alert alert-danger" role="alert"><span class="fas fa-exclamation-circle" aria-hidden="true"></span><span class="sr-only">' + Translator.trans('Error') + ':</span> <span class="error-message"></span></div>');
 		footnoteButtonsPanel.append(footnoteButtonsBody);
 		footnoteContainerBody.append(footnoteButtonsPanel);
 		footnoteContainer.append(footnoteContainerBody);

@@ -98,8 +98,8 @@
 .action div, .editable-select select, .editable-textarea textarea{
 	display: inline;
 }
-.action span, .action label,
-.rule span, .rule label {
+.action span:not(.fas), .action label,
+.rule span:not(.fas), .rule label {
 	margin-right: .2em;
 	font-weight: normal;
 }

@@ -3,7 +3,7 @@
 t.add("An authentication exception occurred.", "En autentiseringsfeil har skjedd.", "security", "no");
 t.add("Authentication credentials could not be found.", "P\u00e5loggingsinformasjonen kunne ikke bli funnet.", "security", "no");
 t.add("Authentication request could not be processed due to a system problem.", "Autentiserings foresp\u00f8rselen kunne ikke bli prosessert grunnet en system feil.", "security", "no");
-t.add("Invalid credentials.", "Ugyldig p\u00e5loggingsinformasjonen.", "security", "no");
+t.add("Invalid credentials.", "Ugyldig p\u00e5loggingsinformasjon.", "security", "no");
 t.add("Cookie has already been used by someone else.", "Cookie har allerede blitt brukt av noen andre.", "security", "no");
 t.add("Not privileged to request the resource.", "Ingen tilgang til \u00e5 be om gitt ressurs.", "security", "no");
 t.add("Invalid CSRF token.", "Ugyldig CSRF token.", "security", "no");
