@@ -2,14 +2,19 @@
 	"use strict";
 
 	function ChoiceSlider (select, options, onComplete) {
+		select.closest('.field-container').addClass('ChoiceSlider-field');
 		var nIntervals = select.find('option').length - 1;
 		var $range = $('<div>', { 'class': 'range' });
 		var $labels = $('<ul>', { 'class': 'range-labels'});
 		var value = 1;
 		select.find('option').each(function(i, v) {
-			$labels.append($('<li>', { 'data-value': this.value, 'text': $(this).text() }));
-			if ($(this).is(':selected')) {
-				value = i + 1;
+			if (this.value != '') {
+				$labels.append($('<li>', { 'data-value': this.value, 'text': $(this).text() }));
+				if ($(this).is(':selected')) {
+					value = i + 1;
+				}
+			} else {
+				nIntervals--;
 			}
 		});
 		var $rangeInput = $('<input>', { 'type': 'range', 'min': 1, 'max': nIntervals + 1, 'step': 1, 'value': value });
@@ -23,7 +28,6 @@
 		prefs = ['webkit-slider-runnable-track', 'moz-range-track', 'ms-track'];
 		document.body.appendChild(sheet);
 
-		// var nIntervals = parseInt($rangeInput.attr('max'), 10) - parseInt($rangeInput.attr('min'), 10);
 		var interval;
 		var getTrackStyle = function (el) {
 			var curVal = el.value,
@@ -50,7 +54,7 @@
 
 		var resize = function () {
 			var width = $('.range-labels').parent().css('display', 'inline-block').width();
-			interval = width / (nIntervals + 9);
+			interval = (width - 9) / nIntervals;
 			$('.range').css('width', (nIntervals * interval + 9) + 'px');
 			var margin = -Math.ceil((interval - 9) / 2);
 			$('.range-labels').css({'margin-left': margin + 'px', 'margin-right':  margin + 'px'});
