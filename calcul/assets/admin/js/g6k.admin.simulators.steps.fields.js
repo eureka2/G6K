@@ -182,14 +182,16 @@ THE SOFTWARE.
 	}
 
 	Simulators.makeWidgetsList = function(field) {
-		var data = Simulators.findDataById(field.data);
-		var input = Simulators.getFieldInputType(field, data);
-		var widgs = typewidgets[data.type].filter(function(w) {
-			return inputwidgets[input] && inputwidgets[input].indexOf(w) > -1;
-		});
 		var list = {};
-		for (var i = 0; i < widgs.length; i++) {
-			list[widgs[i]] = widgets[widgs[i]];
+		var data = Simulators.findDataById(field.data);
+		if (data) {
+			var input = Simulators.getFieldInputType(field, data);
+			var widgs = typewidgets[data.type].filter(function(w) {
+				return inputwidgets[input] && inputwidgets[input].indexOf(w) > -1;
+			});
+			for (var i = 0; i < widgs.length; i++) {
+				list[widgs[i]] = widgets[widgs[i]];
+			}
 		}
 		return list;
 	}
@@ -308,7 +310,7 @@ THE SOFTWARE.
 		} 
 		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldElementId + '" data-type="select" data-name="widget" data-placeholder="' + Translator.trans('Select a widget') + '" data-options="' + encodeURI(JSON.stringify(Simulators.makeWidgetsList(field))) + '">' + Translator.trans('Widget') + '</li>');
 		optionalAttributes.append(optionalAttribute);
-		if (field.widget) {
+		if (field.widget && field.widget != '') {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldElementId + '-widget', 'select', 'widget', Translator.trans('Widget'), field.widget, false, Translator.trans('Select a widget'), JSON.stringify(Simulators.makeWidgetsList(field))));
 			optionalAttribute.hide();
 		} 
