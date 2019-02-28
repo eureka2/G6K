@@ -268,7 +268,7 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 				$ok = false;
 			}
 		}
-		$texts = $simulatorxpath->query("//Description|//Legend|//FootNote|//PreNote|//PostNote|//Section|//Annotations|//Conditions/@value|//Condition/@expression|//DataSet/Data/@content|//DataSet/Data/@default|//DataSet/Data/@min|//DataSet/Data/@max|//BusinessRule//Action/@value");
+		$texts = $simulatorxpath->query("//Description|//Legend|//FootNote|//PreNote|//PostNote|//Section|//Annotations|//Conditions/@value|//Condition/@expression|//DataSet/Data/@content|//DataSet/Data/@default|//DataSet/Data/@min|//DataSet/Data/@max|//DataSet/DataGroup/Data/@content|//DataSet/DataGroup/Data/@default|//DataSet/DataGroup/Data/@min|//DataSet/DataGroup/Data/@max|//BusinessRule//Action/@value");
 		foreach($texts as $text) {
 			if (preg_match_all("|\#(\d+)|",  $text->nodeValue, $m) !== false) {
 				foreach($m[1] as $data) {
