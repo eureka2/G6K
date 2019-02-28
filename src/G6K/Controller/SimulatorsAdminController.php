@@ -642,6 +642,10 @@ class SimulatorsAdminController extends BaseAdminController {
 				));
 			}
 		}
+		if ($simulator != $simulatorData["name"]) {
+			$fs->rename($this->simulatorsDir."/work/".$simulator.".xml", $this->simulatorsDir."/work/".$simulatorData["name"].".xml");
+			$this->doRename($simulator, $simulatorData["name"]);
+		}
 	}
 
 	/**
@@ -668,6 +672,42 @@ class SimulatorsAdminController extends BaseAdminController {
 				$this->runConsoleCommand(array(
 					'command' => 'g6k:assets:manifest:remove-asset',
 					'assetpath' => 'assets/' . $file->getRelativePathname()
+				));
+			}
+		} catch (\Exception $e) {
+		}
+	}
+
+	/**
+	 * Renames a simulator 
+	 *
+	 * @access  protected
+	 * @param   string $oldName old name
+	 * @param   string $newName new name
+	 * @return  void
+	 *
+	 */
+	protected function doRename($oldName, $newName) {
+		$fs = new Filesystem();
+		try {
+			$simulator = new \DOMDocument();
+			$simulator->preserveWhiteSpace  = false;
+			$simulator->formatOutput = true;
+			$simulator->load($this->simulatorsDir."/".$oldName.".xml");
+			$simulator->documentElement->setAttribute('name', $newName);
+			$simulator->save($this->simulatorsDir."/".$newName.".xml");
+			$fs->remove($this->simulatorsDir."/".$oldName.".xml");
+			$finder = new Finder();
+			$finder->name($oldName.'.css')->in($this->publicDir.'/assets')->exclude('admin')->exclude('base')->exclude('bundles');
+			foreach ($finder as $file) {
+				$this->runConsoleCommand(array(
+					'command' => 'g6k:assets:manifest:remove-asset',
+					'assetpath' => 'assets/' . $file->getRelativePathname()
+				));
+				$fs->rename($file->getRealPath(), $file->getPath() . '/' . $newName.'.css');
+				$this->runConsoleCommand(array(
+					'command' => 'g6k:assets:manifest:add-asset',
+					'assetpath' => 'assets/' . dirname($file->getRelativePathname()) . '/' . $newName.'.css'
 				));
 			}
 		} catch (\Exception $e) {
