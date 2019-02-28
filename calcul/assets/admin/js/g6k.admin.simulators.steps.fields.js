@@ -655,7 +655,7 @@ THE SOFTWARE.
 			var field = fieldset.disposition === 'grid' ?
 				Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fieldrows' }, { key: 'id', val: fieldrowId, list: 'fields' }, { key: 'position', val: position }]) :
 				Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: fieldsetId, list: 'fields' }, { key: 'position', val: position }]);
-			var label = field.label ? field.label : 'field #' + field.position; 
+			var label = field.label ? field.label : Translator.trans('Field %id% (nolabel)', { 'id': '#' + field.position }); 
 			var rule;
 			if ((rule = Simulators.isFieldInRules(stepId, panelId, fieldsetId, fieldrowId, position)) !== false) {
 				bootbox.alert({
