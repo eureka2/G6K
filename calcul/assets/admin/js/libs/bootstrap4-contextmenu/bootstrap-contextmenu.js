@@ -59,7 +59,7 @@
 			$menu.trigger(evt = $.Event('show.bs.context', relatedTarget));
 
 			tp = this.getPosition(e, $menu);
-			items = 'li:not(.dropdown-divider, dropdown-header)';
+			items = 'li:visible a';
 			$menu.attr('style', '')
 				.css(tp)
 				.addClass('open')
@@ -87,7 +87,7 @@
 			relatedTarget = { relatedTarget: this };
 			$menu.trigger(evt = $.Event('hide.bs.context', relatedTarget));
 
-			items = 'li:not(.dropdown-divider, .dropdown-header)';
+			items = 'li:visible a';
 			$menu.find('.dropdown-menu').removeClass('show');
 			$menu.removeClass('open')
 				.off('click.context.data-api', items)
