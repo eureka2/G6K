@@ -27,7 +27,6 @@ THE SOFTWARE.
 
 	Simulators.isDataIdInRules = function(id) {
 		var inRules = false;
-		// var re = new RegExp("#" + id + '([^\d])?', 'g');
 		var re = new RegExp("#" + id + '\\b', 'g');
 		$.each(rules, function(r, rule) {
 			if (re.test(rule.conditions)) {
@@ -39,7 +38,7 @@ THE SOFTWARE.
 				return false;
 			}
 			$.each(rule.ifdata, function(a, action) {
-				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
+				if (action.value == "setAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
 						inRules = rule.id;
@@ -48,7 +47,7 @@ THE SOFTWARE.
 				}
 			});
 			$.each(rule.elsedata, function(a, action) {
-				if (action.value == "setAttribute" || action.value == "unsetAttribute") {
+				if (action.value == "setAttribute") {
 					var val = action.fields[0].fields[0].fields[0].value;
 					if (re.test(val)) {
 						inRules = rule.id;
