@@ -197,7 +197,7 @@ class DatasourcesHelper {
 				$datasource->setAttribute('database', $database->getAttribute('id'));
 				break;
 			case 'uri':
-				$datasource->setAttribute('uri', $form['datasource-name']);
+				$datasource->setAttribute('uri', $form['datasource-uri']);
 				$datasource->setAttribute('method', $form['datasource-method']);
 				break;
 		}
