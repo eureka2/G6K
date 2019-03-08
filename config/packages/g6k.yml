@@ -87,7 +87,7 @@ parameters:
                 - js/geoAPILocalitiesEditable.js
         geoAPIZipCode:
             label: Postal code obtained by autocompletion on the name of the commune or its postal code
-            target: [ number, integer ]
+            target: [ number, integer, text ]
             input: [ text ]
             deps:
                 - AutocompletionListbox
@@ -105,6 +105,15 @@ parameters:
             js: 
                 - js/jquery.jeditable.geoAPIZipCode.js
                 - js/geoAPIZipCodeEditable.js
+        geoAPICoupledZipCode:
+            label: Postal code and name of commune obtained by autocompletion on the postal code
+            target: [ number, integer, text ]
+            input: [ number, text ]
+            deps:
+                - AutocompletionListbox
+            css: 
+            js: 
+                - js/geoAPICoupledZipCode.js
         geoAPIMaps:
             label: Insee code obtained from a France map
             target: [ text ]
