@@ -1000,10 +1000,26 @@ class BaseController extends Controller {
 					$result = $this->evaluate($min);
 					if ($result !== false) {
 						$data->setMin($result);
-						if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() != '' && $data->getValue() < $result) {
-							$data->setError(true);
-							$data->addErrorMessage($this->get('translator')->trans("This value can not be less than %min%", array('%min%', $result)));
-							$this->error = true;
+						if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() != '') {
+							if ($data->getType() == 'text' || $data->getType() == 'textarea') {
+								if (strlen($data->getValue()) < $result) {
+									$data->setError(true);
+									$data->addErrorMessage($this->get('translator')->trans("The length of this value can not be less than %min%", array('%min%' => $result)));
+									$this->error = true;
+								}
+							} elseif ($data->getType() == 'date') {
+								$min = DateFunction::makeDate($result);
+								$value = DateFunction::makeDate($data->getValue());
+								if ($value < $min) {
+									$data->setError(true);
+									$data->addErrorMessage($this->get('translator')->trans("This value can not be less than %min%", array('%min%' => $min)));
+									$this->error = true;
+								}
+							} elseif ($data->getValue() < $result) {
+								$data->setError(true);
+								$data->addErrorMessage($this->get('translator')->trans("This value can not be less than %min%", array('%min%' => $result)));
+								$this->error = true;
+							}
 						}
 					}
 				} catch (\Exception $e) {
@@ -1015,10 +1031,26 @@ class BaseController extends Controller {
 					$result = $this->evaluate($max);
 					if ($result !== false) {
 						$data->setMax($result);
-						if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() != '' && $data->getValue() > $result) {
-							$data->setError(true);
-							$data->addErrorMessage($this->get('translator')->trans("This value can not be greater than %max%", array('%max%', $result)));
-							$this->error = true;
+						if (($istep == 0 || $data->getInputStepId() == $istep) && $data->getValue() != '') {
+							if ($data->getType() == 'text' || $data->getType() == 'textarea') {
+								if (strlen($data->getValue()) > $result) {
+									$data->setError(true);
+									$data->addErrorMessage($this->get('translator')->trans("The length of this value can not be greater than %max%", array('%max%' => $result)));
+									$this->error = true;
+								}
+							} elseif ($data->getType() == 'date') {
+								$max = DateFunction::makeDate($result);
+								$value = DateFunction::makeDate($data->getValue());
+								if ($value > $max) {
+									$data->setError(true);
+									$data->addErrorMessage($this->get('translator')->trans("This value can not be greater than %max%", array('%max%' => $max)));
+									$this->error = true;
+								}
+							} elseif ($data->getValue() > $result) {
+								$data->setError(true);
+								$data->addErrorMessage($this->get('translator')->trans("This value can not be greater than %max%", array('%max%' => $result)));
+								$this->error = true;
+							}
 						}
 					}
 				} catch (\Exception $e) {

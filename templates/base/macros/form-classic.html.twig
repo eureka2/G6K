@@ -120,7 +120,7 @@ THE SOFTWARE.
 		{%- if context.script == 0 %}
 		<input type="date" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}" title="{{ 'format: %format%'|trans({ '%format%': simu.dateFormat|trans }) }}"{% if field.required %} aria-required="true"{% endif %}/>
 		{% else %}
-		<input type="text" aria-describedby="{{ name }}-aria-description" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}"{% if field.required %} aria-required="true"{% endif %} />
+		<input type="text" aria-describedby="{{ name }}-aria-description" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" class="date {{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %} placeholder="{{ simu.dateFormat|trans }}"{% if field.required %} aria-required="true"{% endif %}{%- if data.min is not empty %} data-min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} data-max="{{ data.max }}"{% endif %} />
 		<span id="{{ name }}-aria-description" class="sr-only">{{ 'Enter the date as %dateformat% or tab to activate the date selector to the right of this input field'|trans({ '%dateformat%': simu.dateFormat|trans }) }}</span>
 		{% endif %}
 	{% elseif type == 'day' %}
@@ -159,7 +159,7 @@ THE SOFTWARE.
 		{{ form.departments(value, prompt) }}
 		</select>
 	{% elseif type == 'textarea' %}
-		<textarea id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>{{ value }}</textarea>
+		<textarea id="{{ name }}" name="{{ name }}"{{ widget|jscode }} class="{{ fieldClass }}{%- if data.error %} has-error{%- elseif data.warning %} has-warning{% endif %}"{%- if data.min is not empty %} minlength="{{ data.min }}"{% endif %}{%- if data.max is not empty %} maxlength="{{ data.max }}"{% endif %}{%- if data.error %} aria-invalid="true"{% endif %}{% if field.required %} aria-required="true"{% endif %}>{{ value }}</textarea>
 	{% elseif type == 'number' and data.type == 'integer' %}
 		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.min is not empty %} min="{{ data.min }}"{% endif %}{%- if data.max is not empty %} max="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="{{ 'format: %format%'|trans({ '%format%': 'numbers only'|trans }) }}"{% if field.required %} aria-required="true"{% endif %}/>
 	{% elseif type == 'number' %}
@@ -169,7 +169,7 @@ THE SOFTWARE.
 	{% elseif type == 'money' %}
 		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" aria-describedby="{{ name }}-money-symbol"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="{{ 'format: %format%'|trans({ '%format%': 'amount in %symbol%'|trans({ '%symbol%': simu.moneySymbol }) }) }}"{% if field.required %} aria-required="true"{% endif %} />
 	{% else %}
-		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
+		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.min is not empty %} minlength="{{ data.min }}"{% endif %}{%- if data.max is not empty %} maxlength="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %} />
 	{% endif %}
 	</div>
 	{%- if type == 'money' and simu.symbolPosition == 'after' %}
