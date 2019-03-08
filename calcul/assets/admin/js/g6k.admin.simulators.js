@@ -334,7 +334,7 @@ THE SOFTWARE.
 		if (! required) {
 			attribute    += '    <span tabindex="0" class="delete-attribute fas fa-times text-danger"></span>&nbsp;';
 		}
-		attribute    += '    ' + label + '</label>';
+		attribute    += '    <span>' + label + '</span></label>';
 		if (type === 'checkbox') {
 			attribute    += '    <div class="col-sm-4 input-group">';
 		} else {
@@ -399,7 +399,7 @@ THE SOFTWARE.
 		if (! required) {
 			attribute    += '    <span tabindex="0" class="delete-attribute fas fa-times text-danger"></span>&nbsp;';
 		}
-		attribute    += '    ' + label + '</label>';
+		attribute    += '    <span>' + label + '</span></label>';
 		attribute    += '    <span id="' + id + '" data-attribute="' + name + '" class="attribute-expression" data-placeholder="' + placeholder + '"  data-value="' + value + '" />'; 
 		attribute    += '</div>';
 		return $(attribute);

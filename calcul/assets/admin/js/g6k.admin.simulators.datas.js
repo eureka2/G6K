@@ -662,6 +662,19 @@ THE SOFTWARE.
 			} else {
 				Simulators.dataChoicesBackup = dataPanelContainer.find('.choices-panel').detach();
 			}
+			var attributes = dataPanelContainer.find(".attributes-container");
+			var optionalAttributes = dataPanelContainer.find(".optional-attributes");
+			if (type === 'text' || type === 'textarea') {
+				attributes.find("span[data-attribute='min']").prev().find('span:last-child').text(Translator.trans('Minimum length'));
+				attributes.find("span[data-attribute='max']").prev().find('span:last-child').text(Translator.trans('Maximum length'));
+				optionalAttributes.find("li[data-name='min']").text(Translator.trans('Minimum length'));
+				optionalAttributes.find("li[data-name='max']").text(Translator.trans('Maximum length'));
+			} else {
+				attributes.find("span[data-attribute='min']").prev().find('span:last-child').text(Translator.trans('Minimum value'));
+				attributes.find("span[data-attribute='max']").prev().find('span:last-child').text(Translator.trans('Maximum value'));
+				optionalAttributes.find("li[data-name='min']").text(Translator.trans('Minimum value'));
+				optionalAttributes.find("li[data-name='max']").text(Translator.trans('Maximum value'));
+			}
 		});
 		Simulators.bindOptionalDataSource(dataPanelContainer);
 		dataPanelContainer.find('.attribute-expression').each(function( index ) {
@@ -1096,7 +1109,21 @@ THE SOFTWARE.
 				} else if (name == 'index') {
 					attribute = Simulators.simpleAttributeForDisplay(dataElementId, 'text', name, attr.label, data[name], data[name], false, attr.placeholder);
 				} else if (attr.type === 'expression') {
-					attribute = Simulators.expressionAttributeForDisplay(dataElementId, name, attr.label, data[name], Simulators.replaceByDataLabel(data[name]), false, attr.placeholder);
+					if (name == 'min') {
+						if (data.type == 'text' || data.type == 'textarea') {
+							attribute = Simulators.expressionAttributeForDisplay(dataElementId, name, Translator.trans('Minimum length'), data[name], Simulators.replaceByDataLabel(data[name]), false, attr.placeholder);
+						} else {
+							attribute = Simulators.expressionAttributeForDisplay(dataElementId, name, Translator.trans('Minimum value'), data[name], Simulators.replaceByDataLabel(data[name]), false, attr.placeholder);
+						}
+					} else if (name == 'max') {
+						if (data.type == 'text' || data.type == 'textarea') {
+							attribute = Simulators.expressionAttributeForDisplay(dataElementId, name, Translator.trans('Maximum length'), data[name], Simulators.replaceByDataLabel(data[name]), false, attr.placeholder);
+						} else {
+							attribute = Simulators.expressionAttributeForDisplay(dataElementId, name, Translator.trans('Maximum value'), data[name], Simulators.replaceByDataLabel(data[name]), false, attr.placeholder);
+						}
+					} else {
+						attribute = Simulators.expressionAttributeForDisplay(dataElementId, name, attr.label, data[name], Simulators.replaceByDataLabel(data[name]), false, attr.placeholder);
+					}
 				} else {
 					attribute = Simulators.simpleAttributeForDisplay(dataElementId, attr.type, name, attr.label, data[name], data[name], false, attr.placeholder);
 				}
@@ -1149,7 +1176,21 @@ THE SOFTWARE.
 			} else if (name === 'index') {
 				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
 			} else if (attr.type === 'expression') {
-				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+				if (name == 'min') {
+					if (data.type == 'text' || data.type == 'textarea') {
+						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + Translator.trans('Minimum length') + '</li>');
+					} else {
+						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + Translator.trans('Minimum value') + '</li>');
+					}
+				} else if (name == 'max') {
+					if (data.type == 'text' || data.type == 'textarea') {
+						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + Translator.trans('Maximum length') + '</li>');
+					} else {
+						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + Translator.trans('Maximum value') + '</li>');
+					}
+				} else {
+					optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+				}
 			} else {
 				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
 			}
@@ -1161,7 +1202,21 @@ THE SOFTWARE.
 				} else if (name === 'index') {
 					attribute = Simulators.simpleAttributeForInput(dataElementId + '-' + name, 'select', name, attr.label, data[name], false, attr.placeholder, JSON.stringify(indicesList)); 
 				} else if (attr.type === 'expression') {
-					attribute = Simulators.expressionAttributeForInput(dataElementId + '-' + name, name, attr.label, data[name], false, attr.placeholder);
+					if (name == 'min') {
+						if (data.type == 'text' || data.type == 'textarea') {
+							attribute = Simulators.expressionAttributeForInput(dataElementId + '-' + name, name, Translator.trans('Minimum length'), data[name], false, attr.placeholder);
+						} else {
+							attribute = Simulators.expressionAttributeForInput(dataElementId + '-' + name, name, Translator.trans('Minimum value'), data[name], false, attr.placeholder);
+						}
+					} else if (name == 'max') {
+						if (data.type == 'text' || data.type == 'textarea') {
+							attribute = Simulators.expressionAttributeForInput(dataElementId + '-' + name, name, Translator.trans('Maximum length'), data[name], false, attr.placeholder);
+						} else {
+							attribute = Simulators.expressionAttributeForInput(dataElementId + '-' + name, name, Translator.trans('Maximum value'), data[name], false, attr.placeholder);
+						}
+					} else {
+						attribute = Simulators.expressionAttributeForInput(dataElementId + '-' + name, name, attr.label, data[name], false, attr.placeholder);
+					}
 				} else {
 					attribute = Simulators.simpleAttributeForInput(dataElementId + '-' + name, attr.type, name, attr.label, data[name], false, attr.placeholder);
 				}

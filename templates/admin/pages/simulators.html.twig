@@ -1130,8 +1130,13 @@ THE SOFTWARE.
 			{{ page.showAttribute('data-'~data.id, 'text', 'label', 'Label'|trans, data.label, data.label, true, 'Data label'|trans) }}
 			{{ page.showAttribute('data-'~data.id, 'select', 'type', 'Type'|trans, data.type, data.type, true, 'Select a type'|trans, {'array':'liste'|trans, 'date':'date'|trans, 'day':'day'|trans, 'month':'month'|trans, 'year':'year'|trans, 'boolean':'boolean'|trans, 'integer':'integer'|trans, 'number':'number'|trans, 'text':'text'|trans, 'textarea':'textarea'|trans, 'money':'money'|trans, 'choice':'choice'|trans, 'multichoice':'multichoice'|trans, 'percent':'percent'|trans, 'table':'table'|trans, 'department':'department'|trans, 'region':'region'|trans, 'country':'country'|trans}) }}
 			{{ page.showExpressionAttribute('data-'~data.id, 'default', 'Default'|trans, data.unparsedDefault, data.plainDefault, false, 'default value'|trans) }}
-			{{ page.showExpressionAttribute('data-'~data.id, 'min', 'Min'|trans, data.unparsedMin, data.plainMin, false, 'Minimum value'|trans) }}
-			{{ page.showExpressionAttribute('data-'~data.id, 'max', 'Max'|trans, data.unparsedMax, data.plainMax, false, 'Maximum value'|trans) }}
+			{% if data.type == 'text' or data.type == 'textarea' %}
+			{{ page.showExpressionAttribute('data-'~data.id, 'min', 'Minimum length'|trans, data.unparsedMin, data.plainMin, false, 'Minimum length'|trans) }}
+			{{ page.showExpressionAttribute('data-'~data.id, 'max', 'Maximum length'|trans, data.unparsedMax, data.plainMax, false, 'Maximum length'|trans) }}
+			{% else %}
+			{{ page.showExpressionAttribute('data-'~data.id, 'min', 'Minimum value'|trans, data.unparsedMin, data.plainMin, false, 'Minimum value'|trans) }}
+			{{ page.showExpressionAttribute('data-'~data.id, 'max', 'Maximum value'|trans, data.unparsedMax, data.plainMax, false, 'Maximum value'|trans) }}
+			{% endif %}
 			{{ page.showExpressionAttribute('data-'~data.id, 'content', 'Content'|trans, data.content, data.plainContent, false, 'Content'|trans) }}
 			{% if data.round != '2' %}
 			{{ page.showAttribute('data-'~data.id, 'number', 'round', 'Round'|trans, data.round, data.round, false, 'Round'|trans) }}
