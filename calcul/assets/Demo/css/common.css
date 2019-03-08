@@ -380,6 +380,9 @@ main .container p a[target=_blank]:after {
     border: 1px solid #ccc;
     border-radius: 3px;
 }
+.step-page .form-group.ChoiceSlider-field[data-type=choice] .input-group {
+    border: none;
+}
 .step-page .form-group[data-type=choice]  .input-group > div,
 .step-page .form-group[data-type=department]  .input-group > div {
     border: none;
