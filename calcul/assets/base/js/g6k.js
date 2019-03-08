@@ -2835,9 +2835,9 @@ THE SOFTWARE.
 				if ($.isNumeric(token.value)) {
 					token.type = Token.TYPE.T_NUMBER;
 					token.value = parseFloat(token.value);
-				} else if (Date.isDate(value)) {
+				} else if (Date.isDate(token.value)) {
 					token.type = Token.TYPE.T_DATE;
-					token.value = Date.createFromFormat(Date.format, token.value);
+					token.value = Date.createFromFormat(Date.inputFormat, token.value);
 				} else if (token.value === 'true' || token.value === 'false') {
 					token.type = Token.TYPE.T_BOOLEAN;
 					token.value = token.value === 'true';
@@ -3342,8 +3342,9 @@ THE SOFTWARE.
 		this.simu = null;
 		this.currentProfil = null;
 		this.variables = {};
-		this.sourcesCaches = {};
-		this.urisCaches = {};
+		this.sourceRequestsQueue = [];
+		this.sourceRequestRunning = false;
+		this.sourceRequestsCache = {};
 		this.lastUserInputName = "";
 		this.lastSubmitBtn = null;
 		this.hasFatalError = false;
@@ -3568,16 +3569,29 @@ THE SOFTWARE.
 			if (!data || !data.value || data.value.length == 0) {
 				return true;
 			}
-			if (data.type != 'number' && data.type != 'integer' && data.type != 'percent' && data.type != 'money') {
+			if (data.type != 'number' && data.type != 'integer' && data.type != 'percent' && data.type != 'money' && data.type != 'date' && data.type != 'text' && data.type != 'textarea') {
 				return true;
 			}
 			if (data.unparsedMin) {
 				var min = this.evaluate(data.unparsedMin);
 				if (min !== false) {
-					min = data.type == 'integer' ? parseInt(min, 10) : parseFloat(min);
-					var val  = data.type == 'integer' ? parseInt(data.value, 10) : parseFloat(data.value);
-					if (min && val < min ) {
-						return false;
+					if (data.type == 'text' || data.type == 'textarea') {
+						min = parseInt(min, 10);
+						if (min && data.value.length < min) {
+							return false;
+						}
+					} else if (data.type == 'date') {
+						min = Date.createFromFormat(Date.inputFormat, min);
+						var val = Date.createFromFormat(Date.inputFormat, data.value);
+						if (val < min ) {
+							return false;
+						}
+					} else {
+						min = data.type == 'integer' ? parseInt(min, 10) : parseFloat(min);
+						var val  = data.type == 'integer' ? parseInt(data.value, 10) : parseFloat(data.value);
+						if (min && val < min ) {
+							return false;
+						}
 					}
 				}
 			}
@@ -3588,16 +3602,29 @@ THE SOFTWARE.
 			if (!data || !data.value || data.value.length == 0) {
 				return true;
 			}
-			if (data.type != 'number' && data.type != 'integer' && data.type != 'percent' && data.type != 'money') {
+			if (data.type != 'number' && data.type != 'integer' && data.type != 'percent' && data.type != 'money' && data.type != 'date' && data.type != 'text' && data.type != 'textarea') {
 				return true;
 			}
 			if (data.unparsedMax) {
 				var max = this.evaluate(data.unparsedMax);
 				if (max !== false) {
-					max = data.type == 'integer' ? parseInt(max, 10) : parseFloat(max);
-					var val  = data.type == 'integer' ? parseInt(data.value, 10) : parseFloat(data.value);
-					if (max && val > max) {
-						return false;
+					if (data.type == 'text' || data.type == 'textarea') {
+						max = parseInt(max, 10);
+						if (max && data.value.length > max) {
+							return false;
+						}
+					} else if (data.type == 'date') {
+						max = Date.createFromFormat(Date.inputFormat, max);
+						var val = Date.createFromFormat(Date.inputFormat, data.value);
+						if (val > max ) {
+							return false;
+						}
+					} else {
+						max = data.type == 'integer' ? parseInt(max, 10) : parseFloat(max);
+						var val  = data.type == 'integer' ? parseInt(data.value, 10) : parseFloat(data.value);
+						if (max && val > max) {
+							return false;
+						}
 					}
 				}
 			}
@@ -3640,10 +3667,18 @@ THE SOFTWARE.
 						this.setError(name, Translator.trans("The '%field%' field is required",  { "field": field.label }, 'messages'));
 					} else if (!this.checkMin(data)) {
 						var min = this.evaluate(data.unparsedMin);
-						this.setError(name, Translator.trans("The value of the field '%field%' cannot be less than %min%",  { "field": field.label, "min": min }, 'messages'));
+						if (data.type == 'text' || data.type == 'textarea') {
+							this.setError(name, Translator.trans("The length of the field '%field%' cannot be less than %min%",  { "field": field.label, "min": min }, 'messages'));
+						} else {
+							this.setError(name, Translator.trans("The value of the field '%field%' cannot be less than %min%",  { "field": field.label, "min": min }, 'messages'));
+						}
 					} else if (!this.checkMax(data)) {
 						var max = this.evaluate(data.unparsedMax);
-						this.setError(name, Translator.trans("The value of the field '%field%' cannot be greater than %max%",  { "field": field.label, "max": max }, 'messages'));
+						if (data.type == 'text' || data.type == 'textarea') {
+							this.setError(name, Translator.trans("The length of the field '%field%' cannot be greater than %max%",  { "field": field.label, "max": max }, 'messages'));
+						} else {
+							this.setError(name, Translator.trans("The value of the field '%field%' cannot be greater than %max%",  { "field": field.label, "max": max }, 'messages'));
+						}
 					}
 				}
 			}
@@ -4098,6 +4133,12 @@ THE SOFTWARE.
 							if (typeof d.value === "undefined" || d.value === "") {
 								completed = false;
 								return false;
+							} else if ((d.type == 'text' || d.type == 'textarea') && d.unparsedMin) {
+								var min = self.evaluate(d.unparsedMin);
+								if (min === false || d.value.length < parseInt(min, 10)) {
+									completed = false;
+									return false;
+								}
 							}
 						}
 					});
@@ -4303,22 +4344,10 @@ THE SOFTWARE.
 			if (query != '') {
 				query = uri + '?' + query.substr(1);
 			}
-			if (self.urisCaches[query]) {
-				self.processSource(source, self.urisCaches[query]);
-			} else {
-				var method = self.simu.sources[source]['datasource']['method'];
-				var returnType = self.simu.sources[source]['returnType'];
-				$.ajax({
-					method: method,
-					url: uri,
-					dataType: returnType,
-					data: datas,
-					beforeSend: function(xhr){
-						$.each(headers, function(h, header) {
-							xhr.setRequestHeader(header.name, header.value);
-						});
-					}
-				}).done(function( result ) {
+			var method = self.simu.sources[source]['datasource']['method'];
+			var returnType = self.simu.sources[source]['returnType'];
+			self.enqueueSourceRequest(source, method.toUpperCase(), uri, datas, returnType, headers,
+				function (source, returnType, result) {
 					var returnPath = self.simu.sources[source]['returnPath'];
 					returnPath = self.replaceVariables(returnPath);
 					if (returnType == 'json') {
@@ -4352,8 +4381,6 @@ THE SOFTWARE.
 							});
 						}
 					} else if (returnType == 'xml'|| returnType == 'html') {
-						// result = document.evaluate(returnPath, $(result).get(0), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null); 
-						// result = result.singleNodeValue.textContent;
 						var snapshot = document.evaluate(returnPath, $(result).get(0), null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null); 
 						result = [];
 						try {
@@ -4380,14 +4407,13 @@ THE SOFTWARE.
 							result = result[0];
 						}
 					}
-					self.urisCaches[query] = result;
 					self.processSource(source, result);
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					if ((jqXHR.status != 0 && jqXHR.status >= 500) || textStatus === 'timeout') {
-						self.setFatalError( Translator.trans("Data to continue this simulation are not accessible. Please try again later.") );
-					}
-				});
-			}
+				},
+				function(source, returnType, result) {
+					self.resetSourceDatas(source);
+					self.populateChoiceDependencies(source, []);
+				}
+			);
 		},
 
 		getInternalSource: function (source) {
@@ -4410,30 +4436,85 @@ THE SOFTWARE.
 					post[param.name] = param.constant;
 				}
 			});
-			params = $.param(post);
-			if (this.sourcesCaches[params]) {
-				var result = this.sourcesCaches[params];
-				this.processSource(source, result);
-			} else {
-				var view = $('input[name=view]').eq(0).val();
-				var token = $('input[name=_csrf_token]').eq(0).val();
-				if (token) {
-					post['_csrf_token'] = token;
-				}
-				var path = $(location).attr('pathname').replace("/"+view, "").replace(/\/+$/, "") + "/Default/source";
-				$.post(path,
-					post,
-					function(result){
-						self.sourcesCaches[params] = result;
-						self.processSource(source, result);
-					},
-					"json"
-				).fail(function(jqXHR, textStatus, errorThrown) {
-					if ((jqXHR.status != 0 && jqXHR.status != 200) || textStatus === 'timeout') {
-						self.setFatalError( Translator.trans("Data to continue this simulation are not accessible. Please try again later.") );
-					}
-				});
+			var view = $('input[name=view]').eq(0).val();
+			var token = $('input[name=_csrf_token]').eq(0).val();
+			if (token) {
+				post['_csrf_token'] = token;
 			}
+			var path = $(location).attr('pathname').replace("/"+view, "").replace(/\/+$/, "") + "/Default/source";
+			self.enqueueSourceRequest(source, 'POST', path, post, 'json',[],
+				function (source, returnType, result) {
+					self.processSource(source, result);
+				},
+				function(source, returnType, result) {
+					self.resetSourceDatas(source);
+					self.populateChoiceDependencies(source, []);
+				}
+			);
+
+		},
+
+		enqueueSourceRequest: function(source, method, uri, data, returnType, headers, success, error) {
+			var self = this;
+
+			self.sourceRequestsQueue.push({
+				source: source, 
+				method: method, 
+				uri: uri, 
+				data: data, 
+				returnType: returnType, 
+				headers: headers, 
+				success: success,
+				error: error
+			});
+
+			function runSourceRequest() {
+				if (self.sourceRequestRunning) {
+					return;
+				}
+				if (self.sourceRequestsQueue.length > 0) {
+					self.sourceRequestRunning = true;
+					var q = self.sourceRequestsQueue.shift();
+					var key = q.uri + '?' + $.param(q.data);
+					if (self.sourceRequestsCache[key]) {
+						if (self.sourceRequestsCache[key]['error']) {
+							q.error.call(self, q.source, "json", self.sourceRequestsCache[key]);
+						} else {
+							q.success.call(self, q.source, q.returnType, self.sourceRequestsCache[key]);
+						}
+						self.sourceRequestRunning = false;
+						runSourceRequest();
+					} else {
+						$.ajax({
+							method: q.method,
+							url: q.uri,
+							dataType: q.returnType,
+							data: q.data,
+							beforeSend: function(xhr){
+								$.each(q.headers, function(h, header) {
+									xhr.setRequestHeader(header.name, header.value);
+								});
+							}
+						}).done(function( result ) {
+							self.sourceRequestsCache[key] = result;
+							q.success.call(self, q.source, q.returnType, result);
+						}).fail(function(jqXHR, textStatus, errorThrown) {
+							if ((jqXHR.status != 0 && jqXHR.status >= 500) || textStatus === 'timeout') {
+								self.setFatalError( Translator.trans("Data to continue this simulation are not accessible. Please try again later.") );
+							} else {
+								var result = { 'error': jqXHR.status};
+								self.sourceRequestsCache[key] = result;
+								q.error.call(self, q.source, "json", result);
+							}
+						}).always(function() {
+							self.sourceRequestRunning = false;
+							runSourceRequest();
+						});
+					}
+				}
+			}
+
+			runSourceRequest();
 		},
 
 		processSource: function(source, result) {
@@ -4928,10 +5009,18 @@ THE SOFTWARE.
 					}
 				} else if (!self.checkMin(data)) {
 					var min = self.evaluate(data.unparsedMin);
-					self.setError(name, Translator.trans("This value can not be less than %min%",  { "min": min }, 'messages'));
+					if (data.type == 'text' || data.type == 'textarea') {
+						self.setError(name, Translator.trans("The length of this value can not be less than %min%",  { "min": min }, 'messages'));
+					} else {
+						self.setError(name, Translator.trans("This value can not be less than %min%",  { "min": min }, 'messages'));
+					}
 				} else if (!self.checkMax(data)) {
 					var max = self.evaluate(data.unparsedMax);
-					self.setError(name, Translator.trans("This value can not be greater than %max%",  { "max": max }, 'messages'));
+					if (data.type == 'text' || data.type == 'textarea') {
+						self.setError(name, Translator.trans("The length of this value can not be greater than %max%",  { "max": max }, 'messages'));
+					} else {
+						self.setError(name, Translator.trans("This value can not be greater than %max%",  { "max": max }, 'messages'));
+					}
 				}
 			});
 			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").on("keypress", function(event) {
@@ -4945,13 +5034,15 @@ THE SOFTWARE.
 			var inputTimeoutId;
 			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").on('input propertychange', function(event) {
 				var elt = this;
-				if (typeof inputTimeoutId !== "undefined") {
-					clearTimeout(inputTimeoutId);
+				if (!this.hasAttribute('minlength') || $(this).val().length >= parseInt($(this).attr('minlength'), 10)) {
+					if (typeof inputTimeoutId !== "undefined") {
+						clearTimeout(inputTimeoutId);
+					}
+					self.getData($(this).attr('name')).modifiedByUser = true;
+					inputTimeoutId = setTimeout(function () {
+						$(elt).trigger("change");
+					}, 500);
 				}
-				self.getData($(this).attr('name')).modifiedByUser = true;
-				inputTimeoutId = setTimeout(function () {
-					$(elt).trigger("change");
-				}, 500);
 			});
 			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name]").on('paste', function(event) {
 				var elt = this;
