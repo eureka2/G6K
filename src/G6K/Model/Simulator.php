@@ -1796,7 +1796,7 @@ class Simulator {
 		$ruleActionObj = new RuleAction((int)$action['id'], (string)$action['name']);
 		$ruleActionObj->setTarget((string)$action['target']);
 		$ruleActionObj->setData((int)$action['data']);
-		$ruleActionObj->setDatagroup((int)$action['datagroup']);
+		$ruleActionObj->setDatagroup((string)$action['datagroup']);
 		$ruleActionObj->setStep((string)$action['step']);
 		$ruleActionObj->setPanel((string)$action['panel']);
 		$ruleActionObj->setFieldset((string)$action['fieldset']);
