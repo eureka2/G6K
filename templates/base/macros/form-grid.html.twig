@@ -184,7 +184,10 @@ THE SOFTWARE.
 					{% else %}
 					<td headers="{{ step.name }}-panel-{{ fieldset.panel.id }}-grid-{{ fieldset.id }}-col{{ loop.index }} {{ step.name }}-panel-{{ fieldset.panel.id }}-fieldset-{{ fieldset.id }}-fieldrow-{{ row.id }}-head" data-label="{{ fieldset.columns[loop.index0].label|nofnref }}">
 						{% spaceless %}
-						<span id="{{ name }}" data-type="{{ type }}" data-field-position="{{ field.position }}" class="output{%- if field.emphasized %} emphasized{%- endif -%}">{%- if type == 'money' and simu.symbolPosition == 'before' %}{{ simu.moneySymbol }} {% endif -%}
+						{%- if type == 'money' and simu.symbolPosition == 'before' %}
+							<span id="{{ name }}-money-symbol" class="money-symbol before{%- if field.emphasized %} emphasized{%- endif %}">{{ simu.moneySymbol }}&#xA0;</span>
+						{%- endif -%}
+						<span id="{{ name }}" data-type="{{ type }}" data-field-position="{{ field.position }}" class="output{%- if field.emphasized %} emphasized{%- endif -%}">
 						{%- if type == 'choice' -%}
 							{%- for choice in data.choices -%}
 							{%- if choice.class == 'ChoiceGroup' -%}
