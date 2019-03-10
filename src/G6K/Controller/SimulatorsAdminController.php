@@ -3150,6 +3150,36 @@ class SimulatorsAdminController extends BaseAdminController {
 		if (count($fchoices) > 0) {
 			$objects[] = $fchoices;
 		}
+		$notifyFields = array(
+			array(
+				'label' => "",
+				'name' => "message",
+				'fieldType' => "textarea"
+			),
+			array(
+				'label' => $this->get('translator')->trans("on"),
+				'name'	=> "target",
+				'fieldType' => "select",
+				'options' => array(
+					array(
+						'label' => $this->get('translator')->trans('the data'),
+						'name' => 'data',
+						'fields' => array(
+							array(
+								'label' => "",
+								'name' => "fieldName",
+								'fieldType' => "field",
+								'newValue' => false
+							)
+						)
+					),
+					array(
+						'label' => $this->get('translator')->trans('the dataset'),
+						'name' => 'dataset'
+					)
+				)
+			)
+		);
 		$this->actions = array(
 			array(
 				'label' => $this->get('translator')->trans("Choose an Action..."), 
@@ -3159,70 +3189,12 @@ class SimulatorsAdminController extends BaseAdminController {
 			array(
 				'label' => $this->get('translator')->trans("notify Error"), 
 				'name' => "notifyError", 
-				'fields' => array(
-					array(
-						'label' => "",
-						'name' => "message",
-						'fieldType' => "textarea"
-					),
-					array(
-						'label' => $this->get('translator')->trans("on"),
-						'name'	=> "target",
-						'fieldType' => "select",
-						'options' => array(
-							array(
-								'label' => $this->get('translator')->trans('the data'),
-								'name' => 'data',
-								'fields' => array(
-									array(
-										'label' => "",
-										'name' => "fieldName",
-										'fieldType' => "field",
-										'newValue' => false
-									)
-								)
-							),
-							array(
-								'label' => $this->get('translator')->trans('the dataset'),
-								'name' => 'dataset'
-							)
-						)
-					)
-				)
+				'fields' => $notifyFields
 			),
 			array(
 				'label' => $this->get('translator')->trans("notify Warning"), 
 				'name' => "notifyWarning", 
-				'fields' => array(
-					array(
-						'label' => "",
-						'name' => "message",
-						'fieldType' => "textarea"
-					),
-					array(
-						'label' => $this->get('translator')->trans("on"),
-						'name'	=> "target",
-						'fieldType' => "select",
-						'options' => array(
-							array(
-								'label' => $this->get('translator')->trans('the data'),
-								'name' => 'data',
-								'fields' => array(
-									array(
-										'label' => "",
-										'name' => "fieldName",
-										'fieldType' => "field",
-										'newValue' => false
-									)
-								)
-							),
-							array(
-								'label' => $this->get('translator')->trans('the dataset'),
-								'name' => 'dataset'
-							)
-						)
-					)
-				)
+				'fields' => $notifyFields
 			),
 			array(
 				'label' => $this->get('translator')->trans("Hide"), 
