@@ -207,7 +207,10 @@ THE SOFTWARE.
 	</table>
 	{%- else -%}
 	{% spaceless %}
-	<span id="{{ name }}" class="output{%- if field.emphasized %} emphasized{%- endif -%}">{%- if type == 'money' and simu.symbolPosition == 'before' %}{{ simu.moneySymbol }} {% endif -%}
+	{%- if type == 'money' and simu.symbolPosition == 'before' %}
+		<span id="{{ name }}-money-symbol" class="money-symbol before{%- if field.emphasized %} emphasized{%- endif %}">{{ simu.moneySymbol }}&#xA0;</span>
+	{%- endif -%}
+	<span id="{{ name }}" class="output{%- if field.emphasized %} emphasized{%- endif -%}">
 	{%- if type == 'choice' -%}
 		{%- for choice in data.choices -%}
 		{%- if choice.class == 'ChoiceGroup' -%}
