@@ -9,15 +9,15 @@
 The personal resources of the debtor are taken into account which are taxable as well as the social-security benefits, with the exception of those to improve the standard of living of the children (ex: family benefits).
 			]]></Description>
 		</Data>
-		<Data id="2" name="AARight" label="Right of access and residence" type="choice" default="2">
-			<Description edition="manual"><![CDATA[
-<strong>Right of access and residence:</strong>
-
-<strong>reduced</strong>: the residence of the child is mainly fixed at one of the parents and the time of residence at the other parent is lower than 1/4 of the time of global residence. It can consist of a right of access and infrequent hosting because of the unavailability of the parent, or in a simple right of access, without hosting, if the parent does not arrange condition of adequate hosting or if this hosting would not be in accordance with the interest of the child;
-
-<strong>classic</strong>: the residence is mainly fixed at one of the parents and the time of residence at the other parent is equivalent to 1/4 of the time( of global residence (ex: a weekend on two and half of the school holidays).;
-
-<strong>alternated</strong>: the children live alternately in the residence of each of the parents. The alternated residence can give rise to contribution  to the education of the children when the parents did not agree on the sharing of expenses bound to the child according to their resources or when one of the parents cannot assume only the financial charge of the alternated residence.
+		<Data id="2" name="AARight" label="Right of access and residence" type="choice">
+			<Description edition="wysihtml"><![CDATA[
+<p><strong>Right of access and residence:</strong></p>
+<br>
+<p><strong>reduced</strong>: the residence of the child is mainly fixed at one of the parents and the time of residence at the other parent is lower than 1/4 of the time of global residence. It can consist of a right of access and infrequent hosting because of the unavailability of the parent, or in a simple right of access, without hosting, if the parent does not arrange condition of adequate hosting or if this hosting would not be in accordance with the interest of the child;</p>
+<br>
+<p><strong>classic</strong>: the residence is mainly fixed at one of the parents and the time of residence at the other parent is equivalent to 1/4 of the time( of global residence (ex: a weekend on two and half of the school holidays).;</p>
+<br>
+<p><strong>alternated</strong>: the children live alternately in the residence of each of the parents. The alternated residence can give rise to contribution  to the education of the children when the parents did not agree on the sharing of expenses bound to the child according to their resources or when one of the parents cannot assume only the financial charge of the alternated residence.</p>
 			]]></Description>
 			<Choices>
 				<Choice id="1" value="1" label="reduced" />
@@ -25,10 +25,19 @@ The personal resources of the debtor are taken into account which are taxable as
 				<Choice id="3" value="3" label="alternated" />
 			</Choices>
 		</Data>
-		<Data id="3" name="nChildren" label="Number of children" type="number" default="1" min="1">
-			<Description edition="manual"><![CDATA[
-Total number of children chargeable to the debtor parent (whatever is the union from which they were born). All the children is thus taken into account the debtor parent of which has the responsibility) including those who do not live with him.
+		<Data id="3" name="nChildren" label="Number of children" type="choice" default="1">
+			<Description edition="wysihtml"><![CDATA[
+<p>Total number of children chargeable to the debtor parent (whatever is the union from which they were born). All the children is thus taken into account the debtor parent of which has the responsibility) including those who do not live with him.</p>
 			]]></Description>
+			<Choices>
+				<Choice id="1" value="1" label="1" />
+				<Choice id="2" value="2" label="2" />
+				<Choice id="3" value="3" label="3" />
+				<Choice id="4" value="4" label="4" />
+				<Choice id="5" value="5" label="5" />
+				<Choice id="6" value="6" label="6" />
+				<Choice id="7" value="7" label="7+" />
+			</Choices>
 		</Data>
 		<Data id="4" name="MARate" label="Alimony rate" type="percent" source="1">
 			<Description edition="manual"><![CDATA[
@@ -99,7 +108,7 @@ The employee owes in every case, keep at least this sum after seizure
 		<Data id="7" name="totalMA" label="Total amount" type="money" content="min(#1, #6 * #3)" round="0" />
 	</DataSet>
 	<Steps>
-		<Step id="0" name="calculation" label="Maintenance allowance" template="pages:article.html.twig">
+		<Step id="1" name="calculation" label="Maintenance allowance" template="pages:article.html.twig" dynamic="1">
 			<Description edition="manual"><![CDATA[
 The amount of pension to be paid or to receive that you will calculate by using this simulator is strictly indicative.
 Only the judge, if he is seized, can pronounce the definitive amount of the pension by taking into account the specific situation of the parents.
@@ -108,14 +117,11 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 				<Panel id="1" name="panel1" label="">
 					<FieldSet id="1">
 						<Field position="1" data="1" usage="input" label="Income of the debtor parent" required="1" visibleRequired="0" help="1" widget="AutoMoneyFormat" />
-						<Field position="2" data="2" usage="input" label="Amplitude of the right of access and the accommodation" required="1" visibleRequired="0" help="1" widget="abListbox" />
-						<Field position="3" data="3" usage="input" label="Number of children of the debtor parent" required="1" visibleRequired="0" help="1" />
+						<Field position="2" data="2" usage="input" label="Amplitude of the right of access and the accommodation" required="1" visibleRequired="0" help="1" expanded="1" widget="SquareRadioButton" />
+						<Field position="3" data="3" usage="input" label="Number of children of the debtor parent" required="1" visibleRequired="0" help="1" widget="ChoiceSlider" />
 						<Field position="4" data="4" usage="output" label="Applicable rate by child" required="0" visibleRequired="0" help="1" />
 					</FieldSet>
 					<FieldSet id="2">
-						<Legend edition="manual"><![CDATA[
-Maintenance allowance
-						]]></Legend>
 						<Field position="1" data="6" usage="output" label="Maintenance allowance by child" required="0" visibleRequired="0" help="0" emphasize="1" />
 						<Field position="2" data="7" usage="output" label="Total of the maintenance allowance" required="0" visibleRequired="0" help="0" emphasize="1" />
 					</FieldSet>
@@ -123,28 +129,6 @@ Maintenance allowance
 			</Panels>
 			<ActionList>
 				<Action name="reset" label="Reset" shape="button" what="reset" for="currentStep" location="bottom" class="btn-secondary" />
-			</ActionList>
-		</Step>
-		<Step id="1" name="calculation" label="Maintenance allowance" template="pages:article.html.twig">
-			<Description edition="manual"><![CDATA[
-The amount of pension to be paid or to receive that you will calculate by using this simulator is strictly indicative.
-Only the judge, if he is seized, can pronounce the definitive amount of the pension by taking into account the specific situation of the parents.
-			]]></Description>
-			<Panels>
-				<Panel id="1" name="panel1" label="">
-					<FieldSet id="1">
-						<Field position="1" data="1" usage="input" label="Income of the debtor parent" required="1" visibleRequired="0" help="1" explanation="1" widget="AutoMoneyFormat" />
-						<Field position="2" data="2" usage="input" label="Amplitude of the right of access and the accommodation" required="1" visibleRequired="0" help="1" explanation="2" widget="abListbox" />
-						<Field position="3" data="3" usage="input" label="Number of children of the debtor parent" required="1" visibleRequired="0" help="1" explanation="3" />
-						<Field position="4" data="4" usage="output" label="Applicable rate by child" required="0" visibleRequired="0" help="1" explanation="4" />
-						<Field position="5" data="6" usage="output" label="Maintenance allowance by child" required="0" visibleRequired="0" help="0" emphasize="1" explanation="'6 = ((1) - 550.93) * (4) /100'" />
-						<Field position="6" data="7" usage="output" label="Total of the maintenance allowance" required="0" visibleRequired="0" help="0" emphasize="1" explanation="'7 = (6) * (3)'" />
-					</FieldSet>
-				</Panel>
-			</Panels>
-			<ActionList>
-				<Action name="reset" label="Reset" shape="button" what="reset" for="currentStep" location="bottom" class="btn-secondary" />
-				<Action name="calculate" label="Calculate" shape="button" what="submit" for="currentStep" location="bottom" class="btn-primary" />
 			</ActionList>
 		</Step>
 	</Steps>
@@ -179,24 +163,50 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 			</ElseActions>
 		</BusinessRule>
 		<BusinessRule id="3" name="R3" label="Condition of display of the fieldset 'Maintenance allowance' and the 'Reset' button">
-			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6)">
+			<Conditions value="defined(#1) &amp;&amp; defined(#2) &amp;&amp; defined(#3) &amp;&amp; defined(#4) &amp;&amp; defined(#6) &amp;&amp; #6 >= 0">
 				<Connector type="all">
 					<Condition operand="income" operator="present" />
 					<Condition operand="AARight" operator="present" />
 					<Condition operand="nChildren" operator="present" />
 					<Condition operand="MARate" operator="present" />
 					<Condition operand="amountByChild" operator="present" />
+					<Condition operand="amountByChild" operator=">=" expression="0" />
 				</Connector>
 			</Conditions>
 			<IfActions>
-				<Action id="1" name="showObject" target="field" step="0" panel="1" fieldset="1" field="4" />
-				<Action id="2" name="showObject" target="fieldset" step="0" panel="1" fieldset="2" />
-				<Action id="3" name="showObject" target="action" step="0" action="reset" />
+				<Action id="1" name="showObject" target="field" step="1" panel="1" fieldset="1" field="4" />
+				<Action id="2" name="showObject" target="fieldset" step="1" panel="1" fieldset="2" />
+				<Action id="3" name="showObject" target="action" step="1" action="reset" />
 			</IfActions>
 			<ElseActions>
-				<Action id="1" name="hideObject" target="field" step="0" panel="1" fieldset="1" field="4" />
-				<Action id="2" name="hideObject" target="fieldset" step="0" panel="1" fieldset="2" />
-				<Action id="3" name="hideObject" target="action" step="0" action="reset" />
+				<Action id="1" name="hideObject" target="field" step="1" panel="1" fieldset="1" field="4" />
+				<Action id="2" name="hideObject" target="fieldset" step="1" panel="1" fieldset="2" />
+				<Action id="3" name="hideObject" target="action" step="1" action="reset" />
+			</ElseActions>
+		</BusinessRule>
+		<BusinessRule id="4" name="R4" label="Condition of display of the field Amplitude of the right of access and the accommodation">
+			<Conditions value="defined(#1)">
+				<Condition operand="income" operator="present" />
+			</Conditions>
+			<IfActions>
+				<Action id="1" name="showObject" target="field" step="1" panel="1" fieldset="1" field="2" />
+			</IfActions>
+			<ElseActions>
+				<Action id="1" name="hideObject" target="field" step="1" panel="1" fieldset="1" field="2" />
+			</ElseActions>
+		</BusinessRule>
+		<BusinessRule id="5" name="R5" label="Condition of display of the field Number of children of the debtor parent">
+			<Conditions value="defined(#1) &amp;&amp; defined(#2)">
+				<Connector type="all">
+					<Condition operand="income" operator="present" />
+					<Condition operand="AARight" operator="present" />
+				</Connector>
+			</Conditions>
+			<IfActions>
+				<Action id="1" name="showObject" target="field" step="1" panel="1" fieldset="1" field="3" />
+			</IfActions>
+			<ElseActions>
+				<Action id="1" name="hideObject" target="field" step="1" panel="1" fieldset="1" field="3" />
 			</ElseActions>
 		</BusinessRule>
 	</BusinessRules>
