@@ -634,7 +634,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		if ($view != '' && ! $fs->exists($this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css')) {
 			if (isset($form['clone']) && $fs->exists($this->publicDir.'/assets/'.$view.'/css/'.$form['cloned'].'.css')) {
 				$fs->copy($this->publicDir.'/assets/'.$view.'/css/'.$form['cloned'].'.css', $this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css');
-			} elseif ($fs->exists($this->publicDir.'/assets/'.$view.'/css/common.css', $this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css')) {
+			} elseif ($fs->exists($this->publicDir.'/assets/'.$view.'/css/common.css')) {
 				$fs->dumpFile($this->publicDir.'/assets/'.$view.'/css/'.$simulator.'.css', '@import "common.css";'."\n");
 				$this->runConsoleCommand(array(
 					'command' => 'g6k:assets:manifest:add-asset',
