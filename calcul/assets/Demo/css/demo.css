@@ -21,6 +21,9 @@ main {
 h1, footer span {
 	color: #2B4E6B;
 }
+.step-page .step-panel-container div.fieldset {
+	display:none;
+}
 .step-page .step-description p {
 	margin: 0;
 	padding: 0;
@@ -54,13 +57,12 @@ h1, footer span {
 	background-color: #fff;
 }
 .step-page input[type=money]  {
-	max-width: 10em;
-	width: 10em;
+	max-width: 11em;
+	width: 11em;
 	font-size: 1.5em;
 }
 .step-page fieldset, .step-page .fieldset {
 	margin-top : 0;
-	border: 1px solid #e2f1ff;
 	margin-bottom: 25px;
 	padding: 10px 14px;
 	font-size: 1em;
@@ -129,6 +131,13 @@ h1, footer span {
 	margin-top: -1.7em;
 	padding: 0;
 	vertical-align: middle;
+	font-size: 1.5em;
+}
+.step-page .input-group span.money-symbol.before {
+	font-size: 1.5em;
+}
+.step-page .input-group + span.money-symbol.after {
+	margin-top: -0.3em;
 }
 .step-page .input-group + span.percent-symbol {
 	display: inline-block;
@@ -151,6 +160,8 @@ h1, footer span {
 	font-size: 1.4em;
 	border: none;
 	background: transparent;
+	clear: initial;
+	float: right;
 }
 @font-face { font-family: 'fonticon'; src: url("../webfonts/fonticon/fonticon.eot?-765im2"); src: url("../webfonts/fonticon/fonticon.eot?#iefixe-765im2") format("embedded-opentype"), url("../webfonts/fonticon/fonticon.woff?-765im2") format("woff"), url("../webfonts/fonticon/fonticon.ttf?-765im2") format("truetype"), url("../webfonts/fonticon/fonticon.svg?-765im2#fonticon") format("svg"); font-weight: normal; font-style: normal; }
 .icon { font-family: 'fonticon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; /* Better Font Rendering =========== */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
@@ -180,13 +191,13 @@ h1, footer span {
 	padding: 0;
 }
 .step-page .form-group.ChoiceSlider-field .input-group ~ .btn-help {
-	margin: -2.8em 0.5em 0;
+	margin: -0.5em 0.5em 0;
 }
 .step-page .form-group.SquareRadioButton-field .input-group ~ .btn-help {
-	margin: -8em 0.5em 0;
+	margin: 1.8em 0.5em 0;
 }
 .step-page .form-group[data-type=money] .input-group ~ .btn-help {
-	margin: -0.5em 0.5em 0;
+	margin: 0.5em 0.5em 0;
 }
 .step-page .listbox ~ .btn-help {
 	margin: -2.1em 0.5em 0;
@@ -198,7 +209,7 @@ body.iOS .step-page .form-group[data-type=date] .input-group  ~ button.btn-help 
 	margin: -1.5em 0.5em 0 3em;
 }
 .step-page .output ~ .btn-help {
-	margin: -1em 0.5em 0;
+	margin: -0.5em 0.9em 0;
 }
 .step-page .help-panel {
 	clear: both;
@@ -248,7 +259,7 @@ body.iOS .step-page .form-group[data-type=date] .input-group  ~ button.btn-help 
 	margin-right: 1em;
 }
 .simulator-breadcrumb {
-	display: inline;
+	display: none;
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -403,9 +414,45 @@ body.iOS .step-page .form-group[data-type=date] .input-group  ~ button.btn-help 
 	padding:0;
 	margin:0;
 }
+.step-page .action_buttons {
+	clear: both;
+	float: none;
+}
+
 .help-panel { margin-top: -3px; }
 .help-panel p { margin-bottom:0.5em;}
 
 .step-page .field-container[data-type=choice] .input-group {
-	width: 92%;
+	width: 80%;
+}
+.field-container.SquareRadioButton-field fieldset label.checked,
+.field-container.SquareRadioButton-field fieldset label.checked::after {
+	color: #fff;
+	background-color: #2B4E6B;
+}
+.range-labels .active {
+  color: #2B4E6B;
+}
+.range-labels .selected::before {
+  background: #2B4E6B;
+}
+.range input::-webkit-slider-thumb {
+  background: #2B4E6B;
+}
+.range input::-moz-range-thumb {
+  background: #2B4E6B;
+}
+.range input::-ms-thumb {
+  background: #2B4E6B;
+}
+.step-page .step-panel-container div.fieldset .field-container {
+	text-align: center;
+}
+.step-page .step-panel-container div.fieldset .field-container .label {
+	display: block;
+	text-align: center;
+}
+#totalMA-container span:not(.label),
+#totalPA-container span:not(.label) {
+	font-size: 4em;
 }
