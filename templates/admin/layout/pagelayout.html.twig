@@ -46,39 +46,41 @@ THE SOFTWARE.
 	</div>
 {% block scripts %}
 {% if exception is not defined and simulator is not empty %}
+{% set jsonoptions = constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') %}
+{% if app.debug  %}{% set jsonoptions = constant('JSON_PRETTY_PRINT') b-or jsonoptions %}{% endif %}
 <script type="text/javascript">
 {% if dataset is defined %}
-var dataset = {{ dataset|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var dataset = {{ dataset|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if steps is defined %}
-var steps = {{ steps|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var steps = {{ steps|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if actions is defined %}
-var actions = {{ actions|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var actions = {{ actions|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if rules is defined %}
-var rules = {{ rules|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var rules = {{ rules|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if views is defined %}
-var views = {{ views|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var views = {{ views|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if datasources is defined %}
-var datasources = {{ datasources|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var datasources = {{ datasources|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if languages is defined %}
-var languages = {{ languages|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var languages = {{ languages|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if widgets is defined %}
-var widgets = {{ widgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var widgets = {{ widgets|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if typewidgets is defined %}
-var typewidgets = {{ typewidgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var typewidgets = {{ typewidgets|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if inputwidgets is defined %}
-var inputwidgets = {{ inputwidgets|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var inputwidgets = {{ inputwidgets|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 {% if functions is defined %}
-var functions = {{ functions|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+var functions = {{ functions|json_encode(jsonoptions)|nofilter }}
 {% endif %}
 </script>
 {% endif %}
