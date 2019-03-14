@@ -84,7 +84,6 @@ THE SOFTWARE.
 			"acos": {arity: 1, args: ['number'], type: 'number'},
 			"asin": {arity: 1, args: ['number'], type: 'number'},
 			"atan": {arity: 1, args: ['number'], type: 'number'},
-			"atan": {arity: 1, args: ['number'], type: 'number'},
 			"atan2": {arity: 1, args: ['number'], type: 'number'},
 			"ceil": {arity: 1, args: ['number'], type: 'number'},
 			"ceiling": {arity: 1, args: ['number'], type: 'number'},
