@@ -422,6 +422,10 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 			if ($targetname != 'dataset') {
 				$query = $this->makeQuery($action);
 				$targets = $simulatorxpath->query($query);
+				if ($targetname == 'choice' && $targets->length > 0) {
+					$query = "//Data[@id='".$this->getDOMElementItem($targets, 0)->getAttribute('data')."']//Choice[@id='".$action->getAttribute('choice')."']";
+					$targets = $simulatorxpath->query($query);
+				}
 				if ($targets->length == 0) {
 					if (in_array($targetname, ['content', 'default', 'min', 'max','index'])) {
 						if ($action->hasAttribute('data')) {
@@ -449,7 +453,7 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 	 *
 	 */
 	private function makeQuery(\DOMElement $action) {
-		$path = ['Data'=>'id', 'DataGroup'=>'name', 'Step'=>'id', 'FootNote'=>'id', 'ActionList/Action'=>'name', 'Data//Choice'=>'id', 'Panel'=>'id', 'FieldSet'=>'id', 'FieldRow'=>'id', 'Field'=>'position', 'PreNote'=>'position', 'PostNote'=>'position', 'BlockInfo'=>'id', 'Chapter'=>'id', 'Section'=>'id'];
+		$path = ['Data'=>'id', 'DataGroup'=>'name', 'Step'=>'id', 'FootNote'=>'id', 'ActionList/Action'=>'name', 'Panel'=>'id', 'FieldSet'=>'id', 'FieldRow'=>'id', 'Field'=>'position', 'PreNote'=>'position', 'PostNote'=>'position', 'BlockInfo'=>'id', 'Chapter'=>'id', 'Section'=>'id'];
 		$query = "";
 		foreach($path as $element => $id) {
 			$attr = strtolower(preg_replace("|^.+/|", "", $element));
