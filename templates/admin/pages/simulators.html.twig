@@ -205,7 +205,8 @@ THE SOFTWARE.
 {% endblock %}
 
 {% block scripts %}
-{{ parent() }}<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.js') }}"></script>
+{{ parent() }}{% if app.debug %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.sources.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.datas.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.js') }}"></script>
@@ -220,6 +221,9 @@ THE SOFTWARE.
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.steps.sections.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.rules.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.profiles.js') }}"></script>
+{% else %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.simulators.min.js') }}"></script>
+{% endif %}
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/css-validator/csslint.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery.jeditable/jquery.jeditable.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/jquery.jeditable/jquery.jeditable.choices.js') }}"></script>
