@@ -212,7 +212,7 @@ THE SOFTWARE.
 		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldrowElementId + '" data-type="checkbox" data-name="emphasize" data-placeholder="' + Translator.trans('Emphasize the text label ?') + '">' + Translator.trans('Emphasize the text label ?') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldrow.emphasize) {
-			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-emphasize', 'checkbox', 'help', Translator.trans('Emphasize the text label ?'), fieldrow.emphasize, false, Translator.trans('Emphasize the text label ?')));
+			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-emphasize', 'checkbox', 'emphasize', Translator.trans('Emphasize the text label ?'), fieldrow.emphasize, false, Translator.trans('Emphasize the text label ?')));
 			optionalAttribute.hide();
 		} 
 		requiredAttributes.append(Simulators.simpleAttributeForInput(fieldrowElementId + '-datagroup', 'select', 'datagroup', Translator.trans('Datagroup'), fieldrow.datagroup, true, Translator.trans('Select a datagroup'), JSON.stringify(datagroupsList)));
