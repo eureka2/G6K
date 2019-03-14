@@ -286,11 +286,11 @@ THE SOFTWARE.
 			} else {
 				var oldId = dataContainer.attr('data-id');
 				if (id != oldId) {
-					var data = Simulators.findDataById(oldId);
 					$(this).attr('id', 'data-' + id);
 					var re = new RegExp("data-" + oldId + '([^\\d])?', 'g');
 					var a = $(this).find('> .card > .card-header').find('> h4 > a');
-					a.text(' #' + id + ' : ' + data.label + ' ');
+					var txt = $.trim(a.text()).replace(/#\d+\s+:/,  ' #' + id + ' :');
+					a.text(txt + ' ');
 					var descendants = $(this).find('*');
 					descendants.each(function(d) {
 						if (this.hasAttribute('id')) {
