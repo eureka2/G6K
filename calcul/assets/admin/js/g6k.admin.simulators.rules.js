@@ -4393,6 +4393,15 @@ THE SOFTWARE.
 					if (circularReference) {
 						return false;
 					}
+					$(this).next().find('.editable-select[name=fieldName]').next().find('.expression').each(function(v) {
+						if (! Simulators.checkDataInExpression(dataId, $(this))) {
+							circularReference = true;
+							return false;
+						}
+					});
+					if (circularReference) {
+						return false;
+					}
 				}
 			});
 			if (circularReference) {
