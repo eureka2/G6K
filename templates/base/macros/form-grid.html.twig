@@ -43,7 +43,7 @@ THE SOFTWARE.
 				{%- for row in fieldset.fields -%}
 				{% set gid = row.dataGroup %}
 				{% set datagroup = simu.dataGroupById(gid) %}
-				<tr id="{{ step.name }}-panel-{{ fieldset.panel.id }}-fieldset-{{ fieldset.id }}-fieldrow-{{ row.id }}">
+				<tr id="{{ step.name }}-panel-{{ fieldset.panel.id }}-fieldset-{{ fieldset.id }}-fieldrow-{{ row.id }}"{%- if row.emphasize %} class="emphasize"{% endif %}>
 					<th scope="row" rowspan="2" id="{{ step.name }}-panel-{{ fieldset.panel.id }}-fieldset-{{ fieldset.id }}-fieldrow-{{ row.id }}-head" data-label="{{ row.label|nofnref }}">{{ row.label|fnref }}</th>
 					{%- for field in row.fields -%}
 					{%- if field.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
