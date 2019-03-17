@@ -3,6 +3,7 @@
 
 	function geoAPICoupledZipCode (input, options, onComplete) {
 		input.attr('type', 'text');
+		input.attr('maxlength', 5);
 		var input2 = geoAPICoupledInput(input);
 		if (input2 !== false) {
 			input2.attr('readonly', true);
@@ -35,7 +36,7 @@
 	}
 
 	function geoAPICoupledInput(input) {
-		var fields = input.closest('form').find('input[type=text]:visible');
+		var fields = input.closest('form').find('input[type=text]');
 		var index = fields.index( input[0] );
 		if ( index > -1 && ( index + 1 ) < fields.length ) {
 			return fields.eq( index + 1 );
@@ -152,7 +153,9 @@
 					value: item.data('value'),
 					text: item.data('text')
 				};
+				onComplete && onComplete(selected.value, selected.value, true);
 				input2.val(selected.text);
+				input2.trigger("change");
 				isSelected = true;
 				geoAPIRemoveError(input1);
 			},
