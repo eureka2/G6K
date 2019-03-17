@@ -350,12 +350,19 @@ THE SOFTWARE.
 			attribute    += ' />';
 		} else if (type === 'select') {
 			options = JSON.parse(options);
-			attribute    += '        <select name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" data-placeholder="' + placeholder + '">';
+			var labels = [];
 			$.each(options, function(ovalue, olabel) {
-				if (ovalue == value) {
-					attribute    += '        <option value="' + ovalue + '" selected="selected">' + olabel + '</option>';
+				labels.push({label: olabel, value: ovalue});
+			});
+			labels.sort(function (a, b) {
+				return a.label.localeCompare(b.label);
+			});
+			attribute    += '        <select name="' + id + '" id="' + id + '" data-attribute="' + name + '" class="form-control simple-value" data-placeholder="' + placeholder + '">';
+			$.each(labels, function(i, option) {
+				if (option.value == value) {
+					attribute    += '        <option value="' + option.value + '" selected="selected">' + option.label + '</option>';
 				} else {
-					attribute    += '        <option value="' + ovalue + '">' + olabel + '</option>';
+					attribute    += '        <option value="' + option.value + '">' + option.label + '</option>';
 				}
 			});
 			attribute    += '        </select>';

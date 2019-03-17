@@ -136,9 +136,16 @@ var ExpressionBuilder_I18N = {
 					select.append(gMiscellaneous);
 
 					if (Object.keys(settings.fields).length > 0) {
+						var labels = [];
+						$.each(settings.fields, function(name, field) {
+							labels.push({label: field.label, name: name});
+						});
+						labels.sort(function (a, b) {
+							return a.label.localeCompare(b.label);
+						});
 						var gfields = jQuery('<optgroup label="' + i18n['fields-label'] + '">');
-						jQuery.each(settings.fields, function(name, field) {
-							gfields.append('<option operand-type="field" value="' + name + '">' + field.label + '</option>');
+						jQuery.each(labels, function(i, field) {
+							gfields.append('<option operand-type="field" value="' + field.name + '">' + field.label + '</option>');
 						});
 						select.append(gfields);
 					}

@@ -383,11 +383,18 @@ if (typeof jQuery === 'undefined') {
 			} else {
 				var json = data;
 			}
-			for (var key in json) {
-				if (json.hasOwnProperty(key) && 'selected' != key) {
-					choices.addItem(key, json[key], 'field');
+			var labels = [];
+			$.each(json, function(value, label) {
+				labels.push({label: label, value: value});
+			});
+			labels.sort(function (a, b) {
+				return a.label.localeCompare(b.label);
+			});
+			$.each(labels, function(i, item) {
+				if ('selected' != item.value) {
+					choices.addItem(item.value, item.label, 'field');
 				}
-			}
+			});
 			choices.select(json['selected']);
 			$('input', this).before(choices.get());
 		}
