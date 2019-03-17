@@ -3381,6 +3381,8 @@ THE SOFTWARE.
 									} else {
 										content = [content];
 									}
+								} else if (content && (data.type === "money" || data.type === "percent" || data.type === "number")) {
+									content = self.unFormatValue(content);
 								}
 								self.variables[name] = data.value = content;
 							} else if (data.value !== '') {
