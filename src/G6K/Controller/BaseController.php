@@ -645,11 +645,7 @@ class BaseController extends Controller {
 			}
 		}
 		$response = new Response();
-		if ($this->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
-			$response->setContent(json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES | JSON_HEX_APOS | JSON_HEX_QUOT));
-		} else {
-			$response->setContent(json_encode($result));
-		}
+		$response->setContent(json_encode($result));
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
 	}

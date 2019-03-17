@@ -2268,281 +2268,277 @@ class Simulator {
 	}
 
 	/**
-	 * Converts into an associative array, the list of actions (the "then" part or the the "else" part) of a business rule extracted from the XML file.
+	 * Converts to an associative array representing one action (in the "then" part or the the "else" part) of a business rule extracted from the XML file.
 	 * Also completes the list of data dependencies
 	 *
 	 * @access  private
 	 * @param   int $ruleID The ID of the rule
-	 * @param   \SimpleXMLElement $actions The list of actions
+	 * @param   \SimpleXMLElement $actions The action
 	 * @param   array &$dataset The list of data dependencies
 	 * @return  array The associative array
 	 *
 	 */
-	private function actionsData($ruleID, \SimpleXMLElement $actions, &$dataset) {
-		$datas = array();
-		foreach ($actions->Action as $action) {
-			$target = (string)$action['target'];
-			switch ((string)$action['name']) {
-				case 'notifyWarning':
-					$clause = array(
-						'name' => 'action-select',
-						'value' => 'notifyWarning',
-						'fields' => array(
-							array('name' => 'message', 'value' => $this->replaceIdByName((string)$action['value'])),
-							array('name' => 'target', 'value' => $target)
-						)
-					);
-					switch ($target) {
-						case 'data':
-							$clause['fields'][1]['fields'] = array(
-								array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'])
-							);
-							break;
-						case 'datagroup':
-							$clause['fields'][1]['fields'] = array(
-								array('name' => 'datagroupName', 'value' => (string)$action['datagroup'])
-							);
-							break;
-						case 'dataset':
-							break;
-					}
-					break;
-				case 'notifyError':
-					$clause = array(
-						'name' => 'action-select',
-						'value' => 'notifyError',
-						'fields' => array(
-							array('name' => 'message', 'value' => $this->replaceIdByName((string)$action['value'])),
-							array('name' => 'target', 'value' => $target)
-						)
-					);
-					switch ($target) {
-						case 'data':
-							$clause['fields'][1]['fields'] = array(
-								array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'])
-							);
-							break;
-						case 'datagroup':
-							$clause['fields'][1]['fields'] = array(
-								array('name' => 'datagroupName', 'value' => (string)$action['datagroup'])
-							);
-							break;
-						case 'dataset':
-							break;
-					}
-					break;
-				case 'hideObject':
-				case 'showObject':
-					switch ($target) {
-						case 'field':
-						case 'prenote':
-						case 'postnote':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
-																	array('name' => 'fieldId', 'value' => (string)$action[$target])
-																)
+	private function actionData($ruleID, \SimpleXMLElement $action, &$dataset) {
+		$target = (string)$action['target'];
+		switch ((string)$action['name']) {
+			case 'notifyWarning':
+				$clause = array(
+					'name' => 'action-select',
+					'value' => 'notifyWarning',
+					'fields' => array(
+						array('name' => 'message', 'value' => $this->replaceIdByName((string)$action['value'])),
+						array('name' => 'target', 'value' => $target)
+					)
+				);
+				switch ($target) {
+					case 'data':
+						$clause['fields'][1]['fields'] = array(
+							array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'])
+						);
+						break;
+					case 'datagroup':
+						$clause['fields'][1]['fields'] = array(
+							array('name' => 'datagroupName', 'value' => (string)$action['datagroup'])
+						);
+						break;
+					case 'dataset':
+						break;
+				}
+				break;
+			case 'notifyError':
+				$clause = array(
+					'name' => 'action-select',
+					'value' => 'notifyError',
+					'fields' => array(
+						array('name' => 'message', 'value' => $this->replaceIdByName((string)$action['value'])),
+						array('name' => 'target', 'value' => $target)
+					)
+				);
+				switch ($target) {
+					case 'data':
+						$clause['fields'][1]['fields'] = array(
+							array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'])
+						);
+						break;
+					case 'datagroup':
+						$clause['fields'][1]['fields'] = array(
+							array('name' => 'datagroupName', 'value' => (string)$action['datagroup'])
+						);
+						break;
+					case 'dataset':
+						break;
+				}
+				break;
+			case 'hideObject':
+			case 'showObject':
+				switch ($target) {
+					case 'field':
+					case 'prenote':
+					case 'postnote':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId',	'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+														array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
+																array('name' => 'fieldId', 'value' => (string)$action[$target])
 															)
 														)
 													)
 												)
 											)
-										)
-									)
-								)
-							);
-							break;
-						case 'section':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
-															array('name' => 'blockinfoId', 'value' => (string)$action['blockinfo'], 'fields' => array(
-																	array('name' => 'chapterId', 'value' => (string)$action['chapter'], 'fields' => array(
-																			array('name' => 'sectionId', 'value' => (string)$action[$target])
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
-							break;
-						case 'chapter':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
-															array('name' => 'blockinfoId', 'value' => (string)$action['blockinfo'], 'fields' => array(
-																	array('name' => 'chapterId', 'value' => (string)$action[$target])
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
-							break;
-						case 'fieldset':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => (string)$action[$target])
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
-							break;
-						case 'fieldrow':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId',	'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
-																	array('name' => 'fieldrowId', 'value' => (string)$action[$target])
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
-							break;
-						case 'blockinfo':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
-															array('name' => 'blockinfoId', 'value' => (string)$action[$target])
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
-							break;
-						case 'panel':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'panelId', 'value' => (string)$action[$target])
-												)
-											)
-										)
-									)
-								)
-							);
-							break;
-						case 'step':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action[$target])
-										)
-									)
-								)
-							);
-							break;
-						case 'footnote':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'footnoteId', 'value' => (string)$action[$target])
-												)
-											)
-										)
-									)
-								)
-							);
-							break;
-						case 'action':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'actionId', 'value' => (string)$action[$target])
-												)
-											)
-										)
-									)
-								)
-							);
-							break;
-						case 'choice':
-							$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
-									array('name' => 'objectId', 'value' => $target, 'fields' => array(
-											array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
-													array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
-															array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
-																	array('name' => 'fieldId', 'value' => (string)$action['field'], 'fields' => array(
-																			array('name' => 'choiceId', 'value' => (string)$action[$target])
-																		)
-																	)
-																)
-															)
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							);
-							break;
-					}
-					break;
-				case 'setAttribute':
-					$clause = array('name' => 'action-select', 'value' => 'setAttribute', 'fields' => array(
-							array('name' => 'attributeId', 'value' => $target, 'fields' => array(
-									array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'], 'fields' => array(
-											array('name' => 'newValue', 'value' => $this->replaceByDataName((string)$action['value']))
 										)
 									)
 								)
 							)
+						);
+						break;
+					case 'section':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId',	'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+														array('name' => 'blockinfoId', 'value' => (string)$action['blockinfo'], 'fields' => array(
+																array('name' => 'chapterId', 'value' => (string)$action['chapter'], 'fields' => array(
+																		array('name' => 'sectionId', 'value' => (string)$action[$target])
+																	)
+																)
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							)
+						);
+						break;
+					case 'chapter':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId',	'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+														array('name' => 'blockinfoId', 'value' => (string)$action['blockinfo'], 'fields' => array(
+																array('name' => 'chapterId', 'value' => (string)$action[$target])
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							)
+						);
+						break;
+					case 'fieldset':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId', 'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+														array('name' => 'fieldsetId', 'value' => (string)$action[$target])
+													)
+												)
+											)
+										)
+									)
+								)
+							)
+						);
+						break;
+					case 'fieldrow':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId',	'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+														array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
+																array('name' => 'fieldrowId', 'value' => (string)$action[$target])
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							)
+						);
+						break;
+					case 'blockinfo':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId', 'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+														array('name' => 'blockinfoId', 'value' => (string)$action[$target])
+													)
+												)
+											)
+										)
+									)
+								)
+							)
+						);
+						break;
+					case 'panel':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId', 'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'panelId', 'value' => (string)$action[$target])
+											)
+										)
+									)
+								)
+							)
+						);
+						break;
+					case 'step':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId', 'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action[$target])
+									)
+								)
+							)
+						);
+						break;
+					case 'footnote':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId', 'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'footnoteId', 'value' => (string)$action[$target])
+											)
+										)
+									)
+								)
+							)
+						);
+						break;
+					case 'action':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId', 'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'actionId', 'value' => (string)$action[$target])
+											)
+										)
+									)
+								)
+							)
+						);
+						break;
+					case 'choice':
+						$clause = array('name' => 'action-select', 'value' => (string)$action['name'], 'fields' => array(
+								array('name' => 'objectId', 'value' => $target, 'fields' => array(
+										array('name' => 'stepId', 'value' => (string)$action['step'], 'fields' => array(
+												array('name' => 'panelId', 'value' => (string)$action['panel'], 'fields' => array(
+														array('name' => 'fieldsetId', 'value' => (string)$action['fieldset'], 'fields' => array(
+																array('name' => 'fieldId', 'value' => (string)$action['field'], 'fields' => array(
+																		array('name' => 'choiceId', 'value' => (string)$action[$target])
+																	)
+																)
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							)
+						);
+						break;
+				}
+				break;
+			case 'setAttribute':
+				$clause = array('name' => 'action-select', 'value' => 'setAttribute', 'fields' => array(
+						array('name' => 'attributeId', 'value' => $target, 'fields' => array(
+								array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'], 'fields' => array(
+										array('name' => 'newValue', 'value' => $this->replaceByDataName((string)$action['value']))
+									)
+								)
+							)
 						)
-					);
-					if (preg_match_all("/#(\d+)/", (string)$action['value'], $matches)) {
-						foreach($matches[1] as $id) {
-							$name = $this->datas[$id]['name'];
-							if (! isset($dataset[$name]['rulesActionsDependency'])) {
-								$dataset[$name]['rulesActionsDependency'] = array();
-							}
-							$dataset[$name]['rulesActionsDependency'][] = $ruleID;
+					)
+				);
+				if (preg_match_all("/#(\d+)/", (string)$action['value'], $matches)) {
+					foreach($matches[1] as $id) {
+						$name = $this->datas[$id]['name'];
+						if (! isset($dataset[$name]['rulesActionsDependency'])) {
+							$dataset[$name]['rulesActionsDependency'] = array();
 						}
+						$dataset[$name]['rulesActionsDependency'][] = $ruleID;
 					}
-					break;
-				case 'unsetAttribute':
-					$clause = array('name' => 'action-select', 'value' => 'unsetAttribute', 'fields' => array(
-							array('name' => 'attributeId', 'value' => $target, 'fields' => array(
-									array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'])
-								)
+				}
+				break;
+			case 'unsetAttribute':
+				$clause = array('name' => 'action-select', 'value' => 'unsetAttribute', 'fields' => array(
+						array('name' => 'attributeId', 'value' => $target, 'fields' => array(
+								array('name' => 'fieldName', 'value' => $this->datas[(int)$action['data']]['name'])
 							)
 						)
-					);
-					break;
-			}
-			$datas[] = $clause;
+					)
+				);
+				break;
 		}
-		return $datas;
+		return $clause;
 	}
 
 	/**
@@ -2816,26 +2812,64 @@ class Simulator {
 			}
 		}
 		if ($simulator->BusinessRules) {
+			$ruleID = 0;
 			foreach ($simulator->BusinessRules->BusinessRule as $brule) {
-				$rule = array(
-					'id' => (int)$brule['id'],
-					'name' => (string)$brule['name'],
-					'label' => (string)$brule['label'],
-					'conditions' => $this->replaceByDataName((string)$brule->Conditions['value']),
-					'connector' => $brule->Conditions->Condition ? $this->ruleConnector($brule->Conditions->Condition) : ($brule->Conditions->Connector ? $this->ruleConnector($brule->Conditions->Connector) : null),
-					'ifdata' =>  $this->actionsData((int)$brule['id'], $brule->IfActions, $datas),
-					'elsedata' => $this->actionsData((int)$brule['id'], $brule->ElseActions, $datas)
-				);
+				$conditions = $this->replaceByDataName((string)$brule->Conditions['value']);
+				$names = [];
 				if (preg_match_all("/#(\d+)/", (string)$brule->Conditions['value'], $matches)) {
 					foreach($matches[1] as $id) {
 						$name = $this->datas[$id]['name'];
 						if (! isset($datas[$name]['rulesConditionsDependency'])) {
 							$datas[$name]['rulesConditionsDependency'] = array();
 						}
-						$datas[$name]['rulesConditionsDependency'][] = $rule['id'];
+						$names[] = $name;
 					}
 				}
-				$rules[] = $rule;
+				if ($brule->IfActions && $brule->IfActions->Action && $brule->IfActions->Action->count() == 1 &&
+					$brule->ElseActions && $brule->ElseActions->Action && $brule->ElseActions->Action->count() == 1) {
+					$rule = array(
+						'id' => ++$ruleID,
+						'name' => (string)$brule['name'],
+						'conditions' => $conditions,
+						'ifdata' => [ $this->actionData($ruleID, $brule->IfActions->Action[0], $datas) ],
+						'elsedata' => [ $this->actionData($ruleID, $brule->ElseActions->Action[0], $datas) ]
+					);
+					foreach($names as $name) {
+						$datas[$name]['rulesConditionsDependency'][] = $ruleID;
+					}
+					$rules[] = $rule;
+				} else {
+					if ($brule->IfActions && $brule->IfActions->Action) {
+						foreach ($brule->IfActions->Action as $ifAction) {
+							$rule = array(
+								'id' => ++$ruleID,
+								'name' => (string)$brule['name'],
+								'conditions' => $conditions,
+								'ifdata' => [ $this->actionData($ruleID, $ifAction, $datas) ],
+								'elsedata' => []
+							);
+							foreach($names as $name) {
+								$datas[$name]['rulesConditionsDependency'][] = $ruleID;
+							}
+							$rules[] = $rule;
+						}
+					}
+					if ($brule->ElseActions && $brule->ElseActions->Action) {
+						foreach ($brule->ElseActions->Action as $elseAction) {
+							$rule = array(
+								'id' => ++$ruleID,
+								'name' => (string)$brule['name'],
+								'conditions' => $conditions,
+								'ifdata' =>  [],
+								'elsedata' => [ $this->actionData($ruleID, $elseAction, $datas) ]
+							);
+							foreach($names as $name) {
+								$datas[$name]['rulesConditionsDependency'][] = $ruleID;
+							}
+							$rules[] = $rule;
+						}
+					}
+				}
 			}
 			foreach ($datas as $name => $data) {
 				if (isset($data['rulesConditionsDependency'])) {
@@ -2852,11 +2886,7 @@ class Simulator {
 		$json["step"] = $nstep;
 		$json["sources"] = $sources;
 		$json["rules"] = $rules;
-		if ($this->controller->isDevelopmentEnvironment() && ! version_compare(phpversion(), '5.4.0', '<')) {
-			return json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE |  JSON_UNESCAPED_SLASHES);
-		} else {
-			return json_encode($json);
-		}
+		return json_encode($json);
 	}
 
 	/**
