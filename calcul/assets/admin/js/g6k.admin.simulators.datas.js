@@ -275,6 +275,53 @@ THE SOFTWARE.
 		});
 	}
 
+	Simulators.isDataIdInDatas = function(id) {
+		var inData = false;
+		var re1 = new RegExp("#" + id + '\\b', 'g');
+		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + id + '\\"', 'g');
+		var containers = $("#datas").find(".data-container, .datagroup-data-container");
+		containers.each(function(c) {
+			if (! $(this).hasClass('datagroup')) {
+				var field = $(this).find("span[data-attribute]");
+				if ($.inArray(field.attr('data-attribute'), ['content', 'default', 'min', 'max'] > -1)) {
+					if (re1.test(field.attr('data-value'))) {
+						 inData = $(this).attr('data-id');
+						 return false;
+					}
+				}
+				var description = $(this).find(".data-description").html();
+				if (re1.test(description)) {
+					inData = $(this).attr('data-id');
+					return false;
+				}
+				if (re2.test(description)) {
+					inData = $(this).attr('data-id');
+					return false;
+				}
+			}
+		});
+		return inData;
+	}
+
+	Simulators.isDataIdInDatagroups = function(id) {
+		var inDatagroup = false;
+		var re1 = new RegExp("#" + id + '\\b', 'g');
+		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + id + '\\"', 'g');
+		var containers = $("#datas").find(".data-container.datagroup");
+		containers.each(function(c) {
+			var description = $(this).find(".datagroup-description").html();
+			if (re1.test(description)) {
+				inDatagroup = $(this).attr('data-id');
+				return false;
+			}
+			if (re2.test(description)) {
+				inDatagroup = $(this).attr('data-id');
+				return false;
+			}
+		});
+		return inDatagroup;
+	}
+
 	Simulators.renumberDatasPass1 = function(panelGroups, startId) {
 		var id = startId - 1;
 		panelGroups.each(function(index) {
@@ -1513,6 +1560,22 @@ THE SOFTWARE.
 	}
 
 	Simulators.isDataDeleteable = function(id, name) {
+		var data;
+		if ((data = Simulators.isDataIdInDatas(id)) !== false) {
+			bootbox.alert({
+				title: Translator.trans('Deleting data'),
+				message: Translator.trans("This data is used in data #%id%. You must modify this data before you can delete this one", { 'id': data }) 
+			});
+			return false;
+		}
+		var datagroup;
+		if ((datagroup = Simulators.isDataIdInDatagroups(id)) !== false) {
+			bootbox.alert({
+				title: Translator.trans('Deleting data'),
+				message: Translator.trans("This data is used in datagroup #%id%. You must modify this datagroup before you can delete this data", { 'id': datagroup }) 
+			});
+			return false;
+		}
 		var source;
 		if ((source = Simulators.isDataNameInSources(name)) !== false) {
 			bootbox.alert({
