@@ -2168,8 +2168,6 @@ class Simulator {
 	 */
 	protected function toJSONData($data, &$sources) {
 		$id = (int)$data['id'];
-		$this->datas[$id]['id'] = $id;
-		$this->datas[$id]['name'] = (string)$data['name'];
 		$this->datas[$id]['type'] = (string)$data['type'];
 		if ((string)$data['memorize'] != "") {
 			$this->datas[$id]['memorize'] = (string)$data['memorize'];
@@ -2571,18 +2569,30 @@ class Simulator {
 			foreach ($simulator->DataSet->children() as $child) {
 				if ($child->getName() == "DataGroup") {
 					foreach ($child->Data as $data) {
-						$this->toJSONData($data, $sources);
 						$id = (int)$data['id'];
+						$this->datas[$id]['id'] = $id;
+						$this->datas[$id]['name'] = (string)$data['name'];
 						$this->datas[$id]['datagroup'] = (string)$child['name'];
 						if ((int)$data['id'] > $dataIdMax) {
 							$dataIdMax = (int)$data['id'];
 						}
 					}
 				} elseif ($child->getName() == "Data") {
-					$this->toJSONData($child, $sources);
+					$id = (int)$child['id'];
+					$this->datas[$id]['id'] = $id;
+					$this->datas[$id]['name'] = (string)$child['name'];
 					if ((int)$child['id'] > $dataIdMax) {
 						$dataIdMax = (int)$child['id'];
 					}
+				}
+			}
+			foreach ($simulator->DataSet->children() as $child) {
+				if ($child->getName() == "DataGroup") {
+					foreach ($child->Data as $data) {
+						$this->toJSONData($data, $sources);
+					}
+				} elseif ($child->getName() == "Data") {
+					$this->toJSONData($child, $sources);
 				}
 			}
 		}
