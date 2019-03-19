@@ -21,6 +21,9 @@
 		$range.append($rangeInput);
 		select.after($range);
 		$range.after($labels);
+		select.on('change', function(e) {
+			$rangeInput.trigger('input');
+		});
 		select.hide();
 
 		var sheet = document.createElement('style'),  
@@ -40,7 +43,9 @@
 			curLabel.addClass('active selected');
 			curLabel.prevAll().addClass('selected');
 
-			onComplete && onComplete(curLabel.attr('data-value'), curLabel.text());
+			if (curLabel.attr('data-value') != select.val()) {
+				onComplete && onComplete(curLabel.attr('data-value'), curLabel.text());
+			}
 
 			var color = curLabel.css('color');
 			// Change background gradient
@@ -59,7 +64,6 @@
 			var margin = -Math.ceil((interval - 9) / 2);
 			$('.range-labels').css({'margin-left': margin + 'px', 'margin-right':  margin + 'px'});
 			$('.range-labels li').css('width', interval + 'px');
-
 		}
 		resize();
 
