@@ -5211,7 +5211,7 @@ THE SOFTWARE.
 								}, 10);
 							});
 						} else {
-							g6k.setGlobalError(message);
+							self.setGlobalError(message);
 						}
 					}
 				});
