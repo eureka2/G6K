@@ -239,7 +239,7 @@ THE SOFTWARE.
 		{{ form.monthname(value)|trans }}
 	{%- elseif type == 'department' -%}
 		{{ form.departmentname(value) }}
-	{%- elseif type == 'money' -%}
+	{%- elseif type == 'money' or type == 'percent' or type == 'number' -%}
 		{%- if data.value == '' -%}
 		{%- else -%}
 		{{ plainValue }}

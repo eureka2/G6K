@@ -1421,7 +1421,7 @@ class Simulator {
 		$dataObj->setUnparsedMax((string)$data['max']);
 		$dataObj->setUnparsedDefault((string)$data['default']);
 		$dataObj->setUnit((string)$data['unit']);
-		$dataObj->setRound(isset($data['round']) ? (int)$data['round'] : 2);
+		$dataObj->setRound(isset($data['round']) ? (int)$data['round'] : null);
 		$dataObj->setContent((string)$data['content']);
 		$dataObj->setSource((string)$data['source']);
 		$dataObj->setUnparsedIndex((string)$data['index']);
@@ -2169,6 +2169,9 @@ class Simulator {
 	protected function toJSONData($data, &$sources) {
 		$id = (int)$data['id'];
 		$this->datas[$id]['type'] = (string)$data['type'];
+		if ((string)$data['round'] != "" && in_array((string)$data['type'], ['number', 'money', 'percent'])) {
+			$this->datas[$id]['round'] = (int)$data['round'];
+		}
 		if ((string)$data['memorize'] != "") {
 			$this->datas[$id]['memorize'] = (string)$data['memorize'];
 		}
@@ -3002,7 +3005,7 @@ class Simulator {
 					if ($gdata->getUnparsedIndex() != '') {
 						$attrs .= ' index="' . $gdata->getUnparsedIndex() . '"'; 
 					}
-					if ($gdata->getRound() != 2) {
+					if ($gdata->getRound() != null) {
 						$attrs .= ' round="' . $gdata->getRound() . '"'; 
 					}
 					if ($gdata->getUnit() != '') {
@@ -3078,7 +3081,7 @@ class Simulator {
 				if ($data->getUnparsedIndex() != '') {
 					$attrs .= ' index="' . $data->getUnparsedIndex() . '"'; 
 				}
-				if ($data->getRound() != 2) {
+				if ($data->getRound() != null) {
 					$attrs .= ' round="' . $data->getRound() . '"'; 
 				}
 				if ($data->getUnit() != '') {

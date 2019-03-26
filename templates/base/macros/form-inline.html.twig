@@ -239,10 +239,10 @@ THE SOFTWARE.
 		{{ form.monthname(value)|trans }}
 	{%- elseif type == 'department' -%}
 		{{ form.departmentname(value) }}
-	{%- elseif type == 'money' -%}
+	{%- elseif type == 'money' or type == 'percent' or type == 'number' -%}
 		{%- if data.value == '' -%}
 		{%- else -%}
-		{{ data.value|intl_number_format(2, simu.decimalPoint, simu.groupingSeparator, simu.groupingSize) }}
+		{{ plainValue }}
 		{%- endif -%}
 	{%- else -%}
 		{{ value }}

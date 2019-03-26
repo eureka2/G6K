@@ -3381,8 +3381,14 @@ THE SOFTWARE.
 									} else {
 										content = [content];
 									}
-								} else if (content && (data.type === "money" || data.type === "percent" || data.type === "number")) {
+								} else if (content && (data.type === "money" || data.type === "percent")) {
 									content = self.unFormatValue(content);
+									content = parseFloat(content).toFixed(data.round || 2);
+								} else if (content && data.type === "number") {
+									content = self.unFormatValue(content);
+									if (data.round) {
+										content = parseFloat(content).toFixed(data.round);
+									}
 								}
 								self.variables[name] = data.value = content;
 							} else if (data.value !== '') {
@@ -3876,24 +3882,13 @@ THE SOFTWARE.
 			});
 		},
 
-		setFormValue: function(name, value) {
+		setFormValue: function(name, data) {
 			var self = this;
-			var data = this.getData(name);
-			if (value && (data.type === "money" || data.type === "percent")) {
-				value = AutoNumeric.format(value, {
-					currencySymbol: '',
-					currencySymbolPlacement: self.symbolPosition == 'before' ? 'p' : 's',
-					decimalCharacter: self.decimalPoint,
-					decimalPlaces: 2,
-					digitGroupSeparator: self.groupingSeparator,
-					digitalGroupSpacing: self.groupingSize
-				});
-			}
 			if (data.type === "multichoice") {
 				$("input[type=checkbox]").each(function (index) {
 					var n = self.normalizeName($(this).attr('name'));
 					if (n == name) {
-						if ($.inArray($(this).val(), value)) {
+						if ($.inArray($(this).val(), data.value)) {
 							if (! $(this).is(':checked')) $(this).prop('checked', true);
 						} else {
 							if ($(this).is(':checked')) $(this).prop('checked', false);
@@ -3906,22 +3901,22 @@ THE SOFTWARE.
 				if ($(this).is('span')) {
 					$(this).text(self.formatValue(data));
 				} else if ($(this).is('select')) {
-					if ($(this).val() != value) $(this).val(value);
+					if ($(this).val() != data.value) $(this).val(data.value);
 				} else if ($(this).is(':radio')) {
-					$(this).val([value]);
+					$(this).val([data.value]);
 					$(this).parent('label').parent('fieldset').find('label.choice').removeClass('checked');
 					if ( $(this).is(':checked') ) {
 						$(this).parent('label').addClass('checked');
 					}
 				} else if ($(this).is(':checkbox')) {
-					if ($(this).val() != value) $(this).val(value);
+					if ($(this).val() != data.value) $(this).val(data.value);
 				} else if ($(this).hasClass('listbox-input')) {
-					if ($(this).val() != value) {
-						$(this).val(value);
+					if ($(this).val() != data.value) {
+						$(this).val(data.value);
 						$(this).listbox('update');
 					}
 				} else {
-					if ($(this).val() != value) $(this).val(value);
+					if ($(this).val() != data.value) $(this).val(data.value);
 				}
 			});
 		},
@@ -3975,9 +3970,12 @@ THE SOFTWARE.
 			}
 			if (value && (data.type === "money" || data.type === "percent")) {
 				value = self.unFormatValue(value);
-				value = Math.round(parseFloat(value) * 100)/100;
+				value = parseFloat(value).toFixed(data.round || 2);
 			} else if (value && (data.type === "number")) {
 				value = self.unFormatValue(value);
+				if (data.round) {
+					value = parseFloat(value).toFixed(data.round);
+				}
 			} else if (value && data.type === "multichoice" && ! $.isArray(value)) {
 				if (/\[\]$/.test(value)) {
 					value = JSON.parse(value);
@@ -3990,7 +3988,7 @@ THE SOFTWARE.
 			self.variables[name] = data.value = value;
 			self.validate(name);
 			if (name !== self.lastUserInputName || data.type === "integer" || data.type === "number" || data.type === "date") {
-				self.setFormValue(name, value);
+				self.setFormValue(name, data);
 			}
 			if (self.simu.memo && self.simu.memo == "1" && data.memorize && data.memorize == "1") {
 				if (! $.cookie(name) || $.cookie(name) != value) {
@@ -4965,6 +4963,7 @@ THE SOFTWARE.
 			}); 
 
 			$("#g6k_form input[name], #g6k_form select[name], #g6k_form textarea[name]").change(function () {
+				clearTimeout(self.inputTimeoutId);
 				var name = self.normalizeName($(this).attr('name'));
 				self.lastUserInputName = name;
 				var data = self.getData(name);
@@ -5033,25 +5032,18 @@ THE SOFTWARE.
 					$(this).focusNextInputField();
 				}
 			});
-			var inputTimeoutId;
 			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").on('input propertychange', function(event) {
 				var elt = this;
 				if (!this.hasAttribute('minlength') || $(this).val().length >= parseInt($(this).attr('minlength'), 10)) {
-					if (typeof inputTimeoutId !== "undefined") {
-						clearTimeout(inputTimeoutId);
-					}
-					self.getData($(this).attr('name')).modifiedByUser = true;
-					inputTimeoutId = setTimeout(function () {
-						$(elt).trigger("change");
-					}, 500);
+					self.triggerChange($(this), true);
 				}
 			});
 			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name]").on('paste', function(event) {
 				var elt = this;
 				self.getData($(this).attr('name')).modifiedByUser = true;
-				setTimeout(function () {
+				self.inputTimeoutId = setTimeout(function () {
 					$(elt).trigger("change");
-					$(this).focusNextInputField();
+					$(elt).focusNextInputField();
 				}, 0);
 			});
 			$("#g6k_form fieldset label.choice input[type=radio][name]").change(function(event) {
@@ -5135,8 +5127,14 @@ THE SOFTWARE.
 							} else {
 								content = [content];
 							}
-						} else if (content && (data.type === "money" || data.type === "percent" || data.type === "number")) {
+						} else if (content && (data.type === "money" || data.type === "percent")) {
 							content = self.unFormatValue(content);
+							content = parseFloat(content).toFixed(data.round || 2);
+						} else if (content && data.type === "number") {
+							content = self.unFormatValue(content);
+							if (data.round) {
+								content = parseFloat(content).toFixed(data.round);
+							}
 						}
 						self.variables[name] = data.value = content;
 					} else if (data.value !== '') {
@@ -5162,6 +5160,17 @@ THE SOFTWARE.
 			}
 		},
 
+		triggerChange: function(input, modifiedByUser) {
+			var self = this;
+			clearTimeout(self.inputTimeoutId);
+			if (typeof modifiedByUser !== "undefined") {
+				self.getData(input.attr('name')).modifiedByUser = modifiedByUser;
+			}
+			self.inputTimeoutId = setTimeout(function () {
+				input.trigger("change");
+			}, 500);
+		},
+
 		initializeWidgets: function() {
 			var self = this;
 			var options = { 
@@ -5182,7 +5191,7 @@ THE SOFTWARE.
 					if (!preserveVal) {
 						that.val(value);
 					}
-					that.trigger('change');
+					self.triggerChange(that);
 				});
 			});
 		},
@@ -5254,7 +5263,15 @@ THE SOFTWARE.
 					currencySymbol: '',
 					currencySymbolPlacement: this.symbolPosition == 'before' ? 'p' : 's',
 					decimalCharacter: this.decimalPoint,
-					decimalPlaces: 2,
+					decimalPlaces: data.round || 2,
+					digitGroupSeparator: this.groupingSeparator,
+					digitalGroupSpacing: this.groupingSize
+				});
+			}
+			if (value && data.type === "number") {
+				value = AutoNumeric.format(value, {
+					decimalCharacter: this.decimalPoint,
+					decimalPlaces: data.round || null,
 					digitGroupSeparator: this.groupingSeparator,
 					digitalGroupSpacing: this.groupingSize
 				});

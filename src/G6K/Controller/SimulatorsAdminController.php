@@ -1984,7 +1984,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					if ($gdata->getUnit() != '') {
 						$this->dataset[$name]['unit'] = $gdata->getUnit();
 					}
-					if ($gdata->getRound() != '' && $gdata->getRound() != 2) {
+					if ($gdata->getRound() != '' && $gdata->getRound() != null) {
 						$this->dataset[$name]['round'] = $gdata->getRound();
 					}
 					if ($gdata->getSource() != '' && ! preg_match("/[\?:]/", $gdata->getSource())) {
@@ -2045,7 +2045,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				if ($data->getUnit() != '') {
 					$this->dataset[$name]['unit'] = $data->getUnit();
 				}
-				if ($data->getRound() != '' && $data->getRound() != 2) {
+				if ($data->getRound() != '' && $data->getRound() != null) {
 					$this->dataset[$name]['round'] = $data->getRound();
 				}
 				if ($data->getSource() != '' && ! preg_match("/[\?:]/", $data->getSource())) {
