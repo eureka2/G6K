@@ -109,7 +109,9 @@
 
 	function geoAPIRemoveError (input, input2) {
 		var g6k = input.data('g6k');
-		g6k.removeError(input.attr('name'));
+		setTimeout(function () {
+			g6k.removeError(input.attr('name'));
+		}, 500);
 		input2.attr('aria-describedby', input2.attr('id') + '-suggestions-help');
 		geoAPIClearInput(input);
 	}
