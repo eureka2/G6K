@@ -159,7 +159,7 @@ class Data extends DatasetChild {
 	 * @access  private
 	 *
 	 */
-	private $round = 2; 
+	private $round = null; 
 
 	/**
 	 * @var string     $content Contains an arithmetic expression used to calculate the value of this data item
@@ -489,7 +489,7 @@ class Data extends DatasetChild {
 	 * Useless if this data is not of type "number", "money" or "percent".
 	 *
 	 * @access  public
-	 * @return  int The number of decimal places
+	 * @return  int|null The number of decimal places
 	 *
 	 */
 	public function getRound() {
@@ -502,7 +502,7 @@ class Data extends DatasetChild {
 	 * Useless if this data is not of type "number", "money" or "percent".
 	 *
 	 * @access  public
-	 * @param   int $round  The number of decimal places
+	 * @param   int|null $round  The number of decimal places
 	 * @return  void
 	 *
 	 */
@@ -884,14 +884,24 @@ class Data extends DatasetChild {
 			return $this->value;
 		} elseif ($this->type == 'multichoice' || $this->type == 'array') {
 			return json_encode($this->value);
-		} elseif ($this->type == 'money') {
-			return MoneyFunction::toString($this->value);
-		} elseif ($this->type == 'percent') {
-			return PercentFunction::toString($this->value);
-		} elseif ($this->type == 'number') {
-			return NumberFunction::toString($this->value);
 		} else {
-			return $this->value;
+			if (! in_array($this->type, ['money', 'percent', 'number'])) {
+				return $this->value;
+			}
+			$fraction =  NumberFunction::$fractionDigit;
+			if ($this->round != null && $this->round != NumberFunction::$fractionDigit) {
+				NumberFunction::$fractionDigit = $this->round;
+			}
+			$value = "";
+			if ($this->type == 'money') {
+				$value = MoneyFunction::toString($this->value);
+			} elseif ($this->type == 'percent') {
+				$value = PercentFunction::toString($this->value);
+			} else {
+				$value = NumberFunction::toString($this->value);
+			}
+			NumberFunction::$fractionDigit = $fraction;
+			return $value;
 		}
 	}
 
@@ -908,14 +918,20 @@ class Data extends DatasetChild {
 			switch ($this->type) {
 				case 'money': 
 					$value = MoneyFunction::toMoney($value);
-					$value = is_numeric($value) ? ''.round($value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
+					$round = $this->round == null ? 2 : $this->round;
+					$value = is_numeric($value) ? ''.round($value, $round, PHP_ROUND_HALF_EVEN) : $value;
 					break;
 				case 'percent':
 					$value = PercentFunction::toPercent($value);
-					$value = is_numeric($value) ? ''.round($value, $this->round, PHP_ROUND_HALF_EVEN) : $value;
+					$round = $this->round == null ? 2 : $this->round;
+					$value = is_numeric($value) ? ''.round($value, $round, PHP_ROUND_HALF_EVEN) : $value;
 					break;
-				case 'number': 
-					$value = ''.NumberFunction::toNumber($value);
+				case 'number':
+					if ($this->round == null) {
+						$value = ''.NumberFunction::toNumber($value);
+					} else {
+						$value = ''.round(NumberFunction::toNumber($value), $this->round, PHP_ROUND_HALF_EVEN);
+					}
 					break;
 				case 'array': 
 				case 'multichoice': 

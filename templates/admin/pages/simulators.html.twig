@@ -1142,7 +1142,7 @@ THE SOFTWARE.
 			{{ page.showExpressionAttribute('data-'~data.id, 'max', 'Maximum value'|trans, data.unparsedMax, data.plainMax, false, 'Maximum value'|trans) }}
 			{% endif %}
 			{{ page.showExpressionAttribute('data-'~data.id, 'content', 'Content'|trans, data.content, data.plainContent, false, 'Content'|trans) }}
-			{% if data.round != '2' %}
+			{% if data.round %}
 			{{ page.showAttribute('data-'~data.id, 'number', 'round', 'Round'|trans, data.round, data.round, false, 'Round'|trans) }}
 			{% endif %}
 			{{ page.showAttribute('data-'~data.id, 'text', 'unit', 'Unit'|trans, data.unit, data.unit, false, 'Unit'|trans) }}
