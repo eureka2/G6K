@@ -27,6 +27,7 @@ THE SOFTWARE.
 
 	function printElement(clickable, func, callback) {
 		var parameters = func.arguments;
+		$('html').attr('moznomarginboxes', true);
 		var g6k = clickable.data('g6k');
 		if (clickable.is('a')) {
 			clickable.attr('href', '');
@@ -63,7 +64,7 @@ THE SOFTWARE.
 			var element = g6k.getStepChildElement(parameters);
 			clickable.on('click', function(event) {
 				event.preventDefault();
-				$(element).printThis();
+				$(element).printThis({ copyTagClasses: true });
 				if (callback) {
 					callback(true);
 				}
