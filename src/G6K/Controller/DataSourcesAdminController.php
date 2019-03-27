@@ -520,6 +520,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				'admin/pages/datasources.html.twig',
 				array(
 					'ua' => $ua,
+					'browserengine' => $this->getBrowserEngine($this->request),
 					'path' => $this->request->getScheme().'://'.$this->request->getHttpHost(),
 					'nav' => 'datasources',
 					'datasource' => $datasource,
@@ -616,6 +617,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			'admin/pages/report/datasources-header.html.twig',
 			array(
 				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'datasources',
 				'view' => null,
@@ -652,6 +654,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			'admin/pages/report/datasources-footer.html.twig',
 			array(
 				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'datasources',
 				'datasource' => $datasource,
@@ -766,6 +769,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			'admin/pages/report/datasources-table-header.html.twig',
 			array(
 				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'datasources',
 				'view' => null,
@@ -802,6 +806,7 @@ class DataSourcesAdminController extends BaseAdminController {
 			'admin/pages/report/datasources-table-footer.html.twig',
 			array(
 				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'datasources',
 				'dsid' => $dsid,

@@ -180,6 +180,7 @@ class CacheAdminController extends BaseAdminController {
 				'admin/pages/cache-clear.html.twig',
 				array(
 					'ua' => $ua,
+					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'caches',
 					'log' => $this->log,

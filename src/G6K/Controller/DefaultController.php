@@ -225,6 +225,7 @@ class DefaultController extends BaseController {
 					'view' => $view,
 					'script' => $this->script,
 					'ua' => $ua,
+					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $this->path,
 					'log' => $this->log,
 					'step' => $step,
@@ -262,6 +263,7 @@ class DefaultController extends BaseController {
 			array(
 				'view' => $view,
 				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'log' => $this->log,
 				'step' => $step,

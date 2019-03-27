@@ -31,6 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 use App\G6K\Model\Data;
 use App\G6K\Model\Source;
@@ -112,6 +113,51 @@ trait ControllersTrait {
 	 */
 	public function getLanguage() {
 		return $this->getParameter('app_language');
+	}
+
+	/**
+	 * Returns the browser engine from the user agent
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request the active request
+	 * @return  string The browser engine
+	 *
+	 */
+	protected function getBrowserEngine(Request $request) {
+		$engine = "";
+		$useragent = ' ' . $request->headers->get('User-Agent');
+		if (stripos($useragent, "trident")) {
+			$engine = "trident";
+		} elseif (stripos($useragent, "applewebkit")) {
+			if (stripos($useragent, "edge")) {
+				$engine = "edgehtml";
+			} elseif (stripos($useragent, "opr")) {
+				$engine = "blink";
+			} elseif (stripos($useragent, "chrome")) {
+				$engine = "blink";
+			} else {
+				$engine = "webkit";
+			}
+		} elseif (stripos($useragent, "presto")) {
+			$engine = "presto";
+		} elseif (stripos($useragent, "gecko")) {
+			$engine = "gecko";
+		} elseif (stripos($useragent, "robot")) {
+			$engine = "robots";
+		} elseif (stripos($useragent, "spider")) {
+			$engine = "robots";
+		} elseif (stripos($useragent, "bot")) {
+			$engine = "robots";
+		} elseif (stripos($useragent, "crawl")) {
+			$engine = "robots";
+		} elseif (stripos($useragent, "search")) {
+			$engine = "robots";
+		} elseif (stripos($useragent, "w3c_validator")) { 
+			$engine = "validator";
+		} elseif (stripos($useragent, "jigsaw")) {
+			$engine = "validator";
+		}
+		return $engine;
 	}
 
 	/**

@@ -103,6 +103,7 @@ class HomeAdminController extends BaseAdminController {
 				'admin/pages/index.html.twig',
 				array(
 					'ua' => $ua,
+					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'home',
 					'datasourcesCount' => $datasourcesCount,

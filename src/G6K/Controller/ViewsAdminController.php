@@ -227,6 +227,7 @@ class ViewsAdminController extends BaseAdminController {
 				'admin/pages/views.html.twig',
 				array(
 					'ua' => $ua,
+					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'views',
 					'views' => $views,
@@ -260,6 +261,7 @@ class ViewsAdminController extends BaseAdminController {
 			'admin/pages/report/views-header.html.twig',
 			array(
 				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'views',
 				'view' => $view,
@@ -293,6 +295,7 @@ class ViewsAdminController extends BaseAdminController {
 			'admin/pages/report/views-footer.html.twig',
 			array(
 				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'views',
 				'view' => $view
