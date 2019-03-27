@@ -510,20 +510,40 @@ THE SOFTWARE.
 	Simulators.bindOptionalDataSource = function(dataPanelContainer) {
 		dataPanelContainer.find('select[data-attribute=source]').on('change', function(e) {
 			var source = $(this).val();
-			var index = dataPanelContainer.find('select[data-attribute=index]');
-			var columns = $('#collapsesources').find('.source-container[data-id=' + source + ']').find('span[data-attribute=column]');
-			if (index.length > 0) {
-				index.empty();
-				columns.each(function(k) {
-					index.append($('<option>', {value: "'" + $(this).attr('data-alias') + "'", text: $(this).attr('data-alias')}));
-				});
-			}
+			var index = dataPanelContainer.find(':input[data-attribute=index]');
 			var optionalIndex = dataPanelContainer.find('.optional-attributes').find('li[data-name=index]');
-			var indicesList = {};
-			columns.each(function(k) {
-				indicesList["'" + $(this).attr('data-alias') + "'"] = $(this).attr('data-alias');
-			});
-			optionalIndex.attr('data-options', encodeURI(JSON.stringify( indicesList )));
+			var returnType =  $('#collapsesources').find('.source-container[data-id=' + source + ']').find('p[data-attribute=returnType]');
+			if (returnType.attr('data-value') == 'assocArray') {
+				var columns = $('#collapsesources').find('.source-container[data-id=' + source + ']').find('span[data-attribute=column]');
+				var indicesList = {};
+				columns.each(function(k) {
+					indicesList["'" + $(this).attr('data-alias') + "'"] = $(this).attr('data-alias');
+				});
+				if (index.length > 0) {
+					if (index.is('select')) {
+						index.empty();
+						columns.each(function(k) {
+							index.append($('<option>', {value: "'" + $(this).attr('data-alias') + "'", text: $(this).attr('data-alias')}));
+						});
+					} else {
+						var attribute = Simulators.simpleAttributeForInput(index.attr('id'), 'select', 'index', 'label', '', false, index.attr('placeholder'), JSON.stringify(indicesList)); 
+						index.replaceWith(attribute.find('select'));
+					}
+				}
+				optionalIndex.attr('data-type', 'select');
+				optionalIndex.attr('data-options', encodeURI(JSON.stringify( indicesList )));
+			} else {
+				if (index.length > 0) {
+					if (index.is('select')) {
+						var attribute = Simulators.simpleAttributeForInput(index.attr('id'), 'text', 'index', 'label', '', false, index.attr('data-placeholder')); 
+						index.replaceWith(attribute.find('input'));
+					} else {
+						index.val('');
+					}
+				}
+				optionalIndex.attr('data-type', 'text');
+				optionalIndex.removeAttr('data-options');
+			}
 		});
 	}
 
@@ -1154,7 +1174,12 @@ THE SOFTWARE.
 					var source = $('#collapsesources').find('.source-container[data-id=' + data[name] + ']').find('p[data-attribute=label]').attr('data-value') || data[name];
 					attribute = Simulators.simpleAttributeForDisplay(dataElementId, 'text', name, attr.label, data[name], source, false, attr.placeholder);
 				} else if (name == 'index') {
-					attribute = Simulators.simpleAttributeForDisplay(dataElementId, 'text', name, attr.label, data[name], data[name], false, attr.placeholder);
+					var returnType =  $('#collapsesources').find('.source-container[data-id=' + data['source'] + ']').find('p[data-attribute=returnType]');
+					if (returnType.attr('data-value') == 'assocArray') {
+						attribute = Simulators.simpleAttributeForDisplay(dataElementId, 'text', name, attr.label, data[name], data[name], false, attr.placeholder);
+					} else {
+						attribute = Simulators.simpleAttributeForDisplay(dataElementId, 'text', name, attr.label, "'" + data[name] + "'", "'" + data[name] + "'", false, attr.placeholder);
+					}
 				} else if (attr.type === 'expression') {
 					if (name == 'min') {
 						if (data.type == 'text' || data.type == 'textarea') {
@@ -1212,16 +1237,23 @@ THE SOFTWARE.
 		});
 		var indicesList = {};
 		var source = data.source || 1;
-		var columns = $('#collapsesources').find('.source-container[data-id=' + source + ']').find('span[data-attribute=column]');
-		columns.each(function(k) {
-			indicesList["'" + $(this).attr('data-alias') + "'"] = $(this).attr('data-alias');
-		});
+		var returnType =  $('#collapsesources').find('.source-container[data-id=' + source + ']').find('p[data-attribute=returnType]');
+		if (returnType.attr('data-value') == 'assocArray') {
+			var columns = $('#collapsesources').find('.source-container[data-id=' + source + ']').find('span[data-attribute=column]');
+			columns.each(function(k) {
+				indicesList["'" + $(this).attr('data-alias') + "'"] = $(this).attr('data-alias');
+			});
+		}
 		$.each(Simulators.optionalAttributes, function (name, attr) {
 			var optionalAttribute;
 			if (name === 'source') {
 				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( sourcesList )) + '">' + attr.label + '</li>');
 			} else if (name === 'index') {
-				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
+				if (returnType.attr('data-value') == 'assocArray') {
+					optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
+				} else {
+					optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+				}
 			} else if (attr.type === 'expression') {
 				if (name == 'min') {
 					if (data.type == 'text' || data.type == 'textarea') {
@@ -1247,7 +1279,12 @@ THE SOFTWARE.
 				if (name === 'source') {
 					attribute = Simulators.simpleAttributeForInput(dataElementId + '-' + name, 'select', name, attr.label, data[name], false, attr.placeholder, JSON.stringify(sourcesList)); 
 				} else if (name === 'index') {
-					attribute = Simulators.simpleAttributeForInput(dataElementId + '-' + name, 'select', name, attr.label, data[name], false, attr.placeholder, JSON.stringify(indicesList)); 
+					if (returnType.attr('data-value') == 'assocArray') {
+						attribute = Simulators.simpleAttributeForInput(dataElementId + '-' + name, 'select', name, attr.label, data[name], false, attr.placeholder, JSON.stringify(indicesList)); 
+					} else {
+						var value = data[name].replace(/^'/, '').replace(/'$/, '');
+						attribute = Simulators.simpleAttributeForInput(dataElementId + '-' + name, 'text', name, attr.label, value, false, attr.placeholder); 
+					}
 				} else if (attr.type === 'expression') {
 					if (name == 'min') {
 						if (data.type == 'text' || data.type == 'textarea') {
