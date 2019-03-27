@@ -20,7 +20,7 @@
 			}, false);
 		}
 		input[0].addEventListener("autoNumeric:formatted", function(event) {
-			onComplete(event.detail.newRawValue, event.detail.newValue, true);
+			onComplete(event.detail.newRawValue, event.detail.newValue, true, true);
 		}, true);
 	}
 
