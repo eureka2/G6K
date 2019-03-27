@@ -324,7 +324,8 @@ THE SOFTWARE.
 				$(this).attr('id', 'source-' + id);
 				var re = new RegExp("source-" + oldId + '([^\\d])?', 'g');
 				var a = $(this).find('> .card > .card-header').find('> h4 > a');
-				a.text(' #' + id + ' ');
+				var txt = $.trim(a.text()).replace(/#\d+\s+/, ' #' + id + ' ');
+				a.text(txt + ' ');
 				var descendants = $(this).find('*');
 				descendants.each(function(d) {
 					if (this.hasAttribute('id')) {
