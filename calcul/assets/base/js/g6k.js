@@ -4354,7 +4354,7 @@ THE SOFTWARE.
 						if (/^\\$/.test(returnPath)) { // jsonpath
 							result = JSONPath({path: returnPath, json: result});
 						} else { // xpath
-							result = JSON.search(result, returnPath);
+							result = defiant.json.search(result, returnPath);
 							if ($.isArray(result) && result.length == 1) {
 								result = result[0];
 							}
@@ -4381,39 +4381,41 @@ THE SOFTWARE.
 							});
 						}
 					} else if (returnType == 'xml'|| returnType == 'html') {
-						var snapshot = document.evaluate(returnPath, $(result).get(0), null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null); 
-						result = [];
-						try {
-							for (var i = 0, len = snapshot.snapshotLength; i < len; i++) {
-								var node = snapshot.snapshotItem(i);
-								switch (node.nodeType) {
-									case 9: // document
-									case 1: // element
-										result.push(self.xmlToObject(node));
-										break;
-									case 2: // attribute
-										var object = {};
-										object[node.name] = node.value;
-										result.push(object);
-										break;
-									case 3: // text
-										result.push(node.nodeValue);
-								}
-							}
-						}
-						catch (e) {
-						}
-						if ($.isArray(result) && result.length == 1) {
-							result = result[0];
-						}
+						result = extractXMLResult(result, returnPath);
 					}
-					self.processSource(source, result);
+					self.processSource(source, result, returnType);
 				},
 				function(source, returnType, result) {
 					self.resetSourceDatas(source);
 					self.populateChoiceDependencies(source, []);
 				}
 			);
+		},
+
+		extractXMLResult: function (result, returnPath) {
+			var snapshot = document.evaluate(returnPath, $(result).get(0), null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null); 
+			result = [];
+			try {
+				for (var i = 0, len = snapshot.snapshotLength; i < len; i++) {
+					var node = snapshot.snapshotItem(i);
+					switch (node.nodeType) {
+						case 9: // document
+						case 1: // element
+							result.push(self.xmlToObject(node));
+							break;
+						case 2: // attribute
+							var object = {};
+							object[node.name] = node.value;
+							result.push(object);
+							break;
+						case 3: // text
+							result.push(node.nodeValue);
+					}
+				}
+			}
+			catch (e) {
+			}
+			return result;
 		},
 
 		getInternalSource: function (source) {
@@ -4444,7 +4446,7 @@ THE SOFTWARE.
 			var path = $(location).attr('pathname').replace("/"+view, "").replace(/\/+$/, "") + "/Default/source";
 			self.enqueueSourceRequest(source, 'POST', path, post, 'json',[],
 				function (source, returnType, result) {
-					self.processSource(source, result);
+					self.processSource(source, result, 'assocArray');
 				},
 				function(source, returnType, result) {
 					self.resetSourceDatas(source);
@@ -4517,19 +4519,50 @@ THE SOFTWARE.
 			runSourceRequest();
 		},
 
-		processSource: function(source, result) {
+		processSource: function(source, result, returnType) {
 			var self = this;
 			$.each(this.simu.datas, function( name, data ) {
 				if (typeof data.unparsedSource !== "undefined" && data.unparsedSource !== "") {
 					var s = self.evaluate(data.unparsedSource);
 					if (s == source) {
 						if (typeof data.unparsedIndex !== "undefined" && data.unparsedIndex !== "") {
-							var index = self.evaluate(data.unparsedIndex);
+							var index;
+							if (returnType == 'assocArray') {
+								index = self.evaluate(data.unparsedIndex);
+							} else {
+								index = data.unparsedIndex.replace(/^'/, '').replace(/'$/, '');
+								index = self.replaceVariables(index);
+							}
 							if (index !== false) {
-								if (result[index]) {
-									self.setValue(name, result[index]);
-								} else {
-									self.setValue(name, result[index.toLowerCase()]);
+								var value = result;
+								if (returnType == 'assocArray') {
+									if (value[index]) {
+										self.setValue(name, value[index]);
+									} else {
+										self.setValue(name, value[index.toLowerCase()]);
+									}
+								} else if (returnType == 'json') {
+									if (/^\\$/.test(index)) { // jsonpath
+										value = JSONPath({path: index, json: value});
+									} else { // xpath
+										value = defiant.json.search(value, index);
+										if ($.isArray(value) && value.length == 1) {
+											value = value[0];
+										}
+									}
+									self.setValue(name, value);
+								} else if (returnType == 'csv') {
+									var indices = index.split("/");
+									$.each(indices, function (i, ind) {
+										value = value[parseInt(ind, 10) - 1];
+									});
+									self.setValue(name, value);
+								} else if (returnType == 'xml'|| returnType == 'html') {
+									value = extractXMLResult(value, index);
+									if ($.isArray(value) && value.length == 1) {
+										value = value[0];
+									}
+									self.setValue(name, value);
 								}
 							} else {
 								self.unsetValue(name);
@@ -5035,12 +5068,13 @@ THE SOFTWARE.
 			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").on('input propertychange', function(event) {
 				var elt = this;
 				if (!this.hasAttribute('minlength') || $(this).val().length >= parseInt($(this).attr('minlength'), 10)) {
-					self.triggerChange($(this), true);
+					self.triggerChange($(this), true, true);
 				}
 			});
 			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name]").on('paste', function(event) {
 				var elt = this;
 				self.getData($(this).attr('name')).modifiedByUser = true;
+				clearTimeout(self.inputTimeoutId);
 				self.inputTimeoutId = setTimeout(function () {
 					$(elt).trigger("change");
 					$(elt).focusNextInputField();
@@ -5160,15 +5194,19 @@ THE SOFTWARE.
 			}
 		},
 
-		triggerChange: function(input, modifiedByUser) {
+		triggerChange: function(input, delayed, modifiedByUser) {
 			var self = this;
 			clearTimeout(self.inputTimeoutId);
 			if (typeof modifiedByUser !== "undefined") {
 				self.getData(input.attr('name')).modifiedByUser = modifiedByUser;
 			}
-			self.inputTimeoutId = setTimeout(function () {
+			if (delayed) {
+				self.inputTimeoutId = setTimeout(function () {
+					input.trigger("change");
+				}, 500);
+			} else {
 				input.trigger("change");
-			}, 500);
+			}
 		},
 
 		initializeWidgets: function() {
@@ -5187,11 +5225,11 @@ THE SOFTWARE.
 				var widget = window[$(this).attr('data-widget')];
 				var that = $(this);
 				that.data('g6k', self);
-				widget.call(null, that, options, function (value, text, preserveVal) {
+				widget.call(null, that, options, function (value, text, preserveVal, delayed) {
 					if (!preserveVal) {
 						that.val(value);
 					}
-					self.triggerChange(that);
+					self.triggerChange(that, delayed);
 				});
 			});
 		},

@@ -1339,9 +1339,31 @@ class BaseController extends Controller {
 										$value = end($result);
 										break;
 									default:
-										$index = $d->getIndex();
+										$index = $d->getUnparsedIndex();
 										if ($index != "") {
-											$value = isset($result[$index]) ? $result[$index] : $result[strtolower($index)];
+											$index = preg_replace("/^'/", "", $index);
+											$index = preg_replace("/'$/", "", $index);
+											$index = $this->replaceVariables($index);
+											$datasource = $this->getDatasource($source);
+											switch ($source->getReturnType()) {
+												case 'json':
+													$value = ResultFilter::filter("json", $result, $index);
+													break;
+												case 'html':
+													$value = ResultFilter::filter("html", $result, $index, $datasource->getNamespaces());
+													break;
+												case 'xml':
+													$value = ResultFilter::filter("xml", $result, $index, $datasource->getNamespaces());
+													break;
+												case 'csv':
+													$value = ResultFilter::filter("csv", $result, $index, array(), $source->getSeparator(), $source->getDelimiter());
+													break;
+												default:
+													$value = isset($result[$index]) ? $result[$index] : $result[strtolower($index)];
+											}
+											if (is_array($value)) {
+												$value = count($result) >= 1 ? $value[0] : "";
+											}
 										} else {
 											$value = "";
 										}
