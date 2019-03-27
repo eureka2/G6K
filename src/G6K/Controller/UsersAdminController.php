@@ -126,6 +126,7 @@ class UsersAdminController extends BaseAdminController {
 					'admin/pages/users.html.twig',
 					array(
 						'ua' => $ua,
+						'browserengine' => $this->getBrowserEngine($request),
 						'path' => $request->getScheme().'://'.$request->getHttpHost(),
 						'nav' => 'users',
 						'script' => 1,

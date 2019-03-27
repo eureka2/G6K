@@ -417,6 +417,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'admin/pages/simulators.html.twig',
 				array(
 					'ua' => $ua,
+					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'simulators',
 					'simulators' => $simulators,
@@ -1523,6 +1524,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			'admin/pages/report/simulators-header.html.twig',
 			array(
 				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'simulators',
 				'view' => null,
@@ -1556,6 +1558,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			'admin/pages/report/simulators-footer.html.twig',
 			array(
 				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
 				'path' => $request->getScheme().'://'.$request->getHttpHost(),
 				'nav' => 'simulators',
 				'simulator' => $simu

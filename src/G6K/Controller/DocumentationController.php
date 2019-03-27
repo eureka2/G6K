@@ -81,6 +81,7 @@ class DocumentationController extends BaseAdminController {
 				'admin/pages/documentation.html.twig',
 				array(
 					'ua' => $ua,
+					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'documentation',
 					'document' => $document,

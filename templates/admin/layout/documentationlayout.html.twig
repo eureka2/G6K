@@ -30,7 +30,7 @@ THE SOFTWARE.
 <!--[if IE 8 ]>    <html lang="{{ app_language }}" class="no-js ie ie8" dir="ltr"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="{{ app_language }}" class="no-js ie ie9" dir="ltr"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!-->
-<html lang="{{ app_language }}"><!--<![endif]-->
+<html lang="{{ app_language }}"{%- if browserengine is defined -%} class="{{ browserengine }}"{%- endif -%}><!--<![endif]-->
 {% endblock %} {# html #}
 
 <head>

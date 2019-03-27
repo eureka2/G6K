@@ -89,6 +89,7 @@ class IndexController extends BaseController {
 				'base/pages/index.html.twig',
 				array(
 					'ua' => $ua,
+					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'simulators' => $simulators,
 					'simulator' => null,
