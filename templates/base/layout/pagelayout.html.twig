@@ -31,7 +31,7 @@ THE SOFTWARE.
 <!--[if IE 8 ]>    <html lang="{{ app_language }}" class="no-js ie ie8" dir="ltr"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="{{ app_language }}" class="no-js ie ie9" dir="ltr"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!-->
-<html xmlns:esi="http://www.edge-delivery.org/esi/1.0" lang="{{ app_language }}"{%- if browserengine is defined -%} class="{{ browserengine }}"{%- endif -%}><!--<![endif]-->
+<html xmlns:esi="http://www.edge-delivery.org/esi/1.0" lang="{{ app_language }}"{%- if browserengine is defined %} class="{{ browserengine }}"{%- endif -%}><!--<![endif]-->
 {% endblock %}
 <head>
 {% if exception is not defined %}
