@@ -1247,31 +1247,31 @@ THE SOFTWARE.
 		$.each(Simulators.optionalAttributes, function (name, attr) {
 			var optionalAttribute;
 			if (name === 'source') {
-				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( sourcesList )) + '">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + '" data-options="' + encodeURI(JSON.stringify( sourcesList )) + '">' + attr.label + '</li>');
 			} else if (name === 'index') {
 				if (returnType.attr('data-value') == 'assocArray') {
-					optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
+					optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + '" data-options="' + encodeURI(JSON.stringify( indicesList )) + '">' + attr.label + '</li>');
 				} else {
-					optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+					optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-placeholder="' + attr.placeholder + '">' + attr.label + '</li>');
 				}
 			} else if (attr.type === 'expression') {
 				if (name == 'min') {
 					if (data.type == 'text' || data.type == 'textarea') {
-						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + Translator.trans('Minimum length') + '</li>');
+						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + '">' + Translator.trans('Minimum length') + '</li>');
 					} else {
-						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + Translator.trans('Minimum value') + '</li>');
+						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + '">' + Translator.trans('Minimum value') + '</li>');
 					}
 				} else if (name == 'max') {
 					if (data.type == 'text' || data.type == 'textarea') {
-						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + Translator.trans('Maximum length') + '</li>');
+						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + '">' + Translator.trans('Maximum length') + '</li>');
 					} else {
-						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + Translator.trans('Maximum value') + '</li>');
+						optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + '">' + Translator.trans('Maximum value') + '</li>');
 					}
 				} else {
-					optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+					optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="text" data-name="' + name + '" data-expression="true" data-placeholder="' + attr.placeholder + '">' + attr.label + '</li>');
 				}
 			} else {
-				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + ' value">' + attr.label + '</li>');
+				optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + dataElementId + '" data-type="' + attr.type + '" data-name="' + name + '" data-placeholder="' + attr.placeholder + '">' + attr.label + '</li>');
 			}
 			optionalAttributes.append(optionalAttribute);
 			if (data[name]) {
