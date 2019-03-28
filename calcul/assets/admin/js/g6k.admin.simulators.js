@@ -147,10 +147,10 @@ THE SOFTWARE.
 		'min': { type : 'expression', label: Translator.trans('min'), placeholder: Translator.trans('min value')},
 		'max': { type : 'expression', label: Translator.trans('max'), placeholder: Translator.trans('max value')},
 		'content': { type : 'expression', label: Translator.trans('Content'), placeholder: Translator.trans('content')},
-		'round': { type : 'number', label: Translator.trans('Round'), placeholder: Translator.trans('round')},
+		'round': { type : 'number', label: Translator.trans('Round'), placeholder: Translator.trans('Number of decimals after the decimal point')},
 		'unit': { type : 'text', label: Translator.trans('Unit'), placeholder: Translator.trans('unit text')},
 		'source': { type : 'select', label: Translator.trans('Source'), placeholder: Translator.trans('source')},
-		'index': { type : 'select', label: Translator.trans('Index'), placeholder: Translator.trans('index name')},
+		'index': { type : 'select', label: Translator.trans('Index'), placeholder: Translator.trans('Path to the data in JSONPath or XPath format')},
 		'memorize': { type : 'checkbox', label: Translator.trans('Memorize'), placeholder: Translator.trans('Store into memo)')}
 	};
 
