@@ -738,7 +738,7 @@ trait ControllersTrait {
 				$functions['labels'][$name] = $this->getTranslator()->trans($function['label']);
 				$targetsList = $function['target'];
 				if (in_array('all', $targetsList)) {
-					$functions['targets'][$name] = ['data', 'datagroup', 'page', 'article', 'step', 'panel', 'fieldset', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section', 'content', 'annotations', 'footnote'];
+					$functions['targets'][$name] = ['data', 'datagroup', 'page', 'article', 'step', 'panel', 'blockgroup', 'fieldset', 'fieldrow', 'field', 'prenote', 'postnote', 'blockinfo', 'chapter', 'section', 'content', 'annotations', 'footnote'];
 				} else {
 					$functions['targets'][$name] = $targetsList;
 				}

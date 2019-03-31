@@ -39,7 +39,7 @@ THE SOFTWARE.
 		var attributesContainer = $('<div class="attributes-container"></div>');
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, fieldset.disposition, false, Translator.trans('Select a Disposition'), JSON.stringify({ 'classic':Translator.trans('Classic'), 'grid':Translator.trans('Grid'), 'inline':Translator.trans('Inline') })));
-		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'display', Translator.trans('Display'), fieldset.display, fieldset.display, false, Translator.trans('Select a Display'), JSON.stringify({ 'inline':Translator.trans('Inline'), 'pop-in':Translator.trans('Pop-in') })));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'select', 'display', Translator.trans('Display'), fieldset.display, fieldset.display, false, Translator.trans('Select a Display'), JSON.stringify({ 'inline':Translator.trans('Inline'), 'grouped':Translator.trans('Grouped'), 'accordion':Translator.trans('Accordion'), 'pop-in':Translator.trans('Pop-in') })));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(fieldsetElementId, 'text', 'popinLink', Translator.trans('Pop-in Link'), fieldset.popinLink, fieldset.popinLink, false, Translator.trans('Pop-in Link')));
 		attributesContainer.append(requiredAttributes);
 		fieldsetContainerBody.append(attributesContainer);
@@ -76,16 +76,16 @@ THE SOFTWARE.
 			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-disposition', 'select', 'disposition', Translator.trans('Disposition'), fieldset.disposition, false, Translator.trans('FieldSet disposition'), JSON.stringify( {'classic': Translator.trans('Classic'), 'grid': Translator.trans('Grid'), 'inline': Translator.trans('Inline') } )));
 			optionalAttribute.hide();
 		} 
-		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldsetElementId + '" data-type="select" data-name="display" data-placeholder="' + Translator.trans('FieldSet display') + '" data-options="' + encodeURI(JSON.stringify( {'inline': Translator.trans('Inline'), 'pop-in': Translator.trans('Pop-in') } )) + '">' + Translator.trans('Display') + '</li>');
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldsetElementId + '" data-type="select" data-name="display" data-placeholder="' + Translator.trans('FieldSet display') + '" data-options="' + encodeURI(JSON.stringify( {'inline': Translator.trans('Inline'), 'grouped': Translator.trans('Grouped'), 'accordion': Translator.trans('Accordion'), 'pop-in': Translator.trans('Pop-in') } )) + '">' + Translator.trans('Display') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldset.display) {
-			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-display', 'select', 'display', Translator.trans('Display'), fieldset.display, false, Translator.trans('FieldSet display'), JSON.stringify( {'inline': Translator.trans('Inline'), 'pop-in': Translator.trans('Pop-in') } )));
+			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-display', 'select', 'display', Translator.trans('Display'), fieldset.display, false, Translator.trans('FieldSet display'), JSON.stringify( {'inline': Translator.trans('Inline'), 'grouped': Translator.trans('Grouped'), 'accordion': Translator.trans('Accordion'), 'pop-in': Translator.trans('Pop-in') } )));
 			optionalAttribute.hide();
 		} 
 		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + fieldsetElementId + '" data-type="text" data-name="popinLink" data-placeholder="' + Translator.trans('Pop-in Link') + '">' + Translator.trans('Pop-in Link') + '</li>');
 		optionalAttributes.append(optionalAttribute);
 		if (fieldset.popinLink) {
-			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-display', 'text', 'popinLink', Translator.trans('Pop-in Link'), fieldset.popinLink, false, Translator.trans('Pop-in Link')));
+			requiredAttributes.append(Simulators.simpleAttributeForInput(fieldsetElementId + '-popinLink', 'text', 'popinLink', Translator.trans('Pop-in Link'), fieldset.popinLink, false, Translator.trans('Pop-in Link')));
 			optionalAttribute.hide();
 		} 
 		optionalAttributesPanel.append(optionalAttributes);
@@ -257,11 +257,20 @@ THE SOFTWARE.
 	Simulators.checkFieldSet = function(fieldsetContainer) {
 		var fieldsetElementId = fieldsetContainer.attr('id');
 		var display = $.trim($('#' + fieldsetElementId + '-display').val());
-		var popinLink = $.trim($('#' + fieldsetElementId + '-popinLink').val());
-		if (display == 'pop-in' && popinLink == '') {
-			fieldsetContainer.find('.error-message').text(Translator.trans('Incorrect pop-in link'));
-			fieldsetContainer.find('.alert').show();
-			return false;
+		if (display == 'pop-in') {
+			var popinLink = $.trim($('#' + fieldsetElementId + '-popinLink').val());
+			if (popinLink == '') {
+				fieldsetContainer.find('.error-message').text(Translator.trans('The pop-in link text is required when display is pop-in'));
+				fieldsetContainer.find('.alert').show();
+				return false;
+			}
+		} else if (display == 'accordion') {
+			var legend = $.trim(Admin.clearHTML(fieldsetContainer.find('.fieldset-legend')));
+			if (legend == '') {
+				fieldsetContainer.find('.error-message').text(Translator.trans('The legend is required when display is accordion'));
+				fieldsetContainer.find('.alert').show();
+				return false;
+			}
 		}
 		return true;
 	}

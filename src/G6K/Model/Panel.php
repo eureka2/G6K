@@ -266,6 +266,23 @@ class Panel {
 	}
 
 	/**
+	 * Retrieves the BlockInfo or the Fieldset object by its id in the list of blocks contained in this panel.
+	 *
+	 * @access  public
+	 * @param   int $id The id of the BlockInfo or the Fieldset object
+	 * @return  \App\G6K\Model\BlockInfo|\App\G6K\Model\Fieldset|null The BlockInfo or the Fieldset object
+	 *
+	 */
+	public function getBlockById($id) {
+		foreach ($this->fieldsets as $block) {
+			if ($block->getId() == $id) {
+				return $block;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Returns the displayable attribute of this Panel object 
 	 *
 	 * @access  public

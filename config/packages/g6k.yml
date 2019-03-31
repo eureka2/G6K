@@ -163,13 +163,13 @@ parameters:
                 - js/copyToClipboard.js
         saveFormToFile:
             label: Saves all or part of the form data on the user's hard disk
-            target: [ article, panel, fieldset ]
+            target: [ article, panel, blockgroup, fieldset ]
             css: 
             js: 
                 - js/saveFormToFile.js
         loadFormFromFile:
             label: Loads all or part of the form data from the user's hard disk
-            target: [ article, panel, fieldset ]
+            target: [ article, panel, blockgroup, fieldset ]
             css: 
             js: 
                 - js/loadFormFromFile.js

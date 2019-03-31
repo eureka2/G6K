@@ -551,7 +551,7 @@ THE SOFTWARE.
 				{% if action.for == 'function' %}
 					{% set functs = action.uriDecoded %}
 					{{ page.showAttribute(actionElementId, 'select', 'function', 'Function'|trans, functs.function, functs.function, true, 'Select a function'|trans, context.functions.labels) }}
-					{{ page.showAttribute(actionElementId, 'select', 'appliedto', 'Applied to'|trans, functs.appliedto, functs.appliedto, true, 'Select a target'|trans, { 'page': 'Full page'|trans, 'article': 'Simulation block'|trans, 'data': 'Data'|trans, 'datagroup': 'Datagroup'|trans, 'step': 'Step'|trans, 'panel': 'Panel'|trans, 'fieldset': 'FieldSet'|trans, 'fieldrow': 'Fieldrow'|trans, 'field': 'Field'|trans, 'prenote': 'PreNote'|trans, 'postnote': 'PostNote'|trans, 'blockinfo': 'BlockInfo'|trans, 'chapter': 'Chapter'|trans, 'section': 'Section'|trans, 'content': 'Section content'|trans, 'annotations': 'Section annotations'|trans, 'footnote': 'FootNote'|trans } ) }}
+					{{ page.showAttribute(actionElementId, 'select', 'appliedto', 'Applied to'|trans, functs.appliedto, functs.appliedto, true, 'Select a target'|trans, { 'page': 'Full page'|trans, 'article': 'Simulation block'|trans, 'data': 'Data'|trans, 'datagroup': 'Datagroup'|trans, 'step': 'Step'|trans, 'panel': 'Panel'|trans, 'blockgroup': 'Grouping of information block/group of fields'|trans, 'fieldset': 'FieldSet'|trans, 'fieldrow': 'Fieldrow'|trans, 'field': 'Field'|trans, 'prenote': 'PreNote'|trans, 'postnote': 'PostNote'|trans, 'blockinfo': 'BlockInfo'|trans, 'chapter': 'Chapter'|trans, 'section': 'Section'|trans, 'content': 'Section content'|trans, 'annotations': 'Section annotations'|trans, 'footnote': 'FootNote'|trans } ) }}
 					{% if functs.arguments.data is defined %}
 						{% set datalabel =  step.simulator.getDataById(functs.arguments.data).label %}
 						{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'data', 'Data'|trans, functs.arguments.data, datalabel, true, 'Select a data'|trans) }}
@@ -565,7 +565,16 @@ THE SOFTWARE.
 							{% set panelobj = step.getPanelById(functs.arguments.panel) %}
 							{% set panellabel = panelobj.label != '' ? panelobj.label : 'Panel %id% (nolabel)'|trans({'%id%': panelobj.id }) %}
 							{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'panel', 'Panel'|trans, functs.arguments.panel, panellabel, true, 'Select a panel'|trans) }}
-							{% if functs.arguments.fieldset is defined %}
+							{% if functs.arguments.blockgroup is defined %}
+								{% set blockobj = panelobj.getBlockById(functs.arguments.blockgroup) %}
+								{% if blockobj.class == 'FieldSet' %}
+									{% set fieldsetlegend = blockobj.legend and blockobj.legend.content != '' ? blockobj.legend.content : 'Fieldset %id% (nolegend)'|trans({'%id%': blockobj.id }) %}
+									{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'blockgroup', 'Block belonging to the grouping'|trans, functs.arguments.blockgroup, fieldsetlegend, true, 'Select a block belonging to the group'|trans) }}
+								{% else %}
+									{% set blockinfolabel = blockobj.label != '' ? blockobj.label : 'Blockinfo %id% (nolabel)'|trans({'%id%': blockobj.id }) %}
+									{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'blockgroup', 'Block belonging to the grouping'|trans, functs.arguments.blockgroup, blockinfolabel, true, 'Select a block belonging to the group'|trans) }}
+								{% endif %}
+							{% elseif functs.arguments.fieldset is defined %}
 								{% set fieldsetobj = panelobj.getFieldSetById(functs.arguments.fieldset) %}
 								{% set fieldsetlegend = fieldsetobj.legend and fieldsetobj.legend.content != '' ? fieldsetobj.legend.content : 'Fieldset %id% (nolegend)'|trans({'%id%': fieldsetobj.id }) %}
 								{{ page.showAttribute(actionElementId ~ '-argument', 'text', 'fieldset', 'FieldSet'|trans, functs.arguments.fieldset, fieldsetlegend, true, 'Select a fieldset'|trans) }}
@@ -811,7 +820,7 @@ THE SOFTWARE.
 		<div class="attributes-container">
 			<div>
 			{{ page.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'disposition', 'Disposition'|trans, fieldset.disposition, fieldset.disposition, false, 'Select a Disposition'|trans, {'classic':'Classic'|trans, 'grid':'Grid'|trans, 'inline':'Inline'|trans}) }}
-			{{ page.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'display', 'Display'|trans, fieldset.display, fieldset.display, false, 'Select a Display'|trans, {'inline':'Inline'|trans, 'pop-in':'Pop-in'|trans}) }}
+			{{ page.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'select', 'display', 'Display'|trans, fieldset.display, fieldset.display, false, 'Select a Display'|trans, {'inline':'Inline'|trans, 'grouped':'Grouped'|trans, 'accordion':'Accordion'|trans, 'pop-in':'Pop-in'|trans}) }}
 			{{ page.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, 'text', 'popinLink', 'Pop-in Link'|trans, fieldset.popinLink, fieldset.popinLink, false, 'Pop-in Link'|trans) }}
 			</div>
 		</div>
@@ -975,6 +984,8 @@ THE SOFTWARE.
 			<div>
 			{{ page.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'name', 'Name'|trans, blockinfo.name, blockinfo.name, true, 'Blockinfo name'|trans) }}
 			{{ page.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'label', 'Label'|trans, blockinfo.label, blockinfo.label, true, 'Blockinfo label'|trans) }}
+			{{ page.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id, 'select', 'display', 'Display'|trans, blockinfo.display, blockinfo.display, false, 'Select a Display'|trans, {'inline':'Inline'|trans, 'grouped':'Grouped'|trans, 'accordion':'Accordion'|trans, 'pop-in':'Pop-in'|trans}) }}
+			{{ page.showAttribute('step-' ~ step.id ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blockinfo.id, 'text', 'popinLink', 'Pop-in Link'|trans, blockinfo.popinLink, blockinfo.popinLink, false, 'Pop-in Link'|trans) }}
 			</div>
 		</div>
 	</div>

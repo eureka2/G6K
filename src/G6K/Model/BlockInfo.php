@@ -71,6 +71,22 @@ class BlockInfo {
 	private $label = "";
 
 	/**
+	 * @var string     $display  The display mode of this field set: inline (default), grouped, accordion or pop-in
+	 *
+	 * @access  private
+	 *
+	 */
+	private $display = "inline";
+
+	/**
+	 * @var string  $popinLink  The text of the link to display the pop-in (if display is "pop-in")
+	 *
+	 * @access  private
+	 *
+	 */
+	private $popinLink = "";
+
+	/**
 	 * @var array      $chapters Array of Chapter objects 
 	 *
 	 * @access  private
@@ -178,6 +194,66 @@ class BlockInfo {
 	 */
 	public function setLabel($label) {
 		$this->label = $label;
+	}
+
+	/**
+	 * Returns the display mode of this BlockInfo object
+	 *
+	 * The possible values are :
+	 *
+	 * - inline: the content of the BlockInfo object is displayed "online" in the simulation page
+	 * - grouped: the fields of the field set are displayed in a group in the simulation page
+	 * - accordion: the content of the BlockInfo object is displayed in the item of an accordion
+	 * - pop-in: the content of the BlockInfo object is displayed in a pop-in modal window.
+	 *
+	 * @access  public
+	 * @return  string The display mode
+	 *
+	 */
+	public function getDisplay() {
+		return $this->display;
+	}
+
+	/**
+	 * Sets the display mode of this BlockInfo object
+	 *
+	 * The possible values are :
+	 *
+	 * - inline: the content of the BlockInfo object is displayed "online" in the simulation page
+	 * - grouped: the fields of the field set are displayed in a group in the simulation page
+	 * - accordion: the content of the BlockInfo object is displayed in the item of an accordion
+	 * - pop-in: the content of the BlockInfo object is displayed in a pop-in modal window.
+	 *
+	 * @access  public
+	 * @param   string     $display  The display mode
+	 * @return  void
+	 *
+	 */
+	public function setDisplay($display) {
+		$this->display = $display;
+	}
+
+	/**
+	 * Sets the text of the link to display the pop-in (if display is "pop-in")
+	 *
+	 * @access  public
+	 * @return  string The text of the link
+	 *
+	 */
+	public function getPopinLink() {
+		return $this->popinLink;
+	}
+
+	/**
+	 * Returns the text of the link to display the pop-in (if display is "pop-in")
+	 *
+	 * @access  public
+	 * @param   string     $popinLink The text of the link
+	 * @return  void
+	 *
+	 */
+	public function setPopinLink($popinLink) {
+		$this->popinLink = $popinLink;
 	}
 
 	/**

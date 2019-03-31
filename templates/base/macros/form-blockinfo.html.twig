@@ -29,62 +29,60 @@ THE SOFTWARE.
 {% set step = context.step %}
 {% set panel = blockinfo.panel %}
 {% set simu = step.simulator %}
-<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}" class="blockinfo-container">
-	{%- if blockinfo.hasCollapsibles %}
-		<p class="collapse-expand-all-tools">
-			<button class="btn">Tout replier</button>
-			<button class="btn">Tout déplier</button>
-		</p>
-	{% endif %}
-	{% if blockinfo.label is not empty %}
-	<div class="blockinfo-label">
-	<h2>{{ blockinfo.label|fnref }}</h2>
-	</div>
-	{% endif %}
-	<div class="blockinfo-chapters">
-		{% for chapter in blockinfo.chapters %}
-		{%- if chapter.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-		<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}" class="chapter-container {{ chapterContainerClass }}" data-chapter-id="{{ chapter.id }}">
-			{% if chapter.label is not empty %}
-			<div class="chapter-label {{ chapterHeadingClass }}">
-				<h3>
-					{%- if chapter.collapsible -%}
-					<button id="ui-collapse-{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}" role="button" aria-expanded="false" class="btn btn-collapse" data-toggle="collapse" type="button" data-target="#{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections"><span>
-					{% endif %}
-					{{ chapter.label|fnref }}
-					{%- if chapter.collapsible -%}
-					</span></button>
-					{% endif %}
-				</h3>
-			</div>
-			{% endif %}
-			<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections" class="blockinfo-chapter-sections {{ chapterContentClass }}{%- if chapter.collapsible %} collapse{%- endif -%}">
-				{% for section in chapter.sections %}
-				{%- if section.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-				<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}" class="section-container{%- if section.annotations is not empty and section.annotations.content is not empty %} with-annotations{%- endif -%}">
-					{%- if section.label is not empty -%}
-					<div class="section-label">
-						<h2>{{ section.label|fnref }}</h2>
-					</div>
-					{% endif %}
-					<div class="section-body-container">
-						{%- if section.annotations is not empty and section.annotations.content is not empty %}
-						<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-annotations" class="section-annotations">
-							{{ section.annotations|htmlraw }}
-						</div>
-						{% endif %}
-						<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-content" class="section-content{%- if section.annotations is not empty and section.annotations.content is not empty %} with-annotations{%- endif -%}">
-							{{ section.content|htmlraw }}
-						</div>
-					</div>
-				</div>
+{%- if blockinfo.hasCollapsibles %}
+	<p class="collapse-expand-all-tools">
+		<button class="btn">Tout replier</button>
+		<button class="btn">Tout déplier</button>
+	</p>
+{% endif %}
+{% if blockinfo.label is not empty %}
+<div class="blockinfo-label">
+<h2>{{ blockinfo.label|fnref }}</h2>
+</div>
+{% endif %}
+<div class="blockinfo-chapters">
+	{% for chapter in blockinfo.chapters %}
+	{%- if chapter.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
+	<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}" class="chapter-container {{ chapterContainerClass }}" data-chapter-id="{{ chapter.id }}">
+		{% if chapter.label is not empty %}
+		<div class="chapter-label {{ chapterHeadingClass }}">
+			<h3>
+				{%- if chapter.collapsible -%}
+				<button id="ui-collapse-{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}" role="button" aria-expanded="false" class="btn btn-collapse" data-toggle="collapse" type="button" data-target="#{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections"><span>
 				{% endif %}
-				{% endfor %}
-			</div>
+				{{ chapter.label|fnref }}
+				{%- if chapter.collapsible -%}
+				</span></button>
+				{% endif %}
+			</h3>
 		</div>
 		{% endif %}
-		{% endfor %}
+		<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-sections" class="blockinfo-chapter-sections {{ chapterContentClass }}{%- if chapter.collapsible %} collapse{%- endif -%}">
+			{% for section in chapter.sections %}
+			{%- if section.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
+			<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}" class="section-container{%- if section.annotations is not empty and section.annotations.content is not empty %} with-annotations{%- endif -%}">
+				{%- if section.label is not empty -%}
+				<div class="section-label">
+					<h2>{{ section.label|fnref }}</h2>
+				</div>
+				{% endif %}
+				<div class="section-body-container">
+					{%- if section.annotations is not empty and section.annotations.content is not empty %}
+					<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-annotations" class="section-annotations">
+						{{ section.annotations|htmlraw }}
+					</div>
+					{% endif %}
+					<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blockinfo.id }}-chapter-{{ chapter.id }}-section-{{ section.id }}-content" class="section-content{%- if section.annotations is not empty and section.annotations.content is not empty %} with-annotations{%- endif -%}">
+						{{ section.content|htmlraw }}
+					</div>
+				</div>
+			</div>
+			{% endif %}
+			{% endfor %}
+		</div>
 	</div>
+	{% endif %}
+	{% endfor %}
 </div>
 
 {% endmacro %}

@@ -1082,6 +1082,12 @@ class SimulatorsAdminController extends BaseAdminController {
 		$blockinfoObj = new BlockInfo($panelObj, (int)$blockinfo['id']);
 		$blockinfoObj->setName($blockinfo['name']);
 		$blockinfoObj->setLabel($blockinfo['label']);
+		if ($blockinfo['display'] != "") {
+			$blockinfoObj->setDisplay($blockinfo['display']);
+		}
+		if ($blockinfo['popinLink'] != "") {
+			$blockinfoObj->setPopinLink($blockinfo['popinLink']);
+		}
 		foreach ($blockinfo['chapters'] as $c => $chapter) {
 			$blockinfoObj->addChapter($this->makeChapter($chapter, $blockinfoObj));
 		}
@@ -2452,6 +2458,8 @@ class SimulatorsAdminController extends BaseAdminController {
 								'id' => $block->getId(),
 								'name' => $block->getName(),
 								'label' => $block->getLabel(),
+								'display' => $block->getDisplay(),
+								'popinLink' => $block->getPopinLink(),
 								'chapters' => array()
 							);
 							$blockinfo = $block;
