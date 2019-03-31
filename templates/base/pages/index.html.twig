@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 #}
 
-{# extends "base/layout/pagelayout.html.twig" #}
+{% extends "base/layout/pagelayout.html.twig" %}
 
 {% import _self as page %}
 
 {% block content %}
 <h2>{{ 'Simulators'|trans }}</h2>
 
-<div id="page-wrapper" class="content">
+<div id="page-wrapper" class="content" style="height: 100%;">
 	<div id="page-simulators">
 		<div class="row">
 			<div class="col-md-12">
@@ -41,5 +41,6 @@ THE SOFTWARE.
 			</div>
 		</div>
 	</div>
+	<div style="position:absolute; bottom: 10px; width: 100%; text-align: center;"><a href="/mention-legales.html">Mentions légales</a></div>
 </div>
 {% endblock %}

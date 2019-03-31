@@ -80,44 +80,81 @@ THE SOFTWARE.
 	{% else %}
 	<div id="{{ step.name }}-panel-{{ panel.id }}" class="step-panel-container">
 	{% endif %}
+	{% set display = '' %}
+	{% set grouped = false %}
+	{% set groupId = 0 %}
 	{%- for blck in panel.fieldSets -%}
-		{%- if blck.class == 'FieldSet' -%}
-			{% set fieldset = blck %}
-			{% set disposition = 'classic' %}
-			{%- if fieldset.disposition is not empty -%}
-			{% set disposition = fieldset.disposition %}
-			{%- if fieldset.disposition == 'inline' -%}
-			{% set fieldsetContainerClass = '' %}
+		{%- if blck.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
+			{%- if blck.display != display -%}
+				{%- if grouped == true -%}
+				</div>
+				{% set grouped = false %}
+				{% endif %}
+				{% set display = blck.display %}
+				{%- if blck.display != 'inline' -%}
+				{% set groupId = groupId + 1 %}
+				<div class="panel-group {{ blck.display }}" id="{{ step.name }}-panel-{{ panel.id }}-{{ blck.display }}-{{ groupId }}" role="tablist" aria-multiselectable="true">
+				{% set grouped = true %}
+				{% endif %}
 			{% endif %}
-			{% endif %}
-			{%- if fieldset.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-			<{%- if fieldsets > 1 and fieldset.hasInputFields -%}fieldset class="fieldset-container disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% else %}div class="fieldset disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% endif %} id="{{ step.name }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}">
-			{%- if fieldset.display is not empty and fieldset.display == 'pop-in' -%}
-			{{ form.popinheader(context, fieldset) }}
-			{%- endif -%}
-			{%- if fieldsets > 1  and fieldset.hasInputFields %}
-				{%- if fieldset.legend is not empty and fieldset.legend.content is not empty -%}<legend>{{ fieldset.legend|fnref }}</legend>{%- endif -%}
-			{% else %}
-				{%- if fieldset.legend is not empty and fieldset.legend.content is not empty -%}{{ form.heading(fieldset.legend, 3, "legend") }}{%- endif -%}
-			{% endif %}
-			{%- if disposition == "grid" -%}
-			{{ grid.row(context, fieldset, fieldsetContainerClass, fieldContainerClass, fieldGroupClass, fieldClass) }}
-			{%- elseif disposition == "inline" -%}
-			{{ inline.row(context, fieldset) }}
-			{% else %}
-			{{ classic.row(context, fieldset, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass) }}
-			{% endif %}
-			{%- if fieldset.display is not empty and fieldset.display == 'pop-in' -%}
-			{{ form.popinfooter(context) }}
-			{%- endif -%}
-			</{%- if fieldsets > 1 and fieldset.hasInputFields -%}fieldset{% else %}div{% endif %}>
-			{% endif %} {# end fieldset.displayable #}
-		{%- elseif blck.class == 'BlockInfo' -%}
-			{%- if blck.displayable or (step.dynamic and context.script == 1) or (simu.dynamic and step.id == 0) -%}
-			{{ blockinfo.row(context, blck, chapterContainerClass, chapterHeadingClass, chapterContentClass) }}
+			{%- if blck.class == 'FieldSet' -%}
+				{% set fieldset = blck %}
+				{% set disposition = 'classic' %}
+				{%- if fieldset.disposition is not empty -%}
+				{% set disposition = fieldset.disposition %}
+				{%- if fieldset.disposition == 'inline' -%}
+				{% set fieldsetContainerClass = '' %}
+				{% endif %}
+				{% endif %}
+				<{%- if fieldsets > 1 and fieldset.hasInputFields -%}fieldset class="{%- if fieldset.display == 'accordion' -%}panel panel-default accordion-section {% endif -%}fieldset-container disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% else %}div class="{%- if fieldset.display == 'accordion' -%}panel panel-default accordion-section {% endif -%}fieldset disposition-{{ disposition }} {{ fieldsetContainerClass }}"{% endif %} id="{{ step.name }}-panel-{{ panel.id }}-fieldset-{{ fieldset.id }}">
+				{%- if fieldset.display == 'pop-in' -%}
+				{{ form.popinheader(context, fieldset, fieldset.legend) }}
+				{%- endif -%}
+				{%- if fieldset.display == 'accordion' -%}
+				{{ form.accordionheader(context, step.name ~ '-panel-' ~ panel.id ~ '-fieldset-' ~ fieldset.id, fieldset.legend.content, step.name ~ '-panel-' ~ panel.id ~ '-accordion-' ~ groupId) }}
+				{%- else -%}
+				{%- if fieldsets > 1  and fieldset.hasInputFields %}
+					{%- if fieldset.legend is not empty and fieldset.legend.content is not empty -%}<legend>{{ fieldset.legend|fnref }}</legend>{%- endif -%}
+				{%- else -%}
+					{%- if fieldset.legend is not empty and fieldset.legend.content is not empty -%}{{ form.heading(fieldset.legend, 3, "legend") }}{%- endif -%}
+				{%- endif -%}
+				{%- endif -%}
+				{%- if disposition == "grid" -%}
+				{{ grid.row(context, fieldset, fieldsetContainerClass, fieldContainerClass, fieldGroupClass, fieldClass) }}
+				{%- elseif disposition == "inline" -%}
+				{{ inline.row(context, fieldset) }}
+				{% else %}
+				{{ classic.row(context, fieldset, fieldContainerClass, fieldLabelClass, fieldGroupClass, fieldClass) }}
+				{% endif %}
+				{%- if fieldset.display == 'pop-in' -%}
+				{{ form.popinfooter(context) }}
+				{%- endif -%}
+				{%- if fieldset.display == 'accordion' -%}
+				{{ form.accordionfooter(context) }}
+				{%- endif -%}
+				</{%- if fieldsets > 1 and fieldset.hasInputFields -%}fieldset{% else %}div{% endif %}>
+			{%- elseif blck.class == 'BlockInfo' -%}
+				<div id="{{ step.name }}-panel-{{ panel.id }}-blockinfo-{{ blck.id }}" class="{%- if blck.display == 'accordion' -%}panel panel-default accordion-section {% endif -%}blockinfo-container">
+				{%- if blck.display == 'pop-in' -%}
+				{{ form.popinheader(context, blck, blck.label) }}
+				{%- endif -%}
+				{%- if blck.display == 'accordion' -%}
+				{{ form.accordionheader(context, step.name ~ '-panel-' ~ panel.id ~ '-blockinfo-' ~ blck.id, blck.label, step.name ~ '-panel-' ~ panel.id ~ '-accordion-' ~ groupId) }}
+				{%- endif -%}
+				{{ blockinfo.row(context, blck, chapterContainerClass, chapterHeadingClass, chapterContentClass) }}
+				{%- if blck.display == 'pop-in' -%}
+				{{ form.popinfooter(context) }}
+				{%- endif -%}
+				{%- if blck.display == 'accordion' -%}
+				{{ form.accordionfooter(context) }}
+				{%- endif -%}
+				</div>
 			{%- endif -%}
 		{%- endif -%}
 	{% endfor %} {# end for blck in panel.fieldSets #}
+	{%- if grouped == true -%}
+		</div>
+	{% endif %}
 	</div>
 {% endfor %} {# end for panel in step.fieldSets #}
 {% if panels > 1 %}
@@ -151,14 +188,14 @@ THE SOFTWARE.
 
 {% endmacro %}
 
-{% macro popinheader(context, fieldset) %}
-<a data-toggle="modal" data-target="#popin-{{ context.step.id ~ '-' ~ fieldset.id }}">{{ fieldset.popinLink }}</a>
-<div class="modal fade" id="popin-{{ context.step.id ~ '-' ~ fieldset.id }}" tabindex="-1" role="dialog" aria-labelledby="popin-{{ context.step.id ~ '-' ~ fieldset.id }}-label">
+{% macro popinheader(context, block, label) %}
+<a data-toggle="modal" data-target="#popin-{{ context.step.id ~ '-' ~ block.id }}">{{ block.popinLink }}</a>
+<div class="modal fade" id="popin-{{ context.step.id ~ '-' ~ block.id }}" tabindex="-1" role="dialog" aria-labelledby="popin-{{ context.step.id ~ '-' ~ block.id }}-label">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="popin-{{ context.step.id ~ '-' ~ fieldset.id }}-label">{{ fieldset.legend|fnref }}</h4>
+				<h4 class="modal-title" id="popin-{{ context.step.id ~ '-' ~ block.id }}-label">{{ label|fnref }}</h4>
 			</div>
 			<div class="modal-body">
 {% endmacro %}
@@ -169,6 +206,23 @@ THE SOFTWARE.
 				<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
 			</div>
 		</div>
+	</div>
+</div>
+{% endmacro %}
+
+{% macro accordionheader(context, id, label, accordionId) %}
+<div class="panel-heading" role="tab" id="{{ id ~ '-heading' }}">
+	<h4 class="panel-title">
+		<a role="button" data-toggle="collapse" data-parent="{{ '#' ~ accordionId }}" href="{{ '#' ~ id ~ '-collapse' }}" aria-expanded="false" aria-controls="{{ id ~ '-collapse' }}">
+			{{ label }}
+		</a>
+	</h4>
+</div>
+<div id="{{ id ~ '-collapse' }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ id ~ '-heading' }}">
+	<div class="panel-body">
+{% endmacro %}
+
+{% macro accordionfooter(context) %}
 	</div>
 </div>
 {% endmacro %}

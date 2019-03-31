@@ -88,6 +88,9 @@ THE SOFTWARE.
 			if (parameters.fieldset) {
 				text['fieldset'] = parameters.fieldset;
 			}
+			if (parameters.blockgroup) {
+				text['blockgroup'] = parameters.blockgroup;
+			}
 			text['fields'] = fields;
 			saveTextAsFile(g6k.simu.name + '.txt', JSON.stringify(text, null, "\t"));
 		}

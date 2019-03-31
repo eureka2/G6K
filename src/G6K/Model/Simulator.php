@@ -1644,6 +1644,12 @@ class Simulator {
 							$blockinfoObj = new BlockInfo($panelObj, (int)$blockinfo['id']);
 							$blockinfoObj->setName((string)$blockinfo['name']);
 							$blockinfoObj->setLabel((string)$blockinfo['label']);
+							if ((string)$blockinfo['display'] != "") {
+								$blockinfoObj->setDisplay((string)$blockinfo['display']);
+							}
+							if ((string)$blockinfo['popinLink'] != "") {
+								$blockinfoObj->setPopinLink((string)$blockinfo['popinLink']);
+							}
 							foreach ($blockinfo->Chapter as $chapter) {
 								$chapterObj = new Chapter($blockinfoObj, (int)$chapter['id']);
 								$chapterObj->setName((string)$chapter['name']);
@@ -2732,6 +2738,8 @@ class Simulator {
 									'id'	 => (int)$blockinfo['id'],
 									'name' => (string)$blockinfo['name'],
 									'label' => (string)$blockinfo['label'],
+									'display' => (string)$blockinfo['display'],
+									'popinLink' => (string)$blockinfo['popinLink'],
 									'chapters' => $chapters
 								);
 								$this->name = (string)$step['name']."-panel-".$panel['id']."-blockinfo-".$blockinfo['id'];
@@ -3341,6 +3349,12 @@ class Simulator {
 							$attrs = 'id="' . $blocinfo->getId() . '"';
 							$attrs .= ' name="' . $blocinfo->getName() . '"';
 							$attrs .= ' label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $blocinfo->getLabel()) . '"';
+							if ($blocinfo->getDisplay() != '' && $blocinfo->getDisplay() != 'inline') {
+								$attrs .= ' display="' . $blocinfo->getDisplay() . '"'; 
+							}
+							if ($blocinfo->getPopinLink() != '') {
+								$attrs .= ' popinLink="' . $blocinfo->getPopinLink() . '"'; 
+							}
 							$xml[] = '					<BlockInfo ' . $attrs . '>';
 							foreach ($blocinfo->getChapters() as $chapter) {
 								$attrs = 'id="' . $chapter->getId() . '"';

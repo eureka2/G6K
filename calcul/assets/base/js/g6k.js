@@ -3492,7 +3492,18 @@ THE SOFTWARE.
 			var element = this.simu.step.name;
 			if (parameters.panel) {
 				element += '-panel-' + parameters.panel;
-				if (parameters.blockinfo) {
+				if (parameters.blockgroup) {
+					var blockinfo = element + '-blockinfo-' + parameters.blockgroup;
+					if ($('#' + blockinfo).length > 0) {
+						element = blockinfo;
+					} else {
+						element += '-fieldset-' + parameters.blockgroup;
+					}
+					element = document.getElementById(element);
+					if (element) {
+						element = element.parentElement;
+					}
+				} else if (parameters.blockinfo) {
 					element += '-blockinfo-' + parameters.blockinfo;
 					if (parameters.chapter) {
 						element += '-chapter-' + parameters.chapter;

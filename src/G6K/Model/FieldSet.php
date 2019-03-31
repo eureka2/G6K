@@ -75,7 +75,7 @@ class FieldSet {
 	private $disposition = "classic";
 
 	/**
-	 * @var string     $display  The display mode of this field set: inline (default) or pop-in
+	 * @var string     $display  The display mode of this field set: inline (default), grouped, accordion or pop-in
 	 *
 	 * @access  private
 	 *
@@ -242,6 +242,8 @@ class FieldSet {
 	 * The possible values are :
 	 *
 	 * - inline: the fields of the field set are displayed "online" in the simulation page
+	 * - grouped: the fields of the field set are displayed in a group in the simulation page
+	 * - accordion: the fields of the field set are displayed in the item of an accordion
 	 * - pop-in: the fields of the field set are displayed in a pop-in modal window.
 	 *
 	 * @access  public
@@ -257,7 +259,9 @@ class FieldSet {
 	 *
 	 * The possible values are :
 	 *
-	 * - inline: the fields of the field set are displayed "online" in the simulation page
+	 * - inline: the fields of the field set are displayed "inline" in the simulation page
+	 * - grouped: the fields of the field set are displayed in a group in the simulation page
+	 * - accordion: the fields of the field set are displayed in the item of an accordion
 	 * - pop-in: the fields of the field set are displayed in a pop-in modal window.
 	 *
 	 * @access  public

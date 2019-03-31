@@ -68,6 +68,10 @@ THE SOFTWARE.
 						callback && callback(false, "This data does not apply to this part of the simulator.");
 						return;
 					}
+					if (parameters.blockgroup && (! text.blockgroup || text.blockgroup != parameters.blockgroup)) {
+						callback && callback(false, "This data does not apply to this part of the simulator.");
+						return;
+					}
 					element = g6k.getStepChildElement(parameters);
 				}
 

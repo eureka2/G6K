@@ -121,6 +121,8 @@
 																			<xs:simpleType>
 																				<xs:restriction base="xs:NMTOKEN">
 																					<xs:enumeration value="inline"/>
+																					<xs:enumeration value="grouped"/>
+																					<xs:enumeration value="accordion"/>
 																					<xs:enumeration value="pop-in"/>
 																				</xs:restriction>
 																			</xs:simpleType>
@@ -151,6 +153,17 @@
 																			</xs:element>
 																		</xs:sequence>
 																		<xs:attributeGroup ref="IdGroup"/>
+																		<xs:attribute name="display">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:NMTOKEN">
+																					<xs:enumeration value="inline"/>
+																					<xs:enumeration value="grouped"/>
+																					<xs:enumeration value="accordion"/>
+																					<xs:enumeration value="pop-in"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:attribute>
+																		<xs:attribute name="popinLink" type="xs:string"/>
 																	</xs:complexType>
 																</xs:element>
 															</xs:choice>

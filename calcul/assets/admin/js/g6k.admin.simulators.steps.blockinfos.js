@@ -35,6 +35,8 @@ THE SOFTWARE.
 		var requiredAttributes = $('<div></div>');
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(blockinfoElementId, 'text', 'name', Translator.trans('Name'), blockinfo.name, blockinfo.name, true, Translator.trans('Blockinfo name')));
 		requiredAttributes.append(Simulators.simpleAttributeForDisplay(blockinfoElementId, 'text', 'label', Translator.trans('Label'), blockinfo.label, blockinfo.label, true, Translator.trans('Blockinfo label')));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(blockinfoElementId, 'select', 'display', Translator.trans('Display'), blockinfo.display, blockinfo.display, false, Translator.trans('Select a Display'), JSON.stringify({ 'inline':Translator.trans('Inline'), 'grouped':Translator.trans('Grouped'), 'accordion':Translator.trans('Accordion'), 'pop-in':Translator.trans('Pop-in') })));
+		requiredAttributes.append(Simulators.simpleAttributeForDisplay(blockinfoElementId, 'text', 'popinLink', Translator.trans('Pop-in Link'), blockinfo.popinLink, blockinfo.popinLink, false, Translator.trans('Pop-in Link')));
 		attributesContainer.append(requiredAttributes);
 		blockinfoContainerBody.append(attributesContainer);
 		blockinfoContainer.append(blockinfoContainerBody);
@@ -63,6 +65,18 @@ THE SOFTWARE.
 		optionalAttributes.append(optionalAttribute);
 		if (blockinfo.label) {
 			requiredAttributes.append(Simulators.simpleAttributeForInput(blockinfoElementId + '-label', 'text', 'label', Translator.trans('Label'), blockinfo.label, false, Translator.trans('BlockInfo label')));
+			optionalAttribute.hide();
+		} 
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + blockinfoElementId + '" data-type="select" data-name="display" data-placeholder="' + Translator.trans('Blockinfo display') + '" data-options="' + encodeURI(JSON.stringify( {'inline': Translator.trans('Inline'), 'grouped':Translator.trans('Grouped'), 'accordion': Translator.trans('Accordion'), 'pop-in': Translator.trans('Pop-in') } )) + '">' + Translator.trans('Display') + '</li>');
+		optionalAttributes.append(optionalAttribute);
+		if (blockinfo.display) {
+			requiredAttributes.append(Simulators.simpleAttributeForInput(blockinfoElementId + '-display', 'select', 'display', Translator.trans('Display'), blockinfo.display, false, Translator.trans('Blockinfo display'), JSON.stringify( {'inline': Translator.trans('Inline'), 'grouped':Translator.trans('Grouped'), 'accordion': Translator.trans('Accordion'), 'pop-in': Translator.trans('Pop-in') } )));
+			optionalAttribute.hide();
+		} 
+		optionalAttribute = $('<li class="list-group-item" tabindex="0" data-element="' + blockinfoElementId + '" data-type="text" data-name="popinLink" data-placeholder="' + Translator.trans('Pop-in Link') + '">' + Translator.trans('Pop-in Link') + '</li>');
+		optionalAttributes.append(optionalAttribute);
+		if (blockinfo.popinLink) {
+			requiredAttributes.append(Simulators.simpleAttributeForInput(blockinfoElementId + '-popinLink', 'text', 'popinLink', Translator.trans('Pop-in Link'), blockinfo.popinLink, false, Translator.trans('Pop-in Link')));
 			optionalAttribute.hide();
 		} 
 		optionalAttributesPanel.append(optionalAttributes);
@@ -147,6 +161,9 @@ THE SOFTWARE.
 			if (blockinfo['name']) {
 				blockinfo['name'] = $.trim(blockinfo['name']);
 			}
+			if (! blockinfo.popinLink) {
+				blockinfo.popinLink = '';
+			}
 			var oldLabel = '';
 			if ($(this).hasClass('validate-edit-blockinfo')) {
 				var oldBlockInfo = Simulators.findInArray(steps, [{ key: 'id', val: stepId, list: 'panels' }, { key: 'id', val: panelId, list: 'blocks' }, { key: 'id', val: id }]);
@@ -217,6 +234,22 @@ THE SOFTWARE.
 			blockinfoPanelContainer.find('.alert').show();
 			return false;
 		}
+		var display = $.trim($('#' + blockinfoElementId + '-display').val());
+		if (display == 'pop-in') {
+			var popinLink = $.trim($('#' + blockinfoElementId + '-popinLink').val());
+			if (popinLink == '') {
+				blockinfoPanelContainer.find('.error-message').text(Translator.trans('The pop-in link text is required when display is pop-in'));
+				blockinfoPanelContainer.find('.alert').show();
+				return false;
+			}
+		} else if (display == 'accordion') {
+			var label = $.trim($('#' + blockinfoElementId + '-label').val());
+			if (label == '') {
+				blockinfoPanelContainer.find('.error-message').text(Translator.trans('The label is required when display is accordion'));
+				blockinfoPanelContainer.find('.alert').show();
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -241,7 +274,9 @@ THE SOFTWARE.
 				id: parseInt(id) + 1, 
 				name: '',
 				label: '',
-				sections: []
+				display: 'inline',
+				popinLink: '',
+				chapters: []
 			};
 			$('.toggle-collapse-all').hide();
 			$('.update-button').hide();

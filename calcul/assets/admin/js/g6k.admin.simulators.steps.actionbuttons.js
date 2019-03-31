@@ -169,13 +169,20 @@ THE SOFTWARE.
 				if (action.for == 'function') {
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
 					if (functs.arguments.step && functs.arguments.step == stepId &&
-						functs.arguments.panel && functs.arguments.panel == panelId &&
-						functs.arguments.fieldset && functs.arguments.fieldset == oldId) {
-						functs.arguments.fieldset = id;
-						action.uri = JSON.stringify(functs).replace(/"/g, "'");
-						$('#step-' + step.id + '-action-button-' + action.name)
-						.find("p[data-attribute='fieldset']")
-						.attr('data-value', id);
+						functs.arguments.panel && functs.arguments.panel == panelId) {
+						if (functs.arguments.fieldset && functs.arguments.fieldset == oldId) {
+							functs.arguments.fieldset = id;
+							action.uri = JSON.stringify(functs).replace(/"/g, "'");
+							$('#step-' + step.id + '-action-button-' + action.name)
+							.find("p[data-attribute='fieldset']")
+							.attr('data-value', id);
+						} else if (functs.arguments.blockgroup && functs.arguments.blockgroup == oldId) {
+							functs.arguments.blockgroup = id;
+							action.uri = JSON.stringify(functs).replace(/"/g, "'");
+							$('#step-' + step.id + '-action-button-' + action.name)
+							.find("p[data-attribute='blockgroup']")
+							.attr('data-value', id);
+						}
 					}
 				}
 			});
@@ -189,11 +196,16 @@ THE SOFTWARE.
 				if (action.for == 'function') {
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
 					if (functs.arguments.step && functs.arguments.step == stepId &&
-						functs.arguments.panel && functs.arguments.panel == panelId &&
-						functs.arguments.fieldset && functs.arguments.fieldset == id) {
-						$('#step-' + step.id + '-action-button-' + action.name)
-						.find("p[data-attribute='fieldset']")
-						.text(legend);
+						functs.arguments.panel && functs.arguments.panel == panelId) {
+						if (functs.arguments.fieldset && functs.arguments.fieldset == id) {
+							$('#step-' + step.id + '-action-button-' + action.name)
+							.find("p[data-attribute='fieldset']")
+							.text(legend);
+						} else if (functs.arguments.blockgroup && functs.arguments.blockgroup == id) {
+							$('#step-' + step.id + '-action-button-' + action.name)
+							.find("p[data-attribute='blockgroup']")
+							.text(legend);
+						}
 					}
 				}
 			});
@@ -207,10 +219,14 @@ THE SOFTWARE.
 				if (action.for == 'function') {
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
 					if (functs.arguments.step && functs.arguments.step == stepId &&
-						functs.arguments.panel && functs.arguments.panel == panelId &&
-						functs.arguments.fieldset && functs.arguments.fieldset == id) {
-						found = action.label;
-						return false;
+						functs.arguments.panel && functs.arguments.panel == panelId) {
+						if (functs.arguments.fieldset && functs.arguments.fieldset == id) {
+							found = action.label;
+							return false;
+						} else if (functs.arguments.blockgroup && functs.arguments.blockgroup == id) {
+							found = action.label;
+							return false;
+						}
 					}
 				}
 			});
@@ -437,13 +453,20 @@ THE SOFTWARE.
 				if (action.for == 'function') {
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
 					if (functs.arguments.step && functs.arguments.step == stepId &&
-						functs.arguments.panel && functs.arguments.panel == panelId &&
-						functs.arguments.blockinfo && functs.arguments.blockinfo == oldId) {
-						functs.arguments.blockinfo = id;
-						action.uri = JSON.stringify(functs).replace(/"/g, "'");
-						$('#step-' + step.id + '-action-button-' + action.name)
-						.find("p[data-attribute='blockinfo']")
-						.attr('data-value', id);
+						functs.arguments.panel && functs.arguments.panel == panelId) {
+						if (functs.arguments.blockinfo && functs.arguments.blockinfo == oldId) {
+							functs.arguments.blockinfo = id;
+							action.uri = JSON.stringify(functs).replace(/"/g, "'");
+							$('#step-' + step.id + '-action-button-' + action.name)
+							.find("p[data-attribute='blockinfo']")
+							.attr('data-value', id);
+						} else if (functs.arguments.blockgroup && functs.arguments.blockgroup == oldId) {
+							functs.arguments.blockgroup = id;
+							action.uri = JSON.stringify(functs).replace(/"/g, "'");
+							$('#step-' + step.id + '-action-button-' + action.name)
+							.find("p[data-attribute='blockgroup']")
+							.attr('data-value', id);
+						}
 					}
 				}
 			});
@@ -457,11 +480,16 @@ THE SOFTWARE.
 				if (action.for == 'function') {
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
 					if (functs.arguments.step && functs.arguments.step == stepId &&
-						functs.arguments.panel && functs.arguments.panel == panelId &&
-						functs.arguments.blockinfo && functs.arguments.blockinfo == id) {
-						$('#step-' + step.id + '-action-button-' + action.name)
-						.find("p[data-attribute='blockinfo']")
-						.text(label);
+						functs.arguments.panel && functs.arguments.panel == panelId) {
+						if (functs.arguments.blockinfo && functs.arguments.blockinfo == id) {
+							$('#step-' + step.id + '-action-button-' + action.name)
+							.find("p[data-attribute='blockinfo']")
+							.text(label);
+						} else if (functs.arguments.blockgroup && functs.arguments.blockgroup == id) {
+							$('#step-' + step.id + '-action-button-' + action.name)
+							.find("p[data-attribute='blockgroup']")
+							.text(label);
+						}
 					}
 				}
 			});
@@ -475,10 +503,14 @@ THE SOFTWARE.
 				if (action.for == 'function') {
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
 					if (functs.arguments.step && functs.arguments.step == stepId &&
-						functs.arguments.panel && functs.arguments.panel == panelId &&
-						functs.arguments.blockinfo && functs.arguments.blockinfo == id) {
-						found = action.label;
-						return false;
+						functs.arguments.panel && functs.arguments.panel == panelId) {
+						if (functs.arguments.blockinfo && functs.arguments.blockinfo == id) {
+							found = action.label;
+							return false;
+						} else if (functs.arguments.blockgroup && functs.arguments.blockgroup == id) {
+							found = action.label;
+							return false;
+						}
 					}
 				}
 			});
@@ -704,7 +736,7 @@ THE SOFTWARE.
 				if (action.for == 'function') { // always true
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
 					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'function', Translator.trans('Function'), functs.function, functs.function, true, Translator.trans('Select a function'), JSON.stringify(functions.labels)));
-					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'appliedto', Translator.trans('Applied to'), functs.appliedto, functs.appliedto, true, Translator.trans('Select a target'), JSON.stringify({ 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'step': Translator.trans('Step'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') })));
+					requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId, 'select', 'appliedto', Translator.trans('Applied to'), functs.appliedto, functs.appliedto, true, Translator.trans('Select a target'), JSON.stringify({ 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'step': Translator.trans('Step'), 'panel': Translator.trans('Panel'), 'blockgroup': Translator.trans('Grouping of information block/group of fields'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') })));
 					if (functs.arguments.data) {
 						var datasList = {};
 						$.each(Simulators.dataset, function( name, data) {
@@ -724,7 +756,10 @@ THE SOFTWARE.
 						} else if (functs.arguments.panel) {
 							var targetPanels = Simulators.makeTargetPanels(functs.arguments.step);
 							requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId + '-argument', 'select', 'panel', Translator.trans('Panel'), functs.arguments.panel, functs.arguments.panel, true, Translator.trans('Select a panel'), JSON.stringify(targetPanels)));
-							if (functs.arguments.fieldset) {
+							if (functs.arguments.blockgroup) {
+								var targetBlockGroups = Simulators.makeTargetBlockGroups(functs.arguments.step, functs.arguments.panel);
+								requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId + '-argument', 'select', 'blockgroup', Translator.trans('Block belonging to the grouping'), functs.arguments.blockgroup, functs.arguments.blockgroup, true, Translator.trans('Select a block belonging to the group'), JSON.stringify(targetBlockGroups)));
+							} else if (functs.arguments.fieldset) {
 								var targetFieldsets = Simulators.makeTargetFieldsets(functs.arguments.step, functs.arguments.panel);
 								requiredAttributes.append(Simulators.simpleAttributeForDisplay(actionElementId + '-argument', 'select', 'fieldset', Translator.trans('FieldSet'), functs.arguments.fieldset, functs.arguments.fieldset, true, Translator.trans('Select a fieldset'), JSON.stringify(targetFieldsets)));
 								if (functs.arguments.fieldrow) {
@@ -809,6 +844,32 @@ THE SOFTWARE.
 			}
 		});
 		return targetPanels;
+	}
+
+	Simulators.makeTargetBlockGroups = function(stepId, panelId) {
+		var targetBlockGroups = {};
+		$.each(steps, function(s, step) {
+			if (step.id == stepId) {
+				$.each(step.panels, function(p, panel) {
+					if (panel.id == panelId) {
+						$.each(panel.blocks, function(b, block) {
+							if (block.display != 'inline') {
+								var label;
+								if (block.type == 'fieldset') {
+									label = block.legend.content ? block.legend.content : Translator.trans('Fieldset %id% (nolegend)', { id: block.id });
+								} else {
+									label = block.label ? block.label: Translator.trans('Blockinfo %id% (nolabel)', { id: block.id });
+								}
+								targetBlockGroups[block.id] = label;
+							}
+						});
+						return false;
+					}
+				});
+				return false;
+			}
+		});
+		return targetBlockGroups;
 	}
 
 	Simulators.makeTargetFieldsets = function(stepId, panelId) {
@@ -1142,7 +1203,7 @@ THE SOFTWARE.
 				if (action.for == 'function') { // always true
 					var functs = JSON.parse(action.uri.replace(/'/g, '"'));
 					requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-function', 'select', 'function', Translator.trans('Function'), functs.function, true, Translator.trans('Select a function'), JSON.stringify(functions.labels)));
-					var appliedto = { 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
+					var appliedto = { 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'panel': Translator.trans('Panel'), 'blockgroup': Translator.trans('Grouping of information block/group of fields'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
 					$.each(appliedto, function(k, v) {
 						if ($.inArray(k, functions.targets[functs.function]) < 0) delete appliedto[k];
 					});
@@ -1172,7 +1233,10 @@ THE SOFTWARE.
 						} else if (functs.arguments.panel) {
 							var targetPanels = Simulators.makeTargetPanels(functs.arguments.step);
 							requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-argument-panel', 'select', 'panel', Translator.trans('Panel'), functs.arguments.panel, true, Translator.trans('Select a panel'), JSON.stringify(targetPanels)));
-							if (functs.arguments.fieldset) {
+							if (functs.arguments.blockgroup) {
+								var targetBlockGroups = Simulators.makeTargetBlockGroups(functs.arguments.step, functs.arguments.panel);
+								requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-argument-blockgroup', 'select', 'blockgroup', Translator.trans('Block belonging to the grouping'), functs.arguments.blockgroup, true, Translator.trans('Select a block belonging to the group'), JSON.stringify(targetBlockGroups)));
+							} else if (functs.arguments.fieldset) {
 								var targetFieldsets = Simulators.makeTargetFieldsets(functs.arguments.step, functs.arguments.panel);
 								requiredAttributes.append(Simulators.simpleAttributeForInput(actionElementId + '-argument-fieldset', 'select', 'fieldset', Translator.trans('FieldSet'), functs.arguments.fieldset, true, Translator.trans('Select a fieldset'), JSON.stringify(targetFieldsets)));
 								if (functs.arguments.fieldrow) {
@@ -1326,7 +1390,7 @@ THE SOFTWARE.
 			});
 			var funct = $(this).val();
 			var parent = $(this).closest('.form-group').parent();
-			var appliedto = { 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'panel': Translator.trans('Panel'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
+			var appliedto = { 'page': Translator.trans('Full page'), 'article': Translator.trans('Simulation block'), 'data': Translator.trans('Data'), 'datagroup': Translator.trans('Datagroup'), 'panel': Translator.trans('Panel'), 'blockgroup': Translator.trans('Grouping of information block/group of fields'), 'fieldset': Translator.trans('FieldSet'), 'fieldrow': Translator.trans('Fieldrow'), 'field': Translator.trans('Field'), 'prenote': Translator.trans('PreNote'), 'postnote': Translator.trans('PostNote'), 'blockinfo': Translator.trans('BlockInfo'), 'chapter': Translator.trans('Chapter'), 'section': Translator.trans('Section'), 'content': Translator.trans('Section content'), 'annotations': Translator.trans('Section annotations'), 'footnote': Translator.trans('FootNote') };
 			$.each(appliedto, function(k, v) {
 				if ($.inArray(k, functions.targets[funct]) < 0) delete appliedto[k];
 			});
@@ -1433,6 +1497,16 @@ THE SOFTWARE.
 						parent.append(Simulators.simpleAttributeForInput(actionElementId + '-argument-blockinfo', 'select', 'blockinfo', Translator.trans('BlockInfo'), '', true, Translator.trans('Select a blockinfo'), JSON.stringify(targetBlockinfos)));
 						Simulators.bindActionButtonBlockinfo(actionPanelContainer);
 						actionPanelContainer.find('select[data-attribute=blockinfo]').trigger('change');
+					}
+					break;
+				case 'blockgroup':
+					var stepId = actionElementId.match(/^step\-(\d+)\-/)[1];
+					var panelId = actionPanelContainer.find('select[data-attribute=panel]').val();
+					var targetBlockGroups = Simulators.makeTargetBlockGroups(stepId, panelId);
+					if (Object.keys(targetBlockGroups).length == 0) {
+						Simulators.showActionButtonAppliedToError(actionPanelContainer);
+					} else {
+						parent.append(Simulators.simpleAttributeForInput(actionElementId + '-argument-blockgroup', 'select', 'blockgroup', Translator.trans('Block belonging to the grouping'), '', true, Translator.trans('Select a block belonging to the group'), JSON.stringify(targetBlockGroups)));
 					}
 					break;
 				default:
@@ -1729,6 +1803,11 @@ THE SOFTWARE.
 							if (action.blockinfo) {
 								uri.arguments.blockinfo = action.blockinfo;
 								delete action['blockinfo'];
+							}
+						case 'blockgroup':
+							if (action.blockgroup) {
+								uri.arguments.blockgroup = action.blockgroup;
+								delete action['blockgroup'];
 							}
 						case 'panel':
 							if (action.panel) {
