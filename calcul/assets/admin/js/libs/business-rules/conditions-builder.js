@@ -508,9 +508,9 @@ THE SOFTWARE.
 			var div = $("<div>", {"class": "conditional " + kind});
 			var selectWrapper = $("<div>", {"class": "all-any-none-wrapper"});
 			var data = {
-				all: Translator.trans("All"),
-				any: Translator.trans("Any"),
-				none: Translator.trans("None"),
+				all: Translator.trans("all"),
+				any: Translator.trans("any"),
+				none: Translator.trans("none"),
 				selected: kind
 			};
 			var select = $("<span>", {
