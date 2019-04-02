@@ -889,7 +889,7 @@ class Data extends DatasetChild {
 				return $this->value;
 			}
 			$fraction =  NumberFunction::$fractionDigit;
-			if ($this->round != null && $this->round != NumberFunction::$fractionDigit) {
+			if ($this->round !== null && $this->round != NumberFunction::$fractionDigit) {
 				NumberFunction::$fractionDigit = $this->round;
 			}
 			$value = "";
@@ -918,16 +918,16 @@ class Data extends DatasetChild {
 			switch ($this->type) {
 				case 'money': 
 					$value = MoneyFunction::toMoney($value);
-					$round = $this->round == null ? 2 : $this->round;
+					$round = $this->round === null ? 2 : $this->round;
 					$value = is_numeric($value) ? ''.round($value, $round, PHP_ROUND_HALF_EVEN) : $value;
 					break;
 				case 'percent':
 					$value = PercentFunction::toPercent($value);
-					$round = $this->round == null ? 2 : $this->round;
+					$round = $this->round === null ? 2 : $this->round;
 					$value = is_numeric($value) ? ''.round($value, $round, PHP_ROUND_HALF_EVEN) : $value;
 					break;
 				case 'number':
-					if ($this->round == null) {
+					if ($this->round === null) {
 						$value = ''.NumberFunction::toNumber($value);
 					} else {
 						$value = ''.round(NumberFunction::toNumber($value), $this->round, PHP_ROUND_HALF_EVEN);
