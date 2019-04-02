@@ -3013,7 +3013,7 @@ class Simulator {
 					if ($gdata->getUnparsedIndex() != '') {
 						$attrs .= ' index="' . $gdata->getUnparsedIndex() . '"'; 
 					}
-					if ($gdata->getRound() != null) {
+					if ($gdata->getRound() !== null) {
 						$attrs .= ' round="' . $gdata->getRound() . '"'; 
 					}
 					if ($gdata->getUnit() != '') {
@@ -3089,7 +3089,7 @@ class Simulator {
 				if ($data->getUnparsedIndex() != '') {
 					$attrs .= ' index="' . $data->getUnparsedIndex() . '"'; 
 				}
-				if ($data->getRound() != null) {
+				if ($data->getRound() !== null) {
 					$attrs .= ' round="' . $data->getRound() . '"'; 
 				}
 				if ($data->getUnit() != '') {
