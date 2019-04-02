@@ -355,6 +355,20 @@ THE SOFTWARE.
 	{{ text|htmlraw }}
 {% endmacro %}
 
+{% macro textoutput(text) %}
+{%- if text matches '/^https?\:\/\//' -%}
+	{%- if text matches '/(jpg|jpeg|gif|png)$/i' -%}
+	<img src="{{ text }}" alt="{{ text }}">
+	{%- else -%}
+	<a href="{{ text }}">{{ text }}</a>
+	{%- endif -%}
+{%- elseif text matches '/^data\:image\//' -%}
+	<img src="{{ text }}" alt="*">
+{%- else -%}
+{{ text }}
+{%- endif -%}
+{% endmacro %}
+
 {% macro heading(text, level, class) %}
 	{% if text.content is defined %}
 		{% set text = text.content %}

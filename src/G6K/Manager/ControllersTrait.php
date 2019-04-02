@@ -518,6 +518,17 @@ trait ControllersTrait {
 				case 'multichoice': 
 					$value = implode(',', $value);
 					break;
+				case 'text':
+					if (preg_match('/^https?\:\/\//', $value)) {
+						if (preg_match('/(jpg|jpeg|gif|png|svg)$/i', $value)) {
+							$value = '<img src="'.$value.'" alt="'.$value.'">';
+						} else {
+							$value = '<a href="'.$value.'">'.$value.'</a>';
+						}
+					} elseif (preg_match('/^data\:image\//', $value)) {
+						$value = '<img src="'.$value.'" alt="*">';
+					}
+					break;
 			}
 			return $value;
 		}

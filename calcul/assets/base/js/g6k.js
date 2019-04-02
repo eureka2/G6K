@@ -5325,6 +5325,17 @@ THE SOFTWARE.
 					digitalGroupSpacing: this.groupingSize
 				});
 			}
+			if (value && data.type === "text") {
+				if (/^https?\:\/\//.test(value)) {
+					if (/(jpg|jpeg|gif|png|svg)$/i.test(value)) {
+						value = '<img src="'+value+'" alt="'+value+'">';
+					} else {
+						value = '<a href="'+value+'">'+value+'</a>';
+					}
+				} else if (/^data\:image\//.test(value)) {
+					value = '<img src="'+value+'" alt="*">';
+				}
+			}
 			if ($.isArray(value)) {
 				value = value.join(", ");
 			}

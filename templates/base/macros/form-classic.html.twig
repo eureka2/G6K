@@ -244,6 +244,8 @@ THE SOFTWARE.
 		{%- else -%}
 		{{ plainValue }}
 		{%- endif -%}
+	{%- elseif type == 'text' -%}
+		{{ form.textoutput(value) }}
 	{%- else -%}
 		{{ value }}
 	{%- endif -%}
