@@ -1,0 +1,26 @@
+.Base64image .input-group > label {
+	width: 100% !important;
+	height: auto;
+	display: inline;
+	overflow: hidden;
+	font-weight: normal;
+	cursor: pointer;
+}
+.Base64image .input-group > label > input {
+	position: relative;
+	display: none;
+}
+
+.Base64image-label .input-group > label > img {
+	display: inline-block;
+	width: 100%;
+	height: auto;
+}
+.Base64image.image-loaded {
+	line-height: 60px;
+	vertical-align: middle;
+}
+.Base64image.image-loaded .input-group > label > img {
+	width: 60px;
+	height: 60px;
+}
