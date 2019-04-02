@@ -153,6 +153,14 @@ parameters:
                 - css/ChoiceSlider.css
             js: 
                 - js/ChoiceSlider.js
+        Base64image:
+            label: Loads the content of a data with the url of an uploaded image in base64 format
+            target: [ text ]
+            input: [ text ]
+            css: 
+                - css/Base64image.css
+            js: 
+                - js/Base64image.js
 
     functions:
         copyToClipboard:
