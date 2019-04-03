@@ -80,14 +80,16 @@ THE SOFTWARE.
 						var type = $(this).attr('type');
 						if (type == 'radio') {
 							if ($(this).attr('value') == value) {
-								$(this).prop('checked', true);
+								$(this).prop("checked", true);
+								var label = $(this).closest('label');
+								setTimeout(function() {
+									label.addClass('checked');
+								}, 0);
+							} else {
+								return true; // continue
 							}
-						} else if (type == 'checkbox') {
-							$(this).prop('checked', value);
-						} else if (type != 'hidden') {
-							$(this).val(value);
 						}
-						$(this).trigger('change');
+						g6k.setValue(name, value);
 					});
 				});
 				if (callback) {
