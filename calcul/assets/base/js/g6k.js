@@ -5255,6 +5255,9 @@ THE SOFTWARE.
 				var that = $(this);
 				that.data('g6k', self);
 				funct.call(null, that, func, function(ok, message) {
+					if (self.hasGlobalError) {
+						self.removeGlobalError();
+					}
 					if (message) {
 						if (ok) {
 							var mess = $('<div>', { 
