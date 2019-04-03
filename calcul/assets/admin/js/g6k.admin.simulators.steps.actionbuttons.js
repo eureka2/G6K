@@ -1828,19 +1828,25 @@ THE SOFTWARE.
 			}
 			var newActionButtonPanel = Simulators.drawActionButtonForDisplay(action);
 			if ($(this).hasClass('validate-edit-action')) {
-				actionContainer.replaceWith(newActionButtonPanel.find('.action-button-container'));
-				if (oldName != action.name) {
-					Simulators.changeActionButtonNameInRules(stepId, oldName, action.name);
-				}
-				var oldLabel = Simulators.actionButtonBackup.find("p[data-attribute='label']").attr('data-value');
-				if (action.label != oldLabel) {
-					var title = actionPanelContainer.find('> .card > .card-header').find('> h4 > a');
-					title.text('' + Translator.trans('Action Button') + ' : ' + action.label);
-				}
-				Simulators.changeActionButtonLabelInRules(stepId, action.name, action.label)
 				delete action['stepId'];
 				Simulators.updateInArray(steps, [{ key: 'id', val: stepId, list: 'actions' }, { key: 'name', val: oldName }], action);
-				newActionButtonPanel = actionPanelContainer;
+				var oldLabel = Simulators.actionButtonBackup.find("p[data-attribute='label']").attr('data-value');
+				if (oldName != action.name) {
+					Simulators.changeActionButtonNameInRules(stepId, oldName, action.name);
+					if (action.label != oldLabel) {
+						Simulators.changeActionButtonLabelInRules(stepId, action.name, action.label)
+					}
+					actionPanelContainer.replaceWith(newActionButtonPanel);
+					Simulators.bindActionButtonButtons(newActionButtonPanel);
+				} else {
+					actionContainer.replaceWith(newActionButtonPanel.find('.action-button-container'));
+					if (action.label != oldLabel) {
+						var title = actionPanelContainer.find('> .card > .card-header').find('> h4 > a');
+						title.text('' + Translator.trans('Action Button') + ' : ' + action.label);
+						Simulators.changeActionButtonLabelInRules(stepId, action.name, action.label)
+					}
+					newActionButtonPanel = actionPanelContainer;
+				}
 			} else {
 				actionPanelContainer.replaceWith(newActionButtonPanel);
 				Simulators.bindActionButtonButtons(newActionButtonPanel);
