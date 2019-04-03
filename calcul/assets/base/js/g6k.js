@@ -5269,7 +5269,7 @@ THE SOFTWARE.
 								}, 10);
 							});
 						} else {
-							self.setGlobalError(message);
+							self.setGlobalError(Translator.trans(message));
 						}
 					}
 				});
