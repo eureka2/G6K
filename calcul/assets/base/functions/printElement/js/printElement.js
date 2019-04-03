@@ -28,6 +28,10 @@ THE SOFTWARE.
 	function printElement(clickable, func, callback) {
 		var parameters = func.arguments;
 		$('html').attr('moznomarginboxes', true);
+		$('body').css( {
+			'-webkit-print-color-adjust': 'exact',
+			'color-adjust': 'exact'
+		} );
 		var g6k = clickable.data('g6k');
 		if (clickable.is('a')) {
 			clickable.attr('href', '');
@@ -47,7 +51,7 @@ THE SOFTWARE.
 		} else if (func.appliedto == 'page') {
 			clickable.on('click', function(event) {
 				event.preventDefault();
-				$('body').printThis();
+				window.print();
 				if (callback) {
 					callback(true);
 				}
