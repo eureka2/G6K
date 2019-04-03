@@ -567,3 +567,22 @@ div.admin-report .command-title {
 	font-weight: bold;
 	text-decoration: underline;
 }
+.wysihtml-toolbar li.dropdown.custom > ul > li {
+	margin-bottom: 0;
+}
+.wysihtml-toolbar li.dropdown.custom > ul > li:nth-child(2n) {
+	margin-bottom: 0;
+	background: #eee;
+}
+.wysihtml-toolbar a.dropdown-item[data-wysihtml-command=insertDataReference] {
+	padding: 0 1.5rem;
+	white-space: normal;
+	font-size: 0.9em;
+}
+.wysihtml-toolbar li.dropdown.custom > ul.dropdown-menu {
+	max-height: 15rem;
+	overflow-y: scroll;
+	min-width: 15rem;
+	max-width: 25rem;
+	word-wrap: break-word;
+}

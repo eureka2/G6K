@@ -36,8 +36,15 @@ THE SOFTWARE.
 		insertData: function(context) {
 			var locale = context.locale;
 			var options = context.options;
-			var datas = [];
+			var labels = [];
 			$.each(Simulators.dataset, function(name, d) {
+				labels.push({id: d.id, label: d.label});
+			});
+			labels.sort(function (a, b) {
+				return a.label.localeCompare(b.label);
+			});
+			var datas = [];
+			$.each(labels, function(i, d) {
 				datas.push("\n\t\t\t\t" + '<li><a class="dropdown-item" data-wysihtml-command="insertDataReference" data-wysihtml-command-value="' + d.id + '|' + d.label + '">' + d.label + '</a></li>');
 			});
 			return `
