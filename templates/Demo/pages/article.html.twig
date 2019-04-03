@@ -9,9 +9,11 @@
 {% endblock %}
 
 {% block content %}
+		<div class="step-simulator-heading">
 		<h1>{% block page_title %}{{ step.simulator.label }}{% endblock %}</h1>
 		{{ form.paragraphs(step.simulator.description|jscode) }}
 		{{ form.breadcrumb(_context) }}
+		</div>
 
 		<div id="step{{ step.id }}" class="step-page step-container{% if step.simulator.dynamic %} dynamic{%- endif -%}{% if script == 0 %} no-js{%- endif -%}">
 			{{ form.heading(step.description, 2, "step-description legend") }}
