@@ -2968,7 +2968,9 @@ THE SOFTWARE.
 						return new Token(Token.TYPE.T_UNDEFINED, [arg]);
 					}
 					var type = functions[func.value][1][argc - 1];
-					if (arg.type != type) { 
+					if (type == Token.TYPE.T_TEXT && (arg.type == Token.TYPE.T_NUMBER || arg.type == Token.TYPE.T_DATE)) {
+						arg.value += '';
+					} else if (arg.type != type) { 
 						var expected = "";
 						switch (type) {
 							case Token.TYPE.T_NUMBER:
