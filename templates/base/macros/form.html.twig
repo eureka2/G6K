@@ -356,13 +356,13 @@ THE SOFTWARE.
 {% endmacro %}
 
 {% macro textoutput(text) %}
-{%- if text matches '/^https?\:\/\//' -%}
+{%- if text matches '/^https?\\:\\/\\//' -%}
 	{%- if text matches '/(jpg|jpeg|gif|png)$/i' -%}
 	<img src="{{ text }}" alt="{{ text }}">
 	{%- else -%}
 	<a href="{{ text }}">{{ text }}</a>
 	{%- endif -%}
-{%- elseif text matches '/^data\:image\//' -%}
+{%- elseif text matches '/^data\\:image\\//' -%}
 	<img src="{{ text }}" alt="*">
 {%- else -%}
 {{ text }}
