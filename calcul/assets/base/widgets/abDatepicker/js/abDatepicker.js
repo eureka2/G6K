@@ -24,7 +24,10 @@
 			}
 		}
 		input.datepicker(dateOptions);
- 	}
+		input.on('input propertychange', function(event) {
+			g6k.triggerChange($(this), true, true);
+		});
+	}
 
 	global.abDatepicker = abDatepicker;
 }(this));

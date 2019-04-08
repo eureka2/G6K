@@ -5078,7 +5078,7 @@ THE SOFTWARE.
 					$(this).focusNextInputField();
 				}
 			});
-			$("#g6k_form input[type=text][name], #g6k_form input[type=money][name], #g6k_form input[type=number][name]").on('input propertychange', function(event) {
+			$("#g6k_form input[type=text][name]:not([data-widget]), #g6k_form input[type=money][name]:not([data-widget]), #g6k_form input[type=number][name]:not([data-widget])").on('input propertychange', function(event) {
 				var elt = this;
 				if (!this.hasAttribute('minlength') || $(this).val().length >= parseInt($(this).attr('minlength'), 10)) {
 					self.triggerChange($(this), true, true);

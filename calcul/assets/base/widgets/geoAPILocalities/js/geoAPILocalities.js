@@ -206,14 +206,13 @@
 			onInput: function(val) {
 				if (selected) {
 					onComplete('', '', false, true);
-					geoAPIRemoveError(input, input2);
 					$('#' + id + 'localities-confirm').remove();
 					suggestions = [];
 					selected = null;
-				} if (val.length < 2) {
+				} else if (val.length < 2) {
 					onComplete('', '', false, true);
-					geoAPIRemoveError(input, input2);
 				}
+				geoAPIRemoveError(input, input2);
 			},
 			onTab: function() {
 				// nothing todo
@@ -246,7 +245,6 @@
 							temp.push(v);
 						}
 					});
-					geoAPIRemoveError(input, input2);
 					switch (temp.length) {
 						case 0:
 							geoAPISetError(input, input2, Translator.trans("The entered value does not allow to find the information of the locality."));

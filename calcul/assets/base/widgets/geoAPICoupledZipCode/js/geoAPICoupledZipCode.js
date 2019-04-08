@@ -1,12 +1,18 @@
 (function (global) {
 	"use strict";
 
+
+	var allowedKeys = [8, 9, 27, 35, 36, 37, 39, 46, 48, 49, 50, 51,52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
+
 	function geoAPICoupledZipCode (input, options, onComplete) {
+		var originaltype = input.attr('type');
 		input.attr('type', 'text');
-		input.attr('maxlength', 5);
 		var input2 = geoAPICoupledInput(input);
 		if (input2 !== false) {
+			input.attr('minlength', 5);
+			input.attr('maxlength', 5);
 			input2.attr('readonly', true);
+			input2.attr('tabindex', -1);
 			var initial = input.val();
 			if (/^\d{5}$/.test(initial)) {
 				$.getJSON(
@@ -32,6 +38,8 @@
 			} else { 
 				geoAPICoupledZipCode.editable(input, input2, initial, onComplete);
 			}
+		} else if (originaltype != 'text') {
+			input.attr('type', originaltype);
 		}
 	}
 
@@ -87,7 +95,6 @@
 	function geoAPIClearInput(input) {
 		input.removeAttr('aria-describedby');
 		input.removeAttr('aria-invalid');
-		input.removeAttr('class');
 	}
 
 	function geoAPISetError (input, error) {
@@ -105,7 +112,9 @@
 	function geoAPIRemoveError (input) {
 		var g6k = input.data('g6k');
 		setTimeout(function () {
-			g6k.removeError(input.attr('name'));
+			if (input.val() != '') {
+				g6k.removeError(input.attr('name'));
+			}
 		}, 500);
 		input.attr('aria-describedby', input.attr('id') + '-suggestions-help');
 		geoAPIClearInput(input);
@@ -115,16 +124,31 @@
 		if (!input1[0].hasAttribute('id')) {
 			 input1.attr('id', 'geoAPICoupledZipCode' + input1.attr('name'));
 		}
+
+		var suggestions = [];
+		var selected = null;
 		var isSelected = false;
-		input1.bind("keypress", function(event) {
-			if (event.keyCode == 13) {
+		input1.on("keydown", function(event) {
+			var key = event.which || event.keyCode;
+			if (allowedKeys.indexOf(key) < 0) {
 				event.preventDefault();
 				event.stopPropagation();
 			}
 		});
-
-		var suggestions = [];
-		var selected = null;
+		input1.on("blur", function(event) {
+			if (selected == null) {
+				var g6k = input1.data('g6k');
+				if (input1.val().length > 0) {
+					if (input1.val().length < 5) {
+						geoAPISetError (input1, Translator.trans('This value is not in the expected format'));
+					} else {
+						geoAPISetError (input1, Translator.trans('No town match this zipcode'));
+					}
+				}
+				input2.val("");
+				g6k.triggerChange(input2, true, false);
+			}
+		});
 
 		input1.autoComplete({
 			menuId: input1.attr('id') + '-suggestions',
@@ -172,10 +196,10 @@
 			},
 			onInput: function() {
 				if (selected) {
-					geoAPIRemoveError(input1);
 					suggestions = [];
 					selected = null;
 				}
+				geoAPIRemoveError(input1);
 			},
 			onTab: function() {
 			}
