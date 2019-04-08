@@ -161,6 +161,13 @@ parameters:
                 - css/Base64image.css
             js: 
                 - js/Base64image.js
+        SocialSecurityNumber:
+            label: Checks the entry of the French social security number
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/SocialSecurityNumber.js
 
     functions:
         copyToClipboard:
