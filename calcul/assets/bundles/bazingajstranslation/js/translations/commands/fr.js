@@ -86,6 +86,10 @@ t.add("Enter the name of the table : ", "Entrez le nom de la table:", "commands"
 t.add("Enter the name of the view : ", "Entrez le nom de la vue : ", "commands", "fr");
 t.add("Enter the new path of the asset relatively to the public directory : ", "Entrez le nouveau chemin de la ressource par rapport au r\u00e9pertoire public : ", "commands", "fr");
 t.add("Enter the path of the asset relatively to the public directory : ", "Entrez le chemin relatif de la ressource par rapport au r\u00e9pertoire public : ", "commands", "fr");
+t.add("ERROR: The business rule id #%id% is used multiple times.", "ERREUR: l'ID de la r\u00e8gle m\u00e9tier #%id% est utilis\u00e9 plusieurs fois.", "commands", "fr");
+t.add("ERROR: The business rule name '%name%' is used multiple times.", "ERREUR: le nom de la r\u00e8gle m\u00e9tier '%name%' est utilis\u00e9 plusieurs fois.", "commands", "fr");
+t.add("ERROR: The data id #%id% is used multiple times.", "ERREUR: l'ID de la donn\u00e9e #%id% est utilis\u00e9 plusieurs fois.", "commands", "fr");
+t.add("ERROR: The data name '%name%' is used multiple times.", "ERREUR: le nom de la donn\u00e9e '%name%' est utilis\u00e9 plusieurs fois.", "commands", "fr");
 t.add("Error while copying the database '%database%' in '%databasedir%' : '%message%'", "Erreur lors de la copie de la base de donn\u00e9es '%database%' dans '%databasedir%': '%message%'", "commands", "fr");
 t.add("Error while creating '%view%' in '%viewpath%' : %message%", "Erreur lors de la cr\u00e9ation de '%view%' dans '%viewpath%' : %message%", "commands", "fr");
 t.add("Error while migrating the templates : %s%", "Erreur lors de la migration des mod\u00e8les de page : %s%", "commands", "fr");
