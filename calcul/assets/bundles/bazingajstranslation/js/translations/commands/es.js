@@ -86,6 +86,10 @@ t.add("Enter the name of the table : ", "Ingrese el nombre de la tabla: ", "comm
 t.add("Enter the name of the view : ", "Ingrese el nombre de la vista: ", "commands", "es");
 t.add("Enter the new path of the asset relatively to the public directory : ", "Ingrese la nueva ruta del recurso en relaci\u00f3n con el directorio p\u00fablico: ", "commands", "es");
 t.add("Enter the path of the asset relatively to the public directory : ", "Introduzca la ruta del recurso en relaci\u00f3n con el directorio p\u00fablico: ", "commands", "es");
+t.add("ERROR: The business rule id #%id% is used multiple times.", "ERROR: el ID. de la regla de negocio #%id% se usa varias veces.", "commands", "es");
+t.add("ERROR: The business rule name '%name%' is used multiple times.", "ERROR: el nombre de la regla empresarial '%name%' se usa varias veces.", "commands", "es");
+t.add("ERROR: The data id #%id% is used multiple times.", "ERROR: el ID de datos #%id% se usa varias veces.", "commands", "es");
+t.add("ERROR: The data name '%name%' is used multiple times.", "ERROR: El nombre de los datos '%name%' se usa varias veces.", "commands", "es");
 t.add("Error while copying the database '%database%' in '%databasedir%' : '%message%'", "Error al copiar la base de datos '%database%' en '%databasedir%': '%message%'", "commands", "es");
 t.add("Error while creating '%view%' in '%viewpath%' : %message%", "Error al crear '%view%' en '%viewpath%': %message%", "commands", "es");
 t.add("Error while migrating the templates : %s%", "Error al migrar las plantillas: %s%", "commands", "es");

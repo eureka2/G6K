@@ -197,10 +197,16 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 			if (! $this->checkDataReferences($simu, $simulatorxpath, $output)) {
 				$ok = false;
 			}
+			if (! $this->checkDataUniqueness($simu, $simulatorxpath, $output)) {
+				$ok = false;
+			}
 			if (! $this->checkSources($simu, $simulatorxpath, $datasourcesxpath, $output)) {
 				$ok = false;
 			}
 			if (! $this->checkBusinessRules($simu, $simulatorxpath, $output)) {
+				$ok = false;
+			}
+			if (! $this->checkBusinessRulesUniqueness($simu, $simulatorxpath, $output)) {
 				$ok = false;
 			}
 		}
@@ -289,6 +295,44 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 				$id = $data->getAttribute('id');
 				if (!isset($usedData[$id])) {
 					$this->info($output, "NOTICE: The data #%id%: %name% isn't used.", array('%id%' => $id, '%name%' => $data->getAttribute('name')));
+				}
+			}
+		}
+		return $ok;
+	}
+
+	/**
+	 * Checks the uniqueness of id and data names
+	 *
+	 * @access  private
+	 * @param   string $simu The simulator name
+	 * @param   \DOMXPath $simulatorxpath The simulator xpath
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @return  bool true if id and data names are unique, false if not.
+	 *
+	 */
+	private function checkDataUniqueness(string $simu, \DOMXPath $simulatorxpath, OutputInterface $output) {
+		$ok = true;
+		$usedIds = array();
+		$usedNames = array();
+		$datas = $simulatorxpath->query("//DataSet//Data");
+		$len = $datas->length;
+		if ($len > 0) {
+			for($i = 0; $i < $len; $i++) {
+				$data = $this->getDOMElementItem($datas, $i);
+				$id = $data->getAttribute('id');
+				if (isset($usedIds[$id])) {
+					$this->info($output, "ERROR: The data id #%id% is used multiple times.", array('%id%' => $id));
+					$ok = false;
+				} else {
+					$usedIds[$id] = true;
+				}
+				$name = $data->getAttribute('name');
+				if (isset($usedNames[$name])) {
+					$this->info($output, "ERROR: The data name '%name%' is used multiple times.", array('%name%' => $name));
+					$ok = false;
+				} else {
+					$usedNames[$name] = true;
 				}
 			}
 		}
@@ -527,6 +571,44 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 			}
 		}
 		return $tables;
+	}
+
+	/**
+	 * Checks the uniqueness of id and business rule names
+	 *
+	 * @access  private
+	 * @param   string $simu The simulator name
+	 * @param   \DOMXPath $simulatorxpath The simulator xpath
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @return  bool true if id and data names are unique, false if not.
+	 *
+	 */
+	private function checkBusinessRulesUniqueness(string $simu, \DOMXPath $simulatorxpath, OutputInterface $output) {
+		$ok = true;
+		$usedIds = array();
+		$usedNames = array();
+		$brules = $simulatorxpath->query("//BusinessRules/BusinessRule");
+		$len = $brules->length;
+		if ($len > 0) {
+			for($i = 0; $i < $len; $i++) {
+				$data = $this->getDOMElementItem($brules, $i);
+				$id = $data->getAttribute('id');
+				if (isset($usedIds[$id])) {
+					$this->info($output, "ERROR: The business rule id #%id% is used multiple times.", array('%id%' => $id));
+					$ok = false;
+				} else {
+					$usedIds[$id] = true;
+				}
+				$name = $data->getAttribute('name');
+				if (isset($usedNames[$name])) {
+					$this->info($output, "ERROR: The business rule name '%name%' is used multiple times.", array('%name%' => $name));
+					$ok = false;
+				} else {
+					$usedNames[$name] = true;
+				}
+			}
+		}
+		return $ok;
 	}
 
 
