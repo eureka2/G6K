@@ -20221,13 +20221,32 @@ var wysihtmlParserRules = {
 			`<a title="Add a piece of computer code" class="btn btn-light" data-wysihtml-command="formatCode" data-wysihtml-command-value="language-html"><span class="fa fa-code"></span></a>`,
 
 		'table':
-			`<a title="Create table" class="btn btn-light" data-wysihtml-command="createTable"><span class="fa fa-table"></span></a>`,
+			`<button title="Create table" id="wysiwyg-create-table" style="padding: 4px 6px 4px 6px" type="button" data-wysihtml-command-group="createTable" class="btn btn-light" tabindex="-1" aria-haspopup="true" aria-expanded="false">
+				<span style="display: inline-table; margin: 0; padding: 0; height: 20px;">
+					<span style="display: table-row; margin: 0; padding: 0;">
+						<span class="fa fa-table" style="display: table-cell; color: black;"></span>
+						<b style="display: table-cell; vertical-align: middle; float:right; margin: 0 0 0 6px; padding-bottom: 2px;" class="caret"></b>
+					</span>
+				</span>
+			</button>
+			<div class="dropdown-menu wysihtml-table popover bottom" role="list" aria-label="Table">
+				<div class="arrow"></div>
+				<div class="wysihtml-dimension-picker">
+					<div class="wysihtml-dimension-picker-mousecatcher" data-cols="1" data-rows="1"></div>
+					<div class="wysihtml-dimension-picker-highlighted"></div>  
+					<div class="wysihtml-dimension-picker-unhighlighted"></div>
+				</div>
+				<div class="wysihtml-dimension-display">1 x 1</div>
+			</div>`,
 
 		'undo':
 			`<div class="btn-group">
 				<a title="Undo" class="btn btn-light" data-wysihtml-command="undo"><span class="fa fa-undo"></span></a>
 				<a title="Redo" class="btn btn-light" data-wysihtml-command="redo"><span class="fa fa-redo"></span></a>
 			</div>`,
+
+		'fullscreen':
+			`<a title="Full screen" class="btn btn-light" data-wysihtml-command="fullscreen"><span class="fa fa-expand"></span></a>`,
 
 		'html':
 			`<a title="HTML view" class="btn btn-light" data-wysihtml-action="change_view"><span class="fa fa-chevron-left"></span><span class="fa fa-chevron-right"></span></a>`
@@ -20282,20 +20301,6 @@ var wysihtmlParserRules = {
 				<div class="alert" role="alert" style="display: none;"></div>
 			</div>`,
 
-		'createTable':
-			`<div class="row" data-wysihtml-dialog="createTable" style="display: none;">
-				<label class="col-form-label">
-					<span>Rows:</span>
-					<input class="form-control form-control-sm" data-wysihtml-dialog-field="rows" value="2">
-				</label>
-				<label class="col-form-label">
-					<span>Cols:</span>
-					<input class="form-control form-control-sm" data-wysihtml-dialog-field="cols" value="2">
-				</label>
-				<a class="btn btn-primary btn-sm" tabindex="0" data-wysihtml-dialog-action="save">OK</a>&nbsp;<a class="btn btn-secondary btn-sm" tabindex="0" data-wysihtml-dialog-action="cancel">Cancel</a>
-				<div class="alert" role="alert" style="display: none;"></div>
-			</div>`,
-
 		'tableTools':
 			`<div class="popover data-wysihtml-hiddentools" data-placement="top" style="display: none;">
 				<div class="arrow"></div>
@@ -20342,10 +20347,10 @@ var wysihtmlParserRules = {
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&nbsp;<span class="fa fa-close"></span></span>
-							</button>
 							<h4 id="wysihtml-modal-title" class="modal-title">TITLE</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
 						</div>
 						<div class="modal-body">
 							<div class="body-content"></div>
@@ -20748,6 +20753,28 @@ var wysihtmlParserRules = {
 		return li;
 	}
 
+	var makeToolCreateTable = function(self, container) {
+		var option = getOption('table');
+		if (self.options.toolbar[option]) {
+			var li = $('<li>', {
+				'class': 'create-table dropdown',
+				'tabindex': '0',
+				'data-wysihtml-template': 'table',
+				'data-wysihtml-option': 'table'
+			});
+			li.append($(toolbar['table']));
+			li.find('button').attr('data-wysihtml-command-group', 'createTable');
+			li.find('.wysihtml-dimension-picker-mousecatcher').css({
+				width: self.options.createTableMaxSize.col + 'em',
+				height: self.options.createTableMaxSize.row + 'em'
+			});
+			li.find('.wysihtml-dimension-picker-unhighlighted').css({
+				width: self.options.createTableMaxSize.col + 'em'
+			});
+			container.append(li);
+		}
+	}
+
 	var makeFontsTool = function(self, command) {
 		command = command || 'fontName';
 		var fonts = self.fonts.getFonts();
@@ -20861,6 +20888,7 @@ var wysihtmlParserRules = {
 			'code': true,
 			'table': true,
 			'undo': true,
+			'fullscreen': true,
 			'html': true
 		},
 		customTemplates: {},
@@ -20888,6 +20916,10 @@ var wysihtmlParserRules = {
 		tableToolsOffset: {
 			top: 0,
 			left: 0
+		},
+		createTableMaxSize: {
+			col: 10,
+			row: 10
 		},
 		pasteParserRulesets: null,
 		copyedFromMarking: '<meta name="copied-from" content="wysihtml">',
@@ -21042,7 +21074,7 @@ var wysihtmlParserRules = {
 				var option = $(this).text();
 				$(this).text(self.options.translate(option));
 			});
-			self.modal.find('button.close').text(self.options.translate('Close'));
+			self.modal.find('button.close').attr('aria-label', self.options.translate('Close'));
 			self.modal.find('button.modal-cancel').text(self.options.translate('Cancel'));
 			self.modal.find('button.modal-ok').text(self.options.translate('OK'));
 		}
@@ -21406,9 +21438,17 @@ var wysihtmlParserRules = {
 				$(this).trigger('click');
 			}
 		});
+		self.toolbar.find('li.dropdown[data-wysihtml-option], li.custom.dropdown').on('click', function(e) {
+			$(this).find('button').trigger('click');
+		});
 		self.toolbar.find('li.dropdown button').on('click', function(e) {
 			if ($(this).attr('aria-haspopup') && $(this).attr('aria-haspopup') === 'true') {
+				e.stopPropagation();
 				if ($(this).attr('aria-expanded') === 'false') {
+					self.toolbar.find('li.dropdown button[aria-expanded=true]').each(function() {
+						$(this).parent().find('.dropdown-menu').hide();
+						$(this).attr('aria-expanded', false);
+					});
 					$(this).parent().find('.dropdown-menu').show();
 					$(this).attr('aria-expanded', true);
 					var active = $(this).parent().find('a.wysihtml-command-active');
@@ -21467,6 +21507,38 @@ var wysihtmlParserRules = {
 					next.find('a').focus();
 					break;
 			}
+		});
+		self.toolbar.find('li.create-table .wysihtml-dimension-picker-mousecatcher').on('click', function(e) {
+			var cols = $(this).attr('data-cols');
+			var rows = $(this).attr('data-rows');
+			self.editor.composer.commands.exec("createTable", { cols: cols, rows: rows });
+		});
+		self.toolbar.find('li.create-table .wysihtml-dimension-picker-mousecatcher').on('mousemove', function(e) {
+			var offset;
+			if (e.offsetX === undefined) {
+				var pos = $(this).offset();
+				offset = {
+					x: e.pageX - pos.left,
+					y: e.pageY - pos.top
+				};
+			} else {
+				offset = {
+					x: e.offsetX,
+					y: e.offsetY
+				};
+			}
+			var pixelsPerEm = 18;
+			var dim = {
+				c: Math.ceil(offset.x / pixelsPerEm) || 1,
+				r: Math.ceil(offset.y / pixelsPerEm) || 1
+			};
+			$(this).next().css({ width: dim.c + 'em', height: dim.r + 'em' });
+			$(this).attr('data-cols', dim.c);
+			$(this).attr('data-rows', dim.r);
+			if (dim.r > 3 && dim.r < self.options.createTableMaxSize.row) {
+				$(this).next().next().css({ height: dim.r + 1 + 'em' });
+			}
+			$(this).parent().next().html(dim.c + ' x ' + dim.r);
 		});
 		self.toolbar.find('li.color-picker .dropdown-menu tbody tr td a').on('click', function(e) {
 			var dropdownMenu = $(this).parents('.dropdown-menu');
@@ -21669,7 +21741,7 @@ var wysihtmlParserRules = {
 				e.stopPropagation();
 			}
 		});
-		self.toolbar.find('div[data-wysihtml-dialog=createLink] a[data-wysihtml-dialog-action=cancel], div[data-wysihtml-dialog=createTable] a[data-wysihtml-dialog-action=cancel] ').on('click keydown', function(e) {
+		self.toolbar.find('div[data-wysihtml-dialog=createLink] a[data-wysihtml-dialog-action=cancel]').on('click keydown', function(e) {
 			if (e.type == 'click') {
 				e.preventDefault();
 				e.stopPropagation();
@@ -21867,6 +21939,16 @@ var wysihtmlParserRules = {
 				});
 			});
 		});
+		self.editor.on('fullscreen:composer', function(button) {
+			$(button).find('span').removeClass('fa-expand');
+			$(button).find('span').addClass('fa-compress');
+			$(button).attr('title', self.options.translate('Exit full screen mode'));
+		});
+		self.editor.on('normalscreen:composer', function(button) {
+			$(button).find('span').removeClass('fa-compress');
+			$(button).find('span').addClass('fa-expand');
+			$(button).attr('title', self.options.translate('Full screen'));
+		});
 	}
 
 	var initialize = function(self) {
@@ -21886,7 +21968,7 @@ var wysihtmlParserRules = {
 		makeToolDropdownCommands(self, makeFontsTool(self, 'fontNameStyle'), tools);
 		makeToolDropdownCustom(self, 'font-fixed-sizes', tools);
 		makeToolDropdownCommands(self, 'font-named-sizes', tools);
-		makeToolCommands(self, 'table', tools);
+		makeToolCreateTable(self, tools);
 		makeToolCommands(self, 'code', tools);
 		makeToolDropdownCommands(self, makeColorsTool(self, 'foreColor', false, 'Text color'), tools);
 		makeToolDropdownCommands(self, makeColorsTool(self, 'hiliteColor', true, 'Text highlight color'), tools);
@@ -21897,6 +21979,7 @@ var wysihtmlParserRules = {
 			}
 		});
 		makeToolCommands(self, 'undo', tools);
+		makeToolCommands(self, 'fullscreen', tools);
 		makeToolCommands(self, 'html', tools);
 		wysitoolbar.append(tools);
 		$.each(dialogs, function(key, dialog) {
@@ -21914,6 +21997,7 @@ var wysihtmlParserRules = {
 		});
 		self.editable.wrap($('<div>', { 'class': 'container-fluid', 'style': 'padding: 0; margin: 0;' }));
 		self.editable.before(wysitoolbar);
+		self.editable.addClass('wysihtml-editable');
 		self.toolbar = wysitoolbar;
 		self.modal = self.toolbar.find('div[data-wysihtml-dialog="modalDialog"]').modal({show:false});
 		translate(self);
@@ -22588,6 +22672,43 @@ wysihtml.commands.hiliteColor = (function() {
 
 		state: function(composer, command, color) {
 			return wysihtml.commands.formatInline.state(composer, command, {className: "wysiwyg-hilite-color-" + color});
+		}
+	};
+})();
+
+wysihtml.commands.fullscreen = (function() {
+
+	return {
+		exec: function(composer, command) {
+
+			var editor = composer.commands.editor;
+			var elem = composer.editableArea.parentElement;
+			var editable = elem.querySelector('.wysihtml-editable');
+			var toolbar = elem.querySelector('.wysihtml-toolbar');
+
+			function onResize() {
+				composer.editableArea.style.height = editable.style.height = (window.innerHeight - toolbar.offsetHeight) + 'px';
+				wysihtml.dom.copyStyles(['height', 'width']).from(composer.editableArea).to(composer.blurStylesHost).andTo(composer.focusStylesHost);
+			}
+			
+			if (elem.classList.contains('fullscreen')) {
+				window.removeEventListener('resize', onResize, false);
+				elem.classList.remove('fullscreen');
+				composer.editableArea.style.height = editable.style.height = editable.getAttribute('data-original-height');
+				composer.editableArea.style.width = editable.style.width = editable.getAttribute('data-original-width');
+				wysihtml.dom.copyStyles(['height', 'width']).from(composer.editableArea).to(composer.blurStylesHost).andTo(composer.focusStylesHost);
+				document.querySelector('body').style.overflow = 'visible';
+				editor.fire("normalscreen:composer", elem.querySelector('.wysihtml-toolbar .fullscreen a'));
+			} else {
+				elem.classList.add('fullscreen');
+				editable.setAttribute('data-original-height', composer.editableArea.style.height);
+				editable.setAttribute('data-original-width', composer.editableArea.style.width);
+				composer.editableArea.style.width = editable.style.width = '100%';
+				editor.fire("fullscreen:composer", elem.querySelector('.wysihtml-toolbar .fullscreen a'));
+				document.querySelector('body').style.overflow = 'hidden';
+				window.addEventListener('resize', onResize, false);
+				window.dispatchEvent(new Event('resize'));
+			}
 		}
 	};
 })();
