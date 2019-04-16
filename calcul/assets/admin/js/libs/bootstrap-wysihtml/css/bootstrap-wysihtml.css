@@ -7,7 +7,7 @@ iframe {
 }
 
 /* Override caret class of bootstrap 4 with class of boostrap 3*/
-.wysihtml-toolbar li.color-picker .caret {
+.wysihtml-toolbar li.color-picker .caret, .wysihtml-toolbar li.create-table .caret {
   display: inline-block;
   width: 0;
   height: 0;
@@ -170,11 +170,15 @@ iframe {
 	float: left;
 	display: list-item;
 	list-style: none;
-	margin: 0 5px 10px 0;
+	margin: 0 5px 2px 0;
 }
 
 .wysihtml-toolbar ul.dropdown-menu > li {
 	float: none;
+}
+
+.wysihtml-toolbar ul.dropdown-menu > li a {
+	padding: 0 1.5rem;
 }
 
 .wysihtml-toolbar ul.dropdown-menu > li a:focus {
@@ -327,7 +331,8 @@ iframe {
 	padding-bottom: 2px;
 }
 
-.wysihtml-toolbar li.color-picker .popover.bottom {
+.wysihtml-toolbar li.color-picker .popover.bottom ,
+.wysihtml-toolbar li.create-table .popover.bottom{
 	margin-top: 44px;
 }
 
@@ -337,6 +342,10 @@ iframe {
 
 .wysihtml-toolbar li.color-picker .colors-140.popover.bottom > .arrow {
 	margin-left: -130px;
+}
+
+.wysihtml-toolbar li.create-table .popover.bottom > .arrow {
+	margin-left: -80px;
 }
 
 .wysihtml-toolbar li.color-picker a {
@@ -409,4 +418,48 @@ iframe {
 
 .wysicon-delete-table {
 	background: url(../img/delete-table.png)
+}
+.container-fluid.fullscreen .wysihtml-toolbar {
+	background: #F8F9FA;
+}
+.container-fluid.fullscreen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1050;
+	width: 100% !important;
+	background-color: #fff !important;
+}
+
+.wysihtml-table{
+	min-width: 0;
+	padding: 5px;
+}
+.wysihtml-table .wysihtml-dimension-picker{
+	font-size: 18px;
+}
+.wysihtml-table .wysihtml-dimension-picker .wysihtml-dimension-picker-mousecatcher {
+	position: absolute !important;
+	z-index: 3;
+	width: 10em;
+	height: 10em;
+	cursor: pointer;
+}
+.wysihtml-table .wysihtml-dimension-picker .wysihtml-dimension-picker-unhighlighted {
+	position: relative !important;
+	z-index: 1;
+	width: 10em;
+	height: 5em;
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAAroGbEAAAACVBMVEUAAIj4+Pjp6ekKlAqjAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfYAR0BKhmnaJzPAAAAG0lEQVQI12NgAAOtVatWMTCohoaGUY+EmIkEAEruEzK2J7tvAAAAAElFTkSuQmCC') repeat
+}
+.wysihtml-table .wysihtml-dimension-picker .wysihtml-dimension-picker-highlighted {
+	position: absolute!important;
+	z-index: 2;
+	width: 1em;
+	height: 1em;
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAAroGbEAAAACVBMVEUAAIjd6vvD2f9LKLW+AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfYAR0BKwNDEVT0AAAAG0lEQVQI12NgAAOtVatWMTCohoaGUY+EmIkEAEruEzK2J7tvAAAAAElFTkSuQmCC') repeat
+}
+.wysihtml-table .wysihtml-dimension-display {
+	text-align: center;
+	font-size: 1em;
 }

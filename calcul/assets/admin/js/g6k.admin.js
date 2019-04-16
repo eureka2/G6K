@@ -114,6 +114,7 @@ THE SOFTWARE.
 			// 'code': true,
 			'table': true,
 			'undo': true,
+			'fullscreen': true,
 			// 'html': true,
 			'insertData': false,
 			'insertFootnoteReference': false
@@ -215,6 +216,7 @@ THE SOFTWARE.
 			'blocks': false,
 			'lists': false,
 			'align': false,
+			'fullscreen': false,
 			'image': false,
 			'table': false
 		},
