@@ -3586,6 +3586,29 @@ THE SOFTWARE.
 			return true;
 		},
 
+		resetMin: function(name) {
+			var input = $(":input[name='" + name + "']");
+			var data = this.getData(name);
+			if (input.length > 0 && data.unparsedMin) {
+				var min = this.evaluate(data.unparsedMin);
+				if (min !== false) {
+					if (data.type == 'text' || data.type == 'textarea') {
+						min = parseInt(min, 10);
+						if (min) {
+							input.attr('minlength', min);
+						}
+					} else if (data.type == 'date') {
+						input.attr('min', min);
+					} else {
+						min = data.type == 'integer' ? parseInt(min, 10) : parseFloat(min);
+						if (min) {
+							input.attr('min', min);
+						}
+					}
+				}
+			}
+		},
+
 		checkMin: function(data) {
 			if (!data || !data.value || data.value.length == 0) {
 				return true;
@@ -3617,6 +3640,29 @@ THE SOFTWARE.
 				}
 			}
 			return true;
+		},
+
+		resetMax: function(name) {
+			var input = $(":input[name='" + name + "']");
+			var data = this.getData(name);
+			if (input.length > 0 && data.unparsedMax) {
+				var max = this.evaluate(data.unparsedMax);
+				if (max !== false) {
+					if (data.type == 'text' || data.type == 'textarea') {
+						max = parseInt(max, 10);
+						if (max) {
+							input.attr('maxlength', max);
+						}
+					} else if (data.type == 'date') {
+						input.attr('max', max);
+					} else {
+						max = data.type == 'integer' ? parseInt(max, 10) : parseFloat(max);
+						if (max) {
+							input.attr('max', max);
+						}
+					}
+				}
+			}
 		},
 
 		checkMax: function(data) {
@@ -4759,9 +4805,11 @@ THE SOFTWARE.
 							break;
 						case 'min':
 							self.getData(fieldName).unparsedMin = newValue;
+							self.resetMin(fieldName);
 							break;
 						case 'max':
 							self.getData(fieldName).unparsedMax = newValue;
+							self.resetMax(fieldName);
 							break;
 						case 'source':
 							self.getData(fieldName).unparsedSource = newValue;
@@ -4789,9 +4837,11 @@ THE SOFTWARE.
 							break;
 						case 'min':
 							self.getData(fieldName).unparsedMin = '';
+							self.resetMin(fieldName);
 							break;
 						case 'max':
 							self.getData(fieldName).unparsedMax = '';
+							self.resetMax(fieldName);
 							break;
 						case 'source':
 							self.getData(fieldName).unparsedSource = '';
@@ -5315,7 +5365,6 @@ THE SOFTWARE.
 			if (value && $.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
 				value = AutoNumeric.format(parseFloat(value), {
 					currencySymbol: '',
-					currencySymbolPlacement: this.symbolPosition == 'before' ? 'p' : 's',
 					decimalCharacter: this.decimalPoint,
 					decimalPlaces: data.round || 2,
 					digitGroupSeparator: this.groupingSeparator,
