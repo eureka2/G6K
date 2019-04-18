@@ -3392,9 +3392,11 @@ THE SOFTWARE.
 										content = parseFloat(content).toFixed(data.round);
 									}
 								}
-								self.variables[name] = data.value = content;
+								data.value = content;
+								self.setVariable(name, data);
 							} else if (data.value !== '') {
-								self.variables[name] = data.value = '';
+								data.value = '';
+								self.setVariable(name, data);
 							}
 						}
 						self.reevaluateFields(name);
@@ -3995,7 +3997,8 @@ THE SOFTWARE.
 				var pos = $.inArray(value, ovalues);
 				if (pos >= 0) {
 					ovalues.splice( pos, 1 );
-					this.variables[name] = data.value = ovalues;
+					data.value = ovalues;
+					this.setVariable(name, data);
 					this.validate(name);
 					if (this.simu.memo && this.simu.memo == "1" && data.memorize && data.memorize == "1") {
 						if (! $.cookie(name) || $.cookie(name) != value) {
@@ -4044,7 +4047,8 @@ THE SOFTWARE.
 					value = ovalues;
 				}
 			}
-			self.variables[name] = data.value = value;
+			data.value = value;
+			self.setVariable(name, data);
 			self.validate(name);
 			if (name !== self.lastUserInputName || data.type === "integer" || data.type === "number" || data.type === "date") {
 				self.setFormValue(name, data);
@@ -4056,6 +4060,13 @@ THE SOFTWARE.
 			}
 			self.lastUserInputName = "";
 			self.reevaluateFields(name);
+		},
+
+		setVariable: function (name, data) {
+			this.variables[name] = data.value;
+			if (! data.value && data.deflt) {
+				this.variables[name] = data.deflt;
+			}
 		},
 
 		evaluate: function (expression) {
@@ -5233,9 +5244,11 @@ THE SOFTWARE.
 								content = parseFloat(content).toFixed(data.round);
 							}
 						}
-						self.variables[name] = data.value = content;
+						data.value = content;
+						self.setVariable(name, data);
 					} else if (data.value !== '') {
-						self.variables[name] = data.value = '';
+						data.value = '';
+						self.setVariable(name, data);
 					}
 
 				}
