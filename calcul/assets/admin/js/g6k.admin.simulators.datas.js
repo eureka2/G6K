@@ -277,7 +277,7 @@ THE SOFTWARE.
 
 	Simulators.isDataIdInDatas = function(id) {
 		var inData = false;
-		var re1 = new RegExp("#" + id + '\\b', 'g');
+		var re1 = new RegExp('#(' + id + '\\b|' + id + '(L))', 'g');
 		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + id + '\\"', 'g');
 		var containers = $("#datas").find(".data-container, .datagroup-data-container");
 		containers.each(function(c) {
@@ -305,7 +305,7 @@ THE SOFTWARE.
 
 	Simulators.isDataIdInDatagroups = function(id) {
 		var inDatagroup = false;
-		var re1 = new RegExp("#" + id + '\\b', 'g');
+		var re1 = new RegExp('#(' + id + '\\b|' + id + '(L))', 'g');
 		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + id + '\\"', 'g');
 		var containers = $("#datas").find(".data-container.datagroup");
 		containers.each(function(c) {

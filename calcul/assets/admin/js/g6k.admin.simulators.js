@@ -214,13 +214,13 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeDataIdInRichText = function(oldId, id) {
-		var re1 = new RegExp("#" + oldId + '\\b', 'g');
+		var re1 = new RegExp('#(' + oldId + '\\b|' + oldId + '(L))', 'g');
 		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + oldId + '\\"', 'g');
 		$('#simulator').find('.rich-text').each(function(r) {
 			var updated = false;
 			var richtext = $(this).html();
 			if (re1.test(richtext)) {
-				richtext = richtext.replace(re1, "#" + id);
+				richtext = richtext.replace(re1, "#" + id + '$2');
 				updated = true;
 			}
 			if (re2.test(richtext)) {
@@ -234,11 +234,11 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeDataIdInExpression = function(oldId, id) {
-		var re1 = new RegExp("#" + oldId + '\\b', 'g');
+		var re1 = new RegExp('#(' + oldId + '\\b|' + oldId + '(L))', 'g');
 		$('#simulator').find('span.attribute-expression').each(function(a) {
 			var val = $(this).attr('data-value');
 			if (re1.test(val)) {
-				$(this).attr('data-value', val.replace(re1, "#" + id));
+				$(this).attr('data-value', val.replace(re1, "#" + id + '$2'));
 			}
 		});
 	}

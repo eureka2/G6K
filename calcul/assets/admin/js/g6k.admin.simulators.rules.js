@@ -27,7 +27,7 @@ THE SOFTWARE.
 
 	Simulators.isDataIdInRules = function(id) {
 		var inRules = false;
-		var re = new RegExp("#" + id + '\\b', 'g');
+		var re = new RegExp('#(' + id + '\\b|' + id + '(L))', 'g');
 		$.each(rules, function(r, rule) {
 			if (re.test(rule.conditions)) {
 				inRules = rule.id;
@@ -60,7 +60,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeDataIdInRules = function(oldId, id) {
-		var re = new RegExp("#" + oldId + '\\b', 'g');
+		var re = new RegExp('#(' + oldId + '\\b|' + oldId + '(L))', 'g');
 		var ruleConditions = $('#business-rules').find('.rule-conditions');
 		ruleConditions.each(function(r) {
 			if (re.test($(this).attr('data-value'))) {
@@ -82,7 +82,7 @@ THE SOFTWARE.
 			}
 			if (this.hasAttribute('data-name') && ($(this).attr('data-name') == "setAttribute" || $(this).attr('data-name') == "unsetAttribute") && re.test($(this).attr('data-value'))) {
 				var val = $(this).attr('data-value');
-				val = val.replace(re, "#" + id);
+				val = val.replace(re, "#" + id + '$2');
 				$(this).attr('data-value', val);
 			}
 			var datas = $(this).find('data.data');
@@ -94,7 +94,7 @@ THE SOFTWARE.
 		});
 		$.each(rules, function(r, rule) {
 			if (re.test(rule.conditions)) {
-				rule.conditions = rule.conditions.replace(re, "#" + id);
+				rule.conditions = rule.conditions.replace(re, "#" + id + '$2');
 			}
 			if (rule.connector) {
 				Simulators.changeDataIdInConnector(rule.connector, oldId, id);
@@ -223,7 +223,7 @@ THE SOFTWARE.
 				}
 			});
 		} else {
-			var re = new RegExp("#" + id + '\\b', 'g');
+			var re = new RegExp('#(' + id + '\\b|' + id + '(L))', 'g');
 			if (connector.value && re.test(connector.value)) {
 				inConnector = true;
 			}
@@ -245,9 +245,9 @@ THE SOFTWARE.
 				Simulators.changeDataIdInConnector(conn, oldId, id);
 			});
 		} else {
-			var re = new RegExp("#" + oldId + '\\b', 'g');
+			var re = new RegExp('#(' + oldId + '\\b|' + oldId + '(L))', 'g');
 			if (connector.value && re.test(connector.value)) {
-				connector.value = connector.value.replace(re, "#" + id);
+				connector.value = connector.value.replace(re, "#" + id + '$2');
 			}
 		}
 	}

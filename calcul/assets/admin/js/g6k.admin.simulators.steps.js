@@ -126,7 +126,7 @@ THE SOFTWARE.
 	}
 
 	Simulators.isDataIdInSteps = function(id) {
-		var re1 = new RegExp("#" + id + '\\b', 'g');
+		var re1 = new RegExp('#(' + id + '\\b|' + id + '(L))', 'g');
 		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + id + '\\"', 'g');
 		var found = false;
 		$.each(steps, function(s, step) {
@@ -245,11 +245,11 @@ THE SOFTWARE.
 	}
 
 	Simulators.changeDataIdInSteps = function(oldId, id) {
-		var re1 = new RegExp("#" + oldId + '\\b', 'g');
+		var re1 = new RegExp('#(' + oldId + '\\b|' + oldId + '(L))', 'g');
 		var re2 = new RegExp('\\<data\\s+([^\\s]*\\s*)value=\\"' + oldId + '\\"', 'g');
 		$.each(steps, function(s, step) {
 			if (re1.test(step.description.content)) {
-				step.description.content = step.description.content.replace(re1, "#" + id);
+				step.description.content = step.description.content.replace(re1, "#" + id + '$2');
 			}
 			if (re2.test(step.description.content)) {
 				step.description.content = step.description.content.replace(re2, '<data $1value="' + id + '"');
@@ -257,7 +257,7 @@ THE SOFTWARE.
 			if (step.footNotes && step.footNotes.footNotes) {
 				$.each(step.footNotes.footNotes, function(fn, footnote) {
 					if (re1.test(footnote.text.content)) {
-						footnote.text.content = footnote.text.content.replace(re1, "#" + id);
+						footnote.text.content = footnote.text.content.replace(re1, "#" + id + '$2');
 					}
 					if (re2.test(footnote.text.content)) {
 						footnote.text.content = footnote.text.content.replace(re2, '<data $1value="' + id + '"');
@@ -268,7 +268,7 @@ THE SOFTWARE.
 				$.each(panel.blocks || [], function(b, block) {
 					if (block.type == 'fieldset') {
 						if (re1.test(block.legend.content)) {
-							block.legend.content = block.legend.content.replace(re1, "#" + id);
+							block.legend.content = block.legend.content.replace(re1, "#" + id + '$2');
 						}
 						if (re2.test(block.legend.content)) {
 							block.legend.content = block.legend.content.replace(re2, '<data $1value="' + id + '"');
@@ -281,7 +281,7 @@ THE SOFTWARE.
 									}
 									if (field.Note && field.Note.text) {
 										if (re1.test(field.Note.text.content)) {
-											field.Note.text.content = field.Note.text.content.replace(re1, "#" + id);
+											field.Note.text.content = field.Note.text.content.replace(re1, "#" + id + '$2');
 										}
 										if (re2.test(field.Note.text.content)) {
 											field.Note.text.content = field.Note.text.content.replace(re2, '<data $1value="' + id + '"');
@@ -296,7 +296,7 @@ THE SOFTWARE.
 								}
 								if (field.Note && field.Note.text) {
 									if (re1.test(field.Note.text.content)) {
-										field.Note.text.content = field.Note.text.content.replace(re1, "#" + id);
+										field.Note.text.content = field.Note.text.content.replace(re1, "#" + id + '$2');
 									}
 									if (re2.test(field.Note.text.content)) {
 										field.Note.text.content = field.Note.text.content.replace(re2, '<data $1value="' + id + '"');
@@ -308,13 +308,13 @@ THE SOFTWARE.
 						$.each(block.chapters || [], function(c, chapter) {
 							$.each(chapter.sections || [], function(sn, section) {
 								if (re1.test(section.content.content)) {
-									section.content.content = section.content.content.replace(re1, "#" + id);
+									section.content.content = section.content.content.replace(re1, "#" + id + '$2');
 								}
 								if (re2.test(section.content.content)) {
 									section.content.content = section.content.content.replace(re2, '<data $1value="' + id + '"');
 								}
 								if (re1.test(section.annotations.content)) {
-									section.annotations.content = section.annotations.content.replace(re1, "#" + id);
+									section.annotations.content = section.annotations.content.replace(re1, "#" + id + '$2');
 								}
 								if (re2.test(section.annotations.content)) {
 									section.annotations.content = section.annotations.content.replace(re2, '<data $1value="' + id + '"');
