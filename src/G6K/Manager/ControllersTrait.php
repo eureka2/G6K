@@ -545,7 +545,7 @@ trait ControllersTrait {
 	public function replaceVariables($target) {
 		$text = $target instanceof RichText ? $target->getContent(): $target;
 		$result = preg_replace_callback(
-			'/\<data\s+[^\s]*\s*value="(\d+)(L?)"[^\>]*\>[^\<]+\<\/data\>/',
+			'/\<data\s+[^\s]*\s*value="(\d+)"[^\>]*\>[^\<]+\<\/data\>(L?)/',
 			array($this, 'replaceDataTag'),
 			$text
 		);
@@ -590,7 +590,7 @@ trait ControllersTrait {
 	public function replaceDataTagByVariable($target) {
 		$text = $target instanceof RichText ? $target->getContent(): $target;
 		$result = preg_replace_callback(
-			'/\<data\s+[^\s]*\s*value="(\d+)(L?)"[^\>]*\>[^\<]+\<\/data\>/',
+			'/\<data\s+[^\s]*\s*value="(\d+)"[^\>]*\>[^\<]+\<\/data\>(L?)/',
 			array($this, 'replaceDataTag'),
 			$text
 		);
