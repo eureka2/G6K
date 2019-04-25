@@ -755,6 +755,22 @@ var ExpressionBuilder_I18N = {
 					return nested;
 				}
 
+				function argumentsCount(args) {
+					var par = 0;
+					var len = args.length;
+					var count = len > 0 ? 1 : 0;
+					for (var i = 0; i < len; i++) {
+						if (args[i] == '(') {
+							par++;
+						} else if (args[i] == ')') {
+							par--;
+						} else if (par == 0 && args[i] == ',') {
+							count++;
+						}
+					}
+					return count;
+				}
+				
 				function functionExpression(wrapper, funcName, initial) {
 					var holder = wrapper.children('button.operand-holder');
 					if (wrapper.hasClass('function-operand-wrapper')) {
@@ -768,7 +784,7 @@ var ExpressionBuilder_I18N = {
 					var func = settings.functions[funcName];
 					var arity = func.arity;
 					if (arity == -1) {
-						arity = initial ? Math.max(2, initial.filter(function(i) { return i !== ','}).length) : 2;
+						arity = initial ? argumentsCount(initial) : 2;
 					}
 					showHolder(wrapper, funcName, funcName, 'function');
 					var functionWrapper = jQuery('<span class="function-wrapper"></span>');
