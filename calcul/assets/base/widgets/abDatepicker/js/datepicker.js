@@ -1,6 +1,6 @@
 /*!
- * Accessible Datepicker v2.1.5 
- * Copyright 2015 Eureka2, Jacques Archimède.
+ * Accessible Datepicker v2.1.12
+ * Copyright 2015-2019 Eureka2, Jacques Archimède.
  * Based on the example of the Open AJAX Alliance Accessibility Tools Task Force : http://www.oaa-accessibility.org/examplep/datepicker1/
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * Inspired by :
@@ -33,8 +33,8 @@
  *		- Shift+Tab - reverses the direction of the tab order. Once in the widget, a Shift+Tab will take the user to the previous focusable element in the tab order.
  *		- Up Arrow and Down Arrow - goes to the same day of the week in the previous or next week respectively. If the user advances past the end of the month they continue into the next or previous month as appropriate.
  *		- Left Arrow and Right Arrow - advances one day to the next, also in a continuum. Visually focus is moved from day to day and wraps from row to row in a grid of days and weeks.
- *		- Control+Page Up - Moves to the same date in the previous year.
- *		- Control+Page Down - Moves to the same date in the next year.
+ *		- Alt+Page Up - Moves to the same date in the previous year.
+ *		- Alt+Page Down - Moves to the same date in the next year.
  *		- Space -
  *			Singleton Mode: acts as a toggle either selecting or deselecting the date.
  *			Contiguous Mode: Similar to selecting a range of text. Space selects the first date. Shift+Arrows add to the selection. Pressing Space again deselects the previous selections and selects the current focused date.
@@ -234,7 +234,7 @@
 	'use strict';
 
 	var datepickerButton = [
-		'<a class="datepicker-button input-group-addon" role="button" aria-haspopup="true" tabindex="0" aria-labelledby="datepicker-bn-open-label-CALENDARID">',
+		'<a class="datepicker-button input-group-addon btn" role="button" aria-haspopup="true" tabindex="0" aria-labelledby="datepicker-bn-open-label-CALENDARID">',
 		'	<span class="glyphicon glyphicon-calendar" title="Select Date..."></span>',
 		'</a>'
 	];
@@ -282,21 +282,27 @@
 		this.$target = $(target); // textbox that will receive the selected date string and focus (if modal)
 		this.options = $.extend({}, Datepicker.DEFAULTS, options)
 		this.locales = Date.dp_locales;
-		switch (this.options.startView) {
-			case 1: 
-			case 'months':
-				this.options.startView = 1;
-				break;
-			case 2:
-			case 'years':
-				this.options.startView = 2;
-				break;
-			default:
-				this.options.startView = 0;
-		}
+		this.startview(this.options.startView);
 		if (typeof this.options.inputFormat === 'string') {
 			this.options.inputFormat = [this.options.inputFormat];
 		}
+		if (! $.isArray(this.options.datesDisabled)) {
+			this.options.datesDisabled = [this.options.datesDisabled];
+		}
+		$.each(this.options.datesDisabled, function(i, v) {
+			if (typeof v === 'string') {
+				var date = self.parseDate(v);
+				if (date === null ) {
+					self.options.datesDisabled[i] = null;
+				} else {
+					self.options.datesDisabled[i] = self.format(date);
+				}
+			} else if (v instanceof Date && !isNaN(v.valueOf())) {
+				self.options.datesDisabled[i] = self.format(v);
+			} else {
+				self.options.datesDisabled[i] = null;
+			}
+		});
 		if (this.options.min != null) {
 			this.options.min = this.parseDate(this.options.min);
 		} else if (this.$target.attr('min')) {
@@ -307,6 +313,16 @@
 		} else if (this.$target.attr('max')) {
 			this.options.max = this.parseDate(this.$target.attr('max'));
 		}
+		if (typeof this.options.previous === 'string') {
+			this.options.previous = $(this.options.previous);
+		} else if (! (this.options.previous instanceof jQuery)) {
+			this.options.previous = null;
+		}
+		if (typeof this.options.next === 'string') {
+			this.options.next = $(this.options.next);
+		} else if (! (this.options.next instanceof jQuery)) {
+			this.options.next = null;
+		}
 		this.id = this.$target.attr('id') || 'datepicker-' + Math.floor(Math.random() * 100000);
 		var calendar = datepickerCalendar.join("");
 		calendar = calendar.replace(/CALENDARID/g, this.id + '');
@@ -315,14 +331,15 @@
 		if (this.$target.parent('.input-group').length == 0) {
 			this.$target.wrap( '<div class="input-group"></div>' );
 		}
-		this.$label = this.$target.parents().find("label[for=" + this.id + "]");
 		this.$group = this.$target.parent('.input-group');
-		this.$target.attr('aria-autocomplete', 'none')
-		this.$target.css('min-width', '7em')
+		this.$target.attr('aria-autocomplete', 'none');
+		this.$target.css('min-width', '7em');
 		this.$target.addClass('form-control');
+
 		if (! this.$target.attr('placeholder')) {
 			this.$target.attr('placeholder', this.options.inputFormat[0]);
 		}
+
 		var button = datepickerButton.join("");
 		button = button.replace(/CALENDARID/g, this.id + '');
 		this.$button = $(button);
@@ -331,24 +348,13 @@
 		this.$calendar.addClass(this.options.theme);
 		this.$target.after(this.$button);
 
-		if (this.options.inline != false) {
-			this.hideObject(this.$button);
-			var $container = typeof this.options.inline === 'string' ? $('#' + this.options.inline) : this.options.inline;
-			$container.append(this.$calendar);
-			this.$calendar.css({position: 'relative', left: '0px'});
-			this.initializeDate();
-		} else {
-			this.$target.parent().after(this.$calendar);
-			this.hide(!this.options.gainFocusOnConstruction);
-		}
-		
 		// be sure parent of the calendar is positionned  to calculate the position of the calendar
 		if (this.$calendar.parent().css('position') === 'static') {
 			this.$calendar.parent().css('position', 'relative');
 		}
 		this.$calendar.find('.datepicker-bn-open-label').html(this.options.buttonLabel);
 		if (this.$target.attr('id')) {
-			this.$calendar.attr('aria-controls', this.$target.attr('id')); 
+			this.$calendar.attr('aria-controls', this.$target.attr('id'));
 		}
 		this.$button.find('span').attr('title', this.options.buttonTitle);
 		this.$calendar.css('left', this.$target.parent().position().left + 'px');
@@ -371,7 +377,19 @@
 			this.hideObject(this.$calendar.find('.datepicker-close-wrap'));
 			this.hideObject(this.$calendar.find('.datepicker-bn-close-label'));
 		}
-		
+
+		if (this.options.inline != false) {
+			this.hideObject(this.$button);
+			var $container = typeof this.options.inline === 'string' ? $('#' + this.options.inline) : this.options.inline;
+			$container.append(this.$calendar);
+			this.$calendar.css({position: 'relative', left: '0px'});
+			this.initializeDate();
+		} else {
+			this.$calendar.css({display: 'none'});
+			this.$target.parent().after(this.$calendar);
+			this.hide(!this.options.gainFocusOnConstruction);
+		}
+
 		this.keys = {
 			tab: 9,
 			enter: 13,
@@ -389,13 +407,15 @@
 
 		this.bindHandlers();
 		this.$button.click(function(e) {
-			if (self.$calendar.attr('aria-hidden') === 'true') {
-				self.initializeDate();
-				self.show();
-			} else {
-				self.hide();
+			if (!$(this).hasClass('disabled')) {
+				if (self.$calendar.attr('aria-hidden') === 'true') {
+					self.initializeDate();
+					self.show();
+				} else {
+					self.hide();
+				}
+				self.selectGridCell(self.$grid.attr('aria-activedescendant'));
 			}
-			self.selectGridCell(self.$grid.attr('aria-activedescendant'));
 			e.stopPropagation();
 			return false;
 		});
@@ -414,13 +434,17 @@
 		});
 	}
 
-	Datepicker.VERSION  = '2.1.1'
+	Datepicker.VERSION  = '2.1.12'
 
 	Datepicker.DEFAULTS = {
 		firstDayOfWeek: Date.dp_locales.firstday_of_week, // Determines the first column of the calendar grid
 		weekDayFormat: 'short', // Display format of the weekday names - values are 'short' or 'narrow'
 		startView: 0, // Initial calendar - values are 0 or 'days', 1 or 'months', 2 or 'years'
 		daysOfWeekDisabled: [],
+		datesDisabled: [],
+		isDateDisabled: null,
+		isMonthDisabled: null,
+		isYearDisabled: null,
 		inputFormat: [Date.dp_locales.short_format],
 		outputFormat: Date.dp_locales.short_format,
 		titleFormat: Date.dp_locales.full_format,
@@ -438,6 +462,8 @@
 		closeButtonTitle: Date.dp_locales.texts.closeButtonTitle,
 		closeButtonLabel: Date.dp_locales.texts.closeButtonLabel,
 		onUpdate: function (value) {},
+		previous: null,
+		next: null,
 		theme: 'default',
 		modal: false,
 		inline: false,
@@ -455,7 +481,7 @@
 	Datepicker.prototype.initializeDate = function() {
 		var val = this.$target.val();
 		var date = val === '' ? new Date() :  this.parseDate(val);
-		this.setDate(date);
+		this.setDate(date, true);
 	} // end initializeDate()
 
 	/**
@@ -475,8 +501,9 @@
 	 *	@return N/A
 	 *
 	 */
-	Datepicker.prototype.setDate = function(newDate) {
+	Datepicker.prototype.setDate = function(newDate, init) {
 		this.dateObj = newDate;
+		init = (typeof init === 'undefined') ? false : init;
 		if (this.dateObj == null) {
 			this.$target.attr('aria-invalid', true);
 			this.$target.parents('.form-group').addClass('has-error');
@@ -492,7 +519,9 @@
 			this.$target.parents('.form-group').addClass('has-error');
 			this.dateObj = this.options.max;
 		}
-		this.$target.val(this.format(this.dateObj));
+		if (!init || this.$target.val() != '') {
+			this.$target.val(this.format(this.dateObj));
+		}
 		this.curYear = this.dateObj.getFullYear();
 		this.year = this.curYear;
 		this.curMonth = this.dateObj.getMonth();
@@ -617,16 +646,24 @@
 		for ( ; numEmpties > 0; numEmpties--) {
 			gridCells += '\t\t<td class="empty">' + (numPrevDays - numEmpties + 1) + '</td>\n';
 		}
+		var isYearDisabled = this.options.isYearDisabled && this.options.isYearDisabled(this.year);
+		var isMonthDisabled = this.options.isMonthDisabled && this.options.isMonthDisabled(this.year, this.month + 1);
 		// insert the days of the month.
 		for (curDay = 1; curDay <= numDays; curDay++) {
 			var date = new Date(this.year, this.month, curDay, 0, 0, 0, 0);
 			var longdate = this.formatDate(date, this.options.titleFormat);
 			var curDayClass = curDay == this.date && this.month == this.curMonth && this.year == this.curYear ? ' curDay' : '';
-			if ($.inArray(weekday, this.options.daysOfWeekDisabled) > -1) {
+			if (isYearDisabled || isMonthDisabled) {
+				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"';
+			} else if ($.inArray(weekday, this.options.daysOfWeekDisabled) > -1) {
 				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"';
 			} else if (this.options.min != null && date < this.options.min) {
 				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"';
 			} else if (this.options.max != null && date > this.options.max) {
+				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"';
+			} else if ($.inArray(this.format(date), this.options.datesDisabled) > -1) {
+				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"';
+			} else if (this.options.isDateDisabled && this.options.isDateDisabled(date)) {
 				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day unselectable' + curDayClass + '"';
 			} else {
 				gridCells += '\t\t<td id="cell' + curDay + '-' + this.id + '" class="day selectable' + curDayClass + '"';
@@ -698,13 +735,18 @@
 		$tbody.empty();
 		$('#datepicker-err-msg-' + this.id).empty();
 		var gridCells = '\t<tr id="row0-'+this.id+'" role="row">\n';
+		var isYearDisabled = this.options.isYearDisabled && this.options.isYearDisabled(this.year);
 		// insert the months of the year.
 		for (curMonth = 0; curMonth < 12; curMonth++) {
-			if (curMonth == this.month && this.year == this.curYear) {
+			if (isYearDisabled) {
+				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month unselectable"';
+			} else if (curMonth == this.month && this.year == this.curYear) {
 				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month curMonth selectable"';
 			} else if (this.options.min != null && (this.year < this.options.min.getFullYear() || (this.year == this.options.min.getFullYear() && curMonth < this.options.min.getMonth()))) {
 				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month unselectable"';
 			} else if (this.options.max != null && (this.year > this.options.max.getFullYear() || (this.year == this.options.max.getFullYear() && curMonth > this.options.max.getMonth()))) {
+				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month unselectable"';
+			} else if (this.options.isMonthDisabled && this.options.isMonthDisabled(this.year, curMonth + 1)) {
 				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month unselectable"';
 			} else {
 				gridCells += '\t\t<td id="cell' + (curMonth + 1) + '-' + this.id + '" class="month selectable"';
@@ -773,6 +815,8 @@
 				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year unselectable"';
 			} else if (this.options.max != null && (curYear > this.options.max.getFullYear())) {
 				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year unselectable"';
+			} else if (this.options.isYearDisabled && this.options.isYearDisabled(curYear)) {
+				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year unselectable"';
 			} else {
 				gridCells += '\t\t<td id="cell' + (curYear - startYear + 1) + '-' + this.id + '" class="year selectable"';
 			}
@@ -829,7 +873,7 @@
 	 */
 	Datepicker.prototype.showDaysOfMonth = function(month) {
 		if (this.options.min != null &&
-			(	this.year < this.options.min.getFullYear() || 
+			(	this.year < this.options.min.getFullYear() ||
 				(this.year == this.options.min.getFullYear() && month < this.options.min.getMonth()))) {
 			return false;
 		}
@@ -899,7 +943,7 @@
 	 *
 	 *	@param	(offset int) offset may be used to specify an offset for setting
 	 *			focus on a year the specified number of years from the end of the range.
-	 *	@return true if the year - 20 is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the year - 20 is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showYearsOfPrevRange = function(offset) {
 		if (this.options.min != null && this.year - 20 < this.options.min.getFullYear()) {
@@ -925,13 +969,13 @@
 	 *	@param	(offset int) offset may be used to specify an offset for setting
 	 *			focus on a day the specified number of days from
 	 *			the beginning of the month.
-	 *	@return true if the nextmMonth is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the nextmMonth is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showDaysOfNextMonth = function(offset) {
 		// show the next month
 		var nextMonth = this.nextMonth(this.year, this.month);
-		if (this.options.max != null && 
-			(	nextMonth.year > this.options.max.getFullYear() || 
+		if (this.options.max != null &&
+			(	nextMonth.year > this.options.max.getFullYear() ||
 				(nextMonth.year == this.options.max.getFullYear() && nextMonth.month > this.options.max.getMonth()))) {
 			return false;
 		}
@@ -955,7 +999,7 @@
 	 *	@param	(offset int) offset may be used to specify an offset for setting
 	 *			focus on a month the specified number of month from
 	 *			the beginning of the year.
-	 *	@return true if the next year is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the next year is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showMonthsOfNextYear = function(offset) {
 		if (this.options.max != null && this.year + 1 > this.options.max.getFullYear()) {
@@ -981,7 +1025,7 @@
 	 *	@param	(offset int) offset may be used to specify an offset for setting
 	 *			focus on a year the specified number of years from
 	 *			the beginning of the range.
-	 *	@return true if the year + 20 is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the year + 20 is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showYearsOfNextRange = function(offset) {
 		if (this.options.max != null && this.year + 20 > this.options.max.getFullYear()) {
@@ -1004,11 +1048,11 @@
 	/**
 	 *	showDaysOfPrevYear() is a member function to show the previous year
 	 *
-	 *	@return true if the previous year is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the previous year is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showDaysOfPrevYear = function() {
-		if (this.options.min != null && 
-			(	this.year - 1 < this.options.min.getFullYear() || 
+		if (this.options.min != null &&
+			(	this.year - 1 < this.options.min.getFullYear() ||
 				(this.year - 1 == this.options.min.getFullYear() && this.month < this.options.min.getMonth()))) {
 			return false;
 		}
@@ -1023,11 +1067,11 @@
 	/**
 	 *	showDaysOfNextYear() is a member function to show the next year
 	 *
-	 *	@return true if the next year is between the minimum and the maximum date otherwise return false 
+	 *	@return true if the next year is between the minimum and the maximum date otherwise return false
 	 */
 	Datepicker.prototype.showDaysOfNextYear = function() {
-		if (this.options.max != null && 
-			(	this.year + 1 > this.options.max.getFullYear() || 
+		if (this.options.max != null &&
+			(	this.year + 1 > this.options.max.getFullYear() ||
 				(this.year + 1 == this.options.max.getFullYear() && this.month > this.options.max.getMonth()))) {
 			return false;
 		}
@@ -1040,7 +1084,7 @@
 	} // end showDaysOfNextYear()
 
 	/**
-	 *	bindHandlers() is a member function to bind event handlers for the widget 
+	 *	bindHandlers() is a member function to bind event handlers for the widget
 	 *
 	 *	@return N/A
 	 */
@@ -1086,8 +1130,8 @@
 				return self.handleCloseKeyDown(e);
 			});
 		}
-		
-		// bind grid handlers 
+
+		// bind grid handlers
 		this.$grid.keydown(function(e) {
 			return self.handleGridKeyDown(e);
 		});
@@ -1100,8 +1144,14 @@
 		this.$grid.blur(function(e) {
 			return self.handleGridBlur(e);
 		});
-		this.$grid.on('click', 'td', function(e) {
+		this.$grid.delegate('td', 'click', function(e) {
 			return self.handleGridClick(this, e);
+		});
+
+		// bind target handlers
+		this.$target.change(function(e) {
+			var date = self.parseDate($(this).val());
+			self.updateLinked(date);
 		});
 	} // end bindHandlers();
 
@@ -1289,7 +1339,7 @@
 		}
 		switch (e.keyCode) {
 			case this.keys.tab:
-				{	
+				{
 					if (this.options.modal == false || e.ctrlKey) {
 						return true;
 					}
@@ -1336,7 +1386,7 @@
 		}
 		switch (e.keyCode) {
 			case this.keys.tab:
-				{	
+				{
 					if (this.options.modal == false || e.ctrlKey) {
 						return true;
 					}
@@ -1415,7 +1465,7 @@
 				}
 			case this.keys.enter:
 			case this.keys.space:
-				{	
+				{
 					this.changeGrid(e);
 					e.stopPropagation();
 					return false;
@@ -1593,7 +1643,7 @@
 		var $curCell = $('#' + this.$grid.attr('aria-activedescendant'));
 		var $cells = this.$grid.find('td.selectable');
 		var colCount = this.$grid.find('tbody tr').eq(0).find('td').length;
-		if (e.altKey) {
+		if (e.altKey && e.keyCode != this.keys.pageup && e.keyCode != this.keys.pagedown) {
 			return true;
 		}
 		switch (e.keyCode) {
@@ -1652,7 +1702,7 @@
 				}
 			case this.keys.left:
 			case this.keys.right:
-				{	
+				{
 					if ((e.keyCode == this.keys.left && this.locales.directionality === 'LTR')  || (e.keyCode == this.keys.right && this.locales.directionality === 'RTL')) {
 						if (e.ctrlKey || e.shiftKey) {
 							return true;
@@ -1771,14 +1821,14 @@
 			case this.keys.pageup:
 				{
 					var active = this.$grid.attr('aria-activedescendant');
-					if (e.shiftKey) {
+					if (e.shiftKey || e.ctrlKey) {
 						return true;
 					}
 					e.preventDefault();
 					var ok = false;
 					switch (this.gridType) {
 						case 0: // days grid
-							if (e.ctrlKey) {
+							if (e.altKey) {
 								e.stopImmediatePropagation();
 								ok = this.showDaysOfPrevYear();
 							} else {
@@ -1808,14 +1858,14 @@
 			case this.keys.pagedown:
 				{
 					var active = this.$grid.attr('aria-activedescendant');
-					if (e.shiftKey) {
+					if (e.shiftKey || e.ctrlKey) {
 						return true;
 					}
 					e.preventDefault();
 					var ok = false;
 					switch (this.gridType) {
 						case 0: // days grid
-							if (e.ctrlKey) {
+							if (e.altKey) {
 								e.stopImmediatePropagation();
 								ok = this.showDaysOfNextYear();
 							} else {
@@ -1979,7 +2029,7 @@
 		var fields = $('body').find('input:visible,textarea:visible,select:visible');
 		var index = fields.index( this.$target );
 		if ( index > -1 && index < fields.length ) {
-			if (e.shiftKey) { 
+			if (e.shiftKey) {
 				if (index > 0) {
 					index--;
 				}
@@ -2034,25 +2084,25 @@
 	} // end changeGrid()
 
 	/**
-	 *	selectGridCell() is a member function to put focus on the current cell of the grid. 
+	 *	selectGridCell() is a member function to put focus on the current cell of the grid.
 	 *
 	 *	@return N/A
 	 */
 	Datepicker.prototype.selectGridCell = function(cellId) {
 		$('#' + cellId).addClass('focus').attr('aria-selected', 'true').attr('tabindex', 0).focus();
-	} // end focusCurrentDay()
+	} // end selectGridCell()
 
 	/**
-	 *	selectGridCell() is a member function to put focus on the current cell of the grid. 
+	 *	unSelectGridCell() is a member function to remove focus on the current cell of the grid.
 	 *
 	 *	@return N/A
 	 */
 	Datepicker.prototype.unSelectGridCell = function(cellId) {
 		$('#' + cellId).removeClass('focus').attr('aria-selected', 'false').attr('tabindex', -1);
-	} // end focusCurrentDay()
+	} // end unSelectGridCell()
 
 	/**
-	 *	update() is a member function to update the target textbox. 
+	 *	update() is a member function to update the target textbox.
 	 *
 	 *	@return N/A
 	 */
@@ -2070,7 +2120,30 @@
 	} // end update()
 
 	/**
-	 *	hideObject() is a member function to hide an element of the datepicker. 
+	 *	updateLinked() is a member function to update the linked textbox.
+	 *
+	 *	@param	(date Date) the current value of this Datepicker date.
+	 *	@return N/A
+	 */
+	Datepicker.prototype.updateLinked = function(date) {
+		if (this.options.previous !== null && this.options.previous.val() !== '') {
+			var previousDate = this.options.previous.datepicker('getDate');
+			if (previousDate > date) {
+				var previousVal = this.formatDate(date, this.options.previous.datepicker('outputFormat'));
+				this.options.previous.val(previousVal);
+			}
+		}
+		if (this.options.next !== null && this.options.next.val() !== '') {
+			var nextDate = this.options.next.datepicker('getDate');
+			if (nextDate < date) {
+				var nextVal = this.formatDate(date, this.options.next.datepicker('outputFormat'));
+				this.options.next.val(nextVal);
+			}
+		}
+	} // end updateLinked()
+
+	/**
+	 *	hideObject() is a member function to hide an element of the datepicker.
 	 *
 	 *	@param ($element jQuery object) the element to hide
 	 *	@return N/A
@@ -2081,7 +2154,7 @@
 	} // end hideObject()
 
 	/**
-	 *	showObject() is a member function to show an element of the datepicker. 
+	 *	showObject() is a member function to show an element of the datepicker.
 	 *
 	 *	@param ($element jQuery object) the element to show
 	 *	@return N/A
@@ -2092,7 +2165,7 @@
 	} // end showObject()
 
 	/**
-	 *	show() is a member function to show the Datepicker and give it focus. 
+	 *	show() is a member function to show the Datepicker and give it focus.
 	 *
 	 *	@return N/A
 	 */
@@ -2100,14 +2173,17 @@
 		var self = this;
 		$('.datepicker-calendar').trigger('ab.datepicker.opening', [self.id]);
 		if (this.options.modal == true) {
+			if (!this.modalEventHandler) {
+				this.modalEventHandler = function(e) {
+					//ensure focus remains on the dialog
+					self.$grid.focus();
+					// Consume all mouse events and do nothing
+					e.stopPropagation;
+					return false;
+				};
+			}
 			// Bind an event listener to the document to capture all mouse events to make dialog modal
-			$(document).on('click mousedown mouseup', function(e) {
-				//ensure focus remains on the dialog
-				self.$grid.focus();
-				// Consume all mouse events and do nothing
-				e.stopPropagation;
-				return false;
-			});
+			$(document).on('click mousedown mouseup', this.modalEventHandler);
 			this.greyOut(true);
 			var zIndex = parseInt($('#datepicker-overlay').css('z-index'), 10) || 40;
 			this.$calendar.css('z-index', zIndex + 1);
@@ -2129,30 +2205,28 @@
 				self.$grid.focus();
 			}
 		});
-		
+
 		// adjust position of the calendar
-		var groupOffsetTop = Math.max(0, Math.floor(this.$group.offset().top - this.$label.offset().top));
-		var groupOffsetLeft = Math.max(0, Math.floor(this.$group.offset().left - this.$label.offset().left));
-		var parentPaddingLeft = parseInt(this.$calendar.parent().css('padding-left'), 10);
+		var groupOffsetTop = Math.max(0, Math.floor(this.$group[0].offsetTop));
+		var groupOffsetLeft = Math.max(0, Math.floor(this.$group[0].offsetLeft + this.$target[0].offsetLeft));
 		var calendarHeight = this.$calendar.outerHeight();
-		var groupTop = this.$group.offset().top;
-		var groupLeft = this.$group.offset().left;
+		var groupAbsoluteTop = this.$group.offset().top;
 		var groupHeight = this.$group.outerHeight(true);
-		var roomBefore = Math.floor(groupTop - $(window).scrollTop());
-		var roomAfter = Math.floor($(window).height() - (groupTop + groupHeight - $(window).scrollTop()));
+		var roomBefore = Math.floor(groupAbsoluteTop - $(window).scrollTop());
+		var roomAfter = Math.floor($(window).height() - (groupAbsoluteTop + groupHeight - $(window).scrollTop()));
 		if (roomAfter < calendarHeight && roomAfter < roomBefore) {
 			// show calendar above group
 			this.$calendar.addClass('above');
 			this.$calendar.css({
-				top: (groupOffsetTop - calendarHeight + 21) + 'px',
-				left: (groupOffsetLeft + parentPaddingLeft) + 'px'
-			}); 
+				top: (groupOffsetTop - calendarHeight) + 'px',
+				left: groupOffsetLeft + 'px'
+			});
 		} else {
-			  // show calendar below group
+			// show calendar below group
 			this.$calendar.addClass('below');
 			this.$calendar.css({
-				top: (groupHeight + groupOffsetTop + 21) + 'px',
-				left: (groupOffsetLeft + parentPaddingLeft) + 'px'
+				top: (groupOffsetTop + groupHeight) + 'px',
+				left: groupOffsetLeft + 'px'
 			});
 		}
 
@@ -2163,7 +2237,7 @@
 	} // end show()
 
 	/**
-	 *	refresh() is a member function to refesh the datepicker content when an option change. 
+	 *	refresh() is a member function to refesh the datepicker content when an option change.
 	 *
 	 *	@return N/A
 	 */
@@ -2183,7 +2257,7 @@
 	} // end refresh()
 
 	/**
-	 *	handleDocumentClick() is a member function to handle click on document. 
+	 *	handleDocumentClick() is a member function to handle click on document.
 	 *
 	 *	@param (e obj) e is the event object associated with the event
 	 *
@@ -2203,7 +2277,7 @@
 	} // end handleDocumentClick()
 
 	/**
-	 *	hide() is a member function to hide the Datepicker and remove focus. 
+	 *	hide() is a member function to hide the Datepicker and remove focus.
 	 *
 	 *	@return N/A
 	 */
@@ -2212,7 +2286,9 @@
 			var self = this;
 			// unbind the modal event sinks
 			if (this.options.modal == true) {
-				$(document).off('click mousedown mouseup');
+				if (this.modalEventHandler) {
+					$(document).off('click mousedown mouseup', this.modalEventHandler);
+				}
 				this.greyOut(false);
 			} else {
 				$(document).off('click', self.handleDocumentClick);
@@ -2231,7 +2307,7 @@
 	} // end hide()
 
 	/**
-	 *	greyOut() is a member function to grey out the document background. 
+	 *	greyOut() is a member function to grey out the document background.
 	 *
 	 *	@return N/A
 	 */
@@ -2240,14 +2316,6 @@
 		if ($overlay.length == 0 && on) {
 			$('body').append('<div id="datepicker-overlay" class="datepicker-overlay"></div>');
 			$overlay = $('#datepicker-overlay');
-		
-/* 			// compute z-index for overlay
-			var zmax = 0;
-			$('*').each(function() {
-				var cur = parseInt($(this).css('z-index'), 10);
-				if (! isNaN(cur)) zmax = Math.max(zmax, cur);
-			});
-			$overlay.attr('z-index', zmax + 10); */
 		}
 		if (on) {
 			$overlay.fadeIn(500);
@@ -2257,37 +2325,8 @@
 	} // end greyOut()
 
 	/**
-	 *	absolutePosition() is a member function that compute the absolute position 
-	 *	of some element within document. 
-	 *
-	 *	@param (element obj) the element of the document
-	 *	@return an object containing the properties top and left.
-	 */
-	Datepicker.prototype.absolutePosition = function (element) {
-		var top = 0, left = 0;
-		if (element.getBoundingClientRect) {
-			var box = element.getBoundingClientRect();
-			var body = document.body;
-			var docElem = document.documentElement;
-			var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-			var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
-			var clientTop = docElem.clientTop || body.clientTop || 0;
-			var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-			top  = Math.round(box.top +  scrollTop - clientTop);
-			left = Math.round(box.left + scrollLeft - clientLeft);
-		} else {
-			while(element) {
-				top = top + parseInt(element.offsetTop, 10);
-				left = left + parseInt(element.offsetLeft, 10);
-				element = element.offsetParent;	   
-			}   
-		}
-		return {top: top, left: left};
-	} // end absolutePosition()
-
-	/**
 	 *	getDaysInMonth() is a member function to calculate the number of days in a given month
-	 *	
+	 *
 	 *	@param (year int) the year
 	 *	@param (month int) the given month
 	 *
@@ -2298,8 +2337,8 @@
 	} // end getDaysInMonth()
 
 	/**
-	 *	previousMonth() is a member function that compute the month 
-	 *	preceding a given month. 
+	 *	previousMonth() is a member function that compute the month
+	 *	preceding a given month.
 	 *
 	 *	@param (year int) the given year
 	 *	@param (month int) the given month
@@ -2316,8 +2355,8 @@
 	} // end previousMonth()
 
 	/**
-	 *	nextMonth() is a member function that compute the month 
-	 *	following a given month. 
+	 *	nextMonth() is a member function that compute the month
+	 *	following a given month.
 	 *
 	 *	@param (year int) the given year
 	 *	@param (month int) the given month
@@ -2354,12 +2393,12 @@
 		};
 		var getDayOfYear = function(date) {
 			var start = new Date(date.getFullYear(), 0, 0);
-			return Math.floor((date - start) / 86400000);	
+			return Math.floor((date - start) / 86400000);
 		};
 		var getMillisecondsInDay = function(date) {
 			var date1 = new Date(date.getTime());
 			date1.setHours( 0 );
-			return date - date1;			
+			return date - date1;
 		};
 		var y = date.getFullYear() + "";
 		var M = date.getMonth() + 1;
@@ -2441,7 +2480,7 @@
 			"k": H + 1,
 			"KK": zeroPad(H > 11 ? H - 12 : H),
 			"kk": zeroPad(H + 1),
-			"a": H > 11 ? this.locales.day_periods.pm : this.locales.day_periods.am, 
+			"a": H > 11 ? this.locales.day_periods.pm : this.locales.day_periods.am,
 			"m": m,
 			"mm": zeroPad(m),
 			"s": s,
@@ -2449,9 +2488,9 @@
 			"w": w,
 			"ww": zeroPad(w),
 			"W": W,
-		};		
+		};
 		return format.replace(
-			/('[^']+'|y{1,4}|L{1,5}|M{1,5}|c{1,6}|d{1,2}|D{1,3}|E{1,6}|e{1,6}|F{1,1}|G{1,5}|Q{1,5}|q{1,5}|H{1,2}|h{1,2}|K{1,2}|k{1,2}|m{1,2}|s{1,2}|w{1,2}|W{1,1}|A{1,6})/g, 
+			/('[^']+'|y{1,4}|L{1,5}|M{1,5}|c{1,6}|d{1,2}|D{1,3}|E{1,6}|e{1,6}|F{1,1}|G{1,5}|Q{1,5}|q{1,5}|H{1,2}|h{1,2}|K{1,2}|k{1,2}|m{1,2}|s{1,2}|w{1,2}|W{1,1}|A{1,6})/g,
 			function (mask) {
 				return mask.charAt(0) === "'" ? mask.substr(1, mask.length - 2) : values[mask] || mask;
 			}
@@ -2462,22 +2501,22 @@
 	 *	createDateFromFormat( format_string, date_string )
 	 *
 	 *	This function takes a date string and a format string. It matches
-	 *	If the date string matches the format string, it returns the 
+	 *	If the date string matches the format string, it returns the
 	 *	the date object. If it does not match, it returns null.
 	 */
 	Datepicker.prototype.createDateFromFormat = function(format, value) {
 		var extractInteger = function(str, pos, minlength, maxlength) {
 			for (var x = maxlength; x >= minlength; x--) {
 				var integer = str.substring(pos, pos + x);
-				if (integer.length < minlength) { 
-					return null; 
+				if (integer.length < minlength) {
+					return null;
 				}
-				if (/^\d+$/.test(integer)) { 
-					return integer; 
+				if (/^\d+$/.test(integer)) {
+					return integer;
 				}
 			}
 			return null;
-		}; 
+		};
 		var skipName = function(names, pos) {
 			for (var i = 0; i < names.length; i++) {
 				var name = names[i];
@@ -2486,7 +2525,7 @@
 				}
 			}
 			return 0;
-		}; 
+		};
 		var pos = 0;
 		var now = new Date();
 		var year = now.getYear();
@@ -2637,7 +2676,7 @@
 						pos += pmlength;
 					} else {
 						return null;
-					}				
+					}
 					break;
 				default:
 					if (value.substring(pos, pos + token.length) != token) {
@@ -2648,17 +2687,17 @@
 			}
 		});
 		// If there are any trailing characters left in the value, it doesn't match
-		if (pos != value.length) { 
-			return null; 
+		if (pos != value.length) {
+			return null;
 		}
 		if (year == null) {
 			return null;
 		}
 		if (year.length == 2) {
 			if (year > 50) {
-				year = 1900 + (year - 0); 
+				year = 1900 + (year - 0);
 			} else {
-				year = 2000 + (year - 0); 
+				year = 2000 + (year - 0);
 			}
 		}
 		// Is date valid for month?
@@ -2668,23 +2707,23 @@
 		if (month == 2) {
 			// Check for leap year
 			if ( ( (year % 4 == 0) && (year % 100 != 0) ) || (year % 400 == 0) ) { // leap year
-				if (date > 29) { 
+				if (date > 29) {
 					return null;
 				}
-			} else { 
-				if (date > 28) { 
-					return null; 
-				} 
+			} else {
+				if (date > 28) {
+					return null;
+				}
 			}
 		}
 		if ((month == 4) || (month == 6) || (month == 9) || (month==11)) {
-			if (date > 30) { 
-				return null; 
+			if (date > 30) {
+				return null;
 			}
 		}
 		// Correct hours value
 		if (hh < 12 && ampm == "PM") {
-			hh = hh - 0 + 12; 
+			hh = hh - 0 + 12;
 		} else if (hh > 11 && ampm == "AM") {
 			hh -= 12;
 		}
@@ -2692,10 +2731,10 @@
 	} // end createDateFromFormat()
 
 	/**
-	 *	parseDate() is a member function which parse a date string. 
+	 *	parseDate() is a member function which parse a date string.
 	 *
 	 *	This function takes a date string and try to parse it with the input formats.
-	 *	If the date string matches one of the format string, it returns the 
+	 *	If the date string matches one of the format string, it returns the
 	 *	the date object. Otherwise, it returns null.
 	 *
 	 *	@param (value string) the date string
@@ -2710,14 +2749,14 @@
 				return false;
 			}
 		});
-		if (date == null) { // last try with the output format 
+		if (date == null) { // last try with the output format
 			date = self.createDateFromFormat(this.options.outputFormat, value);
 		}
 		return date;
 	} // end parseDate()
 
 	/**
-	 *	min() is a public member function which allow change the smallest selectable date. 
+	 *	min() is a public member function which allow change the smallest selectable date.
 	 *
 	 *	@param (value string) the new date
 	 *	@return the smallest selectable date
@@ -2738,7 +2777,7 @@
 	} // end min()
 
 	/**
-	 *	max() is a public member function which allow change the biggest selectable date. 
+	 *	max() is a public member function which allow change the biggest selectable date.
 	 *
 	 *	@param (value string) the new date
 	 *	@return the biggest selectable date
@@ -2759,7 +2798,7 @@
 	} // end max()
 
 	/**
-	 *	theme() is a public member function which allow change the datepicker theme. 
+	 *	theme() is a public member function which allow change the datepicker theme.
 	 *
 	 *	@param (value string) the new theme
 	 *	@return the datepicker theme
@@ -2776,7 +2815,7 @@
 	} // end theme()
 
 	/**
-	 *	firstDayOfWeek() is a public member function which allow change the first Day Of Week. 
+	 *	firstDayOfWeek() is a public member function which allow change the first Day Of Week.
 	 *
 	 *	@param (value integer) the new first Day Of Week
 	 *	@return the first Day Of Week
@@ -2794,12 +2833,12 @@
 	} // end firstDayOfWeek()
 
 	/**
-	 *	daysOfWeekDisabled() is a public member function which allow disabling of some weekdays. 
+	 *	daysOfWeekDisabled() is a public member function which allow disabling of some weekdays.
 	 *
 	 *	@param (value string) the new disabled week days
 	 *	@return the disabled week days
 	 */
-	Datepicker.prototype.daysOfWeekDisabled = function(value) {		
+	Datepicker.prototype.daysOfWeekDisabled = function(value) {
 		if (value != null) {
 			this.options.daysOfWeekDisabled = [];
 			if (! $.isArray(value)) {
@@ -2811,14 +2850,14 @@
 					self.options.daysOfWeekDisabled.push(val);
 				} else if (typeof val === 'string') {
 					self.options.daysOfWeekDisabled.push(parseInt(val, 10));
-				}				
+				}
 			});
 		}
 		return this.options.daysOfWeekDisabled;
 	} // end daysOfWeekDisabled()
 
 	/**
-	 *	weekDayFormat() is a public member function which allow change the format of weekdays name. 
+	 *	weekDayFormat() is a public member function which allow change the format of weekdays name.
 	 *
 	 *	@param (value string) the new format. Allowed : 'short' or 'narrow'
 	 *	@return the format of weekdays name
@@ -2832,12 +2871,12 @@
 	} // end weekDayFormat()
 
 	/**
-	 *	inputFormat() is a public member function which allow change the input format. 
+	 *	inputFormat() is a public member function which allow change the input format.
 	 *
 	 *	@param (value string) the new format
 	 *	@return the input format
 	 */
-	Datepicker.prototype.inputFormat = function(value) {		
+	Datepicker.prototype.inputFormat = function(value) {
 		if (value != null) {
 			if (! $.isArray(value)) {
 				value = [value];
@@ -2851,12 +2890,12 @@
 	} // end inputFormat()
 
 	/**
-	 *	outputFormat() is a public member function which allow change the output format. 
+	 *	outputFormat() is a public member function which allow change the output format.
 	 *
 	 *	@param (value string) the new format
 	 *	@return the output format
 	 */
-	Datepicker.prototype.outputFormat = function(value) {		
+	Datepicker.prototype.outputFormat = function(value) {
 		if (value != null) {
 			this.options.outputFormat = value;
 		}
@@ -2864,12 +2903,12 @@
 	} // end outputFormat()
 
 	/**
-	 *	modal() is a public member function which allow to set or unset the modal mode. 
+	 *	modal() is a public member function which allow to set or unset the modal mode.
 	 *
 	 *	@param (value boolean) the new modal mode
 	 *	@return the modal mode
 	 */
-	Datepicker.prototype.modal = function(value) {	
+	Datepicker.prototype.modal = function(value) {
 		if (value != null) {
 			this.options.modal = value;
 			if (this.options.modal == true) {
@@ -2896,12 +2935,12 @@
 	} // end modal()
 
 	/**
-	 *	inline() is a public member function which allow to set or unset the inline mode. 
+	 *	inline() is a public member function which allow to set or unset the inline mode.
 	 *
 	 *	@param (value string or false) the id or jquery object of the datepicker container, false otherwise (not inline)
 	 *	@return the given value
 	 */
-	Datepicker.prototype.inline = function(value) {	
+	Datepicker.prototype.inline = function(value) {
 		if (value != null) {
 			if (value != false) {
 				this.hideObject(this.$button);
@@ -2932,22 +2971,83 @@
 	} // end inline()
 
 	/**
-	 *	format() is a public member function to format a date according the output format. 
+	 *	format() is a public member function to format a date according the output format.
 	 *
-	 *	@param (value date object) the date 
+	 *	@param (value date object) the date
 	 *	@return formatted date string
 	 */
-	Datepicker.prototype.format = function(date) {	
+	Datepicker.prototype.format = function(date) {
 		return this.formatDate(date, this.options.outputFormat);
 	} // end format()
 
 	/**
-	 *	setLocales() is a public member function which allow change the locales. 
+	 *	enable() is a public member function to enable this datepicker.
+	 */
+	Datepicker.prototype.enable = function() {
+		this.$button.removeClass('disabled');
+		this.$button.attr('aria-disabled', false);
+		this.$button.attr('tabindex', 0);
+	} // end enable()
+
+	/**
+	 *	disable() is a public member function to disable this datepicker.
+	 */
+	Datepicker.prototype.disable = function() {
+		this.hide();
+		this.$button.addClass('disabled');
+		this.$button.attr('aria-disabled', true);
+		this.$button.attr('tabindex', -1);
+	} // end enable()
+
+	/**
+	 *	datesDisabled() is a public member function to set dates to be disabled.
+	 */
+	Datepicker.prototype.datesDisabled = function(dates) {
+		this.options.datesDisabled = [];
+		if (! $.isArray(dates)) {
+			dates = [dates];
+		}
+		var self = this;
+		$.each(dates, function(i, v) {
+			if (typeof v === 'string') {
+				var date = self.parseDate(v);
+				if (date !== null ) {
+					self.options.datesDisabled.push(self.format(date));
+				}
+			} else if (v instanceof Date && !isNaN(v.valueOf())) {
+				self.options.datesDisabled.push(self.format(v));
+			}
+		});
+	} // end datesDisabled()
+
+	/**
+	 *	startview() is a public member function to format a date according the output format.
+	 *
+	 *	@param (value int|string) the new view
+	 *	@return  N/A
+	 */
+	Datepicker.prototype.startview = function(view) {
+		switch (view) {
+			case 1:
+			case 'months':
+				this.options.startView = 1;
+				break;
+			case 2:
+			case 'years':
+				this.options.startView = 2;
+				break;
+			default:
+				this.options.startView = 0;
+		}
+	} // end startview()
+
+	/**
+	 *	setLocales() is a public member function which allow change the locales.
 	 *
 	 *	@param (value obj) the new locales
 	 *	@return N/A
 	 */
-	Datepicker.prototype.setLocales = function(value) {		
+	Datepicker.prototype.setLocales = function(value) {
 		this.locales = value;
 		this.options.inputFormat = [this.locales.short_format];
 		this.options.outputFormat = this.locales.short_format;
@@ -2983,11 +3083,16 @@
 
 	$.fn.datepicker = function (option, value) {
 		if (typeof option == 'string' && $(this).length == 1) {
-			var $this = $(this);
-			setTimeout(function() {
-				var data = $this.eq(0).data('ab.datepicker');
-				if (data) return data[option](value);
-			}, 0);
+			var data = $(this).eq(0).data('ab.datepicker');
+			if (data) {
+				return data[option](value);
+			} else {
+				var $this = $(this);
+				setTimeout(function() {
+					var data = $this.eq(0).data('ab.datepicker');
+					if (data) return data[option](value);
+				}, 0);
+			}
 		} else {
 			return this.each(function () {
 				var $this   = $(this);
