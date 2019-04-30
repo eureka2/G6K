@@ -33,6 +33,15 @@ parameters:
                 - js/locales/%app_locale%.js
                 - js/datepicker.js
                 - js/abDatepicker.js
+        abCoupledDatepicker:
+            label: Bind the datepicker following this one to represent the end date of a period 
+            target: [ date ]
+            input: [ text ]
+            deps:
+                - abDatepicker
+            css: 
+            js: 
+                - js/abCoupledDatepicker.js
         AutoMoneyFormat:
             label:  Live Amount Formatting
             target: [ money ]
