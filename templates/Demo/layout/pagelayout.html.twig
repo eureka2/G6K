@@ -28,7 +28,7 @@
 		<script type="text/javascript">
 		$(function(){
 			setTimeout(function() {
-				$('input.date').datepicker('theme', 'blue');
+				$('input.date[data-widget=abDatepicker], input.date[data-widget=abCoupledDatepicker]').datepicker('theme', 'blue');
 				$('input.listbox-input').listbox('theme', 'blue');	
 			}, 0);
 		});
