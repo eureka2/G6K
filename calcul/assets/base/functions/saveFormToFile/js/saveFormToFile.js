@@ -55,6 +55,13 @@ THE SOFTWARE.
 			});
 		} else {
 			var element = g6k.getStepChildElement(parameters);
+			if ($(element).hasClass('accordion-section')) {
+				$(element).find('.panel-body').append(clickable);
+			} else if ($(element).find('.modal-footer').length > 0) {
+				$(element).find('.modal-footer').append(clickable);
+			} else {
+				$(element).append(clickable);
+			}
 			clickable.on('click', function(event) {
 				event.preventDefault();
 				saveInputs(element);
@@ -67,14 +74,16 @@ THE SOFTWARE.
 		function saveInputs(element) {
 			var fields = {};
 			$(element).find(":input:not([type='radio']), input[type='radio']:checked").each(function() {
-				var name = $(this).attr('name');
-				var type = $(this).attr('type');
-				if (name && type != 'hidden') {
-					var value = $(this).val();
-					if (type == 'checkbox') {
-						value = $(this).is(':checked');
+				if (! $(this).is('button')) {
+					var name = $(this).attr('name');
+					var type = $(this).attr('type');
+					if (name && type != 'hidden') {
+						var value = $(this).val();
+						if (type == 'checkbox') {
+							value = $(this).is(':checked');
+						}
+						fields[name] = value;
 					}
-					fields[name] = value;
 				}
 			});
 			var text = {
