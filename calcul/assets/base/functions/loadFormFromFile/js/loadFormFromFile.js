@@ -37,6 +37,21 @@ THE SOFTWARE.
 			clickable.addClass('load-form-button');
 			clickable.append($('<span>', { 'class': 'fas fa-save'}));
 		}
+		var element;
+		if (func.appliedto == 'page') {
+			element = 'body';
+		} else if (func.appliedto == 'article') {
+			element = '.main-container article';
+		} else {
+			element = g6k.getStepChildElement(parameters);
+			if ($(element).hasClass('accordion-section')) {
+				$(element).find('.panel-body').append(clickable);
+			} else if ($(element).find('.modal-footer').length > 0) {
+				$(element).find('.modal-footer').append(clickable);
+			} else {
+				$(element).append(clickable);
+			}
+		}
 		var fileToLoad = $('<input>', { 'type': 'file', 'class': 'sr-only', 'accept': 'text/plain, .txt' });
 		$('body').append(fileToLoad);
 		fileToLoad.on('change', function(e) {
@@ -50,29 +65,21 @@ THE SOFTWARE.
 					callback && callback(false, "This data does not apply to this part of the simulator.");
 					return;
 				}
-				var element;
-				if (func.appliedto == 'page') {
-					element = 'body';
-				} else if (func.appliedto == 'article') {
-					element = '.main-container article';
-				} else {
-					if (parameters.step && (! text.step || text.step != g6k.simu.step.name)) {
-						callback && callback(false, "This data does not apply to this step of the simulator.");
-						return;
-					}
-					if (parameters.panel && (! text.panel || text.panel != parameters.panel)) {
-						callback && callback(false, "This data does not apply to this part of the simulator.");
-						return;
-					}
-					if (parameters.fieldset && (! text.fieldset || text.fieldset != parameters.fieldset)) {
-						callback && callback(false, "This data does not apply to this part of the simulator.");
-						return;
-					}
-					if (parameters.blockgroup && (! text.blockgroup || text.blockgroup != parameters.blockgroup)) {
-						callback && callback(false, "This data does not apply to this part of the simulator.");
-						return;
-					}
-					element = g6k.getStepChildElement(parameters);
+				if (parameters.step && (! text.step || text.step != g6k.simu.step.name)) {
+					callback && callback(false, "This data does not apply to this step of the simulator.");
+					return;
+				}
+				if (parameters.panel && (! text.panel || text.panel != parameters.panel)) {
+					callback && callback(false, "This data does not apply to this part of the simulator.");
+					return;
+				}
+				if (parameters.fieldset && (! text.fieldset || text.fieldset != parameters.fieldset)) {
+					callback && callback(false, "This data does not apply to this part of the simulator.");
+					return;
+				}
+				if (parameters.blockgroup && (! text.blockgroup || text.blockgroup != parameters.blockgroup)) {
+					callback && callback(false, "This data does not apply to this part of the simulator.");
+					return;
 				}
 
 				$.each(text.fields, function(name, value) {
