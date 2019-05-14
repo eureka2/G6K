@@ -74,8 +74,8 @@ class DelimitedToSQLConverter extends SQLConverterBase {
 						foreach ($header as $name) {
 							if (!isset($infosColumns[$name])) {
 								$error = $translator === null ?
-										sprintf("Unkown column name : %s", $name) :
-										$translator->trans("Unkown column name : %name%", ['%name%' => $name]);
+										sprintf("Unknown column name : %s", $name) :
+										$translator->trans("Unknown column name : %name%", ['%name%' => $name]);
 								throw new \Exception($error);
 							}
 						}

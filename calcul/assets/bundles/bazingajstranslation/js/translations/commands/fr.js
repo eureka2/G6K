@@ -255,6 +255,7 @@ t.add("To copy all data sources, enter 'all' as data source name.", "Pour copier
 t.add("To copy all simulators, enter 'all' as simulator name.", "Pour copier tous les simulateurs, entrez 'all' comme nom de simulateur.", "commands", "fr");
 t.add("To copy all views, enter 'all' as view name.", "Pour copier toutes les vues, entrez 'all' comme nom de vue.", "commands", "fr");
 t.add("Unable to get parameters: %s%", "Impossible d'obtenir les param\u00e8tres : %s%", "commands", "fr");
+t.add("Unknown column name : %name%", "Nom de colonne inconnu: %name%", "commands", "fr");
 t.add("Updates (or Creates) the manifest.json file for the assets versioning.", "Met \u00e0 jour (ou cr\u00e9e) le fichier manifest.json pour la gestion de version des ressources.", "commands", "fr");
 t.add("Validate against the schema only, not the content.", "Valider par rapport au sch\u00e9ma seulement, pas le contenu.", "commands", "fr");
 t.add("Validates a simulator against the Simulator.xsd schema file.", "Valide un simulateur par rapport au fichier de sch\u00e9ma Simulator.xsd.", "commands", "fr");
