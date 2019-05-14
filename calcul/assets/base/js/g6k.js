@@ -4099,8 +4099,43 @@ THE SOFTWARE.
 					$("#" + name + "-explanation").html(explanation);
 				}
 			}
-			if (data.dataDependencies) {
-				$.each(data.dataDependencies, function( d, dependency ) {
+			if (data.defaultDependencies) {
+				$.each(data.defaultDependencies, function( d, dependency ) {
+					var field = self.getData(dependency);
+					if (typeof field.unparsedDefault !== "undefined" && field.unparsedDefault !== "") {
+						var value = self.evaluate(field.unparsedDefault);
+						if (value !== false) {
+							field.deflt = value;
+						}
+					}
+				});
+			}
+			if (data.minDependencies) {
+				$.each(data.minDependencies, function( d, dependency ) {
+					var field = self.getData(dependency);
+					if (field.unparsedMin !== "undefined" && field.unparsedMin !== "") {
+						self.resetMin(dependency);
+					}
+				});
+			}
+			if (data.maxDependencies) {
+				$.each(data.maxDependencies, function( d, dependency ) {
+					var field = self.getData(dependency);
+					if (field.unparsedMax !== "undefined" && field.unparsedMax !== "") {
+						self.resetMax(dependency);
+					}
+				});
+			}
+			if (data.indexDependencies) {
+				$.each(data.indexDependencies, function( d, dependency ) {
+					var field = self.getData(dependency);
+					if (field.unparsedIndex !== "undefined" && field.unparsedIndex !== "") {
+						self.reevaluateFields(dependency);
+					}
+				});
+			}
+			if (data.contentDependencies) {
+				$.each(data.contentDependencies, function( d, dependency ) {
 					var field = self.getData(dependency);
 					if ((! field.modifiedByUser || field.value === '') && typeof field.unparsedContent !== "undefined" && field.unparsedContent !== "") {
 						var content = self.evaluate(field.unparsedContent);
