@@ -2182,7 +2182,7 @@ class Simulator {
 			$this->datas[$id]['memorize'] = (string)$data['memorize'];
 		}
 		$this->name = $this->datas[$id]['name'];
-		$this->dependencies = 'dataDependencies';
+		$this->dependencies = 'defaultDependencies';
 		if ((string)$data['default'] != "") {
 			$this->datas[$id]['unparsedDefault'] = preg_replace_callback(
 				"/#(\d+)/", 
@@ -2190,6 +2190,7 @@ class Simulator {
 				(string)$data['default']
 			);
 		}
+		$this->dependencies = 'minDependencies';
 		if ((string)$data['min'] != "") {
 			$this->datas[$id]['unparsedMin'] = preg_replace_callback(
 				"/#(\d+)/", 
@@ -2197,6 +2198,7 @@ class Simulator {
 				(string)$data['min']
 			);
 		}
+		$this->dependencies = 'maxDependencies';
 		if ((string)$data['max'] != "") {
 			$this->datas[$id]['unparsedMax'] = preg_replace_callback(
 				"/#(\d+)/", 
@@ -2204,6 +2206,7 @@ class Simulator {
 				(string)$data['max']
 			);
 		}
+		$this->dependencies = 'contentDependencies';
 		if ((string)$data['content'] != "") {
 			$this->datas[$id]['unparsedContent'] = preg_replace_callback(
 				"/#(\d+)/", 
@@ -2211,6 +2214,7 @@ class Simulator {
 				(string)$data['content']
 			);
 		}
+		$this->dependencies = 'usedSourceDependencies';
 		if ((string)$data['source'] != "") {
 			$this->datas[$id]['unparsedSource'] = preg_replace_callback(
 				"/#(\d+)/", 
@@ -2218,6 +2222,7 @@ class Simulator {
 				(string)$data['source']
 			);
 		}
+		$this->dependencies = 'indexDependencies';
 		if ((string)$data['index'] != "") {
 			$this->datas[$id]['unparsedIndex'] = preg_replace_callback(
 				"/#(\d+)/", 
