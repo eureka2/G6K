@@ -4706,7 +4706,7 @@ THE SOFTWARE.
 						var options = ['<option value="">-----</option>'];
 						for (var r in result) {
 							var row = result[r];
-							options.push('<option value="', row[valueColumn], '">', row[labelColumn], '</option>');
+							options.push('<option value="', row[valueColumn] || row[valueColumn.toLowerCase()], '">', row[labelColumn] || row[labelColumn.toLowerCase()], '</option>');
 						}
 						choice.html(options.join(''));
 					} else if (choice.hasClass('listbox-input')) {
@@ -4714,7 +4714,7 @@ THE SOFTWARE.
 						items.push({ value: "", text: "-----", selected: true});
 						for (var r in result) {
 							var row = result[r];
-							items.push({ value: row[valueColumn], text: row[labelColumn]});
+							items.push({ value: row[valueColumn] || row[valueColumn.toLowerCase()], text: row[labelColumn] || row[labelColumn.toLowerCase()] });
 						}
 						choice.listbox('setItems', items);
 					}
