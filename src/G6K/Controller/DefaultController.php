@@ -33,6 +33,8 @@ use App\G6K\Model\Step;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Cookie;
 
+use acroforms\AcroForm;
+
 /**
  *
  * The actions of the DefaultController class are used to run the simulation engine for a particular simulator.
@@ -177,6 +179,9 @@ class DefaultController extends BaseController {
 		if ( ! $this->error && ($step->getOutput() == 'inlinePDF' || $step->getOutput() == 'downloadablePDF')) {
 			return $this->pdfOutput($request, $step, $datas, $view);
 		}
+		if ( ! $this->error && ($step->getOutput() == 'inlineFilledPDF' || $step->getOutput() == 'downloadableFilledPDF')) {
+			return $this->filledPdfOutput($request, $step, $datas);
+		}
 		return $this->htmlOutput($request, $step, $datas, $view);
 	}
 
@@ -289,6 +294,43 @@ class DefaultController extends BaseController {
 		$mpdf->WriteHTML($page);
 
 		$mpdf->Output($this->simu->getName().".pdf", $step->getOutput() == 'inlinePDF' ? 'I' : 'D'); // I = inline, D = download
+		return false;
+	}
+
+	/**
+	 * function filledPdfOutput
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   \App\G6K\Model\Step $step <parameter description>
+	 * @param   array $datas <parameter description>
+	 * @return  bool Always false
+	 *
+	 */
+	protected function filledPdfOutput(Request $request, $step, $datas)
+	{
+		$pdf = new AcroForm(
+			$this->get('kernel')->getProjectDir().'/var/data/pdfforms/'.$step->getTemplate(),
+			[
+				'pdftk' =>	$this->container->hasParameter('acroforms')
+							? $this->container->getParameter('acroforms')['pdftk']
+							: 'pdftk'
+			]
+		);
+		$textFields = $pdf->getTextFields();
+		$buttonFields = $pdf->getButtonFields();
+		$fields = [
+			'text' => array_filter($datas, function ($name) use ($textFields) {
+				return in_array($name, $textFields);
+			}, ARRAY_FILTER_USE_KEY),
+			'button' => array_filter($datas, function ($name) use ($buttonFields) {
+				return in_array($name, $buttonFields);
+			}, ARRAY_FILTER_USE_KEY)
+		];
+		$pdf->load($fields);
+		$pdf->merge(true); // true for flatten (need pdftk), false if not (this is the default)
+		$destination = $step->getOutput() == 'inlineFilledPDF' ? 'I' : 'D';
+		$pdf->output($destination, basename($step->getTemplate()));
 		return false;
 	}
 
