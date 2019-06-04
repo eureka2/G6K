@@ -344,7 +344,7 @@ class Evaluator {
 			"length" => array(1, array(Token::T_TEXT), Token::T_NUMBER, function($a) { return mb_strlen($a, 'utf8'); }),
 			"log" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log($a); }),
 			"log10" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return log10($a); }),
-			"lower" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return strtolower($a); }),
+			"lower" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return mb_strtolower($a); }),
 			"match" => array(2, array(Token::T_TEXT, Token::T_TEXT), Token::T_BOOLEAN, function($a, $b) { return preg_match($a, $b); }),
 			"max" => array(-1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return count($a) > 0 ? max($a) : ''; }),
 			"min" => array(-1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return count($a) > 0 ? min($a) : ''; }),
@@ -376,7 +376,7 @@ class Evaluator {
 			"tanh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return tanh($a); }),
 			"trim" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return trim($a); }),
 			"ucfirst" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return ucfirst($a); }),
-			"upper" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return strtoupper($a); }),
+			"upper" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return mb_strtoupper($a); }),
 			"workdays" => array(2, array(Token::T_DATE, Token::T_DATE), Token::T_NUMBER, function(\DateTime $a, \DateTime $b) { return Holidays::workdays($a, $b); }),
 			"workdaysofmonth" => array(2, array(Token::T_NUMBER, Token::T_NUMBER), Token::T_NUMBER, function($a, $b) { 
 				$d1 = \DateTime::createFromFormat('Y-n-j', $a . '-' . $b . '-1');
