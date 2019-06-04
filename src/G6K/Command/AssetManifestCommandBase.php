@@ -128,6 +128,7 @@ abstract class AssetManifestCommandBase extends CommandBase
 					}, $m[1]));
 				}
 				$rewritecss = false;
+				$importeds = array_unique($importeds);
 				foreach($importeds as $imported) {
 					$ifile = $this->resolvePath($imported, dirname($file));
 					if ($this->processFile($ifile, $output)) {

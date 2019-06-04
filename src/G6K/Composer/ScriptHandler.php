@@ -81,6 +81,7 @@ class ScriptHandler
 		$installationManager = $event->getComposer()->getInstallationManager();
 		$package = $event->getComposer()->getPackage();
 		$version = $package->getPrettyVersion();
+		$version = preg_replace("/[\(\)]/", " ", $version);
 		$version = preg_replace("/\s+/", "-", $version);
 		$isdev = $package->isDev();
 		putenv('APP_VERSION=' . $version);
