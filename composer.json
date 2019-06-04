@@ -14,40 +14,41 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ashleydawson/simple-pagination": "1.0.*",
+        "eureka2/acroforms": "^1.0.0",
         "flow/jsonpath": "^0.4.0",
         "friendsofsymfony/user-bundle": "~2.0",
         "mobiledetect/mobiledetectlib": "^2.8",
         "mpdf/mpdf": "^7.1",
         "sensio/framework-extra-bundle": "^5.1",
-        "symfony/asset": "^4.2.8",
-        "symfony/console": "^4.2.8",
-        "symfony/expression-language": "^4.2.8",
+        "symfony/asset": "^4.3.0",
+        "symfony/console": "^4.3.0",
+        "symfony/expression-language": "^4.3.0",
         "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "^4.2.8",
-        "symfony/lock": "^4.2.8",
+        "symfony/framework-bundle": "^4.3.0",
+        "symfony/lock": "^4.3.0",
         "symfony/monolog-bundle": "^3.1",
         "symfony/orm-pack": "*",
-        "symfony/process": "^4.2.8",
-        "symfony/security-bundle": "^4.2.8",
+        "symfony/process": "^4.3.0",
+        "symfony/security-bundle": "^4.3.0",
         "symfony/serializer-pack": "*",
         "symfony/swiftmailer-bundle": "^3.1",
-        "symfony/twig-bundle": "^4.2.8",
-        "symfony/validator": "^4.2.8",
-        "symfony/web-link": "^4.2.8",
-        "symfony/yaml": "^4.2.8",
+        "symfony/twig-bundle": "^4.3.0",
+        "symfony/validator": "^4.3.0",
+        "symfony/web-link": "^4.3.0",
+        "symfony/yaml": "^4.3.0",
         "willdurand/js-translation-bundle": "^2.6"
     },
     "require-dev": {
         "symfony/browser-kit": "^4.2",
-        "symfony/css-selector": "^4.2.8",
+        "symfony/css-selector": "^4.3.0",
         "symfony/debug-pack": "*",
-        "symfony/dotenv": "^4.2.8",
+        "symfony/dotenv": "^4.3.0",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "~3.4|~4.0",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
-        "symfony/var-dumper": "^4.2.8",
-        "symfony/web-server-bundle": "^4.2.8"
+        "symfony/var-dumper": "^4.3.0",
+        "symfony/web-server-bundle": "^4.3.0"
     },
     "config": {
         "preferred-install": {
@@ -107,7 +108,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "^4.2"
+            "require": "^4.3"
         },
         "branch-alias": {
             "dev-master": "4.x-dev"
