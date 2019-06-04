@@ -75,7 +75,7 @@ class Step {
 	private $template = "";
 
 	/**
-	 * @var string     $output The output of the result of the execution of the step : 'normal', 'inlinePDF', 'downloadablePDF', 'html'
+	 * @var string     $output The output of the result of the execution of the step : 'normal', 'inlinePDF', 'downloadablePDF', 'inlineFilledPDF', 'downloadableFilledPDF', 'html'
 	 *
 	 * @access  private
 	 *
@@ -246,6 +246,8 @@ class Step {
 	 * - normal: the step is displayed normally.
 	 * - inlinePDF: G6K displays a PDF rendering of the generated page.
 	 * - downloadablePDF: G6K generates a PDF file of the rendering of the page to be downloaded.
+	 * - inlineFilledPDF: G6K fills a PDF Form with data.
+	 * - downloadableFilledPDF: G6K fills a PDF Form to be downloaded with data.
 	 * - html: Not implemented
 	 *
 	 * @access  public
@@ -264,6 +266,8 @@ class Step {
 	 * - normal: the step is displayed normally.
 	 * - inlinePDF: G6K displays a PDF rendering of the generated page.
 	 * - downloadablePDF: G6K generates a PDF file of the rendering of the page to be downloaded.
+	 * - inlineFilledPDF: G6K fills a PDF Form with data.
+	 * - downloadableFilledPDF: G6K fills a PDF Form to be downloaded with data.
 	 * - html: Not implemented
 	 *
 	 * @access  public

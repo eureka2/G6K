@@ -182,6 +182,8 @@ THE SOFTWARE.
 		'normal': Translator.trans('Normal'), 
 		'inlinePDF': Translator.trans('Inline PDF'), 
 		'downloadablePDF': Translator.trans('Downloadable PDF'), 
+		'inlineFilledPDF': Translator.trans('Inline pre-filled PDF form'), 
+		'downloadableFilledPDF': Translator.trans('Downloadable pre-filled PDF form'), 
 		'html': Translator.trans('html')
 	}
 

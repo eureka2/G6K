@@ -258,6 +258,8 @@
 												<xs:enumeration value="normal"/>
 												<xs:enumeration value="inlinePDF"/>
 												<xs:enumeration value="downloadablePDF"/>
+												<xs:enumeration value="inlineFilledPDF"/>
+												<xs:enumeration value="downloadableFilledPDF"/>
 												<xs:enumeration value="html"/>
 											</xs:restriction>
 										</xs:simpleType>

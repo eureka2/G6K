@@ -242,10 +242,13 @@ class ValidateSimulatorCommand extends SimulatorCommandBase
 		$len = $steps->length;
 		for($i = 0; $i < $len; $i++) {
 			$step = $this->getDOMElementItem($steps, $i);
-			$template = str_replace(':', '/', $step->getAttribute('template'));
-			if (! $fsystem->exists($viewsDir.'/'.$view.'/'.$template)) {
-				$this->error($output, "In line %line%, the template '%template%' associated to step %step% of '%simulatorname%' doesn't exists.", array('%line%' => $step->getLineNo(), '%template%' => $template, '%step%' => $step->getAttribute('id'), '%simulatorname%' => $simu));
-				$ok = false;
+			$outputType = $step->getAttribute('output');
+			if ($outputType != 'inlineFilledPDF' && $outputType != 'downloadableFilledPDF') {
+				$template = str_replace(':', '/', $step->getAttribute('template'));
+				if (! $fsystem->exists($viewsDir.'/'.$view.'/'.$template)) {
+					$this->error($output, "In line %line%, the template '%template%' associated to step %step% of '%simulatorname%' doesn't exists.", array('%line%' => $step->getLineNo(), '%template%' => $template, '%step%' => $step->getAttribute('id'), '%simulatorname%' => $simu));
+					$ok = false;
+				}
 			}
 		}
 		return $ok;
