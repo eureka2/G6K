@@ -13,6 +13,10 @@ parameters:
         site_key: <YOUR GOOGLE SITE KEY>
         secret_key: <YOUR GOOGLE SECRET KEY>
 
+    acroforms:
+        pdftk: C:\Program Files (x86)\PDFtk\bin\pdftk
+        # pdftk: /usr/bin/pdftk
+
     widgets:
         abListbox:
             label: Accessible and customizable listbox
@@ -177,6 +181,27 @@ parameters:
             css: 
             js: 
                 - js/SocialSecurityNumber.js
+        Email:
+            label: Checks the entry of an email adress
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/Email.js
+        PhoneNumber10Digits:
+            label: Checks the entry of a 10 digits phone number
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/PhoneNumber10Digits.js
+        PhoneNumberNorthAmerica:
+            label: Checks the entry of a North American phone number
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/PhoneNumberNorthAmerica.js
 
     functions:
         copyToClipboard:
