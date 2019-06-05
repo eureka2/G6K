@@ -1502,6 +1502,20 @@ class SimulatorsAdminController extends BaseAdminController {
 
 			);
 		}
+		if ($simulator->Steps) {
+			foreach ($simulator->Steps->Step as $step) {
+				$output = (string)$step['output'];
+				if ($output == 'inlineFilledPDF' || $output == 'downloadableFilledPDF') {
+					$template = str_replace(':', '/', (string)$step['template']);
+					$content[] = array(
+						'name' => $template,
+						'data' => file_get_contents($this->pdfFormsDir . "/" . $template),
+						'modtime' => filemtime($this->pdfFormsDir . "/" . $template)
+
+					);
+				}
+			}
+		}
 		$zipcontent = $this->zip($content);
 		$response = new Response();
 		$response->headers->set('Cache-Control', 'private');
@@ -1680,6 +1694,8 @@ class SimulatorsAdminController extends BaseAdminController {
 		$simu = '';
 		$simufile = '';
 		$stylesheet = '';
+		$pdffile = '';
+		$pdfform = '';
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
 				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
@@ -1691,6 +1707,12 @@ class SimulatorsAdminController extends BaseAdminController {
 					}
 				} elseif ($fieldname == 'simulator-stylesheet') {
 					$stylesheet = $filePath;
+				} elseif ($fieldname == 'simulator-pdfform') {
+					$pdffile = $filePath;
+					$pdfform = $file->getClientOriginalName();
+					if (preg_match("/^(.+)\.pdf$/", $pdfform, $m)) {
+						$pdfform = trim($m[1]);
+					}
 				}
 			}
 		}
@@ -1702,6 +1724,10 @@ class SimulatorsAdminController extends BaseAdminController {
 				$fs->rename($stylesheet, $uploadDir . "/" . $simu . ".css", true);
 				$stylesheet = $uploadDir . "/" . $simu . ".css";
 			}
+			if ($pdffile != '') {
+				$fs->rename($pdffile, $uploadDir . "/" . $pdfform . ".pdf", true);
+				$pdffile = $uploadDir . "/" . $pdfform . ".pdf";
+			}
 			$heading = $translator->trans('Importing the « %simulator% » simulator', ['%simulator%' => $simu]);
 			$header = $this->makeReportHeader($request, $simu, $heading);
 			$footer = $this->makeReportFooter($request, $simu);
@@ -1710,6 +1736,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				'simulatorname' => $simu,
 				'simulatorpath' => $uploadDir,
 				'stylesheetpath' => $stylesheet != '' ? $uploadDir : false,
+				'pdfformspath' => $pdffile != '' ? $uploadDir : false,
 				'--default-widget' => ['abDatepicker', 'abListbox', 'AutoMoneyFormat']
 			], function() use ($header) {
 				print $header;

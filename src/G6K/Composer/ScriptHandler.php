@@ -54,6 +54,7 @@ class ScriptHandler
 		"APP_UPLOAD_DIRECTORY" => "upload directory",
 		"APP_VERSION" => "G6K version",
 		"APP_SECRET" => "application secret",
+		"PDFTK_PATH" => "absolute path of the pdftk executable",
 		"MAILER_URL" => "mailer URL",
 		"DB_ENGINE" => "database engine [sqlite, mysql or pgsql]",
 		"DB_NAME" => "database name",
@@ -190,6 +191,18 @@ class ScriptHandler
 					case 'APP_VERSION':
 						$value = $default;
 						break;
+					case 'PDFTK_PATH':
+						$value = $event->getIO()->askAndValidate(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), function($rep) use (&$engine) {
+							if ($rep == '' || $rep == '~') {
+								return '';
+							} elseif (is_executable($rep)) {
+								return $rep;
+							} else {
+								throw new \Exception(sprintf("The executable '%s' doesn't exists", $rep));
+							}
+						}, null, $default);
+						$engine = $value;
+						break;
 					case 'DB_ENGINE':
 						$value = $event->getIO()->askAndValidate(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), function($rep) use (&$engine) {
 							if (in_array($rep, ['sqlite', 'mysql', 'pgsql'])){
@@ -261,6 +274,9 @@ class ScriptHandler
 						break;
 					default:
 						$value = $event->getIO()->ask(sprintf('<question>%s</question> (<comment>%s</comment>): ', $question, $default), $default);
+				}
+				if (preg_match("/\s+/", $value)) {
+					$value = '"'.$value.'"';
 				}
 				$params[$variable] = $value;
 			}

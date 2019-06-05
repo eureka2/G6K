@@ -39,1098 +39,1118 @@
                 <target>- le chemin complet du répertoire (datasourcepath) où se trouvent les fichiers de votre source de données.</target>
             </trans-unit>
             <trans-unit id="10">
+                <source>- the full path of the directory (pdfformspath) where the PDF Form file is located.</source>
+                <target>- le chemin complet du répertoire (pdfformspath) où se trouve le fichier de formulaire PDF.</target>
+            </trans-unit>
+            <trans-unit id="11">
                 <source>- the full path of the directory (simulatorpath) where the XML file of your simulator is located.</source>
                 <target>- le chemin complet du répertoire (simulatorpath) où se trouve le fichier XML de votre simulateur.</target>
             </trans-unit>
-            <trans-unit id="11">
+            <trans-unit id="12">
                 <source>- the full path of the directory (stylesheetpath) where the css file of the stylesheet is located.</source>
                 <target>- le chemin complet du répertoire (stylesheetpath) où se trouve le fichier css de la feuille de style.</target>
             </trans-unit>
-            <trans-unit id="12">
+            <trans-unit id="13">
                 <source>- the full path of the directory (viewpath) where the .zip files are located.</source>
                 <target>- le chemin complet du répertoire (viewpath) où se trouvent les fichiers .zip.</target>
             </trans-unit>
-            <trans-unit id="13">
+            <trans-unit id="14">
                 <source>- the name of the data source (datasourcename).</source>
                 <target>- le nom de la source de données (datasourcename).</target>
             </trans-unit>
-            <trans-unit id="14">
+            <trans-unit id="15">
                 <source>- the name of the simulator (simulatorname).</source>
                 <target>- le nom du simulateur (simulatorname).</target>
             </trans-unit>
-            <trans-unit id="15">
+            <trans-unit id="16">
                 <source>- the name of the table (tablename).</source>
                 <target>- le nom de la table (tablename).</target>
             </trans-unit>
-            <trans-unit id="16">
+            <trans-unit id="17">
                 <source>- the name of the view (viewname).</source>
                 <target>- le nom de la vue (viewname).</target>
             </trans-unit>
-            <trans-unit id="17">
+            <trans-unit id="18">
                 <source>- the new path of the asset (newassetpath).</source>
                 <target>- le nouveau chemin de la ressource (newassetpath).</target>
             </trans-unit>
-            <trans-unit id="18">
+            <trans-unit id="19">
                 <source>- the path of the asset (assetpath).</source>
                 <target>- le chemin de la ressource (assetpath).</target>
             </trans-unit>
-            <trans-unit id="19">
+            <trans-unit id="20">
                 <source>- the url (viewurl) of the website where this view is used.</source>
                 <target>- l'URL (viewurl) du site Web où cette vue est utilisée.</target>
             </trans-unit>
-            <trans-unit id="20">
+            <trans-unit id="21">
                 <source>// Clearing the cache for the admin environment with debug false</source>
                 <target>// Vidage du cache pour l'environnement d'administration sans deboggage</target>
             </trans-unit>
-            <trans-unit id="21">
+            <trans-unit id="22">
                 <source>// Clearing the cache for the admin environment with debug true</source>
                 <target>// Vidage du cache pour l'environnement d'administration avec deboggage</target>
             </trans-unit>
-            <trans-unit id="22">
+            <trans-unit id="23">
                 <source>// Clearing the cache for the dev environment with debug false</source>
                 <target>// Vidage du cache pour l'environnement de développement sans deboggage</target>
             </trans-unit>
-            <trans-unit id="23">
+            <trans-unit id="24">
                 <source>// Clearing the cache for the dev environment with debug true</source>
                 <target>// Vidage du cache pour l'environnement de développement avec deboggage</target>
             </trans-unit>
-            <trans-unit id="24">
+            <trans-unit id="25">
                 <source>// Clearing the cache for the prod environment with debug false</source>
                 <target>// Vidage du cache pour l'environnement de production sans deboggage</target>
             </trans-unit>
-            <trans-unit id="25">
+            <trans-unit id="26">
                 <source>// Clearing the cache for the prod environment with debug true</source>
                 <target>// Vidage du cache pour l'environnement de production avec deboggage</target>
             </trans-unit>
-            <trans-unit id="26">
+            <trans-unit id="27">
                 <source>// Clearing the cache for the test environment with debug false</source>
                 <target>// Vidage du cache pour l'environnement de test sans deboggage</target>
             </trans-unit>
-            <trans-unit id="27">
+            <trans-unit id="28">
                 <source>// Clearing the cache for the test environment with debug true</source>
                 <target>// Vidage du cache pour l'environnement de test avec deboggage</target>
             </trans-unit>
-            <trans-unit id="28">
+            <trans-unit id="29">
                 <source>// Warming up the cache for the admin environment with debug false</source>
                 <target>// Regénération du cache pour l'environnement d'administration sans deboggage</target>
             </trans-unit>
-            <trans-unit id="29">
+            <trans-unit id="30">
                 <source>// Warming up the cache for the admin environment with debug true</source>
                 <target>// Regénération du cache pour l'environnement d'administration avec deboggage</target>
             </trans-unit>
-            <trans-unit id="30">
+            <trans-unit id="31">
                 <source>// Warming up the cache for the dev environment with debug false</source>
                 <target>// Regénération du cache pour l'environnement de développement sans deboggage</target>
             </trans-unit>
-            <trans-unit id="31">
+            <trans-unit id="32">
                 <source>// Warming up the cache for the dev environment with debug true</source>
                 <target>// Regénération du cache pour l'environnement de développement avec deboggage</target>
             </trans-unit>
-            <trans-unit id="32">
+            <trans-unit id="33">
                 <source>// Warming up the cache for the prod environment with debug false</source>
                 <target>// Regénération du cache pour l'environnement de production sans deboggage</target>
             </trans-unit>
-            <trans-unit id="33">
+            <trans-unit id="34">
                 <source>// Warming up the cache for the prod environment with debug true</source>
                 <target>// Regénération du cache pour l'environnement de production avec deboggage</target>
             </trans-unit>
-            <trans-unit id="34">
+            <trans-unit id="35">
                 <source>// Warming up the cache for the test environment with debug false</source>
                 <target>// Regénération du cache pour l'environnement de test sans deboggage</target>
             </trans-unit>
-            <trans-unit id="35">
+            <trans-unit id="36">
                 <source>// Warming up the cache for the test environment with debug true</source>
                 <target>// Regénération du cache pour l'environnement de test avec deboggage</target>
             </trans-unit>
-            <trans-unit id="36">
+            <trans-unit id="37">
                 <source>Add an asset to the manifest.json file for the assets versioning.</source>
                 <target>Ajoute une ressource au fichier manifest.json pour la gestion de version des ressources.</target>
             </trans-unit>
-            <trans-unit id="37">
+            <trans-unit id="38">
                 <source>Adding of the stylesheet is done!</source>
                 <target>L'ajout de la feuille de style est terminé!</target>
             </trans-unit>
-            <trans-unit id="38">
+            <trans-unit id="39">
                 <source>Adding of the stylesheet is not done!</source>
                 <target>L'ajout de la feuille de style ne s'est pas correctement terminé!</target>
             </trans-unit>
-            <trans-unit id="39">
+            <trans-unit id="40">
                 <source>Adding the stylesheet to the assets manifest</source>
                 <target>Ajout de la feuille de styles au registre des ressources</target>
             </trans-unit>
-            <trans-unit id="40">
+            <trans-unit id="41">
                 <source>and optionally:</source>
                 <target>et éventuellement :</target>
             </trans-unit>
-            <trans-unit id="41">
+            <trans-unit id="42">
                 <source>Asset manifest editor</source>
                 <target>Éditeur du registre de ressources</target>
             </trans-unit>
-            <trans-unit id="42">
+            <trans-unit id="43">
                 <source>Can't add the column '%column%' into table '%table%' : %error%</source>
                 <target>Impossible  d'ajouter le champ '%column%' dans la table '%table%' : %error%</target>
             </trans-unit>
-            <trans-unit id="43">
+            <trans-unit id="44">
                 <source>Can't alter 'NOT NULL' property of column %column% of table %table% : %error%</source>
                 <target>Impossible de modifier la propriété 'NOT NULL' du champ %column% de la table %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="44">
+            <trans-unit id="45">
                 <source>Can't create database %database% : %error%</source>
                 <target>Impossible de se connecter à la base de données %database% : %error%</target>
             </trans-unit>
-            <trans-unit id="45">
+            <trans-unit id="46">
                 <source>Can't create table %table% : %error%</source>
                 <target>Impossible de créer la table %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="46">
+            <trans-unit id="47">
                 <source>Can't delete from %table% : %error%</source>
                 <target>Impossible de supprimer des enregistrements de %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="47">
+            <trans-unit id="48">
                 <source>Can't drop %table% : %error%</source>
                 <target>Impossible de supprimer %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="48">
+            <trans-unit id="49">
                 <source>Can't insert into %table% : %error%</source>
                 <target>Impossible d'insérer dans %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="49">
+            <trans-unit id="50">
                 <source>Can't insert into %table% of database %database% : %error%</source>
                 <target>Impossible d'insérer dans %table% de la base de données %database% : %error%</target>
             </trans-unit>
-            <trans-unit id="50">
+            <trans-unit id="51">
                 <source>Can't modify description of column %column% of table %table% : %error%</source>
                 <target>Impossible de  modifier la description du champ %column% de la table %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="51">
+            <trans-unit id="52">
                 <source>Can't modify title of column %column% of table %table% : %error%</source>
                 <target>Impossible de modifier le titre du champ %column% de la table %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="52">
+            <trans-unit id="53">
                 <source>Can't modify type of column %column% of table %table% : %error%</source>
                 <target>Impossible de modifier le type du champ %column% de la table %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="53">
+            <trans-unit id="54">
                 <source>Can't rename column %column% of table %table% : %error%</source>
                 <target>Impossible de renommer le champ %column% de la table %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="54">
+            <trans-unit id="55">
                 <source>Can't rename table %table% : %error%</source>
                 <target>Impossible de renommer la table %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="55">
+            <trans-unit id="56">
                 <source>Can't update %table% : %error%</source>
                 <target>Impossible de mettre à jour %table% : %error%</target>
             </trans-unit>
-            <trans-unit id="56">
+            <trans-unit id="57">
                 <source>Can not find the assets directory of the other instance '%s%'</source>
                 <target>Impossible de trouver le répertoire des ressources de l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="57">
+            <trans-unit id="58">
                 <source>Can not find the DataSources.xml file from the other instance '%s%'</source>
                 <target>Impossible de trouver le fichier DataSources.xml de l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="58">
+            <trans-unit id="59">
                 <source>Can not find the file %name% in '%in%'</source>
                 <target>Impossible de trouver le fichier %name% dans '%in%'</target>
             </trans-unit>
-            <trans-unit id="59">
+            <trans-unit id="60">
                 <source>Can not find the simulators directory of the other instance '%s%'</source>
                 <target>Impossible de trouver le répertoire des simulateurs de l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="60">
+            <trans-unit id="61">
                 <source>Can not find the templates directory of the other instance '%s%'</source>
                 <target>Impossible de trouver le répertoire de modèles de page de l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="61">
+            <trans-unit id="62">
                 <source>CAUTION: Only internal databases will be copied with this command.</source>
                 <target>ATTENTION: Seules les bases de données internes seront copiées avec cette commande.</target>
             </trans-unit>
-            <trans-unit id="62">
+            <trans-unit id="63">
                 <source>Copies one or all data sources from another instance of G6K.</source>
                 <target>Copie une ou toutes les sources de données depuis une autre instance de G6K.</target>
             </trans-unit>
-            <trans-unit id="63">
+            <trans-unit id="64">
                 <source>Copies one or all simulators from another instance of G6K.</source>
                 <target>Copie un ou tous les simulateurs depuis une autre instance de G6K.</target>
             </trans-unit>
-            <trans-unit id="64">
+            <trans-unit id="65">
                 <source>Copies one or all views from another instance of G6K.</source>
                 <target>Copie une ou toutes les vues depuis une autre instance de G6K.</target>
             </trans-unit>
-            <trans-unit id="65">
+            <trans-unit id="66">
                 <source>Copying table %s% from %from% to %to%</source>
                 <target>Copie de la table %s% de %from% à %to%</target>
             </trans-unit>
-            <trans-unit id="66">
+            <trans-unit id="67">
                 <source>Copying the datasource '%datasourcename%' from '%anotherg6kpath%'</source>
                 <target>Copie de la source de données '%datasourcename%' depuis '%anotherg6kpath%'</target>
             </trans-unit>
-            <trans-unit id="67">
+            <trans-unit id="68">
+                <source>Copying the PDF '%pdf%' of the other instance '%s%'</source>
+                <target>Copie du fichier de formulaire PDF '%pdf%' depuis l'autre instance '%s%'</target>
+            </trans-unit>
+            <trans-unit id="69">
                 <source>Copying the simulator '%simulatorname%' located in '%simulatorpath%'</source>
                 <target>Copie du simulateur '%simulatorname%' situé dans '%simulatorpath%'</target>
             </trans-unit>
-            <trans-unit id="68">
+            <trans-unit id="70">
                 <source>Copying the view '%view%' from '%anotherg6kpath%'</source>
                 <target>Copie de la vue '%view%' de '%anotherg6kpath%'</target>
             </trans-unit>
-            <trans-unit id="69">
+            <trans-unit id="71">
                 <source>Creates and optionally imports a view from a previously exported view with G6K.</source>
                 <target>Crée et éventuellement, importe une vue à partir d'une vue précédemment exportée avec G6K.</target>
             </trans-unit>
-            <trans-unit id="70">
+            <trans-unit id="72">
                 <source>Creating the view '%s%' from the Default view</source>
                 <target>Création de la vue '%s%' à partir de la vue Default</target>
             </trans-unit>
-            <trans-unit id="71">
+            <trans-unit id="73">
                 <source>Datasource Copier</source>
                 <target>Copieur de source de données</target>
             </trans-unit>
-            <trans-unit id="72">
+            <trans-unit id="74">
                 <source>Datasource Importer</source>
                 <target>Importateur de source de données</target>
             </trans-unit>
-            <trans-unit id="73">
+            <trans-unit id="75">
                 <source>Datasource Table Importer</source>
                 <target>Importateur de table</target>
             </trans-unit>
-            <trans-unit id="74">
+            <trans-unit id="76">
                 <source>Default widget for compatible input fields.</source>
                 <target>Widget par défaut pour les champs de saisie compatibles.</target>
             </trans-unit>
-            <trans-unit id="75">
+            <trans-unit id="77">
                 <source>Display messages in HTML.</source>
                 <target>Affichage des messages en HTML.</target>
             </trans-unit>
-            <trans-unit id="76">
+            <trans-unit id="78">
                 <source>Enter the directory where are located the view files : </source>
                 <target>Entrez le répertoire où se trouvent les fichiers de la vue : </target>
             </trans-unit>
-            <trans-unit id="77">
+            <trans-unit id="79">
                 <source>Enter the directory where is located the simulator XML file: </source>
                 <target>Entrez le répertoire où se trouve le fichier XML du simulateur : </target>
             </trans-unit>
-            <trans-unit id="78">
+            <trans-unit id="80">
                 <source>Enter the full path of the delimited text file : </source>
                 <target>Entrez le chemin complet du fichier texte délimité:</target>
             </trans-unit>
-            <trans-unit id="79">
+            <trans-unit id="81">
                 <source>Enter the full path of the directory where the files of your data source are located : </source>
                 <target>Entrez le chemin complet du répertoire où se trouvent les fichiers de votre source de données : </target>
             </trans-unit>
-            <trans-unit id="80">
+            <trans-unit id="82">
                 <source>Enter the installation directory of the other instance of G6K : </source>
                 <target>Entrez le répertoire d'installation de l'autre instance de G6K : </target>
             </trans-unit>
-            <trans-unit id="81">
+            <trans-unit id="83">
                 <source>Enter the name of the datasource : </source>
                 <target>Entrez le nom de la source de données : </target>
             </trans-unit>
-            <trans-unit id="82">
+            <trans-unit id="84">
                 <source>Enter the name of the simulator : </source>
                 <target>Entrez le nom du simulateur : </target>
             </trans-unit>
-            <trans-unit id="83">
+            <trans-unit id="85">
                 <source>Enter the name of the table : </source>
                 <target>Entrez le nom de la table:</target>
             </trans-unit>
-            <trans-unit id="84">
+            <trans-unit id="86">
                 <source>Enter the name of the view : </source>
                 <target>Entrez le nom de la vue : </target>
             </trans-unit>
-            <trans-unit id="85">
+            <trans-unit id="87">
                 <source>Enter the new path of the asset relatively to the public directory : </source>
                 <target>Entrez le nouveau chemin de la ressource par rapport au répertoire public : </target>
             </trans-unit>
-            <trans-unit id="86">
+            <trans-unit id="88">
                 <source>Enter the path of the asset relatively to the public directory : </source>
                 <target>Entrez le chemin relatif de la ressource par rapport au répertoire public : </target>
             </trans-unit>
-            <trans-unit id="87">
+            <trans-unit id="89">
                 <source>ERROR: The business rule id #%id% is used multiple times.</source>
                 <target>ERREUR: l'ID de la règle métier #%id% est utilisé plusieurs fois.</target>
             </trans-unit>
-            <trans-unit id="88">
+            <trans-unit id="90">
                 <source>ERROR: The business rule name '%name%' is used multiple times.</source>
                 <target>ERREUR: le nom de la règle métier '%name%' est utilisé plusieurs fois.</target>
             </trans-unit>
-            <trans-unit id="89">
+            <trans-unit id="91">
                 <source>ERROR: The data id #%id% is used multiple times.</source>
                 <target>ERREUR: l'ID de la donnée #%id% est utilisé plusieurs fois.</target>
             </trans-unit>
-            <trans-unit id="90">
+            <trans-unit id="92">
                 <source>ERROR: The data name '%name%' is used multiple times.</source>
                 <target>ERREUR: le nom de la donnée '%name%' est utilisé plusieurs fois.</target>
             </trans-unit>
-            <trans-unit id="91">
+            <trans-unit id="93">
                 <source>Error while copying the database '%database%' in '%databasedir%' : '%message%'</source>
                 <target>Erreur lors de la copie de la base de données '%database%' dans '%databasedir%': '%message%'</target>
             </trans-unit>
-            <trans-unit id="92">
+            <trans-unit id="94">
                 <source>Error while creating '%view%' in '%viewpath%' : %message%</source>
                 <target>Erreur lors de la création de '%view%' dans '%viewpath%' : %message%</target>
             </trans-unit>
-            <trans-unit id="93">
+            <trans-unit id="95">
                 <source>Error while migrating the templates : %s%</source>
                 <target>Erreur lors de la migration des modèles de page : %s%</target>
             </trans-unit>
-            <trans-unit id="94">
+            <trans-unit id="96">
                 <source>Error while saving DataSources.xml in '%databasedir%' : %message%</source>
                 <target>Erreur lors de l'enregistrement du fichier DataSources.xml dans '%databasedir%': %message%</target>
             </trans-unit>
-            <trans-unit id="95">
+            <trans-unit id="97">
                 <source>Error while updating '%view%' for '%s%' : %message%</source>
                 <target>Erreur lors de la mise à jour de '%view%' pour '%s%' : %message%</target>
             </trans-unit>
-            <trans-unit id="96">
+            <trans-unit id="98">
                 <source>execute method is not implemented</source>
                 <target>la méthode execute n'est pas implémentée</target>
             </trans-unit>
-            <trans-unit id="97">
+            <trans-unit id="99">
                 <source>Fail to refresh the asset manifest : %s%</source>
                 <target>Échec de la regénération du registre de ressources : %s%</target>
             </trans-unit>
-            <trans-unit id="98">
+            <trans-unit id="100">
                 <source>Fail to update the asset manifest : %s%</source>
                 <target>Échec de la mise à jour du registre de ressources : %s%</target>
             </trans-unit>
-            <trans-unit id="99">
+            <trans-unit id="101">
                 <source>Field separator (default 't' : tabulation for .txt file or ';' for .csv file).</source>
                 <target>Séparateur de champs (par défaut 't': tabulation pour le fichier .txt ou ';' pour le fichier .csv).</target>
             </trans-unit>
-            <trans-unit id="100">
+            <trans-unit id="102">
                 <source>Finding the %name%.xml file from the other instance '%s%' in progress</source>
                 <target>Recherche en cours du fichier %name%.xml de l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="101">
+            <trans-unit id="103">
                 <source>Finding the %simulatorname%.css files from the other instance '%s%' in progress</source>
                 <target>Recherche en cours des fichiers %simulatorname%.css de l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="102">
+            <trans-unit id="104">
                 <source>Finding the assets directory of the other instance '%s%' in progress</source>
                 <target>Recherche en cours du répertoire de ressources de l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="103">
+            <trans-unit id="105">
                 <source>Finding the DataSources.xml file from the other instance '%s%' in progress</source>
                 <target>Recherche en cours du fichier DataSources.xml depuis l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="104">
+            <trans-unit id="106">
                 <source>Finding the simulators directory of the other instance '%s%' in progress</source>
                 <target>Recherche en cours du répertoire des simulateurs de l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="105">
+            <trans-unit id="107">
                 <source>Finding the templates directory of the other instance '%s%' in progress</source>
                 <target>Recherche en cours du répertoire de modèles de page de l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="106">
+            <trans-unit id="108">
                 <source>G6K version %s%</source>
                 <target>G6K version %s%</target>
             </trans-unit>
-            <trans-unit id="107">
+            <trans-unit id="109">
                 <source>getCommandArguments method is not implemented</source>
                 <target>la méthode getCommandArguments n'est pas implémentée</target>
             </trans-unit>
-            <trans-unit id="108">
+            <trans-unit id="110">
                 <source>getCommandDescription method is not implemented</source>
                 <target>la méthode getCommandDescription n'est pas implémentée</target>
             </trans-unit>
-            <trans-unit id="109">
+            <trans-unit id="111">
                 <source>getCommandHelp method is not implemented</source>
                 <target>la méthode getCommandHelp n'est pas implémentée</target>
             </trans-unit>
-            <trans-unit id="110">
+            <trans-unit id="112">
                 <source>getCommandName method is not implemented</source>
                 <target>la méthode getCommandName n'est pas implémentée</target>
             </trans-unit>
-            <trans-unit id="111">
+            <trans-unit id="113">
                 <source>If the name of the simulator is 'all', all simulators will be validated.</source>
                 <target>Si le nom du simulateur est 'all', tous les simulateurs seront validés.</target>
             </trans-unit>
-            <trans-unit id="112">
+            <trans-unit id="114">
                 <source>Importing table %s%</source>
                 <target>Import de la table %s%</target>
             </trans-unit>
-            <trans-unit id="113">
+            <trans-unit id="115">
                 <source>Importing the datasource '%datasourcename%' located in '%datasourcepath%'</source>
                 <target>Importation de la source de données '%datasourcename%' située dans '%datasourcepath%'</target>
             </trans-unit>
-            <trans-unit id="114">
+            <trans-unit id="116">
                 <source>Importing the file '%filepath%' into the table '%tablename%'</source>
                 <target>Importation du fichier '%filepath%' dans la table '%tablename%'</target>
             </trans-unit>
-            <trans-unit id="115">
+            <trans-unit id="117">
                 <source>Importing the simulator '%simulatorname%' located in '%simulatorpath%'</source>
                 <target>Importation du simulateur '%simulatorname%' situé dans '%simulatorpath%'</target>
             </trans-unit>
-            <trans-unit id="116">
+            <trans-unit id="118">
                 <source>Importing the view '%view%' located in '%viewpath%'</source>
                 <target>Importation de la vue '%view%' située dans '%viewpath%'</target>
             </trans-unit>
-            <trans-unit id="117">
+            <trans-unit id="119">
                 <source>Imports a datasource from an exported json file.</source>
                 <target>Importe une source de données à partir d'un fichier json précédemment exporté.</target>
             </trans-unit>
-            <trans-unit id="118">
+            <trans-unit id="120">
                 <source>Imports a datasource table from an delimited text file.</source>
                 <target>Importe une table de source de données à partir d'un fichier texte délimité.</target>
             </trans-unit>
-            <trans-unit id="119">
+            <trans-unit id="121">
                 <source>Imports a simulator from an exported xml file.</source>
                 <target>Importe un simulateur à partir d'un fichier XML précédemment exporté.</target>
             </trans-unit>
-            <trans-unit id="120">
+            <trans-unit id="122">
                 <source>In line %line%, the '%datasource%' associated to source %source% of '%simulatorname%' doesn't exists.</source>
                 <target>En ligne %line%, le '%datasource%' associé à la source %source% de '%simulatorname%' n'existe pas.</target>
             </trans-unit>
-            <trans-unit id="121">
+            <trans-unit id="123">
                 <source>In line %line%, the '%targetname%' '%target%' referenced in the rule action '%element%' of '%simulatorname%' doesn't exists.</source>
                 <target>En ligne %line%, le '%targetname%' '%target%' référencé dans l'action de la règle '%element% 'de'%simulatorname% 'n'existe pas.</target>
             </trans-unit>
-            <trans-unit id="122">
+            <trans-unit id="124">
                 <source>In line %line%, the column '%column%' of '%attribute%' in '%element%' isn't returned by the source %source% of '%simulatorname%'.</source>
                 <target>En ligne %line%, la colonne '%column%' de '%attribute%' dans '%element%' n'est pas retournée par la source %source% de '%simulatorname%'.</target>
             </trans-unit>
-            <trans-unit id="123">
+            <trans-unit id="125">
                 <source>In line %line%, the data '%data%' referenced by an element '%element%' of '%simulatorname%' doesn't exists.</source>
                 <target>En ligne %line%, la donnée '%data%' référencée par un élément '%element%' de '%simulatorname%' n'existe pas.</target>
             </trans-unit>
-            <trans-unit id="124">
+            <trans-unit id="126">
                 <source>In line %line%, the data '%data%' referenced in the element '%element%' text of '%simulatorname%' doesn't exists.</source>
                 <target>En ligne %line%, la donnée '%data%' référencée dans l'élément '%element%' de '%simulatorname%' n'existe pas.</target>
             </trans-unit>
-            <trans-unit id="125">
+            <trans-unit id="127">
                 <source>In line %line%, the data '%data%' used in the element '%element%' of '%simulatorname%' doesn't exists.</source>
                 <target>En ligne %line%, la donnée '%data%' utilisée dans l'élément '%element%' de '%simulatorname%' n'existe pas.</target>
             </trans-unit>
-            <trans-unit id="126">
+            <trans-unit id="128">
                 <source>In line %line%, the expression is required when the operator '%operator%' is used in the element '%element%' of '%simulatorname%'</source>
                 <target>En ligne %line%, l'expression est requise lorsque l'opérateur '%operator%' est utilisé dans l'élément '%element%' de '%simulatorname%'</target>
             </trans-unit>
-            <trans-unit id="127">
+            <trans-unit id="129">
                 <source>In line %line%, the expression must not be used with the operator '%operator%' in the element '%element%' of '%simulatorname%'</source>
                 <target>En ligne %line%, l'expression ne doit pas être utilisée avec l'opérateur '%operator%' dans l'élément '%element%' de '%simulatorname%'</target>
             </trans-unit>
-            <trans-unit id="128">
+            <trans-unit id="130">
                 <source>In line %line%, the operator '%operator%' used in the element '%element%' of '%simulatorname%' is invalid.</source>
                 <target>En ligne %line%, l'opérateur '%operator%' utilisé dans l'élément '%element%' de '%simulatorname%' n'est pas valide.</target>
             </trans-unit>
-            <trans-unit id="129">
+            <trans-unit id="131">
                 <source>In line %line%, the source '%source%' used by an element '%element%' of '%simulatorname%' doesn't exists.</source>
                 <target>En ligne %line%, la source '%source%' utilisée par un élément '%element%' de '%simulatorname%' n'existe pas.</target>
             </trans-unit>
-            <trans-unit id="130">
+            <trans-unit id="132">
                 <source>In line %line%, the template '%template%' associated to step %step% of '%simulatorname%' doesn't exists.</source>
                 <target>En ligne %line%, le modèle de page '%template%' associé à l'étape %step% de '%simulatorname%' n'existe pas.</target>
             </trans-unit>
-            <trans-unit id="131">
+            <trans-unit id="133">
                 <source>In this case, one or more data sources can be excluded with the --exclude (-x) option.</source>
                 <target>Dans ce cas, une ou plusieurs sources de données peuvent être exclues avec l'option --exclude (-x).</target>
             </trans-unit>
-            <trans-unit id="132">
+            <trans-unit id="134">
                 <source>In this case, one or more simulators can be excluded with the --exclude (-x) option.</source>
                 <target>Dans ce cas, un ou plusieurs simulateurs peuvent être exclus avec l'option --exclude (-x).</target>
             </trans-unit>
-            <trans-unit id="133">
+            <trans-unit id="135">
                 <source>In this case, one or more views can be excluded with the --exclude (-x) option.</source>
                 <target>Dans ce cas, une ou plusieurs vues peuvent être exclues avec l'option --exclude (-x).</target>
             </trans-unit>
-            <trans-unit id="134">
+            <trans-unit id="136">
                 <source>Line %line% %column%: %message%</source>
                 <target>Ligne %line% %column%: %message%</target>
             </trans-unit>
-            <trans-unit id="135">
+            <trans-unit id="137">
                 <source>Migrates templates created under Symfony 2 or 3.</source>
                 <target>Migre les modèles de page créés sous Symfony 2 ou 3.</target>
             </trans-unit>
-            <trans-unit id="136">
+            <trans-unit id="138">
+                <source>Migrating the template '%template%' of the other instance '%s%'</source>
+                <target>Migration du gabarit '%template%' depuis l'autre instance '%s%'</target>
+            </trans-unit>
+            <trans-unit id="139">
                 <source>migration of the templates</source>
                 <target>migration des modèles de page</target>
             </trans-unit>
-            <trans-unit id="137">
+            <trans-unit id="140">
                 <source>Migration of the templates is done!</source>
                 <target>La migration des modèles de page est terminée!</target>
             </trans-unit>
-            <trans-unit id="138">
+            <trans-unit id="141">
                 <source>Migration of the templates is not done!</source>
                 <target>La migration des modèles de page ne s'est pas correctement terminée!</target>
             </trans-unit>
-            <trans-unit id="139">
+            <trans-unit id="142">
                 <source>Multiple assets directories were found, please choose one :</source>
                 <target>Plusieurs répertoires de ressources ont été trouvés, veuillez en choisir un :</target>
             </trans-unit>
-            <trans-unit id="140">
+            <trans-unit id="143">
                 <source>Multiple assets directories were found in the other instance '%s%'</source>
                 <target>Plusieurs répertoires de ressources ont été trouvés dans l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="141">
+            <trans-unit id="144">
                 <source>Multiple assets directories were found in the other instance, please choose one :</source>
                 <target>Plusieurs répertoires de ressources ont été trouvés dans l’autre instance, veuillez en choisir un:</target>
             </trans-unit>
-            <trans-unit id="142">
+            <trans-unit id="145">
                 <source>Multiple copies of the file %name% were found in '%in%'</source>
                 <target>Plusieurs copies du fichier %name% ont été trouvées dans '%in%'</target>
             </trans-unit>
-            <trans-unit id="143">
+            <trans-unit id="146">
                 <source>Multiple copies of the file %name% were found in '%in%', please choose one :</source>
                 <target>Plusieurs copies du fichier %name% ont été trouvées dans '%in%', veuillez en choisir une:</target>
             </trans-unit>
-            <trans-unit id="144">
+            <trans-unit id="147">
+                <source>Multiple pdf forms directories were found, please choose one :</source>
+                <target>Plusieurs répertoires de formulaires pdf ont été trouvés, veuillez en choisir un :</target>
+            </trans-unit>
+            <trans-unit id="148">
                 <source>Multiple simulators directories were found, please choose one :</source>
                 <target>Plusieurs répertoires de simulateurs ont été trouvés, veuillez en choisir un :</target>
             </trans-unit>
-            <trans-unit id="145">
+            <trans-unit id="149">
                 <source>Multiple simulators directories were found in the other instance '%s%'</source>
                 <target>Plusieurs répertoires de simulateurs ont été trouvés dans l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="146">
+            <trans-unit id="150">
                 <source>Multiple templates directories were found, please choose one :</source>
                 <target>Plusieurs répertoires de modèles de page ont été trouvés, veuillez en choisir un :</target>
             </trans-unit>
-            <trans-unit id="147">
+            <trans-unit id="151">
                 <source>Multiple templates directories were found in the other instance '%s%'</source>
                 <target>Plusieurs répertoires de modèles de page ont été trouvés dans l'autre instance '%s%'</target>
             </trans-unit>
-            <trans-unit id="148">
+            <trans-unit id="152">
                 <source>Multiple templates directories were found in the other instance, please choose one :</source>
                 <target>Plusieurs répertoires de modèles de page ont été trouvés dans l’autre instance, veuillez en choisir un:</target>
             </trans-unit>
-            <trans-unit id="149">
+            <trans-unit id="153">
                 <source>No assets from this view were found in the manifest</source>
                 <target>Éditeur du registre de ressources : Aucune ressource de cette vue n'a été trouvée dans le registre</target>
             </trans-unit>
-            <trans-unit id="150">
+            <trans-unit id="154">
                 <source>No column header in delimited text file.</source>
                 <target>Aucun en-tête de colonne dans le fichier texte délimité.</target>
             </trans-unit>
-            <trans-unit id="151">
+            <trans-unit id="155">
                 <source>NOTICE: The data #%id%: %name% isn't used.</source>
                 <target>AVIS: La donnée #%id%: %name% n'est pas utilisée.</target>
             </trans-unit>
-            <trans-unit id="152">
+            <trans-unit id="156">
                 <source>One or more data sources to exclude when &lt;datasourcename&gt; is 'all'.</source>
                 <target>Une ou plusieurs sources de données à exclure lorsque &lt;datasourcename&gt; est 'all'.</target>
             </trans-unit>
-            <trans-unit id="153">
+            <trans-unit id="157">
                 <source>One or more simulators to exclude when &lt;simulatorname&gt; is 'all'.</source>
                 <target>Un ou plusieurs simulateurs à exclure lorsque &lt;simulatorname&gt; est 'all'.</target>
             </trans-unit>
-            <trans-unit id="154">
+            <trans-unit id="158">
                 <source>One or more views to exclude when &lt;viewname&gt; is 'all'.</source>
                 <target>Une ou plusieurs vues à exclure lorsque &lt;viewname&gt; est 'all'.</target>
             </trans-unit>
-            <trans-unit id="155">
+            <trans-unit id="159">
                 <source>Optionally, the migration can be restricted to a view (viewname)</source>
                 <target>La migration peut optionnellement être limitée à une vue (viewname)</target>
             </trans-unit>
-            <trans-unit id="156">
+            <trans-unit id="160">
                 <source>Refreshing manifest done!</source>
                 <target>La regénération du registre est terminée!</target>
             </trans-unit>
-            <trans-unit id="157">
+            <trans-unit id="161">
                 <source>Refreshing manifest not done!</source>
                 <target>La regénération du registre ne s'est pas correctement terminée!</target>
             </trans-unit>
-            <trans-unit id="158">
+            <trans-unit id="162">
                 <source>Refreshing the assets manifest</source>
                 <target>Regénération du registre des ressources</target>
             </trans-unit>
-            <trans-unit id="159">
+            <trans-unit id="163">
                 <source>Removes an asset from the manifest.json file for the assets versioning.</source>
                 <target>Supprime une ressource du fichier manifest.json pour la gestion de version des ressources.</target>
             </trans-unit>
-            <trans-unit id="160">
+            <trans-unit id="164">
                 <source>Removes the assets of a view from the manifest.json file for the assets versioning.</source>
                 <target>Supprime les ressources d'une vue du fichier manifest.json pour la gestion des versions des ressources.</target>
             </trans-unit>
-            <trans-unit id="161">
+            <trans-unit id="165">
                 <source>Renames an asset in the manifest.json file for the assets versioning.</source>
                 <target>Renomme une ressource dans le fichier manifest.json pour la gestion des versions des ressources.</target>
             </trans-unit>
-            <trans-unit id="162">
+            <trans-unit id="166">
                 <source>Run this command when an asset(css, js, images, ...) is created.</source>
                 <target>Exécutez cette commande lorsqu'une ressource (css, js, images, ...) est créée.</target>
             </trans-unit>
-            <trans-unit id="163">
+            <trans-unit id="167">
                 <source>Run this command when an asset(css, js, images, ...) is deleted.</source>
                 <target>Exécutez cette commande lorsqu'une ressource (css, js, images, ...) est supprimée.</target>
             </trans-unit>
-            <trans-unit id="164">
+            <trans-unit id="168">
                 <source>Run this command when an asset(css, js, images, ...) is modified.</source>
                 <target>Exécutez cette commande lorsqu'une ressource (css, js, images, ...) est modifiée.</target>
             </trans-unit>
-            <trans-unit id="165">
+            <trans-unit id="169">
                 <source>Run this command when an asset(css, js, images, ...) is renamed.</source>
                 <target>Exécutez cette commande lorsqu'une ressource (css, js, images, ...) est renommée.</target>
             </trans-unit>
-            <trans-unit id="166">
+            <trans-unit id="170">
                 <source>Run this command when a view is dropped.</source>
                 <target>Exécutez cette commande lorsqu'une vue est supprimée.</target>
             </trans-unit>
-            <trans-unit id="167">
+            <trans-unit id="171">
                 <source>Simulator Copier</source>
                 <target>Copieur de simulateur</target>
             </trans-unit>
-            <trans-unit id="168">
+            <trans-unit id="172">
                 <source>Simulator Importer</source>
                 <target>Importateur de simulateurs</target>
             </trans-unit>
-            <trans-unit id="169">
+            <trans-unit id="173">
                 <source>Simulator Validator</source>
                 <target>Validateur de simulateur</target>
             </trans-unit>
-            <trans-unit id="170">
+            <trans-unit id="174">
                 <source>Templates migrator</source>
                 <target>Migrateur de modèles de page</target>
             </trans-unit>
-            <trans-unit id="171">
+            <trans-unit id="175">
                 <source>Text field delimiter.</source>
                 <target>Délimiteur de champs texte.</target>
             </trans-unit>
-            <trans-unit id="172">
+            <trans-unit id="176">
                 <source>The asset is successfully renamed</source>
                 <target>la ressource est renommée avec succès</target>
             </trans-unit>
-            <trans-unit id="173">
+            <trans-unit id="177">
                 <source>The asset manifest is successfully refreshed</source>
                 <target>Le registre de ressources est regénéré avec succès</target>
             </trans-unit>
-            <trans-unit id="174">
+            <trans-unit id="178">
                 <source>The asset manifest is successfully updated</source>
                 <target>Le registre de ressources est mis à jour avec succès</target>
             </trans-unit>
-            <trans-unit id="175">
+            <trans-unit id="179">
                 <source>The compressed assets file '%s%' doesn't exists</source>
                 <target>Le fichier compressé de ressources '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="176">
+            <trans-unit id="180">
                 <source>The compressed templates file '%s%' doesn't exists</source>
                 <target>Le fichier compressé de modèles de page '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="177">
+            <trans-unit id="181">
                 <source>The data file '%s%' doesn't exists</source>
                 <target>Le fichier de données '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="178">
+            <trans-unit id="182">
                 <source>The datasource '%datasourcename%' already exists in '%s%'</source>
                 <target>La source de données '%datasourcename%' existe déjà dans '%s%'</target>
             </trans-unit>
-            <trans-unit id="179">
+            <trans-unit id="183">
                 <source>The datasource '%datasourcename%' doesn't exists in '%anotherg6kpath%'</source>
                 <target>La source de données '%datasourcename%' n'existe pas dans '%anotherg6kpath%'</target>
             </trans-unit>
-            <trans-unit id="180">
+            <trans-unit id="184">
                 <source>The datasource '%s%' doesn't exists</source>
                 <target>La source de données '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="181">
+            <trans-unit id="185">
                 <source>The data source '%s%' is successfully copied</source>
                 <target>La source de données '%s%' est copiée avec succès</target>
             </trans-unit>
-            <trans-unit id="182">
+            <trans-unit id="186">
                 <source>The data source '%s%' is successfully imported</source>
                 <target>La source de données '%s%' est importée avec succès</target>
             </trans-unit>
-            <trans-unit id="183">
+            <trans-unit id="187">
                 <source>The delimited text file '%s%' doesn't exists</source>
                 <target>Le fichier texte délimité '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="184">
+            <trans-unit id="188">
                 <source>The directory containing the json schema and data of the data source.</source>
                 <target>Le répertoire contenant le schéma JSON et les données de la source de données.</target>
             </trans-unit>
-            <trans-unit id="185">
+            <trans-unit id="189">
                 <source>The directory of the other instance '%s%' doesn't exists</source>
                 <target>Le répertoire de l'autre instance '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="186">
+            <trans-unit id="190">
                 <source>The directory where are located the view files.</source>
                 <target>Le répertoire où se trouvent les fichiers de vue.</target>
             </trans-unit>
-            <trans-unit id="187">
+            <trans-unit id="191">
+                <source>The directory where is located the PDF Form, if any.</source>
+                <target>Le répertoire où se trouve le fichier de PDF, le cas échéant.</target>
+            </trans-unit>
+            <trans-unit id="192">
                 <source>The directory where is located the simulator XML file.</source>
                 <target>Le répertoire où se trouve le fichier XML du simulateur.</target>
             </trans-unit>
-            <trans-unit id="188">
-                <source>The directoty where is located the stylesheet, if any.</source>
+            <trans-unit id="193">
+                <source>The directory where is located the stylesheet, if any.</source>
                 <target>Le répertoire où se trouve la feuille de style, le cas échéant.</target>
             </trans-unit>
-            <trans-unit id="189">
+            <trans-unit id="194">
                 <source>The field '%field%' is invalid</source>
                 <target>Le champ '%field%' est non valide</target>
             </trans-unit>
-            <trans-unit id="190">
+            <trans-unit id="195">
                 <source>The field '%field%' is not a number</source>
                 <target>Le champ '%field%' n'est pas un nombre</target>
             </trans-unit>
-            <trans-unit id="191">
+            <trans-unit id="196">
                 <source>The field '%field%' is not a valid currency</source>
                 <target>Le champ '%field%' n'est pas un montant valide</target>
             </trans-unit>
-            <trans-unit id="192">
+            <trans-unit id="197">
                 <source>The field '%field%' is not a valid date</source>
                 <target>Le champ '%field%' n'est pas une date valide</target>
             </trans-unit>
-            <trans-unit id="193">
+            <trans-unit id="198">
                 <source>The field '%field%' is not a valid year</source>
                 <target>Le champ '%field%' n'est pas une année valide</target>
             </trans-unit>
-            <trans-unit id="194">
+            <trans-unit id="199">
                 <source>The field '%field%' is not numeric</source>
                 <target>Le champ '%field%' n'est pas numérique</target>
             </trans-unit>
-            <trans-unit id="195">
+            <trans-unit id="200">
                 <source>The field '%field%' is required</source>
                 <target>Le champ '%field%' est obligatoire</target>
             </trans-unit>
-            <trans-unit id="196">
+            <trans-unit id="201">
                 <source>The file %s% has been added</source>
                 <target>Le fichier %s% a été ajouté</target>
             </trans-unit>
-            <trans-unit id="197">
+            <trans-unit id="202">
                 <source>The file %s% has been modified</source>
                 <target>Le fichier %s% a été modifié</target>
             </trans-unit>
-            <trans-unit id="198">
+            <trans-unit id="203">
                 <source>The file %s% has been removed</source>
                 <target>Le fichier %s% a été enlevé</target>
             </trans-unit>
-            <trans-unit id="199">
+            <trans-unit id="204">
                 <source>The file '%s%' doesn't exists</source>
                 <target>Le fichier '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="200">
+            <trans-unit id="205">
                 <source>The file '%s%' is already in the manifest.</source>
                 <target>le fichier '%s%' est déjà dans le registre des ressources.</target>
             </trans-unit>
-            <trans-unit id="201">
+            <trans-unit id="206">
                 <source>The file '%s%' isn't in the manifest.</source>
                 <target>Le fichier '%s%' n'est pas dans le registre.</target>
             </trans-unit>
-            <trans-unit id="202">
+            <trans-unit id="207">
                 <source>The file '%s%' still exists, delete it first.</source>
                 <target>Le fichier '%s%' existe encore, supprimez le d'abord.</target>
             </trans-unit>
-            <trans-unit id="203">
+            <trans-unit id="208">
                 <source>The file '%s%' still exists.</source>
                 <target>le fichier '%s%' existe toujours.</target>
             </trans-unit>
-            <trans-unit id="204">
+            <trans-unit id="209">
                 <source>The file names will be composed as follows:</source>
                 <target>Les noms de fichiers seront composés comme suit :</target>
             </trans-unit>
-            <trans-unit id="205">
+            <trans-unit id="210">
                 <source>The full path of the delimited text file.</source>
                 <target>Le chemin complet du fichier texte délimité.</target>
             </trans-unit>
-            <trans-unit id="206">
+            <trans-unit id="211">
                 <source>The installation directory of the other instance of G6K.</source>
                 <target>Le répertoire d'installation de l'autre instance de G6K.</target>
             </trans-unit>
-            <trans-unit id="207">
+            <trans-unit id="212">
                 <source>The name of the datasource.</source>
                 <target>Le nom de la source de données.</target>
             </trans-unit>
-            <trans-unit id="208">
+            <trans-unit id="213">
                 <source>The name of the datasource or 'all'.</source>
                 <target>Le nom de la source de données ou 'all'.</target>
             </trans-unit>
-            <trans-unit id="209">
+            <trans-unit id="214">
                 <source>The name of the simulator.</source>
                 <target>Le nom du simulateur.</target>
             </trans-unit>
-            <trans-unit id="210">
+            <trans-unit id="215">
                 <source>The name of the simulator or 'all'.</source>
                 <target>Le nom du simulateur ou 'all'.</target>
             </trans-unit>
-            <trans-unit id="211">
+            <trans-unit id="216">
                 <source>The name of the table.</source>
                 <target>Le nom de la table.</target>
             </trans-unit>
-            <trans-unit id="212">
+            <trans-unit id="217">
                 <source>The name of the view.</source>
                 <target>Le nom de la vue.</target>
             </trans-unit>
-            <trans-unit id="213">
+            <trans-unit id="218">
                 <source>The name of the view or 'all'.</source>
                 <target>Le nom de la vue ou 'all'.</target>
             </trans-unit>
-            <trans-unit id="214">
+            <trans-unit id="219">
                 <source>The new path of the asset relatively to the public directory.</source>
                 <target>Le nouveau chemin de la ressource par rapport au répertoire public.</target>
             </trans-unit>
-            <trans-unit id="215">
+            <trans-unit id="220">
                 <source>The path of the asset relatively to the public directory.</source>
                 <target>Le chemin de la ressource par rapport au répertoire public.</target>
             </trans-unit>
-            <trans-unit id="216">
+            <trans-unit id="221">
                 <source>The schema file '%s%' doesn't exists</source>
                 <target>Le fichier du schéma '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="217">
+            <trans-unit id="222">
                 <source>The simulator '%s%' is successfully copied</source>
                 <target>Le simulateur '%s%' est copié avec succès</target>
             </trans-unit>
-            <trans-unit id="218">
+            <trans-unit id="223">
                 <source>The simulator '%s%' is successfully imported</source>
                 <target>Le simulateur '%s%' est importé avec succès</target>
             </trans-unit>
-            <trans-unit id="219">
+            <trans-unit id="224">
                 <source>The simulator '%s%' is successfully validated</source>
                 <target>Le simulateur '%s%' est validé avec succès</target>
             </trans-unit>
-            <trans-unit id="220">
+            <trans-unit id="225">
                 <source>The simulator XML file '%s%' doesn't exists</source>
                 <target>Le fichier XML du simulateur '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="221">
+            <trans-unit id="226">
                 <source>The simulator xml file of '%s%' has some errors.</source>
                 <target>Le fichier XML de simulateur de '%s%' contient des erreurs.</target>
             </trans-unit>
-            <trans-unit id="222">
+            <trans-unit id="227">
                 <source>The stylesheet associated to '%simulatorname%' doesn't exists.</source>
                 <target>La feuille de style associée à '%simulatorname%' n'existe pas.</target>
             </trans-unit>
-            <trans-unit id="223">
+            <trans-unit id="228">
                 <source>The stylesheet file '%s%' doesn't exists</source>
                 <target>Le fichier de feuille de styles '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="224">
+            <trans-unit id="229">
                 <source>The table '%s%' doesn't exists</source>
                 <target>La table '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="225">
+            <trans-unit id="230">
                 <source>The table '%table%' can't be imported : %s%</source>
                 <target>La table '%table%' ne peut pas être importée : %s%</target>
             </trans-unit>
-            <trans-unit id="226">
+            <trans-unit id="231">
                 <source>The table '%table%' is successfully imported</source>
                 <target>La table '%table%' est importée avec succès</target>
             </trans-unit>
-            <trans-unit id="227">
+            <trans-unit id="232">
                 <source>The templates are successfully migrated</source>
                 <target>Les modèles de page ont été migrés avec succès</target>
             </trans-unit>
-            <trans-unit id="228">
+            <trans-unit id="233">
                 <source>The url of the website '%s%' isn't valid</source>
                 <target>L'URL du site '%s%' n'est pas valide</target>
             </trans-unit>
-            <trans-unit id="229">
+            <trans-unit id="234">
                 <source>The url of the website where this view is used.</source>
                 <target>L'URL du site Web où cette vue est utilisée.</target>
             </trans-unit>
-            <trans-unit id="230">
+            <trans-unit id="235">
                 <source>The view '%s%' doesn't exists</source>
                 <target>La vue '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="231">
+            <trans-unit id="236">
                 <source>The view '%s%' is partially created</source>
                 <target>La vue '%s%' est partiellement créée</target>
             </trans-unit>
-            <trans-unit id="232">
+            <trans-unit id="237">
                 <source>The view '%s%' is successfully created</source>
                 <target>La vue '%s%' est créée avec succès</target>
             </trans-unit>
-            <trans-unit id="233">
+            <trans-unit id="238">
                 <source>The view '%s%' still exists, drop it first.</source>
                 <target>La vue '%s%' existe toujours, supprimez-la d'abord</target>
             </trans-unit>
-            <trans-unit id="234">
+            <trans-unit id="239">
                 <source>The view '%view%' doesn't exists in the assets directory '%s%'</source>
                 <target>La vue '%view%' n'existe pas dans le répertoire de ressources '%s%'</target>
             </trans-unit>
-            <trans-unit id="235">
+            <trans-unit id="240">
                 <source>The view '%view%' doesn't exists in the templates directory '%s%'</source>
                 <target>La vue '%view%' n'existe pas dans le répertoire de modèles de page '%s%'</target>
             </trans-unit>
-            <trans-unit id="236">
+            <trans-unit id="241">
                 <source>The view name (optional), if you want to restrict the migration to a view.</source>
                 <target>Le nom de la vue (facultatif), si vous souhaitez limiter la migration à une vue.</target>
             </trans-unit>
-            <trans-unit id="237">
+            <trans-unit id="242">
                 <source>The widget '%s%' doesn't exists</source>
                 <target>Le widget '%s%' n'existe pas</target>
             </trans-unit>
-            <trans-unit id="238">
+            <trans-unit id="243">
                 <source>This command allows you add an asset to the manifest.json file after its creation.</source>
                 <target>Cette commande vous permet d’ajouter une ressource au fichier manifest.json après sa création.</target>
             </trans-unit>
-            <trans-unit id="239">
+            <trans-unit id="244">
                 <source>This command allows you remove an asset from the manifest.json file after its deletion.</source>
                 <target>Cette commande vous permet de supprimer une ressource du fichier manifest.json après sa suppression.</target>
             </trans-unit>
-            <trans-unit id="240">
+            <trans-unit id="245">
                 <source>This command allows you remove assets of a view from the manifest.json file after its deletion.</source>
                 <target>Cette commande vous permet de supprimer les ressources d’une vue du fichier manifest.json après sa suppression.</target>
             </trans-unit>
-            <trans-unit id="241">
+            <trans-unit id="246">
                 <source>This command allows you to copy one or all data sources from another instance of G6K after a fresh installation.</source>
                 <target>Cette commande vous permet de copier une ou toutes les sources de données depuis une autre instance de G6K après une nouvelle installation.</target>
             </trans-unit>
-            <trans-unit id="242">
+            <trans-unit id="247">
                 <source>This command allows you to copy one or all simulators and their stylesheets from another instance of G6K after a fresh installation.</source>
                 <target>Cette commande vous permet de copier un ou tous les simulateurs et leurs feuilles de style à partir d'une autre instance de G6K après une nouvelle installation.</target>
             </trans-unit>
-            <trans-unit id="243">
+            <trans-unit id="248">
                 <source>This command allows you to copy one or all views from another instance of G6K after a fresh installation.</source>
                 <target>Cette commande vous permet de copier une ou toutes les vues d'une autre instance de G6K après une nouvelle installation.</target>
             </trans-unit>
-            <trans-unit id="244">
+            <trans-unit id="249">
                 <source>This command allows you to create a view and optionally import the templates and assets from a previously exported view in a .zip files with G6K.</source>
                 <target>Cette commande vous permet de créer une vue et éventuellement d’importer les modèles de page et les ressources d’une vue précédemment exportée dans un fichier .zip avec G6K.</target>
             </trans-unit>
-            <trans-unit id="245">
+            <trans-unit id="250">
                 <source>This command allows you to import a data source table from an delimited text file.</source>
                 <target>Cette commande vous permet d'importer une table de source de données à partir d'un fichier texte délimité.</target>
             </trans-unit>
-            <trans-unit id="246">
+            <trans-unit id="251">
                 <source>This command allows you to import a data source used by one or more of your simulators.</source>
                 <target>Cette commande vous permet d'importer une source de données utilisée par un ou plusieurs de vos simulateurs.</target>
             </trans-unit>
-            <trans-unit id="247">
+            <trans-unit id="252">
                 <source>This command allows you to import a simulator and eventually, its stylesheets.</source>
                 <target>Cette commande vous permet d'importer un simulateur et éventuellement ses feuilles de styles.</target>
             </trans-unit>
-            <trans-unit id="248">
+            <trans-unit id="253">
                 <source>This command allows you to migrate the templates created under Symfony 2 or 3.</source>
                 <target>Cette commande vous permet de migrer les modèles de page créés sous Symfony 2 ou 3.</target>
             </trans-unit>
-            <trans-unit id="249">
+            <trans-unit id="254">
                 <source>This command allows you to rename an asset in the manifest.json file.</source>
                 <target>Cette commande vous permet de renommer une ressource dans le fichier manifest.json.</target>
             </trans-unit>
-            <trans-unit id="250">
+            <trans-unit id="255">
                 <source>This command allows you to update the manifest.json file after the update of an asset.</source>
                 <target>Cette commande vous permet de mettre à jour le fichier manifest.json après la mise à jour d'une ressource.</target>
             </trans-unit>
-            <trans-unit id="251">
+            <trans-unit id="256">
                 <source>This command allows you to validates a simulator against the Simulator.xsd schema file.</source>
                 <target>Cette commande vous permet de valider un simulateur par rapport au fichier de schéma Simulator.xsd.</target>
             </trans-unit>
-            <trans-unit id="252">
+            <trans-unit id="257">
                 <source>To copy all data sources, enter 'all' as data source name.</source>
                 <target>Pour copier toutes les sources de données, entrez 'all' comme nom de source de données.</target>
             </trans-unit>
-            <trans-unit id="253">
+            <trans-unit id="258">
                 <source>To copy all simulators, enter 'all' as simulator name.</source>
                 <target>Pour copier tous les simulateurs, entrez 'all' comme nom de simulateur.</target>
             </trans-unit>
-            <trans-unit id="254">
+            <trans-unit id="259">
                 <source>To copy all views, enter 'all' as view name.</source>
                 <target>Pour copier toutes les vues, entrez 'all' comme nom de vue.</target>
             </trans-unit>
-            <trans-unit id="255">
+            <trans-unit id="260">
                 <source>Unable to get parameters: %s%</source>
                 <target>Impossible d'obtenir les paramètres : %s%</target>
             </trans-unit>
-            <trans-unit id="256">
+            <trans-unit id="261">
                 <source>Unknown column name : %name%</source>
                 <target>Nom de colonne inconnu: %name%</target>
             </trans-unit>
-            <trans-unit id="257">
+            <trans-unit id="262">
                 <source>Updates (or Creates) the manifest.json file for the assets versioning.</source>
                 <target>Met à jour (ou crée) le fichier manifest.json pour la gestion de version des ressources.</target>
             </trans-unit>
-            <trans-unit id="258">
+            <trans-unit id="263">
                 <source>Validate against the schema only, not the content.</source>
                 <target>Valider par rapport au schéma seulement, pas le contenu.</target>
             </trans-unit>
-            <trans-unit id="259">
+            <trans-unit id="264">
                 <source>Validates a simulator against the Simulator.xsd schema file.</source>
                 <target>Valide un simulateur par rapport au fichier de schéma Simulator.xsd.</target>
             </trans-unit>
-            <trans-unit id="260">
+            <trans-unit id="265">
                 <source>Validate working version.</source>
                 <target>Valider la version de travail.</target>
             </trans-unit>
-            <trans-unit id="261">
+            <trans-unit id="266">
                 <source>Validating the simulator '%simulatorname%' located in '%simulatorpath%'</source>
                 <target>Validation du simulateur '%simulatorname%' situé dans '%simulatorpath%'</target>
             </trans-unit>
-            <trans-unit id="262">
+            <trans-unit id="267">
                 <source>View Copier</source>
                 <target>Copieur de vue</target>
             </trans-unit>
-            <trans-unit id="263">
+            <trans-unit id="268">
                 <source>View Importer</source>
                 <target>Importateur de vues</target>
             </trans-unit>
-            <trans-unit id="264">
+            <trans-unit id="269">
                 <source>XML Validation errors:</source>
                 <target>Erreurs de validation XML :</target>
             </trans-unit>
-            <trans-unit id="265">
+            <trans-unit id="270">
                 <source>You have just selected: '%s%'</source>
                 <target>Vous avez sélectionné : '%s%'</target>
             </trans-unit>
-            <trans-unit id="266">
+            <trans-unit id="271">
                 <source>You must provide:</source>
                 <target>Vous devez fournir :</target>
             </trans-unit>
-            <trans-unit id="267">
+            <trans-unit id="272">
                 <source>Your choice %s is invalid.</source>
                 <target>Votre choix %s est invalide.</target>
             </trans-unit>
-            <trans-unit id="268">
+            <trans-unit id="273">
                 <source>[OK] Cache for the "admin" environment (debug=false) was successfully cleared.</source>
                 <target>[OK] Le cache pour l'environnement "admin" (sans deboggage) a été vidé avec succès.</target>
             </trans-unit>
-            <trans-unit id="269">
+            <trans-unit id="274">
                 <source>[OK] Cache for the "admin" environment (debug=false) was successfully warmed.</source>
                 <target>[OK] Le cache pour l'environnement "admin" (sans deboggage) a été regénéré avec succès.</target>
             </trans-unit>
-            <trans-unit id="270">
+            <trans-unit id="275">
                 <source>[OK] Cache for the "admin" environment (debug=true) was successfully cleared.</source>
                 <target>[OK] Le cache pour l'environnement "admin" (avec deboggage) a été vidé avec succès.</target>
             </trans-unit>
-            <trans-unit id="271">
+            <trans-unit id="276">
                 <source>[OK] Cache for the "admin" environment (debug=true) was successfully warmed.</source>
                 <target>[OK] Le cache pour l'environnement "admin" (avec deboggage) a été regénéré avec succès.</target>
             </trans-unit>
-            <trans-unit id="272">
+            <trans-unit id="277">
                 <source>[OK] Cache for the "dev" environment (debug=false) was successfully cleared.</source>
                 <target>[OK] Le cache pour l'environnement "dev" (sans deboggage) a été vidé avec succès.</target>
             </trans-unit>
-            <trans-unit id="273">
+            <trans-unit id="278">
                 <source>[OK] Cache for the "dev" environment (debug=false) was successfully warmed.</source>
                 <target>[OK] Le cache pour l'environnement "dev" (sans deboggage) a été regénéré avec succès.</target>
             </trans-unit>
-            <trans-unit id="274">
+            <trans-unit id="279">
                 <source>[OK] Cache for the "dev" environment (debug=true) was successfully cleared.</source>
                 <target>[OK] Le cache pour l'environnement "dev" (avec deboggage) a été vidé avec succès.</target>
             </trans-unit>
-            <trans-unit id="275">
+            <trans-unit id="280">
                 <source>[OK] Cache for the "dev" environment (debug=true) was successfully warmed.</source>
                 <target>[OK] Le cache pour l'environnement "dev" (avec deboggage) a été regénéré avec succès.</target>
             </trans-unit>
-            <trans-unit id="276">
+            <trans-unit id="281">
                 <source>[OK] Cache for the "prod" environment (debug=false) was successfully cleared.</source>
                 <target>[OK] Le cache pour l'environnement "prod" (sans deboggage) a été vidé avec succès.</target>
             </trans-unit>
-            <trans-unit id="277">
+            <trans-unit id="282">
                 <source>[OK] Cache for the "prod" environment (debug=false) was successfully warmed.</source>
                 <target>[OK] Le cache pour l'environnement "prod" (sans deboggage) a été regénéré avec succès.</target>
             </trans-unit>
-            <trans-unit id="278">
+            <trans-unit id="283">
                 <source>[OK] Cache for the "prod" environment (debug=true) was successfully cleared.</source>
                 <target>[OK] Le cache pour l'environnement "prod" (avec deboggage) a été vidé avec succès.</target>
             </trans-unit>
-            <trans-unit id="279">
+            <trans-unit id="284">
                 <source>[OK] Cache for the "prod" environment (debug=true) was successfully warmed.</source>
                 <target>[OK] Le cache pour l'environnement "prod" (avec deboggage) a été regénéré avec succès.</target>
             </trans-unit>
-            <trans-unit id="280">
+            <trans-unit id="285">
                 <source>[OK] Cache for the "test" environment (debug=false) was successfully cleared.</source>
                 <target>[OK] Le cache pour l'environnement "test" (sans deboggage) a été vidé avec succès.</target>
             </trans-unit>
-            <trans-unit id="281">
+            <trans-unit id="286">
                 <source>[OK] Cache for the "test" environment (debug=false) was successfully warmed.</source>
                 <target>[OK] Le cache pour l'environnement "test" (sans deboggage) a été regénéré avec succès.</target>
             </trans-unit>
-            <trans-unit id="282">
+            <trans-unit id="287">
                 <source>[OK] Cache for the "test" environment (debug=true) was successfully cleared.</source>
                 <target>[OK] Le cache pour l'environnement "test" (avec deboggage) a été vidé avec succès.</target>
             </trans-unit>
-            <trans-unit id="283">
+            <trans-unit id="288">
                 <source>[OK] Cache for the "test" environment (debug=true) was successfully warmed.</source>
                 <target>[OK] Le cache pour l'environnement "test" (avec deboggage) a été regénéré avec succès.</target>
             </trans-unit>
