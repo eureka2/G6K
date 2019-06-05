@@ -9,6 +9,7 @@ t.add("- &lt;viewpath&gt;\/&lt;viewname&gt;-templates.zip for the compressed twi
 t.add("- the full path (filepath) of the delimited text file.", "- o caminho completo (filepath) do arquivo de texto delimitado.", "commands", "pt");
 t.add("- the full path of the directory (anotherg6kpath) where the other instance of G6K is installed.", "- o caminho completo do diret\u00f3rio (anotherg6kpath) onde a outra inst\u00e2ncia do G6K est\u00e1 instalada.", "commands", "pt");
 t.add("- the full path of the directory (datasourcepath) where the files of your data source are located.", "- o caminho completo do diret\u00f3rio (datasourcepath) onde os arquivos de sua fonte de dados est\u00e3o localizados.", "commands", "pt");
+t.add("- the full path of the directory (pdfformspath) where the PDF Form file is located.", "- o caminho completo do diret\u00f3rio (pdfformspath) onde o arquivo de formul\u00e1rio PDF est\u00e1 localizado.", "commands", "pt");
 t.add("- the full path of the directory (simulatorpath) where the XML file of your simulator is located.", "- o caminho completo do diret\u00f3rio (simulatorpath) onde o arquivo XML do seu simulador est\u00e1 localizado.", "commands", "pt");
 t.add("- the full path of the directory (stylesheetpath) where the css file of the stylesheet is located.", "- o caminho completo do diret\u00f3rio (stylesheetpath) onde o arquivo css da folha de estilo est\u00e1 localizado.", "commands", "pt");
 t.add("- the full path of the directory (viewpath) where the .zip files are located.", "- o caminho completo do diret\u00f3rio (viewpath) onde os arquivos .zip est\u00e3o localizados.", "commands", "pt");
@@ -66,6 +67,7 @@ t.add("Copies one or all simulators from another instance of G6K.", "Copia um ou
 t.add("Copies one or all views from another instance of G6K.", "Copia uma ou todas as vistas de outra inst\u00e2ncia do G6K.", "commands", "pt");
 t.add("Copying table %s% from %from% to %to%", "Copiando a tabela %s% de %from% para %to%", "commands", "pt");
 t.add("Copying the datasource '%datasourcename%' from '%anotherg6kpath%'", "Copiando a fonte de dados '%datasourcename%' from '%anotherg6kpath%'", "commands", "pt");
+t.add("Copying the PDF '%pdf%' of the other instance '%s%'", "Copiando o PDF '%pdf%' da outra inst\u00e2ncia '%s%'", "commands", "pt");
 t.add("Copying the simulator '%simulatorname%' located in '%simulatorpath%'", "Copiando o simulador '%simulatorname%' localizado em '%simulatorpath%'", "commands", "pt");
 t.add("Copying the view '%view%' from '%anotherg6kpath%'", "Copiando a vista '%view%' de '%anotherg6kpath%'", "commands", "pt");
 t.add("Creates and optionally imports a view from a previously exported view with G6K.", "Cria e, opcionalmente, importa uma vista de uma vista exportada anteriormente com G6K.", "commands", "pt");
@@ -135,6 +137,7 @@ t.add("In this case, one or more simulators can be excluded with the --exclude (
 t.add("In this case, one or more views can be excluded with the --exclude (-x) option.", "Nesse caso, uma ou mais visualiza\u00e7\u00f5es podem ser exclu\u00eddas com a op\u00e7\u00e3o --exclude (-x).", "commands", "pt");
 t.add("Line %line% %column%: %message%", "Linha %line% %column%: %message%", "commands", "pt");
 t.add("Migrates templates created under Symfony 2 or 3.", "Migra modelos criados no Symfony 2 ou 3.", "commands", "pt");
+t.add("Migrating the template '%template%' of the other instance '%s%'", "Migrando o modelo '%template%' da outra inst\u00e2ncia '%s%'", "commands", "pt");
 t.add("migration of the templates", "migra\u00e7\u00e3o dos modelos", "commands", "pt");
 t.add("Migration of the templates is done!", "A migra\u00e7\u00e3o dos modelos est\u00e1 conclu\u00edda!", "commands", "pt");
 t.add("Migration of the templates is not done!", "A migra\u00e7\u00e3o dos modelos n\u00e3o est\u00e1 conclu\u00edda!", "commands", "pt");
@@ -143,6 +146,7 @@ t.add("Multiple assets directories were found in the other instance '%s%'", "V\u
 t.add("Multiple assets directories were found in the other instance, please choose one :", "V\u00e1rios diret\u00f3rios de recursos foram encontrados na outra inst\u00e2ncia, escolha um:", "commands", "pt");
 t.add("Multiple copies of the file %name% were found in '%in%'", "V\u00e1rias c\u00f3pias do arquivo %name% foram encontradas em '%in%'", "commands", "pt");
 t.add("Multiple copies of the file %name% were found in '%in%', please choose one :", "M\u00faltiplas c\u00f3pias do arquivo %name% foram encontradas em '%in%', por favor escolha uma:", "commands", "pt");
+t.add("Multiple pdf forms directories were found, please choose one :", "V\u00e1rios diret\u00f3rios de formul\u00e1rios em pdf foram encontrados, por favor, escolha um:", "commands", "pt");
 t.add("Multiple simulators directories were found, please choose one :", "V\u00e1rios diret\u00f3rios de simuladores foram encontrados, por favor, escolha um:", "commands", "pt");
 t.add("Multiple simulators directories were found in the other instance '%s%'", "V\u00e1rios diret\u00f3rios de simuladores foram encontrados na outra inst\u00e2ncia '%s%'", "commands", "pt");
 t.add("Multiple templates directories were found, please choose one :", "V\u00e1rios diret\u00f3rios de templates foram encontrados, por favor, escolha um:", "commands", "pt");
@@ -186,8 +190,9 @@ t.add("The delimited text file '%s%' doesn't exists", "O arquivo de texto delimi
 t.add("The directory containing the json schema and data of the data source.", "O diret\u00f3rio que cont\u00e9m o esquema json e os dados da fonte de dados.", "commands", "pt");
 t.add("The directory of the other instance '%s%' doesn't exists", "O diret\u00f3rio da outra inst\u00e2ncia '%s%' n\u00e3o existe", "commands", "pt");
 t.add("The directory where are located the view files.", "O diret\u00f3rio onde est\u00e3o localizados os arquivos de vista.", "commands", "pt");
+t.add("The directory where is located the PDF Form, if any.", "O diret\u00f3rio onde est\u00e1 localizado o formul\u00e1rio PDF, se houver.", "commands", "pt");
 t.add("The directory where is located the simulator XML file.", "O diret\u00f3rio onde est\u00e1 localizado o arquivo XML do simulador.", "commands", "pt");
-t.add("The directoty where is located the stylesheet, if any.", "O directoty onde est\u00e1 localizada a folha de estilo, se houver.", "commands", "pt");
+t.add("The directory where is located the stylesheet, if any.", "O diret\u00f3rio onde est\u00e1 localizada a folha de estilo, se houver.", "commands", "pt");
 t.add("The field '%field%' is invalid", "O campo '%field%' \u00e9 inv\u00e1lido", "commands", "pt");
 t.add("The field '%field%' is not a number", "O campo '%field%' n\u00e3o \u00e9 um n\u00famero", "commands", "pt");
 t.add("The field '%field%' is not a valid currency", "O campo '%field%' n\u00e3o \u00e9 uma moeda v\u00e1lida", "commands", "pt");

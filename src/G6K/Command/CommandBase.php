@@ -515,12 +515,56 @@ abstract class CommandBase extends Command
 	}
 
 	/**
+	 * Finds the pdf forms directory
+	 *
+	 * @param   string $in The start directory of the search
+	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
+	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
+	 * @return  string|int The full path of the directory or an error code (1: not found, 2: multiple found)
+	 *
+	 */
+	protected function findPDFFormsDirectory(string $in, InputInterface $input, OutputInterface $output) {
+		$pdfDir = '';
+		$finder = new Finder();
+		$finder->directories()->in($in)->path('/data/pdfforms');
+		if ($finder->count() == 0) {
+			return 1;
+		}
+		if ($finder->count() > 1) {
+			if ($input->isInteractive()) {
+				$choices = [];
+				foreach($finder as $dir) {
+					$choices[] = $dir->getRelativePathname();
+				}
+				$helper = $this->getHelper('question');
+				$question = new ChoiceQuestion(
+					$this->translator->trans($this->name) . ": " . $this->translator->trans("Multiple pdf forms directories were found, please choose one :"),
+					$choices,
+					0
+				);
+				$question->setErrorMessage($this->translator->trans('Your choice %s is invalid.'));
+				$choice = $helper->ask($input, $output, $question);
+				$this->info($output, "You have just selected: '%s%'", array('%s%' => $choice));
+				$pdfDir = $in . '/' . $choice;
+			} else {
+				return 1;
+			}
+		} else {
+			foreach($finder as $file) {
+				$pdfDir = str_replace('\\', '/', $file->getRealPath());
+				break;
+			}
+		}
+		return $pdfDir;
+	}
+
+	/**
 	 * Finds the simulators directory
 	 *
 	 * @param   string $in The start directory of the search
 	 * @param   \Symfony\Component\Console\Input\InputInterface $input The input interface
 	 * @param   \Symfony\Component\Console\Output\OutputInterface $output The output interface
-	 * @return  string|int The full path of the files or an error code (1: not found, 2: multiple found)
+	 * @return  string|int The full path of the directory or an error code (1: not found, 2: multiple found)
 	 *
 	 */
 	protected function findSimulatorsDirectory(string $in, InputInterface $input, OutputInterface $output) {

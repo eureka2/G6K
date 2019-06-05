@@ -73,6 +73,7 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 			. $this->translator->trans("- the full path of the directory (simulatorpath) where the XML file of your simulator is located.")."\n"
 			. $this->translator->trans("and optionally:")."\n"
 			. $this->translator->trans("- the full path of the directory (stylesheetpath) where the css file of the stylesheet is located.")."\n"
+			. $this->translator->trans("- the full path of the directory (pdfformspath) where the PDF Form file is located.")."\n"
 			. "\n"
 			. $this->translator->trans("The file names will be composed as follows:")."\n"
 			. $this->translator->trans("- <simulatorpath>/<simulatorname>.xml for the simulator XML file")."\n"
@@ -98,7 +99,12 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 			array(
 				'stylesheetpath',
 				InputArgument::OPTIONAL,
-				$this->translator->trans('The directoty where is located the stylesheet, if any.')
+				$this->translator->trans('The directory where is located the stylesheet, if any.')
+			),
+			array(
+				'pdfformspath',
+				InputArgument::OPTIONAL,
+				$this->translator->trans('The directory where is located the PDF Form, if any.')
 			)
 		);
 	}
@@ -142,12 +148,13 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 		$simupath = str_replace('\\', '/', $input->getArgument('simulatorpath'));
 		$simufile = $simupath . '/'. $input->getArgument('simulatorname') . ".xml";
 		$csspath = $input->getArgument('stylesheetpath');
+		$pdfpath = $input->getArgument('pdfformspath');
 		$stylesheet = $csspath ? $csspath . '/' . $input->getArgument('simulatorname') . ".css" : "";
 		if (! file_exists($simufile)) {
 			$this->error($output, "The simulator XML file '%s%' doesn't exists", array('%s%' => $simufile));
 			return 1;
 		}
-		if (! file_exists($stylesheet)) {
+		if ($stylesheet != "" && ! file_exists($stylesheet)) {
 			$this->error($output, "The stylesheet file '%s%' doesn't exists", array('%s%' => $stylesheet));
 			return 1;
 		}
@@ -198,6 +205,22 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 				$fsystem->copy($assetsDir.'/Demo/css/common.css', $assetsDir.'/'.$view.'/css/'.$simu.'.css');
 			}
 			$this->addToManifest('assets/'.$view.'/css/'.$simu.'.css', $output);
+		}
+		if ($pdfpath) {
+			$pdfDir = $this->projectDir."/var/data/pdfforms";
+			$xpath = new \DOMXPath($simulator);
+			$steps = $xpath->query("/Simulator/Steps/Step");
+			$len = $steps->length;
+			for($i = 0; $i < $len; $i++) {
+				$step = $this->getDOMElementItem($steps, $i);
+				$sOutput = $step->getAttribute('output');
+				if ($sOutput == 'inlineFilledPDF' || $sOutput == 'downloadableFilledPDF') {
+					$template = str_replace(':', '/', $step->getAttribute('template'));
+					if ($fsystem->exists($pdfpath.'/'.$template)) {
+						$fsystem->copy($pdfpath.'/'.$template, $pdfDir.'/'.$template);
+					}
+				}
+			}
 		}
 		$this->success($output, "The simulator '%s%' is successfully imported", array('%s%' => $simu));
 		return 0;

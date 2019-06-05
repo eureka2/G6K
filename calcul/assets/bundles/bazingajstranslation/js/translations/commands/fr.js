@@ -9,6 +9,7 @@ t.add("- <viewpath>\/<viewname>-templates.zip for the compressed twig templates 
 t.add("- the full path (filepath) of the delimited text file.", "- le chemin complet (filepath) du fichier texte d\u00e9limit\u00e9.", "commands", "fr");
 t.add("- the full path of the directory (anotherg6kpath) where the other instance of G6K is installed.", "- le chemin complet du r\u00e9pertoire (anotherg6kpath) o\u00f9 l'autre instance de G6K est install\u00e9e.", "commands", "fr");
 t.add("- the full path of the directory (datasourcepath) where the files of your data source are located.", "- le chemin complet du r\u00e9pertoire (datasourcepath) o\u00f9 se trouvent les fichiers de votre source de donn\u00e9es.", "commands", "fr");
+t.add("- the full path of the directory (pdfformspath) where the PDF Form file is located.", "- le chemin complet du r\u00e9pertoire (pdfformspath) o\u00f9 se trouve le fichier de formulaire PDF.", "commands", "fr");
 t.add("- the full path of the directory (simulatorpath) where the XML file of your simulator is located.", "- le chemin complet du r\u00e9pertoire (simulatorpath) o\u00f9 se trouve le fichier XML de votre simulateur.", "commands", "fr");
 t.add("- the full path of the directory (stylesheetpath) where the css file of the stylesheet is located.", "- le chemin complet du r\u00e9pertoire (stylesheetpath) o\u00f9 se trouve le fichier css de la feuille de style.", "commands", "fr");
 t.add("- the full path of the directory (viewpath) where the .zip files are located.", "- le chemin complet du r\u00e9pertoire (viewpath) o\u00f9 se trouvent les fichiers .zip.", "commands", "fr");
@@ -66,6 +67,7 @@ t.add("Copies one or all simulators from another instance of G6K.", "Copie un ou
 t.add("Copies one or all views from another instance of G6K.", "Copie une ou toutes les vues depuis une autre instance de G6K.", "commands", "fr");
 t.add("Copying table %s% from %from% to %to%", "Copie de la table %s% de %from% \u00e0 %to%", "commands", "fr");
 t.add("Copying the datasource '%datasourcename%' from '%anotherg6kpath%'", "Copie de la source de donn\u00e9es '%datasourcename%' depuis '%anotherg6kpath%'", "commands", "fr");
+t.add("Copying the PDF '%pdf%' of the other instance '%s%'", "Copie du fichier de formulaire PDF '%pdf%' depuis l'autre instance '%s%'", "commands", "fr");
 t.add("Copying the simulator '%simulatorname%' located in '%simulatorpath%'", "Copie du simulateur '%simulatorname%' situ\u00e9 dans '%simulatorpath%'", "commands", "fr");
 t.add("Copying the view '%view%' from '%anotherg6kpath%'", "Copie de la vue '%view%' de '%anotherg6kpath%'", "commands", "fr");
 t.add("Creates and optionally imports a view from a previously exported view with G6K.", "Cr\u00e9e et \u00e9ventuellement, importe une vue \u00e0 partir d'une vue pr\u00e9c\u00e9demment export\u00e9e avec G6K.", "commands", "fr");
@@ -135,6 +137,7 @@ t.add("In this case, one or more simulators can be excluded with the --exclude (
 t.add("In this case, one or more views can be excluded with the --exclude (-x) option.", "Dans ce cas, une ou plusieurs vues peuvent \u00eatre exclues avec l'option --exclude (-x).", "commands", "fr");
 t.add("Line %line% %column%: %message%", "Ligne %line% %column%: %message%", "commands", "fr");
 t.add("Migrates templates created under Symfony 2 or 3.", "Migre les mod\u00e8les de page cr\u00e9\u00e9s sous Symfony 2 ou 3.", "commands", "fr");
+t.add("Migrating the template '%template%' of the other instance '%s%'", "Migration du gabarit '%template%' depuis l'autre instance '%s%'", "commands", "fr");
 t.add("migration of the templates", "migration des mod\u00e8les de page", "commands", "fr");
 t.add("Migration of the templates is done!", "La migration des mod\u00e8les de page est termin\u00e9e!", "commands", "fr");
 t.add("Migration of the templates is not done!", "La migration des mod\u00e8les de page ne s'est pas correctement termin\u00e9e!", "commands", "fr");
@@ -143,6 +146,7 @@ t.add("Multiple assets directories were found in the other instance '%s%'", "Plu
 t.add("Multiple assets directories were found in the other instance, please choose one :", "Plusieurs r\u00e9pertoires de ressources ont \u00e9t\u00e9 trouv\u00e9s dans l\u2019autre instance, veuillez en choisir un:", "commands", "fr");
 t.add("Multiple copies of the file %name% were found in '%in%'", "Plusieurs copies du fichier %name% ont \u00e9t\u00e9 trouv\u00e9es dans '%in%'", "commands", "fr");
 t.add("Multiple copies of the file %name% were found in '%in%', please choose one :", "Plusieurs copies du fichier %name% ont \u00e9t\u00e9 trouv\u00e9es dans '%in%', veuillez en choisir une:", "commands", "fr");
+t.add("Multiple pdf forms directories were found, please choose one :", "Plusieurs r\u00e9pertoires de formulaires pdf ont \u00e9t\u00e9 trouv\u00e9s, veuillez en choisir un :", "commands", "fr");
 t.add("Multiple simulators directories were found, please choose one :", "Plusieurs r\u00e9pertoires de simulateurs ont \u00e9t\u00e9 trouv\u00e9s, veuillez en choisir un :", "commands", "fr");
 t.add("Multiple simulators directories were found in the other instance '%s%'", "Plusieurs r\u00e9pertoires de simulateurs ont \u00e9t\u00e9 trouv\u00e9s dans l'autre instance '%s%'", "commands", "fr");
 t.add("Multiple templates directories were found, please choose one :", "Plusieurs r\u00e9pertoires de mod\u00e8les de page ont \u00e9t\u00e9 trouv\u00e9s, veuillez en choisir un :", "commands", "fr");
@@ -186,8 +190,9 @@ t.add("The delimited text file '%s%' doesn't exists", "Le fichier texte d\u00e9l
 t.add("The directory containing the json schema and data of the data source.", "Le r\u00e9pertoire contenant le sch\u00e9ma JSON et les donn\u00e9es de la source de donn\u00e9es.", "commands", "fr");
 t.add("The directory of the other instance '%s%' doesn't exists", "Le r\u00e9pertoire de l'autre instance '%s%' n'existe pas", "commands", "fr");
 t.add("The directory where are located the view files.", "Le r\u00e9pertoire o\u00f9 se trouvent les fichiers de vue.", "commands", "fr");
+t.add("The directory where is located the PDF Form, if any.", "Le r\u00e9pertoire o\u00f9 se trouve le fichier de PDF, le cas \u00e9ch\u00e9ant.", "commands", "fr");
 t.add("The directory where is located the simulator XML file.", "Le r\u00e9pertoire o\u00f9 se trouve le fichier XML du simulateur.", "commands", "fr");
-t.add("The directoty where is located the stylesheet, if any.", "Le r\u00e9pertoire o\u00f9 se trouve la feuille de style, le cas \u00e9ch\u00e9ant.", "commands", "fr");
+t.add("The directory where is located the stylesheet, if any.", "Le r\u00e9pertoire o\u00f9 se trouve la feuille de style, le cas \u00e9ch\u00e9ant.", "commands", "fr");
 t.add("The field '%field%' is invalid", "Le champ '%field%' est non valide", "commands", "fr");
 t.add("The field '%field%' is not a number", "Le champ '%field%' n'est pas un nombre", "commands", "fr");
 t.add("The field '%field%' is not a valid currency", "Le champ '%field%' n'est pas un montant valide", "commands", "fr");

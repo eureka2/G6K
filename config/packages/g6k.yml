@@ -14,8 +14,7 @@ parameters:
         secret_key: <YOUR GOOGLE SECRET KEY>
 
     acroforms:
-        pdftk: C:\Program Files (x86)\PDFtk\bin\pdftk
-        # pdftk: /usr/bin/pdftk
+        pdftk: "%pdftk_path%"
 
     widgets:
         abListbox:

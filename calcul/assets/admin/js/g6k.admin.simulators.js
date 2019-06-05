@@ -1123,6 +1123,11 @@ $(function(){
 				if (stylesheetfile != '' && ! /\.css$/.test(stylesheetfile)) {
 					errors.push(Translator.trans("The file extension of the stylesheet must be '.css'"));
 				}
+				var pdfforminput = $("#simulator-import-form input[name='simulator-pdfform']");
+				var pdfformfile = pdfforminput.val();
+				if (pdfformfile != '' && ! /\.pdf$/.test(pdfformfile)) {
+					errors.push(Translator.trans("The file extension of the PDF Form must be '.pdf'"));
+				}
 				if (errors.length > 0) {
 					Simulators.showErrors(errors);
 					return false;

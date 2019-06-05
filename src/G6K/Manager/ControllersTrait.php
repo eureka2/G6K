@@ -69,6 +69,7 @@ trait ControllersTrait {
 		$this->simulatorsDir = $projectDir . '/var/data/simulators';
 		$this->publicDir = $projectDir . '/' . ($this->getParameter('public_dir') ?? 'public');
 		$this->viewsDir = $projectDir . '/templates';
+		$this->pdfFormsDir = $projectDir . '/var/data/pdfforms';
 	}
 
 	/**

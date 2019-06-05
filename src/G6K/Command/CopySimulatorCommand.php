@@ -277,20 +277,31 @@ class CopySimulatorCommand extends SimulatorCommandBase
 		$viewsDir1 = $this->findTemplatesDirectory($anotherg6kpath, $input, $output);
 		$viewsDir2 = $this->projectDir."/templates";
 		$view = $simulator->documentElement->getAttribute('defaultView');
+		$pdfDir1 = $this->findPDFFormsDirectory($anotherg6kpath, $input, $output);
+		$pdfDir2 = $this->projectDir."/var/data/pdfforms";
 		for($i = 0; $i < $len; $i++) {
 			$step = $this->getDOMElementItem($steps, $i);
 			$template = str_replace(':', '/', $step->getAttribute('template'));
-			if (! $fsystem->exists($viewsDir2.'/'.$view.'/'.$template)) {
-				$contents = file_get_contents($viewsDir1.'/'.$view.'/'.$template);
-				$contents = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $contents);
-				$contents = preg_replace("|asset\('bundles/eurekag6k/base/js/|m", "asset('assets/base/js/libs/", $contents);
-				$contents = preg_replace("|asset\('assets/base/js/libs/g6k\.|m", "asset('assets/base/js/g6k.", $contents);
-				$contents = preg_replace("|asset\('bundles/eurekag6k/admin/js/|m", "asset('assets/admin/js/libs/", $contents);
-				$contents = preg_replace("|asset\('assets/admin/js/libs/g6k\.|m", "asset('assets/admin/js/g6k.", $contents);
-				$contents = preg_replace("|asset\('bundles/eurekag6k/|m", "asset('assets/", $contents);
-				$contents = preg_replace("|\\\$\([\"']input\.listbox\-input[\"']\)\.listbox|m", "$(\":input[data-widget='abListbox']\").listbox", $contents);
-				$contents = preg_replace("|\\\$\([\"']input\.date[\"']\)\.datepicker|m", "$(\":input[data-widget='abDatepicker']\").datepicker", $contents);
-				$fsystem->dumpFile($viewsDir2.'/'.$view.'/'.$template, $contents);
+			$sOutput = $step->getAttribute('output');
+			if ($sOutput == 'inlineFilledPDF' || $sOutput == 'downloadableFilledPDF') {
+				if ($fsystem->exists($pdfDir1.'/'.$template)) {
+					$this->info($output, "Copying the PDF '%pdf%' of the other instance '%s%'", ['%pdf%' => $template, '%s%' => $anotherg6kpath]);
+					$fsystem->copy($pdfDir1.'/'.$template, $pdfDir2.'/'.$template);
+				}
+			} else {
+				if (! $fsystem->exists($viewsDir2.'/'.$view.'/'.$template)) {
+					$this->info($output, "Migrating the template '%template%' of the other instance '%s%'", ['%template%' => $template, '%s%' => $anotherg6kpath]);
+					$contents = file_get_contents($viewsDir1.'/'.$view.'/'.$template);
+					$contents = preg_replace("/EUREKAG6KBundle:([^:]+):/m", "$1/", $contents);
+					$contents = preg_replace("|asset\('bundles/eurekag6k/base/js/|m", "asset('assets/base/js/libs/", $contents);
+					$contents = preg_replace("|asset\('assets/base/js/libs/g6k\.|m", "asset('assets/base/js/g6k.", $contents);
+					$contents = preg_replace("|asset\('bundles/eurekag6k/admin/js/|m", "asset('assets/admin/js/libs/", $contents);
+					$contents = preg_replace("|asset\('assets/admin/js/libs/g6k\.|m", "asset('assets/admin/js/g6k.", $contents);
+					$contents = preg_replace("|asset\('bundles/eurekag6k/|m", "asset('assets/", $contents);
+					$contents = preg_replace("|\\\$\([\"']input\.listbox\-input[\"']\)\.listbox|m", "$(\":input[data-widget='abListbox']\").listbox", $contents);
+					$contents = preg_replace("|\\\$\([\"']input\.date[\"']\)\.datepicker|m", "$(\":input[data-widget='abDatepicker']\").datepicker", $contents);
+					$fsystem->dumpFile($viewsDir2.'/'.$view.'/'.$template, $contents);
+				}
 			}
 		}
 	}
