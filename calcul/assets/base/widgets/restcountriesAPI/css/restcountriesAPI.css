@@ -1,0 +1,16 @@
+.geoAPILocalities-confirm label {
+	width: 100% !important;
+	text-align: left !important;
+	margin-left: 1em;
+}
+.geoAPILocalities-confirm select {
+	width: 75% !important;
+	margin-left: 1em;
+	font-size: 1em;
+	max-height: 4.5em;
+}
+.geoAPILocalities-confirm button {
+	width: 75% !important;
+	margin-left: 1em;
+	font-size: 1em;
+}

@@ -201,6 +201,15 @@ parameters:
             css: 
             js: 
                 - js/PhoneNumberNorthAmerica.js
+        restcountriesAPI:
+            label: Country name obtained by autocompletion
+            target: [ text ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+            css: 
+            js: 
+                - js/restcountriesAPI.js
 
     functions:
         copyToClipboard:
