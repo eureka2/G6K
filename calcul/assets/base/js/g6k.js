@@ -2905,14 +2905,25 @@ THE SOFTWARE.
 				"nextWorkDay": [1, [Token.TYPE.T_DATE], Token.TYPE.T_DATE, function(a) { return a.nextWorkingDay(); }],
 				"pow": [2, [Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a, b) { return Math.pow(a, b); }],
 				"rand": [0, [], Token.TYPE.T_NUMBER, function() { return Math.random(); }],
-				"replace": [3, [Token.TYPE.T_TEXT, Token.TYPE.T_TEXT, Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a, b, c) { return c.replace(a, b); }],
+				"replace": [3, [Token.TYPE.T_TEXT, Token.TYPE.T_TEXT, Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a, b, c) {
+					var d = c;
+					while (d.indexOf(a) >= 0){
+						d = d.replace(a, b);
+					}
+					return d;
+				}],
 				"round": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.round(a); }],
 				"sin": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.sin(a); }],
 				"sinh": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.sinh(a); }],
 				"size": [1, [Token.TYPE.T_ARRAY], Token.TYPE.T_NUMBER, function(a) { return a.length; }],
 				"split": [2, [Token.TYPE.T_TEXT, Token.TYPE.T_TEXT], Token.TYPE.T_ARRAY, function(a, b) { return b.split(a); }],
 				"sqrt": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.sqrt(a); }],
-				"substr": [3, [Token.TYPE.T_TEXT, Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_TEXT, function(a, b, c) { return a.substr(b, c); }],
+				"substr": [3, [Token.TYPE.T_TEXT, Token.TYPE.T_NUMBER, Token.TYPE.T_NUMBER], Token.TYPE.T_TEXT, function(a, b, c) {
+					if (b > 0) {
+						b--;
+					}
+					return a.substr(b, c);
+				}],
 				"sum": [-1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) {
 					var s = 0;
 					$.each(a, function(i, v) {
