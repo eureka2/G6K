@@ -80,6 +80,7 @@
 			   }
 			},
 			onSelect: function(e, term, item){
+				onComplete( item.data('value'), item.data('text'), false, true);
 				removeError();
 			},
 			onClear: function() {
