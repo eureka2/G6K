@@ -4,23 +4,26 @@
 	function restcountriesAPI (input, options, onComplete) {
 		var lang = options.locale.split(/-/)[0];
 		var g6k = input.data('g6k');
-		var countries = $.map(restcountriesAPI.ALL_COUNTRIES, function(d, k) {
-			return {
-				country: d.translations[lang] || d.name,
-				flag: d.flag
-			};
-		});
-		countries.sort(function(a, b) {
-			a = unaccent(a.country).toLowerCase();
-			b = unaccent(b.country).toLowerCase();
-			if (a == b) {
-				return 0;
-			}
-			if (a > b) {
-				return 1;
-			}
-			return -1;
-		});
+		var countries = [];
+		setTimeout(function() {
+			countries = $.map(restcountriesAPI.ALL_COUNTRIES, function(d, k) {
+				return {
+					country: d.translations[lang] || d.name,
+					flag: d.flag
+				};
+			});
+			countries.sort(function(a, b) {
+				a = unaccent(a.country).toLowerCase();
+				b = unaccent(b.country).toLowerCase();
+				if (a == b) {
+					return 0;
+				}
+				if (a > b) {
+					return 1;
+				}
+				return -1;
+			});
+		}, 1000);
 		var id = 'restcountriesAPI' + input.attr('name');
 		var input2 = $('<input>', { id: id, type: 'text' });
 		var attributes = input.prop("attributes");
@@ -48,7 +51,7 @@
 
 		input2.on("blur", function(event) {
 			var val = $(this).val();
-			onComplete(val, val, false, true);
+			onComplete(val, val, false, false);
 		});
 
 		var isSelected = false;
