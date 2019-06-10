@@ -71,6 +71,7 @@ THE SOFTWARE.
 		"sum" : {arity: -1, args: ['number'], type: 'number'},
 		"tan" : {arity: 1, args: ['number'], type: 'number'},
 		"tanh" : {arity: 1, args: ['number'], type: 'number'},
+		"titlecase" : {arity: 1, args: ['text'], type: 'text'},
 		"trim" : {arity: 1, args: ['text'], type: 'text'},
 		"ucfirst" : {arity: 1, args: ['text'], type: 'text'},
 		"upper" : {arity: 1, args: ['text'], type: 'text'},
