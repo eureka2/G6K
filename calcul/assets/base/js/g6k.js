@@ -2935,6 +2935,11 @@ THE SOFTWARE.
 				}],
 				"tan": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.tan(a); }],
 				"tanh": [1, [Token.TYPE.T_NUMBER], Token.TYPE.T_NUMBER, function(a) { return Math.tanh(a); }],
+				"titlecase": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) {
+					return a.toLowerCase().replace(/^[\u00C0-\u1FFF\u2C00-\uD7FF\w]|[-\s][\u00C0-\u1FFF\u2C00-\uD7FF\w]/g, function(letter) {
+						return letter.toUpperCase();
+					});
+				}],
 				"trim": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) { return $.trim(a); }],
 				"ucfirst": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) { return a.replace(/(^[a-z])/,function (p) { return p.toUpperCase(); } ); }],
 				"upper": [1, [Token.TYPE.T_TEXT], Token.TYPE.T_TEXT, function(a) { return a.toUpperCase(); }],

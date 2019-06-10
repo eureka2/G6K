@@ -381,6 +381,9 @@ class Evaluator {
 			}),
 			"tan" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return tan($a); }),
 			"tanh" => array(1, array(Token::T_NUMBER), Token::T_NUMBER, function($a) { return tanh($a); }),
+			"titlecase" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) {
+				return mb_convert_case($a, MB_CASE_TITLE, "UTF-8");
+			}),
 			"trim" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return trim($a); }),
 			"ucfirst" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return ucfirst($a); }),
 			"upper" => array(1, array(Token::T_TEXT), Token::T_TEXT, function($a) { return mb_strtoupper($a); }),

@@ -77,6 +77,7 @@ THE SOFTWARE.
 		"sum" : {arity: -1, args: ['number'], type: 'number', label: Translator.trans('sum')},
 		"tan" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('tan')},
 		"tanh" : {arity: 1, args: ['number'], type: 'number', label: Translator.trans('tanh')},
+		"titlecase" : {arity: 1, args: ['text'], type: 'text', label: Translator.trans('ucwords')},
 		"trim" : {arity: 1, args: ['text'], type: 'text', label: Translator.trans('trim')},
 		"ucfirst" : {arity: 1, args: ['text'], type: 'text', label: Translator.trans('ucfirst')},
 		"upper" : {arity: 1, args: ['text'], type: 'text', label: Translator.trans('upper')},
