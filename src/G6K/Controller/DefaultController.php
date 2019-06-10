@@ -317,13 +317,20 @@ class DefaultController extends BaseController {
 							: 'pdftk'
 			]
 		);
+		$formdata = [];
+		foreach($datas as $name => $value) {
+			$formdata[$name] = $value;
+			if (!preg_match("/_$/", $name)) {
+				$formdata[$name."_0_"] = $value;
+			}
+		}
 		$textFields = $pdf->getTextFields();
 		$buttonFields = $pdf->getButtonFields();
 		$fields = [
-			'text' => array_filter($datas, function ($name) use ($textFields) {
+			'text' => array_filter($formdata, function ($name) use ($textFields) {
 				return in_array($name, $textFields);
 			}, ARRAY_FILTER_USE_KEY),
-			'button' => array_filter($datas, function ($name) use ($buttonFields) {
+			'button' => array_filter($formdata, function ($name) use ($buttonFields) {
 				return in_array($name, $buttonFields);
 			}, ARRAY_FILTER_USE_KEY)
 		];
