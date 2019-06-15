@@ -283,9 +283,7 @@ trait ControllersTrait {
 					} elseif ($param->getType() == 'header') {
 						if ($value != '') {
 							$name = 'HTTP_' . str_replace('-', '_', strtoupper($param->getName()));
-							$headers[] = array(
-								$name => $value
-							);
+							$headers[$name] = $value;
 						}
 					} elseif ($value != '' || ! $param->isOptional()) {
 						$query .= "&".urlencode($param->getName())."=".$value;
@@ -374,7 +372,7 @@ trait ControllersTrait {
 			case 'json':
 				$returnPath = $source->getReturnPath();
 				$returnPath = $this->replaceVariables($returnPath);
-				$json = json_decode($result, true);
+				$json = gettype($result) == 'string' ? json_decode($result, true) : $result;
 				$result = ResultFilter::filter("json", $json, $returnPath);
 				return $result;
 			case 'assocArray':

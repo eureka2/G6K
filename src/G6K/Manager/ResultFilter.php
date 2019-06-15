@@ -215,10 +215,17 @@ class ResultFilter {
 		if ($path == '') {
 			$result = $json;
 		} elseif (preg_match("/^\\$/", $path)) { // jsonpath
+			if ($json instanceof Crawler) {
+				$json = $this->convertToArray( $json->getNode(0) );
+			}
 			$store = new JSONPath($json);
 			$result = $store->find($path)->data();
 		} else { // xpath
-			$result = $this->xPathFilter( "json", $json, $path);
+			if ($json instanceof Crawler) {
+				$result = $this->filterHTML($json, $path);
+			} else {
+				$result = $this->xPathFilter( "json", $json, $path);
+			}
 		}
 		return $result;
 	}

@@ -51,15 +51,17 @@ class DOMClient extends BaseClient {
 			"text/xml",
 			"application/xml",
 			"application/xhtml+xml",
+			"application/json",
+			"text/javascript",
 			"text/html",
 			"text/plain",
 			"image/png",
 			"image/jpeg",
 			"image/gif",
-			"*/*"
+			"*/*;q=0.01"
 		),
 		"HTTP_ACCEPT_ENCODING" => array(
-			"gzip"
+			"gzip", "deflate", "br"
 		),
 		'HTTP_PROXY' => array(
 			'proxy' => "", // e.g   "192.168.50.12:8080",
@@ -202,7 +204,7 @@ class DOMClient extends BaseClient {
 			$ctxConfig = array(
 				'http' => array(
 					'method' => $request->getMethod(),
-					'header'  => 'Content-type: application/x-www-form-urlencoded'."\r\n",
+					'header'  => $this->makeRequestHeader($request),
 					'content' => $request->getContent(),
 					'proxy' => 'tcp://' . $proxy ,
 					'request_fulluri' => true
@@ -212,7 +214,7 @@ class DOMClient extends BaseClient {
 			$ctxConfig = array(
 				'http' => array(
 					'method' => $request->getMethod(),
-					'header'  => 'Content-type: application/x-www-form-urlencoded'."\r\n",
+					'header'  => $this->makeRequestHeader($request),
 					'content' => $request->getContent(),
 					'request_fulluri' => true
 				)
@@ -299,6 +301,34 @@ class DOMClient extends BaseClient {
 			$chunked = substr($chunked, $pos + 2 + $len);
 		}
 		return $decoded;
+	}
+
+	private function makeRequestHeader($request) {
+		$server = $request->getServer();
+		$protocol = getenv('HTTPS') !== null && getenv('HTTPS') != '' ? 'https' : 'http';
+		$origin = $protocol.'://'. getenv('HTTP_HOST');
+		$referer = $origin . getenv('REQUEST_URI');
+		$header = [];
+		$header[] = 'Origin: ' . $origin . "\r\n";
+		$header[] = 'Referer: ' . $referer . "\r\n";
+		$header[] = "Cache-Control: no-cache\r\n";
+		$header[] = 'Host: '. parse_url($request->getUri(), PHP_URL_HOST) . "\r\n";
+		foreach ($server as $key => $value) {
+			if (preg_match("/^HTTP_(.*)$/", $key, $match)) {
+				if (is_array($value)) {
+					$value = implode(",", $value);
+				}
+				if (!in_array($match[1], ['HOST', 'PORT','PROXY']) && $value != '') {
+					$parts = array_map(function($part) {
+						return ucfirst(strtolower($part));
+					}, explode("_", $match[1]));
+					$name = implode("-", $parts);
+					$header[] = $name . ": " . $value . "\r\n";
+				}
+			}
+		}
+		$header[] = 'Content-type: application/x-www-form-urlencoded'."\r\n";
+		return implode("", $header);
 	}
 
 	/**
