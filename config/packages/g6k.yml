@@ -210,6 +210,34 @@ parameters:
             css: 
             js: 
                 - js/restcountriesAPI.js
+        CharacterCounter:
+            label: Counts and displays the number of characters left to enter
+            target: [ textarea ]
+            input: [ textarea ]
+            css: 
+            js: 
+                - js/CharacterCounter.js
+        FrenchSiretNumber:
+            label: Checks the entry of the French siret number
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/FrenchSiretNumber.js
+        DigitsOnly:
+            label: Only accept digits in a text field
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/DigitsOnly.js
+        AutoHoursFormat:
+            label:  Live hours and minutes formatting
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/AutoHoursFormat.js
 
     functions:
         copyToClipboard:
