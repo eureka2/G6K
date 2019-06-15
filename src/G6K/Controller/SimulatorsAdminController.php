@@ -839,6 +839,9 @@ class SimulatorsAdminController extends BaseAdminController {
 		if (isset($data['max'])) {
 			$dataObj->setUnparsedMax($data['max']);
 		}
+		if (isset($data['pattern'])) {
+			$dataObj->setPattern($data['pattern']);
+		}
 		if (isset($data['default'])) {
 			$dataObj->setUnparsedDefault($data['default']);
 		}
@@ -2014,6 +2017,9 @@ class SimulatorsAdminController extends BaseAdminController {
 					if ($gdata->getUnparsedMax() != '' && ! preg_match("/[\?:]/", $gdata->getUnparsedMax())) {
 						$this->dataset[$name]['unparsedMax'] = $gdata->getUnparsedMax();
 					}
+					if ($gdata->getPattern() != '') {
+						$this->dataset[$name]['pattern'] = $gdata->getPattern();
+					}
 					if ($gdata->getContent() != '' && ! preg_match("/[\?:]/", $gdata->getContent())) {
 						$this->dataset[$name]['unparsedContent'] = $gdata->getContent();
 					}
@@ -2074,6 +2080,9 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 				if ($data->getUnparsedMax() != '' && ! preg_match("/[\?:]/", $data->getUnparsedMax())) {
 					$this->dataset[$name]['unparsedMax'] = $data->getUnparsedMax();
+				}
+				if ($data->getPattern() != '') {
+					$this->dataset[$name]['pattern'] = $data->getPattern();
 				}
 				if ($data->getContent() != '' && ! preg_match("/[\?:]/", $data->getContent())) {
 					$this->dataset[$name]['unparsedContent'] = $data->getContent();

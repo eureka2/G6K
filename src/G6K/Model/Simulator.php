@@ -1421,6 +1421,7 @@ class Simulator {
 		$dataObj->setUnparsedMax((string)$data['max']);
 		$dataObj->setUnparsedDefault((string)$data['default']);
 		$dataObj->setUnit((string)$data['unit']);
+		$dataObj->setPattern((string)$data['pattern']);
 		$dataObj->setRound(isset($data['round']) ? (int)$data['round'] : null);
 		$dataObj->setContent((string)$data['content']);
 		$dataObj->setSource((string)$data['source']);
@@ -2180,6 +2181,9 @@ class Simulator {
 		}
 		if ((string)$data['memorize'] != "") {
 			$this->datas[$id]['memorize'] = (string)$data['memorize'];
+		}
+		if ((string)$data['pattern'] != "") {
+			$this->datas[$id]['pattern'] = (string)$data['pattern'];
 		}
 		$this->name = $this->datas[$id]['name'];
 		$this->dependencies = 'defaultDependencies';
@@ -3009,6 +3013,9 @@ class Simulator {
 					if ($gdata->getUnparsedMax() != '') {
 						$attrs .= ' max="' . $gdata->getUnparsedMax() . '"'; 
 					}
+					if ($gdata->getPattern() != '' && $gdata->getType() == 'text') {
+						$attrs .= ' pattern="' . $gdata->getPattern() . '"'; 
+					}
 					if ($gdata->getContent() != '') {
 						$attrs .= ' content="' . htmlspecialchars($gdata->getContent(), ENT_COMPAT) . '"'; 
 					}
@@ -3084,6 +3091,9 @@ class Simulator {
 				}
 				if ($data->getUnparsedMax() != '') {
 					$attrs .= ' max="' . $data->getUnparsedMax() . '"'; 
+				}
+				if ($data->getPattern() != '' && $data->getType() == 'text') {
+					$attrs .= ' pattern="' . $data->getPattern() . '"'; 
 				}
 				if ($data->getContent() != '') {
 					$attrs .= ' content="' . htmlspecialchars($data->getContent(), ENT_COMPAT) . '"'; 
