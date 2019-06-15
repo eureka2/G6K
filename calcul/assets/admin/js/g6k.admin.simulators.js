@@ -147,6 +147,7 @@ THE SOFTWARE.
 		'default': { type : 'expression', label: Translator.trans('default'), placeholder: Translator.trans('default value')},
 		'min': { type : 'expression', label: Translator.trans('min'), placeholder: Translator.trans('min value')},
 		'max': { type : 'expression', label: Translator.trans('max'), placeholder: Translator.trans('max value')},
+		'pattern': { type : 'text', label: Translator.trans('Pattern'), placeholder: Translator.trans('Pattern')},
 		'content': { type : 'expression', label: Translator.trans('Content'), placeholder: Translator.trans('content')},
 		'round': { type : 'number', label: Translator.trans('Round'), placeholder: Translator.trans('Number of decimals after the decimal point')},
 		'unit': { type : 'text', label: Translator.trans('Unit'), placeholder: Translator.trans('unit text')},

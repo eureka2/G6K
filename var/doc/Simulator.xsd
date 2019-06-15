@@ -523,6 +523,7 @@
 		</xs:attribute>
 		<xs:attribute name="min" type="xs:string"/>
 		<xs:attribute name="max" type="xs:string"/>
+		<xs:attribute name="pattern" type="xs:string"/>
 		<xs:attribute name="content" type="xs:string"/>
 		<xs:attribute name="round" type="xs:nonNegativeInteger" default="2"/>
 		<xs:attribute name="default" type="xs:string"/>

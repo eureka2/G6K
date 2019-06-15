@@ -130,6 +130,14 @@ class Data extends DatasetChild {
 	private $unparsedMax = "";
 
 	/**
+	 * @var string     $pattern The pattern that the text data must respect
+	 *
+	 * @access  private
+	 *
+	 */
+	private $pattern = "";
+
+	/**
 	 * @var string     $default The default value of this data item
 	 *
 	 * @access  private
@@ -401,6 +409,29 @@ class Data extends DatasetChild {
 	 */
 	public function setUnparsedMax($unparsedMax) {
 		$this->unparsedMax = $unparsedMax;
+	}
+
+	/**
+	 * Returns the pattern of this data item.
+	 *
+	 * @access  public
+	 * @return  string The pattern
+	 *
+	 */
+	public function getPattern() {
+		return $this->pattern;
+	}
+
+	/**
+	 * Sets the pattern of this data item.
+	 *
+	 * @access  public
+	 * @param   string     $unit The pattern
+	 * @return  void
+	 *
+	 */
+	public function setPattern($pattern) {
+		$this->pattern = $pattern;
 	}
 
 	/**
@@ -1049,6 +1080,15 @@ class Data extends DatasetChild {
 				}
 				break;
 			case 'text': 
+				if ($this->pattern != '') {
+					$delims = ['/', '#', '-', '|', '_', '=', '!'];
+					foreach($delims as $delim) {
+						if (strpos($this->pattern, $delim) === false) {
+							return preg_match($delim . $this->pattern . $delim, $this->value);
+						}
+					}
+				}
+				break;
 			case 'textarea': 
 				break;
 			case 'money': 

@@ -1476,6 +1476,23 @@ THE SOFTWARE.
 				return false;
 			}
 		}
+		var pattern = dataPanelContainer.find('.data-container input[data-attribute=pattern]');
+		if (pattern.length > 0 && pattern.val() != '') {
+			var type = dataPanelContainer.find('.data-container select[data-attribute=type]');
+			if (type.val() != 'text') {
+				dataPanelContainer.find('.error-message').text(Translator.trans("pattern attribute only applies to data of type 'text'"));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+			try {
+				var re = new RegExp(pattern.val());
+				re.test('dummy');
+			} catch(err) {
+				dataPanelContainer.find('.error-message').text(Translator.trans("Invalid pattern: %error%", { 'error': err.message }));
+				dataPanelContainer.find('.alert').show();
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -1855,6 +1872,7 @@ THE SOFTWARE.
 						'default': $(this).find("span[data-attribute='default']").attr('data-value'),
 						min: $(this).find("span[data-attribute='min']").attr('data-value'),
 						max: $(this).find("span[data-attribute='max']").attr('data-value'),
+						pattern: $(this).find("p[data-attribute='pattern']").attr('data-value'),
 						content: $(this).find("span[data-attribute='content']").attr('data-value'),
 						round: $(this).find("p[data-attribute='round']").attr('data-value'),
 						unit: $(this).find("p[data-attribute='unit']").attr('data-value'),
@@ -1907,6 +1925,7 @@ THE SOFTWARE.
 					'default': $(this).find("span[data-attribute='default']").attr('data-value'),
 					min: $(this).find("span[data-attribute='min']").attr('data-value'),
 					max: $(this).find("span[data-attribute='max']").attr('data-value'),
+					pattern: $(this).find("p[data-attribute='pattern']").attr('data-value'),
 					content: $(this).find("span[data-attribute='content']").attr('data-value'),
 					round: $(this).find("p[data-attribute='round']").attr('data-value'),
 					unit: $(this).find("p[data-attribute='unit']").attr('data-value'),

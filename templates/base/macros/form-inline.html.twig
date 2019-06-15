@@ -169,7 +169,7 @@ THE SOFTWARE.
 	{% elseif type == 'money' %}
 		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}" aria-describedby="{{ name }}-money-symbol"{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %} title="{{ 'format: %format%'|trans({ '%format%': 'amount in %symbol%'|trans({ '%symbol%': simu.moneySymbol}) }) }}"{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %} />
 	{% else %}
-		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.min is not empty %} minlength="{{ data.min }}"{% endif %}{%- if data.max is not empty %} maxlength="{{ data.max }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %} />
+		<input type="{{ type }}" id="{{ name }}" name="{{ name }}"{{ widget|jscode }} value="{{ value }}"{%- if data.min is not empty %} minlength="{{ data.min }}"{% endif %}{%- if data.max is not empty %} maxlength="{{ data.max }}"{% endif %}{%- if data.pattern is not empty %} pattern="{{ data.pattern }}"{% endif %}{%- if data.error -%} class="has-error" aria-invalid="true"{%- elseif data.warning %} class="has-warning"{% endif %}{% if field.required %} aria-required="true"{% endif %}{% if data.label is not empty %} aria-label="{{  data.label|nofnref }}"{% endif %} />
 	{% endif %}
 	</div>
 	{%- if type == 'money' and simu.symbolPosition == 'after' %}

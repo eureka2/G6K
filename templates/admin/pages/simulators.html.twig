@@ -1158,6 +1158,9 @@ THE SOFTWARE.
 			{{ page.showExpressionAttribute('data-'~data.id, 'min', 'Minimum value'|trans, data.unparsedMin, data.plainMin, false, 'Minimum value'|trans) }}
 			{{ page.showExpressionAttribute('data-'~data.id, 'max', 'Maximum value'|trans, data.unparsedMax, data.plainMax, false, 'Maximum value'|trans) }}
 			{% endif %}
+			{% if data.type == 'text' %}
+			{{ page.showAttribute('data-'~data.id, 'text', 'pattern', 'Pattern'|trans, data.pattern, data.pattern, false, 'Pattern'|trans) }}
+			{% endif %}
 			{{ page.showExpressionAttribute('data-'~data.id, 'content', 'Content'|trans, data.content, data.plainContent, false, 'Content'|trans) }}
 			{% if data.round %}
 			{{ page.showAttribute('data-'~data.id, 'number', 'round', 'Round'|trans, data.round, data.round, false, 'Round'|trans) }}

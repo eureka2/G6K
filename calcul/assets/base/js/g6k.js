@@ -3600,6 +3600,12 @@ THE SOFTWARE.
 						return false;
 					}
 					break;
+				case 'text':
+					if (data.pattern) {
+						var re = new RegExp(data.pattern);
+						return re.test(data.value);
+					}
+					break;
 			}
 			return true;
 		},
