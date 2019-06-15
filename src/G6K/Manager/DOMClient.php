@@ -200,25 +200,27 @@ class DOMClient extends BaseClient {
 	private function doRemoteRequest($request, $scheme) {
 		$server = $request->getServer();
 		$proxy = $scheme == 'https' ? $server['HTTPS_PROXY']['proxy'] : $server['HTTP_PROXY']['proxy'];
+		$content = $request->getContent();
+		$contentLength = $content === null ? 0 : strlen($content);
 		if ($proxy) {
-			$ctxConfig = array(
-				'http' => array(
+			$ctxConfig = [
+				'http' => [
 					'method' => $request->getMethod(),
-					'header'  => $this->makeRequestHeader($request),
-					'content' => $request->getContent(),
+					'header'  => $this->makeRequestHeader($request, $contentLength),
 					'proxy' => 'tcp://' . $proxy ,
 					'request_fulluri' => true
-				)
-			);
+				]
+			];
 		} else {
-			$ctxConfig = array(
-				'http' => array(
+			$ctxConfig = [
+				'http' => [
 					'method' => $request->getMethod(),
-					'header'  => $this->makeRequestHeader($request),
-					'content' => $request->getContent(),
-					'request_fulluri' => true
-				)
-			);
+					'header'  => $this->makeRequestHeader($request, $contentLength)
+				]
+			];
+		}
+		if ($contentLength > 0) {
+			$ctxConfig['http']['content'] = $content;
 		}
 		if ( $scheme == 'https') {
 			$sniServer = parse_url($request->getUri(), PHP_URL_HOST);
@@ -241,7 +243,7 @@ class DOMClient extends BaseClient {
 			}
 			foreach($responseHeaders as $h) {
 				if (preg_match("/^([^\:]+):\s*(.+)$/", $h, $m)) {
-					$headers[trim($m[1])] = trim($m[2]);
+					$headers[strtolower(trim($m[1]))] = trim($m[2]);
 				}
 			}
 		}
@@ -303,16 +305,16 @@ class DOMClient extends BaseClient {
 		return $decoded;
 	}
 
-	private function makeRequestHeader($request) {
+	private function makeRequestHeader($request, $contentLength = 0) {
 		$server = $request->getServer();
 		$protocol = getenv('HTTPS') !== null && getenv('HTTPS') != '' ? 'https' : 'http';
 		$origin = $protocol.'://'. getenv('HTTP_HOST');
 		$referer = $origin . getenv('REQUEST_URI');
 		$header = [];
-		$header[] = 'Origin: ' . $origin . "\r\n";
-		$header[] = 'Referer: ' . $referer . "\r\n";
-		$header[] = "Cache-Control: no-cache\r\n";
-		$header[] = 'Host: '. parse_url($request->getUri(), PHP_URL_HOST) . "\r\n";
+		$header[] = 'Origin: ' . $origin;
+		$header[] = 'Referer: ' . $referer;
+		$header[] = "Cache-Control: no-cache";
+		$header[] = 'Host: '. parse_url($request->getUri(), PHP_URL_HOST);
 		foreach ($server as $key => $value) {
 			if (preg_match("/^HTTP_(.*)$/", $key, $match)) {
 				if (is_array($value)) {
@@ -323,12 +325,15 @@ class DOMClient extends BaseClient {
 						return ucfirst(strtolower($part));
 					}, explode("_", $match[1]));
 					$name = implode("-", $parts);
-					$header[] = $name . ": " . $value . "\r\n";
+					$header[] = $name . ": " . $value;
 				}
 			}
 		}
-		$header[] = 'Content-type: application/x-www-form-urlencoded'."\r\n";
-		return implode("", $header);
+		if ($contentLength > 0) {
+			$header[] = 'Content-Type: application/x-www-form-urlencoded';
+			$header[] = 'Content-Length: ' . $contentLength;
+		}
+		return $header;
 	}
 
 	/**

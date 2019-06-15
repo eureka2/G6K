@@ -268,13 +268,13 @@ trait ControllersTrait {
 						}
 						$value = '';
 					}
-					$value = urlencode($value);
 					if ($param->getType() == 'path') {
 						if ($value != '' || ! $param->isOptional()) {
-							$path .= "/".$value;
+							$path .= "/".urlencode($value);
 						}
 					} elseif ($param->getType() == 'data') {
 						$name = $param->getName();
+						$value = urlencode($value);
 						if (isset($datas[$name])) {
 							$datas[$name][] = $value;
 						}  else {
@@ -286,7 +286,7 @@ trait ControllersTrait {
 							$headers[$name] = $value;
 						}
 					} elseif ($value != '' || ! $param->isOptional()) {
-						$query .= "&".urlencode($param->getName())."=".$value;
+						$query .= "&".urlencode($param->getName())."=".urlencode($value);
 					}
 				}
 				$uri = $datasource->getUri();
