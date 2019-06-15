@@ -1362,7 +1362,8 @@ class BaseController extends Controller {
 													$value = isset($result[$index]) ? $result[$index] : $result[strtolower($index)];
 											}
 											if (is_array($value)) {
-												$value = count($result) >= 1 ? $value[0] : "";
+												$keys = array_keys($value);
+												$value = count($keys) > 0 ? $value[$keys[0]] : "";
 											}
 										} else {
 											$value = "";
