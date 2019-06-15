@@ -320,8 +320,13 @@ class DefaultController extends BaseController {
 		$formdata = [];
 		foreach($datas as $name => $value) {
 			$formdata[$name] = $value;
-			if (!preg_match("/_$/", $name)) {
+			if (!preg_match("/_\d+_$/", $name)) {
 				$formdata[$name."_0_"] = $value;
+				if (!preg_match("/^Page/", $name)) {
+					$formdata["Page1_0__".$name."_0_"] = $value;
+				}
+			} elseif (!preg_match("/^Page/", $name)) {
+				$formdata["Page1_0__".$name] = $value;
 			}
 		}
 		$textFields = $pdf->getTextFields();
