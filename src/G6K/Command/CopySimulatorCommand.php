@@ -201,10 +201,6 @@ class CopySimulatorCommand extends SimulatorCommandBase
 		$viewsDir2 = $this->projectDir."/templates";
 		$this->info($output, "Finding the %simulatorname%.css files from the other instance '%s%' in progress", array('%simulatorname%' => $simulatorname, '%s%' => $anotherg6kpath));
 		$stylesheets = $this->findFile($assetsDir1, $simulatorname.'.css', $input, $output, ['path' => '/css/', 'multiple' => true]);
-		$stylesheets = array_filter($stylesheets, function ($stylesheet) use ($assetsDir2) {
-			$view = basename(dirname(dirname($stylesheet)));
-			return file_exists($assetsDir2 ."/" . $view);
-		});
 		$this->info($output, "Copying the simulator '%simulatorname%' located in '%simulatorpath%'", array('%simulatorname%' => $simulatorname, '%simulatorpath%' => dirname($simufile)));
 		$simulator = new \DOMDocument();
 		$simulator->preserveWhiteSpace  = false;
@@ -218,10 +214,21 @@ class CopySimulatorCommand extends SimulatorCommandBase
 		$view = $simulator->documentElement->getAttribute('defaultView');
 		if (! $fsystem->exists(array($viewsDir2.'/'.$view, $assetsDir2.'/'.$view))) {
 			if (! $this->runEmbeddedCommand(['command' => 'g6k:view:copy', 'viewname' => $view, 'anotherg6kpath' => $anotherg6kpath], $input, $output)) {
-				$view = empty($stylesheets) ? 'Demo' : basename(dirname(dirname($stylesheets[0])));
+				$view = 'Demo';
+				foreach($stylesheets as $stylesheet) {
+					$sview = basename(dirname(dirname($stylesheet)));
+					if (file_exists($assetsDir2 ."/" . $sview)) {
+						$view = $sview;
+						break;
+					}
+				}
 				$simulator->documentElement->setAttribute('defaultView', $view);
 			}
 		}
+		$stylesheets = array_filter($stylesheets, function ($stylesheet) use ($assetsDir2) {
+			$sview = basename(dirname(dirname($stylesheet)));
+			return file_exists($assetsDir2 ."/" . $sview);
+		});
 		$this->copyTemplates($simulator, $anotherg6kpath, $fsystem, $input, $output);
 		$this->fixDatasourcesReference($simulator, $anotherg6kpath, $input, $output);
 		$this->fixNewAttributes($simulator);
