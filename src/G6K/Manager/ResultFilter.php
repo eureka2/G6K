@@ -474,6 +474,9 @@ class ResultFilter {
 			$key = $keys[0];
 			if ($key == '#text') {
 				$array = $array[$key];
+				if (is_array($array)) {
+					$this->replaceTextKeys($array);
+				}
 			} elseif ($key == 0 && is_array($array[0])) {
 				$array = $array[0];
 				$this->replaceTextKeys($array);
@@ -486,6 +489,9 @@ class ResultFilter {
 						$key = $keys[0];
 						if ($key == '#text') {
 							$array[$i] = $value[$key];
+							if (is_array($array[$i])) {
+								$this->replaceTextKeys($array[$i]);
+							}
 						}
 					} else {
 						$this->replaceTextKeys($array[$i]);
