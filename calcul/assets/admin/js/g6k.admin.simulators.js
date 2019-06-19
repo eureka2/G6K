@@ -970,18 +970,25 @@ $(function(){
 			descriptionPanel.hide();
 			relatedInformationsPanel.hide();
 			descriptionPanel.after(Simulators.drawSimulatorOptionsForInput(simulator).children());
+			var categoriesSugg = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.whitespace,
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				local: categories
+			});
 			$('#simulator-category').typeahead({
-				minLength: 1,
+				minLength: 0,
 				hint: true,
 				highlight: true
 			},
 			{
 				name: 'categories-list',
-				source: new Bloodhound({
-					datumTokenizer: Bloodhound.tokenizers.whitespace,
-					queryTokenizer: Bloodhound.tokenizers.whitespace,
-					local: categories
-				})
+				source: function (q, sync, async) {
+					if (q === '') {
+						sync(categories);
+					} else {
+						categoriesSugg.search(q, sync, async);
+					}
+				}
 			});
 			$('#simulator-groupingSize').attr('min', '2');
 			$('#simulator-groupingSize').attr('max', '4');
@@ -993,7 +1000,11 @@ $(function(){
 		});
 		$('label.tree-toggler').click(function () {
 			$(this).parent().toggleClass("closed");
-			// $(this).parent().children('ul.tree').toggle(300);
+			if ($(this).parent().hasClass("closed")) {
+				$(this).attr('aria-expanded', 'false');
+			} else {
+				$(this).attr('aria-expanded', 'true');
+			}
 		});
 		Simulators.bindSimulatorButtons();
 		Simulators.bindProfileDataButtons();
