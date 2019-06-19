@@ -342,6 +342,44 @@ h4.card-title {
 #page-simulators .profiles-container .buttons-panel {
 	margin-top: 0.5em;
 }
+
+#simulators ul.nav.tree {
+	margin-top: 0;
+}
+
+#simulators li.closed ul.nav.tree {
+	display: none;
+}
+
+#simulators ul.nav.tree {
+	margin-left: 1.5em;
+}
+
+#simulators li > label.tree-toggler {
+	padding: 0 1.5em;
+	color:  #007bff;
+	font-weight: bold;
+	width: 100%;
+}
+
+#simulators li > label.tree-toggler:hover {
+	color:  #0056b3;
+}
+
+#simulators li.closed > label.tree-toggler:before {
+	content: "+";
+	font-weight: bold;
+	position: absolute;
+	left: 0.5em;
+}
+
+#simulators li:not(.closed) > label.tree-toggler:before {
+	content: "-";
+	font-weight: bold;
+	position: absolute;
+	left: 0.7em;
+}
+
 #business-rules .actions button.remove {
 	color: #999;
 } 

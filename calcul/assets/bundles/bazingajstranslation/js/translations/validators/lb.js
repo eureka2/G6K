@@ -80,6 +80,9 @@ t.add("This value does not match the expected {{ charset }} charset.", "D\u00ebs
 t.add("This is not a valid Business Identifier Code (BIC).", "D\u00ebst ass kee g\u00ebltege \"Business Identifier Code\" (BIC).", "validators", "lb");
 t.add("Error", "Feeler", "validators", "lb");
 t.add("This is not a valid UUID.", "D\u00ebst ass keng g\u00eblteg UUID.", "validators", "lb");
+t.add("This value should be a multiple of {{ compared_value }}.", "D\u00ebse W\u00e4ert sollt e puer vun {{ compared_value }} sinn.", "validators", "lb");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "D\u00ebse \"Business Identifier Code\" (BIC) ass net mat IBAN verbonnen {{ iban }}.", "validators", "lb");
+t.add("This value should be valid JSON.", "D\u00ebse W\u00e4ert sollt g\u00eblteg JSON.", "validators", "lb");
 t.add("This form should not contain extra fields.", "D\u00ebs Feldergrupp sollt keng zous\u00e4tzlech Felder enthalen.", "validators", "lb");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "De gesch\u00e9cktene Fichier ass ze grouss. Versicht wann ech gelift ee m\u00e9i klenge Fichier eropzelueden.", "validators", "lb");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "Den CSRF-Token ass ong\u00eblteg. Versicht wann ech gelift de Formulaire nach eng K\u00e9ier ze sch\u00e9cken.", "validators", "lb");

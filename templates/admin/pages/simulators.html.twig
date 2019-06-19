@@ -47,9 +47,24 @@ THE SOFTWARE.
 					</form>
 				</div>
 				<ul class="nav nav-pills flex-column">
+					{% set category = '' %}
 					{% for simu in simulators %}
+					{% if simu.category != category %}
+						{% if category != '' %} 
+							</ul>
+						</li>
+						{% endif %}
+						{% set category = simu.category|trim %}
+						<li class="closed">
+							<label class="tree-toggler nav-header">{{ category }}</label>
+							<ul class="nav nav-list tree">
+					{% endif %}
 					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_simulators') }}/{{ simu.file }}">{{ simu.label }}</a></li>
 					{% endfor %}
+					{% if category != '' %} 
+						</ul>
+					</li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>
@@ -118,6 +133,7 @@ THE SOFTWARE.
 										<div>
 										{{ page.showAttribute('simulator', 'text', 'name', 'Name'|trans, simulator.name, simulator.name, true, 'name') }}
 										{{ page.showAttribute('simulator', 'text', 'label', 'Label'|trans, simulator.label, simulator.label, true, 'label') }}
+										{{ page.showAttribute('simulator', 'text', 'category', 'Category'|trans, simulator.category, simulator.category, true, 'category') }}
 										{{ page.showAttribute('simulator', 'text', 'defaultView', 'Default view'|trans, simulator.defaultView, simulator.defaultView, true, 'defaultView') }}
 										{{ page.showAttribute('simulator', 'text', 'referer', 'Main referer'|trans, simulator.referer, simulator.referer, true, 'referer') }}
 										{{ page.showAttribute('simulator', 'select', 'locale', 'Locale'|trans, simulator.locale, simulator.locale, true, 'Locale'|trans, simulator.controller.languages) }}

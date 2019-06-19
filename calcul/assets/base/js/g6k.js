@@ -4478,12 +4478,14 @@ THE SOFTWARE.
 					var returnPath = self.simu.sources[source]['returnPath'];
 					returnPath = self.replaceVariables(returnPath);
 					if (returnType == 'json') {
-						if (/^\\$/.test(returnPath)) { // jsonpath
-							result = JSONPath({path: returnPath, json: result});
-						} else { // xpath
-							result = defiant.json.search(result, returnPath);
-							if ($.isArray(result) && result.length == 1) {
-								result = result[0];
+						if (returnPath != '') {
+							if (/^\\$/.test(returnPath)) { // jsonpath
+								result = JSONPath({path: returnPath, json: result});
+							} else { // xpath
+								result = defiant.json.search(result, returnPath);
+								if ($.isArray(result) && result.length == 1) {
+									result = result[0];
+								}
 							}
 						}
 					} else if (returnType == 'csv') {
@@ -4669,12 +4671,14 @@ THE SOFTWARE.
 										self.setValue(name, value[index.toLowerCase()]);
 									}
 								} else if (returnType == 'json') {
-									if (/^\\$/.test(index)) { // jsonpath
-										value = JSONPath({path: index, json: value});
-									} else { // xpath
-										value = defiant.json.search(value, index);
-										if ($.isArray(value) && value.length == 1) {
-											value = value[0];
+									if (index != '') {
+										if (/^\\$/.test(index)) { // jsonpath
+											value = JSONPath({path: index, json: value});
+										} else { // xpath
+											value = defiant.json.search(value, index);
+											if ($.isArray(value) && value.length == 1) {
+												value = value[0];
+											}
 										}
 									}
 									self.setValue(name, value);

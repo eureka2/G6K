@@ -77,7 +77,12 @@ t.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait ori
 t.add("An empty file is not allowed.", "\u4e0d\u5141\u8bb8\u4f7f\u7528\u7a7a\u6587\u4ef6\u3002", "validators", "zh_CN");
 t.add("The host could not be resolved.", "\u4e3b\u673a\u540d\u65e0\u6cd5\u89e3\u6790\u3002", "validators", "zh_CN");
 t.add("This value does not match the expected {{ charset }} charset.", "\u8be5\u503c\u4e0d\u7b26\u5408 {{ charset }} \u7f16\u7801\u3002", "validators", "zh_CN");
+t.add("This is not a valid Business Identifier Code (BIC).", "\u8fd9\u4e0d\u662f\u6709\u6548\u7684\u4e1a\u52a1\u6807\u8bc6\u7b26\u4ee3\u7801\uff08BIC)\u3002", "validators", "zh_CN");
 t.add("Error", "\u9519\u8bef", "validators", "zh_CN");
+t.add("This is not a valid UUID.", "\u8fd9\u4e0d\u662f\u6709\u6548\u7684UUID\u3002", "validators", "zh_CN");
+t.add("This value should be a multiple of {{ compared_value }}.", "\u6b64\u503c\u5e94\u4e3a {{ compared_value }} \u7684\u500d\u6570\u3002", "validators", "zh_CN");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "\u6b64\u4e1a\u52a1\u6807\u8bc6\u7b26\u4ee3\u7801\uff08BIC\uff09\u4e0eIBAN {{ iban }} \u65e0\u5173\u3002", "validators", "zh_CN");
+t.add("This value should be valid JSON.", "\u8be5\u503c\u5e94\u8be5\u662f\u6709\u6548\u7684JSON\u3002", "validators", "zh_CN");
 t.add("This form should not contain extra fields.", "\u8be5\u8868\u5355\u4e2d\u4e0d\u53ef\u6709\u989d\u5916\u5b57\u6bb5.", "validators", "zh_CN");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "\u4e0a\u4f20\u6587\u4ef6\u592a\u5927\uff0c \u8bf7\u91cd\u65b0\u5c1d\u8bd5\u4e0a\u4f20\u4e00\u4e2a\u8f83\u5c0f\u7684\u6587\u4ef6.", "validators", "zh_CN");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF \u9a8c\u8bc1\u7b26\u65e0\u6548\uff0c \u8bf7\u91cd\u65b0\u63d0\u4ea4.", "validators", "zh_CN");

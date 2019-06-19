@@ -75,7 +75,13 @@ t.add("The image is square ({{ width }}x{{ height }}px). Square images are not a
 t.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "A imagem est\u00e1 orientada \u00e0 paisagem ({{ width }}x{{ height }}px). Imagens orientadas \u00e0 paisagem n\u00e3o s\u00e3o permitidas.", "validators", "pt");
 t.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "A imagem est\u00e1 orientada ao retrato ({{ width }}x{{ height }}px). Imagens orientadas ao retrato n\u00e3o s\u00e3o permitidas.", "validators", "pt");
 t.add("An empty file is not allowed.", "Ficheiro vazio n\u00e3o \u00e9 permitido.", "validators", "pt");
+t.add("The host could not be resolved.", "O host n\u00e3o pode ser resolvido.", "validators", "pt");
+t.add("This value does not match the expected {{ charset }} charset.", "O valor n\u00e3o corresponde ao conjunto de caracteres {{ charset }} esperado.", "validators", "pt");
+t.add("This is not a valid Business Identifier Code (BIC).", "O C\u00f3digo de Identifica\u00e7\u00e3o de Empresa (BIC) n\u00e3o \u00e9 v\u00e1lido.", "validators", "pt");
 t.add("Error", "Erro", "validators", "pt");
+t.add("This is not a valid UUID.", "Este valor n\u00e3o \u00e9 um UUID v\u00e1lido.", "validators", "pt");
+t.add("This value should be a multiple of {{ compared_value }}.", "Este valor deve ser um m\u00faltiplo de {{ compared_value }}.", "validators", "pt");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "O C\u00f3digo de Identifica\u00e7\u00e3o de Empresa (BIC) n\u00e3o est\u00e1 associado ao IBAN {{ iban }}.", "validators", "pt");
 t.add("This form should not contain extra fields.", "Este formul\u00e1rio n\u00e3o deveria conter campos extra.", "validators", "pt");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "O arquivo enviado \u00e9 muito grande. Por favor, tente enviar um ficheiro mais pequeno.", "validators", "pt");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "O token CSRF \u00e9 inv\u00e1lido. Por favor submeta o formul\u00e1rio novamente.", "validators", "pt");

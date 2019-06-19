@@ -80,6 +80,9 @@ t.add("This value does not match the expected {{ charset }} charset.", "Ez az \u
 t.add("This is not a valid Business Identifier Code (BIC).", "\u00c9rv\u00e9nytelen nemzetk\u00f6zi bankazonos\u00edt\u00f3 k\u00f3d (BIC\/SWIFT).", "validators", "hu");
 t.add("Error", "Hiba", "validators", "hu");
 t.add("This is not a valid UUID.", "\u00c9rv\u00e9nytelen egyedi azonos\u00edt\u00f3 (UUID).", "validators", "hu");
+t.add("This value should be a multiple of {{ compared_value }}.", "Ennek az \u00e9rt\u00e9knek oszthat\u00f3nak kell lennie a k\u00f6vetkez\u0151vel: {{ compared_value }}", "validators", "hu");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Ez a Bankazonos\u00edt\u00f3 k\u00f3d (BIC) nem kapcsol\u00f3dik az IBAN k\u00f3dhoz ({{ iban }}).", "validators", "hu");
+t.add("This value should be valid JSON.", "Ez az \u00e9rt\u00e9k \u00e9rv\u00e9nyes JSON kell, hogy legyen.", "validators", "hu");
 t.add("This form should not contain extra fields.", "Ez a mez\u0151csoport nem tartalmazhat extra mez\u0151ket.", "validators", "hu");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "A felt\u00f6lt\u00f6tt f\u00e1jl t\u00fal nagy. K\u00e9rem, pr\u00f3b\u00e1ljon egy kisebb f\u00e1jlt felt\u00f6lteni.", "validators", "hu");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "\u00c9rv\u00e9nytelen CSRF token. K\u00e9rem, pr\u00f3b\u00e1lja \u00fajra elk\u00fcldeni az \u0171rlapot.", "validators", "hu");

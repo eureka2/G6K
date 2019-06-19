@@ -75,7 +75,14 @@ t.add("The image is square ({{ width }}x{{ height }}px). Square images are not a
 t.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "Nuotrauka orientuota \u012f plot\u012f ({{ width }}x{{ height }}px). Nuotraukos orientuotos \u012f plot\u012f n\u0117ra leistinos.", "validators", "lt");
 t.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "Nuotrauka orientuota \u012f auk\u0161t\u012f ({{ width }}x{{ height }}px). Nuotraukos orientuotos \u012f auk\u0161t\u012f n\u0117ra leistinos.", "validators", "lt");
 t.add("An empty file is not allowed.", "Failas negali b\u016bti tu\u0161\u010dias.", "validators", "lt");
+t.add("The host could not be resolved.", "Serveris nepasiekiamas.", "validators", "lt");
+t.add("This value does not match the expected {{ charset }} charset.", "\u0160i reik\u0161m\u0117 neatitinka {{ charset }} koduot\u0117s.", "validators", "lt");
+t.add("This is not a valid Business Identifier Code (BIC).", "Bendrov\u0117s Identifikavimo Kodas (BIC) n\u0117ra tinkamas.", "validators", "lt");
 t.add("Error", "Klaida", "validators", "lt");
+t.add("This is not a valid UUID.", "\u0160i reik\u0161m\u0117 n\u0117ra tinkamas UUID.", "validators", "lt");
+t.add("This value should be a multiple of {{ compared_value }}.", "\u0160i reik\u0161m\u0117 turi b\u016bti skai\u010diaus {{ compared_value }} kartotinis.", "validators", "lt");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "\u0160is bendrov\u0117s identifikavimo kodas (BIC) nesusij\u0119s su IBAN {{ iban }}.", "validators", "lt");
+t.add("This value should be valid JSON.", "\u0160i reik\u0161m\u0117 turi b\u016bti tinkamo JSON formato.", "validators", "lt");
 t.add("This form should not contain extra fields.", "Forma negali tur\u0117ti papildom\u0173 lauk\u0173.", "validators", "lt");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "\u012ekelta byla yra per didel\u0117. bandykite \u012fkelti ma\u017eesn\u0119.", "validators", "lt");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF kodas nepriimtinas. Bandykite si\u0173sti formos u\u017eklaus\u0105 dar kart\u0105.", "validators", "lt");

@@ -213,18 +213,31 @@ class SimulatorsAdminController extends BaseAdminController {
 		$hiddens['action'] = 'show';
 		$simulators = array();
 		$updated = false;
+		$categories = [];
+		$notCategorized = $this->getTranslator()->trans("Not categorized");
 		foreach($simus as $simu) {
-			$s = new \SimpleXMLElement($this->simulatorsDir."/".$simu, LIBXML_NOWARNING, true);
+			$simupath = $this->simulatorsDir."/work/".$simu;
+			if (! file_exists($simupath)) {
+				$simupath = $this->simulatorsDir."/".$simu;
+			}
+			$s = new \SimpleXMLElement($simupath, LIBXML_NOWARNING, true);
 			$file = preg_replace("/.xml$/", "", $simu);
 			$simulators[] = array(
 				'file' => $file, 
 				'name' => $s['name'], 
 				'label' => $s['label'], 
+				'category' => (string)$s['category'] == '' ? 
+					$notCategorized :
+					$s['category'],
 				'description' => array(
 					'content' => $s->Description,
 					'edition' => (string)$s->Description['edition']
 				)
 			);
+			$category = (string)$s['category'];
+			if ($category != '') {
+				$categories[$category] = true;
+			}
 			if ($simulator !== null && $file == $simulator) {
 				$this->simu = new Simulator($this);
 				try {
@@ -240,6 +253,19 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 			}
 		}
+		usort($simulators, function($a, $b) use ($notCategorized) {
+			$cmp = strcmp($a["category"], $b["category"]);
+			if ($cmp == 0) {
+				return strcmp($a["label"], $b["label"]);
+			} elseif ($a["category"] == $notCategorized) {
+				return 1;
+			} elseif ($b["category"] == $notCategorized) {
+				return -1;
+			} else {
+				return $cmp;
+			}
+		});
+		$categories = array_keys($categories);
 		$hiddens['updated'] = $updated;
 		if ($crud == 'create') {
 			$hiddens['action'] = 'create';
@@ -420,6 +446,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'nav' => 'simulators',
+					'categories' => $categories,
 					'simulators' => $simulators,
 					'simulator' => $this->simu,
 					'valid' => $valid,
@@ -559,6 +586,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$simulatorData = json_decode($form['simulator'], true);
 		$this->simu->setName($simulatorData["name"]);
 		$this->simu->setLabel($simulatorData["label"]);
+		$this->simu->setCategory($simulatorData["category"]);
 		$this->simu->setDefaultView($simulatorData["defaultView"]);
 		$this->simu->setReferer($simulatorData["referer"]);
 		$this->simu->setLocale($simulatorData["locale"]);

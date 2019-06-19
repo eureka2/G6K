@@ -77,6 +77,12 @@ t.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait ori
 t.add("An empty file is not allowed.", "Tuk\u0161s fails nav at\u013cauts.", "validators", "lv");
 t.add("The host could not be resolved.", "Resursdatora nosaukumu nevar atrisin\u0101t.", "validators", "lv");
 t.add("This value does not match the expected {{ charset }} charset.", "\u0160\u012b v\u0113rt\u012bba neatbilst sagaid\u0101majai rakstz\u012bmju kopai {{ charset }}.", "validators", "lv");
+t.add("This is not a valid Business Identifier Code (BIC).", "\u0160\u012b v\u0113rt\u012bba nav der\u012bgs Biznesa Identifik\u0101cijas Kods (BIC).", "validators", "lv");
+t.add("Error", "K\u013c\u016bda", "validators", "lv");
+t.add("This is not a valid UUID.", "\u0160is nav der\u012bgs UUID.", "validators", "lv");
+t.add("This value should be a multiple of {{ compared_value }}.", "\u0160ai v\u0113rt\u012bbai j\u0101b\u016bt vair\u0101kas reizes atk\u0101rtotai {{ compared_value }}.", "validators", "lv");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "\u0160is Biznesa Identifik\u0101cijas Kods (BIC) neatbilst {{ iban }} konta numuram (IBAN).", "validators", "lv");
+t.add("This value should be valid JSON.", "\u0160ai v\u0113rt\u012bbai j\u0101b\u016bt der\u012bgam JSON.", "validators", "lv");
 t.add("This form should not contain extra fields.", "\u0160aj\u0101 veidlap\u0101 nevajadz\u0113tu b\u016bt papildus ievades laukiem.", "validators", "lv");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Aug\u0161upiel\u0101d\u0113t\u0101 faila izm\u0113rs bija par lielu. L\u016bdzu m\u0113\u0123iniet aug\u0161upiel\u0101d\u0113t maz\u0101ka izm\u0113ra failu.", "validators", "lv");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "Dotais CSRF talons nav der\u012bgs. L\u016bdzu m\u0113\u0123iniet v\u0113lreiz iesniegt veidlapu.", "validators", "lv");
