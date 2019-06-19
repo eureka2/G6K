@@ -698,6 +698,8 @@ THE SOFTWARE.
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='name']").text($('#simulator-name').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='label']").attr('data-value', $('#simulator-label').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='label']").text($('#simulator-label').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='category']").attr('data-value', $('#simulator-category').val());
+				$('#simulator-attributes-panel-holder').find("p[data-attribute='category']").text($('#simulator-category').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='referer']").attr('data-value', $('#simulator-referer').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='referer']").text($('#simulator-referer').val());
 				$('#simulator-attributes-panel-holder').find("p[data-attribute='locale']").attr('data-value', $('#simulator-locale').val());
@@ -867,6 +869,7 @@ THE SOFTWARE.
 		var simulatorAttributes = $('<div></div>');
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-name', 'text', 'name', Translator.trans('Name'), simulator.name, true, Translator.trans('Simulator name without spaces or special characters')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-label', 'text', 'label', Translator.trans('Label'), simulator.label, true, Translator.trans('Simulator label')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-category', 'text', 'category', Translator.trans('Category'), simulator.category, true, Translator.trans('Simulator category')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-defaultView', 'select', 'defaultView', Translator.trans('Default view'), simulator.defaultView, true, Translator.trans('Default view'), JSON.stringify(views)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-referer', 'text', 'referer', Translator.trans('Main referer'), simulator.referer, false, Translator.trans('referer URL')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-locale', 'select', 'locale', Translator.trans('Locale'), simulator.locale, true, Translator.trans('Locale'), JSON.stringify(languages)));
@@ -941,6 +944,7 @@ $(function(){
 			var simulator = {
 				name: attributesPanel.find("p[data-attribute='name']").attr('data-value'),
 				label: attributesPanel.find("p[data-attribute='label']").attr('data-value'),
+				category: attributesPanel.find("p[data-attribute='category']").attr('data-value'),
 				defaultView: attributesPanel.find("p[data-attribute='defaultView']").attr('data-value'),
 				referer: attributesPanel.find("p[data-attribute='referer']").attr('data-value'),
 				locale: attributesPanel.find("p[data-attribute='locale']").attr('data-value'),
@@ -966,6 +970,19 @@ $(function(){
 			descriptionPanel.hide();
 			relatedInformationsPanel.hide();
 			descriptionPanel.after(Simulators.drawSimulatorOptionsForInput(simulator).children());
+			$('#simulator-category').typeahead({
+				minLength: 1,
+				hint: true,
+				highlight: true
+			},
+			{
+				name: 'categories-list',
+				source: new Bloodhound({
+					datumTokenizer: Bloodhound.tokenizers.whitespace,
+					queryTokenizer: Bloodhound.tokenizers.whitespace,
+					local: categories
+				})
+			});
 			$('#simulator-groupingSize').attr('min', '2');
 			$('#simulator-groupingSize').attr('max', '4');
 			descriptionPanel.after(relatedInformationsPanel);
@@ -973,6 +990,10 @@ $(function(){
 			$('.update-button').hide();
 			$('.toggle-collapse-all').hide();
 			Simulators.updating = true;
+		});
+		$('label.tree-toggler').click(function () {
+			$(this).parent().toggleClass("closed");
+			// $(this).parent().children('ul.tree').toggle(300);
 		});
 		Simulators.bindSimulatorButtons();
 		Simulators.bindProfileDataButtons();
@@ -1020,6 +1041,7 @@ $(function(){
 			var simulator = {
 				name: $('#simulator-attributes-panel-holder').find("p[data-attribute='name']").attr('data-value'),
 				label: $('#simulator-attributes-panel-holder').find("p[data-attribute='label']").attr('data-value'),
+				category: $('#simulator-attributes-panel-holder').find("p[data-attribute='category']").attr('data-value'),
 				defaultView: $('#simulator-attributes-panel-holder').find("p[data-attribute='defaultView']").attr('data-value'),
 				referer: $('#simulator-attributes-panel-holder').find("p[data-attribute='referer']").attr('data-value'),
 				locale: $('#simulator-attributes-panel-holder').find("p[data-attribute='locale']").attr('data-value'),

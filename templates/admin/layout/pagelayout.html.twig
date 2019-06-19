@@ -49,6 +49,9 @@ THE SOFTWARE.
 {% set jsonoptions = constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') %}
 {% if app.debug  %}{% set jsonoptions = constant('JSON_PRETTY_PRINT') b-or jsonoptions %}{% endif %}
 <script type="text/javascript">
+{% if categories is defined %}
+var categories = {{ categories|json_encode(jsonoptions)|nofilter }}
+{% endif %}
 {% if dataset is defined %}
 var dataset = {{ dataset|json_encode(jsonoptions)|nofilter }}
 {% endif %}

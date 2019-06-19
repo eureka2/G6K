@@ -78,6 +78,11 @@ t.add("An empty file is not allowed.", "Arquivo vazio n\u00e3o \u00e9 permitido.
 t.add("The host could not be resolved.", "O host n\u00e3o p\u00f4de ser resolvido.", "validators", "pt_BR");
 t.add("This value does not match the expected {{ charset }} charset.", "Este valor n\u00e3o corresponde ao charset {{ charset }} esperado.", "validators", "pt_BR");
 t.add("This is not a valid Business Identifier Code (BIC).", "Este n\u00e3o \u00e9 um C\u00f3digo Identificador Banc\u00e1rio (BIC) v\u00e1lido.", "validators", "pt_BR");
+t.add("Error", "Erro", "validators", "pt_BR");
+t.add("This is not a valid UUID.", "Este n\u00e3o \u00e9 um UUID v\u00e1lido.", "validators", "pt_BR");
+t.add("This value should be a multiple of {{ compared_value }}.", "Este valor deve ser m\u00faltiplo de {{ compared_value }}.", "validators", "pt_BR");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Este C\u00f3digo Identificador Banc\u00e1rio (BIC) n\u00e3o est\u00e1 associado ao IBAN {{ iban }}.", "validators", "pt_BR");
+t.add("This value should be valid JSON.", "Este valor deve ser um JSON v\u00e1lido.", "validators", "pt_BR");
 t.add("This form should not contain extra fields.", "Este formul\u00e1rio n\u00e3o deve conter campos adicionais.", "validators", "pt_BR");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "O arquivo enviado \u00e9 muito grande. Por favor, tente enviar um arquivo menor.", "validators", "pt_BR");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "O token CSRF \u00e9 inv\u00e1lido. Por favor, tente reenviar o formul\u00e1rio.", "validators", "pt_BR");

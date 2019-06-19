@@ -75,7 +75,13 @@ t.add("The image is square ({{ width }}x{{ height }}px). Square images are not a
 t.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "L'imatge est\u00e0 orientada horitzontalment ({{ width }}x{{ height }}px). Les imatges orientades horitzontalment no estan permeses.", "validators", "ca");
 t.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "L'imatge est\u00e0 orientada verticalment ({{ width }}x{{ height }}px). Les imatges orientades verticalment no estan permeses.", "validators", "ca");
 t.add("An empty file is not allowed.", "No est\u00e0 perm\u00e8s un fixter buit.", "validators", "ca");
+t.add("The host could not be resolved.", "No s'ha pogut resoldre l'amfitri\u00f3.", "validators", "ca");
+t.add("This value does not match the expected {{ charset }} charset.", "Aquest valor no coincideix amb l'esperat {{ charset }} joc de car\u00e0cters.", "validators", "ca");
+t.add("This is not a valid Business Identifier Code (BIC).", "Aquest no \u00e9s un codi d'identificaci\u00f3 bancari (BIC) v\u00e0lid.", "validators", "ca");
+t.add("Error", "Error", "validators", "ca");
 t.add("This is not a valid UUID.", "Aquest valor no \u00e9s un UUID v\u00e0lid.", "validators", "ca");
+t.add("This value should be a multiple of {{ compared_value }}.", "Aquest valor ha de ser m\u00faltiple de {{ compared_value }}.", "validators", "ca");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Aquest Codi d'identificaci\u00f3 bancari (BIC) no est\u00e0 associat amb l'IBAN {{ iban }}.", "validators", "ca");
 t.add("This form should not contain extra fields.", "Aquest formulari no hauria de contenir camps addicionals.", "validators", "ca");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "L'arxiu pujat \u00e9s massa gran. Per favor, pugi un arxiu m\u00e9s petit.", "validators", "ca");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "El token CSRF no \u00e9s v\u00e0lid. Per favor, provi d'enviar novament el formulari.", "validators", "ca");

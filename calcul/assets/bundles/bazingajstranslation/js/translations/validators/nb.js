@@ -78,6 +78,11 @@ t.add("An empty file is not allowed.", "Tomme filer er ikke tilatt.", "validator
 t.add("The host could not be resolved.", "Vertsnavn kunne ikke l\u00f8ses.", "validators", "nb");
 t.add("This value does not match the expected {{ charset }} charset.", "Verdien samsvarer ikke med forventet tegnsett {{ charset }}.", "validators", "nb");
 t.add("This is not a valid Business Identifier Code (BIC).", "Dette er ikke en gyldig BIC.", "validators", "nb");
+t.add("Error", "Feil", "validators", "nb");
+t.add("This is not a valid UUID.", "Dette er ikke en gyldig UUID.", "validators", "nb");
+t.add("This value should be a multiple of {{ compared_value }}.", "Verdien skal v\u00e6re flertall av {{ compared_value }}.", "validators", "nb");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Business Identifier Code (BIC) er ikke tilknyttet en IBAN {{ iban }}.", "validators", "nb");
+t.add("This value should be valid JSON.", "Verdien er ikke gyldig JSON.", "validators", "nb");
 t.add("This form should not contain extra fields.", "Feltgruppen m\u00e5 ikke inneholde ekstra felter.", "validators", "nb");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Den opplastede filen var for stor. Vennligst last opp en mindre fil.", "validators", "nb");
 t.add("The CSRF token is invalid.", "CSRF n\u00f8kkelen er ugyldig.", "validators", "nb");

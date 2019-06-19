@@ -79,6 +79,10 @@ t.add("The host could not be resolved.", "Poslu\u017eitelj nije mogao biti razri
 t.add("This value does not match the expected {{ charset }} charset.", "Znakovne oznake vrijednosti ne odgovaraju o\u010dekivanom {{ charset }} skupu.", "validators", "hr");
 t.add("This is not a valid Business Identifier Code (BIC).", "Ovo nije validan poslovni identifikacijski broj (BIC).", "validators", "hr");
 t.add("Error", "Gre\u0161ka", "validators", "hr");
+t.add("This is not a valid UUID.", "Ovo nije validan UUID.", "validators", "hr");
+t.add("This value should be a multiple of {{ compared_value }}.", "Ova vrijednost treba biti vi\u0161ekratnik od {{ compared_value }}.", "validators", "hr");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Poslovni identifikacijski broj (BIC) nije povezan sa IBAN brojem {{ iban }}.", "validators", "hr");
+t.add("This value should be valid JSON.", "Ova vrijednost treba biti validan JSON.", "validators", "hr");
 t.add("This form should not contain extra fields.", "Ovaj obrazac ne smije sadr\u017eavati dodatna polja.", "validators", "hr");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Prenesena datoteka je prevelika. Molim poku\u0161ajte prenijeti manju datoteku.", "validators", "hr");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF vrijednost nije ispravna. Poku\u0161ajte ponovo poslati obrazac.", "validators", "hr");

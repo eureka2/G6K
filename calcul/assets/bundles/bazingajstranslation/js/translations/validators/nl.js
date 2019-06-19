@@ -75,11 +75,13 @@ t.add("The image is square ({{ width }}x{{ height }}px). Square images are not a
 t.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "De afbeelding is liggend ({{ width }}x{{ height }}px). Liggende afbeeldingen zijn niet toegestaan.", "validators", "nl");
 t.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "De afbeelding is staand ({{ width }}x{{ height }}px). Staande afbeeldingen zijn niet toegestaan.", "validators", "nl");
 t.add("An empty file is not allowed.", "Lege bestanden zijn niet toegestaan.", "validators", "nl");
+t.add("The host could not be resolved.", "De hostnaam kon niet worden bepaald.", "validators", "nl");
 t.add("This value does not match the expected {{ charset }} charset.", "Deze waarde is niet in de verwachte tekencodering {{ charset }}.", "validators", "nl");
 t.add("This is not a valid Business Identifier Code (BIC).", "Dit is geen geldige bedrijfsidentificatiecode (BIC\/SWIFT).", "validators", "nl");
 t.add("Error", "Fout", "validators", "nl");
 t.add("This is not a valid UUID.", "Dit is geen geldige UUID.", "validators", "nl");
-t.add("This value should be a multiple of {{ compared_value }}.", "Deze waarde moet een veelvoud zijn van {{ compared_value }}.", "validators", "nl");
+t.add("This value should be a multiple of {{ compared_value }}.", "Deze waarde zou een meervoud van {{ compared_value }} moeten zijn.", "validators", "nl");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Deze bedrijfsidentificatiecode (BIC) is niet gekoppeld aan IBAN {{ iban }}.", "validators", "nl");
 t.add("This form should not contain extra fields.", "Dit formulier mag geen extra velden bevatten.", "validators", "nl");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Het ge\u00fcploade bestand is te groot. Probeer een kleiner bestand te uploaden.", "validators", "nl");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "De CSRF-token is ongeldig. Probeer het formulier opnieuw te versturen.", "validators", "nl");

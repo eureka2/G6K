@@ -57,12 +57,20 @@ class Simulator {
 	private $name = "";
 
 	/**
-	 * @var string     $label The label of this simulator label.
+	 * @var string     $label The label of this simulator .
 	 *
 	 * @access  private
 	 *
 	 */
 	private $label = "";
+
+	/**
+	 * @var string     $category The category of this simulator.
+	 *
+	 * @access  private
+	 *
+	 */
+	private $category = "";
 
 	/**
 	 * @var string     $defaultView  The name of the default view with which this simulator will be displayed
@@ -352,6 +360,29 @@ class Simulator {
 	 */
 	public function setLabel($label) {
 		$this->label = $label;
+	}
+
+	/**
+	 * Returns the category of this simulator
+	 *
+	 * @access  public
+	 * @return  string The category of this simulator
+	 *
+	 */
+	public function getCategory() {
+		return $this->category;
+	}
+
+	/**
+	 * Sets the category of this simulator
+	 *
+	 * @access  public
+	 * @param   string $category The category of this simulator
+	 * @return  void
+	 *
+	 */
+	public function setCategory($category) {
+		$this->category = $category;
 	}
 
 	/**
@@ -1537,6 +1568,7 @@ class Simulator {
 		}
 		$this->setName((string)$simulator["name"]);
 		$this->setLabel((string)$simulator["label"]);
+		$this->setCategory((string)$simulator["category"]);
 		$this->setDefaultView((string)$simulator["defaultView"]);
 		$this->setReferer((string)$simulator["referer"]);
 		$this->setDynamic((string)$simulator['dynamic'] == '1');
@@ -2616,6 +2648,7 @@ class Simulator {
 		}
 		$json["name"] = (string)$simulator["name"];
 		$json["label"] = (string)$simulator["label"];
+		$json["category"] = (string)$simulator["category"];
 		$json["defaultView"] = (string)$simulator["defaultView"];
 		$json["referer"] = (string)$simulator["referer"];
 		if ((string)$simulator["memo"] != "") {
@@ -2994,7 +3027,7 @@ class Simulator {
 	public function save($file) {
 		$xml = array();
 		$xml[] = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $this->getLabel()) . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '" locale="' . $this->getLocale() . '" timezone="' . $this->getTimezone() . '">';
+		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $this->getLabel()) . '" category="' . $this->getCategory() . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '" locale="' . $this->getLocale() . '" timezone="' . $this->getTimezone() . '">';
 		$xml[] = '	<Description edition="' . $this->getDescription()->getEdition() . '"><![CDATA[';
 		$xml[] = $this->cleanRichText($this->getDescription());
 		$xml[] = '	]]></Description>';

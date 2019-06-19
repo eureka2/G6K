@@ -79,6 +79,10 @@ t.add("The host could not be resolved.", "V\u00e4rddatorn kunde inte hittas.", "
 t.add("This value does not match the expected {{ charset }} charset.", "Detta v\u00e4rde har inte den f\u00f6rv\u00e4ntade teckenkodningen {{ charset }}.", "validators", "sv");
 t.add("This is not a valid Business Identifier Code (BIC).", "Detta \u00e4r inte en giltig BIC-kod.", "validators", "sv");
 t.add("Error", "Fel", "validators", "sv");
+t.add("This is not a valid UUID.", "Detta \u00e4r inte ett giltigt UUID.", "validators", "sv");
+t.add("This value should be a multiple of {{ compared_value }}.", "Detta v\u00e4rde ska vara en multipel av {{ compared_value }}.", "validators", "sv");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Denna BIC-koden \u00e4r inte associerad med IBAN {{ iban }}.", "validators", "sv");
+t.add("This value should be valid JSON.", "Detta v\u00e4rde ska vara giltig JSON.", "validators", "sv");
 t.add("This form should not contain extra fields.", "Formul\u00e4ret kan inte inneh\u00e5lla extra f\u00e4lt.", "validators", "sv");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Den uppladdade filen var f\u00f6r stor. F\u00f6rs\u00f6k ladda upp en mindre fil.", "validators", "sv");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF-elementet \u00e4r inte giltigt. F\u00f6rs\u00f6k att skicka formul\u00e4ret igen.", "validators", "sv");

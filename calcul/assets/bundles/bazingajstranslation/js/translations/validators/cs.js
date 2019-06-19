@@ -79,6 +79,10 @@ t.add("The host could not be resolved.", "Hostitele nebylo mo\u017en\u00e9 rozpo
 t.add("This value does not match the expected {{ charset }} charset.", "Tato hodnota neodpov\u00edd\u00e1 o\u010dek\u00e1van\u00e9 znakov\u00e9 sad\u011b {{ charset }}.", "validators", "cs");
 t.add("This is not a valid Business Identifier Code (BIC).", "Tato hodnota nen\u00ed platn\u00fd identifika\u010dn\u00ed k\u00f3d podniku (BIC).", "validators", "cs");
 t.add("Error", "Chyba", "validators", "cs");
+t.add("This is not a valid UUID.", "Tato hodnota nen\u00ed platn\u00e9 UUID.", "validators", "cs");
+t.add("This value should be a multiple of {{ compared_value }}.", "Tato hodnota mus\u00ed b\u00fdt n\u00e1sobek hodnoty {{ compared_value }}.", "validators", "cs");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Bankovn\u00ed identifika\u010dn\u00ed k\u00f3d (BIC) neodpov\u00edd\u00e1 mezin\u00e1rodn\u00edmu \u010d\u00edslu \u00fa\u010dtu (IBAN) {{ iban }}.", "validators", "cs");
+t.add("This value should be valid JSON.", "Tato hodnota mus\u00ed b\u00fdt validn\u00ed JSON.", "validators", "cs");
 t.add("This form should not contain extra fields.", "Tato skupina pol\u00ed nesm\u00ed obsahovat dal\u0161\u00ed pole.", "validators", "cs");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Nahran\u00fd soubor je p\u0159\u00edli\u0161 velk\u00fd. Nahrajte pros\u00edm men\u0161\u00ed soubor.", "validators", "cs");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF token je neplatn\u00fd. Zkuste pros\u00edm znovu odeslat formul\u00e1\u0159.", "validators", "cs");

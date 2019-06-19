@@ -79,6 +79,9 @@ t.add("The host could not be resolved.", "Host tidak dapat diselesaikan.", "vali
 t.add("This value does not match the expected {{ charset }} charset.", "Nilai ini tidak memenuhi set karakter {{ charset }} yang diharapkan.", "validators", "id");
 t.add("This is not a valid Business Identifier Code (BIC).", "Ini bukan Business Identifier Code (BIC) yang sah.", "validators", "id");
 t.add("Error", "Galat", "validators", "id");
+t.add("This is not a valid UUID.", "Ini bukan UUID yang sah.", "validators", "id");
+t.add("This value should be a multiple of {{ compared_value }}.", "Nilai ini harus kelipatan dari {{ compared_value }}.", "validators", "id");
+t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Business Identifier Code (BIC) ini tidak terkait dengan IBAN {{ iban }}.", "validators", "id");
 t.add("This form should not contain extra fields.", "Gabungan kolom tidak boleh mengandung kolom tambahan.", "validators", "id");
 t.add("The uploaded file was too large. Please try to upload a smaller file.", "Berkas yang di unggah terlalu besar. Silahkan coba unggah berkas yang lebih kecil.", "validators", "id");
 t.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF-Token tidak sah. Silahkan coba kirim ulang formulir.", "validators", "id");
