@@ -364,6 +364,7 @@ h4.card-title {
 
 #simulators li > label.tree-toggler:hover {
 	color:  #0056b3;
+	cursor: pointer;
 }
 
 #simulators li.closed > label.tree-toggler:before {
