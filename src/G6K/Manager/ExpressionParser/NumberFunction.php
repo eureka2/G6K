@@ -89,7 +89,7 @@ class NumberFunction {
 				self::$groupingSize = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);
 			}
 			if (self::$fractionDigit === null) {
-				self::$fractionDigit = $formatter->getAttribute(\NumberFormatter::FRACTION_DIGITS);
+				self::$fractionDigit = $formatter->getAttribute(\NumberFormatter::MAX_FRACTION_DIGITS);
 			}
 		} else {
 			if (self::$decimalPoint === null) {
