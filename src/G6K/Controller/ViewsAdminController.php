@@ -176,7 +176,6 @@ class ViewsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function showViews(Request $request, $view, $crud) {
-		$views = array_filter(scandir($this->viewsDir), function ($simu) { return preg_match("/.xml$/", $simu); } );
 		$hiddens = array();
 		$hiddens['script'] = $this->script;
 		$hiddens['action'] = $crud == 'edit-node' ? 'edit' : 'show';
