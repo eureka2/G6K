@@ -56,10 +56,10 @@ THE SOFTWARE.
 						{% endif %}
 						{% set category = simu.category|trim %}
 						<li class="closed">
-							<label class="tree-toggler nav-header">{{ category }}</label>
+							<label class="tree-toggler nav-header" aria-expanded="false">{{ category }}</label>
 							<ul class="nav nav-list tree">
 					{% endif %}
-					<li class="nav-item"><a class="nav-link" href="{{ path('eureka_g6k_admin_simulators') }}/{{ simu.file }}">{{ simu.label }}</a></li>
+					<li class="nav-item" data-simulator="{{ simu.file }}"><a class="nav-link" href="{{ path('eureka_g6k_admin_simulators') }}/{{ simu.file }}">{{ simu.label }}</a></li>
 					{% endfor %}
 					{% if category != '' %} 
 						</ul>
@@ -211,6 +211,12 @@ THE SOFTWARE.
 									<label class="col-sm-2 col-form-label" for="simulator-pdfform">{{ 'PDF Form (optional)'|trans }}</label>    
 									<div class="col-sm-10">
 										<input type="file" id="simulator-pdfform" name="simulator-pdfform" accept="application/pdf" class="form-control input-sm" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label" for="simulator-pdfinfo">{{ 'PDF Form infos (optional)'|trans }}</label>    
+									<div class="col-sm-10">
+										<input type="file" id="simulator-pdfinfo" name="simulator-pdfinfo" accept=".info" class="form-control input-sm" />
 									</div>
 								</div>
 							</div>

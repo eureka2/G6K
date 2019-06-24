@@ -1544,6 +1544,15 @@ class SimulatorsAdminController extends BaseAdminController {
 						'modtime' => filemtime($this->pdfFormsDir . "/" . $template)
 
 					);
+					$info = $this->pdfFormsDir . "/" . pathinfo($template, PATHINFO_FILENAME) . ".info";
+					if (file_exists($info)) {
+						$content[] = array(
+							'name' => basename($info),
+							'data' => file_get_contents($info),
+							'modtime' => filemtime($info)
+
+						);
+					}
 				}
 			}
 		}
@@ -1726,6 +1735,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$simufile = '';
 		$stylesheet = '';
 		$pdffile = '';
+		$pdfinfofile = '';
 		$pdfform = '';
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
@@ -1744,6 +1754,8 @@ class SimulatorsAdminController extends BaseAdminController {
 					if (preg_match("/^(.+)\.pdf$/", $pdfform, $m)) {
 						$pdfform = trim($m[1]);
 					}
+				} elseif ($fieldname == 'simulator-pdfinfo') {
+					$pdfinfofile = $filePath;
 				}
 			}
 		}
@@ -1755,9 +1767,15 @@ class SimulatorsAdminController extends BaseAdminController {
 				$fs->rename($stylesheet, $uploadDir . "/" . $simu . ".css", true);
 				$stylesheet = $uploadDir . "/" . $simu . ".css";
 			}
-			if ($pdffile != '') {
-				$fs->rename($pdffile, $uploadDir . "/" . $pdfform . ".pdf", true);
-				$pdffile = $uploadDir . "/" . $pdfform . ".pdf";
+			if ($pdfform != '') {
+				if ($pdffile != '') {
+					$fs->rename($pdffile, $uploadDir . "/" . $pdfform . ".pdf", true);
+					$pdffile = $uploadDir . "/" . $pdfform . ".pdf";
+				}
+				if ($pdfinfofile != '') {
+					$fs->rename($pdfinfofile, $uploadDir . "/" . $pdfform . ".info", true);
+					$pdffile = $uploadDir . "/" . $pdfform . ".info";
+				}
 			}
 			$heading = $translator->trans('Importing the « %simulator% » simulator', ['%simulator%' => $simu]);
 			$header = $this->makeReportHeader($request, $simu, $heading);

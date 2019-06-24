@@ -219,6 +219,10 @@ ul.rule-conditions > li {
 	width: 100%;
 	margin-bottom: 40px;
 }
+#page-pdfforms {
+	margin-bottom: 2.5rem;
+}
+
 .panel-group {
 	margin-bottom: 20px;
 }
@@ -274,6 +278,7 @@ h4.card-title {
 #datasource-import-panel-holder .form-group input,
 #table-import-panel-holder .form-group input,
 #simulator-import-panel-holder .form-group input,
+#pdfform-import-panel-holder .form-group input,
 #view-create-panel-holder .form-group input {
 	margin: 0;
 	padding: 0;
@@ -281,6 +286,7 @@ h4.card-title {
 #datasource-import-panel-holder .form-group > div,
 #table-import-panel-holder .form-group > div,
 #simulator-import-panel-holder .form-group > div,
+#pdfform-import-panel-holder .form-group > div,
 #view-create-panel-holder .form-group > div {
 	line-height: 6em;
 }
@@ -343,38 +349,41 @@ h4.card-title {
 	margin-top: 0.5em;
 }
 
-#simulators ul.nav.tree {
+#simulators ul.nav.tree,
+#pdfforms ul.nav.tree{
 	margin-top: 0;
-}
-
-#simulators li.closed ul.nav.tree {
-	display: none;
-}
-
-#simulators ul.nav.tree {
 	margin-left: 1.5em;
 }
 
-#simulators li > label.tree-toggler {
+#simulators li.closed ul.nav.tree,
+#pdfforms li.closed ul.nav.tree {
+	display: none;
+}
+
+#simulators li > label.tree-toggler,
+#pdfforms li > label.tree-toggler {
 	padding: 0 1.5em;
 	color:  #007bff;
 	font-weight: bold;
 	width: 100%;
 }
 
-#simulators li > label.tree-toggler:hover {
+#simulators li > label.tree-toggler:hover,
+#pdfforms li > label.tree-toggler:hover {
 	color:  #0056b3;
 	cursor: pointer;
 }
 
-#simulators li.closed > label.tree-toggler:before {
+#simulators li.closed > label.tree-toggler:before,
+#pdfforms li.closed > label.tree-toggler:before {
 	content: "+";
 	font-weight: bold;
 	position: absolute;
 	left: 0.5em;
 }
 
-#simulators li:not(.closed) > label.tree-toggler:before {
+#simulators li:not(.closed) > label.tree-toggler:before,
+#pdfforms li:not(.closed) > label.tree-toggler:before {
 	content: "-";
 	font-weight: bold;
 	position: absolute;
@@ -404,7 +413,8 @@ h4.card-title {
 .view-button, .drop-view-button , .help-view-button ,
 .edit-profiles-label, .add-profile, .edit-profile, .delete-profile, .add-profile-data, .edit-profile-data, .delete-profile-data,
 .edit-source, .delete-source, .add-source-parameter, .delete-source-parameter,
-.btn-group.update-button {
+.btn-group.update-button, .edit-pdfform-button, .drop-pdfform-button,
+ {
 	margin-top: -9px;
 }
 a.add-data, a.add-datagroup, a.add-footnotes, a.add-panel,

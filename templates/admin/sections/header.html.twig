@@ -13,6 +13,9 @@
 			{% if is_granted('ROLE_MANAGER') %}
 			<li class="nav-item{%- if nav == 'views' %} active{%- endif -%}"><a class="nav-link" href="{{ path('eureka_g6k_admin_views') }}">{{ 'Views'|trans }}</a></li>
 			{% endif %}
+			{% if is_granted('ROLE_ADMIN') %}
+			<li class="nav-item{%- if nav == 'pdfforms' %} active{%- endif -%}"><a class="nav-link" href="{{ path('eureka_g6k_admin_pdfforms') }}">{{ 'PDF Forms'|trans }}</a></li>
+			{% endif %}
 			{% if is_granted('ROLE_MANAGER') %}
 			<li class="nav-item{%- if nav == 'simulators' %} active{%- endif -%}"><a class="nav-link" href="{{ path('eureka_g6k_admin_simulators') }}">{{ 'Simulators'|trans }}</a></li>
 			{% endif %}

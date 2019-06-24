@@ -621,18 +621,18 @@ THE SOFTWARE.
 				var label = $(this).find("input[name='label[]']").val();
 				if (field !== '') {
 					if (! /^\w+$/.test(field)) {
-						errors.push(Translator.trans("Incorrect field name for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
+						errors.push(Translator.trans("Incorrect field name for field %field%", {'field': (Math.floor(index / 3) + 1)}));
 					}
 					if (label === '') {
-						errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
+						errors.push(Translator.trans("incorrect label for field %field%", {'field': (Math.floor(index / 3) + 1)}));
 					}
 				} else if (label !== '') { 
-					errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
+					errors.push(Translator.trans("incorrect label for field %field%", {'field': (Math.floor(index / 3) + 1)}));
 				}
 			} else {
 				var description = Admin.clearHTML($(this).find("textarea"));
 				if (field === '' && description !== '') { 
-					errors.push(Translator.trans("incorrect description for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
+					errors.push(Translator.trans("incorrect description for field %field%", {'field': (Math.floor(index / 3) + 1)}));
 				}
 			}
 			
@@ -657,18 +657,18 @@ THE SOFTWARE.
 				var label = $(this).find("input[name='label[]']").val();
 				if (field !== '') {
 					if (! /^\w+$/.test(field)) {
-						errors.push(Translator.trans("Incorrect field name for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
+						errors.push(Translator.trans("Incorrect field name for field %field%", {'field': (Math.floor(index / 3) + 1)}));
 					}
 					if (label === '') {
-						errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
+						errors.push(Translator.trans("incorrect label for field %field%", {'field': (Math.floor(index / 3) + 1)}));
 					}
 				} else if (label !== '') { 
-					errors.push(Translator.trans("incorrect label for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
+					errors.push(Translator.trans("incorrect label for field %field%", {'field': (Math.floor(index / 3) + 1)}));
 				}
 			} else {
 				var description = Admin.clearHTML($(this).find("textarea"));
 				if (field === '' && description !== '') { 
-					errors.push(Translator.trans("incorrect description for field %field%", {'%field%': (Math.floor(index / 3) + 1)}));
+					errors.push(Translator.trans("incorrect description for field %field%", {'field': (Math.floor(index / 3) + 1)}));
 				}
 			}
 			

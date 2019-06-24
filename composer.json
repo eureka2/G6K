@@ -14,7 +14,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ashleydawson/simple-pagination": "1.0.*",
-        "eureka2/acroforms": "^1.0.4",
+        "eureka2/acroforms": "^1.0.6",
         "flow/jsonpath": "^0.4.0",
         "friendsofsymfony/user-bundle": "~2.0",
         "mobiledetect/mobiledetectlib": "^2.8",

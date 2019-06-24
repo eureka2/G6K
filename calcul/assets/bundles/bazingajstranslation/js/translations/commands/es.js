@@ -67,6 +67,7 @@ t.add("Copies one or all simulators from another instance of G6K.", "Copia uno o
 t.add("Copies one or all views from another instance of G6K.", "Copia una o todas las vistas de otra instancia de G6K.", "commands", "es");
 t.add("Copying table %s% from %from% to %to%", "Copiando la tabla %s% de %from% a %to%", "commands", "es");
 t.add("Copying the datasource '%datasourcename%' from '%anotherg6kpath%'", "Copiando la fuente de datos '%datasourcename%' de '%anotherg6kpath%'", "commands", "es");
+t.add("Copying the infos about the PDF '%pdf%' of the other instance '%s%'", "Copiando las informaciones sobre el PDF '%pdf%' de la otra instancia '%s%'", "commands", "es");
 t.add("Copying the PDF '%pdf%' of the other instance '%s%'", "Copiando el PDF '%pdf%' de la otra instancia '%s%'", "commands", "es");
 t.add("Copying the simulator '%simulatorname%' located in '%simulatorpath%'", "Copiando el simulador '%simulatorname%' ubicado en '%simulatorpath%'", "commands", "es");
 t.add("Copying the view '%view%' from '%anotherg6kpath%'", "Copiando la vista '%view%' desde '%anotherg6kpath%'", "commands", "es");

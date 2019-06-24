@@ -216,8 +216,12 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 				$sOutput = $step->getAttribute('output');
 				if ($sOutput == 'inlineFilledPDF' || $sOutput == 'downloadableFilledPDF') {
 					$template = str_replace(':', '/', $step->getAttribute('template'));
+					$info = pathinfo($template, PATHINFO_FILENAME) . ".info";
 					if ($fsystem->exists($pdfpath.'/'.$template)) {
 						$fsystem->copy($pdfpath.'/'.$template, $pdfDir.'/'.$template);
+					}
+					if ($fsystem->exists($pdfpath.'/'.$info)) {
+						$fsystem->copy($pdfpath.'/'.$info, $pdfDir.'/'.$info);
 					}
 				}
 			}
