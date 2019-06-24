@@ -44,3 +44,6 @@
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/sqltokenizer/sqltokenizer.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/admin/js/libs/typeahead/typeahead.bundle.min.js') }}"></script>
 {% endif %}
+{% if exception is not defined and pdfforms is defined %}
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/typeahead/typeahead.bundle.min.js') }}"></script>
+{% endif %}

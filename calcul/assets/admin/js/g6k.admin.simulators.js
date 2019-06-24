@@ -1163,6 +1163,11 @@ $(function(){
 				if (pdfformfile != '' && ! /\.pdf$/.test(pdfformfile)) {
 					errors.push(Translator.trans("The file extension of the PDF Form must be '.pdf'"));
 				}
+				var pdfinfoinput = $("#simulator-import-form input[name='simulator-pdfinfo']");
+				var pdfinfofile = pdfinfoinput.val();
+				if (pdfinfofile != '' && ! /\.info$/.test(pdfinfofile)) {
+					errors.push(Translator.trans("The file extension of the PDF Form infos must be '.info'"));
+				}
 				if (errors.length > 0) {
 					Simulators.showErrors(errors);
 					return false;

@@ -8,13 +8,13 @@
 <link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/select2/select2-bootstrap3.css') }}" />
 <link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/css/titatoggle/titatoggle-dist.css') }}" />
 {% if exception is not defined %}
-{% if simulator is not empty %}<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/3d-skew-sidemenu/3d-skew-sidemenu.css') }}" />{% endif %}
+{% if simulator is defined and simulator is not empty %}<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/3d-skew-sidemenu/3d-skew-sidemenu.css') }}" />{% endif %}
 <link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap-wysihtml/css/bootstrap4-wysihtml5.min.css') }}" />
 <link rel="stylesheet" type='text/css' href="{{ asset('assets/admin/js/libs/typeahead/typeahead.css') }}" />
 <link rel="stylesheet" type='text/css' href="{{ asset('assets/admin/css/business-rules.css') }}" />
-{% if view is not empty %}
+{% if view is defined and view is not empty %}
 <link rel="stylesheet" type='text/css' href="{{ asset('assets/admin/js/libs/jquery.treegrid/css/jquery.treegrid.css') }}">
-{% if file is not empty %}
+{% if file is defined and file is not empty %}
 <link rel="stylesheet" type='text/css' href="{{ asset('assets/admin/js/libs/codemirror/css/codemirror.css') }}">
 <link rel="stylesheet" type='text/css' href="{{ asset('assets/admin/js/libs/codemirror/addon/display/fullscreen.css') }}">
 {% if hiddens.action == 'edit' %}

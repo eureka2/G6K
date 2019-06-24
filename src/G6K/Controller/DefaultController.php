@@ -32,8 +32,10 @@ use App\G6K\Model\Step;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\Yaml\Yaml;
 
 use acroforms\AcroForm;
+use acroforms\Utils\StringToolBox;
 
 /**
  *
@@ -309,16 +311,24 @@ class DefaultController extends BaseController {
 	 */
 	protected function filledPdfOutput(Request $request, $step, $datas)
 	{
+		$template = $step->getTemplate();
+		$info = pathinfo($template, PATHINFO_FILENAME) . ".info";
 		$pdf = new AcroForm(
-			$this->get('kernel')->getProjectDir().'/var/data/pdfforms/'.$step->getTemplate(),
+			$this->pdfFormsDir.'/'.$template,
 			[
 				'pdftk' =>	$this->container->hasParameter('acroforms')
 							? $this->container->getParameter('acroforms')['pdftk']
 							: 'pdftk'
 			]
 		);
+		$mapping = [];
+		if (file_exists($this->pdfFormsDir.'/'.$info)) {
+			$pdfinfo = Yaml::parseFile($this->pdfFormsDir.'/'.$info);
+			$mapping = array_flip($pdfinfo['descriptors']['mapping']);
+		}
 		$formdata = [];
-		foreach($datas as $name => $value) {
+		foreach($datas as $dataname => $value) {
+			$name = isset($mapping[$dataname]) ? StringToolBox::normalizeFieldName($mapping[$dataname]) : $dataname;
 			$formdata[$name] = $value;
 			if (!preg_match("/_\d+_$/", $name)) {
 				$formdata[$name."_0_"] = $value;
@@ -339,6 +349,7 @@ class DefaultController extends BaseController {
 				return in_array($name, $buttonFields);
 			}, ARRAY_FILTER_USE_KEY)
 		];
+		error_log(var_export($fields, true));
 		$pdf->load($fields);
 		$pdf->merge(true); // true for flatten (need pdftk), false if not (this is the default)
 		$destination = $step->getOutput() == 'inlineFilledPDF' ? 'I' : 'D';

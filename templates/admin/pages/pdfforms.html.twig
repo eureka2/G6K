@@ -1,0 +1,259 @@
+{#
+The MIT License (MIT)
+
+Copyright (c) 2019 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+#}
+
+{% extends "admin/layout/pagelayout.html.twig" %}
+
+{% import _self as page %}
+
+{% block content %}
+<h2>{{ 'PDF Forms management'|trans }}</h2>
+<div class="navbar-light navbar-side" role="navigation">
+	<div class="sidebar-collapse">
+		<div id="pdfforms" class="nav card bg-primary rounded">
+			<div class="card-header rounded-top"><h3>{{ 'PDF Forms'|trans }}</h3></div>
+			<div class="card-body">
+				<div>
+					<form action="{{ path('eureka_g6k_admin_pdfform_crud', {'pdf': 'new', 'crud': 'import'}) }}">
+					<button id="btnImportPDFForm" class="btn btn-secondary float-right">{{ 'Import PDF Form'|trans }} <span class="fas fa-download"></span></button>
+					</form>
+				</div>
+				<ul class="nav nav-pills flex-column">
+					{% set category = '' %}
+					{% for pdf in pdfforms %}
+					{% if pdf.category != category %}
+						{% if category != '' %} 
+							</ul>
+						</li>
+						{% endif %}
+						{% set category = pdf.category|trim %}
+						<li class="closed">
+							<label class="tree-toggler nav-header" aria-expanded="false">{{ category }}</label>
+							<ul class="nav nav-list tree">
+					{% endif %}
+					<li class="nav-item" data-pdfform="{{ pdf.name }}"><a class="nav-link" href="{{ path('eureka_g6k_admin_pdfform', { 'pdf':  pdf.name} ) }}">{{ pdf.title }}</a></li>
+					{% endfor %}
+					{% if category != '' %} 
+						</ul>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div id="trigger"></div>
+</div>
+
+<div id="page-wrapper" class="content">
+	<div id="page-pdfforms">
+		<div class="row">
+			<div class="col-md-12">
+				{% if pdfform is not empty %}
+				<div id="pdfform" class="card bg-primary">
+					<div class="card-header">
+					{% if hiddens.action == 'show' %}
+					{% if usedby is empty %}
+					<a class="btn btn-primary float-right drop-pdfform-button" href="{{ path('eureka_g6k_admin_pdfform_crud', {'pdf': pdfform.descriptors.name, 'crud': 'drop'}) }}" title="{{ 'Drop PDF Form'|trans }}" data-confirm="{{ 'Are you sure you want to drop the PDF Form %pdfform% ?'|trans({ '%pdfform%': pdfform.descriptors.name }) }}'"><span class="button-label">{{ 'Drop datasource'|trans }}</span> <span class="fas fa-minus-circle"></span></a>
+					{% endif %}
+					<a class="btn btn-primary float-right edit-pdfform-button" href="{{ path('eureka_g6k_admin_pdfform_crud', {'pdf': pdfform.descriptors.name, 'crud': 'edit'}) }}" title="{{ 'Edit PDF Form'|trans }}" data-confirm="{{ 'Are you sure you want to edit the PDF Form %pdfform% ?'|trans({ '%pdfform%': pdfform.descriptors.name }) }}'"><span class="button-label">{{ 'Edit datasource'|trans }}</span> <span class="fas fa-pencil-alt"></span></a>
+					{% endif %}
+					<h4 class="card-title">{{ pdfform.descriptors.title|striptags }}</h4>
+					</div>
+					<div class="card-body">
+						<div class="alert alert-danger" role="alert">
+							<span class="fas fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="sr-only">{{ 'Error'|trans }}:</span>
+							<span class="error-message"></span>
+							<ul></ul>
+						</div>
+						{% if hiddens.action == 'show' %}
+						<div class="card bg-light">
+							<div class="card-body">
+								<div class="attributes-container">
+									<div>
+										<div class="form-group row">
+											<label class="col-sm-2 col-form-label">{{ 'Name'|trans }}</label>    
+											<div class="col-sm-10">
+												<p data-attribute="name" data-value="{{ pdfform.descriptors.name }}" class="form-control-plaintext simple-value">{{ pdfform.descriptors.name }}</p>
+											</div>
+										</div>
+										<div class="form-group row">
+											<label class="col-sm-2 col-form-label">{{ 'Title'|trans }}</label>    
+											<div class="col-sm-10">
+												<p data-attribute="title" data-value="{{ pdfform.descriptors.title }}" class="form-control-plaintext simple-value">{{ pdfform.descriptors.title }}</p>
+											</div>
+										</div>
+										<div class="form-group row">
+											<label class="col-sm-2 col-form-label">{{ 'Category'|trans }}</label>    
+											<div class="col-sm-10">
+												<p data-attribute="category" data-value="{{ pdfform.descriptors.category }}" class="form-control-plaintext simple-value">{{ pdfform.descriptors.category }}</p>
+											</div>
+										</div>
+										{% if usedby is not empty %}
+										<div class="form-group row">
+											<label class="col-sm-2 col-form-label">{{ 'Used by the simulator(s)'|trans }}</label>    
+											<div class="col-sm-10">
+												<p data-attribute="usedby" class="form-control-plaintext simple-value">{{ usedby|join(', ') }}</p>
+											</div>
+										</div>
+										{% endif %}
+									</div>
+								</div>
+								<div class="card bg-light field-mapping-panel">
+									<div class="card-header">
+										{{ 'Field mapping'|trans }}
+									</div>
+									<div class="card-body">
+										<table id="field-mapping-table" class="table table-bordered table-hover">
+											<thead class="thead-light">
+												<tr>
+													<th scope="col">{{ 'PDF Form field'|trans }}</th>
+													<th scope="col">{{ 'Simulator data'|trans }}</th>
+											</thead>
+											<tbody>
+												{% for field, data in pdfform.descriptors.mapping %}
+												<tr>
+													<td>{{ field }}</td>
+													<td data-field="{{ field }}">{{ data }}</td>
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+						{% elseif hiddens.action == 'edit' %}
+						<form id="edit-pdfform" method="post" action="{{ path('eureka_g6k_admin_pdfform_crud', {'pdf': pdfform.descriptors.name, 'crud': 'doedit'}) }}" enctype="multipart/form-data">
+						<div class="card bg-light">
+							<div class="card-body">
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">{{ 'Name'|trans }}</label>    
+									<div class="col-sm-8">
+										<p data-attribute="name" data-value="{{ pdfform.descriptors.name }}" class="form-control-plaintext simple-value">{{ pdfform.descriptors.name }}</p>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label" for="pdfform-category">{{ 'PDF Form category'|trans }}</label> 
+									<div class="col-sm-8 input-group">
+										<input id="pdfform-category" name="pdfform-category" value="{{ pdfform.descriptors.category }}" class="form-control" placeholder="{{ 'Enter a category for the PDF Form'|trans }}" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label" for="pdfform-title">{{ 'PDF Form title'|trans }} *</label> 
+									<div class="col-sm-8 input-group">
+										<input id="pdfform-title" name="pdfform-title" value="{{ pdfform.descriptors.title }}" required="required" class="form-control" placeholder="{{ 'Enter a title for the PDF Form'|trans }}" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card bg-light field-mapping-panel">
+							<div class="card-header">
+								{{ 'Field mapping'|trans }}
+							</div>
+							<div class="card-body">
+								<table id="field-mapping-table" class="table table-bordered table-hover">
+									<thead class="thead-light">
+										<tr>
+											<th scope="col">{{ 'PDF Form field'|trans }}</th>
+											<th scope="col">{{ 'Simulator data'|trans }}</th>
+									</thead>
+									<tbody>
+										{% for field, data in pdfform.descriptors.mapping %}
+										<tr>
+											<td>{{ field }}</td>
+											<td data-field="{{ field }}"><input type="text" name="pdfform-data-{{ data }}" class="form-control" value="{{ data }}" /></td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<button id="btnSavePDFForm" class="btn btn-primary float-right">{{ 'Save'|trans }}</button>
+						</form>
+						{% endif %}
+					</div>
+				</div>
+				{% elseif hiddens.action == 'create' %}
+				<div id="pdfform" class="card bg-primary">
+					<div class="card-header">
+					<h4 class="card-title">{{ 'Import PDF Form'|trans }}</h4>
+					</div>
+					<div class="card-body">
+						<div class="alert alert-danger" role="alert">
+							<span class="fas fa-exclamation-circle" aria-hidden="true"></span>
+							<span class="sr-only">{{ 'Error'|trans }} :</span>
+							<span class="error-message"></span>
+							<ul></ul>
+						</div>
+						<form id="import-pdfform" method="post" action="{{ path('eureka_g6k_admin_pdfform_crud', {'pdf': 'new', 'crud': 'docreate'}) }}" enctype="multipart/form-data">
+						<div class="card bg-light">
+							<div class="card-body">
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label" for="pdfform-category">{{ 'PDF Form category'|trans }} *</label> 
+									<div class="col-sm-8 input-group">
+										<input id="pdfform-category" name="pdfform-category" value="" required="required" class="form-control" placeholder="{{ 'Enter a category for the PDF Form'|trans }}" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label" for="pdfform-title">{{ 'PDF Form title'|trans }} *</label> 
+									<div class="col-sm-8 input-group">
+										<input id="pdfform-title" name="pdfform-title" value="" required="required" class="form-control" placeholder="{{ 'Enter a title for the PDF Form'|trans }}" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card bg-light" id="pdfform-import-panel-holder">
+							<div class="card-header">
+								{{ 'PDF Form file'|trans }}
+							</div>
+							<div class="card-body pdfform-file">
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label" for="pdfform-file">{{ 'PDF Form file'|trans }}</label>
+									<div class="col-sm-8">
+										<input type="file" name="pdfform-file" accept="application/pdf" class="form-control form-control-sm" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<button id="btnDoImportPDFForm" class="btn btn-primary float-right">{{ 'Import'|trans }}</button>
+						</form>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ parent() }}<script type="text/javascript" src="{{ asset('assets/admin/js/g6k.admin.pdfforms.js') }}"></script>
+<script type="text/javascript">
+{% if categories is defined %}
+var categories = {{ categories|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|nofilter }}
+{% endif %}
+var pdfforms = [{%- for pdf in pdfforms -%}'{{ pdf.name }}'{%- if not loop.last -%}, {% endif -%}{%- endfor -%}];
+</script>   
+{% endblock %}
+

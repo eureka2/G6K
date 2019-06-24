@@ -89,6 +89,21 @@ eureka_g6k_admin_view_node_crud:
     methods: [ get, post ]
     defaults: { _controller: App\G6K\Controller\ViewsAdminController::indexAction }
 
+eureka_g6k_admin_pdfforms:
+    path:     /admin/pdfforms
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\PDFFormsAdminController::indexAction }
+
+eureka_g6k_admin_pdfform:
+    path:     /admin/pdfforms/{pdf}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\PDFFormsAdminController::indexAction }
+
+eureka_g6k_admin_pdfform_crud:
+    path:     /admin/pdfforms/{pdf}/{crud}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\PDFFormsAdminController::indexAction }
+
 eureka_g6k_admin_simulator_calcul:
     path:     /{simu}/{view}/tryIt
     methods: [ get, post ]

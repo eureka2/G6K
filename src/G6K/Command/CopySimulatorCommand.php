@@ -291,9 +291,14 @@ class CopySimulatorCommand extends SimulatorCommandBase
 			$template = str_replace(':', '/', $step->getAttribute('template'));
 			$sOutput = $step->getAttribute('output');
 			if ($sOutput == 'inlineFilledPDF' || $sOutput == 'downloadableFilledPDF') {
+				$info = pathinfo($template, PATHINFO_FILENAME) . ".info";
 				if ($fsystem->exists($pdfDir1.'/'.$template)) {
 					$this->info($output, "Copying the PDF '%pdf%' of the other instance '%s%'", ['%pdf%' => $template, '%s%' => $anotherg6kpath]);
 					$fsystem->copy($pdfDir1.'/'.$template, $pdfDir2.'/'.$template);
+				}
+				if ($fsystem->exists($pdfDir1.'/'.$info)) {
+					$this->info($output, "Copying the infos about the PDF '%pdf%' of the other instance '%s%'", ['%pdf%' => $info, '%s%' => $anotherg6kpath]);
+					$fsystem->copy($pdfDir1.'/'.$info, $pdfDir2.'/'.$info);
 				}
 			} else {
 				if (! $fsystem->exists($viewsDir2.'/'.$view.'/'.$template)) {
