@@ -87,6 +87,7 @@ class ScriptHandler
 		$isdev = $package->isDev();
 		putenv('APP_VERSION=' . $version);
 		$installPath = $installationManager->getInstallPath($package);
+		$event->getIO()->write("buildDotenv: installPath = " . $installPath);
 		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 
 		putenv('PUBLIC_DIR=' . ( $extras['public-dir'] ?? 'public'));
@@ -301,6 +302,7 @@ class ScriptHandler
 		$installationManager = $event->getComposer()->getInstallationManager();
 		$package = $event->getComposer()->getPackage();
 		$installPath = $installationManager->getInstallPath($package);
+		$event->getIO()->write("installUsers: installPath = " . $installPath);
 		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 		$databasesDir = $symfonyDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
 		if (($parameters = self::getParameters($event, $symfonyDir)) === false) {
@@ -422,6 +424,7 @@ class ScriptHandler
 		$installationManager = $event->getComposer()->getInstallationManager();
 		$package = $event->getComposer()->getPackage();
 		$installPath = $installationManager->getInstallPath($package);
+		$event->getIO()->write("installDemo: installPath = " . $installPath);
 		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 		$databasesDir = $symfonyDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
 		$simusDir = $symfonyDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
