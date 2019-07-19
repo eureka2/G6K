@@ -299,11 +299,8 @@ class ScriptHandler
 	 */
 	public static function installUsers(Event $event) {
 		$event->getIO()->write("Installing the users of the administration interface");
-		$installationManager = $event->getComposer()->getInstallationManager();
-		$package = $event->getComposer()->getPackage();
-		$installPath = $installationManager->getInstallPath($package);
-		$event->getIO()->write("installUsers: installPath = " . $installPath);
-		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
+		$vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
+		$symfonyDir = dirname($vendorDir);
 		$databasesDir = $symfonyDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
 		if (($parameters = self::getParameters($event, $symfonyDir)) === false) {
 			return;
@@ -421,11 +418,8 @@ class ScriptHandler
 			return;
 		}
 		$event->getIO()->write("Installing the demo simulator");
-		$installationManager = $event->getComposer()->getInstallationManager();
-		$package = $event->getComposer()->getPackage();
-		$installPath = $installationManager->getInstallPath($package);
-		$event->getIO()->write("installDemo: installPath = " . $installPath);
-		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
+		$vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
+		$symfonyDir = dirname($vendorDir);
 		$databasesDir = $symfonyDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'databases';
 		$simusDir = $symfonyDir . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'simulators';
 		if (($parameters = self::getParameters($event, $symfonyDir)) === false) {
