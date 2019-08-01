@@ -64,7 +64,9 @@ class ScriptHandler
 		"DB_PASSWORD" => "database password",
 		"DB_VERSION" => "database version",
 		"DB_PATH" => "database path",
-		"DB_CHARSET" => "database character set [UTF8, LATIN1, ...]"
+		"DB_CHARSET" => "database character set [UTF8, LATIN1, ...]",
+		"HTTP_PROXY" => "HTTP proxy url [http://user:pass@host:port]",
+		"HTTPS_PROXY" => "HTTPS proxy url [https://user:pass@host:port]"
 	];
 	
 	private static $locales = null;
@@ -87,7 +89,6 @@ class ScriptHandler
 		$isdev = $package->isDev();
 		putenv('APP_VERSION=' . $version);
 		$installPath = $installationManager->getInstallPath($package);
-		$event->getIO()->write("buildDotenv: installPath = " . $installPath);
 		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 
 		putenv('PUBLIC_DIR=' . ( $extras['public-dir'] ?? 'public'));
