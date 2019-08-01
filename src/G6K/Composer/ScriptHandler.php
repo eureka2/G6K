@@ -64,7 +64,9 @@ class ScriptHandler
 		"DB_PASSWORD" => "database password",
 		"DB_VERSION" => "database version",
 		"DB_PATH" => "database path",
-		"DB_CHARSET" => "database character set [UTF8, LATIN1, ...]"
+		"DB_CHARSET" => "database character set [UTF8, LATIN1, ...]",
+		"HTTP_PROXY" => "HTTP proxy url [http://user:pass@host:port]",
+		"HTTPS_PROXY" => "HTTPS proxy url [https://user:pass@host:port]"
 	];
 	
 	private static $locales = null;
