@@ -82,27 +82,18 @@ class IndexController extends BaseController {
 			);
 		}
 		$ua = new \Detection\MobileDetect();
-		$widgets = $this->getWidgets();
-		$functions = $this->getFunctions();
 		try {
 			return $this->render(
 				'base/pages/index.html.twig',
 				array(
+					'script' => $script,
 					'ua' => $ua,
 					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
+					'step' => null,
 					'simulators' => $simulators,
-					'simulator' => null,
-					'dataset' => array(),
-					'steps' => array(),
-					'actions' => array(),
-					'rules' => array(),
-					'datasources' => array(),
-					'script' => $script,
-					'views' => array(),
-					'view' => null,
-					'widgets' => $widgets,
-					'functions' => $functions
+					'widgets' => array(),
+					'functions' => array()
 				)
 			);
 		} catch (\Exception $e) {
