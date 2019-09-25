@@ -145,7 +145,7 @@ if (/no-js=/.test(window.location.search)) {
 <script type="text/javascript">
 $(function(){
 	{% if exception is not defined %}
-	{% if step is not empty %}
+	{% if step is defined and step is not empty %}
 	var options = { 
 		locale: '{{ app_locale }}',
 		dynamic: {%- if step.dynamic or (step.simulator.dynamic and step.id == 0) -%}true{%- else -%}false{%- endif %},
