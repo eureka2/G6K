@@ -70,7 +70,7 @@ class DocumentationController extends BaseAdminController {
 		$script = $no_js == 1 ? 0 : 1;
 
 		if (! $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+			throw $this->createAccessDeniedException ($this->translator->trans("Access Denied!"));
 		}
 
 		$hiddens = array();
@@ -90,7 +90,7 @@ class DocumentationController extends BaseAdminController {
 		);
 		} catch (\Exception $e) {
 			echo $e->getMessage();
-			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+			throw $this->createNotFoundException($this->translator->trans("This template does not exist"));
 		}
 	}
 }

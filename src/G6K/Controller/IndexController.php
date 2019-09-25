@@ -98,7 +98,7 @@ class IndexController extends BaseController {
 			);
 		} catch (\Exception $e) {
 			echo $e->getMessage();
-			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+			throw $this->createNotFoundException($this->translator->trans("This template does not exist"));
 		}
 	}
 

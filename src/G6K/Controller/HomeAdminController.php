@@ -84,8 +84,7 @@ class HomeAdminController extends BaseAdminController {
 			$datasourcesCount = 0;
 		}
 
-		$userManager = $this->get('fos_user.user_manager');
-		$users = $userManager->findUsers();
+		$users = $this->userManager->findUsers();
 
 		$finder = new Finder();
 		$finder->depth('== 0')->files()->name('*.xml')->in($this->simulatorsDir);
@@ -118,7 +117,7 @@ class HomeAdminController extends BaseAdminController {
 		);
 		} catch (\Exception $e) {
 			echo $e->getMessage();
-			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+			throw $this->createNotFoundException($this->translator->trans("This template does not exist"));
 		}
 	}
 }

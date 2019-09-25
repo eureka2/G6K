@@ -64,34 +64,34 @@ trait ControllersTrait {
 	 *
 	 */
 	protected function initialize() {
-		$projectDir = $this->get('kernel')->getProjectDir();
-		$this->databasesDir = $projectDir . '/var/data/databases';
-		$this->simulatorsDir = $projectDir . '/var/data/simulators';
-		$this->publicDir = $projectDir . '/' . ($this->getParameter('public_dir') ?? 'public');
-		$this->viewsDir = $projectDir . '/templates';
-		$this->pdfFormsDir = $projectDir . '/var/data/pdfforms';
+		$this->databasesDir = $this->projectDir . '/var/data/databases';
+		$this->simulatorsDir = $this->projectDir . '/var/data/simulators';
+		$this->publicDir = $this->projectDir . '/' . ($this->getParameter('public_dir') ?? 'public');
+		$this->viewsDir = $this->projectDir . '/templates';
+		$this->pdfFormsDir = $this->projectDir . '/var/data/pdfforms';
 	}
 
 	/**
 	 * Returns the translator interface
 	 *
 	 * @access  public
-	 * @return  \Symfony\Component\Translation\TranslatorInterface The translator interface
+	 * @return  \Symfony\Contracts\Translation\TranslatorInterface The translator interface
 	 *
 	 */
 	public function getTranslator() {
-		return $this->get('translator');
+		return $this->translator;
 	}
 
 	/**
-	 * Returns the Symfony kernel
+	 * Checks if a parameter exists or not
 	 *
 	 * @access  public
-	 * @return   \Symfony\Component\HttpKernel\Kernel $kernel The Symfony kernel
+	 * @return  bool true the parameter exists, false otherwise
 	 *
 	 */
-	public function getKernel() {
-		return $this->get('kernel');
+	public function hasParameter($parameters) {
+		$value = $this->getParameter($parameters);
+		return isset($value);
 	}
 
 	/**
@@ -913,7 +913,7 @@ trait ControllersTrait {
 		);
 		$returnCode = $application->run($input, $output);
 		if ($report !== null) {
-			$translator = $this->get('translator');
+			$translator = $this->translator;
 			$report = array_merge(
 				$report, 
 				array_map(

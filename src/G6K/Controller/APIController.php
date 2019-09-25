@@ -129,10 +129,10 @@ class APIController extends BaseController {
 		try {
 			$api = $this->container->getParameter('api');
 		} catch (\Exception $e) {
-			throw $this->createNotFoundException($this->get('translator')->trans("API for this simulator is not implemented"));
+			throw $this->createNotFoundException($this->translator->trans("API for this simulator is not implemented"));
 		}
 		if (! is_array($api) || !isset($api[$simu])) {
-			throw $this->createNotFoundException($this->get('translator')->trans("API for this simulator is not implemented"));
+			throw $this->createNotFoundException($this->translator->trans("API for this simulator is not implemented"));
 		}
 		$form = $request->query->all();
 		$form['step'] = $api[$simu]['step'];
@@ -166,8 +166,8 @@ class APIController extends BaseController {
 				if (is_null($data)) {
 					$this->addParameterError(
 						$field,
-						$this->get('translator')->trans("Invalid fields parameter"), 
-						$this->get('translator')->trans("This field doesn't exists")
+						$this->translator->trans("Invalid fields parameter"), 
+						$this->translator->trans("This field doesn't exists")
 					);
 				} else {
 					$this->datas[$data->getName()] = $data->getValue();
@@ -179,8 +179,8 @@ class APIController extends BaseController {
 		if (! isset($form['step'])) {
 			$this->addParameterError(
 				'step',
-				$this->get('translator')->trans("Invalid step parameter"), 
-				$this->get('translator')->trans("The step parameter is required")
+				$this->translator->trans("Invalid step parameter"), 
+				$this->translator->trans("The step parameter is required")
 			);
 		} else {
 			$cstep = $this->simu->getStepById($form['step']);
@@ -195,8 +195,8 @@ class APIController extends BaseController {
 				if ($actionButton == "") {
 					$this->addEntityError(
 						"/data/" . $this->simu->getName(),
-						$this->get('translator')->trans("Missing action parameter"), 
-						$this->get('translator')->trans("The action parameter is required")
+						$this->translator->trans("Missing action parameter"), 
+						$this->translator->trans("The action parameter is required")
 					);
 				}
 			}
@@ -207,8 +207,8 @@ class APIController extends BaseController {
 				if (is_null($data)) {
 					$this->addParameterError(
 						$param,
-						$this->get('translator')->trans("Invalid parameter"), 
-						$this->get('translator')->trans("This parameter doesn't exists")
+						$this->translator->trans("Invalid parameter"), 
+						$this->translator->trans("This parameter doesn't exists")
 					);
 				}
 			}
@@ -216,15 +216,15 @@ class APIController extends BaseController {
 		if ($this->simu->isError()) {
 			$this->addEntityError(
 				"/data/" . $this->simu->getName(),
-				$this->get('translator')->trans("Global error"), 
+				$this->translator->trans("Global error"), 
 				implode("\n", $this->simu->getErrorMessages())
 			);
 		}
 		if (is_null($step)) {
 			$this->addParameterError(
 				'step',
-				$this->get('translator')->trans("Invalid step"), 
-				$this->get('translator')->trans("This step doesn't exists")
+				$this->translator->trans("Invalid step"), 
+				$this->translator->trans("This step doesn't exists")
 			);
 		} else {
 			foreach ($step->getPanels() as $panel) {
@@ -334,13 +334,13 @@ class APIController extends BaseController {
 		if (isset($form[$name])) {
 			$this->addParameterError(
 				$name,
-				$this->get('translator')->trans("Invalid parameter"), 
+				$this->translator->trans("Invalid parameter"), 
 				implode("\n", $data->getErrorMessages())
 			);
 		} else {
 			$this->addEntityError(
 				"/data/attribute/" . $name,
-				$this->get('translator')->trans("Error on data"), 
+				$this->translator->trans("Error on data"), 
 				implode("\n", $data->getErrorMessages())
 			);
 		}

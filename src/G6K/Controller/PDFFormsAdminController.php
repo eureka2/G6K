@@ -380,7 +380,7 @@ class PDFFormsAdminController extends BaseAdminController {
 				}
 			}
 		}
-		$translator = $this->get('translator');
+		$translator = $this->translator;
 		if ($pdffile != '' && $pdfform != '') {
 			$mapping = $this->getCurrentMapping($pdfform);
 			$this->saveInfo($pdfform, $category, $title, $mapping);
@@ -402,7 +402,7 @@ class PDFFormsAdminController extends BaseAdminController {
 	}
 
 	protected function dropPDFForm(Request $request, $pdfform) {
-		$translator = $this->get('translator');
+		$translator = $this->translator;
 		$message = '';
 		if (file_exists($this->pdfFormsDir . '/' . $pdfform . ".pdf")) {
 			$usedby = $this->getUsedBy($pdfform);

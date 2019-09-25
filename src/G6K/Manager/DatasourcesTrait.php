@@ -26,7 +26,7 @@ THE SOFTWARE.
  
 namespace App\G6K\Manager;
 
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\G6K\Model\Database;
 
@@ -580,7 +580,7 @@ trait DatasourcesTrait {
 	 * @param   string $table The table name
 	 * @param   array $infosColumns The informations about the columns
 	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @param   bool $restore (default: false) true if the row is to be restored, false otherwise
 	 * @param   bool $fromOtherTable (default: false) true if the row comes from another table
 	 * @return  string|bool
@@ -630,7 +630,7 @@ trait DatasourcesTrait {
 	 * @param   string $table The table name
 	 * @param   \SimpleXMLElement $datasources The DataSources.xml content
 	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @param   bool $fromOtherTable (default: false) true if the row comes from another table
 	 * @return  bool|string
 	 *
@@ -678,7 +678,7 @@ trait DatasourcesTrait {
 	 * @param   array $row The row
 	 * @param   string $table The table name
 	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @return  string|true
 	 *
 	 */
@@ -701,7 +701,7 @@ trait DatasourcesTrait {
 	 * @access  protected
 	 * @param   array $info Informations about the column
 	 * @param   string|null $value The value to check
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @param   bool $fromOtherTable (default: false) true if the row comes from another table
 	 * @return  string|bool An error message or true if no error.
 	 *
@@ -839,7 +839,7 @@ trait DatasourcesTrait {
 	 * @param   \SimpleXMLElement $fromDatasources The origin DataSources.xml content
 	 * @param   \App\G6K\Model\Database $fromDatabase The origin Database object
 	 * @param   string|null $databasesDir The database directory
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @param   callable|null $fprogress a function receiving the row number that's inserted
 	 * @return  string|true
 	 *
@@ -888,7 +888,7 @@ trait DatasourcesTrait {
 	 * @param   string $dbtype The target database type
 	 * @param   \SimpleXMLElement $datasources The DataSources.xml content
 	 * @param   string|null $databasesDir The database directory
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @return  string|true
 	 *
 	 */
@@ -946,7 +946,7 @@ trait DatasourcesTrait {
 	 * @access  protected
 	 * @param   array $form The form fields
 	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @return  string|true
 	 *
 	 */
@@ -1025,7 +1025,7 @@ trait DatasourcesTrait {
 	 * @access  protected
 	 * @param   string $table The table name
 	 * @param   \App\G6K\Model\Database $database The Database object
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @return  string|true
 	 *
 	 */
@@ -1050,7 +1050,7 @@ trait DatasourcesTrait {
 	 * @param   string $table The table name
 	 * @param   \App\G6K\Model\Database $database The Database object
 	 * @param   \SimpleXMLElement $datasources The DataSources.xml content
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @return  string|true
 	 *
 	 */
@@ -1271,7 +1271,7 @@ trait DatasourcesTrait {
 	 * @param   string $table The table name
 	 * @param   string $alterdefs Comma separated alter specifications
 	 * @param   \App\G6K\Model\Database $database  The Database object
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @return  bool Always true
 	 */
 	protected function alterSQLiteTable($table, $alterdefs, Database $database, TranslatorInterface $translator = null){

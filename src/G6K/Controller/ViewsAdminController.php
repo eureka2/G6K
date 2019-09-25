@@ -239,7 +239,7 @@ class ViewsAdminController extends BaseAdminController {
 				)
 			);
 		} catch (\Exception $e) {
-			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+			throw $this->createNotFoundException($this->translator->trans("This template does not exist"));
 		}
 	}
 
@@ -334,7 +334,7 @@ class ViewsAdminController extends BaseAdminController {
 				}
 			}
 		}
-		$translator = $this->get('translator');
+		$translator = $this->translator;
 		$heading = $translator->trans('Creating the view « %view% » view', ['%view%' => $view]);
 		$header = $this->makeReportHeader($request, $view, $heading);
 		$footer = $this->makeReportFooter($request, $view);

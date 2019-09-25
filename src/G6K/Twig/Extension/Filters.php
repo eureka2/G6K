@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 namespace App\G6K\Twig\Extension;
 
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\G6K\Model\RichText;
 use App\G6K\Manager\ExpressionParser\NumberFunction;
 
@@ -39,7 +39,7 @@ use App\G6K\Manager\ExpressionParser\NumberFunction;
 class Filters extends \Twig_Extension {
 
 	/**
-	 * @var \Symfony\Component\Translation\TranslatorInterface	  $translator The translator interface
+	 * @var \Symfony\Contracts\Translation\TranslatorInterface	  $translator The translator interface
 	 *
 	 * @access  private
 	 *
@@ -50,7 +50,7 @@ class Filters extends \Twig_Extension {
 	 * Constructor of class Filters
 	 *
 	 * @access  public
-	 * @param   \Symfony\Component\Translation\TranslatorInterface $translator The translator interface
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface $translator The translator interface
 	 * @return  void
 	 *
 	 */

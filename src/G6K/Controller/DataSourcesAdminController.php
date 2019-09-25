@@ -139,11 +139,11 @@ class DataSourcesAdminController extends BaseAdminController {
 		}
 		if ($crud !== null) {
 			if (! $this->get('security.authorization_checker')->isGranted('ROLE_CONTRIBUTOR')) {
-				return $this->errorResponse($form, $this->get('translator')->trans("Access denied!"));
+				return $this->errorResponse($form, $this->translator->trans("Access denied!"));
 			}
 			return $this->dispatch($request, $dsid, $table, $crud, $form);
 		} else if (! $this->get('security.authorization_checker')->isGranted('ROLE_CONTRIBUTOR')) {
-			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+			throw $this->createAccessDeniedException ($this->translator->trans("Access Denied!"));
 		} else {
 			return $this->showDatasources($dsid, $table);
 		}
@@ -200,7 +200,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				case 'restore':
 					return $this->restoreTableRow ($form, $table, $database);
 				default:
-					throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+					throw $this->createAccessDeniedException ($this->translator->trans("Access Denied!"));
 			}
 		}
 	}
@@ -327,8 +327,8 @@ class DataSourcesAdminController extends BaseAdminController {
 						'action' => 'import',
 						'id' => 0,
 						'type' => 'internal',
-						'name' => $this->get('translator')->trans('Import Datasource'),
-						'label' => $this->get('translator')->trans('Import Datasource'),
+						'name' => $this->translator->trans('Import Datasource'),
+						'label' => $this->translator->trans('Import Datasource'),
 						'uri' => '',
 						'method' => '',
 						'description' => '',
@@ -338,8 +338,8 @@ class DataSourcesAdminController extends BaseAdminController {
 						'action' => 'create',
 						'id' => 0,
 						'type' => 'internal',
-						'name' => $this->get('translator')->trans('New Datasource'),
-						'label' => $this->get('translator')->trans('New Datasource'),
+						'name' => $this->translator->trans('New Datasource'),
+						'label' => $this->translator->trans('New Datasource'),
 						'database' => array(
 							'id' => 0, 
 							'type' => $type, 
@@ -386,7 +386,7 @@ class DataSourcesAdminController extends BaseAdminController {
 					if ($table !== null && $table != 'dummy') {
 						$tabledef['action'] = $table != 'new' ? $action : 'create-table';
 						$tabledef['name'] = $table;
-						$tabledef['label'] = $this->get('translator')->trans('New Table');
+						$tabledef['label'] = $this->translator->trans('New Table');
 						$tabledef['description'] = '';
 						if ($table != 'new') {
 							$tableinfos = $this->tableInfos($database, $table);
@@ -538,7 +538,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				)
 			);
 		} catch (\Exception $e) {
-			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+			throw $this->createNotFoundException($this->translator->trans("This template does not exist"));
 		}
 	}
 
@@ -696,7 +696,7 @@ class DataSourcesAdminController extends BaseAdminController {
 				}
 			}
 		}
-		$translator = $this->get('translator');
+		$translator = $this->translator;
 		if ($datasource != '' && $schemafile != '' && $datafile != '') {
 			$fs->rename($schemafile, $uploadDir . "/" . $datasource . ".schema.json", true);
 			$schemafile = $uploadDir . "/" . $datasource . ".schema.json";
@@ -851,7 +851,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$delimiter = $form["table-data-delimiter"]; 
 		$hasheader = isset($form["table-data-has-header"]) && $form["table-data-has-header"] == "1";
 		$fs = new Filesystem();
-		$translator = $this->get('translator');
+		$translator = $this->translator;
 		$heading = $translator->trans('Importing the table « %table% »', ['%table%' => $table]);
 		$header = $this->makeTableReportHeader($request, $dsid, $table, $heading);
 		$footer = $this->makeTableReportFooter($request, $dsid, $table);
@@ -931,7 +931,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function migrateDB($dsid, $dbtype, $fromDatabase) {
-		return $this->migrateDatabase($dsid, $dbtype, $this->datasources, $this->datasources, $fromDatabase, $this->databasesDir, $this->get('translator'));
+		return $this->migrateDatabase($dsid, $dbtype, $this->datasources, $this->datasources, $fromDatabase, $this->databasesDir, $this->translator);
 	}
 
 	/**
@@ -944,7 +944,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function createDB($dsid, $dbtype) {
-		return $this->createDatabase($dsid, $dbtype, $this->datasources, $this->databasesDir, $this->get('translator'));
+		return $this->createDatabase($dsid, $dbtype, $this->datasources, $this->databasesDir, $this->translator);
 	}
 
 	/**
@@ -957,7 +957,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function createDBTable(&$form, $database) {
-		return $this->createDatabaseTable($form, $database, $this->get('translator'));
+		return $this->createDatabaseTable($form, $database, $this->translator);
 	}
 
 	/**
@@ -971,7 +971,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function editDBTable($form, $table, $database) {
-		return $this->editTableStructure($form, $table, $database, $this->datasources, $this->get('translator'));
+		return $this->editTableStructure($form, $table, $database, $this->datasources, $this->translator);
 	}
 
 	/**
@@ -987,7 +987,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 */
 	protected function addDBTableRow($form, $table, $database, $restore = false) {
 		$infosColumns = $this->infosColumns($this->datasources, $database, $table);
-		return $this->insertRowIntoTable($form, $table, $infosColumns, $database, $this->get('translator'), $restore);
+		return $this->insertRowIntoTable($form, $table, $infosColumns, $database, $this->translator, $restore);
 	}
 
 	/**
@@ -1001,7 +1001,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function updateDBTableRow($form, $table, $database) {
-		return $this->updateRowInTable($form, $table, $this->datasources, $database, $this->get('translator'));
+		return $this->updateRowInTable($form, $table, $this->datasources, $database, $this->translator);
 	}
 
 	/**
@@ -1015,7 +1015,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function deleteDBTableRow($form, $table, $database) {
-		return $this->deleteRowFromTable($form, $table, $database, $this->get('translator'));
+		return $this->deleteRowFromTable($form, $table, $database, $this->translator);
 	}
 
 	/**
@@ -1028,7 +1028,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function dropDBTable($table, $database) {
-		return $this->dropDatabaseTable($table, $database, $this->get('translator'));
+		return $this->dropDatabaseTable($table, $database, $this->translator);
 	}
 
 	/**
@@ -1106,7 +1106,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 */
 	protected function addTableRow($form, $table, $database) {
 		if ($form['id'] > 0) {
-			return $this->errorResponse($form, $this->get('translator')->trans("This record already exists."));
+			return $this->errorResponse($form, $this->translator->trans("This record already exists."));
 		}
 		if (($result = $this->addDBTableRow($form, $table, $database)) !== true) {
 			return $this->errorResponse($form, $result);
@@ -1179,7 +1179,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 */
 	protected function deleteTableRow($form, $table, $database) {
 		if ($form['id'] == 0) {
-			return $this->errorResponse($form, $this->get('translator')->trans("There's no record with id 0."));
+			return $this->errorResponse($form, $this->translator->trans("There's no record with id 0."));
 		}
 		if (($result = $this->deleteDBTableRow($form, $table, $database)) !== true) {
 			return $this->errorResponse($form, $result);

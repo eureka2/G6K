@@ -212,7 +212,7 @@ abstract class SQLConverterBase {
 	 *
 	 * @access  public
 	 * @param   array $inputs An associative array containing files name
-	 * @param   \Symfony\Component\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface|null $translator (default: null) true if the row is to be restored, false otherwise
 	 * @param   callable|null $fprogress a function receiving the row number that's inserted
 	 * @return  array The array descriptor of the SQL database
 	 * @throws \Exception

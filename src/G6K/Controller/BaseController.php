@@ -27,6 +27,7 @@ THE SOFTWARE.
 namespace App\G6K\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\G6K\Model\Simulator;
 use App\G6K\Model\DataGroup;
@@ -55,6 +56,14 @@ use Symfony\Component\HttpFoundation\Response;
  *
  */
 class BaseController extends Controller {
+
+	protected $projectDir;
+	protected $translator;
+
+	public function __construct(TranslatorInterface $translator, $projectDir) {
+		$this->projectDir = $projectDir;
+		$this->translator = $translator;
+	}
 
 	use ControllersTrait;
 
@@ -237,10 +246,10 @@ class BaseController extends Controller {
 				if ($page404 !== FALSE) {
 					return new Response($page404, 404, array('Content-Type', 'text/html')); 
 				} else {
-					throw $this->createNotFoundException($this->get('translator')->trans("This simulator does not exist"));
+					throw $this->createNotFoundException($this->translator->trans("This simulator does not exist"));
 				}
 			} else {
-				throw $this->createNotFoundException($this->get('translator')->trans("This simulator does not exist"));
+				throw $this->createNotFoundException($this->translator->trans("This simulator does not exist"));
 			}
 		}
 		if (! $view) {
@@ -257,7 +266,7 @@ class BaseController extends Controller {
 				}
 			}
 		}
-		$viewpath = $this->container->getParameter('viewpath');
+		$viewpath = $this->getParameter('viewpath');
 		$this->path = $request->getScheme().'://'.$request->getHttpHost();
 		if (isset($viewpath[$view])) {
 			$this->path = $viewpath[$view];
@@ -703,31 +712,31 @@ class BaseController extends Controller {
 				if ($field->isRequired() && $value ==  '') {
 					$data->setError(true);
 					if ($field->getLabel() != "") {
-						$data->addErrorMessage($this->get('translator')->trans("The '%field%' field is required", array('%field%' => $field->getLabel())));
+						$data->addErrorMessage($this->translator->trans("The '%field%' field is required", array('%field%' => $field->getLabel())));
 					} else {
-						$data->addErrorMessage($this->get('translator')->trans("This field is required"));
+						$data->addErrorMessage($this->translator->trans("This field is required"));
 					}
 					$this->error = true;
 				} elseif (! $data->check()) {
 					$data->setError(true);
 					switch ($data->getType()) {
 						case 'date':
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans($this->simu->getDateFormat()))));
+							$data->addErrorMessage($this->translator->trans("This value is not in the expected format (%format%)", array('%format%' => $this->translator->trans($this->simu->getDateFormat()))));
 							break;
 						case 'number': 
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('numbers only'))));
+							$data->addErrorMessage($this->translator->trans("This value is not in the expected format (%format%)", array('%format%' => $this->translator->trans('numbers only'))));
 							break;
 						case 'integer': 
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('numbers only'))));
+							$data->addErrorMessage($this->translator->trans("This value is not in the expected format (%format%)", array('%format%' => $this->translator->trans('numbers only'))));
 							break;
 						case 'money': 
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('amount'))));
+							$data->addErrorMessage($this->translator->trans("This value is not in the expected format (%format%)", array('%format%' => $this->translator->trans('amount'))));
 							break;
 						case 'percent':
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format (%format%)", array('%format%' => $this->get('translator')->trans('percentage'))));
+							$data->addErrorMessage($this->translator->trans("This value is not in the expected format (%format%)", array('%format%' => $this->translator->trans('percentage'))));
 							break;
 						default:
-							$data->addErrorMessage($this->get('translator')->trans("This value is not in the expected format"));
+							$data->addErrorMessage($this->translator->trans("This value is not in the expected format"));
 					}
 					$this->error = true;
 					unset($this->variables[''.$data->getId()]);
@@ -1000,7 +1009,7 @@ class BaseController extends Controller {
 							if ($data->getType() == 'text' || $data->getType() == 'textarea') {
 								if (strlen($data->getValue()) < $result) {
 									$data->setError(true);
-									$data->addErrorMessage($this->get('translator')->trans("The length of this value can not be less than %min%", array('%min%' => $result)));
+									$data->addErrorMessage($this->translator->trans("The length of this value can not be less than %min%", array('%min%' => $result)));
 									$this->error = true;
 								}
 							} elseif ($data->getType() == 'date') {
@@ -1008,12 +1017,12 @@ class BaseController extends Controller {
 								$value = DateFunction::makeDate($data->getValue());
 								if ($value < $min) {
 									$data->setError(true);
-									$data->addErrorMessage($this->get('translator')->trans("This value can not be less than %min%", array('%min%' => $min)));
+									$data->addErrorMessage($this->translator->trans("This value can not be less than %min%", array('%min%' => $min)));
 									$this->error = true;
 								}
 							} elseif ($data->getValue() < $result) {
 								$data->setError(true);
-								$data->addErrorMessage($this->get('translator')->trans("This value can not be less than %min%", array('%min%' => $result)));
+								$data->addErrorMessage($this->translator->trans("This value can not be less than %min%", array('%min%' => $result)));
 								$this->error = true;
 							}
 						}
@@ -1031,7 +1040,7 @@ class BaseController extends Controller {
 							if ($data->getType() == 'text' || $data->getType() == 'textarea') {
 								if (strlen($data->getValue()) > $result) {
 									$data->setError(true);
-									$data->addErrorMessage($this->get('translator')->trans("The length of this value can not be greater than %max%", array('%max%' => $result)));
+									$data->addErrorMessage($this->translator->trans("The length of this value can not be greater than %max%", array('%max%' => $result)));
 									$this->error = true;
 								}
 							} elseif ($data->getType() == 'date') {
@@ -1039,12 +1048,12 @@ class BaseController extends Controller {
 								$value = DateFunction::makeDate($data->getValue());
 								if ($value > $max) {
 									$data->setError(true);
-									$data->addErrorMessage($this->get('translator')->trans("This value can not be greater than %max%", array('%max%' => $max)));
+									$data->addErrorMessage($this->translator->trans("This value can not be greater than %max%", array('%max%' => $max)));
 									$this->error = true;
 								}
 							} elseif ($data->getValue() > $result) {
 								$data->setError(true);
-								$data->addErrorMessage($this->get('translator')->trans("This value can not be greater than %max%", array('%max%' => $result)));
+								$data->addErrorMessage($this->translator->trans("This value can not be greater than %max%", array('%max%' => $result)));
 								$this->error = true;
 							}
 						}

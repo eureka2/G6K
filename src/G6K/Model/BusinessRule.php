@@ -110,7 +110,7 @@ class BusinessRule {
 	private $elseActions = array();	
 
 	/**
-	 * @var \Symfony\Component\Translation\TranslatorInterface|null $translator Instance of translation service
+	 * @var \Symfony\Contracts\Translation\TranslatorInterface|null $translator Instance of translation service
 	 *
 	 * @access  private
 	 *

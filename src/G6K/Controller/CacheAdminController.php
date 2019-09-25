@@ -106,7 +106,7 @@ class CacheAdminController extends BaseAdminController {
 	 */
 	protected function runClear(Request $request, $env)
 	{
-		$translator = $this->get('translator');
+		$translator = $this->translator;
 		if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
 			throw $this->createAccessDeniedException ($translator->trans("Access Denied!"));
 		}
@@ -150,7 +150,7 @@ class CacheAdminController extends BaseAdminController {
 	 */
 	protected function runWarmup(Request $request)
 	{
-		$translator = $this->get('translator');
+		$translator = $this->translator;
 		if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
 			throw $this->createAccessDeniedException ($translator->trans("Access Denied!"));
 		}
@@ -238,7 +238,7 @@ class CacheAdminController extends BaseAdminController {
 	private function cc($cache_dir, $name) {
 		$d = $cache_dir . '/' . $name;
 		if (is_dir($d)) {
-			$this->log[] =  "<br/><br/><b>" . $this->get('translator')->trans("clearing %cache%", array('%cache%' => $name)) . " :</b>";
+			$this->log[] =  "<br/><br/><b>" . $this->translator->trans("clearing %cache%", array('%cache%' => $name)) . " :</b>";
 			$this->rrmdir($d, 0);
 		}
 	}

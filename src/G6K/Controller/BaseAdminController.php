@@ -27,6 +27,8 @@ THE SOFTWARE.
 namespace App\G6K\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Translation\TranslatorInterface;
+use FOS\UserBundle\Model\UserManager;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,6 +40,10 @@ use Symfony\Component\HttpFoundation\Response;
  *
  */
 class BaseAdminController extends Controller {
+
+	protected $projectDir;
+	protected $translator;
+	protected $userManager;
 
 	/**
 	 * @var string      $databasesDir Databases directory
@@ -70,6 +76,12 @@ class BaseAdminController extends Controller {
 	 *
 	 */
 	public $viewsDir;
+
+	public function __construct(TranslatorInterface $translator, UserManager $userManager, $projectDir) {
+		$this->projectDir = $projectDir;
+		$this->userManager = $userManager;
+		$this->translator = $translator;
+	}
 
 	/**
 	 * Returns a JSON response formed with the data of a form and an error message.
