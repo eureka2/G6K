@@ -244,13 +244,13 @@ THE SOFTWARE.
 									{% for row in pagination.items %}
 									<tr>
 										{% for col, cell in row %}
-											<td class="{{ tableinfos[loop.index0].g6k_type }}">{% spaceless %}
+											<td class="{{ tableinfos[loop.index0].g6k_type }}">{% apply spaceless %}
 											{% if tableinfos[loop.index0].g6k_type == 'boolean' %}
 											{% if cell == '0' %}{{ 'No'|trans }}{% else %}{{ 'Yes'|trans }}{% endif %}
 											{% else -%}
 											{{ cell }}
 											{%- endif %}
-											{% endspaceless %}</td>
+											{% endapply %}</td>
 										{% endfor %}
 									</tr>
 									{% endfor %}

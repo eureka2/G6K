@@ -206,7 +206,7 @@ THE SOFTWARE.
 		</tbody>
 	</table>
 	{%- else -%}
-	{% spaceless %}
+	{% apply spaceless %}
 	{%- if type == 'money' and simu.symbolPosition == 'before' %}
 		<span id="{{ name }}-money-symbol" class="money-symbol before{%- if field.emphasized %} emphasized{%- endif %}">{{ simu.moneySymbol }}&#xA0;</span>
 	{%- endif -%}
@@ -214,8 +214,8 @@ THE SOFTWARE.
 	{%- if type == 'choice' -%}
 		{%- for choice in data.choices -%}
 		{%- if choice.class == 'ChoiceGroup' -%}
-		{%- for gchoice in choice.choices if gchoice.value == value -%}
-		{{- gchoice.label|trim|nofnref -}}
+		{%- for gchoice in choice.choices %}
+		{% if gchoice.value == value -%}{{- gchoice.label|trim|nofnref -}}{% endif %}
 		{%- endfor -%}
 		{%- elseif choice.class == 'Choice' and choice.value == value -%}
 		{{- choice.label|trim|nofnref -}}
@@ -224,8 +224,8 @@ THE SOFTWARE.
 	{%- elseif type == 'multichoice' -%}
 		{%- for choice in data.choices -%}
 		{%- if choice.class == 'ChoiceGroup' -%}
-		{%- for gchoice in choice.choices if gchoice.value in value -%}
-		<span>{{- gchoice.label|trim|nofnref -}}</span>
+		{%- for gchoice in choice.choices %} 
+		{% if gchoice.value in value -%}<span>{{- gchoice.label|trim|nofnref -}}</span>{% endif %}
 		{%- endfor -%}
 		{%- elseif choice.class == 'Choice' and choice.value in value -%}
 		<span>{{- choice.label|trim|nofnref -}}</span>
@@ -255,7 +255,7 @@ THE SOFTWARE.
 	{%- endif -%}
 	{%- if type == 'percent' -%}<span id="{{ name }}-percent-symbol" class="percent-symbol{%- if field.emphasized %} emphasized{%- endif -%}">%</span>{%- endif -%}
 	{%- if data.unit -%}<span class="unit{%- if field.emphasized %} emphasized{%- endif -%}"> {{ data.unit }}</span>{%- endif -%}
-	{% endspaceless %}
+	{% endapply %}
 	{%- endif %}
 	{% endif %}
 	{%- if field.hasHelp -%}
