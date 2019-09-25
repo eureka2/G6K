@@ -1638,7 +1638,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function doPublishSimulator(Request $request, $simu) {
-		$translator = $this->get('translator');
+		$translator = $this->translator;
 		$heading = $translator->trans('Publishing of the « %simulator% » simulator.', array('%simulator%' => $simu));
 		$header = $this->makeReportHeader($request, $simu, $heading);
 		$footer = $this->makeReportFooter($request, $simu);
@@ -1687,7 +1687,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function doDeploySimulator(Request $request, $simu){
 		if (! $this->get('security.authorization_checker')->isGranted('ROLE_MANAGER')) {
 			$form = array();
-			return $this->errorResponse($form, $this->get('translator')->trans("Access denied!"));
+			return $this->errorResponse($form, $this->translator->trans("Access denied!"));
 		}
 		$this->simu = new Simulator($this);
 		$this->simu->load($this->simulatorsDir."/".$simu.'.xml');
@@ -1695,7 +1695,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			$report = $this->get('g6k.deployer')->deploy($this->simu);
 		} catch (\Exception $ex) {
 		}
-		$heading = $this->get('translator')->trans('Deployment of the « %simulator% » simulator', ['%simulator%' => $this->simu->getName()]);
+		$heading = $this->translator->trans('Deployment of the « %simulator% » simulator', ['%simulator%' => $this->simu->getName()]);
 		$header = $this->makeReportHeader($request, $this->simu->getName(), $heading);
 		$footer = $this->makeReportFooter($request, $this->simu->getName());
 		$response = new StreamedResponse();
@@ -1759,7 +1759,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				}
 			}
 		}
-		$translator = $this->get('translator');
+		$translator = $this->translator;
 		if ($simu != '' && $simufile != '') {
 			$fs->rename($simufile, $uploadDir . "/" . $simu . ".xml", true);
 			$simufile = $uploadDir . "/" . $simu . ".xml";
@@ -2184,22 +2184,22 @@ class SimulatorsAdminController extends BaseAdminController {
 					'actions' => array(),
 					'footNotes' => array()
 				);
-				$stepLabel = $step->getLabel() != '' ? $step->getLabel() : $this->get('translator')->trans('Step %id% (nolabel)', array('%id%' => $step->getId()));
+				$stepLabel = $step->getLabel() != '' ? $step->getLabel() : $this->translator->trans('Step %id% (nolabel)', array('%id%' => $step->getId()));
 				$osteps[] = array (
 					"label" => $stepLabel,
 					"name" => $step->getId()
 				);
 				$this->dataset['step' . $step->getId() . '.dynamic'] = array(
 					'id' => 10000 + $step->getId(), 
-					'label' => $this->get('translator')->trans('Is step %id% interactive ?', array('%id%' => $step->getId())),
+					'label' => $this->translator->trans('Is step %id% interactive ?', array('%id%' => $step->getId())),
 					'type' => 'choice',
 					'options' => array(
 						array(
-							'label' => $this->get('translator')->trans('No'),
+							'label' => $this->translator->trans('No'),
 							'name' => 0
 						),
 						array(
-							'label' => $this->get('translator')->trans('Yes'),
+							'label' => $this->translator->trans('Yes'),
 							'name' => 1
 						)
 					)
@@ -2222,7 +2222,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'label' => $panel->getLabel(),
 						'blocks' => array()
 					);
-					$panelLabel = $panel->getLabel() != '' ? $panel->getLabel() : $this->get('translator')->trans('Panel %id% (nolabel)', array('%id%' => $panel->getId()));
+					$panelLabel = $panel->getLabel() != '' ? $panel->getLabel() : $this->translator->trans('Panel %id% (nolabel)', array('%id%' => $panel->getId()));
 					$opanels[] = array (
 						"label" => $panelLabel,
 						"name" => $panel->getId()
@@ -2240,7 +2240,7 @@ class SimulatorsAdminController extends BaseAdminController {
 					foreach ($panel->getFieldSets() as $block) {
 						if ($block instanceof FieldSet) {
 							$fieldset = $block;
-							$fieldsetLabel = $fieldset->getLegend()->getContent() != '' ? trim($fieldset->getLegend()->getContent()) : $this->get('translator')->trans('Fieldset %id% (nolegend)', array('%id%' => $fieldset->getId()));
+							$fieldsetLabel = $fieldset->getLegend()->getContent() != '' ? trim($fieldset->getLegend()->getContent()) : $this->translator->trans('Fieldset %id% (nolegend)', array('%id%' => $fieldset->getId()));
 							$ofieldsets[] = array (
 								"label" => $fieldsetLabel,
 								"name" => $fieldset->getId()
@@ -2271,7 +2271,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									$data = $this->simu->getDataById($field->getData());
 									$name = $data->getName();
 									$tfield = $this->loadBusinessRuleField($field);
-									$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
+									$fieldLabel = $field->getLabel() != '' ? $field->getLabel() : $this->translator->trans('Field %id% (nolabel)', array('%id%' => $field->getPosition()));
 									$ofields[] = array (
 										"label" => $fieldLabel,
 										"name" => $field->getPosition()
@@ -2282,7 +2282,7 @@ class SimulatorsAdminController extends BaseAdminController {
 											"name" => $field->getPosition(),
 											"fields" => array(
 												array(
-													"label" => $this->get('translator')->trans('whose label is'),
+													"label" => $this->translator->trans('whose label is'),
 													"name" => "choiceId",
 													"fieldType" => "select",
 													"options" => $this->dataset[$name]['options']
@@ -2326,7 +2326,7 @@ class SimulatorsAdminController extends BaseAdminController {
 										"name" => $fieldset->getId(),
 										"fields" => array(
 											array(
-												"label" => $this->get('translator')->trans('whose label is'),
+												"label" => $this->translator->trans('whose label is'),
 												"name" => "fieldId",
 												"fieldType" => "select",
 												"options" => $ofields
@@ -2340,7 +2340,7 @@ class SimulatorsAdminController extends BaseAdminController {
 										"name" => $fieldset->getId(),
 										"fields" => array(
 											array(
-												"label" => $this->get('translator')->trans("of field"),
+												"label" => $this->translator->trans("of field"),
 												"name" => "fieldId",
 												"fieldType" => "select",
 												"options" => $oprenotes
@@ -2354,7 +2354,7 @@ class SimulatorsAdminController extends BaseAdminController {
 										"name" => $fieldset->getId(),
 										"fields" => array(
 											array(
-												"label" => $this->get('translator')->trans("of field"),
+												"label" => $this->translator->trans("of field"),
 												"name" => "fieldId",
 												"fieldType" => "select",
 												"options" => $opostnotes
@@ -2368,7 +2368,7 @@ class SimulatorsAdminController extends BaseAdminController {
 										"name" => $fieldset->getId(),
 										"fields" => array(
 											array(
-												"label" => $this->get('translator')->trans("of field"),
+												"label" => $this->translator->trans("of field"),
 												"name" => "fieldId",
 												"fieldType" => "select",
 												"options" => $ochoices
@@ -2415,7 +2415,7 @@ class SimulatorsAdminController extends BaseAdminController {
 										'datagroup' => $fieldrow->getDatagroup(),
 										'fields' => array()
 									);
-									$fieldrowLabel = $fieldrow->getLabel() != '' ? $fieldrow->getLabel() : $this->get('translator')->trans('Fieldrow %id% (nolabel)', array('%id%' => $fieldrow->getId()));
+									$fieldrowLabel = $fieldrow->getLabel() != '' ? $fieldrow->getLabel() : $this->translator->trans('Fieldrow %id% (nolabel)', array('%id%' => $fieldrow->getId()));
 									$ofieldrows[] = array (
 										"label" => $fieldrowLabel,
 										"name" => $fieldrow->getId()
@@ -2425,7 +2425,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									foreach ($fieldrow->getFields() as $rfield) {
 										$data = $this->simu->getDataById($rfield->getData());
 										$name = $data->getName();
-										$fieldLabel = $rfield->getLabel() != '' ? $rfield->getLabel() : $this->get('translator')->trans('Field %id% (nolabel)', array('%id%' => $rfield->getPosition()));
+										$fieldLabel = $rfield->getLabel() != '' ? $rfield->getLabel() : $this->translator->trans('Field %id% (nolabel)', array('%id%' => $rfield->getPosition()));
 										$ofields[] = array (
 											"label" => $fieldLabel,
 											"name" => $rfield->getPosition()
@@ -2436,7 +2436,7 @@ class SimulatorsAdminController extends BaseAdminController {
 												"name" => $rfield->getPosition(),
 												"fields" => array(
 													array(
-														"label" => $this->get('translator')->trans('whose label is'),
+														"label" => $this->translator->trans('whose label is'),
 														"name" => "choiceId",
 														"fieldType" => "select",
 														"options" => $this->dataset[$name]['options']
@@ -2452,7 +2452,7 @@ class SimulatorsAdminController extends BaseAdminController {
 											"name" => $fieldrow->getId(),
 											"fields" => array(
 												array(
-													"label" => $this->get('translator')->trans('whose label is'),
+													"label" => $this->translator->trans('whose label is'),
 													"name" => "fieldId",
 													"fieldType" => "select",
 													"options" => $ofields
@@ -2466,7 +2466,7 @@ class SimulatorsAdminController extends BaseAdminController {
 											"name" => $fieldrow->getId(),
 											"fields" => array(
 												array(
-													"label" => $this->get('translator')->trans("of field"),
+													"label" => $this->translator->trans("of field"),
 													"name" => "fieldId",
 													"fieldType" => "select",
 													"options" => $ochoices
@@ -2483,7 +2483,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									"name" => $fieldset->getId(),
 									"fields" => array(
 										array(
-											"label" => $this->get('translator')->trans('whose label is'),
+											"label" => $this->translator->trans('whose label is'),
 											"name" => "columnId",
 											"fieldType" => "select",
 											"options" => $ocolumns
@@ -2497,7 +2497,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									"name" => $fieldset->getId(),
 									"fields" => array(
 										array(
-											"label" => $this->get('translator')->trans('whose label is'),
+											"label" => $this->translator->trans('whose label is'),
 											"name" => "fieldrowId",
 											"fieldType" => "select",
 											"options" => $ofieldrows
@@ -2511,7 +2511,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									"name" => $fieldset->getId(),
 									"fields" => array(
 										array(
-											"label" => $this->get('translator')->trans("of fieldrow"),
+											"label" => $this->translator->trans("of fieldrow"),
 											"name" => "fieldrowId",
 											"fieldType" => "select",
 											"options" => $ofieldrowfields
@@ -2525,7 +2525,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									"name" => $fieldset->getId(),
 									"fields" => array(
 										array(
-											"label" => $this->get('translator')->trans("of fieldrow"),
+											"label" => $this->translator->trans("of fieldrow"),
 											"name" => "fieldrowId",
 											"fieldType" => "select",
 											"options" => $ofieldrowchoices
@@ -2545,7 +2545,7 @@ class SimulatorsAdminController extends BaseAdminController {
 								'chapters' => array()
 							);
 							$blockinfo = $block;
-							$blockinfoLabel = $blockinfo->getLabel() != '' ? $blockinfo->getLabel() : $this->get('translator')->trans('Blockinfo %id% (nolabel)', array('%id%' => $blockinfo->getId()));
+							$blockinfoLabel = $blockinfo->getLabel() != '' ? $blockinfo->getLabel() : $this->translator->trans('Blockinfo %id% (nolabel)', array('%id%' => $blockinfo->getId()));
 							$oblockinfos[] = array (
 								"label" => $blockinfoLabel,
 								"name" => $blockinfo->getId()
@@ -2561,7 +2561,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									'collapsible' => $chapter->isCollapsible() ? '1' : '0',
 									'sections' => array()
 								);
-								$chapterLabel = $chapter->getLabel() != '' ? $chapter->getLabel() : $this->get('translator')->trans('Chapter %id% (nolabel)', array('%id%' => $chapter->getId()));
+								$chapterLabel = $chapter->getLabel() != '' ? $chapter->getLabel() : $this->translator->trans('Chapter %id% (nolabel)', array('%id%' => $chapter->getId()));
 								$ochapters[] = array (
 									"label" => $chapterLabel,
 									"name" => $chapter->getId()
@@ -2581,7 +2581,7 @@ class SimulatorsAdminController extends BaseAdminController {
 											'edition' => $section->getAnnotations()->getEdition()
 										)
 									);
-									$sectionLabel = $section->getLabel() != '' ? $section->getLabel() : $this->get('translator')->trans('Section %id% (nolabel)', array('%id%' => $section->getId()));
+									$sectionLabel = $section->getLabel() != '' ? $section->getLabel() : $this->translator->trans('Section %id% (nolabel)', array('%id%' => $section->getId()));
 									$osections[] = array (
 										"label" => $sectionLabel,
 										"name" => $section->getId()
@@ -2594,7 +2594,7 @@ class SimulatorsAdminController extends BaseAdminController {
 										"name" => $chapter->getId(),
 										"fields" => array(
 											array(
-												"label" => $this->get('translator')->trans('whose label is'),
+												"label" => $this->translator->trans('whose label is'),
 												"name" => "sectionId",
 												"fieldType" => "select",
 												"options" => $osections
@@ -2610,7 +2610,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									"name" => $blockinfo->getId(),
 									"fields" => array(
 										array(
-											"label" => $this->get('translator')->trans('whose label is'),
+											"label" => $this->translator->trans('whose label is'),
 											"name" => "chapterId",
 											"fieldType" => "select",
 											"options" => $ochapters
@@ -2624,7 +2624,7 @@ class SimulatorsAdminController extends BaseAdminController {
 									"name" => $blockinfo->getId(),
 									"fields" => array(
 										array(
-											"label" => $this->get('translator')->trans("of chapter"),
+											"label" => $this->translator->trans("of chapter"),
 											"name" => "chapterId",
 											"fieldType" => "select",
 											"options" => $ochaptersections
@@ -2641,7 +2641,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans('whose label is'),
+									"label" => $this->translator->trans('whose label is'),
 									"name" => "fieldsetId",
 									"fieldType" => "select",
 									"options" => $ofieldsets
@@ -2655,7 +2655,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans("of fieldset"),
+									"label" => $this->translator->trans("of fieldset"),
 									"name" => "fieldsetId",
 									"fieldType" => "select",
 									"options" => $ofieldsetcolumns
@@ -2669,7 +2669,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans("of fieldset"),
+									"label" => $this->translator->trans("of fieldset"),
 									"name" => "fieldsetId",
 									"fieldType" => "select",
 									"options" => $ofieldsetfieldrows
@@ -2683,7 +2683,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans("of fieldset"),
+									"label" => $this->translator->trans("of fieldset"),
 									"name" => "fieldsetId",
 									"fieldType" => "select",
 									"options" => $ofieldsetfields
@@ -2697,7 +2697,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans("of fieldset"),
+									"label" => $this->translator->trans("of fieldset"),
 									"name" => "fieldsetId",
 									"fieldType" => "select",
 									"options" => $ofieldsetprenotes
@@ -2711,7 +2711,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans("of fieldset"),
+									"label" => $this->translator->trans("of fieldset"),
 									"name" => "fieldsetId",
 									"fieldType" => "select",
 									"options" => $ofieldsetpostnotes
@@ -2725,7 +2725,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans("of fieldset"),
+									"label" => $this->translator->trans("of fieldset"),
 									"name" => "fieldsetId",
 									"fieldType" => "select",
 									"options" => $ofieldsetchoices
@@ -2739,7 +2739,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans('whose label is'),
+									"label" => $this->translator->trans('whose label is'),
 									"name" => "blockinfoId",
 									"fieldType" => "select",
 									"options" => $oblockinfos
@@ -2753,7 +2753,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans("of blockinfo"),
+									"label" => $this->translator->trans("of blockinfo"),
 									"name" => "blockinfoId",
 									"fieldType" => "select",
 									"options" => $oblockinfochapters
@@ -2767,7 +2767,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							"name" => $panel->getId(),
 							"fields" => array(
 								array(
-									"label" => $this->get('translator')->trans("of blockinfo"),
+									"label" => $this->translator->trans("of blockinfo"),
 									"name" => "blockinfoId",
 									"fieldType" => "select",
 									"options" => $oblockinfosections
@@ -2783,7 +2783,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans('whose label is'),
+								"label" => $this->translator->trans('whose label is'),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanels
@@ -2797,7 +2797,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelfieldsets
@@ -2811,7 +2811,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelcolumns
@@ -2825,7 +2825,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelfieldrows
@@ -2839,7 +2839,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelfields
@@ -2853,7 +2853,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelprenotes
@@ -2867,7 +2867,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelpostnotes
@@ -2881,7 +2881,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelchoices
@@ -2895,7 +2895,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelblockinfos
@@ -2909,7 +2909,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelchapters
@@ -2923,7 +2923,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						"name" => $step->getId(),
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of panel"),
+								"label" => $this->translator->trans("of panel"),
 								"name" => "panelId",
 								"fieldType" => "select",
 								"options" => $opanelsections
@@ -2955,7 +2955,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'name' => $step->getId(),
 						'fields' => array(
 							array(
-								'label' => $this->get('translator')->trans('whose label is'),
+								'label' => $this->translator->trans('whose label is'),
 								'name' => 'actionId',
 								'fieldType' => 'select',
 								'options' => $oactionbuttons
@@ -2980,7 +2980,7 @@ class SimulatorsAdminController extends BaseAdminController {
 							)
 						);
 						$ofootnotes[] = array(
-							'label' => $this->get('translator')->trans('FootNote %id%', array('%id%' => $footnote->getId())),
+							'label' => $this->translator->trans('FootNote %id%', array('%id%' => $footnote->getId())),
 							'name' => $footnote->getId()
 						);
 						$tfootnotes['footNotes'][] = $tfootnote;
@@ -2993,7 +2993,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						'name' => $step->getId(),
 						'fields' => array(
 							array(
-								'label' => $this->get('translator')->trans('whose label is'),
+								'label' => $this->translator->trans('whose label is'),
 								'name' => 'footnoteId',
 								'fieldType' => 'select',
 								'options' => $ofootnotes
@@ -3005,7 +3005,7 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($osteps) > 0) {
 				$steps = array(
-						"label" => $this->get('translator')->trans("the step"),
+						"label" => $this->translator->trans("the step"),
 						"name" => "step",
 						"fields" => array(
 							array(
@@ -3019,11 +3019,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($osteppanels) > 0) {
 				$panels = array(
-						"label" => $this->get('translator')->trans("the panel"),
+						"label" => $this->translator->trans("the panel"),
 						"name" => "panel",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $osteppanels
@@ -3033,11 +3033,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepfieldsets) > 0) {
 				$fieldsets = array(
-						"label" => $this->get('translator')->trans("the fieldset"),
+						"label" => $this->translator->trans("the fieldset"),
 						"name" => "fieldset",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepfieldsets
@@ -3047,11 +3047,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepcolumns) > 0) {
 				$columns = array(
-						"label" => $this->get('translator')->trans("the column"),
+						"label" => $this->translator->trans("the column"),
 						"name" => "column",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepcolumns
@@ -3061,11 +3061,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepfieldrows) > 0) {
 				$fieldrows = array(
-						"label" => $this->get('translator')->trans("the fieldrow"),
+						"label" => $this->translator->trans("the fieldrow"),
 						"name" => "fieldrow",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepfieldrows
@@ -3075,11 +3075,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepfields) > 0) {
 				$fields = array(
-						"label" => $this->get('translator')->trans("the field"),
+						"label" => $this->translator->trans("the field"),
 						"name" => "field",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepfields
@@ -3089,11 +3089,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepprenotes) > 0) {
 				$prenotes = array(
-						"label" => $this->get('translator')->trans("the prenote"),
+						"label" => $this->translator->trans("the prenote"),
 						"name" => "prenote",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepprenotes
@@ -3103,11 +3103,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($osteppostnotes) > 0) {
 				$postnotes = array(
-						"label" => $this->get('translator')->trans("the postnote"),
+						"label" => $this->translator->trans("the postnote"),
 						"name" => "postnote",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $osteppostnotes
@@ -3117,11 +3117,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepchoices) > 0) {
 				$fchoices = array(
-						"label" => $this->get('translator')->trans("the choice"),
+						"label" => $this->translator->trans("the choice"),
 						"name" => "choice",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepchoices
@@ -3131,11 +3131,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepblockinfos) > 0) {
 				$blockinfos = array(
-						"label" => $this->get('translator')->trans("the blockinfo"),
+						"label" => $this->translator->trans("the blockinfo"),
 						"name" => "blockinfo",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepblockinfos
@@ -3145,11 +3145,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepchapters) > 0) {
 				$chapters = array(
-						"label" => $this->get('translator')->trans("the chapter"),
+						"label" => $this->translator->trans("the chapter"),
 						"name" => "chapter",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepchapters
@@ -3159,11 +3159,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepsections) > 0) {
 				$sections = array(
-						"label" => $this->get('translator')->trans("the section"),
+						"label" => $this->translator->trans("the section"),
 						"name" => "section",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepsections
@@ -3173,11 +3173,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepfootnotes) > 0) {
 				$footnotes = array(
-						"label" => $this->get('translator')->trans("the footnote"),
+						"label" => $this->translator->trans("the footnote"),
 						"name" => "footnote",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepfootnotes
@@ -3187,11 +3187,11 @@ class SimulatorsAdminController extends BaseAdminController {
 			}
 			if (count($ostepactionbuttons) > 0) {
 				$actionbuttons = array(
-						"label" => $this->get('translator')->trans("the actionbutton"),
+						"label" => $this->translator->trans("the actionbutton"),
 						"name" => "action",
 						"fields" => array(
 							array(
-								"label" => $this->get('translator')->trans("of step"),
+								"label" => $this->translator->trans("of step"),
 								"name" => "stepId",
 								"fieldType" => "select", 
 								"options" => $ostepactionbuttons
@@ -3250,12 +3250,12 @@ class SimulatorsAdminController extends BaseAdminController {
 				'fieldType' => "textarea"
 			),
 			array(
-				'label' => $this->get('translator')->trans("on"),
+				'label' => $this->translator->trans("on"),
 				'name'	=> "target",
 				'fieldType' => "select",
 				'options' => array(
 					array(
-						'label' => $this->get('translator')->trans('the data'),
+						'label' => $this->translator->trans('the data'),
 						'name' => 'data',
 						'fields' => array(
 							array(
@@ -3267,7 +3267,7 @@ class SimulatorsAdminController extends BaseAdminController {
 						)
 					),
 					array(
-						'label' => $this->get('translator')->trans('the dataset'),
+						'label' => $this->translator->trans('the dataset'),
 						'name' => 'dataset'
 					)
 				)
@@ -3275,22 +3275,22 @@ class SimulatorsAdminController extends BaseAdminController {
 		);
 		$this->actions = array(
 			array(
-				'label' => $this->get('translator')->trans("Choose an Action..."), 
+				'label' => $this->translator->trans("Choose an Action..."), 
 				'name' => "", 
 				'fieldType' => "textarea"
 			),
 			array(
-				'label' => $this->get('translator')->trans("notify Error"), 
+				'label' => $this->translator->trans("notify Error"), 
 				'name' => "notifyError", 
 				'fields' => $notifyFields
 			),
 			array(
-				'label' => $this->get('translator')->trans("notify Warning"), 
+				'label' => $this->translator->trans("notify Warning"), 
 				'name' => "notifyWarning", 
 				'fields' => $notifyFields
 			),
 			array(
-				'label' => $this->get('translator')->trans("Hide"), 
+				'label' => $this->translator->trans("Hide"), 
 				'name' => "hideObject", 
 				'fields' => array(
 					array(
@@ -3302,7 +3302,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				)
 			),
 			array(
-				'label' => $this->get('translator')->trans("Show"), 
+				'label' => $this->translator->trans("Show"), 
 				'name' => "showObject", 
 				'fields' => array(
 					array(
@@ -3314,7 +3314,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				)
 			),
 			array(
-				'label' => $this->get('translator')->trans("Set"), 
+				'label' => $this->translator->trans("Set"), 
 				'name' => "setAttribute", 
 				'fields' => array(
 					array(
@@ -3323,11 +3323,11 @@ class SimulatorsAdminController extends BaseAdminController {
 						'fieldType' => "select",
 						'options' => array(
 							array(
-								'label' => $this->get('translator')->trans("the content"), 
+								'label' => $this->translator->trans("the content"), 
 								'name' => "content", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => true
@@ -3335,11 +3335,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the default"), 
+								'label' => $this->translator->trans("the default"), 
 								'name' => "default", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => true
@@ -3347,11 +3347,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the minimum"), 
+								'label' => $this->translator->trans("the minimum"), 
 								'name' => "min", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => true
@@ -3359,11 +3359,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the maximum"), 
+								'label' => $this->translator->trans("the maximum"), 
 								'name' => "max", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => true
@@ -3371,11 +3371,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the result index"), 
+								'label' => $this->translator->trans("the result index"), 
 								'name' => "index", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => true
@@ -3383,11 +3383,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the explanation"), 
+								'label' => $this->translator->trans("the explanation"), 
 								'name' => "explanation", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => true
@@ -3399,7 +3399,7 @@ class SimulatorsAdminController extends BaseAdminController {
 				)
 			),
 			array(
-				'label' => $this->get('translator')->trans("Unset"), 
+				'label' => $this->translator->trans("Unset"), 
 				'name' => "unsetAttribute", 
 				'fields' => array(
 					array(
@@ -3408,11 +3408,11 @@ class SimulatorsAdminController extends BaseAdminController {
 						'fieldType' => "select",
 						'options' => array(
 							array(
-								'label' => $this->get('translator')->trans("the content"), 
+								'label' => $this->translator->trans("the content"), 
 								'name' => "content", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => false
@@ -3420,11 +3420,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the default"), 
+								'label' => $this->translator->trans("the default"), 
 								'name' => "default", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => false
@@ -3432,11 +3432,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the minimum"), 
+								'label' => $this->translator->trans("the minimum"), 
 								'name' => "min", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => false
@@ -3444,11 +3444,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the maximum"), 
+								'label' => $this->translator->trans("the maximum"), 
 								'name' => "max", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => false
@@ -3456,11 +3456,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the result index"), 
+								'label' => $this->translator->trans("the result index"), 
 								'name' => "index", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => false
@@ -3468,11 +3468,11 @@ class SimulatorsAdminController extends BaseAdminController {
 								)
 							),
 							array(
-								'label' => $this->get('translator')->trans("the explanation"), 
+								'label' => $this->translator->trans("the explanation"), 
 								'name' => "explanation", 
 								'fields' => array(
 									array(
-										'label' => $this->get('translator')->trans("of"),
+										'label' => $this->translator->trans("of"),
 										'name' => "fieldName",
 										'fieldType' => "field",
 										'newValue' => false
@@ -3487,7 +3487,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		if (count($datagroups) > 0) {
 			foreach (array(1, 2) as $a) {
 				$this->actions[$a]['fields'][1]['options'][] = array(
-					'label' => $this->get('translator')->trans('the datagroup'),
+					'label' => $this->translator->trans('the datagroup'),
 					'name' => 'datagroup',
 					'fields' => array(
 						array(
@@ -3502,30 +3502,30 @@ class SimulatorsAdminController extends BaseAdminController {
 		}
 		$this->dataset['script'] = array(
 			'id' => 20000, 
-			'label' => $this->get('translator')->trans('Script'),
+			'label' => $this->translator->trans('Script'),
 			'type' => 'choice',
 			'options' => array(
 				 array(
-					'label' => $this->get('translator')->trans('Disabled'),
+					'label' => $this->translator->trans('Disabled'),
 					'name' => 0
 				),
 				 array(
-					'label' => $this->get('translator')->trans('Enabled'),
+					'label' => $this->translator->trans('Enabled'),
 					'name' => 1
 				)
 			)
 		);
 		$this->dataset['dynamic'] = array(
 			'id' => 20001, 
-			'label' => $this->get('translator')->trans('Interactive UI'),
+			'label' => $this->translator->trans('Interactive UI'),
 			'type' => 'choice',
 			'options' => array(
 				 array(
-					'label' => $this->get('translator')->trans('No'),
+					'label' => $this->translator->trans('No'),
 					'name' => 0
 				),
 				 array(
-					'label' => $this->get('translator')->trans('Yes'),
+					'label' => $this->translator->trans('Yes'),
 					'name' => 1
 				)
 			)

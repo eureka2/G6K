@@ -247,7 +247,7 @@ class DefaultController extends BaseController {
 			}
 			return $response;
 		} catch (\Exception $e) {
-			throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+			throw $this->createNotFoundException($this->translator->trans("This template does not exist"));
 		}
 	}
 
@@ -283,13 +283,13 @@ class DefaultController extends BaseController {
 		$mpdf->PDFA = true;
 		$mpdf->PDFAauto = true;
 		$mpdf->ignore_invalid_utf8 = true;
-		$mpdf->Bookmark($this->get('translator')->trans("Beginning of the document")); 
+		$mpdf->Bookmark($this->translator->trans("Beginning of the document")); 
 		$mpdf->SetDisplayMode('fullwidth');
 		if ($step->hasPdfFooter()) {
 			$footer = '<table class="pdf-footer"><tr><td>';
-			$footer .= $this->get('translator')->trans("Simulation performed on %host% on %date%", array('%host%' => $request->getHttpHost(), '%date%' => '{DATE j-m-Y}'));
+			$footer .= $this->translator->trans("Simulation performed on %host% on %date%", array('%host%' => $request->getHttpHost(), '%date%' => '{DATE j-m-Y}'));
 			$footer .= '</td><td>';
-			$footer .= $this->get('translator')->trans("Page %pageno% of %numberofpages%", array('%pageno%' => '{PAGENO}', '%numberofpages%' => '{nbpg}'));
+			$footer .= $this->translator->trans("Page %pageno% of %numberofpages%", array('%pageno%' => '{PAGENO}', '%numberofpages%' => '{nbpg}'));
 			$footer .= '</td></tr></table>';
 			$mpdf->SetHTMLFooter ( $footer, 'BLANK', true);
 		}

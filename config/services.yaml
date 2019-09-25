@@ -20,6 +20,7 @@ services:
                             # The best practice is to be explicit about your dependencies anyway.
         bind:
             $projectDir: '%kernel.project_dir%'
+            $cacheDir: '%kernel.cache_dir%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -53,3 +54,7 @@ services:
             - "%kernel.project_dir%/manifest.json"
             - "%%s?version=%%s"
         public: false
+
+    # the `fos_user.user_manager.default` service will be injected when
+    # a `FOS\UserBundle\Model\UserManager` type-hint is detected
+    FOS\UserBundle\Model\UserManager: '@fos_user.user_manager.default'

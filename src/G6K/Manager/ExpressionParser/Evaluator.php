@@ -456,7 +456,7 @@ class Evaluator {
 					return new Token(Token::T_UNDEFINED, array($arg));
 				}
 			}
-			array_unshift($argslist, $arg->value); 
+			array_unshift($argslist, $arg->value ?? null); 
 		}
 		if ($variableArgsCount) {
 			$argslist = array($argslist);

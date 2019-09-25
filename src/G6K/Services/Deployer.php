@@ -31,7 +31,7 @@ use App\G6K\Model\Simulator;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Lock\Factory;
 use Symfony\Component\Lock\Store\SemaphoreStore;
@@ -54,7 +54,7 @@ class Deployer {
 	private $kernel;
 
 	/**
-	 * @var \Symfony\Component\Translation\TranslatorInterface	  $translator The translator interface
+	 * @var \Symfony\Contracts\Translation\TranslatorInterface	  $translator The translator interface
 	 *
 	 * @access  private
 	 *
@@ -98,7 +98,7 @@ class Deployer {
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpKernel\KernelInterface $kernel The Symfony kernel interface
-	 * @param   \Symfony\Component\Translation\TranslatorInterface $translator The translator interface
+	 * @param   \Symfony\Contracts\Translation\TranslatorInterface $translator The translator interface
 	 * @return  void
 	 *
 	 */

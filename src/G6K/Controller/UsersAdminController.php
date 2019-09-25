@@ -102,10 +102,9 @@ class UsersAdminController extends BaseAdminController {
 					return $this->restoreUser ($form);
 			}
 		} else if (! $this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
-			throw $this->createAccessDeniedException ($this->get('translator')->trans("Access Denied!"));
+			throw $this->createAccessDeniedException ($this->translator->trans("Access Denied!"));
 		} else {
-			$userManager = $this->get('fos_user.user_manager');
-			$users = $userManager->findUsers();
+			$users = $this->userManager->findUsers();
 
 			$paginator = new \AshleyDawson\SimplePagination\Paginator();
 			$paginator->setItemTotalCallback(function () use ($users) {
@@ -138,7 +137,7 @@ class UsersAdminController extends BaseAdminController {
 				);
 			} catch (\Exception $e) {
 				echo $e->getMessage();
-				throw $this->createNotFoundException($this->get('translator')->trans("This template does not exist"));
+				throw $this->createNotFoundException($this->translator->trans("This template does not exist"));
 			}
 		}
 	}
@@ -217,36 +216,35 @@ class UsersAdminController extends BaseAdminController {
 		if ($password == "" || strlen($password)  < 6) {
 			return $this->errorResponse($form, "The password field is required (6 car. min)!");
 		}
-		$userManager = $this->get('fos_user.user_manager');
 		if (! $restore && ! $newUser) {
-			$user = $userManager->findUserBy(array('id' => $form['id']));
+			$user = $this->userManager->findUserBy(array('id' => $form['id']));
 			if ($user === null) {
 				return $this->errorResponse($form, "This user doesn't  exists !");
 			}
 			$oldRoles = $user->getRoles();
 			if ($userName != $user->getUserName()) {
-				$otherUser = $userManager->findUserByUsername($userName);
+				$otherUser = $this->userManager->findUserByUsername($userName);
 				if ($otherUser !== null) {
 					return $this->errorResponse($form, "This username already exists !");
 				}
 			}
 			if ($email != $user->getEmail()) {
-				$otherUser = $userManager->findUserByEmail($email);
+				$otherUser = $this->userManager->findUserByEmail($email);
 				if ($otherUser !== null) {
 					return $this->errorResponse($form, "This email already exists !");
 				}
 			}
 		} else {
 			$oldRoles = array();
-			$otherUser = $userManager->findUserByUsername($userName);
+			$otherUser = $this->userManager->findUserByUsername($userName);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This username already exists !");
 			}
-			$otherUser = $userManager->findUserByEmail($email);
+			$otherUser = $this->userManager->findUserByEmail($email);
 			if ($otherUser !== null) {
 				return $this->errorResponse($form, "This email already exists !");
 			}
-			$user = $userManager->createUser();
+			$user = $this->userManager->createUser();
 		}
 		$user->setUsername($userName);
 		$user->setEmail($email);
@@ -267,7 +265,7 @@ class UsersAdminController extends BaseAdminController {
 				$user->removeRole($role);
 			}
 		}		
-		$userManager->updateUser($user);
+		$this->userManager->updateUser($user);
 		$response = new Response();
 		$response->setContent(json_encode($form));
 		$response->headers->set('Content-Type', 'application/json');
@@ -288,12 +286,11 @@ class UsersAdminController extends BaseAdminController {
 	 */
 	protected function deleteUser ($form) {
 		$id = $form['id'];
-		$userManager = $this->get('fos_user.user_manager');
-		$user = $userManager->findUserBy(array('id' => $id));
+		$user = $this->userManager->findUserBy(array('id' => $id));
 		if ($user === null) {
 			return $this->errorResponse($form, "This user doesn't  exists !");
 		}
-		$userManager->deleteUser($user);
+		$this->userManager->deleteUser($user);
 		$response = new Response();
 		$response->setContent(json_encode($form));
 		$response->headers->set('Content-Type', 'application/json');
