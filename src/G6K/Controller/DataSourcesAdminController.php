@@ -138,14 +138,14 @@ class DataSourcesAdminController extends BaseAdminController {
 			$this->datasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd"><Databases></Databases></DataSources>', LIBXML_NOWARNING);
 		}
 		if ($crud !== null) {
-			if (! $this->get('security.authorization_checker')->isGranted('ROLE_CONTRIBUTOR')) {
+			if (! $this->authorizationChecker->isGranted('ROLE_CONTRIBUTOR')) {
 				return $this->errorResponse($form, $this->translator->trans("Access denied!"));
 			}
 			return $this->dispatch($request, $dsid, $table, $crud, $form);
-		} else if (! $this->get('security.authorization_checker')->isGranted('ROLE_CONTRIBUTOR')) {
+		} else if (! $this->authorizationChecker->isGranted('ROLE_CONTRIBUTOR')) {
 			throw $this->createAccessDeniedException ($this->translator->trans("Access Denied!"));
 		} else {
-			return $this->showDatasources($dsid, $table);
+			return $this->showDatasources($request, $dsid, $table);
 		}
 	}
 
@@ -165,21 +165,21 @@ class DataSourcesAdminController extends BaseAdminController {
 		if ($crud == 'create-datasource') {
 			return $this->createDatasource ($form);
 		} elseif ($crud == 'import-datasource') {
-			return $this->showDatasources(0, null, "import");
+			return $this->showDatasources($request, 0, null, "import");
 		} elseif ($crud == 'doimport-datasource') {
 			return $this->doImportDatasource($request);
 		} elseif ($crud == 'export-datasource') {
 			return $this->doExportDatasource($dsid);
 		} elseif ($crud == 'edit-datasource') {
-			return $this->showDatasources($dsid, null, "edit");
+			return $this->showDatasources($request, $dsid, null, "edit");
 		} elseif ($crud == 'doedit-datasource') {
 			return $this->doEditDatasource ($dsid, $form);
 		} elseif ($crud == 'drop-datasource') {
 			return $this->dropDatasource ($dsid);
 		} elseif ($crud == 'edit') {
-			return $this->showDatasources($dsid, $table, 'edit-table');
+			return $this->showDatasources($request, $dsid, $table, 'edit-table');
 		} elseif ($crud == 'import') {
-			return $this->showDatasources($dsid, $table, 'import-table');
+			return $this->showDatasources($request, $dsid, $table, 'import-table');
 		} else {
 			$database = $this->getDatabase($dsid, $this->datasources, $this->databasesDir);
 			switch ($crud) {
@@ -214,7 +214,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function hasConfigParameter($parameter) {
-		return $this->get('kernel')->getContainer()->hasParameter($parameter);
+		return $this->getKernel()->getContainer()->hasParameter($parameter);
 	}
 
 	/**
@@ -226,20 +226,21 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function getConfigParameter($parameter) {
-		return $this->get('kernel')->getContainer()->getParameter($parameter);
+		return $this->getKernel()->getContainer()->getParameter($parameter);
 	}
 
 	/**
 	 * Shows the data sources management interface.
 	 *
 	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request  The request
 	 * @param   int|null $dsid The datasource ID
 	 * @param   string|null $table (default: null) The table name
 	 * @param   string $action (default: 'show') <parameter description>
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
-	protected function showDatasources($dsid, $table = null, $action = 'show') {
+	protected function showDatasources(Request $request, $dsid, $table = null, $action = 'show') {
 		$dbname = null;
 		$datasources = array();
 		$dss = $this->datasources->xpath("/DataSources/DataSource");
@@ -431,7 +432,6 @@ class DataSourcesAdminController extends BaseAdminController {
 								}
 							}
 							if ($datasource['type'] == 'internal') {
-								$request = $this->container->get('request_stack')->getCurrentRequest();
 								$where = array();
 								foreach($tableinfos as &$infos) {
 									if ($infos['name'] != 'id') {
@@ -684,7 +684,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$datafile = '';
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
-				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+				$filePath = $uploadDir . "/" . $this->fileUploader->upload($file);
 				if ($fieldname == 'datasource-schema-file') {
 					$schemafile = $filePath;
 				} elseif ($fieldname == 'datasource-data-file') {
@@ -837,7 +837,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		$filename = '';
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
-				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+				$filePath = $uploadDir . "/" . $this->fileUploader->upload($file);
 				if ($fieldname == 'table-data-file') {
 					$csvfile = $filePath;
 					$filename = $file->getClientOriginalName();

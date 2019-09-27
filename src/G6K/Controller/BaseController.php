@@ -28,6 +28,8 @@ namespace App\G6K\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 use App\G6K\Model\Simulator;
 use App\G6K\Model\DataGroup;
@@ -59,9 +61,13 @@ class BaseController extends Controller {
 
 	protected $projectDir;
 	protected $translator;
+	protected $kernel;
+	protected $authorizationChecker;
 
-	public function __construct(TranslatorInterface $translator, $projectDir) {
+	public function __construct(TranslatorInterface $translator, KernelInterface $kernel, AuthorizationCheckerInterface $authorizationChecker, $projectDir) {
 		$this->projectDir = $projectDir;
+		$this->kernel = $kernel;
+		$this->authorizationChecker = $authorizationChecker;
 		$this->translator = $translator;
 	}
 

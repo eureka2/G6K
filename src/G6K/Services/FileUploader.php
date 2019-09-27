@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2018 Jacques Archimède
+Copyright (c) 2015-2019 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  *
  * This class implements a file uploader service.
  *
- * This service is defined in src/EUREKA/G6KBundle/Resources/config/services.yml as follows:
+ * This service is defined in config/packages/g6k.yml as follows:
  *
  *    g6k.file_uploader:
  *        class: App\G6K\Services\FileUploader
@@ -43,23 +43,23 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class FileUploader {
 
 	/**
-	 * @var string      $targetDir The upload directory
+	 * @var string      $uploadDir The upload directory
 	 *
 	 * @access  private
 	 *
 	 */
-	private $targetDir;
+	private $uploadDir;
 
 	/**
 	 * Constructor of class FileUploader
 	 *
 	 * @access  public
-	 * @param   string $targetDir The upload directory
+	 * @param   string $uploadDir The upload directory
 	 * @return  void
 	 *
 	 */
-	public function __construct($targetDir) {
-		$this->targetDir = $targetDir;
+	public function __construct($uploadDir) {
+		$this->uploadDir = $uploadDir;
 	}
 
 	/**
@@ -72,7 +72,7 @@ class FileUploader {
 	 */
 	public function upload(UploadedFile $file) {
 		$fileName = md5(uniqid()).'.'.$file->guessExtension();
-		$file->move($this->targetDir, $fileName);
+		$file->move($this->uploadDir, $fileName);
 		return $fileName;
 	}
 }

@@ -107,10 +107,10 @@ class CacheAdminController extends BaseAdminController {
 	protected function runClear(Request $request, $env)
 	{
 		$translator = $this->translator;
-		if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+		if (! $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
 			throw $this->createAccessDeniedException ($translator->trans("Access Denied!"));
 		}
-		$cache_dir = dirname($this->get('kernel')->getCacheDir());
+		$cache_dir = dirname($this->getKernel()->getCacheDir());
 		$this->log[] = "<b>" . $translator->trans("cache directory : %cachedir%", array('%cachedir%' => $cache_dir)) . "</b>";
 		if ($this->getEnvironment() == $env) {
 			$this->log[] =  "<br/><br/><b>" . $translator->trans("clearing cache") . " :</b>";
@@ -151,10 +151,10 @@ class CacheAdminController extends BaseAdminController {
 	protected function runWarmup(Request $request)
 	{
 		$translator = $this->translator;
-		if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+		if (! $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
 			throw $this->createAccessDeniedException ($translator->trans("Access Denied!"));
 		}
-		$cache_dir = dirname($this->get('kernel')->getCacheDir());
+		$cache_dir = dirname($this->getKernel()->getCacheDir());
 		$this->log[] = "<b>" . $translator->trans("cache directory : %cachedir%", array('%cachedir%' => $cache_dir)) . "</b>";
 		$this->log[] =  "<br/><br/><b>" . $translator->trans("warming cache") . " :</b>";
 		$ok = $this->runConsoleCommand(array(

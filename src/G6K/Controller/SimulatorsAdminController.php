@@ -435,7 +435,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$inputwidgets = $this->getWidgetsByInputType();
 		$functions = $this->getFunctions();
 		$deployment = 	$this->container->hasParameter('deployment') && 
-						$this->get('security.authorization_checker')->isGranted('ROLE_MANAGER') && 
+						$this->authorizationChecker->isGranted('ROLE_MANAGER') && 
 						$simulator !== null && $simulator != 'new' && $valid &&
 						!file_exists($this->simulatorsDir . '/work/' . $simulator . '.xml');
 		try {
@@ -517,7 +517,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 */
 	protected function runValidation(Request $request) {
 		$form = $request->request->all();
-		$schema = $this->get('kernel')->getProjectDir()."/var/doc/Simulator.xsd";
+		$schema = $this->projectDir."/var/doc/Simulator.xsd";
 		$dom = new \DOMDocument();
 		$dom->preserveWhiteSpace  = false;
 		$dom->formatOutput = true;
@@ -1685,14 +1685,14 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function doDeploySimulator(Request $request, $simu){
-		if (! $this->get('security.authorization_checker')->isGranted('ROLE_MANAGER')) {
+		if (! $this->authorizationChecker->isGranted('ROLE_MANAGER')) {
 			$form = array();
 			return $this->errorResponse($form, $this->translator->trans("Access denied!"));
 		}
 		$this->simu = new Simulator($this);
 		$this->simu->load($this->simulatorsDir."/".$simu.'.xml');
 		try {
-			$report = $this->get('g6k.deployer')->deploy($this->simu);
+			$report = $this->deployer->deploy($this->simu);
 		} catch (\Exception $ex) {
 		}
 		$heading = $this->translator->trans('Deployment of the « %simulator% » simulator', ['%simulator%' => $this->simu->getName()]);
@@ -1729,8 +1729,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	protected function doImportSimulator(Request $request) {
 		$files = $request->files->all();
 		$fs = new Filesystem();
-		$container = $this->get('kernel')->getContainer();
-		$uploadDir = str_replace("\\", "/", $container->getParameter('upload_directory'));
+		$uploadDir = str_replace("\\", "/", $this->getParameter('upload_directory'));
 		$simu = '';
 		$simufile = '';
 		$stylesheet = '';
@@ -1739,7 +1738,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$pdfform = '';
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
-				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+				$filePath = $uploadDir . "/" . $this->fileUploader->upload($file);
 				if ($fieldname == 'simulator-file') {
 					$simufile = $filePath;
 					$simu = $file->getClientOriginalName();
@@ -3921,7 +3920,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 *
 	 */
 	public function getLanguages() {
-		$locale = $this->get('kernel')->getContainer()->getParameter('app_locale');
+		$locale = $this->getParameter('app_locale');
 		$locales = $this->getLocales();
 		$inlocale = substr($locale, 0, 2);
 		$languages = array();

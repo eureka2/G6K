@@ -364,12 +364,12 @@ class PDFFormsAdminController extends BaseAdminController {
 		$category = $form['pdfform-category'];
 		$title = $form['pdfform-title'];
 		$fs = new Filesystem();
-		$uploadDir = str_replace("\\", "/", $this->get('kernel')->getContainer()->getParameter('upload_directory'));
+		$uploadDir = str_replace("\\", "/", $this->getParameter('upload_directory'));
 		$pdffile = '';
 		$pdfform = '';
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
-				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+				$filePath = $uploadDir . "/" . $this->fileUploader->upload($file);
 				if ($fieldname == 'pdfform-file') {
 					$pdfform = $file->getClientOriginalName();
 					$pdffile = $this->pdfFormsDir . "/" . $pdfform;

@@ -69,7 +69,7 @@ class DocumentationController extends BaseAdminController {
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
 
-		if (! $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+		if (! $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
 			throw $this->createAccessDeniedException ($this->translator->trans("Access Denied!"));
 		}
 

@@ -319,12 +319,12 @@ class ViewsAdminController extends BaseAdminController {
 		$view = $form['view-name'];
 		$viewurl = $form['view-site'];
 		$fs = new Filesystem();
-		$uploadDir = str_replace("\\", "/", $this->get('kernel')->getContainer()->getParameter('upload_directory'));
+		$uploadDir = str_replace("\\", "/", $this->getParameter('upload_directory'));
 		$templatesfile = '';
 		$assetsfile = '';
 		foreach ($files as $fieldname => $file) {
 			if ($file && $file->isValid()) {
-				$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+				$filePath = $uploadDir . "/" . $this->fileUploader->upload($file);
 				if ($fieldname == 'view-templates-file') {
 					$fs->rename($filePath, $uploadDir . "/" . $view . "-templates.zip", true);
 					$templatesfile = $uploadDir . "/" . $view . "-templates.zip";
@@ -550,8 +550,7 @@ class ViewsAdminController extends BaseAdminController {
 	 */
 	protected function addViewNode($form, $files, $view) {
 		$fs = new Filesystem();
-		$container = $this->get('kernel')->getContainer();
-		$uploadDir = str_replace("\\", "/", $container->getParameter('upload_directory'));
+		$uploadDir = str_replace("\\", "/", $this->getParameter('upload_directory'));
 		$nodePath = $this->searchNodePath($view);
 		if ($nodePath != '') {
 			$nodeName = $form['add-node-name'];
@@ -559,7 +558,7 @@ class ViewsAdminController extends BaseAdminController {
 				$nodeFile = '';
 				foreach ($files as $fieldname => $file) {
 					if ($file && $file->isValid()) {
-						$filePath = $uploadDir . "/" . $this->get('g6k.file_uploader')->upload($file);
+						$filePath = $uploadDir . "/" . $this->fileUploader->upload($file);
 						if ($fieldname == 'add-node-file') {
 							$nodeFile = $filePath;
 						}
