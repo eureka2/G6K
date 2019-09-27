@@ -28,7 +28,11 @@ namespace App\G6K\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Translation\TranslatorInterface;
-use FOS\UserBundle\Model\UserManager;
+use Symfony\Component\HttpKernel\KernelInterface;
+use FOS\UserBundle\Model\UserManagerInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use App\G6K\Services\FileUploader;
+use App\G6K\Services\Deployer;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,7 +47,11 @@ class BaseAdminController extends Controller {
 
 	protected $projectDir;
 	protected $translator;
+	protected $kernel;
 	protected $userManager;
+	protected $authorizationChecker;
+	protected $fileUploader;
+	protected $deployer;
 
 	/**
 	 * @var string      $databasesDir Databases directory
@@ -77,10 +85,14 @@ class BaseAdminController extends Controller {
 	 */
 	public $viewsDir;
 
-	public function __construct(TranslatorInterface $translator, UserManager $userManager, $projectDir) {
+	public function __construct(TranslatorInterface $translator, KernelInterface $kernel, AuthorizationCheckerInterface $authorizationChecker, UserManagerInterface $userManager, FileUploader $fileUploader, Deployer $deployer, $projectDir) {
 		$this->projectDir = $projectDir;
 		$this->userManager = $userManager;
+		$this->kernel = $kernel;
+		$this->authorizationChecker = $authorizationChecker;
 		$this->translator = $translator;
+		$this->fileUploader = $fileUploader;
+		$this->deployer = $deployer;
 	}
 
 	/**

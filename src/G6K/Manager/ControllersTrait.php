@@ -72,6 +72,17 @@ trait ControllersTrait {
 	}
 
 	/**
+	 * Returns the Symfony kernel
+	 *
+	 * @access  public
+	 * @return   \Symfony\Component\HttpKernel\KernelInterface $kernel The Symfony kernel
+	 *
+	 */
+	public function getKernel() {
+		return $this->kernel;
+	}
+
+	/**
 	 * Returns the translator interface
 	 *
 	 * @access  public
@@ -899,7 +910,7 @@ trait ControllersTrait {
 	 *
 	 */
 	private function runConsoleCommand($command, &$report = null) {
-		$application = new Application($this->get('kernel'));
+		$application = new Application($this->getKernel());
 		$application->setAutoExit(false);
 		$command['--no-debug'] = true;
 		$command['--no-interaction'] = true;
@@ -937,7 +948,7 @@ trait ControllersTrait {
 	 *
 	 */
 	private function runStreamedConsoleCommand($command, callable $start, callable $end) {
-		$application = new Application($this->get('kernel'));
+		$application = new Application($this->getKernel());
 		$application->setAutoExit(false);
 		$command['--no-debug'] = true;
 		$command['--no-interaction'] = true;
@@ -963,7 +974,7 @@ trait ControllersTrait {
 	 *
 	 */
 	public function isDevelopmentEnvironment() {
-		return in_array($this->get('kernel')->getEnvironment(), array('test', 'dev'));
+		return in_array($this->getKernel()->getEnvironment(), array('test', 'dev'));
 	}
 
 	/**
@@ -974,7 +985,7 @@ trait ControllersTrait {
 	 *
 	 */
 	public function getEnvironment() {
-		return $this->get('kernel')->getEnvironment();
+		return $this->getKernel()->getEnvironment();
 	}
 
 }

@@ -88,7 +88,7 @@ class UsersAdminController extends BaseAdminController {
 		$script = $no_js == 1 ? 0 : 1;
 		
 		if ($crud !== null) {
-			if (! $this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
+			if (! $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
 				return $this->errorResponse($form, "Access denied!");
 			}
 			switch ($crud) {
@@ -101,7 +101,7 @@ class UsersAdminController extends BaseAdminController {
 				case 'restore':
 					return $this->restoreUser ($form);
 			}
-		} else if (! $this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN')) {
+		} else if (! $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
 			throw $this->createAccessDeniedException ($this->translator->trans("Access Denied!"));
 		} else {
 			$users = $this->userManager->findUsers();
@@ -113,9 +113,9 @@ class UsersAdminController extends BaseAdminController {
 			$paginator->setSliceCallback(function ($offset, $length) use ($users) {
 				return array_slice($users, $offset, $length);
 			});
-			$itemsPerPage = (int)$this->container->get('request_stack')->getCurrentRequest()->get('itemsPerPage', 25);
+			$itemsPerPage = (int)$request->get('itemsPerPage', 25);
 			$paginator->setItemsPerPage($itemsPerPage)->setPagesInRange(10);
-			$pagination = $paginator->paginate((int)$this->container->get('request_stack')->getCurrentRequest()->get('page', 1));
+			$pagination = $paginator->paginate((int)$request->get('page', 1));
 
 		 	$hiddens = array();
 			$hiddens['script'] = $script;
