@@ -71,7 +71,7 @@ class CacheAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response The response object
 	 *
 	 */
-	public function clearAction(Request $request, $env = 'prod')
+	public function clear(Request $request, $env = 'prod')
 	{
 		$this->initialize();
 		return $this->runClear($request, $env);
@@ -89,7 +89,7 @@ class CacheAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response The response object
 	 *
 	 */
-	public function warmupAction(Request $request)
+	public function warmup(Request $request)
 	{
 		$this->initialize();
 		return $this->runWarmup($request);

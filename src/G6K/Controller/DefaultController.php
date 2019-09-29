@@ -61,7 +61,7 @@ class DefaultController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response|false
 	 *
 	 */
-	public function calculAction(Request $request, $simu, $view = null)
+	public function calcul(Request $request, $simu, $view = null)
 	{
 		$this->initialize();
 		return $this->runCalcul($request, $simu, $view);
@@ -77,7 +77,7 @@ class DefaultController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response|false
 	 *
 	 */
-	public function tryItAction(Request $request, $simu, $view = null)
+	public function tryIt(Request $request, $simu, $view = null)
 	{
 		$this->initialize();
 		return $this->runCalcul($request, $simu, $view, true);
@@ -92,7 +92,7 @@ class DefaultController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
-	public function fieldsAction(Request $request, $simu)
+	public function fields(Request $request, $simu)
 	{
 		$this->initialize();
 		return $this->runFields($request, $simu);
@@ -107,7 +107,7 @@ class DefaultController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
-	public function fieldsTryItAction(Request $request, $simu)
+	public function fieldsTryIt(Request $request, $simu)
 	{
 		$this->initialize();
 		return $this->runFields($request, $simu, true);
@@ -122,7 +122,7 @@ class DefaultController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
-	public function sourceAction(Request $request, $simu)
+	public function source(Request $request, $simu)
 	{
 		$this->initialize();
 		return $this->runSource($request, $simu);
@@ -137,7 +137,7 @@ class DefaultController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
-	public function sourceTryItAction(Request $request, $simu)
+	public function sourceTryIt(Request $request, $simu)
 	{
 		$this->initialize();
 		return $this->runSource($request, $simu, true);

@@ -49,7 +49,7 @@ class IndexController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
 	 *
 	 */
-	public function indexAction(Request $request)
+	public function index(Request $request)
 	{
 		$this->initialize();
 		return $this->runIndex($request);

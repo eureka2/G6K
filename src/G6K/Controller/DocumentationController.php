@@ -50,7 +50,7 @@ class DocumentationController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response The rendered document
 	 *
 	 */
-	public function indexAction(Request $request, $document = null)
+	public function index(Request $request, $document = null)
 	{
 		$this->initialize();
 		return $this->runIndex($request, $document);

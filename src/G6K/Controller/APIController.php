@@ -94,7 +94,7 @@ class APIController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response|\App\G6K\Model\Step The simulation step object or the API response object in JSON format
 	 *
 	 */
-	public function calculAction(Request $request, $simu)
+	public function calcul(Request $request, $simu)
 	{
 		return $this->runCalcul($request, $simu);
 	}
@@ -108,7 +108,7 @@ class APIController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response|\App\G6K\Model\Step The simulation step object or the API response object in JSON format
 	 *
 	 */
-	public function tryItAction(Request $request, $simu)
+	public function tryIt(Request $request, $simu)
 	{
 		return $this->runCalcul($request, $simu, true);
 	}

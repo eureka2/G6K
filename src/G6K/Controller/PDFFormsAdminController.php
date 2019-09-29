@@ -82,7 +82,7 @@ class PDFFormsAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse The response object
 	 *
 	 */
-	public function indexAction(Request $request, $pdf = null, $crud = null)
+	public function index(Request $request, $pdf = null, $crud = null)
 	{
 		$this->initialize();
 		$no_js = $request->query->get('no-js') || 0;

@@ -110,7 +110,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse
 	 *
 	 */
-	public function indexAction(Request $request, $dsid = null, $table = null, $crud = null) {
+	public function index(Request $request, $dsid = null, $table = null, $crud = null) {
 		$this->initialize();
 		$no_js = $request->query->get('no-js') || 0;
 		$this->script = $no_js == 1 ? 0 : 1;

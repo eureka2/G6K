@@ -65,7 +65,7 @@ class UsersAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response The response with JSON content
 	 *
 	 */
-	public function indexAction(Request $request, $crud = null)
+	public function index(Request $request, $crud = null)
 	{
 		$this->initialize();
 		return $this->runIndex($request, $crud);
