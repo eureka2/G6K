@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 namespace App\G6K\Manager;
 
-use Symfony\Component\BrowserKit\Client as BaseClient;
+use Symfony\Component\BrowserKit\AbstractBrowser as BaseClient;
 use Symfony\Component\BrowserKit\Response;
 
 /**
