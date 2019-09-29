@@ -122,7 +122,7 @@ class ViewsAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse The response object
 	 *
 	 */
-	public function indexAction(Request $request, $view = null, $node = 0, $crud = null)
+	public function index(Request $request, $view = null, $node = 0, $crud = null)
 	{
 		$this->initialize();
 		$this->assetsDir = $this->publicDir . '/assets';

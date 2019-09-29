@@ -58,7 +58,7 @@ class HomeAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response The administration interface homepage in a Response object
 	 *
 	 */
-	public function indexAction(Request $request)
+	public function index(Request $request)
 	{
 		$this->initialize();
 		return $this->runIndex($request);

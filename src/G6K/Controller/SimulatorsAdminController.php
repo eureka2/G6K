@@ -174,7 +174,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response <description of the return value>
 	 *
 	 */
-	public function indexAction(Request $request, $simulator = null, $crud = null)
+	public function index(Request $request, $simulator = null, $crud = null)
 	{
 		$this->initialize();
 		$this->uricache = array();
@@ -482,7 +482,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response The regional settings in json format
 	 *
 	 */
-	public function regionalSettingsAction(Request $request, $locale)
+	public function regionalSettings(Request $request, $locale)
 	{
 		$this->initialize();
 		$settings = $this->getRegionalSettings($locale);
@@ -502,7 +502,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 * @return  \Symfony\Component\HttpFoundation\Response
 	 *
 	 */
-	public function validateAction(Request $request) {
+	public function validate(Request $request) {
 		$this->initialize();
 		return $this->runValidation($request);
 	}

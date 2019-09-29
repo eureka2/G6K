@@ -51,7 +51,7 @@ class MailController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response|false
 	 *
 	 */
-	public function sendMailAction(Request $request, $template, $view, \Swift_Mailer $mailer)
+	public function sendMail(Request $request, $template, $view, \Swift_Mailer $mailer)
 	{
 		$this->initialize();
 		return $this->runSendMail($request, $template, $view, $mailer);
