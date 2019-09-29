@@ -362,7 +362,9 @@ services:
 
     kernel.listener.g6k_exception_listener:
         class: App\G6K\EventListener\G6KExceptionListener
-        arguments: [ "@kernel" ]
+        autowire: true
+        autoconfigure: true
+        public: false
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 

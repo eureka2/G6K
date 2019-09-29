@@ -5,3 +5,5 @@ fos_user:
     from_email:
         address:        noreply@example.com
         sender_name:    Eureka2
+    service:
+        mailer: fos_user.mailer.twig_swift
