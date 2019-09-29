@@ -214,7 +214,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function hasConfigParameter($parameter) {
-		return $this->getKernel()->getContainer()->hasParameter($parameter);
+		return $this->hasParameter($parameter);
 	}
 
 	/**
@@ -226,7 +226,7 @@ class DataSourcesAdminController extends BaseAdminController {
 	 *
 	 */
 	protected function getConfigParameter($parameter) {
-		return $this->getKernel()->getContainer()->getParameter($parameter);
+		return $this->getParameter($parameter);
 	}
 
 	/**

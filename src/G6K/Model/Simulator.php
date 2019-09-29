@@ -1906,9 +1906,9 @@ class Simulator {
 				$databaseObj->setPassword((string)$database['password']);
 			} elseif ((string)$database['user'] != '') {
 				try {
-					$user = $this->controller->getKernel()->getContainer()->getParameter('database_user');
+					$user = $this->controller->getParameter('database_user');
 					if ((string)$database['user'] == $user) {
-						$databaseObj->setPassword($this->controller->getKernel()->getContainer()->getParameter('database_password'));
+						$databaseObj->setPassword($this->controller->getParameter('database_password'));
 					}
 				} catch (\Exception $e) {
 				}

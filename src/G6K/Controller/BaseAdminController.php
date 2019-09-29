@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @author Jacques Archimède
  *
  */
-class BaseAdminController extends Controller {
+class BaseAdminController extends AbstractController {
 
 	protected $projectDir;
 	protected $translator;

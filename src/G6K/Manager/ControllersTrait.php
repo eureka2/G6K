@@ -101,7 +101,11 @@ trait ControllersTrait {
 	 *
 	 */
 	public function hasParameter($parameters) {
-		$value = $this->getParameter($parameters);
+		try {
+			$value = $this->getParameter($parameters);
+		} catch (\Exception $e) {
+			$value = null;
+		}
 		return isset($value);
 	}
 
@@ -674,8 +678,8 @@ trait ControllersTrait {
 	 */
 	public function getWidgets() {
 		$widgets = array();
-		if ($this->container->hasParameter('widgets')) {
-			foreach ($this->container->getParameter('widgets') as $name => $widget) {
+		if ($this->hasParameter('widgets')) {
+			foreach ($this->getParameter('widgets') as $name => $widget) {
 				$widgets[$name] = $this->getTranslator()->trans($widget['label']);
 			}
 		}
@@ -691,8 +695,8 @@ trait ControllersTrait {
 	 */
 	public function getWidgetsByType() {
 		$types = array();
-		if ($this->container->hasParameter('widgets')) {
-			foreach ($this->container->getParameter('widgets') as $name => $widget) {
+		if ($this->hasParameter('widgets')) {
+			foreach ($this->getParameter('widgets') as $name => $widget) {
 				$targets = $widget['target'];
 				foreach($targets as $target) {
 					if ($target == 'all') {
@@ -721,8 +725,8 @@ trait ControllersTrait {
 	 */
 	public function getWidgetsByInputType() {
 		$types = array();
-		if ($this->container->hasParameter('widgets')) {
-			foreach ($this->container->getParameter('widgets') as $name => $widget) {
+		if ($this->hasParameter('widgets')) {
+			foreach ($this->getParameter('widgets') as $name => $widget) {
 				$inputs = $widget['input'];
 				foreach($inputs as $input) {
 					if ($input == 'all') {
@@ -754,8 +758,8 @@ trait ControllersTrait {
 			'labels' => array(),
 			'targets' => array()
 		);
-		if ($this->container->hasParameter('functions')) {
-			foreach ($this->container->getParameter('functions') as $name => $function) {
+		if ($this->hasParameter('functions')) {
+			foreach ($this->getParameter('functions') as $name => $function) {
 				$functions['labels'][$name] = $this->getTranslator()->trans($function['label']);
 				$targetsList = $function['target'];
 				if (in_array('all', $targetsList)) {
