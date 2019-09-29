@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 namespace App\G6K\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -57,7 +57,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @author    Jacques Archimède
  *
  */
-class BaseController extends Controller {
+class BaseController extends AbstractController {
 
 	protected $projectDir;
 	protected $translator;
@@ -238,8 +238,8 @@ class BaseController extends Controller {
 			$this->simu = new Simulator($this);
 			$this->simu->load($this->getSimuPath($simu, $test));
 		} catch (\Exception $e) {
-			if ($this->container->hasParameter('page404')) {
-				$page404Url = $request->getScheme() . '://' . $request->getHttpHost() . $this->container->getParameter('page404');
+			if ($this->hasParameter('page404')) {
+				$page404Url = $request->getScheme() . '://' . $request->getHttpHost() . $this->getParameter('page404');
 				try {
 					$client = Client::createClient();
 					$page404 = $client->get($page404Url);
@@ -262,7 +262,7 @@ class BaseController extends Controller {
 			$view = $this->simu->getDefaultView();
 			if ($view == '') {
 				$domain = $request->getHost();
-				$domainview = $this->container->getParameter('domainview');
+				$domainview = $this->getParameter('domainview');
 				$view = "Default";
 				foreach ($domainview as $d => $v) {
 					if (preg_match("/".$d."$/", $domain)) {

@@ -434,7 +434,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$typewidgets = $this->getWidgetsByType();
 		$inputwidgets = $this->getWidgetsByInputType();
 		$functions = $this->getFunctions();
-		$deployment = 	$this->container->hasParameter('deployment') && 
+		$deployment = 	$this->hasParameter('deployment') && 
 						$this->authorizationChecker->isGranted('ROLE_MANAGER') && 
 						$simulator !== null && $simulator != 'new' && $valid &&
 						!file_exists($this->simulatorsDir . '/work/' . $simulator . '.xml');

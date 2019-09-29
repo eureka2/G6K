@@ -223,8 +223,8 @@ class PDFFormsAdminController extends BaseAdminController {
 		$acroform = new AcroForm(
 			$this->pdfFormsDir . '/' . $pdfform . '.pdf',
 			[
-				'pdftk' =>	$this->container->hasParameter('acroforms')
-							? $this->container->getParameter('acroforms')['pdftk']
+				'pdftk' =>	$this->hasParameter('acroforms')
+							? $this->getParameter('acroforms')['pdftk']
 							: 'pdftk'
 			]
 		);

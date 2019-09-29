@@ -2,11 +2,12 @@
 
 namespace App\G6K\EventListener;
 
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Twig\Environment;
 
 /**
  *
@@ -19,7 +20,7 @@ class G6KExceptionListener
 {
 
 	/**
-	 * @var \Symfony\Component\HttpKernel\Kernel      $kernel The Symfony kernel
+	 * @var \Symfony\Component\HttpKernel\KernelInterface      $kernel The Symfony kernel
 	 *
 	 * @access  protected
 	 *
@@ -27,26 +28,36 @@ class G6KExceptionListener
 	protected $kernel;
 
 	/**
+	 * @var \Twig\Environment      $twig The Twig engine
+	 *
+	 * @access  protected
+	 *
+	 */
+	protected $twig;
+
+	/**
 	 * Constructor of class G6KExceptionListener
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpKernel\KernelInterface $kernel The Symfony kernel
+	 * @param   \Twig\Environment $twig The twig environment
 	 * @return  void
 	 *
 	 */
-	public function __construct(KernelInterface $kernel) {
+	public function __construct(KernelInterface $kernel, Environment $twig) {
 		$this->kernel = $kernel;
+		$this->twig = $twig;
 	}
 
 	/**
 	 * The listener for the exception event
 	 *
 	 * @access  public
-	 * @param   \Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent $event The exception event
+	 * @param   \Symfony\Component\HttpKernel\Event\ExceptionEvent $event The exception event
 	 * @return  void
 	 *
 	 */
-	public function onKernelException(GetResponseForExceptionEvent $event) {
+	public function onKernelException(ExceptionEvent $event) {
 		$request = $event->getRequest();
 		$exception = $event->getException();
 		$route = $request->get("_route");
@@ -89,12 +100,11 @@ class G6KExceptionListener
 		}
 		$step = (object)array('simulator' => array('label' => 'Exception'));
 		$message = $exception instanceof HttpExceptionInterface && $exception->getStatusCode() == 404 ? 'This simulator does not exist or is not available' : 'The simulation engine is currently under maintenance';
-		$twig = $this->kernel->getContainer()->get('templating');
 		$response = new Response();
 
 		if (! $exception instanceof \Exception) {
 			$response->setContent(
-				$twig->render(
+				$this->twig->render(
 					'base\pages\exception.html.twig', 
 					array(
 						'adminmessage' => "status : " . $exception->getStatusCode(),
@@ -111,7 +121,7 @@ class G6KExceptionListener
 			$response->headers->replace($exception->getHeaders());
 		} else {
 			$response->setContent(
-				$twig->render(
+				$this->twig->render(
 					'base\pages\exception.html.twig', 
 					array(
 						'adminmessage' => $this->trace($exception),
@@ -138,13 +148,12 @@ class G6KExceptionListener
 	 *
 	 */
 	protected function htmlAdminResponse(\Exception $exception) {
-		$twig = $this->kernel->getContainer()->get('templating');
 		$step = (object)array('simulator' => array('label' => 'Exception'));
 		$response = new Response();
 
 		if (! $exception instanceof \Exception) {
 			$response->setContent(
-				$twig->render(
+				$this->twig->render(
 					'admin/pages/exception.html.twig',
 					array(
 						'message' => "status : " . $exception->getStatusCode(),
@@ -160,7 +169,7 @@ class G6KExceptionListener
 			$response->headers->replace($exception->getHeaders());
 		} else {
 			$response->setContent(
-				$twig->render(
+				$this->twig->render(
 					'admin/pages/exception.html.twig',
 					array(
 						'message' => $this->trace($exception),

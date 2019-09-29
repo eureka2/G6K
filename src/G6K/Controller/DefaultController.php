@@ -206,7 +206,7 @@ class DefaultController extends BaseController {
 		$hiddens['script'] = $this->script;
 		$hiddens['view'] = $view;
 		$ua = new \Detection\MobileDetect();
-		$availWidgets = $this->container->getParameter('widgets');
+		$availWidgets = $this->getParameter('widgets');
 		$widgets = array();
 		foreach ($this->simuWidgets as $widget) {
 			if (isset($availWidgets[$widget]) && ! isset($widgets[$widget])) {
@@ -214,7 +214,7 @@ class DefaultController extends BaseController {
 				$widgets[$widget] = $availWidgets[$widget];
 			}
 		}
-		$availFunctions = $this->container->getParameter('functions');
+		$availFunctions = $this->getParameter('functions');
 		$functions = array();
 		foreach ($this->simuFunctions as $function) {
 			if (isset($availFunctions[$function]) && ! isset($functions[$function])) {
@@ -222,8 +222,8 @@ class DefaultController extends BaseController {
 				$functions[$function] = $availFunctions[$function];
 			}
 		}
-		if ($this->container->hasParameter('recaptcha')) {
-			$hiddens['recaptcha'] = $this->container->getParameter('recaptcha')['site_key'];
+		if ($this->hasParameter('recaptcha')) {
+			$hiddens['recaptcha'] = $this->getParameter('recaptcha')['site_key'];
 		}
 		try {
 			$response =  $this->render(
@@ -316,8 +316,8 @@ class DefaultController extends BaseController {
 		$pdf = new AcroForm(
 			$this->pdfFormsDir.'/'.$template,
 			[
-				'pdftk' =>	$this->container->hasParameter('acroforms')
-							? $this->container->getParameter('acroforms')['pdftk']
+				'pdftk' =>	$this->hasParameter('acroforms')
+							? $this->getParameter('acroforms')['pdftk']
 							: 'pdftk'
 			]
 		);

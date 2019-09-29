@@ -127,7 +127,7 @@ class APIController extends BaseController {
 	{
 		$this->initialize();
 		try {
-			$api = $this->container->getParameter('api');
+			$api = $this->getParameter('api');
 		} catch (\Exception $e) {
 			throw $this->createNotFoundException($this->translator->trans("API for this simulator is not implemented"));
 		}
