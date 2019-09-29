@@ -2,13 +2,15 @@
 
 namespace App\G6K\EventListener;
 
+use Twig\Loader\FilesystemLoader as TwigLoaderFilesystem;
+
 /**
  * Loads twig template from the filesystem.
  *
  * @copyright Jacques Archimède
  *
  */
-class FileSystemLoader extends \Twig_Loader_Filesystem {
+class FileSystemLoader extends TwigLoaderFilesystem {
 
 	/**
 	 * Constructor of class FileSystemLoader
