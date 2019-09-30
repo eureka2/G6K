@@ -349,7 +349,6 @@ class DefaultController extends BaseController {
 				return in_array($name, $buttonFields);
 			}, ARRAY_FILTER_USE_KEY)
 		];
-		error_log(var_export($fields, true));
 		$pdf->load($fields);
 		$pdf->merge(true); // true for flatten (need pdftk), false if not (this is the default)
 		$destination = $step->getOutput() == 'inlineFilledPDF' ? 'I' : 'D';
