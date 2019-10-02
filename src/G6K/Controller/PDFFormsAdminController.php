@@ -27,11 +27,9 @@ THE SOFTWARE.
 namespace App\G6K\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
@@ -97,7 +95,7 @@ class PDFFormsAdminController extends BaseAdminController {
 	 *
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
-	 * @param   string|null $view The view name
+	 * @param   string|null $pdfform The PDF Form name
 	 * @param   string|null $crud operation to execute on the view (docreate, drop, edit, doedit)
 	 * @return  \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse The response object
 	 *
@@ -255,7 +253,7 @@ class PDFFormsAdminController extends BaseAdminController {
 	 * Constructs the default mapping of a PDF Form
 	 *
 	 * @access  protected
-	 * @param   \acroforms\AcroForm; $acroform The parsed pdf form
+	 * @param   \acroforms\AcroForm $acroform The parsed pdf form
 	 * @return  array The default mapping
 	 *
 	 */

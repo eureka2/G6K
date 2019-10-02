@@ -426,7 +426,7 @@ class Data extends DatasetChild {
 	 * Sets the pattern of this data item.
 	 *
 	 * @access  public
-	 * @param   string     $unit The pattern
+	 * @param   string     $pattern The pattern
 	 * @return  void
 	 *
 	 */
