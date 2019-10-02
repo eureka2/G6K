@@ -2321,7 +2321,7 @@ class Simulator {
 	 *
 	 * @access  private
 	 * @param   int $ruleID The ID of the rule
-	 * @param   \SimpleXMLElement $actions The action
+	 * @param   \SimpleXMLElement $action The action
 	 * @param   array &$dataset The list of data dependencies
 	 * @return  array The associative array
 	 *
