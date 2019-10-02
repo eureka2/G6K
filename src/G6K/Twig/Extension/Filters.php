@@ -78,12 +78,12 @@ class Filters extends \Twig_Extension {
 	 */
 	public function getFilters() {
 		return array(
-			new \Twig_SimpleFilter('jscode', array($this, 'jscodeFilter'), array('is_safe' => array('html'))),
-			new \Twig_SimpleFilter('htmlraw', array($this, 'htmlRaw'), array('is_safe' => array('html'))),
-			new \Twig_SimpleFilter('fnref', array($this, 'replaceFootnotesReference'), array('is_safe' => array('html'))),
-			new \Twig_SimpleFilter('nofnref', array($this, 'removeFootnotesReference'), array('is_safe' => array('html'))),
-			new \Twig_SimpleFilter('nofilter', array($this, 'noFilter'), array('is_safe' => array('html'))),
-			new \Twig_SimpleFilter('intl_number_format', array($this, 'numberFormat')),
+			new \Twig_Filter('jscode', array($this, 'jscodeFilter'), array('is_safe' => array('html'))),
+			new \Twig_Filter('htmlraw', array($this, 'htmlRaw'), array('is_safe' => array('html'))),
+			new \Twig_Filter('fnref', array($this, 'replaceFootnotesReference'), array('is_safe' => array('html'))),
+			new \Twig_Filter('nofnref', array($this, 'removeFootnotesReference'), array('is_safe' => array('html'))),
+			new \Twig_Filter('nofilter', array($this, 'noFilter'), array('is_safe' => array('html'))),
+			new \Twig_Filter('intl_number_format', array($this, 'numberFormat')),
 		);
 	}
 
