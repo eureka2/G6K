@@ -73,7 +73,7 @@ class PercentFunction {
 			}
 			if (self::$groupingSeparator === null) {
 				self::$groupingSeparator = normalizer_normalize($formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL));
-				self::$groupingSeparator = str_replace("\xc2\xa0", ' ', self::$groupingSeparator);
+				self::$groupingSeparator = str_replace(["\xc2\xa0", "\xe2\x80\xaf"], [' ', ' '], self::$groupingSeparator);
 			}
 			if (self::$groupingSize === null) {
 				self::$groupingSize = $formatter->getAttribute(\NumberFormatter::GROUPING_SIZE);

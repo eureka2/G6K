@@ -769,7 +769,6 @@ THE SOFTWARE.
 			Simulators.updating = false;
 		});
 		Simulators.bindOptionalAttributes(simulatorContainer);
-		$('#simulator-locale').trigger('change');
 	}
 
 	Simulators.bindOptionalAttributes = function(container, onSelect, onDelete) {
@@ -879,7 +878,7 @@ THE SOFTWARE.
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-timezone', 'select', 'timezone', Translator.trans('Time zone'), simulator.timezone, true, Translator.trans('Time zone'), JSON.stringify(timezones)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-decimalPoint', 'select', 'decimalPoint', Translator.trans('Decimal point'), simulator.decimalPoint, true, Translator.trans('Decimal point'), JSON.stringify(Simulators.decimalPoints)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSeparator', 'select', 'groupingSeparator', Translator.trans('Grouping separator'), simulator.groupingSeparator, true, Translator.trans('Grouping separator'), JSON.stringify(Simulators.groupingSeparators)));
-		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSize', 'number', 'groupingSize', Translator.trans('Grouping size'), simulator.groupingSeparator, true, Translator.trans('Grouping size')));
+		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-groupingSize', 'number', 'groupingSize', Translator.trans('Grouping size'), simulator.groupingSize, true, Translator.trans('Grouping size')));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-moneySymbol', 'select', 'moneySymbol', Translator.trans('Currency symbol'), simulator.moneySymbol, true, Translator.trans('Select a symbol'), JSON.stringify(Simulators.moneySymbols)));
 		simulatorAttributes.append(Simulators.simpleAttributeForInput('simulator-symbolPosition', 'select', 'symbolPosition', Translator.trans('Symbol position'), simulator.symbolPosition, true, Translator.trans('Select a position'), JSON.stringify({ 'before': Translator.trans('before currency'), 'after': Translator.trans('after currency') })));
 		if (simulator.dynamic == 1) {
