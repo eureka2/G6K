@@ -1,7 +1,7 @@
 /**
  * Helper functions for autoNumeric.js
  * @author Alexandre Bonneau <alexandre.bonneau@linuxfr.eu>
- * @copyright © 2016 Alexandre Bonneau
+ * @copyright © 2019 Alexandre Bonneau
  *
  * The MIT License (http://www.opensource.org/licenses/mit-license.php)
  *
@@ -128,7 +128,7 @@ export default class AutoNumericHelper {
      */
     static isEmptyObj(obj) {
         for (const prop in obj) {
-            if (obj.hasOwnProperty(prop)) {
+            if (Object.prototype.hasOwnProperty.call(obj, prop)) {
                 return false;
             }
         }
@@ -205,7 +205,7 @@ export default class AutoNumericHelper {
      */
     static isIE11() {
         // noinspection JSUnresolvedVariable
-        return !!window.MSInputMethodContext && !!document.documentMode;
+        return typeof window !== 'undefined' && !!window.MSInputMethodContext && !!document.documentMode;
     }
 
     /**
@@ -371,7 +371,7 @@ export default class AutoNumericHelper {
     static character(event) {
         let result;
         if (event.key === 'Unidentified' || event.key === void(0) || this.isSeleniumBot()) {
-            //XXX The selenium geckodriver do not understand `event.key`, hence when using it, we need to rely on the old deprecated `keyCode` attribute, cf. upstream issue https://github.com/mozilla/geckodriver/issues/440
+            //XXX The selenium geckodriver does not understand `event.key`, hence when using it, we need to rely on the old deprecated `keyCode` attribute, cf. upstream issue https://github.com/mozilla/geckodriver/issues/440
             // Use the old deprecated keyCode property, if the new `key` one is not supported
             const keyCode = this.keyCodeNumber(event);
             if (keyCode === AutoNumericEnum.keyCode.AndroidDefault) {
@@ -399,7 +399,12 @@ export default class AutoNumericHelper {
                     result = AutoNumericEnum.keyName.CrSel;
                     break;
                 case 'Decimal':
-                    result = AutoNumericEnum.keyName.NumpadDot;
+                    if (event.char) {
+                        // this fixes #602
+                        result = event.char;
+                    } else {
+                        result = AutoNumericEnum.keyName.NumpadDot;
+                    }
                     break;
                 case 'Del':
                     browser = this.browser();
