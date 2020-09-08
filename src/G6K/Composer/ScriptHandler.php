@@ -56,6 +56,7 @@ class ScriptHandler
 		"APP_SECRET" => "application secret",
 		"PDFTK_PATH" => "absolute path of the pdftk executable",
 		"MAILER_URL" => "mailer URL",
+		"MAIL_FROM" => "email adress to use as sender of all emails",
 		"DB_ENGINE" => "database engine [sqlite, mysql or pgsql]",
 		"DB_NAME" => "database name",
 		"DB_HOST" => "database host [localhost, ...]",
@@ -290,7 +291,7 @@ class ScriptHandler
 	 * Users installation:
 	 *
 	 * - Creation of the database according to parameters provided in parameters.yml
-	 * - Running the 'fos_user.sql' script in the 'src/EUREKA/G6KBundle/Resources/data/databases' directory. This script contains an 'insert' of two users: admin and guest.
+	 * - Running the 'g6k_user.sql' script in the 'src/EUREKA/G6KBundle/Resources/data/databases' directory. This script contains an 'insert' of two users: admin and guest.
 	 *
 	 * @access  public
 	 * @static 
@@ -340,8 +341,8 @@ class ScriptHandler
 				$event->getIO()->write(sprintf("Unsupported database driver: %s", $driver));
 				return;
 		}
-		if (($script = file_get_contents($databasesDir . DIRECTORY_SEPARATOR . 'fos_user.sql')) === FALSE) {
-			$event->getIO()->write(sprintf("Unable to read  %s", $databasesDir . DIRECTORY_SEPARATOR . 'fos_user.sql'));
+		if (($script = file_get_contents($databasesDir . DIRECTORY_SEPARATOR . 'g6k_user.sql')) === FALSE) {
+			$event->getIO()->write(sprintf("Unable to read  %s", $databasesDir . DIRECTORY_SEPARATOR . 'g6k_user.sql'));
 			return;
 		}
 		try {
@@ -387,13 +388,13 @@ class ScriptHandler
 		}
 		switch ($driver) {
 			case 'pdo_mysql':
-				$sql = 'alter table fos_user auto_increment = 3';
+				$sql = 'alter table user auto_increment = 3';
 				break;
 			case 'pdo_pgsql':
-				$sql = "alter sequence fos_user_id_seq restart with 3";
+				$sql = "alter sequence user_id_seq restart with 3";
 				break;
 			case 'pdo_sqlite':
-				$sql = "update sqlite_sequence set seq = 2 where name = 'fos_user'";
+				$sql = "update sqlite_sequence set seq = 2 where name = 'user'";
 				break;
 			default:
 				return;
@@ -401,7 +402,7 @@ class ScriptHandler
 		try {
 			$database->exec($sql);
 		} catch (\Exception $e) {
-			$event->getIO()->write("Can't set sequence for table fos_user : " . $e->getMessage());
+			$event->getIO()->write("Can't set sequence for table user : " . $e->getMessage());
 		}
 	}
 

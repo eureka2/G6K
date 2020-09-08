@@ -69,7 +69,7 @@ t.add("This value should be less than {{ compared_value }}.", "V\u00e4\u00e4rtus
 t.add("This value should be less than or equal to {{ compared_value }}.", "V\u00e4\u00e4rtus peaks olema v\u00e4iksem kui v\u00f5i v\u00f5rduma {{ compared_value }}-ga.", "validators", "et");
 t.add("This value should not be equal to {{ compared_value }}.", "V\u00e4\u00e4rtus ei tohiks v\u00f5rduda {{ compared_value }}-ga.", "validators", "et");
 t.add("This value should not be identical to {{ compared_value_type }} {{ compared_value }}.", "V\u00e4\u00e4rtus ei tohiks olla identne v\u00e4\u00e4rtusega {{ compared_value_type }} {{ compared_value }}.", "validators", "et");
-t.add("This form should not contain extra fields.", "V\u00e4ljade grupp ei tohiks sisalda lisav\u00e4ljasid.", "validators", "et");
-t.add("The uploaded file was too large. Please try to upload a smaller file.", "\u00dcleslaaditud fail oli liiga suur. Palun proovi uuesti v\u00e4iksema failiga.", "validators", "et");
-t.add("The CSRF token is invalid. Please try to resubmit the form.", "CSRF-m\u00e4rgis on vigane. Palun proovi vormi uuesti esitada.", "validators", "et");
+t.add("The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.", "Kuvasuhe on liiga suur ({{ ratio }}). Lubatud maksimaalne suhe on {{ max_ratio }}.", "validators", "et");
+t.add("The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.", "Kuvasuhe on liiga v\u00e4ike ({{ ratio }}). Oodatav minimaalne suhe on {{ min_ratio }}.", "validators", "et");
+t.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "Pilt on ruudukujuline ({{ width }}x{{ height }}px). Ruudukujulised pildid pole lubatud.", "validators", "et");
 })(Translator);

@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2018 Jacques Archimède
+Copyright (c) 2015-2020 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ namespace App\G6K\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Security\SecurityFunction;
 
 use App\G6K\Manager\ControllersTrait;
 
@@ -213,8 +214,8 @@ class UsersAdminController extends BaseAdminController {
 		if (!preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/", $email)) {
 			return $this->errorResponse($form, "Please enter a valid email address.");
 		}
-		if ($password == "" || strlen($password)  < 6) {
-			return $this->errorResponse($form, "The password field is required (6 car. min)!");
+		if ($password == "") {
+			return $this->errorResponse($form, "The password field is required!");
 		}
 		if (! $restore && ! $newUser) {
 			$user = $this->userManager->findUserBy(array('id' => $form['id']));
@@ -252,6 +253,9 @@ class UsersAdminController extends BaseAdminController {
 			$user->setPlainPassword('');
 			$user->setPassword($password);
 		} else if ($newUser || $password != $user->getPassword()) {
+			if (! SecurityFunction::isPasswordStrong($password)) {
+				return $this->errorResponse($form, "Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.");
+			}
 			$user->setPlainPassword($password);
 		}
 		$user->setEnabled($enabled);

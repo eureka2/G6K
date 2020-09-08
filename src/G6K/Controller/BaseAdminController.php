@@ -29,7 +29,7 @@ namespace App\G6K\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
-use FOS\UserBundle\Model\UserManagerInterface;
+use App\Security\UserManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use App\G6K\Services\FileUploader;
 use App\G6K\Services\Deployer;

@@ -1,6 +1,8 @@
 parameters:
     upload_directory: '%env(resolve:APP_UPLOAD_DIRECTORY)%'
 
+    mail_from: '%env(resolve:MAIL_FROM)%'
+
     domainview: 
         localhost: Demo
 

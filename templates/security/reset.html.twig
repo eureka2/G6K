@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'security' %}
+
+{% block title %}{{ 'security.resetting.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">	
+	<div id="resetbox" class="mainbox col-md-6 col-sm-8 mx-auto mt-5">
+		<div class="card" >
+			<div class="card-header bg-primary">
+				<div class="float-right small">
+				</div>
+				<div class="card-title mb-0 font-weight-bold text-white">{{ 'security.resetting.header'|trans }}</div>
+			</div>	 
+			<div style="padding-top:30px" class="card-body" >
+				<form name="user_resetting_reset_form" method="post" action="{{ path('app_resetting_reset', {'token': token}) }}" class="user_resetting_reset form-horizontal">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+					<input type="hidden" name="token" value="{{ token }}">
+					{% if error %}
+						<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+					{% endif %}
+					<div id="user_resetting_reset_form">
+						<div>
+							<label for="user_resetting_reset_form_plainPassword_first" class="required">{{ 'security.resetting.reset.new_password'|trans }}</label>
+							<input type="password" id="user_resetting_reset_form_plainPassword_first" name="user_resetting_reset_form[plainPassword][first]" value="{{ newFirst }}" required="required" autocomplete="new-password" />
+						</div>
+						<div>
+							<label for="user_resetting_reset_form_plainPassword_second" class="required">{{ 'security.resetting.reset.new_password_confirmation'|trans }}</label>
+							<input type="password" id="user_resetting_reset_form_plainPassword_second" name="user_resetting_reset_form[plainPassword][second]" value="{{ newSecond }}" required="required" autocomplete="new-password" />
+						</div>
+					</div>
+					<div style="margin-top:10px" class="form-group form-inline">
+						<div class="col-sm-8 controls">
+							<input type="submit" class="btn btn-primary btn-lg btn-block" style="height: auto;" value="{{ 'security.resetting.reset.submit'|trans }}" />
+						</div>
+						<div class="col-sm-4 controls">
+							<input type="submit" class="btn btn-secondary btn-lg btn-block" style="height: auto;" name="_cancel" value="{{ 'security.resetting.cancel'|trans }}" />
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>  
+	</div>
+</div>
+{% endblock body %}

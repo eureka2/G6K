@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'security' %}
+
+{% block title %}{{ 'security.resetting.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">	
+	<div id="requestbox" class="mainbox col-md-6 col-sm-8 mx-auto mt-5">
+		<div class="card" >
+			<div class="card-header bg-primary">
+				<div class="card-title mb-0 font-weight-bold text-white">{{ 'security.resetting.header'|trans }}</div>
+			</div>	 
+			<div style="padding-top:30px" class="card-body">
+				<div class="flash-messages-text">
+				{% for type, messages in app.session.flashbag.all() %}
+					{% for message in messages %}
+						<div class="flash-{{ type }}">
+							{{ message }}
+						</div>
+					{% endfor %}
+				{% endfor %}
+				</div>
+				<form action="{{ path('app_send_email') }}" method="POST" class="user_resetting_request form-horizontal" role="form" enctype="multipart/form-data">
+					<div>
+						{% if invalid_username is defined %}
+							<p>{{ 'security.resetting.error.invalid_username'|trans({'%username%': invalid_username}) }}</p>
+						{% endif %}
+						<label class="col-form-label" for="username">{{ 'security.resetting.request.username'|trans }}</label>
+						<input type="text" class="form-control" id="username" name="username" required="required" />
+					</div>
+					<div style="margin-top:10px" class="form-group form-inline">
+						<div class="col-sm-8 controls">
+							<input type="submit" class="btn btn-primary btn-lg btn-block" style="height: auto;" value="{{ 'security.resetting.request.submit'|trans }}" />
+						</div>
+						<div class="col-sm-4 controls">
+							<input type="submit" class="btn btn-secondary btn-lg btn-block" style="height: auto;" name="_cancel" value="{{ 'security.resetting.request.cancel'|trans }}" />
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>  
+	</div>
+</div>
+{% endblock body %}
+

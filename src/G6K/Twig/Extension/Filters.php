@@ -26,6 +26,9 @@ THE SOFTWARE.
 
 namespace App\G6K\Twig\Extension;
 
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\G6K\Model\RichText;
 use App\G6K\Manager\ExpressionParser\NumberFunction;
@@ -36,7 +39,7 @@ use App\G6K\Manager\ExpressionParser\NumberFunction;
  * @copyright Jacques Archimède
  *
  */
-class Filters extends \Twig_Extension {
+class Filters extends AbstractExtension {
 
 	/**
 	 * @var \Symfony\Contracts\Translation\TranslatorInterface	  $translator The translator interface
@@ -77,14 +80,14 @@ class Filters extends \Twig_Extension {
 	 *
 	 */
 	public function getFilters() {
-		return array(
-			new \Twig_Filter('jscode', array($this, 'jscodeFilter'), array('is_safe' => array('html'))),
-			new \Twig_Filter('htmlraw', array($this, 'htmlRaw'), array('is_safe' => array('html'))),
-			new \Twig_Filter('fnref', array($this, 'replaceFootnotesReference'), array('is_safe' => array('html'))),
-			new \Twig_Filter('nofnref', array($this, 'removeFootnotesReference'), array('is_safe' => array('html'))),
-			new \Twig_Filter('nofilter', array($this, 'noFilter'), array('is_safe' => array('html'))),
-			new \Twig_Filter('intl_number_format', array($this, 'numberFormat')),
-		);
+		return [
+			new TwigFilter('jscode', array($this, 'jscodeFilter'), array('is_safe' => array('html'))),
+			new TwigFilter('htmlraw', array($this, 'htmlRaw'), array('is_safe' => array('html'))),
+			new TwigFilter('fnref', array($this, 'replaceFootnotesReference'), array('is_safe' => array('html'))),
+			new TwigFilter('nofnref', array($this, 'removeFootnotesReference'), array('is_safe' => array('html'))),
+			new TwigFilter('nofilter', array($this, 'noFilter'), array('is_safe' => array('html'))),
+			new TwigFilter('intl_number_format', array($this, 'numberFormat')),
+		];
 	}
 
 	/**
@@ -112,7 +115,7 @@ class Filters extends \Twig_Extension {
 			return $this->replaceFootnotesReference($string);
 		} else {
 			$text = $string instanceof RichText ? $string->getContent() : $string;
-			$blocktags = array('address', 'article', 'aside', 'blockquote', 'canvas', 'dd', 'div', 'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'noscript', 'ol', 'output', 'pre', 'section', 'table', 'tfoot', 'ul', 'video');
+			$blocktags = ['address', 'article', 'aside', 'blockquote', 'canvas', 'dd', 'div', 'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'noscript', 'ol', 'output', 'pre', 'section', 'table', 'tfoot', 'ul', 'video'];
 			$paragraphs = explode("\n", trim($text));
 			$result = '';
 			foreach($paragraphs as $paragraph) {

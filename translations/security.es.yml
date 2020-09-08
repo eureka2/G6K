@@ -1,0 +1,69 @@
+security:
+    login:
+        title: Entrar
+        header: Entrar
+        already_logged_in_as: 'Ya estás registrado como %username%'
+        sign_out: 'Desconectarse'
+        username: 'Nombre de usuario'
+        password: Contraseña
+        remember_me: Recordar
+        submit: Entrar
+    change_password:
+        title: 'Cambio de contraseña'
+        header: 'Cambio de contraseña'
+        username: 'Nombre de usuario'
+        email: Email
+        current_password: 'Contraseña actual'
+        password: Contraseña
+        password_confirmation: 'Repita la contraseña'
+        new_password: 'Nueva contraseña'
+        new_password_confirmation: 'Repita la contraseña'
+        submit: 'Cambiar contraseña'
+        cancel: 'Cancelar'
+        ok: 'Okay'
+        error:
+            invalid_current_password: 'La contraseña actual no es válida.'
+            two_passwords_mismatch: 'Las dos contraseñas no son iguales.'
+            password_not_strong: 'La contraseña debe tener al menos 8 caracteres de longitud y debe incluir al menos una letra mayúscula, un número y un carácter especial.'
+            change_failed: 'Error al actualizar la contraseña'
+        flash:
+            success: 'La contraseña se ha cambiado con éxito.'
+    resetting:
+        title: 'Restablecer Contraseña'
+        header: 'Restablecer Contraseña'
+        check_email: |
+            Se ha enviado un correo electrónico a tu cuenta de correo. Contiene un enlace de activación al que debes acceder para restablecer tu contraseña.
+            Nota: Solo se puede solicitar una nueva contraseña cada %tokenLifetime% horas.
+
+            Si no recibes un correo electrónico, comprueba tu carpeta de correo no deseado o inténtalo de nuevo.
+
+        request:
+            username: 'Nombre de usuario o correo electrónico'
+            submit: 'Restablecer contraseña'
+            cancel: 'Cancelar'
+        reset:
+            new_password: 'Nueva contraseña'
+            new_password_confirmation: 'Repita la contraseña'
+            submit: 'Cambiar contraseña'
+        cancel: 'Cancelar'
+        ok: 'Okay'
+        error:
+            invalid_username: 'El nombre de usuario ''%username%'' no es válido.'
+        flash:
+            success: 'La contraseña se ha cambiado con éxito.'
+        email:
+            subject: 'Restablecer Contraseña'
+            message: |
+                ¡Hola %username%!
+
+                Para restablecer tu contraseña, por favor visita %confirmationUrl%
+
+                Atentamente,
+                el Equipo.
+
+layout:
+    logout: Salir
+    login: Entrar
+    register: Registrar
+    logged_in_as: 'Identificado como %username%'
+    change_password: 'Cambiar contraseña'

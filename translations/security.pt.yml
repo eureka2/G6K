@@ -1,0 +1,69 @@
+security:
+    login:
+        title: 'Entrar'
+        header: 'Entrar'
+        already_logged_in_as: 'Você já está logado como %username%'
+        sign_out: 'Sair'
+        username: 'Utilizador'
+        password: 'Password'
+        remember_me: 'Lembrar-me'
+        submit: 'Entrar'
+    change_password:
+        title: 'Mudança de senha'
+        header: 'Mudança de senha'
+        username: 'Utilizador'
+        email: 'Email'
+        current_password: 'Password atual'
+        password: 'Password'
+        password_confirmation: 'Verificar password'
+        new_password: 'Nova password'
+        new_password_confirmation: 'Verificar a nova password'
+        submit: 'Mudar a password'
+        cancel: 'Cancelar'
+        ok: 'Está bem'
+        error:
+            invalid_current_password: 'A senha atual é inválida.'
+            two_passwords_mismatch: 'As duas senhas não são iguais.'
+            password_not_strong: 'A senha deve ter pelo menos 8 caracteres e deve incluir pelo menos uma letra maiúscula, um número e um caractere especial.'
+            change_failed: 'Falha na atualização da senha'
+        flash:
+            success: 'A password foi alterada'
+    resetting:
+        title: 'Recuperar password'
+        header: 'Recuperar password'
+        check_email: |
+            Foi enviado um email. Este contém um link que terá de visitar para recuperar a sua password.
+            Nota: Só poderá voltar a pedir para recuperar a sua password dentro de %tokenLifetime% horas.
+
+            Se não receber o email verifique a pasta de spam do seu cliente de email ou tente novamente.
+        request:
+            username: 'Utilizador ou endereço de email'
+            submit: 'Recuperar password'
+            cancel: 'Cancelar'
+        reset:
+            new_password: 'Nova password'
+            new_password_confirmation: 'Verificar a nova password'
+            submit: 'Alterar password'
+        cancel: 'Cancelar'
+        ok: 'Está bem'
+        error:
+            invalid_username: 'O nome de usuário ''%username%'' é inválido.'
+        flash:
+            success: 'A password foi recuperada com sucesso'
+        email:
+            subject: 'Recuperar password'
+            message: |
+                Olá %username%!
+
+                Para recuperar a password, por favor aceda a %confirmationUrl%
+
+                Cumprimentos,
+                A equipa.
+
+# Global strings
+layout:
+    logout: 'Sair'
+    login: 'Entrar'
+    register: 'Registar'
+    logged_in_as: 'Entrou como %username%'
+    change_password: 'Mudar a password'

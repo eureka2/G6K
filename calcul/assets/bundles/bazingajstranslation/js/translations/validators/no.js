@@ -83,7 +83,12 @@ t.add("This is not a valid UUID.", "Dette er ikke en gyldig UUID.", "validators"
 t.add("This value should be a multiple of {{ compared_value }}.", "Verdien skal v\u00e6re flertall av {{ compared_value }}.", "validators", "no");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Business Identifier Code (BIC) er ikke tilknyttet en IBAN {{ iban }}.", "validators", "no");
 t.add("This value should be valid JSON.", "Verdien er ikke gyldig JSON.", "validators", "no");
-t.add("This form should not contain extra fields.", "Feltgruppen m\u00e5 ikke inneholde ekstra felter.", "validators", "no");
-t.add("The uploaded file was too large. Please try to upload a smaller file.", "Den opplastede filen var for stor. Vennligst last opp en mindre fil.", "validators", "no");
-t.add("The CSRF token is invalid.", "CSRF n\u00f8kkelen er ugyldig.", "validators", "no");
+t.add("This collection should contain only unique elements.", "Samlingen kan kun inneholde unike elementer.", "validators", "no");
+t.add("This value should be positive.", "Denne verdien m\u00e5 v\u00e6re positiv.", "validators", "no");
+t.add("This value should be either positive or zero.", "Denne verdien m\u00e5 v\u00e6re positiv eller null.", "validators", "no");
+t.add("This value should be negative.", "Denne verdien m\u00e5 v\u00e6re negativ.", "validators", "no");
+t.add("This value should be either negative or zero.", "Denne verdien m\u00e5 v\u00e6re negativ eller null.", "validators", "no");
+t.add("This value is not a valid timezone.", "Verdien er ikke en gyldig tidssone.", "validators", "no");
+t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Dette passordet er lekket i et datainnbrudd, det m\u00e5 ikke tas i bruk. Vennligst bruk et annet passord.", "validators", "no");
+t.add("This value should be between {{ min }} and {{ max }}.", "Verdien m\u00e5 v\u00e6re mellom {{ min }} og {{ max }}.", "validators", "no");
 })(Translator);
