@@ -1,0 +1,69 @@
+security:
+    login:
+        title: Connexion
+        header: Connexion
+        already_logged_in_as: 'Vous êtes déjà connecté en tant que %username%'
+        sign_out: 'Se déconnecter'
+        username: 'Nom d''utilisateur'
+        password: 'Mot de passe'
+        remember_me: 'Se souvenir de moi'
+        submit: Connexion
+    change_password:
+        title: 'Changement du mot de passe'
+        header: 'Changement du mot de passe'
+        username: 'Nom d''utilisateur'
+        email: 'Adresse e-mail'
+        current_password: 'Mot de passe actuel'
+        password: 'Mot de passe'
+        password_confirmation: 'Répéter le mot de passe'
+        new_password: 'Nouveau mot de passe'
+        new_password_confirmation: 'Répéter le nouveau mot de passe'
+        submit: 'Modifier le mot de passe'
+        cancel: 'Annuler'
+        ok: 'Ok'
+        error:
+            invalid_current_password: 'Le mot de passe actuel n''est pas valide.'
+            two_passwords_mismatch: 'Les deux mots de passe ne sont pas identiques.'
+            password_not_strong: 'Le mot de passe doit comporter au moins 8 caractères et doit inclure au moins une lettre majuscule, un chiffre et un caractère spécial.'
+            change_failed: 'La mise à jour du mot de passe a échouée'
+        flash:
+            success: 'Le mot de passe a été modifié.'
+    resetting:
+        title: 'Réinitialisation de votre mot de passe'
+        header: 'Réinitialisation de votre mot de passe'
+        check_email: |
+            Un e-mail a été envoyé. Il contient un lien sur lequel il vous faudra cliquer pour réinitialiser votre mot de passe.
+            Remarque : Vous ne pouvez demander un nouveau mot de passe que toutes les %tokenLifetime% heures.
+
+            Si vous ne recevez pas un email, vérifiez votre dossier spam ou essayez à nouveau.
+
+        request:
+            username: 'Nom d''utilisateur ou adresse e-mail'
+            submit: 'Réinitialiser le mot de passe'
+            cancel: 'Annuler'
+        reset:
+            new_password: 'Nouveau mot de passe'
+            new_password_confirmation: 'Répéter le nouveau mot de passe'
+            submit: 'Modifier le mot de passe'
+        cancel: 'Annuler'
+        ok: 'Ok'
+        error:
+            invalid_username: 'Le nom d''utilisateur ''%username%'' n''est pas valide.'
+        flash:
+            success: 'Le mot de passe a été réinitialisé avec succès.'
+        email:
+            subject: 'Réinitialisation de votre mot de passe'
+            message: |
+                Bonjour %username% !
+
+                Pour réinitialiser votre mot de passe, merci de vous rendre sur %confirmationUrl%
+
+                Cordialement,
+                L'équipe
+
+layout:
+    logout: Déconnexion
+    login: Connexion
+    register: Inscription
+    logged_in_as: 'Connecté en tant que %username%'
+    change_password: 'Modifier le mot de passe'

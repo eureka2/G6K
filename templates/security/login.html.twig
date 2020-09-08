@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'security' %}
+
+{% block title %}{{ 'security.login.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">	
+	<div id="loginbox" class="mainbox col-md-6 col-sm-8 mx-auto mt-5">
+		<div class="card" >
+			<div class="card-header bg-primary">
+				<div class="float-right small"><a class="text-white" href="{{ path('app_request') }}">{{ 'Forgot password?'|trans({}, 'messages') }}</a></div>
+				<div class="card-title mb-0 font-weight-bold text-white">{{ 'security.login.header'|trans }}</div>
+			</div>	 
+			<div style="padding-top:30px" class="card-body" >
+				<div class="flash-messages-text">
+				{% for type, messages in app.session.flashbag.all() %}
+					{% for message in messages %}
+						<div class="flash-{{ type }}">
+							{{ message }}
+						</div>
+					{% endfor %}
+				{% endfor %}
+				</div>
+				<form id="loginform" method="post" class="form-horizontal" role="form">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+					{% if error %}
+						<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+					{% endif %}
+
+					{% if app.user %}
+						<div class="mb-3">
+							{{ 'security.login.already_logged_in_as'|trans({'%username%': app.user.username})}}, <a href="{{ path('app_logout') }}">{{ 'security.login.sign_out'|trans }}</a>
+						</div>
+					{% endif %}
+					<label for="inputUsername">{{ 'security.login.username'|trans }}</label>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend"><i class="input-group-text pt-2 fas fa-user"></i></div>
+						<input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" required autofocus>
+					</div>
+					<label for="inputPassword">{{ 'security.login.password'|trans }}</label>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend"><i class="input-group-text pt-2 fas fa-lock"></i></div>
+						<input type="password" name="password" id="inputPassword" class="form-control" required>
+					</div>
+
+
+					{#
+						Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+						See https://symfony.com/doc/current/security/remember_me.html
+					#}
+					 <div class="input-group">
+						<div class="checkbox mb-3">
+							<label>
+								<input type="checkbox" name="_remember_me"> {{ 'security.login.remember_me'|trans }}
+							</label>
+						</div>
+					</div>
+					<div style="margin-top:10px" class="form-group">
+						<div class="col-sm-12 controls">
+							<button class="btn btn-lg btn-block btn-primary" type="submit">
+								{{ 'security.login.submit'|trans }}
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>  
+	</div>
+</div>
+{% endblock %}

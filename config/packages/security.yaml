@@ -1,7 +1,9 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     encoders:
-        FOS\UserBundle\Model\UserInterface: sha512
+        App\Entity\User:
+            algorithm: auto
+
 
     role_hierarchy:
         ROLE_CONTRIBUTOR:  ROLE_USER
@@ -10,22 +12,30 @@ security:
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_CONTRIBUTOR, ROLE_MANAGER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
-        fos_userbundle:
-            id: fos_user.user_provider.username
-        in_memory: { memory: ~ }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
 
     firewalls:
         main:
             pattern: ^/
             user_checker: security.user_checker
             form_login:
-                provider: fos_userbundle
+                provider: app_user_provider
                 csrf_token_generator: security.csrf.token_manager
                 use_referer: true
             logout:
-                path: /logout
+                path: app_logout
                 target: /admin
             anonymous: true
+            guard:
+                authenticators:
+                    - App\Security\G6KAuthenticator
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false

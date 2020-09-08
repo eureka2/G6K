@@ -57,17 +57,17 @@
 			{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
 			<li id="authentification" class="nav-item dropdown">
 				<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-				{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} <span class="caret"></span>&nbsp;
+				{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'security') }} <span class="caret"></span>&nbsp;
 				 </a>
 				<ul class="dropdown-menu">
-					<li><a class="dropdown-item" href="{{ path('fos_user_security_logout') }}"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
+					<li><a class="dropdown-item" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ 'layout.logout'|trans({}, 'security') }}</a></li>
 					<li class="dropdown-divider"></li>
-					<li><a class="dropdown-item" href="{{ path('fos_user_change_password') }}"><i class="fas fa-lock" aria-hidden="true"></i> {{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}</a></li>
+					<li><a class="dropdown-item" href="{{ path('app_change_password') }}"><i class="fas fa-lock" aria-hidden="true"></i> {{ 'layout.change_password'|trans({}, 'security') }}</a></li>
 				</ul>
 			</li>
 			{% else %}
 			<li id="authentification" class="nav-item">
-				<a class="nav-link" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+				<a class="nav-link" href="{{ path('app_login') }}">{{ 'layout.login'|trans({}, 'security') }}</a>
 			</li>
 			{% endif %}
 		</ul>

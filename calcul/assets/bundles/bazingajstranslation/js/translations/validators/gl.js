@@ -82,7 +82,4 @@ t.add("Error", "Erro", "validators", "gl");
 t.add("This is not a valid UUID.", "Isto non \u00e9 un UUID v\u00e1lido.", "validators", "gl");
 t.add("This value should be a multiple of {{ compared_value }}.", "Este valor deber\u00eda ser multiplo de {{ compared_value }}.", "validators", "gl");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Este C\u00f3digo de identificaci\u00f3n bancaria (BIC) non est\u00e1 asociado co IBAN {{ iban }}.", "validators", "gl");
-t.add("This form should not contain extra fields.", "Este formulario non deber\u00eda conter campos adicionais.", "validators", "gl");
-t.add("The uploaded file was too large. Please try to upload a smaller file.", "O arquivo subido \u00e9 demasiado grande. Por favor, suba un arquivo m\u00e1is pequeno.", "validators", "gl");
-t.add("The CSRF token is invalid. Please try to resubmit the form.", "O token CSRF non \u00e9 v\u00e1lido. Por favor, probe a enviar novamente o formulario.", "validators", "gl");
 })(Translator);

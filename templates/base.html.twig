@@ -3,10 +3,21 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+		<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap4/css/bootstrap.css') }}" />
+		<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/css/login.css') }}" />
+		<link rel='stylesheet' type='text/css' href="{{ asset('assets/base/js/libs/fontawesome/css/all.min.css') }}" />
     </head>
     <body>
+		<h1 class="text-center text-primary">{{ 'Simulators'|trans }}</h1>
+		<div>
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
+		</div>
+		<script type="text/javascript">
+		 var changepasswordinputs = document.querySelectorAll("#changepasswordbox input");
+		 for (var i = 0; i < changepasswordinputs.length; i++) {
+			changepasswordinputs[i].className += " form-control";
+		}
+		</script>
     </body>
 </html>
