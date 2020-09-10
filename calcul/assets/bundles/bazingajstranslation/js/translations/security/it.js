@@ -18,6 +18,10 @@ t.add("Account is locked.", "L'account \u00e8 bloccato.", "security", "it");
 t.add("security.login.title", "Login", "security", "it");
 t.add("security.login.header", "Login", "security", "it");
 t.add("security.login.already_logged_in_as", "Hai gi\u00e0 effettuato l'accesso come %username%", "security", "it");
+t.add("security.login.disabled_user", "L'account dell'utente '%username%' \u00e8 disabilitato.", "security", "it");
+t.add("security.login.locked_user", "L'account dell'utente '%username%' \u00e8 bloccato.", "security", "it");
+t.add("security.login.expired_user", "L'account dell'utente '% username%' \u00e8 scaduto.", "security", "it");
+t.add("security.login.expired_credentials", "Le credenziali dell'utente '%username%' sono scadute.", "security", "it");
 t.add("security.login.sign_out", "Disconnessione", "security", "it");
 t.add("security.login.username", "Username", "security", "it");
 t.add("security.login.password", "Password", "security", "it");
@@ -33,6 +37,7 @@ t.add("security.change_password.password_confirmation", "Ripeti password", "secu
 t.add("security.change_password.new_password", "Nuova password", "security", "it");
 t.add("security.change_password.new_password_confirmation", "Ripeti password", "security", "it");
 t.add("security.change_password.submit", "Cambia password", "security", "it");
+t.add("security.change_password.show_hide", "Mostra \/ Nascondi password", "security", "it");
 t.add("security.change_password.cancel", "Annulla", "security", "it");
 t.add("security.change_password.ok", "Ok", "security", "it");
 t.add("security.change_password.error.invalid_current_password", "La password attuale non \u00e8 valida.", "security", "it");
@@ -43,6 +48,7 @@ t.add("security.change_password.flash.success", "La password \u00e8 stata cambia
 t.add("security.resetting.title", "Password reset", "security", "it");
 t.add("security.resetting.header", "Password reset", "security", "it");
 t.add("security.resetting.check_email", "\u00c8 stata inviata un'email con il link d'attivazione che devi utilizzare per il reset della password.\nNota: \u00e8 possibile richiedere una password entro %tokenLifetime% ore.\n\nSe non ricevi un'email verifica la cartella di spam o riprova.\n", "security", "it");
+t.add("security.resetting.locked_account", "La tua password non pu\u00f2 essere reimpostata perch\u00e9 il tuo account \u00e8 bloccato.\n\nContatta l'amministratore.\n", "security", "it");
 t.add("security.resetting.request.username", "Username o indirizzo email", "security", "it");
 t.add("security.resetting.request.submit", "Password reset", "security", "it");
 t.add("security.resetting.request.cancel", "Annulla", "security", "it");

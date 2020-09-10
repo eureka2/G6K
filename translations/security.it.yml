@@ -3,6 +3,10 @@ security:
         title: Login
         header: Login
         already_logged_in_as: 'Hai già effettuato l''accesso come %username%'
+        disabled_user: 'L''account dell''utente ''%username%'' è disabilitato.'
+        locked_user: 'L''account dell''utente ''%username%'' è bloccato.'
+        expired_user: 'L''account dell''utente ''% username%'' è scaduto.'
+        expired_credentials: 'Le credenziali dell''utente ''%username%'' sono scadute.'
         sign_out: 'Disconnessione'
         username: Username
         password: Password
@@ -19,6 +23,7 @@ security:
         new_password: 'Nuova password'
         new_password_confirmation: 'Ripeti password'
         submit: 'Cambia password'
+        show_hide: 'Mostra / Nascondi password'
         cancel: 'Annulla'
         ok: 'Ok'
         error:
@@ -36,6 +41,10 @@ security:
             Nota: è possibile richiedere una password entro %tokenLifetime% ore.
 
             Se non ricevi un'email verifica la cartella di spam o riprova.
+        locked_account: |
+            La tua password non può essere reimpostata perché il tuo account è bloccato.
+
+            Contatta l'amministratore.
         request:
             username: 'Username o indirizzo email'
             submit: 'Password reset'

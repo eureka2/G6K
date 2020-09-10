@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'security/base.html.twig' %}
 
 {% trans_default_domain 'security' %}
 
@@ -23,19 +23,25 @@
 					<div id="user_resetting_reset_form">
 						<div>
 							<label for="user_resetting_reset_form_plainPassword_first" class="required">{{ 'security.resetting.reset.new_password'|trans }}</label>
-							<input type="password" id="user_resetting_reset_form_plainPassword_first" name="user_resetting_reset_form[plainPassword][first]" value="{{ newFirst }}" required="required" autocomplete="new-password" />
+							<div class="input-group mb-3">
+								<input type="password" id="user_resetting_reset_form_plainPassword_first" name="user_resetting_reset_form[plainPassword][first]" value="{{ newFirst }}" required="required" autocomplete="new-password" class="form-control" />
+								<button class="pwd-shower" style="border:none;background:transparent" title="{{ 'security.change_password.show_hide'|trans }}"><i class=" far fa-eye"></i></button>
+							</div>
 						</div>
 						<div>
 							<label for="user_resetting_reset_form_plainPassword_second" class="required">{{ 'security.resetting.reset.new_password_confirmation'|trans }}</label>
-							<input type="password" id="user_resetting_reset_form_plainPassword_second" name="user_resetting_reset_form[plainPassword][second]" value="{{ newSecond }}" required="required" autocomplete="new-password" />
+							<div class="input-group mb-3">
+								<input type="password" id="user_resetting_reset_form_plainPassword_second" name="user_resetting_reset_form[plainPassword][second]" value="{{ newSecond }}" required="required" autocomplete="new-password" class="form-control" />
+								<button class="pwd-shower" style="border:none;background:transparent" title="{{ 'security.change_password.show_hide'|trans }}"><i class=" far fa-eye"></i></button>
+							</div>
 						</div>
 					</div>
 					<div style="margin-top:10px" class="form-group form-inline">
 						<div class="col-sm-8 controls">
-							<input type="submit" class="btn btn-primary btn-lg btn-block" style="height: auto;" value="{{ 'security.resetting.reset.submit'|trans }}" />
+							<input type="submit" class="btn btn-primary btn-lg btn-block form-control" style="height: auto;" value="{{ 'security.resetting.reset.submit'|trans }}" />
 						</div>
 						<div class="col-sm-4 controls">
-							<input type="submit" class="btn btn-secondary btn-lg btn-block" style="height: auto;" name="_cancel" value="{{ 'security.resetting.cancel'|trans }}" />
+							<input type="submit" class="btn btn-secondary btn-lg btn-block form-control" style="height: auto;" name="_cancel" value="{{ 'security.resetting.cancel'|trans }}" />
 						</div>
 					</div>
 				</form>

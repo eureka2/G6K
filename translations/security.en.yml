@@ -3,6 +3,10 @@ security:
         title: 'Log in'
         header: 'Log in'
         already_logged_in_as: 'You are already logged in as %username%'
+        disabled_user: 'The user ''%username%'' account is disabled.'
+        locked_user: 'The user ''%username%'' account is locked.'
+        expired_user: 'The user ''%username%'' account is locked.'
+        expired_credentials: 'The user ''%username%'' credentials has expired.'
         sign_out: 'Sign out'
         username: Username
         password: Password
@@ -19,6 +23,7 @@ security:
         new_password: 'New password'
         new_password_confirmation: 'Repeat new password'
         submit: 'Change password'
+        show_hide: 'Show/Hide password'
         cancel: 'Cancel'
         ok: 'Ok'
         error:
@@ -36,6 +41,10 @@ security:
             Note: You can only request a new password once within %tokenLifetime% hours.
 
             If you don't get an email check your spam folder or try again.
+        locked_account: |
+            Your password cannot be reset because your account is locked.
+
+            Please contact the administrator.
         request:
             username: 'Username or email address'
             submit: 'Reset password'

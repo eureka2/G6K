@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>{% block title %}Welcome!{% endblock %}</title>
+		<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap4/css/bootstrap.css') }}" />
+		<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/css/login.css') }}" />
+		<link rel='stylesheet' type='text/css' href="{{ asset('assets/base/js/libs/fontawesome/css/all.min.css') }}" />
+	</head>
+	<body>
+		<h1 class="text-center text-primary">{{ 'Simulators'|trans }}</h1>
+		<div>
+		{% block body %}{% endblock %}
+		{% block javascripts %}{% endblock %}
+		</div>
+		<script type="text/javascript">
+		var _cancel = document.querySelector("input[name=_cancel]");
+		if (_cancel) {
+			var required = document.querySelectorAll("input[required]");
+			if (required.length) {
+				_cancel.addEventListener('click', event => {
+					for (var i = 0; i < required.length; i++) {
+						required[i].removeAttribute("required");
+					}
+				});
+			}
+		}
+		var eyes = document.querySelectorAll(".pwd-shower");
+		for (var i = 0; i < eyes.length; i++) {
+			eyes[i].addEventListener('click', event => {
+				event.preventDefault();
+				var ipassword = event.currentTarget.parentElement.querySelector("input");
+				if (ipassword) {
+					if (ipassword.type === 'password') {
+						ipassword.type = 'text';
+					} else {
+						ipassword.type = 'password';
+					}
+				}
+				return false;
+			});
+		}
+		</script>
+ 	</body>
+</html>

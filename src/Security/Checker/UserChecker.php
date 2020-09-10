@@ -24,40 +24,62 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
  
-namespace App\Repository;
+namespace App\Security\Checker;
 
-use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\User;
+use App\Security\Exception\LockedAccountException;
+use App\Security\Exception\DisabledAccountException;
+use App\Security\Exception\ExpiredAccountException;
+use App\Security\Exception\ExpiredCredentialsException;
 
 /**
- * @method User|null find($id, $lockMode = null, $lockVersion = null)
- * @method User|null findOneBy(array $criteria, array $orderBy = null)
- * @method User[]    findAll()
- * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * UserChecker checks the user account flags.
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserChecker implements UserCheckerInterface
 {
-	public function __construct(ManagerRegistry $registry)
+	/**
+	 * {@inheritdoc}
+	 */
+	public function checkPreAuth(UserInterface $user)
 	{
-		parent::__construct($registry, User::class);
+		if (!$user instanceof User) {
+			return;
+		}
+
+		if (!$user->isAccountNonLocked()) {
+			$ex = new LockedAccountException();
+			$ex->setUser($user);
+			throw $ex;
+		}
+
+		if (!$user->isEnabled()) {
+			$ex = new DisabledAccountException();
+			$ex->setUser($user);
+			throw $ex;
+		}
+
+		if (!$user->isAccountNonExpired()) {
+			$ex = new ExpiredAccountException();
+			$ex->setUser($user);
+			throw $ex;
+		}
 	}
 
 	/**
-	 * Used to upgrade (rehash) the user's password automatically over time.
+	 * {@inheritdoc}
 	 */
-	public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
+	public function checkPostAuth(UserInterface $user)
 	{
 		if (!$user instanceof User) {
-			throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+			return;
 		}
 
-		$user->setPassword($newEncodedPassword);
-		$this->_em->persist($user);
-		$this->_em->flush();
+		if (!$user->isCredentialsNonExpired()) {
+			$ex = new ExpiredCredentialsException();
+			$ex->setUser($user);
+			throw $ex;
+		}
 	}
-
 }

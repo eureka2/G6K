@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
 The MIT License (MIT)
@@ -83,6 +83,8 @@ interface UserInterface extends CoreUserInterface
 	 * Sets the email.
 	 *
 	 * @param string $email
+	 *
+	 * @return static
 	 */
 	public function setEmail(string $email);
 
@@ -169,14 +171,14 @@ interface UserInterface extends CoreUserInterface
 	/**
 	 * Gets the timestamp that the user requested a password reset.
 	 *
-	 * @param null|\DateTime $date
+	 * @param null|\DateTimeInterface $date
 	 */
 	public function getPasswordRequestedAt();
 
 	/**
 	 * Sets the timestamp that the user requested a password reset.
 	 *
-	 * @param null|\DateTime $date
+	 * @param null|\DateTimeInterface $password_requested_at
 	 */
 	public function setPasswordRequestedAt(?\DateTimeInterface $password_requested_at = null);
 
@@ -199,7 +201,7 @@ interface UserInterface extends CoreUserInterface
 	/**
 	 * Sets the last login time.
 	 *
-	 * @param \DateTime|null $time
+	 * @param \DateTimeInterface|null $last_login
 	 *
 	 * @return static
 	 */
@@ -257,18 +259,26 @@ interface UserInterface extends CoreUserInterface
 	public function setLocked(?bool $locked);
  
 	public function isLocked();
+ 
+	public function isAccountNonLocked();
 
 	public function getExpired();
 
 	public function setExpired(?bool $expired);
 
 	public function isExpired();
+	
+	public function isAccountNonExpired();
 
 	public function getExpiresAt();
 
 	public function setExpiresAt(?\DateTimeInterface $expires_at);
 
 	public function getCredentialsExpired();
+
+	public function isCredentialsExpired();
+
+	public function isCredentialsNonExpired();
 
 	public function setCredentialsExpired(?bool $credentials_expired);
 

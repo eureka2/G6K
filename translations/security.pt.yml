@@ -3,6 +3,10 @@ security:
         title: 'Entrar'
         header: 'Entrar'
         already_logged_in_as: 'Você já está logado como %username%'
+        disabled_user: 'A conta do usuário ''%username%'' está desabilitada.'
+        locked_user: 'A conta do usuário ''%username%'' está bloqueada.'
+        expired_user: 'A conta do usuário ''%username%'' expirou.'
+        expired_credentials: 'As credenciais do usuário ''%username%'' expiraram.'
         sign_out: 'Sair'
         username: 'Utilizador'
         password: 'Password'
@@ -19,6 +23,7 @@ security:
         new_password: 'Nova password'
         new_password_confirmation: 'Verificar a nova password'
         submit: 'Mudar a password'
+        show_hide: 'Mostrar / ocultar senha'
         cancel: 'Cancelar'
         ok: 'Está bem'
         error:
@@ -36,6 +41,10 @@ security:
             Nota: Só poderá voltar a pedir para recuperar a sua password dentro de %tokenLifetime% horas.
 
             Se não receber o email verifique a pasta de spam do seu cliente de email ou tente novamente.
+        locked_account: |
+            Sua senha não pode ser redefinida porque sua conta está bloqueada.
+
+            Entre em contato com o administrador.
         request:
             username: 'Utilizador ou endereço de email'
             submit: 'Recuperar password'

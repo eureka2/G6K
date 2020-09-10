@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
 The MIT License (MIT)
@@ -24,11 +24,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace App\Security;
+namespace App\Security\Manager;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
-use App\Security\SecurityFunction;
+use App\Security\Util\SecurityFunction;
+use App\Security\UserManagerInterface;
+use App\Security\UserInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserManager implements UserManagerInterface {

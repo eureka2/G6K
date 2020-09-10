@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
 The MIT License (MIT)
@@ -23,43 +23,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+ 
+namespace App\Security\Exception;
 
-namespace App\Security;
+use Symfony\Component\Security\Core\Exception\AccountStatusException;
 
-/**
- *
- * This class provides some security related functions.
- *
- * @copyright Jacques Archimède
- *
- */
-class SecurityFunction {
+class DisabledAccountException extends AccountStatusException {
 
-	public static function isPasswordStrong(string $password): bool {
-		$uppercase = preg_match('@[A-Z]@', $password);
-		$lowercase = preg_match('@[a-z]@', $password);
-		$number    = preg_match('@[0-9]@', $password);
-		$specialChars = preg_match('@[^\w]@', $password);
-
-		return $uppercase && $lowercase && $number && $specialChars && strlen($password) >= 8;
+	/**
+	 * Message key to be used by the translation component.
+	 *
+	 * @return string
+	 */
+	public function getMessageKey()
+	{
+		return 'security.login.disabled_user';
 	}
 
-	public static function canonicalize(string $str): ?string {
-		if (null === $str) {
-			return null;
-		}
-		$encoding = mb_detect_encoding($str);
-		$result = $encoding
-			? mb_convert_case($str, MB_CASE_LOWER, $encoding)
-			: mb_convert_case($str, MB_CASE_LOWER);
-
-		return $result;
+	/**
+	 * Message data to be used by the translation component.
+	 *
+	 * @return array
+	 */
+	public function getMessageData()
+	{
+		return ["%username%" => $this->getUser()->getUsernameCanonical()];
 	}
-
-	public static function generateToken(): string {
-		return rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
-	}
-
 }
-
-?>

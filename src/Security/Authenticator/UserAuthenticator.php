@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
 The MIT License (MIT)
@@ -24,9 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
  
-namespace App\Security;
+namespace App\Security\Authenticator;
 
-use App\Entity\User;
 use App\Security\UserManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +43,7 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
 use Symfony\Component\Security\Guard\PasswordAuthenticatedInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class G6KAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
+class UserAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
 {
 	use TargetPathTrait;
 
@@ -91,7 +90,7 @@ class G6KAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
 			throw new InvalidCsrfTokenException();
 		}
 
-		$user = $this->userManager->findUserByUsername($credentials['username']);
+		$user = $userProvider->loadUserByUsername($credentials['username']);
 
 		if (!$user) {
 			// fail authentication with a custom error

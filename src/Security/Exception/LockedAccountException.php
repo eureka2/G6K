@@ -24,35 +24,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
  
-namespace App\Controller;
+namespace App\Security\Exception;
 
-use App\Security\UserInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Exception\AccountStatusException;
 
-trait SecurityControllerTrait {
+class LockedAccountException extends AccountStatusException {
 
-	protected function sendResettingEmailMessage(UserInterface $user, \Swift_Mailer $mailer) {
-		$url = $this->generateUrl('app_resetting_reset', ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
-		$rendered = $this->render("security/email.txt.twig", [
-			'user' => $user,
-			'confirmationUrl' => $url,
-		])->getContent();
-		$this->sendEmailMessage($rendered, $this->getParameter('mail_from'), (string) $user->getEmail(), $mailer);
+	/**
+	 * Message key to be used by the translation component.
+	 *
+	 * @return string
+	 */
+	public function getMessageKey()
+	{
+		return 'security.login.locked_user';
 	}
 
-	protected function sendEmailMessage(string $renderedTemplate, string $fromEmail, string $toEmail, \Swift_Mailer $mailer) {
-		// Render the email, use the first line as the subject, and the rest as the body
-		$renderedLines = explode("\n", trim($renderedTemplate));
-		$subject = array_shift($renderedLines);
-		$body = implode("\n", $renderedLines);
-
-		$message = (new \Swift_Message())
-			->setSubject($subject)
-			->setFrom($fromEmail)
-			->setTo($toEmail)
-			->setBody($body);
-
-		$mailer->send($message);
+	/**
+	 * Message data to be used by the translation component.
+	 *
+	 * @return array
+	 */
+	public function getMessageData()
+	{
+		return ["%username%" => $this->getUser()->getUsernameCanonical()];
 	}
-
 }

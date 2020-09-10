@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
 The MIT License (MIT)
@@ -37,7 +37,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 use App\Security\UserManagerInterface;
-use App\Security\SecurityFunction;
+use App\Security\Util\SecurityFunction;
 
 class SecurityController extends AbstractController {
 
@@ -142,17 +142,19 @@ class SecurityController extends AbstractController {
 		$username = $request->request->get('username');
 		$user = $userManager->findUserByUsernameOrEmail($username);
 
-		if (null !== $user && !$user->isPasswordRequestNonExpired($this->retryTtl)) {
-
-			if (null === $user->getConfirmationToken()) {
-				$user->setConfirmationToken(SecurityFunction::generateToken());
+		if (null !== $user) {
+			if (!$user->isAccountNonLocked()) {
+				return $this->render('security/reset_locked.html.twig', []);
 			}
-
-			$this->sendResettingEmailMessage($user, $mailer);
-
-			$user->setPasswordRequestedAt(new \DateTime());
-			$userManager->updateUser($user);
-			return new RedirectResponse($this->generateUrl('app_check_email', ['username' => $username]));
+			if (!$user->isPasswordRequestNonExpired($this->retryTtl)) {
+				if (null === $user->getConfirmationToken()) {
+					$user->setConfirmationToken(SecurityFunction::generateToken());
+				}
+				$this->sendResettingEmailMessage($user, $mailer);
+				$user->setPasswordRequestedAt(new \DateTime());
+				$userManager->updateUser($user);
+				return new RedirectResponse($this->generateUrl('app_check_email', ['username' => $username]));
+			}
 		}
 
 		return $this->redirectToRoute('app_login');
@@ -176,9 +178,9 @@ class SecurityController extends AbstractController {
 			return $this->redirectToRoute('app_request');
 		}
 
-		return $this->render('security/check_email.html.twig', array(
+		return $this->render('security/check_email.html.twig', [
 			'tokenLifetime' => ceil($this->retryTtl / 3600),
-		));
+		]);
 	}
 
 	/**
@@ -223,6 +225,7 @@ class SecurityController extends AbstractController {
 				try {
 					$user->setPlainPassword($newFirst);
 					$user->setConfirmationToken(null);
+					$user->setPasswordRequestedAt(null);
 					$userManager->updateUser($user);
 					$success = [
 						'messageKey' => 'security.change_password.flash.success',

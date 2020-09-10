@@ -32,7 +32,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\Question;
 
-use App\Security\SecurityFunction;
+use App\Security\Util\SecurityFunction;
 use App\Security\UserManagerInterface;
 
 /**

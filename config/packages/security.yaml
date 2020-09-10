@@ -21,7 +21,7 @@ security:
     firewalls:
         main:
             pattern: ^/
-            user_checker: security.user_checker
+            user_checker: App\Security\Checker\UserChecker
             form_login:
                 provider: app_user_provider
                 csrf_token_generator: security.csrf.token_manager
@@ -32,7 +32,7 @@ security:
             anonymous: true
             guard:
                 authenticators:
-                    - App\Security\G6KAuthenticator
+                    - App\Security\Authenticator\UserAuthenticator
             remember_me:
                 secret:   '%kernel.secret%'
                 lifetime: 604800 # 1 week in seconds

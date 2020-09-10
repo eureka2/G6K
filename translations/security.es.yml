@@ -3,6 +3,10 @@ security:
         title: Entrar
         header: Entrar
         already_logged_in_as: 'Ya estás registrado como %username%'
+        disabled_user: 'La cuenta del usuario ''%username%'' está deshabilitada.'
+        locked_user: 'La cuenta del usuario ''%username%'' está bloqueada.'
+        expired_user: 'La cuenta del usuario ''%username%'' ha expirado.'
+        expired_credentials: 'Las credenciales del usuario ''%username%'' caducaron.'
         sign_out: 'Desconectarse'
         username: 'Nombre de usuario'
         password: Contraseña
@@ -19,6 +23,7 @@ security:
         new_password: 'Nueva contraseña'
         new_password_confirmation: 'Repita la contraseña'
         submit: 'Cambiar contraseña'
+        show_hide: 'Mostrar / Ocultar contraseña'
         cancel: 'Cancelar'
         ok: 'Okay'
         error:
@@ -36,7 +41,10 @@ security:
             Nota: Solo se puede solicitar una nueva contraseña cada %tokenLifetime% horas.
 
             Si no recibes un correo electrónico, comprueba tu carpeta de correo no deseado o inténtalo de nuevo.
+        locked_account: |
+            Su contraseña no se puede restablecer porque su cuenta está bloqueada.
 
+            Comuníquese con el administrador.
         request:
             username: 'Nombre de usuario o correo electrónico'
             submit: 'Restablecer contraseña'

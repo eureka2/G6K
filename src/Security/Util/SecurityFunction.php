@@ -23,36 +23,41 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
- 
-namespace App\Controller;
 
-use App\Security\UserInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+namespace App\Security\Util;
 
-trait SecurityControllerTrait {
+/**
+ *
+ * This class provides some security related functions.
+ *
+ * @copyright Jacques Archimède
+ *
+ */
+class SecurityFunction {
 
-	protected function sendResettingEmailMessage(UserInterface $user, \Swift_Mailer $mailer) {
-		$url = $this->generateUrl('app_resetting_reset', ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
-		$rendered = $this->render("security/email.txt.twig", [
-			'user' => $user,
-			'confirmationUrl' => $url,
-		])->getContent();
-		$this->sendEmailMessage($rendered, $this->getParameter('mail_from'), (string) $user->getEmail(), $mailer);
+	public static function isPasswordStrong(string $password): bool {
+		$uppercase = preg_match('@[A-Z]@', $password);
+		$lowercase = preg_match('@[a-z]@', $password);
+		$number    = preg_match('@[0-9]@', $password);
+		$specialChars = preg_match('@[^\w]@', $password);
+
+		return $uppercase && $lowercase && $number && $specialChars && strlen($password) >= 8;
 	}
 
-	protected function sendEmailMessage(string $renderedTemplate, string $fromEmail, string $toEmail, \Swift_Mailer $mailer) {
-		// Render the email, use the first line as the subject, and the rest as the body
-		$renderedLines = explode("\n", trim($renderedTemplate));
-		$subject = array_shift($renderedLines);
-		$body = implode("\n", $renderedLines);
+	public static function canonicalize(string $str): ?string {
+		if (null === $str) {
+			return null;
+		}
+		$encoding = mb_detect_encoding($str);
+		$result = $encoding
+			? mb_convert_case($str, MB_CASE_LOWER, $encoding)
+			: mb_convert_case($str, MB_CASE_LOWER);
 
-		$message = (new \Swift_Message())
-			->setSubject($subject)
-			->setFrom($fromEmail)
-			->setTo($toEmail)
-			->setBody($body);
+		return $result;
+	}
 
-		$mailer->send($message);
+	public static function generateToken(): string {
+		return rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
 	}
 
 }
