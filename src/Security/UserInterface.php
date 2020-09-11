@@ -171,7 +171,7 @@ interface UserInterface extends CoreUserInterface
 	/**
 	 * Gets the timestamp that the user requested a password reset.
 	 *
-	 * @param null|\DateTimeInterface $date
+	 * @return null|\DateTimeInterface
 	 */
 	public function getPasswordRequestedAt();
 

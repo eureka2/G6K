@@ -421,7 +421,7 @@ class User implements UserInterface
 	 */
 	public function isPasswordRequestNonExpired($ttl): ?bool
 	{
-		return $this->getPasswordRequestedAt() instanceof \DateTime &&
+		return $this->getPasswordRequestedAt() instanceof \DateTimeInterface &&
 			   $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time();
 	}
 
