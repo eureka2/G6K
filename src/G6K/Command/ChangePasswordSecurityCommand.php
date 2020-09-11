@@ -34,7 +34,7 @@ use Symfony\Component\Console\Question\Question;
 
 use App\Security\UserManagerInterface;
 
-use App\Security\SecurityFunction;
+use App\Security\Util\SecurityFunction;
 
 /**
  * Changes the password of a user into the users database.

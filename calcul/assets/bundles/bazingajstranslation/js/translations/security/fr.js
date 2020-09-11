@@ -18,6 +18,10 @@ t.add("Account is locked.", "Le compte est bloqu\u00e9.", "security", "fr");
 t.add("security.login.title", "Connexion", "security", "fr");
 t.add("security.login.header", "Connexion", "security", "fr");
 t.add("security.login.already_logged_in_as", "Vous \u00eates d\u00e9j\u00e0 connect\u00e9 en tant que %username%", "security", "fr");
+t.add("security.login.disabled_user", "Le compte utilisateur '%username%' est d\u00e9sactiv\u00e9.", "security", "fr");
+t.add("security.login.locked_user", "Le compte utilisateur '%username%' est verrouill\u00e9.", "security", "fr");
+t.add("security.login.expired_user", "Le compte utilisateur '%username%' a expir\u00e9.", "security", "fr");
+t.add("security.login.expired_credentials", "Les informations d'identification de l'utilisateur '%username%' ont expir\u00e9es.", "security", "fr");
 t.add("security.login.sign_out", "Se d\u00e9connecter", "security", "fr");
 t.add("security.login.username", "Nom d'utilisateur", "security", "fr");
 t.add("security.login.password", "Mot de passe", "security", "fr");
@@ -33,6 +37,7 @@ t.add("security.change_password.password_confirmation", "R\u00e9p\u00e9ter le mo
 t.add("security.change_password.new_password", "Nouveau mot de passe", "security", "fr");
 t.add("security.change_password.new_password_confirmation", "R\u00e9p\u00e9ter le nouveau mot de passe", "security", "fr");
 t.add("security.change_password.submit", "Modifier le mot de passe", "security", "fr");
+t.add("security.change_password.show_hide", "Afficher \/ masquer le mot de passe", "security", "fr");
 t.add("security.change_password.cancel", "Annuler", "security", "fr");
 t.add("security.change_password.ok", "Ok", "security", "fr");
 t.add("security.change_password.error.invalid_current_password", "Le mot de passe actuel n'est pas valide.", "security", "fr");
@@ -43,6 +48,7 @@ t.add("security.change_password.flash.success", "Le mot de passe a \u00e9t\u00e9
 t.add("security.resetting.title", "R\u00e9initialisation de votre mot de passe", "security", "fr");
 t.add("security.resetting.header", "R\u00e9initialisation de votre mot de passe", "security", "fr");
 t.add("security.resetting.check_email", "Un e-mail a \u00e9t\u00e9 envoy\u00e9. Il contient un lien sur lequel il vous faudra cliquer pour r\u00e9initialiser votre mot de passe.\nRemarque : Vous ne pouvez demander un nouveau mot de passe que toutes les %tokenLifetime% heures.\n\nSi vous ne recevez pas un email, v\u00e9rifiez votre dossier spam ou essayez \u00e0 nouveau.\n", "security", "fr");
+t.add("security.resetting.locked_account", "Votre mot de passe ne peut pas \u00eatre r\u00e9initialis\u00e9 car votre compte est verrouill\u00e9.\n\nVeuillez contacter l'administrateur.\n", "security", "fr");
 t.add("security.resetting.request.username", "Nom d'utilisateur ou adresse e-mail", "security", "fr");
 t.add("security.resetting.request.submit", "R\u00e9initialiser le mot de passe", "security", "fr");
 t.add("security.resetting.request.cancel", "Annuler", "security", "fr");

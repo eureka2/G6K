@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
 The MIT License (MIT)
@@ -323,6 +323,14 @@ class User implements UserInterface
 	/**
 	 * @see UserInterface
 	 */
+	public function isAccountNonLocked(): ?bool
+	{
+		return ! $this->locked;
+	}
+
+	/**
+	 * @see UserInterface
+	 */
 	public function getExpired(): ?bool
 	{
 		return $this->expired;
@@ -344,6 +352,14 @@ class User implements UserInterface
 	public function isExpired(): ?bool
 	{
 		return $this->expired;
+	}
+
+	/**
+	 * @see UserInterface
+	 */
+	public function isAccountNonExpired(): ?bool
+	{
+		return !$this->expired;
 	}
 
 	/**
@@ -405,7 +421,7 @@ class User implements UserInterface
 	 */
 	public function isPasswordRequestNonExpired($ttl): ?bool
 	{
-		return $this->getPasswordRequestedAt() instanceof \DateTime &&
+		return $this->getPasswordRequestedAt() instanceof \DateTimeInterface &&
 			   $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time();
 	}
 
@@ -505,6 +521,22 @@ class User implements UserInterface
 	/**
 	 * @see UserInterface
 	 */
+	public function isCredentialsExpired(): ?bool
+	{
+		return $this->getCredentialsExpired();
+	}
+
+	/**
+	 * @see UserInterface
+	 */
+	public function isCredentialsNonExpired(): ?bool
+	{
+		return !$this->getCredentialsExpired();
+	}
+
+	/**
+	 * @see UserInterface
+	 */
 	public function setCredentialsExpired(?bool $credentials_expired): self
 	{
 		$this->credentials_expired = $credentials_expired;
@@ -566,5 +598,3 @@ class User implements UserInterface
 	}
 
 }
-
-?>

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'security/base.html.twig' %}
 
 {% trans_default_domain 'security' %}
 
@@ -42,6 +42,7 @@
 					<div class="input-group mb-3">
 						<div class="input-group-prepend"><i class="input-group-text pt-2 fas fa-lock"></i></div>
 						<input type="password" name="password" id="inputPassword" class="form-control" required>
+						<button class="pwd-shower" style="border:none;background:transparent" title="{{ 'security.change_password.show_hide'|trans }}"><i class=" far fa-eye"></i></button>
 					</div>
 
 

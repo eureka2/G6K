@@ -3,6 +3,10 @@ security:
         title: Connexion
         header: Connexion
         already_logged_in_as: 'Vous êtes déjà connecté en tant que %username%'
+        disabled_user: 'Le compte utilisateur ''%username%'' est désactivé.'
+        locked_user: 'Le compte utilisateur ''%username%'' est verrouillé.'
+        expired_user: 'Le compte utilisateur ''%username%'' a expiré.'
+        expired_credentials: 'Les informations d''identification de l''utilisateur ''%username%'' ont expirées.'
         sign_out: 'Se déconnecter'
         username: 'Nom d''utilisateur'
         password: 'Mot de passe'
@@ -19,6 +23,7 @@ security:
         new_password: 'Nouveau mot de passe'
         new_password_confirmation: 'Répéter le nouveau mot de passe'
         submit: 'Modifier le mot de passe'
+        show_hide: 'Afficher / masquer le mot de passe'
         cancel: 'Annuler'
         ok: 'Ok'
         error:
@@ -36,7 +41,10 @@ security:
             Remarque : Vous ne pouvez demander un nouveau mot de passe que toutes les %tokenLifetime% heures.
 
             Si vous ne recevez pas un email, vérifiez votre dossier spam ou essayez à nouveau.
+        locked_account: |
+            Votre mot de passe ne peut pas être réinitialisé car votre compte est verrouillé.
 
+            Veuillez contacter l'administrateur.
         request:
             username: 'Nom d''utilisateur ou adresse e-mail'
             submit: 'Réinitialiser le mot de passe'

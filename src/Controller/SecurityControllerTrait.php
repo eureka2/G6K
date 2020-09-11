@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
 The MIT License (MIT)
@@ -36,11 +36,11 @@ trait SecurityControllerTrait {
 		$rendered = $this->render("security/email.txt.twig", [
 			'user' => $user,
 			'confirmationUrl' => $url,
-		]);
+		])->getContent();
 		$this->sendEmailMessage($rendered, $this->getParameter('mail_from'), (string) $user->getEmail(), $mailer);
 	}
 
-	protected function sendEmailMessage($renderedTemplate, $fromEmail, $toEmail, \Swift_Mailer $mailer) {
+	protected function sendEmailMessage(string $renderedTemplate, string $fromEmail, string $toEmail, \Swift_Mailer $mailer) {
 		// Render the email, use the first line as the subject, and the rest as the body
 		$renderedLines = explode("\n", trim($renderedTemplate));
 		$subject = array_shift($renderedLines);
@@ -56,5 +56,3 @@ trait SecurityControllerTrait {
 	}
 
 }
-
-?>

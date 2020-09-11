@@ -18,6 +18,10 @@ t.add("Account is locked.", "Account is locked.", "security", "en");
 t.add("security.login.title", "Log in", "security", "en");
 t.add("security.login.header", "Log in", "security", "en");
 t.add("security.login.already_logged_in_as", "You are already logged in as %username%", "security", "en");
+t.add("security.login.disabled_user", "The user '%username%' account is disabled.", "security", "en");
+t.add("security.login.locked_user", "The user '%username%' account is locked.", "security", "en");
+t.add("security.login.expired_user", "The user '%username%' account is locked.", "security", "en");
+t.add("security.login.expired_credentials", "The user '%username%' credentials has expired.", "security", "en");
 t.add("security.login.sign_out", "Sign out", "security", "en");
 t.add("security.login.username", "Username", "security", "en");
 t.add("security.login.password", "Password", "security", "en");
@@ -33,6 +37,7 @@ t.add("security.change_password.password_confirmation", "Repeat password", "secu
 t.add("security.change_password.new_password", "New password", "security", "en");
 t.add("security.change_password.new_password_confirmation", "Repeat new password", "security", "en");
 t.add("security.change_password.submit", "Change password", "security", "en");
+t.add("security.change_password.show_hide", "Show\/Hide password", "security", "en");
 t.add("security.change_password.cancel", "Cancel", "security", "en");
 t.add("security.change_password.ok", "Ok", "security", "en");
 t.add("security.change_password.error.invalid_current_password", "The current password is invalid.", "security", "en");
@@ -43,6 +48,7 @@ t.add("security.change_password.flash.success", "The password has been changed."
 t.add("security.resetting.title", "Reset Password", "security", "en");
 t.add("security.resetting.header", "Reset Password", "security", "en");
 t.add("security.resetting.check_email", "An email has been sent. It contains a link you must click to reset your password.\nNote: You can only request a new password once within %tokenLifetime% hours.\n\nIf you don't get an email check your spam folder or try again.\n", "security", "en");
+t.add("security.resetting.locked_account", "Your password cannot be reset because your account is locked.\n\nPlease contact the administrator.\n", "security", "en");
 t.add("security.resetting.request.username", "Username or email address", "security", "en");
 t.add("security.resetting.request.submit", "Reset password", "security", "en");
 t.add("security.resetting.request.cancel", "Cancel", "security", "en");

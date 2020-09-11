@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2018 Jacques Archimède
+Copyright (c) 2015-2020 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -93,11 +93,11 @@ class ScriptHandler
 		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 
 		putenv('PUBLIC_DIR=' . ( $extras['public-dir'] ?? 'public'));
-		$dotenvdist = new Dotenv();
+		$dotenvdist = new Dotenv(true);
 		$dotenvdist->load($symfonyDir . DIRECTORY_SEPARATOR . '.env.dist');
 
 		if (is_file($symfonyDir . DIRECTORY_SEPARATOR . '.env')) {
-			$dotenv = new Dotenv();
+			$dotenv = new Dotenv(true);
 			$dotenv->load($symfonyDir . DIRECTORY_SEPARATOR . '.env');
 		}
 		$event->getIO()->write('<info>Creating the ".env" file</info>');
@@ -465,7 +465,7 @@ class ScriptHandler
 	protected static function getParameters(Event $event, $symfonyDir) {
 		$parameters = array();
 		try {
-			$dotenv = new Dotenv();
+			$dotenv = new Dotenv(true);
 			$dotenv->load($symfonyDir . DIRECTORY_SEPARATOR . '.env');
 			$parameters['database_driver'] = 'pdo_' . self::getParameterValue($symfonyDir, 'DB_ENGINE');
 			$parameters['database_host'] = self::getParameterValue($symfonyDir, 'DB_HOST');

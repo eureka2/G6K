@@ -3,6 +3,10 @@
 t.add("security.login.title", "Entrar", "security", "pt");
 t.add("security.login.header", "Entrar", "security", "pt");
 t.add("security.login.already_logged_in_as", "Voc\u00ea j\u00e1 est\u00e1 logado como %username%", "security", "pt");
+t.add("security.login.disabled_user", "A conta do usu\u00e1rio '%username%' est\u00e1 desabilitada.", "security", "pt");
+t.add("security.login.locked_user", "A conta do usu\u00e1rio '%username%' est\u00e1 bloqueada.", "security", "pt");
+t.add("security.login.expired_user", "A conta do usu\u00e1rio '%username%' expirou.", "security", "pt");
+t.add("security.login.expired_credentials", "As credenciais do usu\u00e1rio '%username%' expiraram.", "security", "pt");
 t.add("security.login.sign_out", "Sair", "security", "pt");
 t.add("security.login.username", "Utilizador", "security", "pt");
 t.add("security.login.password", "Password", "security", "pt");
@@ -18,6 +22,7 @@ t.add("security.change_password.password_confirmation", "Verificar password", "s
 t.add("security.change_password.new_password", "Nova password", "security", "pt");
 t.add("security.change_password.new_password_confirmation", "Verificar a nova password", "security", "pt");
 t.add("security.change_password.submit", "Mudar a password", "security", "pt");
+t.add("security.change_password.show_hide", "Mostrar \/ ocultar senha", "security", "pt");
 t.add("security.change_password.cancel", "Cancelar", "security", "pt");
 t.add("security.change_password.ok", "Est\u00e1 bem", "security", "pt");
 t.add("security.change_password.error.invalid_current_password", "A senha atual \u00e9 inv\u00e1lida.", "security", "pt");
@@ -28,6 +33,7 @@ t.add("security.change_password.flash.success", "A password foi alterada", "secu
 t.add("security.resetting.title", "Recuperar password", "security", "pt");
 t.add("security.resetting.header", "Recuperar password", "security", "pt");
 t.add("security.resetting.check_email", "Foi enviado um email. Este cont\u00e9m um link que ter\u00e1 de visitar para recuperar a sua password.\nNota: S\u00f3 poder\u00e1 voltar a pedir para recuperar a sua password dentro de %tokenLifetime% horas.\n\nSe n\u00e3o receber o email verifique a pasta de spam do seu cliente de email ou tente novamente.\n", "security", "pt");
+t.add("security.resetting.locked_account", "Sua senha n\u00e3o pode ser redefinida porque sua conta est\u00e1 bloqueada.\n\nEntre em contato com o administrador.\n", "security", "pt");
 t.add("security.resetting.request.username", "Utilizador ou endere\u00e7o de email", "security", "pt");
 t.add("security.resetting.request.submit", "Recuperar password", "security", "pt");
 t.add("security.resetting.request.cancel", "Cancelar", "security", "pt");

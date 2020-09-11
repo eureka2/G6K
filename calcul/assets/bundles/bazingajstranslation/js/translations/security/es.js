@@ -18,6 +18,10 @@ t.add("Account is locked.", "La cuenta est\u00e1 bloqueada.", "security", "es");
 t.add("security.login.title", "Entrar", "security", "es");
 t.add("security.login.header", "Entrar", "security", "es");
 t.add("security.login.already_logged_in_as", "Ya est\u00e1s registrado como %username%", "security", "es");
+t.add("security.login.disabled_user", "La cuenta del usuario '%username%' est\u00e1 deshabilitada.", "security", "es");
+t.add("security.login.locked_user", "La cuenta del usuario '%username%' est\u00e1 bloqueada.", "security", "es");
+t.add("security.login.expired_user", "La cuenta del usuario '%username%' ha expirado.", "security", "es");
+t.add("security.login.expired_credentials", "Las credenciales del usuario '%username%' caducaron.", "security", "es");
 t.add("security.login.sign_out", "Desconectarse", "security", "es");
 t.add("security.login.username", "Nombre de usuario", "security", "es");
 t.add("security.login.password", "Contrase\u00f1a", "security", "es");
@@ -33,6 +37,7 @@ t.add("security.change_password.password_confirmation", "Repita la contrase\u00f
 t.add("security.change_password.new_password", "Nueva contrase\u00f1a", "security", "es");
 t.add("security.change_password.new_password_confirmation", "Repita la contrase\u00f1a", "security", "es");
 t.add("security.change_password.submit", "Cambiar contrase\u00f1a", "security", "es");
+t.add("security.change_password.show_hide", "Mostrar \/ Ocultar contrase\u00f1a", "security", "es");
 t.add("security.change_password.cancel", "Cancelar", "security", "es");
 t.add("security.change_password.ok", "Okay", "security", "es");
 t.add("security.change_password.error.invalid_current_password", "La contrase\u00f1a actual no es v\u00e1lida.", "security", "es");
@@ -43,6 +48,7 @@ t.add("security.change_password.flash.success", "La contrase\u00f1a se ha cambia
 t.add("security.resetting.title", "Restablecer Contrase\u00f1a", "security", "es");
 t.add("security.resetting.header", "Restablecer Contrase\u00f1a", "security", "es");
 t.add("security.resetting.check_email", "Se ha enviado un correo electr\u00f3nico a tu cuenta de correo. Contiene un enlace de activaci\u00f3n al que debes acceder para restablecer tu contrase\u00f1a.\nNota: Solo se puede solicitar una nueva contrase\u00f1a cada %tokenLifetime% horas.\n\nSi no recibes un correo electr\u00f3nico, comprueba tu carpeta de correo no deseado o int\u00e9ntalo de nuevo.\n", "security", "es");
+t.add("security.resetting.locked_account", "Su contrase\u00f1a no se puede restablecer porque su cuenta est\u00e1 bloqueada.\n\nComun\u00edquese con el administrador.\n", "security", "es");
 t.add("security.resetting.request.username", "Nombre de usuario o correo electr\u00f3nico", "security", "es");
 t.add("security.resetting.request.submit", "Restablecer contrase\u00f1a", "security", "es");
 t.add("security.resetting.request.cancel", "Cancelar", "security", "es");

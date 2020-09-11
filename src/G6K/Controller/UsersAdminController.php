@@ -28,7 +28,7 @@ namespace App\G6K\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Security\SecurityFunction;
+use App\Security\Util\SecurityFunction;
 
 use App\G6K\Manager\ControllersTrait;
 
@@ -90,7 +90,7 @@ class UsersAdminController extends BaseAdminController {
 		
 		if ($crud !== null) {
 			if (! $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
-				return $this->errorResponse($form, "Access denied!");
+				return $this->errorResponse($form, $this->translator->trans("Access denied!"));
 			}
 			switch ($crud) {
 				case 'add':
@@ -206,44 +206,44 @@ class UsersAdminController extends BaseAdminController {
 		$enabled = isset($form['enabled']) ? $form['enabled'] == 1 : false;
 		$roles = isset($form['roles']) ? $form['roles'] : array() ;
 		if ($userName == "" || strlen($userName)  < 3) {
-			return $this->errorResponse($form, "The username field is required  (3 car .min)!");
+			return $this->errorResponse($form, $this->translator->trans("The username field is required  (3 car .min)!"));
 		}
 		if ($email == "") {
-			return $this->errorResponse($form, "The email field is required!");
+			return $this->errorResponse($form, $this->translator->trans("The email field is required!"));
 		}
 		if (!preg_match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/", $email)) {
-			return $this->errorResponse($form, "Please enter a valid email address.");
+			return $this->errorResponse($form, $this->translator->trans("Please enter a valid email address."));
 		}
 		if ($password == "") {
-			return $this->errorResponse($form, "The password field is required!");
+			return $this->errorResponse($form, $this->translator->trans("The password field is required!"));
 		}
 		if (! $restore && ! $newUser) {
 			$user = $this->userManager->findUserBy(array('id' => $form['id']));
 			if ($user === null) {
-				return $this->errorResponse($form, "This user doesn't  exists !");
+				return $this->errorResponse($form, $this->translator->trans("This user doesn't  exists !"));
 			}
 			$oldRoles = $user->getRoles();
 			if ($userName != $user->getUserName()) {
 				$otherUser = $this->userManager->findUserByUsername($userName);
 				if ($otherUser !== null) {
-					return $this->errorResponse($form, "This username already exists !");
+					return $this->errorResponse($form, $this->translator->trans("This username already exists !"));
 				}
 			}
 			if ($email != $user->getEmail()) {
 				$otherUser = $this->userManager->findUserByEmail($email);
 				if ($otherUser !== null) {
-					return $this->errorResponse($form, "This email already exists !");
+					return $this->errorResponse($form, $this->translator->trans("This email already exists !"));
 				}
 			}
 		} else {
 			$oldRoles = array();
 			$otherUser = $this->userManager->findUserByUsername($userName);
 			if ($otherUser !== null) {
-				return $this->errorResponse($form, "This username already exists !");
+				return $this->errorResponse($form, $this->translator->trans("This username already exists !"));
 			}
 			$otherUser = $this->userManager->findUserByEmail($email);
 			if ($otherUser !== null) {
-				return $this->errorResponse($form, "This email already exists !");
+				return $this->errorResponse($form, $this->translator->trans("This email already exists !"));
 			}
 			$user = $this->userManager->createUser();
 		}
@@ -254,7 +254,7 @@ class UsersAdminController extends BaseAdminController {
 			$user->setPassword($password);
 		} else if ($newUser || $password != $user->getPassword()) {
 			if (! SecurityFunction::isPasswordStrong($password)) {
-				return $this->errorResponse($form, "Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.");
+				return $this->errorResponse($form, $this->translator->trans("security.change_password.error.password_not_strong", [], 'security'));
 			}
 			$user->setPlainPassword($password);
 		}
@@ -292,7 +292,7 @@ class UsersAdminController extends BaseAdminController {
 		$id = $form['id'];
 		$user = $this->userManager->findUserBy(array('id' => $id));
 		if ($user === null) {
-			return $this->errorResponse($form, "This user doesn't  exists !");
+			return $this->errorResponse($form, $this->translator->trans("This user doesn't  exists !"));
 		}
 		$this->userManager->deleteUser($user);
 		$response = new Response();

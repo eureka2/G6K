@@ -136,7 +136,7 @@ abstract class CommandBase extends Command
 	private function getParameters() {
 		$parameters = array();
 		try {
-			$dotenv = new Dotenv();
+			$dotenv = new Dotenv(true);
 			$dotenv->load($this->projectDir.'/.env');
 			$parameters['app_env'] = $this->getParameterValue('APP_ENV');
 			$parameters['app_version'] = $this->getParameterValue('APP_VERSION');

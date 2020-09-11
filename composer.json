@@ -46,8 +46,7 @@
         "symfony/phpunit-bridge": "~3.4|~4.0",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
-        "symfony/var-dumper": "^4.3.0",
-        "symfony/web-server-bundle": "^4.3.0"
+        "symfony/var-dumper": "^4.3.0"
     },
     "config": {
         "preferred-install": {

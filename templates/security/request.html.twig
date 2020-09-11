@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'security/base.html.twig' %}
 
 {% trans_default_domain 'security' %}
 
@@ -31,10 +31,10 @@
 					</div>
 					<div style="margin-top:10px" class="form-group form-inline">
 						<div class="col-sm-8 controls">
-							<input type="submit" class="btn btn-primary btn-lg btn-block" style="height: auto;" value="{{ 'security.resetting.request.submit'|trans }}" />
+							<input type="submit" class="btn btn-primary btn-lg btn-block form-control" style="height: auto;" value="{{ 'security.resetting.request.submit'|trans }}" />
 						</div>
 						<div class="col-sm-4 controls">
-							<input type="submit" class="btn btn-secondary btn-lg btn-block" style="height: auto;" name="_cancel" value="{{ 'security.resetting.request.cancel'|trans }}" />
+							<input type="submit" class="btn btn-secondary btn-lg btn-block form-control" style="height: auto;" name="_cancel" value="{{ 'security.resetting.request.cancel'|trans }}" />
 						</div>
 					</div>
 				</form>
