@@ -1,0 +1,32 @@
+{% extends 'security/base.html.twig' %}
+
+{% trans_default_domain 'security' %}
+
+{% block title %}{{ 'security.resetting.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">	
+	<div id="resetbox" class="mainbox col-md-6 col-sm-8 mx-auto mt-5">
+		<div class="card" >
+			<div class="card-header bg-primary">
+				<div class="card-title mb-0 font-weight-bold text-white">{{ 'security.resetting.header'|trans }}</div>
+			</div>	 
+			<div style="padding-top:30px" class="card-body" >
+				<div class="flash-messages-text">
+				{% for type, messages in app.session.flashbag.all() %}
+					{% for message in messages %}
+						<div class="flash-{{ type }}">
+							{{ message }}
+						</div>
+					{% endfor %}
+				{% endfor %}
+				</div>
+				<p>
+				{{ 'security.resetting.locked_account'|trans }}
+				</p>
+			</div>
+		</div>  
+	</div>
+</div>
+
+{% endblock %}
