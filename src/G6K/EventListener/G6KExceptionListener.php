@@ -83,7 +83,7 @@ class G6KExceptionListener
 	 */
 	public function onKernelException(ExceptionEvent $event) {
 		$request = $event->getRequest();
-		$exception = $event->getException();
+		$exception = $event->getThrowable();
 		$route = $request->get("_route");
 		if ($route == 'eureka_g6k_api') {
 			$response = $this->jsonResponse($request, $exception);
