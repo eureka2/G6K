@@ -42,24 +42,28 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Security\Guard\PasswordAuthenticatedInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class UserAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
 {
 	use TargetPathTrait;
 
 	public const LOGIN_ROUTE = 'app_login';
+	public const HOME_ROUTE = 'eureka_g6k_index';
 
 	private $userManager;
 	private $urlGenerator;
 	private $csrfTokenManager;
 	private $passwordEncoder;
+	private $authorizationChecker;
 
-	public function __construct(UserManagerInterface $userManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
+	public function __construct(UserManagerInterface $userManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder, AuthorizationCheckerInterface $authorizationChecker)
 	{
 		$this->userManager = $userManager;
 		$this->urlGenerator = $urlGenerator;
 		$this->csrfTokenManager = $csrfTokenManager;
 		$this->passwordEncoder = $passwordEncoder;
+		$this->authorizationChecker = $authorizationChecker;
 	}
 
 	public function supports(Request $request)
@@ -116,17 +120,22 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 	public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
 	{
 		if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-			$user = $this->userManager->findUserByUsername($token->getUsername());
+			$user = $token->getUser();
 			if (!$user) {
 				throw new CustomUserMessageAuthenticationException('Username could not be found.');
 			}
 			$user->setLastLogin(new \DateTime());
 			$this->userManager->updateUser($user);
-			return new RedirectResponse($targetPath);
+			if ($this->authorizationChecker->isGranted('ROLE_CONTRIBUTOR')) {
+				return new RedirectResponse($targetPath);
+			} else {
+				return new RedirectResponse($this->urlGenerator->generate(self::HOME_ROUTE));
+			}
 		}
 
 		// For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
-		throw new \Exception('provide a valid redirect inside '.__FILE__);
+		return new RedirectResponse($this->urlGenerator->generate(self::HOME_ROUTE));
+		// throw new \Exception('provide a valid redirect inside '.__FILE__);
 	}
 
 	protected function getLoginUrl()

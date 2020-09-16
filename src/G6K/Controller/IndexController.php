@@ -84,13 +84,14 @@ class IndexController extends BaseController {
 		$ua = new \Detection\MobileDetect();
 		try {
 			return $this->render(
-				'base/pages/index.html.twig',
+				'index/pages/index.html.twig',
 				array(
 					'script' => $script,
 					'ua' => $ua,
 					'browserengine' => $this->getBrowserEngine($request),
 					'path' => $request->getScheme().'://'.$request->getHttpHost(),
 					'step' => null,
+					'nav' => 'home',
 					'simulators' => $simulators,
 					'widgets' => array(),
 					'functions' => array()

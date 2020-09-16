@@ -1,0 +1,180 @@
+{#
+The MIT License (MIT)
+
+Copyright (c) 2015-2018 Jacques Archimède
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+#}
+
+{% extends "base/layout/pagelayout.html.twig" %}
+
+{% import _self as page %}
+
+{% block title %}{{ 'Simulators'|trans }}{% endblock %}
+
+{% block styles %}
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/base/css/g6k.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/css/g6k.admin.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/admin/js/libs/bootstrap4/css/bootstrap.min.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/base/js/libs/fontawesome/css/all.min.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/index/css/index.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ asset('assets/index/css/animate.css') }}" />
+{% endblock %}
+
+{% block content %}
+
+<div id="preloader">
+	<div id="status"></div>
+</div>
+
+<header class="header">
+	<div class="container-fluid">
+		<nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-dark" role="banner">
+			<a class="navbar-brand" href="#">{{ 'Simulators'|trans }}</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="{{ 'Toggle navigation'|trans }}">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="navbarCollapse" role="navigation">
+				<ul class="navbar-nav mr-auto">
+					{% if is_granted('ROLE_CONTRIBUTOR') %}
+					<li class="nav-item{%- if nav == 'home' %} active{%- endif -%}"><a class="nav-link" href="{{ path('eureka_g6k_admin') }}">{{ 'Dashboard'|trans }}</a></li>
+					{% else %}
+					<li class="nav-item"></li>
+					{% endif %}
+				</ul>
+				<ul class="navbar-nav navbar-right">
+					{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+					<li id="authentification" class="nav-item dropdown">
+						<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'security') }} <span class="caret"></span>&nbsp;
+						 </a>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ 'layout.logout'|trans({}, 'security') }}</a></li>
+							<li class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="{{ path('app_change_password') }}"><i class="fas fa-lock" aria-hidden="true"></i> {{ 'layout.change_password'|trans({}, 'security') }}</a></li>
+						</ul>
+					</li>
+					{% else %}
+					<li id="authentification" class="nav-item">
+						<a class="nav-link" href="{{ path('app_login') }}">{{ 'layout.login'|trans({}, 'security') }}</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- .container -->
+	</nav>
+</header>
+
+
+<div id="page-simulators" class="content" style="height: 100%;">
+	<div id="page" class="container-fluid">
+		<div class="row">
+			{% for simu in simulators %}
+			<div class="col-md-4 wow fadeInUpBig" style="margin-top: 1rem;">
+				<div class="card" style="min-height: 20rem">
+					<h5 class="card-header">{{ simu.name }}</h5>
+					<div class="card-body">
+						<h5 class="card-title">{{ simu.label }}</h5>
+						<div class="card-text shrinkable" id="{{ simu.name }}">{{ simu.description|jscode }}</div>
+						<a href="{{ path('eureka_g6k_calcul', { simu: simu.name }) }}" class="btn btn-primary">Accéder au simulateur</a>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+<footer id="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<ul class="social-links">
+					<li><a href="https://www.facebook.com/sharer/sharer.php?u={{ app.request.uri }}" class="wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;"><i class="fab fa-facebook-f"></i></a></li>
+					<li><a href="http://twitter.com/share?url={{ app.request.uri }}&text={{ 'Simulators'|trans }}" class="wow fadeInUp" data-wow-delay=".1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;"><i class="fab fa-twitter"></i></a></li>
+					<li><a href="https://plus.google.com/share?url={{ app.request.uri }}" class="wow fadeInUp" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;"><i class="fab fa-google-plus-g"></i></a></li>
+					<li><a href="https://www.linkedin.com/shareArticle?mini=true&url={{ app.request.uri }}&title={{ 'Simulators'|trans }}" class="wow fadeInUp" data-wow-delay=".4s" style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp;"><i class="fab fa-linkedin-in"></i></a></li>
+				</ul>
+				<div class="legal-notice" style=" width: 100%; text-align: center;"><a href="/mention-legales.html">Mentions légales</a></div>
+			</div>
+		</div><!-- .row -->
+	</div><!-- .container -->
+</footer>
+<div class="scroll-up" style="display: block;">
+	<a href="#page-simulators"><i class="fa fa-angle-up"></i></a>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('assets/admin/js/libs/bootstrap4/js/bootstrap.bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/index/js/libs/ShowMoreJS/showmore.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/index/js/animations.min.js') }}"></script>
+<script type="text/javascript">
+$(window).load(function() {
+	$('#status').fadeOut();
+	$('#preloader').delay(300).fadeOut('slow');
+});
+ShowMore.init({
+	target: '.shrinkable',
+	numOfWords: 40,
+	showMoretext: '{{ 'Show more'|trans }}',
+	ellipsisText: ' ...',
+	hiddenClass: 'd-none'
+});
+wow = new WOW({
+	mobile: false
+});
+wow.init();
+$('a[href*=#]').bind("click", function(e){
+	var anchor = $(this);
+	$('html, body').stop().animate({
+		scrollTop: $(anchor.attr('href')).offset().top
+	}, 1000);
+	e.preventDefault();
+});
+$(window).scroll(function() {
+	if ($(this).scrollTop() > 100) {
+		$('.scroll-up').fadeIn();
+	} else {
+		$('.scroll-up').fadeOut();
+	}
+});
+$(".screen-height").height($(window).height());
+
+$(window).resize(function(){
+	$(".screen-height").height($(window).height());
+});
+
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+	$('#home').css({'background-attachment': 'scroll'});
+} else {
+	$('#home').parallax('50%', 0.1);
+}
+$('.header').sticky({
+	topSpacing: 0
+});
+
+$('body').scrollspy({
+	target: '#navbar',
+	offset: 70
+});
+
+</script>
+{% endblock %}

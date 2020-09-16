@@ -85,7 +85,11 @@ class SecurityController extends AbstractController {
 		$newFirst = '';
 		$newSecond = '';
 		if (isset($form['_cancel'])) {
-			return $this->redirectToRoute('eureka_g6k_admin');
+			if ($this->isGranted('ROLE_CONTRIBUTOR')) {
+				return $this->redirectToRoute('eureka_g6k_admin');
+			} else {
+				return $this->redirectToRoute('eureka_g6k_index');
+			}
 		} elseif (isset($form['user_change_password_form'])) {
 			$password = $form['user_change_password_form']['current_password'];
 			$newFirst = $form['user_change_password_form']['plainPassword']['first'];
@@ -139,6 +143,13 @@ class SecurityController extends AbstractController {
 	 * @Route("/send-email", name="app_send_email")
 	 */
 	public function sendEmail(Request $request, UserManagerInterface $userManager, \Swift_Mailer $mailer): Response {
+		if (null !== $request->request->get('_cancel')) {
+			if ($this->isGranted('ROLE_CONTRIBUTOR')) {
+				return $this->redirectToRoute('eureka_g6k_admin');
+			} else {
+				return $this->redirectToRoute('eureka_g6k_index');
+			}
+		}
 		$username = $request->request->get('username');
 		$user = $userManager->findUserByUsernameOrEmail($username);
 
@@ -207,7 +218,11 @@ class SecurityController extends AbstractController {
 		$newFirst = '';
 		$newSecond = '';
 		if (isset($form['_cancel'])) {
-			return $this->redirectToRoute('eureka_g6k_admin');
+			if ($this->isGranted('ROLE_CONTRIBUTOR')) {
+				return $this->redirectToRoute('eureka_g6k_admin');
+			} else {
+				return $this->redirectToRoute('eureka_g6k_index');
+			}
 		} elseif (isset($form['user_resetting_reset_form'])) {
 			$newFirst = $form['user_resetting_reset_form']['plainPassword']['first'];
 			$newSecond = $form['user_resetting_reset_form']['plainPassword']['second'];

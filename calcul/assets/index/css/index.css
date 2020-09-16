@@ -1,0 +1,352 @@
+@import url(http://fonts.googleapis.com/css?family=Raleway:400,300,500,700,800);
+@import url(http://fonts.googleapis.com/css?family=Lobster);
+/* ---------------------------------------------- /*
+ * General Styles
+/* ---------------------------------------------- */
+
+.pfblock {
+	padding: 120px 0 100px;
+}
+
+.pfblock-gray {
+	background: #f5f5f5;
+}
+
+.pfblock-image {
+	padding: 0;
+}
+
+.calltoaction h1,
+.calltoaction h2,
+.calltoaction h3,
+.calltoaction h4,
+.calltoaction h5,
+.calltoaction h6,
+.pfblock-image,
+.pfblock-image h1,
+.pfblock-image h2,
+.pfblock-image h3,
+.pfblock-image h4,
+.pfblock-image h5,
+.pfblock-image h6 {
+	color: #fff;
+}
+
+.pfblock-header {
+	text-align: center;
+	margin: 0 0 60px;
+}
+
+.pfblock-header-left {
+	text-align: left;
+}
+
+.pfblock-header-left .pfblock-line {
+	width: inherit;
+	margin: 30px 0;
+}
+
+.pfblock-title{
+    font-weight: 800;
+}
+
+.pfblock-subtitle {
+	font-family: Raleway, "Times New Roman", Times, sans-serif;
+	font-style: normal;
+	font-size: 18px;
+}
+
+.pfblock-line {
+	background: rgba(135, 135, 135, 0.5);
+	width: 100px;
+	height: 1px;
+	margin: 30px auto;
+}
+
+.pfblock-icon {
+	font-size: 32px;
+}
+.calltoaction *{
+    text-align: center;
+}
+.calltoaction {
+    background: url(../images/item-3.jpg);
+	background-color: #222;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	-webkit-background-size: cover;
+	   -moz-background-size: cover;
+		 -o-background-size: cover;
+			background-size: cover;
+	padding: 50px 0;
+	color: #999;
+}
+
+.calltoaction h2 {
+	font-size: 20px;
+	letter-spacing: 1px;
+	margin-bottom: 5px;
+}
+
+.calltoaction-decription{
+    padding-top: 20px;
+    padding-bottom: 30px;
+    font-size: 20px;
+    color: #fff;
+}
+
+.calltoaction-btn {
+	text-align: center;
+}
+
+.calltoaction-btn > .btn {
+    background: rgba(255, 255, 255, .8);
+    color: #111;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.calltoaction-btn > .btn:hover{
+    background: #fff;
+}
+
+.long-down {
+	margin-bottom: 40px;
+}
+
+
+.header {
+	border-bottom: 1px solid #f5f5f5;
+	position: relative;
+	width: 100%;
+	z-index: 998;
+}
+.header > div {
+	padding: 0;
+}
+#home {
+	background: url(../../admin/images/login.jpeg);
+	background-color: #222;
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	-webkit-background-size: cover;
+	   -moz-background-size: cover;
+		 -o-background-size: cover;
+			background-size: cover;
+	padding: 0;
+}
+.home-overlay {
+	background-color: rgba(44, 62, 80, 0.3);
+	background-image: url("../images/pattern.png");
+	background-repeat: repeat;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 0;
+}
+.intro {
+	position: absolute;
+	width: 100%;
+	top: 50%;
+	left: 0;
+	text-align: center;
+	-webkit-transform: translate(0%, -50%);
+	   -moz-transform: translate(0%, -50%);
+		-ms-transform: translate(0%, -50%);
+		 -o-transform: translate(0%, -50%);
+			transform: translate(0%, -50%);
+	padding: 0 15px;
+}
+.intro h1{
+	font-weight: 800;
+}
+.start {
+	font-family: Raleway, "Times New Roman", Times, sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	text-transform: none;
+	margin: 15px 0;
+}
+
+.sticky-wrapper + .content {
+	padding: 0 0 1rem;
+}
+
+.sticky-wrapper + .content > #page{
+	margin-top: 0;
+}
+
+#home + .sticky-wrapper + .content {
+	padding: 3.5rem 0 1rem;
+}
+
+#footer {
+	background: #222;
+	text-align: center;
+	padding: 40px 0;
+	color: #FFF;
+	margin-top: 1rem;
+}
+.copyright {
+	margin: 0;
+}
+.copyright a{
+	border-bottom: 1px dotted #fff;
+}
+.legal-notice {
+	margin: 0;
+}
+.legal-notice a {
+	color: #FFF;
+}
+#footer span{
+	animation-iteration-count: infinite;
+	-webkit-animation-iteration-count: infinite;
+	color: #ff5252;
+}
+.social-links {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 20px;
+}
+.social-links li {
+	display: inline-block;
+	margin: 5px;
+}
+.social-links a {
+	width: 36px;
+	height: 36px;
+	display: block;
+	line-height: 35px;
+	text-align: center;
+	border: 1px solid rgba(255, 255, 255, .1);
+	-webkit-border-radius: 3px;
+	   -moz-border-radius: 3px;
+			border-radius: 3px;
+	font-size: 14px;
+	color: rgba(255, 255, 255, .2);
+}
+.social-links a:hover {
+	border: 1px solid rgba(255, 255, 255, .5);
+	color: rgba(255, 255, 255, .8);
+}
+.scroll-up {
+	position: fixed;
+	display: none;
+	z-index: 999;
+	bottom: 2em;
+	right: 2em;
+}
+.scroll-up a {
+	background-color: rgba(135, 135, 135, 0.5);
+	display: block;
+	width: 35px;
+	height: 35px;
+	text-align: center;
+	color: #fff;
+	font-size: 15px;
+	line-height: 30px;
+}
+.scroll-up a:hover,
+.scroll-up a:active {
+	background-color: rgba(235, 235, 235, .8);
+	color: #e7746f;
+}
+
+.scroll-down {
+	position: absolute;
+	left: 50%;
+	bottom: 40px;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+	margin-left: -15px;
+	display: block;
+	z-index: 10;
+	text-align: center;
+}
+
+.scroll-down span{
+	position: relative;
+	color: #fff;
+	-webkit-animation-name: drop;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-timing-function: linear;
+	-webkit-animation-delay: 0s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-play-state: running;
+	animation-name: drop;
+	animation-duration: 1s;
+	animation-timing-function: linear;
+	animation-delay: 0s;
+	animation-iteration-count: infinite;
+	animation-play-state: running;
+}
+
+@-webkit-keyframes drop	{
+	0%   { top:0px;  opacity: 0;}
+	30%  { top:10px; opacity: 1;}
+	100% { top:25px; opacity: 0;}
+}
+
+@keyframes drop	{
+	0%   { top:0px;  opacity: 0;}
+	30%  { top:10px; opacity: 1;}
+	100% { top:25px; opacity: 0;}
+}
+
+/* ---------------------------------------------- /*
+ * Preloader
+/* ---------------------------------------------- */
+
+#preloader {
+	background: #FFF;
+	bottom: 0;
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	z-index: 9999;
+}
+
+#status {
+	background-image: url(preloader.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+	height: 200px;
+	left: 50%;
+	margin: -100px 0 0 -100px;
+	position: absolute;
+	top: 50%;
+	width: 200px;
+}
+
+/* ---------------------------------------------- /*
+ * Media
+/* ---------------------------------------------- */
+
+@media (max-width: 767px) {
+
+	.calltoaction {
+		text-align: center;
+	}
+
+}
+
+@media (max-width: 480px) {
+
+	h1 {
+		font-size: 34px;
+		letter-spacing: 3px;
+	}
+
+	h2 {
+		font-size: 24px;
+		margin: 0 0 30px;
+		letter-spacing: 3px;
+	}
+
+}
