@@ -28,7 +28,7 @@ security:
                 use_referer: true
             logout:
                 path: app_logout
-                target: /admin
+                target: /
             anonymous: true
             guard:
                 authenticators:
