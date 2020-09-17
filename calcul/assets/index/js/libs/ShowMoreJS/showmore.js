@@ -2,7 +2,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2020 Jacques Archimède
+Copyright (c) 2020 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ THE SOFTWARE.
  *     numOfWords: 50,                // Number of words to initially display (any number). Default: 50
  *     showMoretext: 'Show more',     // The text of 'Show more' link. Default: 'Show more'
  *     ellipsisText: ' ...',          // The text to use to replace the hidden text
- *     hiddenClass: 'd-none'          // The class to use to hide part of the text. Default: 'hidden'
+ *     hiddenClass: 'sr-only'         // The class to use to hide part of the text except screen readers for which the text remains visible. Default: 'sr-only'
  * });
  */
 
@@ -40,176 +40,94 @@ THE SOFTWARE.
 
 	var ShowMore = {};
 
-	ShowMore.helpers = {
-		extends: function() {
-			for (var i = 1, l = arguments.length; i < l; i++) {
-				for (var key in arguments[i]) {
-					if (arguments[i].hasOwnProperty(key)) {
-						if (arguments[i][key] && arguments[i][key].constructor && arguments[i][key].constructor === Object) {
+	const EMPTY_TAGS = ['area', 'base', 'basefont', 'br', 'col', 'embed', 'frame', 'hr', 'img', 'input', 'keygen', 'isindex', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+
+	ShowMore.init = function (options) {
+
+		var merge = function() {
+			for (var argument of arguments) {
+				for (var key in argument) {
+					if (argument.hasOwnProperty(key)) {
+						if (argument[key] && argument[key].constructor && argument[key].constructor === Object) {
 							arguments[0][key] = arguments[0][key] || {};
-							this.extends(arguments[0][key], arguments[i][key]);
+							merge(arguments[0][key], argument[key]);
 						} else {
-							arguments[0][key] = arguments[i][key];
+							arguments[0][key] = argument[key];
 						}
 					}
 				}
 			}
 			return arguments[0];
-		}
-	};
+		};
 
-	var startTag = /^<([-A-Za-z0-9_]+)((?:\s+\w+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
-		endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/,
-		attr = /([-A-Za-z0-9_]+)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
-
-	const EMPTY_TAGS = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
-	const BLOCK_TAGS =['address', 'applet', 'blockquote', 'button', 'center', 'dd', 'del', 'dir', 'div', 'dl', 'dt', 'fieldset', 'form', 'frameset', 'hr', 'iframe', 'ins', 'isindex', 'li', 'map', 'menu', 'noframes', 'noscript', 'object', 'ol', 'p', 'pre', 'script', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul'];
-	const INLINE_TAGS = ['a', 'abbr', 'acronym', 'applet', 'b', 'basefont', 'bdo', 'big', 'br', 'button', 'cite', 'code', 'del', 'dfn', 'em', 'font', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'map', 'object', 'q', 's', 'samp', 'script', 'select', 'small', 'span', 'strike', 'strong', 'sub', 'sup', 'textarea', 'tt', 'u', 'var'];
-	const CLOSESELF_TAGS = ['colgroup', 'dd', 'dt', 'li', 'options', 'p', 'td', 'tfoot', 'th', 'thead', 'tr'];
-	const FILL_ATTRS = ['checked', 'compact', 'declare', 'defer', 'disabled', 'ismap', 'multiple', 'nohref', 'noresize', 'noshade', 'nowrap', 'readonly', 'selected'];
-	const SPECIAL_TAGS = ['script', 'style'];
-
-	ShowMore.init = function (options) {
 		var defaults = {
 			target: '',
 			numOfWords: 50,
 			showMoretext: 'Show more',
 			ellipsisText: ' ...',
-			hiddenClass: 'hidden'
+			hiddenClass: 'sr-only'
 		};
-		options = ShowMore.helpers.extends({}, defaults, options);
 
-		var parse = function(html, handler) {
-			var index, chars, match, stack = [], last = html;
-			stack.last = function() {
-				return this[this.length - 1];
-			};
-			while (html) {
-				chars = true;
-				if (!stack.last() || !SPECIAL_TAGS.includes(stack.last())) {
-					if ( html.indexOf("<!--") == 0 ) {
-						index = html.indexOf("-->");
-						if ( index >= 0 ) {
-							if (handler.comment) {
-								handler.comment(html.substring(4, index));
-							}
-							html = html.substring(index + 3);
-							chars = false;
-						}
-					} else if (html.indexOf("</") == 0) {
-						match = html.match(endTag);
-						if (match) {
-							html = html.substring(match[0].length);
-							match[0].replace(endTag, parseEndTag);
-							chars = false;
-						}
-					} else if (html.indexOf("<") == 0) {
-						match = html.match(startTag);
-						if (match) {
-							html = html.substring(match[0].length);
-							match[0].replace(startTag, parseStartTag);
-							chars = false;
-						}
-					}
-					if ( chars ) {
-						index = html.indexOf("<");
-						var text = index < 0 ? html : html.substring(0, index);
-						html = index < 0 ? "" : html.substring(index);
-						if ( handler.chars ) {
-							handler.chars( text );
-						}
-					}
-				} else {
-					html = html.replace(new RegExp("(.*)<\/" + stack.last() + "[^>]*>"), function(all, text){
-						text = text.replace(/<!--(.*?)-->/g, "$1")
-							.replace(/<!\[CDATA\[(.*?)]]>/g, "$1");
-						if (handler.chars) {
-							handler.chars( text );
-						}
-						return "";
+		options = merge({}, defaults, options);
+
+		var walk = function(node, callback) {
+			var tag = node.nodeName.toLowerCase();
+			var empty = EMPTY_TAGS.includes(tag);
+			if (callback.start) {
+				var attributes = [];
+				for (var attr of node.attributes) {
+					attributes.push({
+						name: attr.name,
+						value: attr.value,
+						escaped: attr.value.replace(/(^|[^\\])"/g, '$1\\\"') //"
 					});
-					parseEndTag("", stack.last());
 				}
-				if (html == last) {
-					throw "Parse Error: " + html;
-				}
-				last = html;
-			};
-
-			parseEndTag();
-
-			function parseStartTag(tag, tagName, rest, unary) {
-				tagName = tagName.toLowerCase();
-				if (BLOCK_TAGS.includes(tagName)) {
-					while (stack.last() && INLINE_TAGS.includes( stack.last())) {
-						parseEndTag( "", stack.last() );
-					}
-				}
-				if (CLOSESELF_TAGS.includes(tagName) && stack.last() == tagName) {
-					parseEndTag( "", tagName );
-				}
-				unary = EMPTY_TAGS.includes(tagName) || !!unary;
-				if (!unary) {
-					stack.push( tagName );
-				}
-				if (handler.start) {
-					var attrs = [];
-					rest.replace(attr, function(match, name) {
-						var value = arguments[2] ? arguments[2] :
-							arguments[3] ? arguments[3] :
-							arguments[4] ? arguments[4] :
-							FILL_ATTRS.includes(name) ? name : "";
-						
-						attrs.push({
-							name: name,
-							value: value,
-							escaped: value.replace(/(^|[^\\])"/g, '$1\\\"') //"
-						});
-					});
-					if (handler.start) {
-						handler.start(tagName, attrs, unary);
-					}
-				}
-			};
-
-			function parseEndTag(tag, tagName) {
-				if ( !tagName ) {
-					var pos = 0;
-				} else {
-					for (var pos = stack.length - 1; pos >= 0; pos--) {
-						if (stack[pos] == tagName) {
-							break;
+				callback.start.call(node, tag, attributes, empty);
+			}
+			var children = node.childNodes;
+			children.forEach(child => {
+				switch (child.nodeType) {
+					case Node.ELEMENT_NODE:
+						walk(child, callback);
+						break;
+					case Node.DOCUMENT_FRAGMENT_NODE:
+						if (null !== child.firstElementChild) {
+							walk(child.firstElementChild, callback);
 						}
-					}
-				}
-				if (pos >= 0) {
-					for (var i = stack.length - 1; i >= pos; i--) {
-						if (handler.end) {
-							handler.end(stack[i]);
+						break;
+					case Node.TEXT_NODE:
+						if (callback.chars) {
+							callback.chars.call(child, child.nodeValue);
 						}
-					}
-					stack.length = pos;
+						break;
+					case Node.COMMENT_NODE:
+						if (callback.comment) {
+							callback.comment.call(child, child.nodeValue);
+						}
+						break;
 				}
+			});
+			if (callback.end && ! empty) {
+				callback.end.call(null, tag);
 			}
 		};
 
 		var shrinkables = document.querySelectorAll(options.target);
 		shrinkables.forEach(shrinkable => {
-			var tagsStack = [];
 			var truncated = "";
 			var maxWords = options.numOfWords;
 			var shrinked = false;
 
-			parse(shrinkable.outerHTML, {
+			walk(shrinkable, {
 				start: function( tag, attrs, unary ) {
 					var classFound = false;
 					truncated += "<" + tag;
-					for ( var i = 0; i < attrs.length; i++ ) {
-						if (shrinked && attrs[i].name == 'class') {
-							attrs[i].escaped += ' ' + options.hiddenClass;
+					for (var attr of attrs) {
+						if (shrinked && attr.name == 'class') {
+							attr.escaped += ' ' + options.hiddenClass;
 							classFound = true;
 						}
-						truncated += " " + attrs[i].name + '="' + attrs[i].escaped + '"';
+						truncated += " " + attr.name + '="' + attr.escaped + '"';
 					}
 					if (shrinked && !classFound) {
 						truncated += ' class="' + options.hiddenClass + '"';
@@ -225,7 +143,7 @@ THE SOFTWARE.
 						if (nWords > maxWords) {
 							text = text.split(/\s+/).slice(0, maxWords).join(' ');
 							text += '<span>' + '... ' + '</span>';
-							text += '<a class="show-more-link" href="#!"><em><strong>' + options.showMoretext + '</strong></em></a>';
+							text += '<a class="show-more-link" href="javscript:void"><em><strong>' + options.showMoretext + '</strong></em></a>';
 							shrinked = true;
 						}
 						maxWords -= nWords;
@@ -238,7 +156,8 @@ THE SOFTWARE.
 			});
 			if (shrinked) {
 				var container = document.createElement('div');
-				container.classList.add('d-inline-block');
+				container.style.display = 'inline-block';
+				container.setAttribute('aria-hidden', 'true');
 				container.innerHTML = truncated;
 				shrinkable.parentNode.insertBefore(container, shrinkable.nextSibling);
 				container.querySelector('.show-more-link').addEventListener("click", function(event) {
