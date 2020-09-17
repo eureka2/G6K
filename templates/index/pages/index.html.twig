@@ -82,7 +82,6 @@ THE SOFTWARE.
 	</nav>
 </header>
 
-
 <div id="page-simulators" class="content" style="height: 100%;">
 	<div id="page" class="container-fluid">
 		<div class="row">
@@ -127,7 +126,7 @@ THE SOFTWARE.
 <script type="text/javascript" src="{{ asset('assets/index/js/libs/ShowMoreJS/showmore.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/index/js/animations.min.js') }}"></script>
 <script type="text/javascript">
-$(window).load(function() {
+$(window).on("load", function() {
 	$('#status').fadeOut();
 	$('#preloader').delay(300).fadeOut('slow');
 });
@@ -135,21 +134,20 @@ ShowMore.init({
 	target: '.shrinkable',
 	numOfWords: 40,
 	showMoretext: '{{ 'Show more'|trans }}',
-	ellipsisText: ' ...',
-	hiddenClass: 'd-none'
+	ellipsisText: ' ...'
 });
 wow = new WOW({
 	mobile: false
 });
 wow.init();
-$('a[href*=#]').bind("click", function(e){
+$("a[href*='#']").on("click", function(e){
 	var anchor = $(this);
 	$('html, body').stop().animate({
 		scrollTop: $(anchor.attr('href')).offset().top
 	}, 1000);
 	e.preventDefault();
 });
-$(window).scroll(function() {
+$(window).on("scroll", function() {
 	if ($(this).scrollTop() > 100) {
 		$('.scroll-up').fadeIn();
 	} else {
@@ -158,7 +156,7 @@ $(window).scroll(function() {
 });
 $(".screen-height").height($(window).height());
 
-$(window).resize(function(){
+$(window).on("resize", function(){
 	$(".screen-height").height($(window).height());
 });
 

@@ -70,7 +70,6 @@
     text-align: center;
 }
 .calltoaction {
-    background: url(../images/item-3.jpg);
 	background-color: #222;
 	background-repeat: no-repeat;
 	background-position: 0 0;
@@ -137,7 +136,7 @@
 }
 .home-overlay {
 	background-color: rgba(44, 62, 80, 0.3);
-	background-image: url("../images/pattern.png");
+	background-image: url(pattern.png);
 	background-repeat: repeat;
 	height: 100%;
 	left: 0;
