@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
 The MIT License (MIT)
@@ -29,6 +29,7 @@ namespace App\G6K\Controller;
 use App\G6K\Manager\ControllersTrait;
 
 use Symfony\Component\HttpFoundation\Request;
+use App\Security\Util\AccessControl;
 
 /**
  *
@@ -49,10 +50,10 @@ class IndexController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
 	 *
 	 */
-	public function index(Request $request)
+	public function index(Request $request, AccessControl $accessControl)
 	{
 		$this->initialize();
-		return $this->runIndex($request);
+		return $this->runIndex($request, $accessControl);
 	}
 
 	/**
@@ -63,7 +64,7 @@ class IndexController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
 	 *
 	 */
-	protected function runIndex(Request $request)
+	protected function runIndex(Request $request, AccessControl $accessControl)
 	{
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;
@@ -73,13 +74,15 @@ class IndexController extends BaseController {
 		$simulators = array();
 		foreach($simus as $simu) {
 			$s = new \SimpleXMLElement($this->simulatorsDir."/".$simu, LIBXML_NOWARNING, true);
-			$file = preg_replace("/.xml$/", "", $simu);
-			$simulators[] = array(
-				'file' => $file, 
-				'name' => $s['name'], 
-				'label' => $s['label'], 
-				'description' => $s->Description
-			);
+			if ($accessControl->isPathAuthorized("/" . $s['name'])) {
+				$file = preg_replace("/.xml$/", "", $simu);
+				$simulators[] = array(
+					'file' => $file, 
+					'name' => $s['name'], 
+					'label' => $s['label'], 
+					'description' => $s->Description
+				);
+			}
 		}
 		$ua = new \Detection\MobileDetect();
 		try {
