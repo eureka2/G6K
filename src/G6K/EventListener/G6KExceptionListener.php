@@ -100,11 +100,11 @@ class G6KExceptionListener
 	 *
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
-	 * @param   \Exception $exception <parameter description>
+	 * @param   \Throwable $exception <parameter description>
 	 * @return  \Symfony\Component\HttpFoundation\Response The HTML response
 	 *
 	 */
-	protected function htmlResponse(Request $request, \Exception $exception) {
+	protected function htmlResponse(Request $request, \Throwable $exception) {
 		$domainview = $this->kernel->getContainer()->getParameter('domainview');
 		$domain = $request->getHost();
 		$view = $request->request->get("view", "", true);
@@ -126,7 +126,7 @@ class G6KExceptionListener
 		$message = $exception instanceof HttpExceptionInterface && $exception->getStatusCode() == 404 ? 'This simulator does not exist or is not available' : 'The simulation engine is currently under maintenance';
 		$response = new Response();
 
-		if (! $exception instanceof \Exception) {
+		if ($exception instanceof HttpExceptionInterface) {
 			$response->setContent(
 				$this->twig->render(
 					'base\pages\exception.html.twig', 
@@ -167,15 +167,15 @@ class G6KExceptionListener
 	 * Renders a HTML response with the exception for the administration module
 	 *
 	 * @access  protected
-	 * @param   \Exception $exception <parameter description>
+	 * @param   \Throwable $exception <parameter description>
 	 * @return  \Symfony\Component\HttpFoundation\Response The HTML response
 	 *
 	 */
-	protected function htmlAdminResponse(\Exception $exception) {
+	protected function htmlAdminResponse(\Throwable $exception) {
 		$step = (object)array('simulator' => array('label' => 'Exception'));
 		$response = new Response();
 
-		if (! $exception instanceof \Exception) {
+		if ($exception instanceof HttpExceptionInterface) {
 			$response->setContent(
 				$this->twig->render(
 					'admin/pages/exception.html.twig',
@@ -219,7 +219,7 @@ class G6KExceptionListener
 	 * @return  \Symfony\Component\HttpFoundation\Response The JSON response
 	 *
 	 */
-	protected function jsonResponse(Request $request, \Exception $exception) {
+	protected function jsonResponse(Request $request, \Throwable $exception) {
 		$simu = $request->request->get("simu", "", true);
 		if ($simu == "") {
 			$simu = $request->query->get("simu", "", true);
@@ -253,12 +253,12 @@ class G6KExceptionListener
 	 * Makes an HTML trace of the exception
 	 *
 	 * @access  protected
-	 * @param   \Exception $e The exception
+	 * @param   \Throwable $e The exception
 	 * @param   array $seen (default: null)
 	 * @return  string The HTML trace
 	 *
 	 */
-	protected function trace(\Exception $e, $seen = null) {
+	protected function trace(\Throwable $e, $seen = null) {
 		$starter = $seen ? 'Caused by: ' : '';
 		$result = array();
 		if (!$seen) $seen = array();
