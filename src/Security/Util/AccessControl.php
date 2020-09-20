@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2015-2018 Jacques Archimède
+Copyright (c) 2020 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,115 +26,62 @@ THE SOFTWARE.
 
 namespace App\Security\Util;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecurityAnnotation;
-use Symfony\Component\ExpressionLanguage\Expression;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Yaml\Exception\ParseException;
-
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Http\AccessMapInterface;
 
-use App\Security\UserInterface;
+class AccessControl implements AccessControlInterface 
+{
 
-class AccessControl {
+	/**
+	 * @var array
+	 */
+	protected $server;
 
-	protected $acl = [];
-	protected $roleHierarchy = [
-		'ROLE_ALLOWED_TO_SWITCH' => [],
-		'IS_AUTHENTICATED_FULLY' => [],
-		'IS_AUTHENTICATED_REMEMBERED' => ['IS_AUTHENTICATED_FULLY'],
-		'ROLE_USER' => ['IS_AUTHENTICATED_FULLY', 'IS_AUTHENTICATED_REMEMBERED'],
-		'IS_AUTHENTICATED_ANONYMOUSLY' => []
-	];
-	protected $annotationReader;
-	protected $userRoles = ['IS_AUTHENTICATED_ANONYMOUSLY'];
+	/**
+	 * @var string
+	 */
+	protected $baseUrl;
 
-	public function __construct(string $projectDir, ?TokenStorageInterface $tokenStorage)
+	/**
+	 * @var \Symfony\Component\Security\Http\AccessMapInterface
+	 */
+	protected $accessMap;
+
+	/**
+	 * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface
+	 */
+	protected $tokenStorage;
+
+	/**
+	 * @var \Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
+	 */
+	protected $accessDecisionManager;
+
+	public function __construct(
+		AccessMapInterface $accessMap,
+		RequestStack $requestStack,
+		TokenStorageInterface $tokenStorage,
+		AccessDecisionManagerInterface $accessDecisionManager
+	)
 	{
-		$this->annotationReader = new AnnotationReader();
-		try {
-			$config = Yaml::parseFile($projectDir . '/config/packages/security.yaml');
-			$this->loadRoleHierarchyFromConfig($config);
-			$this->loadACLFromConfig($config);
-		} catch (ParseException $exception) {
-			throw new \Exception(sprintf('Unable to parse security.yaml: %s', $exception->getMessage()));
-		}
-		$user = $tokenStorage->getToken()->getUser();
-		if ($user instanceof UserInterface) { // user is connected
-			$this->userRoles = $this->getAllUserRoles($user);
-		}
+		$this->accessMap = $accessMap;
+		$this->server = $requestStack->getCurrentRequest()->server->all();
+		$this->baseUrl = $requestStack->getCurrentRequest()->getBaseUrl();
+		$this->tokenStorage = $tokenStorage;
+		$this->accessDecisionManager = $accessDecisionManager;
 	}
 
-	public function isPathAuthorized(string $path) : bool
+	public function isPathAuthorized(string $path)
 	{
-		foreach($this->acl as $aclpath => $roles) {
-			if (preg_match("@" . $aclpath . "@", $path)) {
-				$commonRoles = array_intersect($roles, $this->userRoles);
-				return !empty($commonRoles);
-			}
+		$request = Request::create($this->baseUrl . $path, 'GET', [], [], [], $this->server);
+		$token = $this->tokenStorage->getToken();
+		[$attributes] = $this->accessMap->getPatterns($request);
+		if (null === $attributes) {
+			$attributes = ['IS_AUTHENTICATED_ANONYMOUSLY'];
 		}
-		return true;
+		return $this->accessDecisionManager->decide($token, $attributes, $request);
 	}
-
-	protected function loadRoleHierarchyFromConfig(array $config) : void
-	{
-		foreach ($config['security']['role_hierarchy'] as $role => $subroles) {
-			if (!is_array($subroles)) {
-				$subroles = [$subroles];
-			}
-			if (isset($this->roleHierarchy[$role])) {
-				$this->roleHierarchy[$role] = array_merge($this->roleHierarchy[$role], $subroles);
-			} else {
-				$this->roleHierarchy[$role] = $subroles;
-			}
-		}
-	}
-
-	protected function loadACLFromConfig(array $config) : void
-	{
-		foreach ($config['security']['access_control'] as $accessControl) {
-			$roles = [];
-			if (isset($accessControl['role'])) {
-				if (is_array($accessControl['role'])) {
-					$roles = array_merge($roles, $accessControl['role']);
-				} else {
-					$roles[] = $accessControl['role'];
-				}
-			}
-			if (isset($accessControl['roles'])) {
-				if (is_array($accessControl['roles'])) {
-					$roles = array_merge($roles, $accessControl['roles']);
-				} else {
-					$roles[] = $accessControl['roles'];
-				}
-			}
-			$this->acl[$accessControl['path']] = array_unique($roles);
-		}
-	}
-
-	private function addSubRoles(string $role, array &$roles) : void
-	{
-		if (isset($this->roleHierarchy[$role])) {
-			foreach($this->roleHierarchy[$role] as $subrole) {
-				if (!in_array($subrole, $roles)) {
-					$roles[] = $subrole;
-					$this->addSubRoles($subrole, $roles);
-				}
-			}
-		}
-	}
-
-	private function getAllUserRoles(UserInterface $user) : array
-	{
-		$userRoles = [];
-		$roles = $user->getRoles();
-		foreach ($roles as $role) {
-			if (!in_array($role, $userRoles)) {
-				$userRoles[] = $role;
-				$this->addSubRoles($role, $userRoles);
-			}
-		}
-		return $userRoles;
-	}
-
 }

@@ -55,3 +55,8 @@ services:
             - "%kernel.project_dir%/manifest.json"
             - "%%s?version=%%s"
         public: false
+
+    App\Security\Util\AccessControlInterface:
+        class: App\Security\Util\AccessControl
+        arguments:
+            - '@security.access_map'
