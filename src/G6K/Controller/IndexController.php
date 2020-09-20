@@ -29,7 +29,7 @@ namespace App\G6K\Controller;
 use App\G6K\Manager\ControllersTrait;
 
 use Symfony\Component\HttpFoundation\Request;
-use App\Security\Util\AccessControl;
+use App\Security\Util\AccessControlInterface;
 
 /**
  *
@@ -47,10 +47,11 @@ class IndexController extends BaseController {
 	 * 
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   \App\Security\Util\AccessControlInterface $accessControl
 	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
 	 *
 	 */
-	public function index(Request $request, AccessControl $accessControl)
+	public function index(Request $request, AccessControlInterface $accessControl)
 	{
 		$this->initialize();
 		return $this->runIndex($request, $accessControl);
@@ -61,10 +62,11 @@ class IndexController extends BaseController {
 	 *
 	 * @access  protected
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   \App\Security\Util\AccessControlInterface $accessControl
 	 * @return  \Symfony\Component\HttpFoundation\Response <description of the return value>
 	 *
 	 */
-	protected function runIndex(Request $request, AccessControl $accessControl)
+	protected function runIndex(Request $request, AccessControlInterface $accessControl)
 	{
 		$no_js = $request->query->get('no-js') || 0;
 		$script = $no_js == 1 ? 0 : 1;

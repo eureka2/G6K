@@ -47,14 +47,14 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register/, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin, role: ROLE_CONTRIBUTOR }
-        - { path: ^/admin$, role: ROLE_CONTRIBUTOR }
-        - { path: ^/admin/, role: ROLE_CONTRIBUTOR }
-        - { path: ^/index.php/admin$, role: ROLE_CONTRIBUTOR }
-        - { path: ^/index.php/admin$, role: ROLE_CONTRIBUTOR }
-        - { path: ^/index.php/admin/, role: ROLE_CONTRIBUTOR }
+        - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin, roles: ROLE_CONTRIBUTOR }
+        - { path: ^/admin$, roles: ROLE_CONTRIBUTOR }
+        - { path: ^/admin/, roles: ROLE_CONTRIBUTOR }
+        - { path: ^/index.php/admin$, roles: ROLE_CONTRIBUTOR }
+        - { path: ^/index.php/admin$, roles: ROLE_CONTRIBUTOR }
+        - { path: ^/index.php/admin/, roles: ROLE_CONTRIBUTOR }
