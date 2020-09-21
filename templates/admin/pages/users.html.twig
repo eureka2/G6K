@@ -33,7 +33,7 @@ THE SOFTWARE.
 			<div class="col-md-12">
 				<div id="table" class="card bg-primary">
 					<div class="card-header">{{ 'Users list'|trans }}
-					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'users-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
+					<a class="btn btn-primary float-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'users-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
 					</div>
 					<div class="card-body">
 						<div class="alert alert-danger" role="alert">
@@ -45,9 +45,9 @@ THE SOFTWARE.
 						<input type="hidden" name="page" value="{{ pagination.currentPageNumber }}">
 						<div class="table-responsive">
 							<button id="btnAddNewRow" class="btn btn-secondary" title="{{ 'Add user'|trans }}"><span class="button-label">{{ 'Add user'|trans }}</span> <span class="fas fa-plus-circle"></span></button>
-							<div class="pull-left">
-								<label class="pull-left col-form-label">{{ 'Lines per page'|trans }}</label>
-								<div class="pull-left">
+							<div class="float-left">
+								<label class="float-left col-form-label">{{ 'Lines per page'|trans }}</label>
+								<div class="float-left">
 								<select name="itemsPerPage" class="form-control">
 								<option value="5"{% if pagination.itemsPerPage == 5 %} selected="selected"{% endif %}>5</option>
 								<option value="10"{% if pagination.itemsPerPage == 10 %} selected="selected"{% endif %}>10</option>
@@ -89,8 +89,8 @@ THE SOFTWARE.
 								</tbody>
 							</table>
 							{% if pagination.lastPageNumber > 1 %}
-							<nav class="pull-right" id="table-nav">
-								<ul class="pagination pull-right">
+							<nav class="float-right" id="table-nav">
+								<ul class="pagination float-right">
 									{% if pagination.firstPageNumber and pagination.firstPageNumber != pagination.currentPageNumber %}
 									<li>
 										<a data-page="{{ pagination.firstPageNumber }}" href="#">&laquo;</a>
