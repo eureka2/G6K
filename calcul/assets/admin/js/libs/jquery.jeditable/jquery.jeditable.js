@@ -256,7 +256,7 @@
                 }
         
                 /* discard changes if pressing esc */
-                input.keydown(function(e) {
+                input.on('keydown', function(e) {
                     if (e.keyCode == 27) {
                         e.preventDefault();
                         reset.apply(form, [settings, self]);
@@ -267,25 +267,25 @@
                 /* Do nothing is usable when navigating with tab. */
                 var t;
                 if ('cancel' == settings.onblur) {
-                    input.blur(function(e) {
+                    input.on('blur', function(e) {
                         /* Prevent canceling if submit was clicked. */
                         t = setTimeout(function() {
                             reset.apply(form, [settings, self]);
                         }, 500);
                     });
                 } else if ('submit' == settings.onblur) {
-                    input.blur(function(e) {
+                    input.on('blur', function(e) {
                         /* Prevent double submit if submit was clicked. */
                         t = setTimeout(function() {
                             form.submit();
                         }, 200);
                     });
                 } else if ($.isFunction(settings.onblur)) {
-                    input.blur(function(e) {
+                    input.on('blur', function(e) {
                         settings.onblur.apply(self, [input.val(), settings]);
                     });
                 } else {
-                    input.blur(function(e) {
+                    input.on('blur', function(e) {
                     });
                 }
 

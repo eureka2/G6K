@@ -242,9 +242,9 @@ THE SOFTWARE.
 	}
 
 	Simulators.bindProfiles = function(profilesPanelContainer) {
-		profilesPanelContainer.find('.cancel-edit-profiles-label').click(function() {
+		profilesPanelContainer.find('.cancel-edit-profiles-label').on('click', function() {
 			profilesPanelContainer.replaceWith(Simulators.profilesBackup);
-			Simulators.profilesBackup.find('button.edit-profiles-label').click(function(e) {
+			Simulators.profilesBackup.find('button.edit-profiles-label').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editProfilesLabel($($(this).attr('data-parent')));
 			});
@@ -255,7 +255,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		profilesPanelContainer.find('.validate-edit-profiles-label').click(function() {
+		profilesPanelContainer.find('.validate-edit-profiles-label').on('click', function() {
 			if (! Simulators.checkProfilesLabel(profilesPanelContainer)) {
 				return false;
 			}
@@ -265,7 +265,7 @@ THE SOFTWARE.
 			}
 			var newProfilesPanel = Simulators.drawProfilesForDisplay(profiles);
 			profilesPanelContainer.replaceWith(newProfilesPanel);
-			newProfilesPanel.find('button.edit-profiles-label').click(function(e) {
+			newProfilesPanel.find('button.edit-profiles-label').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editProfilesLabel($($(this).attr('data-parent')));
 			});
@@ -351,19 +351,19 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#profiles");
 		}
-		container.find('button.edit-profiles-label').click(function(e) {
+		container.find('button.edit-profiles-label').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editProfilesLabel($($(this).attr('data-parent')));
 		});
-		container.find('button.edit-profile').click(function(e) {
+		container.find('button.edit-profile').on('click', function(e) {
 			e.preventDefault();
 			Simulators.editProfile($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-profile').click(function(e) {
+		container.find('button.delete-profile').on('click', function(e) {
 			e.preventDefault();
 			Simulators.deleteProfile($($(this).attr('data-parent')));
 		});
-		container.find('button.add-profile-data').click(function(e) {
+		container.find('button.add-profile-data').on('click', function(e) {
 			e.preventDefault();
 			Simulators.addProfileData($($(this).attr('data-parent')));
 		});
@@ -371,7 +371,7 @@ THE SOFTWARE.
 
 	Simulators.bindProfile = function(profilePanelContainer) {
 		profilePanelContainer.find('textarea').wysihtml(Admin.wysihtml5Options);
-		profilePanelContainer.find('.cancel-edit-profile').click(function() {
+		profilePanelContainer.find('.cancel-edit-profile').on('click', function() {
 			profilePanelContainer.find('.profile-container').replaceWith(Simulators.profileBackup);
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -380,7 +380,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		profilePanelContainer.find('.cancel-add-profile').click(function() {
+		profilePanelContainer.find('.cancel-add-profile').on('click', function() {
 			profilePanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -389,7 +389,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		profilePanelContainer.find('.validate-edit-profile, .validate-add-profile').click(function() {
+		profilePanelContainer.find('.validate-edit-profile, .validate-add-profile').on('click', function() {
 			var profileContainerGroup = profilePanelContainer.parent();
 			var profileContainer = profilePanelContainer.find('.profile-container');
 			if (! Simulators.checkProfile(profilePanelContainer)) {
@@ -715,11 +715,11 @@ THE SOFTWARE.
 		if (! container ) {
 			container = $("#simulator");
 		}
-		container.find('button.edit-profile-data').click(function(e) {
+		container.find('button.edit-profile-data').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.editProfileData($($(this).attr('data-parent')));
 		});
-		container.find('button.delete-profile-data').click(function(e) {
+		container.find('button.delete-profile-data').on('click', function(e) {
 		    e.preventDefault();
 			Simulators.deleteProfileData($($(this).attr('data-parent')));
 		});
@@ -730,13 +730,13 @@ THE SOFTWARE.
 			cursor: "move",
 			axis: "y"
 		});
-		dataPanelContainer.find('.cancel-edit-profile-data').click(function() {
+		dataPanelContainer.find('.cancel-edit-profile-data').on('click', function() {
 			dataPanelContainer.find('.profile-data-container').replaceWith(Simulators.profileDataBackup);
-			Simulators.profileDataBackup.find('button.edit-profile-data').click(function(e) {
+			Simulators.profileDataBackup.find('button.edit-profile-data').on('click', function(e) {
 				e.preventDefault();
 				Simulators.editProfileData($($(this).attr('data-parent')));
 			});
-			Simulators.profileDataBackup.find('button.delete-profile-data').click(function(e) {
+			Simulators.profileDataBackup.find('button.delete-profile-data').on('click', function(e) {
 				e.preventDefault();
 				Simulators.deleteProfileData($($(this).attr('data-parent')));
 			});
@@ -747,7 +747,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		dataPanelContainer.find('.cancel-add-profile-data').click(function() {
+		dataPanelContainer.find('.cancel-add-profile-data').on('click', function() {
 			dataPanelContainer.remove();
 			$('.update-button').show();
 			$('.toggle-collapse-all').show();
@@ -756,7 +756,7 @@ THE SOFTWARE.
 			}
 			Simulators.updating = false;
 		});
-		dataPanelContainer.find('.validate-edit-profile-data, .validate-add-profile-data').click(function() {
+		dataPanelContainer.find('.validate-edit-profile-data, .validate-add-profile-data').on('click', function() {
 			var dataContainer = dataPanelContainer.find('.profile-data-container');
 			if (! Simulators.checkProfileData(dataPanelContainer)) {
 				return false;
@@ -791,7 +791,7 @@ THE SOFTWARE.
 			});
 			$("html, body").animate({ scrollTop: newProfileDataPanel.offset().top - $('#navbar').height() }, 500);
 		});
-		dataPanelContainer.find('select[data-attribute=data]').change(function(e) {
+		dataPanelContainer.find('select[data-attribute=data]').on('change', function(e) {
 			var data = Simulators.findDataById($(this).val());
 			var defaultContainer = dataPanelContainer.find('*[data-attribute=default]');
 			if (data) {

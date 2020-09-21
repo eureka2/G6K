@@ -158,7 +158,7 @@ THE SOFTWARE.
 			actions: actions,
 		    data: rule.elsedata
 		});
-		ruleContainer.find("> div > button.delete-rule").click(function(e) {
+		ruleContainer.find("> div > button.delete-rule").on('click', function(e) {
 		    e.preventDefault();
 			var r = findRuleIndexByName(rule.name);
 			$(this).parents('div.rule-container').remove();
@@ -184,7 +184,7 @@ THE SOFTWARE.
 				$(this).focusNextInputField();
 			}, 0);
 		});
-		ruleContainer.find('.input-rule-name').change(function () {
+		ruleContainer.find('.input-rule-name').on('change', function () {
 			ruleContainer.find('.rule-name').text($(this).val());
 		});
 		
@@ -207,7 +207,7 @@ THE SOFTWARE.
 				$(this).focusNextInputField();
 			}, 0);
 		});
-		ruleContainer.find('.input-rule-label').change(function () {
+		ruleContainer.find('.input-rule-label').on('change', function () {
 			ruleContainer.find('.rule-label').text($(this).val());
 		});
 	}
@@ -232,7 +232,7 @@ THE SOFTWARE.
 			bindRule(rule);
 		});
 		
-		$('button.add-rule').click(function(e) {
+		$('button.add-rule').on('click', function(e) {
 		    e.preventDefault();
 			var rule = {
 				id: rules.length + 1,
@@ -246,7 +246,7 @@ THE SOFTWARE.
 			var ruleContainer = drawRule(rule);
 			rule.elementId = ruleContainer.attr('id');
 			bindRule(rule);
-			ruleContainer.find('> .card-header a').click();
+			ruleContainer.find('> .card-header a').trigger('click');
 			// ruleContainer[0].scrollIntoView(true);
 			$("html, body").animate({ scrollTop: ruleContainer.offset().top }, 500);
 		});

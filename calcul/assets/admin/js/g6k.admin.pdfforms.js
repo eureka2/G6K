@@ -49,7 +49,7 @@ THE SOFTWARE.
 				}
 			}
 		});
-		$('label.tree-toggler').click(function () {
+		$('label.tree-toggler').on('click', function () {
 			$(this).parent().toggleClass("closed");
 			if ($(this).parent().hasClass("closed")) {
 				$(this).attr('aria-expanded', 'false');

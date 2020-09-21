@@ -423,7 +423,7 @@ THE SOFTWARE.
 		var name = ids.pop();
 		var element = ids.join('-');
 		var li = attr.parents('div.attributes-container').children('div.optional-attributes').children('ul').children("li[data-element='" + element +"'][data-name='" + name +"']");
-		li.show().focus();
+		li.show().trigger('focus');
 		attr.parent('label').parent('div.form-group').remove();
 	}
 
@@ -472,9 +472,9 @@ THE SOFTWARE.
 				});
 			ui.hide();
 			if (expression) {
-				attribute.find('.attribute-expression').focus();
+				attribute.find('.attribute-expression').trigger('focus');
 			} else {
-				attribute.find(':input').focus();
+				attribute.find(':input').trigger('focus');
 			}
 		}
 	}
@@ -813,11 +813,11 @@ THE SOFTWARE.
 					break;
 				case 35: // end
 					e.preventDefault();
-					$(this).parent().children(':visible').last().focus();
+					$(this).parent().children(':visible').last().trigger('focus');
 					break;
 				case 36: // home
 					e.preventDefault();
-					$(this).parent().children(':visible').first().focus();
+					$(this).parent().children(':visible').first().trigger('focus');
 					break;
 				case 38: // arrow up
 					e.preventDefault();
@@ -826,7 +826,7 @@ THE SOFTWARE.
 					if (prev.length == 0) {
 						prev = $(this).parent().children(':visible').last();
 					}
-					prev.focus();
+					prev.trigger('focus');
 					break;
 				case 40: // arrow down
 					e.preventDefault();
@@ -835,7 +835,7 @@ THE SOFTWARE.
 					if (next.length == 0) {
 						next = $(this).parent().children(':visible').first();
 					}
-					next.focus();
+					next.trigger('focus');
 					break;
 			}
 		});
@@ -997,7 +997,7 @@ $(function(){
 			$('.toggle-collapse-all').hide();
 			Simulators.updating = true;
 		});
-		$('label.tree-toggler').click(function () {
+		$('label.tree-toggler').on('click', function () {
 			$(this).parent().toggleClass("closed");
 			if ($(this).parent().hasClass("closed")) {
 				$(this).attr('aria-expanded', 'false');

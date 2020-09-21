@@ -22,7 +22,7 @@ A calculation simulator is an online service made available to a user to enable 
 1. [Copyright and license](#copyright-and-license)
 
 ## Prerequisites for Symfony
-* PHP Version 7.1.3+
+* PHP Version 7.2.5+
 * JSON enabled
 * ctype
 * date.timezone in php.ini
@@ -49,26 +49,29 @@ A calculation simulator is an online service made available to a user to enable 
 1. If you plan to use MySQL or PostgreSQL, create a user with "CREATE DATABASE" and "CREATE TABLE" privileges using the administration tool of your RDBMS.
 2. Be placed in the <DOCUMENT_ROOT> Web Server
 3. Download composer.phar (https://getcomposer.org/download/) in <DOCUMENT_ROOT>. composer 1.7.2+ is required.
-4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/ 4.*`` 
+4. Under a shell or DOS, execute: ``php -d memory_limit=-1 composer.phar create-project eureka2/g6k simulator/ 5.*`` 
 5. Enter the parameter values required by the installer, including:
-  * application environment [dev or prod] (prod) :
-  * debug mode [0 or 1] (0) :
-  * locale [en-GB, en-US, fr-FR, ...] (en-US) :
-  * upload directory (%kernel.project_dir%/var/uploads) :
-  * mailer URL (null://localhost) : 
-  * database engine [sqlite, mysql or pgsql] (sqlite) :
-  * database name (g6k) :
+  * Enter the application environment [dev or prod] (prod):
+  * Enter the debug mode [0 or 1] (0):
+  * Enter the locale [en-GB, en-US, fr-FR, ...] (en-US):
+  * Enter the upload directory (%kernel.project_dir%/var/uploads):
+  * Enter the absolute path of the pdftk executable (~):
+  * Enter the mailer URL (null://localhost):
+  * Enter the email adress to use as sender of all emails (noreply@domain.fr):
+  * Enter the database engine [sqlite, mysql or pgsql] (sqlite):
+  * Enter the HTTP proxy url [http://user:pass@host:port] (~):
+  * Enter the HTTPS proxy url [https://user:pass@host:port] (~):
 
 for sqlite database only:
-  * database version (3.15) : 
-  * database path (%kernel.project_dir%/var/data/databases/g6k.db) :
+  * Enter the database version (3.15) : 
+  * Enter the database path (%kernel.project_dir%/var/data/databases/g6k.db) :
 
 for mysql or pgsql database:
-  * database host [localhost, ...] :
-  * database port :
-  * database user :
-  * database password :
-  * database character set [UTF8, LATIN1, ...] (UTF8) :
+  * Enter the database host [localhost, ...] :
+  * Enter the database port :
+  * Enter the database user :
+  * Enter the database password :
+  * Enter the database character set [UTF8, LATIN1, ...] (UTF8) :
 
 ## Web server configuration
 

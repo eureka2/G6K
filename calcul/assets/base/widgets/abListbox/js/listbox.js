@@ -220,22 +220,22 @@
 	 */
 	Listbox.prototype.bindEditboxHandlers = function() {
 		var self = this;
-		this.$listbox.keydown(function(e) {
+		this.$listbox.on('keydown', function(e) {
 			return self.handleEditKeyDown($(this), e);
 		});
-		this.$listbox.keypress(function(e) {
+		this.$listbox.on('keypress', function(e) {
 			return self.handleEditKeyPress($(this), e);
 		});
-		this.$listbox.blur(function(e) {
-			self.$edit.css('outline', 0);
+		this.$listbox.on('blur', function(e) {
+			self.$edit.css('outline', '0px');
 			return self.handleListBlur($(this), e);
 		});
-		this.$listbox.focus(function(e) {
+		this.$listbox.on('focus', function(e) {
 			self.$edit.css('outline', 'thin dotted');
 			return false;
 		});
-		$("label[for=combobox-"+this.id+"]").click(function (e) {
-			self.$listbox.focus();
+		$("label[for=combobox-"+this.id+"]").on('click', function (e) {
+			self.$listbox.trigger('focus');
 		});
 	} // end bindEditboxHandlers()
 
@@ -247,19 +247,19 @@
 	 */
 	Listbox.prototype.bindButtonHandlers = function() {
 		var self = this;
-		this.$group.click(function(e) {
+		this.$group.on('click', function(e) {
 			return self.handleButtonClick($(this), e);
 		});
-		this.$group.mouseover(function(e) {
+		this.$group.on('mouseover', function(e) {
 			return self.handleButtonMouseOver($(this), e);
 		});
-		this.$group.mouseout(function(e) {
+		this.$group.on('mouseout', function(e) {
 			return self.handleButtonMouseOut($(this), e);
 		});
-		this.$group.mousedown(function(e) {
+		this.$group.on('mousedown', function(e) {
 			return self.handleButtonMouseDown($(this), e);
 		});
-		this.$group.mouseup(function(e) {
+		this.$group.on('mouseup', function(e) {
 			return self.handleButtonMouseUp($(this), e);
 		});
 	} // end bindButtonHandlers()
@@ -272,10 +272,10 @@
 	 */
 	Listbox.prototype.bindListboxHandlers = function() {
 		var self = this;
-		this.$list.focus(function(e) {
+		this.$list.on('focus', function(e) {
 			return self.handleListFocus($(this), e);
 		});
-		this.$list.blur(function(e) {
+		this.$list.on('blur', function(e) {
 			return self.handleListBlur($(this), e);
 		});
 	} // end bindListboxHandlers()
@@ -288,19 +288,19 @@
 	 */
 	Listbox.prototype.bindOptionsHandlers = function() {
 		var self = this;
-		this.$items.keydown(function(e) {
+		this.$items.on('keydown', function(e) {
 			return self.handleOptionKeyDown($(this), e);
 		});
-		this.$items.keypress(function(e) {
+		this.$items.on('keypress', function(e) {
 			return self.handleOptionKeyPress($(this), e);
 		});
-		this.$items.click(function(e) {
+		this.$items.on('click', function(e) {
 			return self.handleOptionClick($(this), e);
 		});
-		this.$items.focus(function(e) {
+		this.$items.on('focus', function(e) {
 			return self.handleListFocus($(this), e);
 		});
-		this.$items.blur(function(e) {
+		this.$items.on('blur', function(e) {
 			return self.handleListBlur($(this), e);
 		});
 	} // end bindOptionsHandlers()
