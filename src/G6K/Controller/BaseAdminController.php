@@ -27,7 +27,7 @@ THE SOFTWARE.
 namespace App\G6K\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use App\Security\UserManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;

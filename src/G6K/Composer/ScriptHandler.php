@@ -93,11 +93,13 @@ class ScriptHandler
 		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 
 		putenv('PUBLIC_DIR=' . ( $extras['public-dir'] ?? 'public'));
-		$dotenvdist = new Dotenv(true);
+		$dotenvdist = new Dotenv();
+		$dotenvdist->usePutenv();
 		$dotenvdist->load($symfonyDir . DIRECTORY_SEPARATOR . '.env.dist');
 
 		if (is_file($symfonyDir . DIRECTORY_SEPARATOR . '.env')) {
-			$dotenv = new Dotenv(true);
+			$dotenv = new Dotenv();
+			$dotenv->usePutenv();
 			$dotenv->load($symfonyDir . DIRECTORY_SEPARATOR . '.env');
 		}
 		$event->getIO()->write('<info>Creating the ".env" file</info>');

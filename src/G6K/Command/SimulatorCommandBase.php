@@ -230,7 +230,7 @@ abstract class SimulatorCommandBase extends CommandBase
 	 */
 	protected function setWidgets(\DOMDocument $simulator, array $widgets) {
 		$set = false;
-		$config = Yaml::parse(file_get_contents($this->projectDir."/config/packages/g6k.yml"));
+		$config = Yaml::parse(file_get_contents($this->projectDir."/config/packages/g6k.yaml"));
 		$config = $config['parameters']['widgets'];
 		$xpath = new \DOMXPath($simulator);
 		$fields = $xpath->query("//FieldSet//Field");

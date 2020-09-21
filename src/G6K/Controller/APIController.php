@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * This class deals with the API function of the simulation engine.
  *
- * For a simulator to accept an API request, the following parameters must be defined in the "config/packages/g6k.yml" file:
+ * For a simulator to accept an API request, the following parameters must be defined in the "config/packages/g6k.yaml" file:
  * <pre>
  *    api:
  *         &lt;simulator name&gt;:

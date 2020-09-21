@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  *
  * This class implements a file uploader service.
  *
- * This service is defined in config/packages/g6k.yml as follows:
+ * This service is defined in config/packages/g6k.yaml as follows:
  *
  *    g6k.file_uploader:
  *        class: App\G6K\Services\FileUploader
