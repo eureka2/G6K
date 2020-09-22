@@ -791,13 +791,24 @@ export default class AutoNumericHelper {
     }
 
     /**
+     * Return `true` if the given event is an instance of WheelEvent
+     *
+     * @static
+     * @param {event} event The event to test
+     * @returns {boolean} Return `true` if the event is an instance of WheelEvent, FALSE otherwise
+    */
+    static isWheelEvent(event) {
+        return event instanceof WheelEvent;
+    }
+
+    /**
      * Return `true` if the given event is a wheelup event
      *
      * @param {WheelEvent} wheelEvent
      * @returns {boolean}
      */
     static isWheelUpEvent(wheelEvent) {
-        if (!wheelEvent.deltaY) {
+        if (!this.isWheelEvent(wheelEvent) || this.isUndefinedOrNullOrEmpty(wheelEvent.deltaY)) {
             this.throwError(`The event passed as a parameter is not a valid wheel event, '${wheelEvent.type}' given.`);
         }
 
@@ -811,7 +822,7 @@ export default class AutoNumericHelper {
      * @returns {boolean}
      */
     static isWheelDownEvent(wheelEvent) {
-        if (!wheelEvent.deltaY) {
+        if (!this.isWheelEvent(wheelEvent) || this.isUndefinedOrNullOrEmpty(wheelEvent.deltaY)) {
             this.throwError(`The event passed as a parameter is not a valid wheel event, '${wheelEvent.type}' given.`);
         }
 
@@ -1267,6 +1278,31 @@ export default class AutoNumericHelper {
         } else {
             element.textContent = value;
         }
+    }
+
+    /**
+     * Set the invalid state for the given element.
+     * A custom message can be passed as the second argument.
+     * Note: This does not work with contenteditable elements
+     *
+     * @param {HTMLElement|HTMLInputElement} element
+     * @param {string|null} message
+     * @throws Error
+     */
+    static setInvalidState(element, message = 'Invalid') {
+        if (message === '' || this.isNull(message)) this.throwError('Cannot set the invalid state with an empty message.');
+
+        element.setCustomValidity(message);
+    }
+
+    /**
+     * Set the valid state for the given element.
+     * Note: This does not work with contenteditable elements
+     *
+     * @param {HTMLElement|HTMLInputElement} element
+     */
+    static setValidState(element) {
+        element.setCustomValidity('');
     }
 
     /**
