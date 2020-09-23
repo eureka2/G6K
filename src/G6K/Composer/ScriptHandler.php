@@ -368,14 +368,15 @@ class ScriptHandler
 			if (preg_match("/^CREATE TABLE/i", $sql)) {
 				switch ($driver) {
 					case 'pdo_mysql':
-						$sql = preg_replace("/id INTEGER NOT NULL,/i", "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,", $sql);
+						$sql = preg_replace("/id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,/i", "id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL,", $sql);
+						$sql = preg_replace("/\s+CLOB\s+/i", " TEXT ", $sql);
 						break;
 					case 'pdo_pgsql':
-						$sql = preg_replace("/id INTEGER NOT NULL,/i", "id SERIAL PRIMARY KEY,", $sql);
+						$sql = preg_replace("/id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,/i", "id SERIAL PRIMARY KEY,", $sql);
 						$sql = preg_replace("/\s+DATETIME\s+/i", " TIMESTAMP ", $sql);
+						$sql = preg_replace("/\s+CLOB\s+/i", " TEXT ", $sql);
 						break;
 					case 'pdo_sqlite':
-						$sql = preg_replace("/id INTEGER NOT NULL,/i", "id INTEGER PRIMARY KEY AUTOINCREMENT,", $sql);
 						break;
 				}
 			}
