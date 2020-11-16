@@ -174,3 +174,7 @@ eureka_g6k_mail_send:
     methods: [ post ]
     defaults: { _controller: App\G6K\Controller\MailController::sendMail }
 
+eureka_g6k_api_target:
+    path:     /{simu}/api/{target}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\APIController::api }

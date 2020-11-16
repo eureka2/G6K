@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017-2018 Jacques Archimède
+Copyright (c) 2017-2020 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,14 @@ use App\G6K\Model\FieldRow;
 use App\G6K\Model\Field;
 use App\G6K\Model\Step;
 
+use App\G6K\Manager\Api\HTMLMarkup;
+use App\G6K\Manager\Api\Bootstrapifier;
+
 use App\G6K\Manager\ControllersTrait;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  *
@@ -86,7 +90,7 @@ class APIController extends BaseController {
 	private $errors = array();
 
 	/**
-	 * The entry point of the API request
+	 * The entry point of the API request step by step
 	 *
 	 * @access  public
 	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
@@ -97,6 +101,21 @@ class APIController extends BaseController {
 	public function calcul(Request $request, $simu)
 	{
 		return $this->runCalcul($request, $simu);
+	}
+
+	/**
+	 * The entry point of the API request all steps
+	 *
+	 * @access  public
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
+	 * @param   string $simu The simulator name
+	 * @param   string $target The target file ('json', 'markup' or 'js'), default 'json'
+	 * @return  \Symfony\Component\HttpFoundation\Response The API response object
+	 *
+	 */
+	public function api(Request $request, $simu, $target)
+	{
+		return $this->runApi($request, $simu, $target);
 	}
 
 	/**
@@ -144,7 +163,36 @@ class APIController extends BaseController {
 		if (!is_null($step) && ! $step instanceof Step) {
 			return $step;
 		}
-		return $this->apiOutput($request, $form, $step);
+		return $this->apiStepOutput($request, $form, $step);
+	}
+
+	/**
+	 * Run the Api server
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The user request
+	 * @param   string $simu The simulator name
+	 * @param   string $target The target file ('json', 'markup' or 'js'), default 'json'
+	 * @return  \Symfony\Component\HttpFoundation\Response|\App\G6K\Model\Step The simulation step object or the API response object in JSON format
+	 *
+	 */
+	protected function runApi(Request $request, $simu, $target)
+	{
+		$this->initialize();
+		try {
+			$api = $this->getParameter('api');
+		} catch (\Exception $e) {
+			throw $this->createNotFoundException($this->translator->trans("API for this simulator is not implemented"));
+		}
+		if (! is_array($api) || !isset($api[$simu])) {
+			throw $this->createNotFoundException($this->translator->trans("API for this simulator is not implemented"));
+		}
+		$simufile = $this->projectDir . "/var/data/simulators/api/" . $simu;
+		if (!file_exists($simufile . ".json") || !file_exists($simufile . ".js")) {
+			throw $this->createNotFoundException($this->translator->trans("API for this simulator is not implemented"));
+		}
+		$form = $request->query->all();
+		return $this->apiOutput($request, $simu, $form, $target);
 	}
 
 	/**
@@ -157,7 +205,7 @@ class APIController extends BaseController {
 	 * @return  \Symfony\Component\HttpFoundation\Response The API response object in JSON format
 	 *
 	 */
-	protected function apiOutput(Request $request, $form, Step $step)
+	protected function apiStepOutput(Request $request, $form, Step $step)
 	{
 		$fields = array_fill_keys(preg_split('/\s*,\s*/', $request->query->get('fields', '')), 1);
 		foreach ($fields as $field => $val) {
@@ -258,23 +306,169 @@ class APIController extends BaseController {
 		$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo() . '?' . $request->getQueryString();
 		$response = new Response();
 		$response->headers->set('Content-Type', 'application/json');
-		$content = array(
-			'links' => array(
+		$content = [
+			'links' => [
 				'self' => $self
-			)
-		);
+			]
+		];
 		if ($this->error) {
 			$content['errors'] = $this->errors;
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 		}
-		$content['data'] = array(
+		$content['data'] = [
 			'type' => $this->simu->getName(),
 			'id' => $id,
 			'attributes' => $this->datas,
 			'meta' => $this->metas
-		);
+		];
 		$response->setContent(json_encode($content));
 		return $response;
+	}
+
+	protected function apiOutput(Request $request, $simulator, $form, string $target)
+	{
+		$response = new Response();
+		$apiDir = $this->projectDir . "/var/data/simulators/api";
+		switch ($target) {
+			case 'html':
+				$locale = $form['locale'] ?? '';
+				if ($locale !== '') {
+					$this->translator->setLocale($locale);
+				}
+				$this->checkApiParameters($form);
+				if ($this->error) {
+					break;
+				}
+				$markup = $form['markup'] ?? 'page';
+				$bootstrap = $form['bootstrap'] ?? '';
+				$primaryColor = $form['primaryColor'] ?? '#0b6ba8';
+				$secondaryColor = $form['secondaryColor'] ?? '#ececec';
+				$breadcrumbColor = $form['breadcrumbColor'] ?? $form['primaryColor'] ?? '#0b6ba8';
+				$tabColor = $form['tabColor'] ?? $form['primaryColor'] ?? '#0b6ba8';
+				$globalErrorColor = $form['globalErrorColor'] ?? 'red';
+				$globalWarningColor = $form['globalWarningColor'] ?? '#8a6d3b';
+				$fieldErrorColor = $form['fieldErrorColor'] ?? $form['globalErrorColor'] ?? 'red';
+				$fieldWarningColor = $form['fieldWarningColor'] ?? $form['globalWarningColor'] ?? '#8a6d3b';
+				$htmlMarkup = new HTMLMarkup($this->translator, $this->projectDir);
+				$htmlMarkup->setSimulator($simulator);
+				$htmlMarkup->run();
+				$document = $htmlMarkup->get();
+
+				if ($bootstrap != '') {
+					$bootstrapifier = new Bootstrapifier([
+						'markup' => $markup,
+						'version' => $bootstrap
+					]);
+					$bootstrapifier->bootstrapify($document);
+				}
+				$container = $document->find('article.simulator-container')[0];
+				$mainContainer = $markup == 'fragment' ? $container : $document->body();
+				$mainContainer->append('<style>', implode("\n", ['', 
+					'.simulator-container {',
+					'	--primary-color: ' . $primaryColor . ';',
+					'}',
+					'.simulator-container {',
+					'	--secondary-color: ' . $secondaryColor . ';',
+					'}',
+					'.simulator-container .simulator-breadcrumb {',
+					'	--color: ' . $breadcrumbColor . ';',
+					'}',
+					'.simulator-container .global-alert.has-error {',
+					'	--color: ' . $globalErrorColor . ';',
+					'}',
+					'.simulator-container .global-alert.has-warning {',
+					'	--color: ' . $globalWarningColor . ';',
+					'}',
+					'.simulator-container .field-alert.has-error {',
+					'	--color: ' . $fieldErrorColor . ';',
+					'}',
+					'.simulator-container .field-alert.has-warning {',
+					'	--color: ' . $fieldWarningColor . ';',
+					'}',
+					'.simulator-container .step-panels-list {',
+					'	--color: ' . $tabColor . ';',
+					'}',
+					'    '
+				]));
+				$mainContainer->append('<script>', [
+					'type' => "text/javascript",
+					'src' => $this->generateUrl(
+						'eureka_g6k_api_target',
+						[
+							'simu' => $simulator,
+							'target' => 'js'
+						],
+						UrlGeneratorInterface::ABSOLUTE_URL
+					)
+				]); 
+				if ($markup == 'fragment') {
+					$html = $document->html($container);
+				} else {
+					$html = $document->html();
+				}
+				$response->headers->set('Content-Type', 'text/html');
+				$response->setContent($html);
+				break;
+			case 'js':
+				$jsfile = $apiDir . "/" . $simulator . ".min.js";
+				$response->headers->set('Content-Type', 'application/javascript');
+				$response->setContent(file_get_contents($jsfile));
+				break;
+			case 'json':
+				$jsonfile = $apiDir . "/" . $simulator . ".json";
+				$response->headers->set('Content-Type', 'application/json');
+				$response->setContent(file_get_contents($jsonfile));
+				break;
+			default:
+				$this->addEntityError(
+					"/data/" . $simulator,
+					$this->translator->trans("Invalid API request"), 
+					$this->translator->trans(
+						"Unrecognizable target '%target%'",
+						[ '%target%' => $target ]
+					)
+				);
+		}
+		if ($this->error) {
+			$id = urlencode(base64_encode( gzcompress($request->getQueryString())));
+			$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo() . '?' . $request->getQueryString();
+			$response->headers->set('Content-Type', 'application/json');
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			$content = [
+				'links' => [
+					'self' => $self
+				],
+				'errors' => $this->errors,
+				'data' => [
+					'type' => $simulator,
+					'id' => $id
+				]
+			];
+			$response->setContent(json_encode($content));
+		}
+		return $response;
+	}
+
+	private function checkApiParameters($form) {
+		$parameters = [
+			'markup', 'locale', 'bootstrap',
+			'primaryColor', 'secondaryColor',
+			'breadcrumbColor', 'tabColor',
+			'globalErrorColor', 'globalWarningColor',
+			'fieldErrorColor', 'fieldWarningColor'
+		];
+		foreach($form as $param => $value) {
+			if (! in_array($param, $parameters)) {
+				$this->addParameterError(
+					$param,
+					$this->translator->trans("Invalid parameter"), 
+					$this->translator->trans(
+						"This parameter '%parameter%' doesn't exists",
+						[ '%parameter%' => $param ]
+					)
+				);
+			}
+		}
 	}
 
 	/**

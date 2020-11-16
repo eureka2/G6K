@@ -218,6 +218,13 @@ class BaseController extends AbstractController {
 	public $viewsDir;
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function getParameter(string $name) {
+		return parent::getParameter($name);
+	}
+
+	/**
 	 * Run the simulation engine for a step
 	 *
 	 * @access  protected

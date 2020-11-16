@@ -88,7 +88,9 @@ THE SOFTWARE.
 		var m = 3 + Math.floor( ( l + 40 ) / 44 );
 		var d = l + 28 - 31 * Math.floor( m / 4 );
 		var z = new Date();
-		z.setFullYear( year, m-1, d );
+		z.setFullYear(year);
+		z.setMonth(m - 1);
+		z.setDate(d);
 		z.setHours(0,0,0,0);
 		return z;
 	};
@@ -2280,6 +2282,12 @@ THE SOFTWARE.
 (function (global) {
 	'use strict';
 
+	Number.isNumeric = Number.isNumeric || function(value) {
+		var type = typeof value;
+		return (type === "number" || type === "string") &&
+				!isNaN(value - parseFloat(value));
+	}
+
 	function Expression(expression) {
 		this.expression = expression;
 		this.tokens = [];
@@ -2378,12 +2386,12 @@ THE SOFTWARE.
 					if (Array.isArray(value)) {
 						token.type = Token.TYPE.T_ARRAY;
 						token.value = value;
-					} else if (!isNaN(parseFloat(value))) {
-						token.type = Token.TYPE.T_NUMBER;
-						token.value = parseFloat(value);
 					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
 						token.value = Date.createFromFormat(Date.inputFormat, value);
+					} else if (Number.isNumeric(value)) {
+						token.type = Token.TYPE.T_NUMBER;
+						token.value = parseFloat(value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2402,12 +2410,12 @@ THE SOFTWARE.
 					if (Array.isArray(value)) {
 						token.type = Token.TYPE.T_ARRAY;
 						token.value = value;
-					} else if (!isNaN(parseFloat(value))) {
-						token.type = Token.TYPE.T_NUMBER;
-						token.value = parseFloat(value);
 					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
 						token.value = Date.createFromFormat(Date.inputFormat, value);
+					} else if (Number.isNumeric(value)) {
+						token.type = Token.TYPE.T_NUMBER;
+						token.value = parseFloat(value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2429,12 +2437,12 @@ THE SOFTWARE.
 					} else if (Array.isArray(value)) {
 						token.type = Token.TYPE.T_ARRAY;
 						token.value = value;
-					} else if (!isNaN(parseFloat(value))) {
-						token.type = Token.TYPE.T_NUMBER;
-						token.value = parseFloat(value);
 					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
 						token.value = Date.createFromFormat(Date.inputFormat, value);
+					} else if (Number.isNumeric(value)) {
+						token.type = Token.TYPE.T_NUMBER;
+						token.value = parseFloat(value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2449,12 +2457,12 @@ THE SOFTWARE.
 					} else if (Array.isArray(value)) {
 						token.type = Token.TYPE.T_ARRAY;
 						token.value = value;
-					} else if (!isNaN(parseFloat(value))) {
-						token.type = Token.TYPE.T_NUMBER;
-						token.value = parseFloat(value);
 					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
 						token.value = Date.createFromFormat(Date.inputFormat, value);
+					} else if (Number.isNumeric(value)) {
+						token.type = Token.TYPE.T_NUMBER;
+						token.value = parseFloat(value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2832,12 +2840,12 @@ THE SOFTWARE.
 
 		guessType : function (token) {
 			if (token.type == Token.TYPE.T_TEXT) {
-				if (!isNaN(parseFloat(token.value))) {
-					token.type = Token.TYPE.T_NUMBER;
-					token.value = parseFloat(token.value);
-				} else if (Date.isDate(token.value)) {
+				if (Date.isDate(token.value)) {
 					token.type = Token.TYPE.T_DATE;
 					token.value = Date.createFromFormat(Date.inputFormat, token.value);
+				} else if (Number.isNumeric(token.value)) {
+					token.type = Token.TYPE.T_NUMBER;
+					token.value = parseFloat(token.value);
 				} else if (token.value === 'true' || token.value === 'false') {
 					token.type = Token.TYPE.T_BOOLEAN;
 					token.value = token.value === 'true';
@@ -3087,7 +3095,7 @@ THE SOFTWARE.
 			$.each(toks, function( t, value ) {
 				value = value.replace(/^\s+|\s+$/g, '');
 				var matches;
-				if (!isNaN(parseFloat(value))) {
+				if (Number.isNumeric(value)) {
 					if (prev.type == Token.TYPE.T_PCLOSE)
 						expr.push(new Token(Token.TYPE.T_TIMES, '*'));
 					expr.push(prev = new Token(Token.TYPE.T_NUMBER, parseFloat(value)));
@@ -5436,7 +5444,7 @@ THE SOFTWARE.
 
 		formatValue: function(data) {
 			var value = data.value;
-			if (value && !isNaN(parseFloat(value)) && (data.type === "money" || data.type === "percent")) {
+			if (value && Number.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
 				value = AutoNumeric.format(parseFloat(value), {
 					currencySymbol: '',
 					decimalCharacter: this.decimalPoint,

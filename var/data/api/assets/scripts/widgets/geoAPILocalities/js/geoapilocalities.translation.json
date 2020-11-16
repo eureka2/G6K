@@ -1,0 +1,48 @@
+	{
+		'geoapilocalities': {
+			'fr': {
+				"There is no suggestion": "Il n'y a aucune suggestion",
+				"There is one suggestion": "Il y a une suggestion",
+				"There are %count% suggestions, use up and down arrows to review.": "Il y a des suggestions %count%, utilisez les flèches haut et bas pour revoir.",
+				"Suggestions will be proposed when you enter. Use the up or down key to access and browse suggestions after entering. Confirm your choice with the Enter key, or the Esc key to close the suggestion box": "Des suggestions vous seront proposées lors de votre inscription. Utilisez la touche haut ou bas pour accéder aux suggestions et les parcourir après la saisie. Confirmez votre choix avec la touche Entrée ou la touche Échap pour fermer la boîte de suggestion",
+				"Clear this field": "Videz ce champ",
+				"The entered value does not allow to find the information of the locality.": "La valeur saisie ne permet pas de retrouver les informations de la localité.",
+				"Several localities are served by the postal code entered, please specify": "Plusieurs localités sont desservies par le code postal saisi, veuillez préciser",
+				"Several localities match the name entered, please specify": "Plusieurs localités correspondent au nom saisi, veuillez préciser",
+				"Validate": "Valider"
+			},
+			'es': {
+				"There is no suggestion": "No hay sugerencia",
+				"There is one suggestion": "Hay una sugerencia",
+				"There are %count% suggestions, use up and down arrows to review.": "Hay sugerencias de %count%, use las flechas hacia arriba y hacia abajo para revisar.",
+				"Suggestions will be proposed when you enter. Use the up or down key to access and browse suggestions after entering. Confirm your choice with the Enter key, or the Esc key to close the suggestion box": "Se propondrán sugerencias cuando ingrese. Use la tecla arriba o abajo para acceder y buscar sugerencias después de ingresar. Confirme su elección con la tecla Intro o la tecla Esc para cerrar el cuadro de sugerencias",
+				"Clear this field": "limpia este campo",
+				"The entered value does not allow to find the information of the locality.": "El valor ingresado no permite encontrar la información de la localidad.",
+				"Several localities are served by the postal code entered, please specify": "Varias localidades son atendidas por el código postal ingresado, por favor especifique",
+				"Several localities match the name entered, please specify": "Varias localidades coinciden con el nombre ingresado, por favor especifique",
+				"Validate": "Validar"
+			},
+			'pt': {
+				"There is no suggestion": "Não há sugestão",
+				"There is one suggestion": "Existe uma sugestão",
+				"There are %count% suggestions, use up and down arrows to review.": "Existem %count% sugestões, use as setas para cima e para baixo para revisar.",
+				"Suggestions will be proposed when you enter. Use the up or down key to access and browse suggestions after entering. Confirm your choice with the Enter key, or the Esc key to close the suggestion box": "As sugestões serão propostas quando você entrar. Use a tecla para cima ou para baixo para acessar e navegar pelas sugestões após entrar. Confirme sua escolha com a tecla Enter ou a tecla Esc para fechar a caixa de sugestões",
+				"Clear this field": "limpe este campo",
+				"The entered value does not allow to find the information of the locality.": "O valor inserido não permite encontrar a informação da localidade.",
+				"Several localities are served by the postal code entered, please specify": "Várias localidades são atendidas pelo código postal inserido, especifique",
+				"Several localities match the name entered, please specify": "Várias localidades correspondem ao nome inserido, especifique",
+				"Validate": "Validar"
+			},
+			'it': {
+				"There is no suggestion": "Non ci sono suggerimenti",
+				"There is one suggestion": "C'è un suggerimento",
+				"There are %count% suggestions, use up and down arrows to review.": "Sono disponibili %count% suggerimenti, utilizzare le frecce su e giù per rivedere.",
+				"Suggestions will be proposed when you enter. Use the up or down key to access and browse suggestions after entering. Confirm your choice with the Enter key, or the Esc key to close the suggestion box": "Suggerimenti verranno proposti quando si entra. Utilizzare il tasto su o giù per accedere e sfogliare i suggerimenti dopo averli inseriti. Conferma la tua scelta con il tasto Invio o il tasto Esc per chiudere la casella dei suggerimenti",
+				"Clear this field": "Cancella questo campo",
+				"The entered value does not allow to find the information of the locality.": "Il valore inserito non permette di trovare le informazioni della località.",
+				"Several localities are served by the postal code entered, please specify": "Diverse località sono servite dal codice postale inserito, specificare",
+				"Several localities match the name entered, please specify": "Diverse località corrispondono al nome inserito, specificare",
+				"Validate": "Convalidare"
+			}
+		}
+	}

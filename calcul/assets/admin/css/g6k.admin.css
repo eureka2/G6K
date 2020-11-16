@@ -413,7 +413,7 @@ h4.card-title {
 .view-button, .drop-view-button , .help-view-button ,
 .edit-profiles-label, .add-profile, .edit-profile, .delete-profile, .add-profile-data, .edit-profile-data, .delete-profile-data,
 .edit-source, .delete-source, .add-source-parameter, .delete-source-parameter,
-.btn-group.update-button, .edit-pdfform-button, .drop-pdfform-button,
+.btn-group.update-button, .edit-pdfform-button, .drop-pdfform-button
  {
 	margin-top: -9px;
 }

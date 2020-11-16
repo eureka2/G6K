@@ -96,6 +96,13 @@ class BaseAdminController extends AbstractController {
 	}
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function getParameter(string $name) {
+		return parent::getParameter($name);
+	}
+
+	/**
 	 * Returns a JSON response formed with the data of a form and an error message.
 	 *
 	 * @access  protected
