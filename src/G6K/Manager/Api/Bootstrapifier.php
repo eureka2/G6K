@@ -62,18 +62,27 @@ class Bootstrapifier {
 			} elseif ($node->is('textarea')) {
 				$node->addClass('form-control');
 			} elseif ($node->is('label')) {
-				$node->addClass('col-form-label');
+				$node->addClass('col-form-label', 'control-label');
 			} elseif ($node->is('button')) {
 				$node->addClass('btn');
-				if ($node->hasClass('btn-default')) {
-					$node->addClass('btn-secondary');
+				if ($node->hasClass('btn-default')
+					&& $node->parent()->hasClass('bottom')) {
+					$node->addClass('btn-secondary', 'float-left');
+				} elseif ($node->hasClass('btn-primary')
+					&& $node->parent()->hasClass('bottom')) {
+					$node->addClass('float-right');
 				}
 			} else {
+				if ($node->hasClass('fieldset')
+					&& $node->hasClass('disposition-classic')) {
+					$node->addClass('form-horizontal');
+				}
 				if ($node->hasClass('field-container')) {
-					$node->addClass('form-group', 'row');
+					$node->addClass('form-group');
 				}
 				if ($node->hasClass('field-group')) {
 					$node->addClass('input-group');
+					$node->removeClass('native');
 				}
 			}
 		});

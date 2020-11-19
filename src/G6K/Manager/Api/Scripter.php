@@ -171,24 +171,6 @@ class Scripter {
 		}
 		$escript[] = "};";
 		$escript[] = "";
-		$escript[] = "document.addEventListener( 'DOMContentLoaded', function(event) {";
-		$escript[] = "	var options = {";
-		$escript[] = "		simulator: G6K_SIMU,";
-		$escript[] = "		form: document.querySelector('.simulator form'),";
-		$escript[] = "		locale: '" . $simulator['locale'] ."',";
-		$escript[] = "		dynamic: true,";
-		$escript[] = "		mobile: false,";
-		$escript[] = "		dateFormat: '" . $simulator->DataSet['dateFormat'] . "',";
-		$escript[] = "		decimalPoint: '" . $simulator->DataSet['decimalPoint'] . "',";
-		$escript[] = "		moneySymbol: '" . $simulator->DataSet['moneySymbol'] . "',";
-		$escript[] = "		symbolPosition: '" . $simulator->DataSet['symbolPosition'] . "',";
-		$escript[] = "		groupingSeparator: '" . $simulator->DataSet['groupingSeparator'] . "',";
-		$escript[] = "		groupingSize: '" . $simulator->DataSet['groupingSize'] . "'";
-		$escript[] = "	};";
-		$escript[] = "	var g6k = new G6k(options);";
-		$escript[] = "	g6k.run();";
-		$escript[] = "});";
-		$escript[] = "";
 		$this->loadScript($escript);
 	}
 

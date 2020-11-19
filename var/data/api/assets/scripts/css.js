@@ -140,6 +140,23 @@
 		.simulator-container.default-style .hidden {
 			display: none;
 		}
+		.simulator-container.default-style {
+			font-family: var(--font-family, 'Arial, Verdana');
+                        font-size: var(--font-size, 1em);
+		}
+		.simulator-container.default-style div.simulator > h1 {
+                        border-color: #ccc;
+                        border-image: none;
+                        border-style: solid;
+                        border-width: 1px 0;
+                        color: var(--color, var(--primary-color, #0b6ba8));
+                        font-size: 1.6em;
+                        margin: 0 0 1em;
+                        padding: 0.3em;
+                        text-align: center;
+                        text-transform: uppercase;
+                        font-weight: 400;
+		}
 		.simulator-container.default-style .asterisk {
 			color: red;
 		}
@@ -211,14 +228,24 @@
 			border-radius: 4px;
 			background-color: #fff;
 		}
+		.simulator-container.default-style .field-container.date field-group {
+                        max-width: 5.5em;
+                        width: 5.5em;
+                }
+		.simulator-container.default-style .field-container.choice:not([data-expanded='true']) > .field-group.native select,
+		.simulator-container.default-style .field-container.department:not([data-expanded='true']) > .field-group.native select,
+		.simulator-container.default-style .field-container.day:not([data-expanded='true']) > .field-group.native select,
+		.simulator-container.default-style .field-container.month:not([data-expanded='true']) > .field-group.native select,
+		.simulator-container.default-style .field-container.year:not([data-expanded='true']) > .field-group.native select {
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+                }
 		.simulator-container.default-style .field-container.choice:not([data-expanded='true']) select,
 		.simulator-container.default-style .field-container.department:not([data-expanded='true']) select,
 		.simulator-container.default-style .field-container.day:not([data-expanded='true']) select,
 		.simulator-container.default-style .field-container.month:not([data-expanded='true']) select,
 		.simulator-container.default-style .field-container.year:not([data-expanded='true']) select {
-			-webkit-appearance: none;
-			-moz-appearance: none;
-			appearance: none;
 			box-sizing: border-box;
 			width: 100%; 
 			height: 2.1rem;
@@ -264,11 +291,11 @@
 			position: relative;
 		}
 
-		.simulator-container.default-style .field-container.choice:not([data-expanded='true']) > .field-group::after,
-		.simulator-container.default-style .field-container.department:not([data-expanded='true']) > .field-group::after,
-		.simulator-container.default-style .field-container.day:not([data-expanded='true']) > .field-group::after, 
-		.simulator-container.default-style .field-container.month:not([data-expanded='true']) > .field-group::after,
-		.simulator-container.default-style .field-container.year:not([data-expanded='true']) > .field-group::after { 
+		.simulator-container.default-style .field-container.choice:not([data-expanded='true']) > .field-group.native::after,
+		.simulator-container.default-style .field-container.department:not([data-expanded='true']) > .field-group.native::after,
+		.simulator-container.default-style .field-container.day:not([data-expanded='true']) > .field-group.native::after, 
+		.simulator-container.default-style .field-container.month:not([data-expanded='true']) > .field-group.native::after,
+		.simulator-container.default-style .field-container.year:not([data-expanded='true']) > .field-group.native::after { 
 			content: '\\e608';
 			position: absolute;
 			top: 0.125rem;
@@ -290,11 +317,11 @@
 			border-radius: 0.1875rem;
 			padding-left: 0.25rem;
 		}
-		.simulator-container.default-style .field-container.choice:not([data-expanded='true']) > .field-group:hover::after,
-		.simulator-container.default-style .field-container.department:not([data-expanded='true']) > .field-group:hover::after,
-		.simulator-container.default-style .field-container.day:not([data-expanded='true']) > .field-group:hover::after, 
-		.simulator-container.default-style .field-container.month:not([data-expanded='true']) > .field-group:hover::after,
-		.simulator-container.default-style .field-container.year:not([data-expanded='true']) > .field-group:hover::after { 
+		.simulator-container.default-style .field-container.choice:not([data-expanded='true']) > .field-group.native:hover::after,
+		.simulator-container.default-style .field-container.department:not([data-expanded='true']) > .field-group.native:hover::after,
+		.simulator-container.default-style .field-container.day:not([data-expanded='true']) > .field-group.native:hover::after, 
+		.simulator-container.default-style .field-container.month:not([data-expanded='true']) > .field-group.native:hover::after,
+		.simulator-container.default-style .field-container.year:not([data-expanded='true']) > .field-group.native:hover::after { 
 			background-color: var(--color, var(--primary-color, #0b6ba8));
 			color: #fff;
 		}
@@ -312,6 +339,9 @@
 		.simulator-container.default-style .simulator-description p {
 			line-height: 1em;
 		}
+		.simulator-container.default-style .simulator-description p:not(:last-child) {
+			margin-top: 0;
+                        margin-bottom: 0;
 		}
 		.simulator-container.default-style .help-panel p{
 			line-height: 0.5em;
@@ -327,7 +357,8 @@
 			-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 				  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 		}
-		.simulator-container.default-style fieldset > legend {
+		.simulator-container.default-style fieldset > legend,
+                .simulator-container.default-style h2.step-description {
 			font-size: 1.2em;
 			font-weight: bold;
 			display: block;
@@ -339,6 +370,9 @@
 			border-bottom: 3px solid;
 			margin: 0 0 0.8em;
 			width: 100%;
+		}
+                .simulator-container.default-style h2.step-description > p {
+                        margin: 0;
 		}
 		.simulator-container.default-style .disposition-classic fieldset.choices.numerous label,
 		.simulator-container.default-style .disposition-classic fieldset.choices.long label {
@@ -516,6 +550,7 @@
 			height: 50px;
 			text-decoration: none;
 			color: #000;
+                        line-height: 1.2;
 			background: var(--secondary-color, #ececec);
 		}
 		.simulator-container .simulator-breadcrumb li p:first-child {

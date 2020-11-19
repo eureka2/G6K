@@ -38,6 +38,7 @@ use App\G6K\Manager\ExpressionParser\MoneyFunction;
 class HTMLMarkup {
 
 	private $simulator;
+	private $json;
 	private $options = [];
 	private $translator;
 	private $projectDir;
@@ -57,32 +58,32 @@ class HTMLMarkup {
 
 	public function setSimulator($simulator) {
 		$this->simulator = $simulator;
+		$this->json = json_decode(file_get_contents($this->jsonDir . '/' . $this->simulator . '.json'), true);
+		$this->options = $this->json['data']['attributes'];
 	}
 
 	public function run() {
-		$json = json_decode(file_get_contents($this->jsonDir . '/' . $this->simulator . '.json'), true);
-		$this->options = $json['data']['attributes'];
-		foreach ($json['meta'] as $name => $data) {
+		foreach ($this->json['meta'] as $name => $data) {
 			$this->variables[$name] = $data['initial'];
 		}
-		$steps = $json['included']['steps'];
-		$simulatorType = $json['data']['type'];
-		$simulatorId = $json['data']['id'];
-		$simulatorTitle = $json['data']['attributes']['title'];
-		$simulatorDescription = $json['data']['attributes']['description'];
-		DateFunction::$dateFormat = $json['data']['attributes']['dateFormat'];
-		DateFunction::$timezone = $json['data']['attributes']['timezone'];
-		MoneyFunction::$decimalPoint = $json['data']['attributes']['decimalPoint'];
-		MoneyFunction::$groupingSeparator = $json['data']['attributes']['groupingSeparator'];
-		MoneyFunction::$groupingSize = $json['data']['attributes']['groupingSize'];
-		MoneyFunction::$moneySymbol = $json['data']['attributes']['moneySymbol'];
-		MoneyFunction::$symbolPosition = $json['data']['attributes']['symbolPosition'];
-		NumberFunction::$decimalPoint = $json['data']['attributes']['decimalPoint'];
-		NumberFunction::$groupingSeparator = $json['data']['attributes']['groupingSeparator'];
-		NumberFunction::$groupingSize = $json['data']['attributes']['groupingSize'];
-		PercentFunction::$decimalPoint = $json['data']['attributes']['decimalPoint'];
-		PercentFunction::$groupingSeparator = $json['data']['attributes']['groupingSeparator'];
-		PercentFunction::$groupingSize = $json['data']['attributes']['groupingSize'];
+		$steps = $this->json['included']['steps'];
+		$simulatorType = $this->json['data']['type'];
+		$simulatorId = $this->json['data']['id'];
+		$simulatorTitle = $this->json['data']['attributes']['title'];
+		$simulatorDescription = $this->json['data']['attributes']['description'];
+		DateFunction::$dateFormat = $this->json['data']['attributes']['dateFormat'];
+		DateFunction::$timezone = $this->json['data']['attributes']['timezone'];
+		MoneyFunction::$decimalPoint = $this->json['data']['attributes']['decimalPoint'];
+		MoneyFunction::$groupingSeparator = $this->json['data']['attributes']['groupingSeparator'];
+		MoneyFunction::$groupingSize = $this->json['data']['attributes']['groupingSize'];
+		MoneyFunction::$moneySymbol = $this->json['data']['attributes']['moneySymbol'];
+		MoneyFunction::$symbolPosition = $this->json['data']['attributes']['symbolPosition'];
+		NumberFunction::$decimalPoint = $this->json['data']['attributes']['decimalPoint'];
+		NumberFunction::$groupingSeparator = $this->json['data']['attributes']['groupingSeparator'];
+		NumberFunction::$groupingSize = $this->json['data']['attributes']['groupingSize'];
+		PercentFunction::$decimalPoint = $this->json['data']['attributes']['decimalPoint'];
+		PercentFunction::$groupingSeparator = $this->json['data']['attributes']['groupingSeparator'];
+		PercentFunction::$groupingSize = $this->json['data']['attributes']['groupingSize'];
 		$this->markup = new HTMLDocument($simulatorTitle);
 		$body = $this->markup->body();
 		$article = $body->append('<article>', ['class' => 'article simulator-container default-style']);
@@ -93,9 +94,13 @@ class HTMLMarkup {
 			->parent()->append('<div>', $simulatorDescription, ['class' => $simulatorType . '-description'])
 			->parent()->append('<form>');
 		$this->breadcrumb($steps, $form);
-		$this->profiles($json['included']['profiles'], $form);
-		$this->steps($steps, $json['meta'], $form);
-		$this->hiddens($json['meta'], $form);
+		$this->profiles($this->json['included']['profiles'], $form);
+		$this->steps($steps, $form);
+		$this->hiddens($form);
+	}
+
+	public function getOptions() {
+		return $this->options;
 	}
 
 	public function get() {
@@ -168,7 +173,7 @@ class HTMLMarkup {
 		}
 	}
 
-	private function steps($steps, &$meta, $form) {
+	private function steps($steps, $form) {
 		foreach($steps as $s => $step) {
 			$stepContainer = $form->append('<div>', [
 				'id' => $step['id'],
@@ -206,12 +211,11 @@ class HTMLMarkup {
 						'data-toggle' => 'tab',
 						'href' => '#' . $panel['id']
 					]);
-					$active = '';
 				}
 				$panelsContent = $ul->after('<div>', [ 'class' => 'panels-content' ]);
-				$this->panels($panels, $step, $meta, $panelsContent);
+				$this->panels($panels, $step, $panelsContent);
 			} else {
-				$this->panels($panels, $step, $meta, $stepContainer);
+				$this->panels($panels, $step, $stepContainer);
 			}
 			$footnotesPosition = 'afterActions';
 			foreach($step['attributes']['data'] as $child) {
@@ -237,7 +241,7 @@ class HTMLMarkup {
 		]);
 	}
 
-	private function panels($panels, $step, &$meta, $container) {
+	private function panels($panels, $step, $container) {
 		$numberOfPanels = count($panels);
 		foreach($panels as $panelNum => $panel) {
 			$panelContainer = $container->append('<div>', '', [
@@ -314,11 +318,11 @@ class HTMLMarkup {
 						}
 					}
 					if ($disposition == "grid") {
-						$this->grid($step['id'], $fieldset, $meta, $fieldsetContainer);
+						$this->grid($step['id'], $fieldset, $fieldsetContainer);
 					} elseif ($disposition == "inline") {
-						$this->inline($step['id'], $fieldset, $meta, $fieldsetContainer);
+						$this->inline($step['id'], $fieldset, $fieldsetContainer);
 					} else {
-						$this->classic($step['id'], $fieldset, $meta, $fieldsetContainer);
+						$this->classic($step['id'], $fieldset, $fieldsetContainer);
 					}
 					if ($display == 'pop-in') {
 						$this->popinfooter($fieldsetContainer);
@@ -335,7 +339,7 @@ class HTMLMarkup {
 						$accordionId = 'accordion' . $step['id'] . '-' . $panel['id'] . '-' . $groupId;
 						$blockinfoContainer = $this->accordionheader($blockinfo['id'], $this->nofnref($blockinfo['attributes']['title']), $accordionId, $blockinfoContainer);
 					}
-					$this->blockinfo($step['id'], $blockinfo, $meta, $blockinfoContainer);
+					$this->blockinfo($step['id'], $blockinfo, $blockinfoContainer);
 					if ($display == 'pop-in') {
 						$this->popinfooter($blockinfoContainer);
 					}
@@ -344,7 +348,7 @@ class HTMLMarkup {
 		}
 	}
 
-	private function grid($stepId, $fieldset, &$meta, $container) {
+	private function grid($stepId, $fieldset, $container) {
 		$table = $container->append('<table>', [
 			'class' => 'grid',
 			'id' => $fieldset['id']
@@ -383,7 +387,7 @@ class HTMLMarkup {
 						'headers' => str_replace('fieldrow', 'head', $row['id']),
 						'data-label' => $labels[$f]
 					]);
-					$this->field($stepId, $field, $meta, $td);
+					$this->field($stepId, $field, $td);
 				}
 				$tbody->append('<tr>')
 				->append('<td>', [
@@ -398,23 +402,23 @@ class HTMLMarkup {
 		}
 	}
 
-	private function inline($stepId, $fieldset, &$meta, $container) {
+	private function inline($stepId, $fieldset, $container) {
 		foreach($fieldset['attributes']['data'] as $fieldrow) {
 			foreach($fieldrow['attributes']['data'] as $position => $field) {
-				$this->field($stepId, $field, $meta, $container);
+				$this->field($stepId, $field, $container);
 			}
 		}
 	}
 
-	private function classic($stepId, $fieldset, &$meta, $container) {
+	private function classic($stepId, $fieldset, $container) {
 		foreach($fieldset['attributes']['data'] as $fieldrow) {
 			foreach($fieldrow['attributes']['data'] as $position => $field) {
-				$this->field($stepId, $field, $meta, $container);
+				$this->field($stepId, $field, $container);
 			}
 		}
 	}
 
-	private function blockinfo($stepId, $blockinfo, &$meta, $container) {
+	private function blockinfo($stepId, $blockinfo, $container) {
 		$hasCollapsible = false;
 		foreach($blockinfo['attributes']['data'] as $chapter) {
 			if ($chapter['attributes']['collapsible'] == '1') {
@@ -489,15 +493,15 @@ class HTMLMarkup {
 		}
 	}
 
-	private function hiddens(&$meta, $form) {
-		foreach ($meta as $name => $data) {
+	private function hiddens($form) {
+		foreach ($this->json['meta'] as $name => $data) {
 			if ($data['hidden']) {
 				$form->append('<input>', [ 
 					'type' => "hidden" ,
 					'id' => $data['elementId'], 
 					'name' => $name,
 					'class' => 'resettable',
-					'value' => $this->value($name, $meta)
+					'value' => $this->value($name)
 				]);
 			}
 		}
@@ -556,7 +560,6 @@ class HTMLMarkup {
 									'name' => $attr['name']
 								]);
 							}
-							$formaction = $datafunction = '';
 							if ($attr['for'] == 'externalPage') {
 								$actionContainer->attr('formaction', $attr['uri']);
 							} elseif ($attr['for'] == 'function') {
@@ -587,7 +590,7 @@ class HTMLMarkup {
 		}
 	}
 
-	private function field($stepId, $field, &$meta, $container) {
+	private function field($stepId, $field, $container) {
 		$fieldContainer = $container->append('<div>', [ 
 			'id' => $field['id'] . '-container', 
 			'class' => $field['type'] . '-container ' . $field['attributes']['dataType']
@@ -606,9 +609,9 @@ class HTMLMarkup {
 			}
 		}
 		if ($field['attributes']['usage'] == 'output') {
-			$this->outputField($stepId, $field, $meta, $fieldContainer);
+			$this->outputField($stepId, $field, $fieldContainer);
 		} else {
-			$this->inputField($stepId, $field, $meta, $fieldContainer);
+			$this->inputField($stepId, $field, $fieldContainer);
 		}
 		if ($field['attributes']['help'] == '1') {
 			$fieldContainer->append('<button>', [ 
@@ -657,16 +660,16 @@ class HTMLMarkup {
 			])->append('<dl>')->append('<dt>', $this->fnref($stepId, $field['attributes']['title']), [
 				'class' => 'only',
 				'aria-hidden' => 'true'
-			])->parent()->append('<dd>', $this->fnref($stepId, $meta[$field['attributes']['dataName']]['definition']));
+			])->parent()->append('<dd>', $this->fnref($stepId, $this->json['meta'][$field['attributes']['dataName']]['definition']));
 		}
 	}
 
-	private function inputField($stepId, $field, &$meta, $container) {
+	private function inputField($stepId, $field, $container) {
 		$id = $field['id'];
 		$attributes = $field['attributes'];
 		$name = $attributes['dataName'];
 		$widget = isset($attributes['widget']) ? $attributes['widget'] : '';
-		$value = $plainvalue = $this->value($name, $meta, $attributes['dataType']);
+		$value = $plainvalue = $this->value($name, $attributes['dataType']);
 		if ($value != '') {
 			$round = 2;
 			if (isset($attributes['round']) && $attributes['round'] != '') {
@@ -720,7 +723,6 @@ class HTMLMarkup {
 						}
 					}
 					$quantity = $quantity > 3 ? ' numerous' : '';
-					$long = $length > 200 ? ' long' : '';
 					$fieldset = $fieldGroup->append('<fieldset>', [
 						'id' => $id . '-choices',
 						'class' => 'choices'
@@ -776,7 +778,7 @@ class HTMLMarkup {
 						}
 					}
 				} else {
-					$select = $fieldGroup->append('<select>', [
+					$select = $fieldGroup->addClass('native')->append('<select>', [
 						'class' => $field['type'],
 						'id' => $id,
 						'name' => $name
@@ -865,7 +867,7 @@ class HTMLMarkup {
 				$fieldGroup->append($plainvalue);
 				break;
 			case 'department':
-				$select = $fieldGroup->append('<select>', [
+				$select = $fieldGroup->addClass('native')->append('<select>', [
 					'class' => $field['type'],
 					'id' => $id,
 					'name' => $name
@@ -886,7 +888,7 @@ class HTMLMarkup {
 				if (isset($attributes['max'])) {
 					$max = $this->evaluate($attributes['max'], 31);
 				}
-				$select = $fieldGroup->append('<select>', [
+				$select = $fieldGroup->addClass('native')->append('<select>', [
 					'class' => $field['type'],
 					'id' => $id,
 					'name' => $name
@@ -907,7 +909,7 @@ class HTMLMarkup {
 				if (isset($attributes['max'])) {
 					$max = $this->evaluate($attributes['max'], 12);
 				}
-				$select = $fieldGroup->append('<select>', [
+				$select = $fieldGroup->addClass('native')->append('<select>', [
 					'class' => $field['type'],
 					'id' => $id,
 					'name' => $name
@@ -928,7 +930,7 @@ class HTMLMarkup {
 				if (isset($attributes['max'])) {
 					$max = $this->evaluate($attributes['max'], $min + 100);
 				}
-				$select = $fieldGroup->append('<select>', [
+				$select = $fieldGroup->addClass('native')->append('<select>', [
 					'class' => $field['type'],
 					'id' => $id,
 					'name' => $name
@@ -941,7 +943,6 @@ class HTMLMarkup {
 				}
 				break;
 			case 'boolean':
-				$checked = $value == 'true' ? ' checked' : '';
 				$fieldGroup->append('<input>', [
 					'type' => 'checkbox',
 					'class' => $field['type'],
@@ -980,7 +981,7 @@ class HTMLMarkup {
 					'id' => $id,
 					'name' => $name,
 					'value' => $value,
-					'placeholder' => $meta[$name]['format']
+					'placeholder' => $this->json['meta'][$name]['format']
 				])->setAttr('aria-required', 'true', $required)
 				->setAttr('data-widget', $widget, $widget != '');
 				break;
@@ -1044,11 +1045,11 @@ class HTMLMarkup {
 		}
 	}
 
-	private function outputField($stepId, $field, &$meta, $container) {
+	private function outputField($stepId, $field, $container) {
 		$id = $field['id'];
 		$attributes = $field['attributes'];
 		$name = $attributes['dataName'];
-		$value = $plainvalue = $this->value($name, $meta, $attributes['dataType']);
+		$value = $plainvalue = $this->value($name, $attributes['dataType']);
 		if ($value != '') {
 			$round = 2;
 			if (isset($attributes['round']) && $attributes['round'] != '') {
@@ -1217,10 +1218,10 @@ class HTMLMarkup {
 		return $panelbody;
 	}
 
-	private function value($name, &$meta, $type = null) {
+	private function value($name, $type = null) {
 		$value = "";
-		if (isset($meta[$name])) {
-			$value = $meta[$name]['initial'];
+		if (isset($this->json['meta'][$name])) {
+			$value = $this->json['meta'][$name]['initial'];
 		}
 		if ($value != '' && $type != null && $type != 'multichoice' && $type != 'array') {
 			if ($type == 'money') {

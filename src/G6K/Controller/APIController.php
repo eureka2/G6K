@@ -349,6 +349,9 @@ class APIController extends BaseController {
 				$globalWarningColor = $form['globalWarningColor'] ?? '#8a6d3b';
 				$fieldErrorColor = $form['fieldErrorColor'] ?? $form['globalErrorColor'] ?? 'red';
 				$fieldWarningColor = $form['fieldWarningColor'] ?? $form['globalWarningColor'] ?? '#8a6d3b';
+				$fontFamily = $form['fontFamily'] ?? 'Arial, Verdana';
+				$fontSize = $form['fontSize'] ?? '1em';
+				$stylesheet = $form['stylesheet'] ?? '';
 				$htmlMarkup = new HTMLMarkup($this->translator, $this->projectDir);
 				$htmlMarkup->setSimulator($simulator);
 				$htmlMarkup->run();
@@ -361,11 +364,20 @@ class APIController extends BaseController {
 					]);
 					$bootstrapifier->bootstrapify($document);
 				}
+				if ($stylesheet != '' && $markup == 'page') {
+					$document->head()->append('<link>', [
+						'type' => 'text/css',
+						'rel' => 'stylesheet',
+						'href' => $stylesheet
+					]);
+				}
 				$container = $document->find('article.simulator-container')[0];
 				$mainContainer = $markup == 'fragment' ? $container : $document->body();
 				$mainContainer->append('<style>', implode("\n", ['', 
 					'.simulator-container {',
 					'	--primary-color: ' . $primaryColor . ';',
+					'	--font-family: ' . $fontFamily . ';',
+					'	--font-size: ' . $fontSize . ';',
 					'}',
 					'.simulator-container {',
 					'	--secondary-color: ' . $secondaryColor . ';',
@@ -400,7 +412,33 @@ class APIController extends BaseController {
 						],
 						UrlGeneratorInterface::ABSOLUTE_URL
 					)
-				]); 
+				]);
+				$internalSourceURI = $this->generateUrl(
+					'eureka_g6k_source',
+					[ 'simu' => $simulator ],
+					UrlGeneratorInterface::ABSOLUTE_URL
+				);
+				$options = $htmlMarkup->getOptions();
+				$mainContainer->append('<script>', preg_replace("/\s+/", " ", implode("", ['', 
+					"document.addEventListener( 'DOMContentLoaded', function() {",
+					"	var options = {",
+					"		simulator: G6K_SIMU,",
+					"		form: document.querySelector('.simulator form'),",
+					"		locale: '" . $options['locale'] ."',",
+					"		dynamic: true,",
+					"		mobile: false,",
+					"		dateFormat: '" . $options['dateFormat'] . "',",
+					"		decimalPoint: '" . $options['decimalPoint'] . "',",
+					"		moneySymbol: '" . $options['moneySymbol'] . "',",
+					"		symbolPosition: '" . $options['symbolPosition'] . "',",
+					"		groupingSeparator: '" . $options['groupingSeparator'] . "',",
+					"		groupingSize: '" . $options['groupingSize'] . "',",
+					"       internalSourceURI: '" . $internalSourceURI . "'", 
+					"	};",
+					"	var g6k = new G6k(options);",
+					"	g6k.run();",
+					"});"
+				])));
 				if ($markup == 'fragment') {
 					$html = $document->html($container);
 				} else {
@@ -455,7 +493,8 @@ class APIController extends BaseController {
 			'primaryColor', 'secondaryColor',
 			'breadcrumbColor', 'tabColor',
 			'globalErrorColor', 'globalWarningColor',
-			'fieldErrorColor', 'fieldWarningColor'
+			'fieldErrorColor', 'fieldWarningColor',
+			'fontFamily', 'fontSize', 'stylesheet'
 		];
 		foreach($form as $param => $value) {
 			if (! in_array($param, $parameters)) {

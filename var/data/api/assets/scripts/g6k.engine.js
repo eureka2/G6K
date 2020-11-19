@@ -29,6 +29,11 @@
 		this.hasGlobalError = false;
 		this.hasError = false;
 		this.basePath = window.location.pathname.replace(/\/[^\/]+$/, "");
+ 		var view = this.form.querySelector("input[name='view']").value;
+		this.internalSourceURI = options.internalSourceURI
+			|| window.location.pathname
+				.replace(new RegExp('\\/' + view + '(\\/\\w+)?'), "")
+				.replace(/\/+$/, "") + "/Default/source";
 		this.preloadCounter = 0;
 	};
 
@@ -1446,15 +1451,11 @@
 					post[param.name] = param.constant;
 				}
 			});
-			var view = self.form.querySelector("input[name='view']").value;
 			var token = self.form.querySelector("input[name='_csrf_token']");
 			if (token && token.value) {
 				post['_csrf_token'] = token.value;
 			}
-			const re = new RegExp('\\/' + view + '(\\/\\w+)?');
-			var path = window.location.pathname.replace(re, "").replace(/\/+$/, "") + "/Default/source";
-			path = path.replace("/sandbox/", "/mysimu5dev/calcul/").replace(".html",""); // PROVISOIRE: à supprimer après intégration dans symfony
-			self.enqueueSourceRequest(source, 'POST', path, post, 'json',[],
+			self.enqueueSourceRequest(source, 'POST', self.internalSourceURI, post, 'json',[],
 				function (source, returnType, result) {
 					self.processSource(source, result, 'assocArray');
 				},
@@ -2391,7 +2392,7 @@
 		},
 
 		findFieldProperties: function(elementId) {
-			var steps = this.simu.steps
+			var steps = this.simu.steps;
 			for (var step of this.simu.steps) {
 				for (var panel of step.panels) {
 					for (var block of panel.blocks) {
@@ -2411,7 +2412,7 @@
 		},
 
 		findSectionProperties: function(elementId) {
-			var steps = this.simu.steps
+			var steps = this.simu.steps;
 			for (var step of this.simu.steps) {
 				for (var panel of step.panels) {
 					for (var block of panel.blocks) {
@@ -2431,7 +2432,7 @@
 		},
 
 		findFootnoteProperties: function(footnoteId) {
-			var steps = this.simu.steps
+			var steps = this.simu.steps;
 			for (var step of this.simu.steps) {
 				if (! Array.isArray(step.footnotes) && typeof step.footnotes === 'object') {
 					var footnotes = step.footnotes.footnotes;
