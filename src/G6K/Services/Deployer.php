@@ -252,7 +252,7 @@ class Deployer {
 		$localDatasources = new \SimpleXMLElement($databasesDir."/DataSources.xml", LIBXML_NOWARNING, true);
 		$localDom = dom_import_simplexml($localDatasources)->ownerDocument;
 		$localxpath = new \DOMXPath($localDom);
-		$deployedDatasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd"></DataSources>', LIBXML_NOWARNING);
+		$deployedDatasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schemas/DataSources.xsd"></DataSources>', LIBXML_NOWARNING);
 		$deployedDom = dom_import_simplexml($deployedDatasources)->ownerDocument;
 		$deployedDatasources = $this->getDOMElementItem($deployedDom->getElementsByTagName("DataSources"), 0);
 		$databases = array();

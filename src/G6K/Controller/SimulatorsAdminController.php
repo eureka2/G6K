@@ -517,7 +517,7 @@ class SimulatorsAdminController extends BaseAdminController {
 	 */
 	protected function runValidation(Request $request) {
 		$form = $request->request->all();
-		$schema = $this->projectDir."/var/doc/Simulator.xsd";
+		$schema = $this->projectDir."/var/data/schemas/Simulator.xsd";
 		$dom = new \DOMDocument();
 		$dom->preserveWhiteSpace  = false;
 		$dom->formatOutput = true;

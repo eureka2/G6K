@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="demo" label="France: Maintenance allowance calculation simulator" defaultView="Demo" referer="" dynamic="1" memo="0" locale="en-US" timezone="America/Los_Angeles">
+<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schemas/Simulator.xsd" name="demo" label="France: Maintenance allowance calculation simulator" defaultView="Demo" referer="" dynamic="1" memo="0" locale="en-US" timezone="America/Los_Angeles">
 	<Description edition="wysihtml"><![CDATA[
 <p>The amount of the pension by child is calculated in proportion to the income, net by a minimum living wage (€ 550.93), by a debtor parent. This proportion is different according to the total number of children chargeable to the debtor parent (whatever is the union from which they were born) and the amplitude of the right of access and the accommodation (reduced, classic, or alternated without spontaneous sharing of expenses).</p>
 	]]></Description>

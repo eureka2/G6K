@@ -135,7 +135,7 @@ class DataSourcesAdminController extends BaseAdminController {
 		if (file_exists($this->databasesDir."/DataSources.xml")) {
 			$this->datasources = new \SimpleXMLElement($this->databasesDir."/DataSources.xml", LIBXML_NOWARNING, true);
 		} else {
-			$this->datasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd"><Databases></Databases></DataSources>', LIBXML_NOWARNING);
+			$this->datasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schemas/DataSources.xsd"><Databases></Databases></DataSources>', LIBXML_NOWARNING);
 		}
 		if ($crud !== null) {
 			if (! $this->authorizationChecker->isGranted('ROLE_CONTRIBUTOR')) {
