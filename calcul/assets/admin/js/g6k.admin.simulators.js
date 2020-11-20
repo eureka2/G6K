@@ -1189,7 +1189,7 @@ $(function(){
 				}
 				$.post( 
 					'../../validate', 
-					{ xml : simulatorinput.data('content') }, 
+					{ xml : simulatorinput.data('content'), removeUnknownAttributes: true }, 
 					function(data) {
 						if(data.status == 'Error') {
 							$.each(data.errors, function(index, error) {
