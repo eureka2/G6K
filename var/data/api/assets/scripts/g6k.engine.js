@@ -34,6 +34,9 @@
 			|| window.location.pathname
 				.replace(new RegExp('\\/' + view + '(\\/\\w+)?'), "")
 				.replace(/\/+$/, "") + "/Default/source";
+		this.publicURI = options.publicURI;
+		this.recaptchaSiteKey = options.recaptchaSiteKey;
+		this.theme = options.theme;
 		this.preloadCounter = 0;
 	};
 
@@ -298,57 +301,66 @@
 		},
 
 		getStepChildElement: function(parameters) {
-			var element = this.getStep().name;
+			var element = parameters.step;
 			if (parameters.panel) {
-				element += '-panel-' + parameters.panel;
+				element += '-' + parameters.panel;
 				if (parameters.blockgroup) {
-					var blockinfo = element + '-blockinfo-' + parameters.blockgroup;
+					var blockinfo = element + '-' + parameters.blockgroup;
 					if (document.getElementById(blockinfo) !== null) {
 						element = blockinfo;
 					} else {
-						element += '-fieldset-' + parameters.blockgroup;
+						element += '-' + parameters.blockgroup;
 					}
 					element = document.getElementById(element);
 					if (element) {
 						element = element.parentElement;
 					}
 				} else if (parameters.blockinfo) {
-					element += '-blockinfo-' + parameters.blockinfo;
+					var prefix = 'blockinfo';
+					element += '-' + parameters.blockinfo;
 					if (parameters.chapter) {
-						element += '-chapter-' + parameters.chapter;
+						prefix = 'chapter';
+						element += '-' + parameters.chapter;
 						if (parameters.section) {
-							element += '-section-' + parameters.section;
+							prefix = 'section';
+							element += '-' + parameters.section;
 						} else if (parameters.content) {
-							element += '-section-' + parameters.content + '-content';
+							prefix = 'section';
+							element += '-' + parameters.content + '-content';
 						} else if (parameters.annotations) {
-							element += '-section-' + parameters.annotations + '-annotations';
+							prefix = 'section';
+							element += '-' + parameters.annotations + '-annotations';
 						}
 					}
-					element = document.getElementById(element);
+					element = document.getElementById(prefix + element);
 				} else if (parameters.fieldset) {
-					element += '-fieldset-' + parameters.fieldset;
+					var prefix = 'fieldset';
+					element += '-' + parameters.fieldset;
 					if (parameters.fieldrow) {
-						element += '-fieldrow-' + parameters.fieldrow;
+						prefix = 'fieldrow';
+						element += '-' + parameters.fieldrow;
+					} else if (parameters.field) {
+						element += '-0';
 					}
 					if (parameters.field) {
-						var selector = '#' + element + " [data-field-position='" + parameters.field + "']";
+						var selector = '#field' + element + "-" + parameters.field;
 						element = document.querySelector(selector);
 					} else if (parameters.prenote) {
-						var selector = '#' + element + " [data-field-position='" + parameters.prenote + "'] .pre-note";
+						var selector = '#prenote' + element + "-" + parameters.prenote;
 						element = document.querySelector(selector);
 					} else if (parameters.postnote) {
-						var selector = '#' + element + " [data-field-position='" + parameters.postnote + "'] .post-note";
+						var selector = '#postnote' + element + "-" + parameters.postnote;
 						element = document.querySelector(selector);
 					} else {
-						element = document.getElementById(element);
+						element = document.getElementById(prefix + element);
 					}
 				} else {
-					element = document.getElementById(element);
+					element = document.getElementById('panel' + element);
 				}
 			} else if (parameters.footnote) {
-				element = document.getElementById(parameters.footnote);
+				element = document.getElementById('footnote' + parameters.footnote);
 			} else {
-				element = document.getElementById(element);
+				element = document.getElementById('step' + element);
 			}
 			return element;
 		},
@@ -357,6 +369,9 @@
 			var input = this.form.querySelector("input[name='"+ name +"'], select[name='"+ name +"'], textarea[name='"+ name +"']");
 			if (! input) {
 				return false;
+			}
+			if (input.classList.contains('listbox-input')) {
+				input = input.parentElement;
 			}
 			return this.isObjectVisible(input);
 		},
@@ -598,7 +613,7 @@
 
 		setGroupWarning: function(name, warning) {
 			var errorContainer = document.getElementById(name + "-alert");
-			if (! errorContainer.classList.contains('has-error')) {
+			if (errorContainer !== null && ! errorContainer.classList.contains('has-error')) {
 				errorContainer.classList.replace('hidden', 'has-warning');
 				errorContainer.innerHTML = warning;
 				this.showObject(errorContainer);
@@ -608,7 +623,7 @@
 
 		removeGroupWarning: function(name) {
 			var errorContainer = document.getElementById(name + "-alert");
-			if (! errorContainer.classList.contains('has-error')) {
+			if (errorContainer !== null && ! errorContainer.classList.contains('has-error')) {
 				errorContainer.classList.replace('has-warning', 'hidden');
 				errorContainer.innerText = "";
 				errorContainer.setAttribute('aria-hidden', true);
@@ -619,7 +634,7 @@
 		setWarning: function(name, warning) {
 			var self = this;
 			var field = self.getInputByName(name);
-			if (null !== field && field.hasAttribute('id')) {
+			if (null !== field && field.getAttribute('type') !== 'hidden' && field.hasAttribute('id')) {
 				var fieldContainer = field.closest(".field-container");
 				var visible = this.isObjectVisible(fieldContainer);
 				var inputs = self.form.querySelectorAll("input[name='" + name + "'], input[type='checkbox'], select[name='" + name + "']");
@@ -653,7 +668,7 @@
 		removeWarning: function(name) {
 			var self = this;
 			var field = self.getInputByName(name);
-			if (null !== field && field.hasAttribute('id')) {
+			if (null !== field && field.getAttribute('type') !== 'hidden' && field.hasAttribute('id')) {
 				if (this.getData(name).datagroup) {
 					this.removeGroupWarning(this.getData(name).datagroup);
 				} else {
@@ -723,30 +738,34 @@
 		setGroupError: function(name, error) {
 			this.hasError = true;
 			var errorContainer = document.getElementById(name + "-alert");
-			var errorhtml = "";
-			if (Array.isArray(error)) {
-				errorhtml = '<p>' + error.join('</p><p>') + '</p>';
-			} else {
-				errorhtml = '<p>' + error + '</p>';
+			if (errorContainer !== null) {
+				var errorhtml = "";
+				if (Array.isArray(error)) {
+					errorhtml = '<p>' + error.join('</p><p>') + '</p>';
+				} else {
+					errorhtml = '<p>' + error + '</p>';
+				}
+				errorContainer.classList.replace('hidden', 'has-error');
+				errorContainer.innerHTML = errorhtml;
+				this.showObject(errorContainer);
+				errorContainer.removeAttribute('aria-hidden');
 			}
-			errorContainer.classList.replace('hidden', 'has-error');
-			errorContainer.innerHTML = errorhtml;
-			this.showObject(errorContainer);
-			errorContainer.removeAttribute('aria-hidden');
 		},
 
 		removeGroupError: function(name) {
 			var errorContainer = document.getElementById(name + "-alert");
-			errorContainer.classList.replace('has-error', 'hidden')
-			errorContainer.innerText = "";
-			errorContainer.setAttribute('aria-hidden', true);
-			this.hideObject(errorContainer);
+			if (errorContainer !== null) {
+				errorContainer.classList.replace('has-error', 'hidden')
+				errorContainer.innerText = "";
+				errorContainer.setAttribute('aria-hidden', true);
+				this.hideObject(errorContainer);
+			}
 		},
 
 		setError: function(name, error) {
 			var self = this;
 			var field = self.getInputByName(name);
-			if (null !== field && field.hasAttribute('id')) {
+			if (null !== field && field.getAttribute('type') !== 'hidden' && field.hasAttribute('id')) {
 				var fieldContainer = field.closest(".field-container");
 				var visible = this.isObjectVisible(fieldContainer);
 				var inputs = self.form.querySelectorAll("input[name='" + name + "'], input[type='checkbox'], select[name='" + name + "']");
@@ -792,7 +811,7 @@
 		removeError: function(name) {
 			var self = this;
 			var field = self.getInputByName(name);
-			if (null !== field && field.hasAttribute('id')) {
+			if (null !== field && field.getAttribute('type') !== 'hidden' && field.hasAttribute('id')) {
 				if (self.getData(name).datagroup) {
 					self.removeGroupError(self.getData(name).datagroup);
 				} else {
@@ -865,6 +884,11 @@
 				} else if (input.type === 'date') {
 					var value = Date.createFromFormat(Date.inputFormat, data.value).format('Y-m-d')
 					if (input.value != value) input.value = value;
+				} else if (input.classList.contains('listbox-input')) {
+					if (input.value != data.value) {
+						input.value = data.value;
+						input.listbox.update();
+					}
 				} else {
 					if (input.value != data.value) input.value = data.value;
 				}
@@ -1629,6 +1653,17 @@
 							options.push('<option value="', value, '"' + selected + '>', label, '</option>');
 						}
 						input.innerHTML = options.join('');
+					} else if (input.classList.contains('listbox-input')) {
+						var valueColumn = data.choices.source.valueColumn;
+						var labelColumn = data.choices.source.labelColumn;
+						var prompt = field.prompt || '-----'
+						var items = [];
+						items.push({ value: "", text: prompt, selected: true});
+						for (var r in result) {
+							var row = result[r];
+							items.push({ value: row[valueColumn] || row[valueColumn.toLowerCase()], text: row[labelColumn] || row[labelColumn.toLowerCase()] });
+						}
+						input.listbox.setItems(items);
 					}
 					// self.setValue(dependency, "");
 				});
@@ -1895,14 +1930,18 @@
 							var choiceId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldrowId", "fieldId", "choiceId");
 							var fieldContainer = document.getElementById("field" + stepId + "-" + panelId + "-" + fieldsetId + "-" + fieldrowId + "-" + fieldId + "-container");
 							var input = fieldContainer.querySelector("select");
-							if (input) {
+							if (input !== null) {
 								var option = input.querySelector("option[value='" + choiceId + "']");
 								self.hideObject(option);
 							} else {
 								input = fieldContainer.querySelector("input[value='" + choiceId + "']");
-								var label = input.closest('label');
-								label.setAttribute('aria-hidden', true);
-								self.hideObject(label);
+								if (input.classList.contains('listbox-input')) {
+									input.listbox.hideItem(choiceId);
+								} else {
+									var label = input.closest('label');
+									label.setAttribute('aria-hidden', true);
+									self.hideObject(label);
+								}
 							}
 							break;
 					}
@@ -1993,14 +2032,18 @@
 							var choiceId = data.find("objectId", "stepId", "panelId", "fieldsetId", "fieldrowId", "fieldId", "choiceId");
 							var fieldContainer = document.getElementById("field" + stepId + "-" + panelId + "-" + fieldsetId + "-" + fieldrowId + "-" + fieldId + "-container");
 							var input = fieldContainer.querySelector("select");
-							if (input) {
+							if (input !== null) {
 								var option = input.querySelector("option[value='" + choiceId + "']");
 								self.showObject(option);
 							} else {
 								input = fieldContainer.querySelector("input[value='" + choiceId + "']");
-								var label = input.closest('label');
-								self.showObject(label);
-								label.removeAttribute('aria-hidden', true);
+								if (input.classList.contains('listbox-input')) {
+									input.listbox.showItem(choiceId);
+								} else {
+									var label = input.closest('label');
+									self.showObject(label);
+									label.removeAttribute('aria-hidden', true);
+								}
 							}
 							break;
 					}
@@ -2346,7 +2389,10 @@
 				moneySymbol: self.moneySymbol,
 				symbolPosition: self.symbolPosition,
 				groupingSeparator: self.groupingSeparator,
-				groupingSize: self.groupingSize
+				groupingSize: self.groupingSize,
+				publicURI: self.publicURI,
+				recaptchaSiteKey: self.recaptchaSiteKey,
+				theme: self.theme
 			};
 			self.form.querySelectorAll('input[data-widget], select[data-widget], textarea[data-widget]').forEach((input) => {
 				var widget = window[input.getAttribute('data-widget')];
@@ -2361,13 +2407,26 @@
 
 		initializeExternalFunctions: function() {
 			var self = this;
-			self.form.querySelectorAll('div.action_buttons > [data-function]').forEach( funcElt => {
+			var options = { 
+				locale: self.locale,
+				mobile: self.isMobile,
+				dateFormat: self.dateFormat,
+				decimalPoint: self.decimalPoint,
+				moneySymbol: self.moneySymbol,
+				symbolPosition: self.symbolPosition,
+				groupingSeparator: self.groupingSeparator,
+				groupingSize: self.groupingSize,
+				publicURI: self.publicURI,
+				recaptchaSiteKey: self.recaptchaSiteKey,
+				theme: self.theme
+			};
+			self.form.querySelectorAll('div.actionbuttons > [data-function]').forEach( funcElt => {
 				var func = funcElt.getAttribute('data-function');
 				func = func.replace(/'/g, '"');
 				func = JSON.parse(func);
 				var funct = window[func.function];
 				var that = funcElt;
-				funct.call(self, that, func, function(ok, message) {
+				funct.call(self, that, func, options, function(ok, message) {
 					if (self.hasGlobalError) {
 						self.removeGlobalError();
 					}
@@ -2646,7 +2705,7 @@
 			inputs = Array.prototype.filter.call(inputs, (item) => {
 				return item.tabIndex >= 0;
 			});
-			var index = inputs.indexOf(input);
+			var index = Array.prototype.indexOf.call(inputs, input);
 			var next = inputs[index + 1] || inputs[0];
 			next.focus();
 		},
@@ -2664,6 +2723,9 @@
 			var type = input.type;
 			if (type === 'text' || type === 'password'  || type === 'number'|| tag === 'textarea') {
 				input.value = "";
+				if (input.classList.contains('listbox-input')) {
+					input.listbox.update();
+				}
 			} else if (type === 'checkbox' || type === 'radio') {
 				input.removeAttribute('checked');
 			} else if (type === 'select-one' || tag === 'select') {

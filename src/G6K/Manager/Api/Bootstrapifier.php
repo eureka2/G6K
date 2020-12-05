@@ -48,7 +48,8 @@ class Bootstrapifier {
 		if (count($container) > 0) {
 			$container[0]->addClass('container');
 		}
-		$document->traverse(function($node) {
+		$bootstrapStyle = 'bootstrap' . $this->options->version[0] . '-style';
+		$document->traverse(function($node) use ($bootstrapStyle) {
 			if ($node->is('input')) {
 				$type = $node->attr('type');
 				if ($type != 'hidden') { 
@@ -73,6 +74,11 @@ class Bootstrapifier {
 					$node->addClass('float-right');
 				}
 			} else {
+				if ($node->hasClass('step')) {
+					$node->addClass('step-page');
+				} elseif ($node->hasClass('step-description')) {
+					$node->addClass('legend');
+				}
 				if ($node->hasClass('fieldset')
 					&& $node->hasClass('disposition-classic')) {
 					$node->addClass('form-horizontal');
@@ -84,6 +90,10 @@ class Bootstrapifier {
 					$node->addClass('input-group');
 					$node->removeClass('native');
 				}
+				if ($node->hasClass('default-style')) {
+					$node->addClass($bootstrapStyle);
+					$node->removeClass('default-style');
+				}
 			}
 		});
 		if ($this->options->markup == 'page') {
@@ -93,7 +103,7 @@ class Bootstrapifier {
 	}
 
 	private function addStylesheet(&$document, $version) {
-		$links = $document->find('link[rel=stylesheet][href]');
+		$links = $document->head()->find('link[rel=stylesheet][href]');
 		foreach ($links as $link) {
 			if (preg_match("/bootstrap/", $link->attr('href'))) {
 				return;
@@ -103,6 +113,16 @@ class Bootstrapifier {
 			'type' => 'text/css',
 			'rel' => 'stylesheet',
 			'href' => 'https://stackpath.bootstrapcdn.com/bootstrap/' . $version . '/css/bootstrap.min.css'
+		]);
+		foreach ($links as $link) {
+			if (preg_match("/font-awesome/", $link->attr('href'))) {
+				return;
+			}
+		}
+		$document->head()->append('<link>', [
+			'type' => 'text/css',
+			'rel' => 'stylesheet',
+			'href' => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css'
 		]);
 	}
 
@@ -130,15 +150,16 @@ class Bootstrapifier {
 				]);
 			} 
 			$nextSibling = $jqueryScript->next();
+			$bundle = $version[0] == '3' ? '' : '.bundle';
 			if (null == $nextSibling) {
 				$document->body()->append('<script>', [
 					'type' => 'text/javascript',
-					'src' => 'https://stackpath.bootstrapcdn.com/bootstrap/' . $version . '/js/bootstrap.bundle.min.js'
+					'src' => 'https://stackpath.bootstrapcdn.com/bootstrap/' . $version . '/js/bootstrap' . $bundle . '.min.js'
 				]);
 			} else {
 				$nextSibling->before('<script>', [
 					'type' => 'text/javascript',
-					'src' => 'https://stackpath.bootstrapcdn.com/bootstrap/' . $version . '/js/bootstrap.bundle.min.js'
+					'src' => 'https://stackpath.bootstrapcdn.com/bootstrap/' . $version . '/js/bootstrap' . $bundle . '.min.js'
 				]);
 			}
 		}

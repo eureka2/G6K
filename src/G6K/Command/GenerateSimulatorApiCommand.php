@@ -50,11 +50,17 @@ class GenerateSimulatorApiCommand extends CommandBase
 	protected $parameterBag = false;
 
 	/**
+	 * @var string
+	 */
+	protected $publicDir = '';
+
+	/**
 	 * @inheritdoc
 	 */
-	public function __construct(ParameterBagInterface $parameterBag, string $projectDir) {
+	public function __construct(ParameterBagInterface $parameterBag, string $projectDir, string $publicDir) {
 		parent::__construct($projectDir, "Generator of files for the simulator API");
 		$this->parameterBag = $parameterBag;
+		$this->publicDir = $publicDir;
 	}
 
 	/**
@@ -157,7 +163,7 @@ class GenerateSimulatorApiCommand extends CommandBase
 			);
 			return 1;
 		}
-		if ($simulatorname != 'all' && !isset($api[$simulatorname])) {
+		if ($simulatorname != 'all' && !in_array($simulatorname, $api)) {
 			$this->error(
 				$output,
 				"The simulator '%simulatorname%' can't be used via the API",
@@ -175,7 +181,7 @@ class GenerateSimulatorApiCommand extends CommandBase
 			$finder->files()->in($simulatorsDir)->depth('== 0')->name('*.xml');
 			foreach ($finder as $file) {
 				$name = preg_replace("/.xml$/", "", basename($file->getRelativePathname()));
-				if (!in_array($name, $exclude) && isset($api[$name])) {
+				if (!in_array($name, $exclude) && in_array($name, $api)) {
 					$simulators[] = $name;
 				}
 			}
@@ -225,7 +231,7 @@ class GenerateSimulatorApiCommand extends CommandBase
 	}
 
 	private function generateScript(string $simulatorname, ?string $scriptsDirOut) {
-		$scripter = new Scripter($this->projectDir, $scriptsDirOut);
+		$scripter = new Scripter($this->projectDir, $this->publicDir, $scriptsDirOut);
 		$scripter->setSimulator($simulatorname);
 		$scripter->run();
 		$scripter->save();

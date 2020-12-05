@@ -348,9 +348,9 @@ parameters:
 
     # api configuration
     # api:
-        # <simulator-name>:
-            # step: 1
-            # action: compute
+        #- <simulator1-name>
+        #- <simulator2-name>
+        #- <simulator3-name>
 
     # Deployment configuration
     # deployment:

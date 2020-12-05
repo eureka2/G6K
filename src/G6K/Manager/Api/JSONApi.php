@@ -152,7 +152,7 @@ class JSONApi {
 								'attributes' => [
 									'title' => $fieldrow['label'] ?? '',
 									'help' => $fieldrow['help'] ?? '0',
-									'colon' => $fieldrow['colon'] ?? '0',
+									'colon' => $fieldrow['colon'] ?? '1',
 									'emphasize' => $fieldrow['emphasize'] ?? '0',
 									'datagroup' => $fieldrow['datagroup'] ?? ''
 								]
@@ -169,8 +169,8 @@ class JSONApi {
 										'expanded' => $field['expanded'] ?? '0',
 										'required' => $field['required'] ?? '0',
 										'visibleRequired' => $field['visibleRequired'] ?? '0',
-										'newline' => $field['newline'] ?? '0',
-										'colon' => $field['colon'] ?? '0',
+										'newline' => $field['newline'] ?? '1',
+										'colon' => $field['colon'] ?? '1',
 										'underlabel' => $field['underlabel'] ?? '0',
 										'help' => $field['help'] ?? '0',
 										'emphasize' => $field['emphasize'] ?? '0'
@@ -383,8 +383,8 @@ class JSONApi {
 							"what" => $action['what'],
 							"for" => $action['for'],
 							"uri" => $action['uri'],
-							"location" => $action['location'],
-							"shape" => $action['shape'],
+							"location" => $action['location'] ?? 'bottom',
+							"shape" => $action['shape'] ?? 'button',
 							"class" => $action['class']
 						]
 					];
@@ -446,6 +446,7 @@ class JSONApi {
 				'attributes' => [
 					'title' => $jsondata['label'],
 					'description' => $jsondata['description'],
+					'defaultView' => (string)$simulator['defaultView'],
 					'locale' => (string)$simulator['locale'],
 					'timezone' => (string)$simulator['timezone'],
 					'dateFormat' => (string)$simulator->DataSet['dateFormat'],

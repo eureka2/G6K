@@ -77,10 +77,12 @@ class JSONData {
 	private $allowedWidgets = [];
 	private $widgets = [];
 	private $widgetDependencies = [];
+	private $widgetExternals = [];
 
 	private $allowedFunctions = [];
 	private $functions = [];
 	private $functionDependencies = [];
+	private $functionExternals = [];
 
 	/**
 	 * Constructor of class JSONData
@@ -97,8 +99,8 @@ class JSONData {
 			],
 			$options
 		);
-		$this->allowedWidgets = $this->allowedWidgets();
-		$this->allowedFunctions = $this->allowedFunctions();
+		$this->allowedWidgets();
+		$this->allowedFunctions();
 	}
 
 	/**
@@ -937,6 +939,13 @@ class JSONData {
 				} elseif ($for === "jumpToStep") {
 					$nextStepsId[] = (int)$uri;
 				}
+				if ($naction['for'] == 'function') {
+					$function = str_replace("'", '"', $naction['uri']);
+					$function = json_decode($function);
+					if (in_array($function->function, $this->allowedFunctions)) {
+						$this->functions[] = $function->function;
+					}
+				}
 			}
 		}
 		foreach ($step->FootNotes as $footnoteList) {
@@ -1028,6 +1037,7 @@ class JSONData {
 		$json["category"] = (string)$simulator["category"];
 		$json["defaultView"] = (string)$simulator["defaultView"];
 		$json["referer"] = (string)$simulator["referer"];
+		$json["locale"] = (string)$simulator["locale"];
 		if ((string)$simulator["memo"] != "") {
 			$json["memo"] = (string)$simulator["memo"];
 		}
@@ -1200,7 +1210,7 @@ class JSONData {
 			 
 			}
 		}
-		$widgets = array_unique($this->widgets);
+		$widgets = array_values(array_unique($this->widgets));
 		$nwidgets = count($widgets);
 		for ($i = 0; $i < $nwidgets; $i++) {
 			$widget = $widgets[$i];
@@ -1211,7 +1221,7 @@ class JSONData {
 			}
 		}
 		$widgets = array_unique($widgets);
-		$functions = array_unique($this->functions);
+		$functions = array_values(array_unique($this->functions));
 		$nfunctions = count($functions);
 		for ($i = 0; $i < $nfunctions; $i++) {
 			$function = $functions[$i];
@@ -1228,14 +1238,45 @@ class JSONData {
 		$json["sources"] = $sources;
 		$json["rules"] = $rules;
 		$json["widgets"] = array_reverse($widgets);
+		$json["widgetExternals"] = $this->widgetExternals;
 		$json["functions"] = array_reverse($functions);
+		$json["functionExternals"] = $this->functionExternals;
 		return $json;
+	}
+
+	private function widgetExternals($name, $widget) {
+		if (isset($widget['css'])) {
+			foreach ($widget['css'] as $css) {
+				if (preg_match("/^https?\:/", $css)) {
+					if (!isset($this->widgetExternals[$name])) {
+						$this->widgetExternals[$name] = [
+							'css' => [],
+							'js' => []
+						];
+					}
+					$this->widgetExternals[$name]['css'][] = $css;
+				}
+			}
+		}
+		if (isset($widget['js'])) {
+			foreach ($widget['js'] as $js) {
+				if (preg_match("/^https?\:/", $js)) {
+					if (!isset($this->widgetExternals[$name])) {
+						$this->widgetExternals[$name] = [
+							'css' => [],
+							'js' => []
+						];
+					}
+					$this->widgetExternals[$name]['js'][] = $js;
+				}
+			}
+		}
 	}
 
 	private function widgetdep($widget, &$widgetsconf, &$widgets) {
 		$deps = isset($widgetsconf[$widget]['deps']) ? $widgetsconf[$widget]['deps'] : [];
 		foreach($deps as $widget) {
-			if (!in_array($widget, $widgets) && file_exists('scripts/widgets/' . $widget)) {
+			if (!in_array($widget, $widgets) && file_exists($this->projectDir . '/var/data/api/assets/scripts/widgets/' . $widget)) {
 				if (! isset($widgetsconf[$widget]['deps'])) {
 					array_push($widgets, $widget);
 				} else {
@@ -1246,6 +1287,7 @@ class JSONData {
 						array_push($widgets, $widget);
 					}
 				}
+				$this->widgetExternals($widget, $widgetsconf[$widget]);
 			}
 		}
 	}
@@ -1255,7 +1297,7 @@ class JSONData {
 		$conf = Yaml::parseFile($this->projectDir . '/config/packages/g6k.yaml');
 		$widgetsconf = $conf['parameters']['widgets'] ?? [];
 		foreach ($widgetsconf as $name => $widget) {
-			if (file_exists('scripts/widgets/' . $name)) {
+			if (file_exists($this->projectDir . '/var/data/api/assets/scripts/widgets/' . $name)) {
 				if (! isset($widget['deps'])) {
 					array_push($widgets, $name);
 				} else {
@@ -1267,16 +1309,45 @@ class JSONData {
 						$this->widgetDependencies[$name] = $deps;
 					}
 				}
+				$this->widgetExternals($name, $widget);
 			}
 		}
-		$widgets = array_unique($widgets);
-		return $widgets;
+		$this->allowedWidgets = array_unique($widgets);
+	}
+
+	private function functionExternals($name, $function) {
+		if (isset($function['css'])) {
+			foreach ($function['css'] as $css) {
+				if (preg_match("/^https?\:/", $css)) {
+					if (!isset($this->functionExternals[$name])) {
+						$this->functionExternals[$name] = [
+							'css' => [],
+							'js' => []
+						];
+					}
+					$this->functionExternals[$name]['css'][] = $css;
+				}
+			}
+		}
+		if (isset($function['js'])) {
+			foreach ($function['js'] as $js) {
+				if (preg_match("/^https?\:/", $js)) {
+					if (!isset($this->functionExternals[$name])) {
+						$this->functionExternals[$name] = [
+							'css' => [],
+							'js' => []
+						];
+					}
+					$this->functionExternals[$name]['js'][] = $js;
+				}
+			}
+		}
 	}
 
 	private function functiondep($function, &$functionsconf, &$functions) {
 		$deps = isset($functionsconf[$function]['deps']) ? $functionsconf[$function]['deps'] : [];
 		foreach($deps as $function) {
-			if (!in_array($function, $functions) && file_exists('scripts/functions/' . $function)) {
+			if (!in_array($function, $functions) && file_exists($this->projectDir . '/var/data/api/assets/scripts/functions/' . $function)) {
 				if (! isset($functionsconf[$function]['deps'])) {
 					array_push($functions, $function);
 				} else {
@@ -1287,6 +1358,7 @@ class JSONData {
 						array_push($functions, $function);
 					}
 				}
+				$this->functionExternals($function, $functionsconf[$function]);
 			}
 		}
 	}
@@ -1296,7 +1368,7 @@ class JSONData {
 		$conf = Yaml::parseFile($this->projectDir . '/config/packages/g6k.yaml');
 		$functionsconf = $conf['parameters']['functions'] ?? [];
 		foreach ($functionsconf as $name => $function) {
-			if (file_exists('scripts/functions/' . $name)) {
+			if (file_exists($this->projectDir . '/var/data/api/assets/scripts/functions/' . $name)) {
 				if (! isset($function['deps'])) {
 					array_push($functions, $name);
 				} else {
@@ -1308,10 +1380,10 @@ class JSONData {
 						$this->functionDependencies[$name] = $deps;
 					}
 				}
+				$this->functionExternals($name, $function);
 			}
 		}
-		$functions = array_unique($functions);
-		return $functions;
+		$this->allowedFunctions = array_unique($functions);
 	}
 
 }

@@ -111,8 +111,8 @@ class HTMLElement {
 
 	public function hasClass($classname) {
 		if ($this->hasAttribute('class')) {
-			$class = $this->element->getAttribute('class');
-			return preg_match("/\b" . $classname . "\b/", $class);
+			$classes = preg_split("/\s+/", $this->element->getAttribute('class'));
+			return in_array($classname, $classes);
 		}
 		return false;
 	}
@@ -377,9 +377,9 @@ class HTMLElement {
 		$doc = $dom->createDocument((string)null, 'html', $doctype);
 		$doc->encoding='UTF-8';
 		libxml_use_internal_errors(true);
-		$html = $doc->loadHTML(utf8_decode($html), LIBXML_NOWARNING);
+		$html = $doc->loadHTML(utf8_decode('<div>'.trim($html).'</div>'), LIBXML_NOWARNING);
 		$xml = $doc->saveXML($doc->documentElement->firstChild);
-		$xml = str_replace(['<body>', '</body>'], ['<fragment>', '</fragment>'], $xml);
+		$xml = str_replace(['<body><div>', '</div></body>'], ['<fragment>', '</fragment>'], $xml);
 		$fragment = $this->doc()->createDocumentFragment();
 		$fragment->appendXML($xml);
 		return $fragment;

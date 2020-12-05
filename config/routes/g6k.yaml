@@ -152,17 +152,17 @@ eureka_g6k_calcul:
 eureka_g6k_api:
     path:     /{simu}/api
     methods: [ get ]
-    defaults: { _controller: App\G6K\Controller\APIController::calcul }
+    defaults: { _controller: App\G6K\Controller\APIController::api }
+
+eureka_g6k_api_target:
+    path:     /{simu}/api/{target}
+    methods: [ get, post ]
+    defaults: { _controller: App\G6K\Controller\APIController::api }
 
 eureka_g6k_calcul_view:
     path:     /{simu}/{view}
     methods: [ get, post ]
     defaults: { _controller: App\G6K\Controller\DefaultController::calcul }
-
-eureka_g6k_calcul_api_try:
-    path:     /{simu}/api/tryIt
-    methods: [ get ]
-    defaults: { _controller: App\G6K\Controller\APIController::tryIt }
 
 eureka_g6k_calcul_view_try:
     path:     /{simu}/{view}/tryIt
@@ -173,8 +173,3 @@ eureka_g6k_mail_send:
     path:     /{template}/{view}/mail
     methods: [ post ]
     defaults: { _controller: App\G6K\Controller\MailController::sendMail }
-
-eureka_g6k_api_target:
-    path:     /{simu}/api/{target}
-    methods: [ get, post ]
-    defaults: { _controller: App\G6K\Controller\APIController::api }
