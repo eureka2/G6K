@@ -318,7 +318,7 @@ class APIController extends BaseController {
 				$container = $document->find('article.simulator-container')[0];
 				$mainContainer = $markup == 'fragment' ? $container : $document->body();
 				$mainContainer->append('<style>', implode("\n", ['', 
-					'.simulator-container, .simulator-modal {',
+					'.simulator-container, .simulator-modal, .step-page {',
 					'	--primary-color: ' . $primaryColor . ';',
 					'	--primary-color-darken: ' . $this->lightenDarkenColor($primaryColor, -50) . ';',
 					'	--primary-color-lighten: ' . $this->lightenDarkenColor($primaryColor, 50) . ';',

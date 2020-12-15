@@ -2,7 +2,6 @@
 	"use strict";
 		
 	function AutocompletionListbox (select, options, onComplete) {
-		var g6k = this;
 		if (typeof select === "object" && select && select["jquery"]) {
 			select = select[0];
 		}
@@ -26,7 +25,8 @@
 		select.setAttribute('tabindex', '-1');
 		select.style.display = 'none';
 		select.setAttribute('aria-hidden', 'true');
-		select.parentElement.insertBefore(input, select);
+		select.insertAdjacentElement('beforebegin', input);
+		select.parentElement.classList.remove('native');
 
 		input.addEventListener("keypress", function(event) {
 			if (event.keyCode == 13) {
@@ -40,16 +40,17 @@
 			minChars: 0,
 			clearButton: Translator.trans('Clear this field'),
 			source: function(term, suggest){
+				var that = this;
 				term = term.toLowerCase();
 				var suggestions = [];
 				select.querySelectorAll('option').forEach( option => {
-					var text = option.innerText;
+					var text = option.textContent;
 					var value = option.getAttribute('value');
 					if (value !== '' && ~(text).toLowerCase().indexOf(term)) {
 						suggestions.push({ text: text, value: value });
 					}
 				});
-				suggest(autocomplete, suggestions);
+				suggest(that, suggestions);
 			},
 			cache: 1,
 			renderItem: function (item,  search) {

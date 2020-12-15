@@ -46,6 +46,24 @@
 		return o;
 	};
 
+	var offsetTop = function(element) {
+		var offsetTop = 0;
+		while(element) {
+			offsetTop += element.offsetTop;
+			element = element.offsetParent;
+		}
+		return offsetTop;
+	}
+
+	var offsetLeft = function(element) {
+		var offsetLeft = 0;
+		while(element) {
+			offsetLeft += element.offsetLeft;
+			element = element.offsetParent;
+		}
+		return offsetLeft;
+	}
+
 	function autoComplete(input, options) {
 		var self = this;
 		this.input = input;
@@ -97,7 +115,7 @@
 		announce.setAttribute('id', this.options.menuId + '-announce');
 		announce.setAttribute('aria-live', 'polite');
 		announce.classList.add('sr-only');
-		this.input.parentElement.insertBefore(announce, this.input);
+		this.input.insertAdjacentElement('beforebegin', announce);
 		if (this.options.clearButton) {
 			this.clearButton = document.createElement('button');
 			this.clearButton.setAttribute('id', this.options.menuId + '-clear');
@@ -116,18 +134,13 @@
 				this.style.display = 'none';
 				return false;
 			});
-			var next = this.input.nextElementSibling;
-			if (next !== null) {
-				this.input.parentElement.appendChild(this.clearButton);
-			} else {
-				this.input.parentElement.insertBefore(this.clearButton, this.input.nextElementSibling);
-			}
+			this.input.insertAdjacentElement('afterend', this.clearButton);
 		}
 
 		this.input.updateSC = function(resize, next){
 			var positioner = self.options.alignOnParent ? self.input.parentElement : self.input; 
-			self.input.sc.style.top = (positioner.offsetTop + positioner.offsetHeight) + 'px'; 
-			self.input.sc.style.left = positioner.offsetLeft + 'px'; 
+			self.input.sc.style.top = (offsetTop(positioner) + positioner.offsetHeight) + 'px'; 
+			self.input.sc.style.left = offsetLeft(positioner) + 'px'; 
 			self.input.sc.style.width = positioner.offsetWidth + 'px';  
 			if (!resize) {
 				self.input.sc.style.display = 'block';
@@ -135,11 +148,11 @@
 				if (next) {
 					if (self.input.sc.scrollHeight > self.input.sc.clientHeight) {
 						var scrollBottom = self.input.sc.clientHeight + self.input.sc.scrollTop;
-						var elementBottom = next.offsetTop + next.offsetHeight;
+						var elementBottom = offsetTop(next) + next.offsetHeight;
 						if (elementBottom > scrollBottom) {
 							self.input.sc.scrollTop = elementBottom - self.input.sc.clientHeight;
-						} else if (next.offsetTop < self.input.sc.scrollTop) {
-							self.input.sc.scrollTop = next.offsetTop;
+						} else if (offsetTop(next) < self.input.sc.scrollTop) {
+							self.input.sc.scrollTop = offsetTop(next);
 						}
 					}
 				}
@@ -154,7 +167,7 @@
 			helpText.setAttribute('id', this.input.sc.getAttribute('id') + '-clear');
 			helpText.classList.add('sr-only');
 			helpText.appendChild(document.createTextNode(this.options.helpText));
-			this.input.parentElement.insertBefore(helpText, this.input);
+			this.input.insertAdjacentElement('beforebegin', helpText);
 			this.input.setAttribute('aria-describedby', this.input.sc.getAttribute('id') + '-help');
 			helpText.style.display = 'none';
 		}
@@ -430,14 +443,18 @@
 				setTimeout(function() { 
 					if (self.input.value == '') {
 						self.options.onClear();
-						self.clearButton.style.display = 'none';
+						if (self.clearButton) {
+							self.clearButton.style.display = 'none';
+						}
 					} else {
 						self.options.onInput(self.input.value);
 					}
 				}, 40);
 			} else {
 				if (self.input.value !== '') {
-					self.clearButton.style.display = 'inline-block';
+					if (self.clearButton) {
+						self.clearButton.style.display = 'inline-block';
+					}
 				}
 				setTimeout(function() {
 					self.options.onInput(self.input.value);
@@ -469,7 +486,7 @@
 							}
 						}
 						self.input.timer = setTimeout(function() {
-							self.options.source(val, suggest) 
+							self.options.source.call(self, val, suggest) 
 						}, self.options.delay);
 					}
 				} else {

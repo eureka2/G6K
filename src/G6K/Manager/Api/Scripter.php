@@ -97,7 +97,6 @@ class Scripter {
 		$translations[] = "	global.Translator = Translator;";
 		$translations[] = "}(this));";
 		$translations[] = "";
-		file_put_contents($this->projectDir . "/trans.txt", implode("\n", $translations));
 		$externalCss = [];
 		$externalJs = [];
 		$wcss = [];

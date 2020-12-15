@@ -164,7 +164,7 @@
 
 	var general = `
 		@charset 'UTF-8';
-		.simulator-container.default-style .sr-only {
+		.simulator-container .sr-only {
 			position: absolute;
 			width: 1px;
 			height: 1px;
@@ -175,7 +175,7 @@
 			white-space: nowrap;
 			border: 0;
 		}
-		.simulator-container.default-style .hidden {
+		.simulator-container .hidden {
 			display: none;
 		}
 		.simulator-container.default-style {
@@ -201,6 +201,9 @@
 		.simulator-container.default-style .prenote,
 		.simulator-container.default-style .postnote {
 			font-size: smaller;
+		}
+		.simulator-container .actionbuttons {
+			clear:both;
 		}
 		.simulator-container.default-style .actionbuttons.top.link {
 			display: block;
@@ -257,11 +260,11 @@
 		.simulator-container.default-style .icon-help:before {
 			color: var(--color, var(--primary-color, #2b4e6b));
 		}
-		.simulator-container.default-style .field-container input[type="text"],
-		.simulator-container.default-style .field-container input[type="date"],
-		.simulator-container.default-style .field-container input.date,
-		.simulator-container.default-style .field-container input[type="number"],
-		.simulator-container.default-style .field-container input[type="money"] {
+		.simulator-container input[type="text"],
+		.simulator-container input[type="date"],
+		.simulator-container input.date,
+		.simulator-container input[type="number"],
+		.simulator-container input[type="money"] {
 			box-sizing: border-box;
 			margin-top: 0;
 			margin-right: 0.5em;
@@ -271,10 +274,10 @@
 			border-radius: 4px;
 			background-color: #fff;
 		}
-		.simulator-container.default-style .field-container.date field-group {
-                        max-width: 5.5em;
-                        width: 5.5em;
-                }
+		.simulator-container .date field-group {
+			max-width: 5.5em;
+			width: 5.5em;
+		}
 		.simulator-container.default-style .field-container.choice:not([data-expanded='true']) > .field-group.native select,
 		.simulator-container.default-style .field-container.department:not([data-expanded='true']) > .field-group.native select,
 		.simulator-container.default-style .field-container.day:not([data-expanded='true']) > .field-group.native select,
@@ -496,7 +499,7 @@
 		.simulator-container.default-style .field-container {
 			margin-bottom: 1rem;
 		}
-		.simulator-container.default-style .field-container:not(.underlabel) > label {
+		.simulator-container.default-style .fieldset:not(.disposition-inline) .field-container:not(.underlabel) > label {
 			width: 40%;
 			display: inline-block;
 			text-align: right;
@@ -1160,10 +1163,10 @@
 			}
 		}
 		var css = icons + general + preloader + profiles + breadcrumb + grid + blockinfo + expand + buttons + widgets + functions;
-		if (style.firstElementChild == null) {
+		if (style.firstChild === null) {
 			style.appendChild(document.createTextNode(css));
 		} else {
-			style.insertBefore(document.createTextNode(css), style.firstElementChild);
+			style.insertBefore(document.createTextNode(css), style.firstChild);
 		}
 	});
 

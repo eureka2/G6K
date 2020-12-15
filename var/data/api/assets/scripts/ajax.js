@@ -16,6 +16,9 @@
 		var methods = ['get', 'post', 'put', 'delete'];
 		options = options || {};
 		options.baseUrl = options.baseUrl || '';
+		if (typeof options.async == 'undefined' || options.async === null) {
+			options.async = true;
+		}
 		if (options.method && options.url) {
 			return xhrConnection(
 				options.method,
@@ -52,7 +55,7 @@
 		}, {});
 		var xhr = new XMLHttpRequest();
 		var featuredUrl = getUrlWithData(url, data, type);
-		xhr.open(type, featuredUrl, true);
+		xhr.open(type, featuredUrl, options.async);
 		if (options.dataType) {
 			xhr.responseType = options.dataType;
 		}
@@ -98,12 +101,12 @@
 		return function handleReady () {
 			if (xhr.readyState === xhr.DONE) {
 				xhr.removeEventListener('readystatechange', handleReady, false);
-				promiseMethods.always.apply(promiseMethods, parseResponse(xhr));
 				if (xhr.status >= 200 && xhr.status < 300) {
 					promiseMethods.then.apply(promiseMethods, parseResponse(xhr));
 				} else {
 					promiseMethods.catch.apply(promiseMethods, parseResponse(xhr));
 				}
+				promiseMethods.always.apply(promiseMethods, parseResponse(xhr));
 			}
 		}
 	}

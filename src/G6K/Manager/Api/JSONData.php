@@ -272,11 +272,11 @@ class JSONData {
 		if ((string)$field['visibleRequired'] == '1') {
 			$nfield['visibleRequired'] = '1';
 		}
-		if ((string)$field['newline'] == '1') {
-			$nfield['newline'] = '1';
+		if ((string)$field['newline'] == '0') {
+			$nfield['newline'] = '0';
 		}
-		if ((string)$field['colon'] == '1') {
-			$nfield['colon'] = '1';
+		if ((string)$field['colon'] == '0') {
+			$nfield['colon'] = '0';
 		}
 		if ((string)$field['underlabel'] == '1') {
 			$nfield['underlabel'] = '1';

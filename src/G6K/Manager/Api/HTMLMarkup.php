@@ -179,7 +179,7 @@ class HTMLMarkup {
 		foreach($steps as $s => $step) {
 			$stepContainer = $form->append('<div>', [
 				'id' => $step['id'],
-				'class' => $step['type']
+				'class' => $step['type'] . " default-style step-page"
 			]);
 			if ($step['attributes']['description'] != '') {
 				$stepContainer->append('<h2>', $this->fnref($step['id'], $step['attributes']['description']), [
@@ -978,6 +978,8 @@ class HTMLMarkup {
 					'value' => $value,
 					'step' => 'any'
 				])->setAttr('min', $min, $min !== '')->setAttr('max', $max, $max !== '')
+				->setAttr('title', $this->translator->trans('format: %format%', ['%format%' => $this->translator->trans('numbers only')]), ($attributes['dataType'] == 'integer'))
+				->setAttr('title', $this->translator->trans('format: %format%', ['%format%' => $this->translator->trans('number')]), ($attributes['dataType'] == 'number'))
 				->setAttr('aria-required', 'true', $required)
 				->setAttr('data-widget', $widget, $widget != '');
 				break;
@@ -988,18 +990,20 @@ class HTMLMarkup {
 					'id' => $id,
 					'name' => $name,
 					'value' => $value,
-					'placeholder' => $this->json['meta'][$name]['format']
+					'placeholder' => $this->json['meta'][$name]['format'],
+					'title' => $this->translator->trans('format: %format%', ['%format%' => $this->translator->trans($this->options['dateFormat'])])
 				])->setAttr('aria-required', 'true', $required)
 				->setAttr('data-widget', $widget, $widget != '');
 				break;
 			case 'money':
 				$fieldGroup->append('<input>', [
-					'type' => 'text',
+					'type' => 'money',
 					'class' => $field['type'],
 					'id' => $id,
 					'name' => $name,
 					'value' => str_replace(".", MoneyFunction::$decimalPoint, $value),
-					'aria-describedby' => $id  . '-money-symbol'
+					'aria-describedby' => $id  . '-money-symbol',
+					'title' => $this->translator->trans('format: %format%', ['%format%' => $this->translator->trans('amount in %symbol%', ['%symbol%' => $this->options['moneySymbol']])])
 				])->setAttr('aria-required', 'true', $required)
 				->setAttr('data-widget', $widget, $widget != '');
 				break;
@@ -1018,7 +1022,8 @@ class HTMLMarkup {
 					'id' => $id,
 					'name' => $name,
 					'value' => str_replace(".", PercentFunction::$decimalPoint, $value),
-					'aria-describedby' => $id  . '-percent-symbol'
+					'aria-describedby' => $id  . '-percent-symbol',
+					'title' => $this->translator->trans('format: %format%', ['%format%' => $this->translator->trans('percentage')])
 				])->setAttr('min', $min, $min !== '')->setAttr('max', $max, $max !== '')
 				->setAttr('aria-required', 'true', $required)
 				->setAttr('data-widget', $widget, $widget != '');
@@ -1041,7 +1046,7 @@ class HTMLMarkup {
 				->setAttr('data-widget', $widget, $widget != '');
 				break;
 			default:
-				$fieldGroup->append('<input>', $value, [
+				$fieldGroup->append('<input>', [
 					'type' => 'text',
 					'class' => $field['type'],
 					'id' => $id,
@@ -1049,6 +1054,17 @@ class HTMLMarkup {
 					'value' => $value
 				])->setAttr('aria-required', 'true', $required)
 				->setAttr('data-widget', $widget, $widget != '');
+		}
+		if ($attributes['dataType'] == 'money' && $this->options['symbolPosition'] == 'after') {
+			$fieldGroup->after('<span>', $this->options['moneySymbol'] . '&#xA0;', [
+				'id' => $id . '-money-symbol',
+				'class' => 'money-symbol after'
+			])->addClass('emphasized', $attributes['emphasize'] == '1');
+		}
+		if (isset($attributes['unit']) && $attributes['unit'] != '') {
+			$container->append('<span>', $attributes['unit'], [
+				'class' => 'unit'
+			])->addClass('emphasized', $attributes['emphasize'] == '1');
 		}
 	}
 

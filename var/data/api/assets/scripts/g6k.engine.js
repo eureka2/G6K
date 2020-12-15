@@ -1373,11 +1373,14 @@
 				return null;
 			}
 			var uri = self.simu.sources[source]['datasource']['uri'];
+			if (/^https:/.test(window.location.href) && /^http:/.test(uri)) {
+				uri = uri.replace(/^http/, 'https');
+			}
 			if (path != "") {
 				uri += encodeURI(path);
 			}
 			if (query != '') {
-				query = uri + '?' + query.substr(1);
+				uri += '?' + query.substr(1);
 			}
 			var method = self.simu.sources[source]['datasource']['method'];
 			var returnType = self.simu.sources[source]['returnType'];
@@ -1641,27 +1644,43 @@
 					var field = self.findFieldProperties(data.inputField);
 					var input = document.getElementById(field.elementId);
 					if (input.tagName.toLowerCase() === 'select') {
-						var valueColumn = data.choices.source.valueColumn;
-						var labelColumn = data.choices.source.labelColumn;
+						var valueColumn = data.choices.source.valueColumn.toLowerCase();
+						var labelColumn = data.choices.source.labelColumn.toLowerCase();
 						var prompt = field.prompt || '-----'
 						var options = ['<option value="">' + prompt + '</option>'];
 						for (var r in result) {
 							var row = result[r];
-							var value = row[valueColumn] || row[valueColumn.toLowerCase()];
-							var label = row[labelColumn] || row[labelColumn.toLowerCase()];
+							var value = '';
+							var label = '';
+							for (var key in row) {
+								if (key.toLowerCase() == valueColumn) {
+									value = row[key];
+								} else if (key.toLowerCase() == labelColumn) {
+									label = row[key];
+								}
+							}
 							var selected = data.value && value == data.value ? ' selected="selected"' : '';
 							options.push('<option value="', value, '"' + selected + '>', label, '</option>');
 						}
 						input.innerHTML = options.join('');
 					} else if (input.classList.contains('listbox-input')) {
-						var valueColumn = data.choices.source.valueColumn;
-						var labelColumn = data.choices.source.labelColumn;
+						var valueColumn = data.choices.source.valueColumn.toLowerCase();
+						var labelColumn = data.choices.source.labelColumn.toLowerCase();
 						var prompt = field.prompt || '-----'
 						var items = [];
 						items.push({ value: "", text: prompt, selected: true});
 						for (var r in result) {
 							var row = result[r];
-							items.push({ value: row[valueColumn] || row[valueColumn.toLowerCase()], text: row[labelColumn] || row[labelColumn.toLowerCase()] });
+							var value = '';
+							var label = '';
+							for (var key in row) {
+								if (key.toLowerCase() == valueColumn) {
+									value = row[key];
+								} else if (key.toLowerCase() == labelColumn) {
+									label = row[key];
+								}
+							}
+							items.push({ value: value, text: label });
 						}
 						input.listbox.setItems(items);
 					}

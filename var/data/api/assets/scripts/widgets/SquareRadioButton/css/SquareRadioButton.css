@@ -1,0 +1,90 @@
+@charset "UTF-8";
+
+/* CLEARFIX */
+
+.field-container.SquareRadioButton-field fieldset:before,
+.field-container.SquareRadioButton-field fieldset:after {
+	content: " ";
+	display: table;
+}
+
+.field-container.SquareRadioButton-field fieldset:after {
+	clear: both;
+}
+
+.field-container.SquareRadioButton-field fieldset {
+	*zoom: 1;
+}
+
+/* SQUARES */
+
+.field-container.SquareRadioButton-field fieldset label {
+	display: block;
+	float:left;
+	margin: 1% 0 1% 1.6%;
+	text-align: center !important;
+}
+
+.field-container.SquareRadioButton-field fieldset label:first-of-type { 
+	margin-left: -1.6%;
+}
+
+.field-container.SquareRadioButton-field fieldset {
+	border: none;
+}
+
+.field-container.SquareRadioButton-field fieldset input{
+	display: none !important;
+}
+
+.field-container.SquareRadioButton-field fieldset label{
+	position: relative;
+	text-align: center;
+	display: block;
+	cursor: pointer;
+	border: 3px solid transparent;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.field-container.SquareRadioButton-field fieldset label.checked {
+	border: 3px solid #333;
+}
+
+.field-container.SquareRadioButton-field fieldset label.checked:after{
+	content: '\\2713';
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	border-radius: 100%;
+	border: 2px solid #333;
+	z-index: 5;
+	position: absolute;
+	top: -10px;
+	right: -10px;
+}
+
+/* COLORS : CHANGE IN COMMON.CSS OF THE  VIEW TO FIT YOUR NEEDS */
+
+/* checked radio colors */
+.field-container.SquareRadioButton-field fieldset label.checked,
+.field-container.SquareRadioButton-field fieldset label.checked:after {
+	color: #fff;
+	background-color: var(--color, var(--primary-color-lighten, #0b6ba8)) !important;
+}
+/* unchecked radio colors */
+.field-container.SquareRadioButton-field fieldset label{
+	color: #fff;
+	background-color: #aaa;
+}
+
+/* SIZES : CHANGE IN COMMON.CSS OF THE  VIEW TO FIT YOUR NEEDS */
+
+.field-container.SquareRadioButton-field fieldset label{
+	font-size: 1em;
+	height: 75px;
+	line-height: 75px;
+	width: auto;
+	min-width: 75px;
+}

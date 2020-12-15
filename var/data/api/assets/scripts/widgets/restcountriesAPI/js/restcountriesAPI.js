@@ -71,8 +71,9 @@
 			minChars: 2,
 			clearButton: Translator.trans('Clear this field'),
 			source: function(term, response){
+				var that = this;
 				search (term, function (terms) {
-					response(autocomplete, terms);
+					response(that, terms);
 				});
 			},
 			cache: 0,

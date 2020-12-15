@@ -2,7 +2,13 @@
 	"use strict";
 
 	function geoAPILocalities (input, options, onComplete) {
-		var g6k = this;
+		var g6k;
+		if (typeof input === "object" && input && input["jquery"]) {
+			g6k = input.data('g6k');
+			input = input[0];
+		} else {
+			g6k = this;
+		}
 
 		var geoAPIFromInseeCode = function(code, onComplete) {
 			var param = {
@@ -182,7 +188,8 @@
 			minChars: 2,
 			clearButton: Translator.trans('Clear this field', {}, 'geoapilocalities'),
 			source: function(term, response){
-				geoAPISearch (term, function (terms) { suggestions = terms; response(autocomplete, terms); });
+				var that = this;
+				geoAPISearch (term, function (terms) { suggestions = terms; response(that, terms); });
 			},
 			cache: 0,
 			renderItem: function (item,  search) {

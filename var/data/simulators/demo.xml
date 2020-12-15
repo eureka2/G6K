@@ -116,14 +116,14 @@ Only the judge, if he is seized, can pronounce the definitive amount of the pens
 			<Panels>
 				<Panel id="1" name="panel1" label="">
 					<FieldSet id="1">
-						<Field position="1" data="1" usage="input" label="Income of the debtor parent" required="1" visibleRequired="0" help="1" widget="AutoMoneyFormat" />
-						<Field position="2" data="2" usage="input" label="Amplitude of the right of access and the accommodation" required="1" visibleRequired="0" help="1" expanded="1" widget="SquareRadioButton" />
-						<Field position="3" data="3" usage="input" label="Number of children of the debtor parent" required="1" visibleRequired="0" help="1" widget="ChoiceSlider" />
-						<Field position="4" data="4" usage="output" label="Applicable rate by child" required="0" visibleRequired="0" help="1" />
+						<Field position="1" data="1" usage="input" label="Income of the debtor parent" required="1" visibleRequired="0" underlabel="1" help="1" widget="AutoMoneyFormat" />
+						<Field position="2" data="2" usage="input" label="Amplitude of the right of access and the accommodation" required="1" visibleRequired="0" underlabel="1" help="1" expanded="1" widget="SquareRadioButton" />
+						<Field position="3" data="3" usage="input" label="Number of children of the debtor parent" required="1" visibleRequired="0" underlabel="1" help="1" widget="ChoiceSlider" />
+						<Field position="4" data="4" usage="output" label="Applicable rate by child" required="0" visibleRequired="0" underlabel="1" help="1" />
 					</FieldSet>
 					<FieldSet id="2">
-						<Field position="1" data="6" usage="output" label="Maintenance allowance by child" required="0" visibleRequired="0" help="0" emphasize="1" />
-						<Field position="2" data="7" usage="output" label="Total of the maintenance allowance" required="0" visibleRequired="0" help="0" emphasize="1" />
+						<Field position="1" data="6" usage="output" label="Maintenance allowance by child" required="0" visibleRequired="0" underlabel="1" help="0" emphasize="1" />
+						<Field position="2" data="7" usage="output" label="Total of the maintenance allowance" required="0" visibleRequired="0" underlabel="1" help="0" emphasize="1" />
 					</FieldSet>
 				</Panel>
 			</Panels>
