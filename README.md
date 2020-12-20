@@ -4,6 +4,8 @@ G6K is a tool that enables the creation and online publishing of calculation sim
 
 A calculation simulator is an online service made available to a user to enable them to calculate the results (taxes, social benefits, etc.) corresponding to their particular situation. The results are calculated on the basis of data supplied by the user, reference data (eg amount of a tax) and business rules reflecting the current legislation in the field of simulation.
 
+ATTENTION: THIS BRANCH IS NO LONGER MAINTAINED
+
 [Learn more](http://eureka2.github.io/g6k/documentation/en/learn-more.html)
 
 ## Table of contents
