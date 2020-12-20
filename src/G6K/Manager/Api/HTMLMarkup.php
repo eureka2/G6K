@@ -62,12 +62,16 @@ class HTMLMarkup {
 		$this->simulator = $simulator;
 		$this->json = json_decode(file_get_contents($this->jsonDir . '/' . $this->simulator . '.json'), true);
 		$this->options = $this->json['data']['attributes'];
-	}
-
-	public function run() {
 		foreach ($this->json['meta'] as $name => $data) {
 			$this->variables[$name] = $data['initial'];
 		}
+	}
+
+	public function getVariables() {
+		return $this->variables;
+	}
+
+	public function run() {
 		$steps = $this->json['included']['steps'];
 		$simulatorType = $this->json['data']['type'];
 		$simulatorId = $this->json['data']['id'];
@@ -88,7 +92,14 @@ class HTMLMarkup {
 		PercentFunction::$groupingSize = $this->json['data']['attributes']['groupingSize'];
 		$this->markup = new HTMLDocument($simulatorTitle);
 		$body = $this->markup->body();
-		$article = $body->append('<article>', ['class' => 'article simulator-container default-style']);
+		$article = $body->append('<article>', [
+			'class' => implode(' ', [
+				'article',
+				'simulator-container',
+				$this->simulator,
+				'default-style'
+			])
+		]);
 		$form = $article->append('<div>', ['class' => 'outer-wrap hidden'])
 			->append('<div>', ['class' => 'inner-wrap'])
 			->append('<div>', ['id' => $simulatorId, 'class' => $simulatorType])
@@ -744,14 +755,14 @@ class HTMLMarkup {
 									$fieldset->append('<label>', [
 										'for' => $id . '-' . $choicevalue,
 										'class' => 'choice'
-									])->addClass('checked', $choicevalue == $value)
+									])->addClass('checked', (string)$choicevalue == (string)$value)
 									->append('<input>', [
 										'type' => 'radio',
 										'class' => $field['type'],
 										'id' => $id . '-' . $choicevalue,
 										'name' => $name,
 										'value' => $choicevalue
-									])->setAttr('checked', 'checked', $choicevalue == $value)
+									])->setAttr('checked', 'checked', (string)$choicevalue == (string)$value)
 									->setAttr('aria-required', 'true', $required)
 									->setAttr('data-widget', $widget, $widget != '')
 									->parent()->append($text);
@@ -768,14 +779,14 @@ class HTMLMarkup {
 										$choicegroup->append('<label>', [
 											'for' => $id . '-' . $choicevalue,
 											'class' => 'choice'
-										])->addClass('checked', $choicevalue == $value)
+										])->addClass('checked', (string)$choicevalue == (string)$value)
 										->append('<input>', [
 											'type' => 'radio',
 											'class' => $field['type'],
 											'id' => $id . '-' . $choicevalue,
 											'name' => $name,
 											'value' => $choicevalue
-										])->setAttr('checked', 'checked', $choicevalue == $value)
+										])->setAttr('checked', 'checked', (string)$choicevalue == (string)$value)
 										->setAttr('aria-required', 'true', $required)
 										->setAttr('data-widget', $widget, $widget != '')
 										->parent()->append($text);
@@ -797,7 +808,7 @@ class HTMLMarkup {
 						foreach ($attributes['data'] as $data) {
 							if ($data['type'] == 'choices') {
 								foreach ($data['attributes']['choices'] as $choicevalue => $text) {
-									$select->append('<option>', $text, [ 'value' => $choicevalue ])->setAttr('selected', 'selected', $choicevalue == $value);
+									$select->append('<option>', $text, [ 'value' => $choicevalue ])->setAttr('selected', 'selected', (string)$choicevalue == (string)$value);
 								}
 								break;
 							} elseif ($data['type'] == 'choicegroup') {
@@ -806,7 +817,7 @@ class HTMLMarkup {
 								]);
 								foreach ($data['attributes']['data'] as $choices) {
 									foreach ($choices['attributes']['choices'] as $choicevalue => $text) {
-										$choicegroup->append('<option>', $text, [ 'value' => $choicevalue ])->setAttr('selected', 'selected', $choicevalue == $value);
+										$choicegroup->append('<option>', $text, [ 'value' => $choicevalue ])->setAttr('selected', 'selected', (string)$choicevalue == (string)$value);
 									}
 								}
 							}
@@ -829,14 +840,14 @@ class HTMLMarkup {
 								$fieldset->append('<label>', $this->fnref($stepId, $attributes['title']), [
 									'for' => $id . '-' . $choicevalue,
 									'class' => 'choice'
-								])->addClass('checked', $choicevalue == $value)
+								])->addClass('checked', (string)$choicevalue == (string)$value)
 								->append('<input>', [
 									'type' => 'checkbox',
 									'class' => $field['type'],
 									'id' => $id . '-' . $choicevalue,
 									'name' => $name,
 									'value' => $choicevalue
-								])->setAttr('checked', 'checked', $choicevalue == $value)
+								])->setAttr('checked', 'checked', (string)$choicevalue == (string)$value)
 								->setAttr('aria-required', 'true', $required)
 								->setAttr('data-widget', $widget, $widget != '')
 								->parent()->append($text);
@@ -853,14 +864,14 @@ class HTMLMarkup {
 									$choicegroup->append('<label>', [
 										'for' => $id . '-' . $choicevalue,
 										'class' => 'choice'
-									])->addClass('checked', $choicevalue == $value)
+									])->addClass('checked', (string)$choicevalue == (string)$value)
 									->append('<input>', [
 										'type' => 'checkbox',
 										'class' => $field['type'],
 										'id' => $id . '-' . $choicevalue,
 										'name' => $name,
 										'value' => $choicevalue
-									])->setAttr('checked', 'checked', $choicevalue == $value)
+									])->setAttr('checked', 'checked', (string)$choicevalue == (string)$value)
 									->setAttr('aria-required', 'true', $required)
 									->setAttr('data-widget', $widget, $widget != '')
 									->parent()->append($text);

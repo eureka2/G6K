@@ -49,7 +49,8 @@ class Bootstrapifier {
 			$container[0]->addClass('container');
 		}
 		$bootstrapStyle = 'bootstrap' . $this->options->version[0] . '-style';
-		$document->traverse(function($node) use ($bootstrapStyle) {
+		$labelClass = $this->options->version[0] == 3 ? 'control-label' : 'col-form-label';
+		$document->traverse(function($node) use ($bootstrapStyle, $labelClass) {
 			if ($node->is('input')) {
 				$type = $node->attr('type');
 				if ($type != 'hidden') { 
@@ -62,16 +63,31 @@ class Bootstrapifier {
 				$node->addClass('form-control', 'custom-select');
 			} elseif ($node->is('textarea')) {
 				$node->addClass('form-control');
-			} elseif ($node->is('label')) {
-				$node->addClass('col-form-label', 'control-label');
+			} elseif ($node->is('label') || $node->hasClass('label')) {
+				if ($node->parent()->hasClass('row')) {
+					$node->addClass($labelClass);
+				}
 			} elseif ($node->is('button')) {
 				$node->addClass('btn');
-				if ($node->hasClass('btn-default')
+				if ($node->hasClass('btn-secondary')
 					&& $node->parent()->hasClass('bottom')) {
-					$node->addClass('btn-secondary', 'float-left');
+					if ($this->options->version[0] == 3) {
+						$node->addClass('btn-default', 'pull-left');
+						$node->removeClass('btn-secondary');
+					} else {
+						$node->addClass('float-left');
+					}
 				} elseif ($node->hasClass('btn-primary')
 					&& $node->parent()->hasClass('bottom')) {
-					$node->addClass('float-right');
+					if ($this->options->version[0] == 3) {
+						$node->addClass('pull-right');
+					} else {
+						$node->addClass('float-right');
+					}
+				}
+			} elseif ($node->is('a')) {
+				if ($node->parent()->hasClass('actionbuttons', 'link')) {
+					$node->addClass('btn');
 				}
 			} else {
 				if ($node->hasClass('step')) {
@@ -79,8 +95,7 @@ class Bootstrapifier {
 				} elseif ($node->hasClass('step-description')) {
 					$node->addClass('legend');
 				}
-				if ($node->hasClass('fieldset')
-					&& $node->hasClass('disposition-classic')) {
+				if ($node->hasClass('fieldset', 'disposition-classic')) {
 					$node->addClass('form-horizontal');
 				}
 				if ($node->hasClass('field-container')) {

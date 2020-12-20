@@ -325,6 +325,7 @@
 		if (this.selected !== null) {
 			this.edit.textContent = this.selected.textContent;
 			this.input.setAttribute('value', this.selected.getAttribute('data-value'));
+			this.input.setAttribute('data-text', this.selected.textContent);
 			this.input.dispatchEvent(new Event('change'));
 		}
 
@@ -645,6 +646,7 @@
 		// update the edit box
 		this.edit.textContent = id.textContent;
 		this.input.setAttribute('value', id.getAttribute('data-value'));
+		this.input.setAttribute('data-text', id.textContent);
 		this.input.dispatchEvent(new Event('change'));
 		this.options.onSelected(id.getAttribute('data-value'), id.textContent);
 	} // end selectOption
@@ -1013,6 +1015,7 @@
 			case this.keys.del: {
 				this.edit.textContent = this.selected.textContent;
 				this.input.setAttribute('value', this.selected.getAttribute('data-value'));
+				this.input.setAttribute('data-text', this.selected.textContent);
 				this.input.dispatchEvent(new Event('change'));
 				e.stopPropagation();
 				return false;
@@ -1227,6 +1230,7 @@
 		// update the edit box
 		this.edit.textContent = this.initial.textContent;
 		this.input.setAttribute('value', this.initial.getAttribute('data-value'));
+		this.input.setAttribute('data-text', this.initial.textContent);
 		return this.initial.getAttribute('data-value');
 	} // end reset
 

@@ -76,18 +76,28 @@
 
 		var resize = function () {
 			var labels = document.querySelector('.range-labels');
-			labels.parentElement.style.display = 'inline-block';
-			var width = parseFloat(getComputedStyle(labels.parentElement, null).width.replace("px", ""));
-			interval = (width - 9) / nIntervals;
-			document.querySelector('.range').style.width = (nIntervals * interval + 9) + 'px';
-			var margin = -Math.ceil((interval - 9) / 2);
+			var fieldContainer = select.closest('.field-container');
+			var contRect = fieldContainer.getBoundingClientRect();
+			var labelRect = fieldContainer.querySelector('label').getBoundingClientRect();
+			var groupRect = fieldContainer.querySelector('.field-group').getBoundingClientRect();
+			var width = groupRect.top >= labelRect.bottom ? contRect.width : contRect.width  - labelRect.width;
+			interval = (width - 50) / nIntervals;
+			document.querySelector('.range').style.width = (nIntervals * interval) + 'px';
+			var margin = -Math.ceil((interval) / 2);
 			labels.style.marginLeft = margin + 'px';
 			labels.style.marginRight = margin + 'px';
 			document.querySelectorAll('.range-labels li').forEach( li => {
 				li.style.width = interval + 'px';
 			});
 		}
-		resize();
+
+		var fieldContainer = select.closest('.field-container');
+		var observer = new MutationObserver(function(){
+			if(fieldContainer.style.display != 'none'){
+				resize();
+			}
+		});
+		observer.observe(fieldContainer, { attributes: true, childList: false });
 
 		rangeInput.addEventListener('input', function () {
 			sheet.textContent = getTrackStyle(this);
@@ -108,6 +118,7 @@
 		window.addEventListener('resize', function () {
 			resize();
 		});
+		resize();
 		rangeInput.dispatchEvent(new Event('input'));
 	}
 

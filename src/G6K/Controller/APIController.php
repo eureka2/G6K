@@ -276,7 +276,10 @@ class APIController extends BaseController {
 				if ($locale !== '') {
 					$this->translator->setLocale($locale);
 				}
-				$this->checkApiParameters($form);
+				$htmlMarkup = new HTMLMarkup($this->translator, $this->projectDir, null ,$params->all());
+				$htmlMarkup->setSimulator($simulator);
+				$variables = array_keys($htmlMarkup->getVariables());
+				$this->checkApiParameters($form, $variables);
 				if ($this->error) {
 					break;
 				}
@@ -293,8 +296,6 @@ class APIController extends BaseController {
 				$fontFamily = $form['fontFamily'] ?? 'Arial, Verdana';
 				$fontSize = $form['fontSize'] ?? '1em';
 				$stylesheet = $form['stylesheet'] ?? '';
-				$htmlMarkup = new HTMLMarkup($this->translator, $this->projectDir, null ,$params->all());
-				$htmlMarkup->setSimulator($simulator);
 				$htmlMarkup->run();
 				$document = $htmlMarkup->get();
 				if ($bootstrap != '') {
@@ -368,6 +369,13 @@ class APIController extends BaseController {
 				$recaptcha = $this->getParameter('recaptcha');
 				$options = $htmlMarkup->getOptions();
 				$simulatorCss = $publicURI . "/assets/" . $options['defaultView'] . "/css/" . $simulator . ".css";
+				$observers = [];
+				foreach($form as $param => $value) {
+					if (in_array($param, $variables)) {
+						$observers[$param] = $value;
+					}
+				}
+				$observers = str_replace(['[]', '"'], ['{}', "'"],json_encode($observers));
 				$mainContainer->append('<script>', preg_replace("/\s+/", " ", implode("", ['', 
 					"document.addEventListener( 'DOMContentLoaded', function() {",
 					$bootstrapifyjs,
@@ -376,6 +384,8 @@ class APIController extends BaseController {
 					"	css.rel = 'stylesheet';",
 					"	css.href = '" . $simulatorCss . "';",
 					"	document.querySelector('head').appendChild(css);",
+					"});",
+					"window.addEventListener('load', function() {",
 					"	var options = {",
 					"		simulator: G6K_SIMU,",
 					"		form: document.querySelector('.simulator form'),",
@@ -391,7 +401,8 @@ class APIController extends BaseController {
 					"		internalSourceURI: '" . $internalSourceURI . "',", 
 					"		publicURI: '" . $publicURI . "',", 
 					"		recaptchaSiteKey: '" . $recaptcha['site_key'] . "',", 
-					"		theme: '" . $theme . "'", 
+					"		theme: '" . $theme . "',", 
+					"		observers: " . $observers, 
 					"	};",
 					"	var g6k = new G6k(options);",
 					"	g6k.run();",
@@ -406,7 +417,7 @@ class APIController extends BaseController {
 				$response->setContent($html);
 				break;
 			case 'js':
-				$jsfile = $apiDir . "/" . $simulator . ".js";
+				$jsfile = $apiDir . "/" . $simulator . ".min.js";
 				$response->headers->set('Content-Type', 'application/javascript');
 				$response->setContent(file_get_contents($jsfile));
 				break;
@@ -480,7 +491,7 @@ class APIController extends BaseController {
 		return $this->rgb2hex([$r, $g, $b]);
 	  
 	}
-	private function checkApiParameters($form) {
+	private function checkApiParameters($form, $variables = []) {
 		$parameters = [
 			'markup', 'locale', 'bootstrap',
 			'primaryColor', 'secondaryColor',
@@ -490,7 +501,7 @@ class APIController extends BaseController {
 			'fontFamily', 'fontSize', 'stylesheet'
 		];
 		foreach($form as $param => $value) {
-			if (! in_array($param, $parameters)) {
+			if (! in_array($param, $parameters) && ! in_array($param, $variables)) {
 				$this->addParameterError(
 					$param,
 					$this->translator->trans("Invalid parameter"), 

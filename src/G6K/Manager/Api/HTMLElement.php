@@ -109,10 +109,15 @@ class HTMLElement {
 		return $this;
 	}
 
-	public function hasClass($classname) {
+	public function hasClass(...$classes) {
 		if ($this->hasAttribute('class')) {
-			$classes = preg_split("/\s+/", $this->element->getAttribute('class'));
-			return in_array($classname, $classes);
+			$existingClasses = preg_split("/\s+/", $this->element->getAttribute('class'));
+			foreach($classes as $class) {
+				if (!in_array($class, $existingClasses)) {
+					return false;
+				}
+			}
+			return true;
 		}
 		return false;
 	}
@@ -152,11 +157,6 @@ class HTMLElement {
 	public function hasAttribute($attribute) {
 		return  $this->element->nodeType === XML_ELEMENT_NODE
 		&& $this->element->hasAttribute($attribute);
-	}
-
-	public function is($tag) {
-		return $this->element->nodeType === XML_ELEMENT_NODE
-		&& $this->element->tagName == $tag;
 	}
 
 	public function append($tag, ...$args) {
@@ -313,6 +313,16 @@ class HTMLElement {
 				$node->traverse($callback);
 			}
 		}
+	}
+
+	public function is($selector) {
+		if (preg_match("/^[a-z]+$/", $selector)) {
+			return $this->element->nodeType === XML_ELEMENT_NODE
+				&& $this->element->tagName == $selector;
+		}
+		$expr = $this->document->selectorConverter->toXPath($selector, 'self::');
+		$entries = $this->document->xpath->query($expr, $this->element);
+		return $entries !== false && $entries->length > 0;
 	}
 
 	public function find($selector) {

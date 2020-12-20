@@ -37,6 +37,9 @@
 		this.publicURI = options.publicURI;
 		this.recaptchaSiteKey = options.recaptchaSiteKey;
 		this.theme = options.theme;
+		this.displays = {};
+		this.defaultDisplays = {};
+		this.observers = this.setObservers(options.observers);
 		this.preloadCounter = 0;
 	};
 
@@ -53,6 +56,25 @@
 			this.initializeExternalFunctions();
 		},
 
+		setObservers(observers) {
+			var validObservers = {};
+			traverse: for (var name in observers) {
+				var namespaces = observers[name].split(".");
+				var observer = namespaces.pop();
+				var context = window;
+				for (var i = 0; i < namespaces.length; i++) {
+					context = context[namespaces[i]];
+					if (!context) {
+						continue traverse;
+					}
+				}
+				if (context[observer] && typeof context[observer] == 'function') {
+					validObservers[name] = context[observer];
+				}
+			}
+			return validObservers;
+		},
+
 		createPreloader: function() {
 			var self = this;
 			var preloader = document.createElement('div');
@@ -65,7 +87,7 @@
 				if (self.preloadCounter !== false) {
 					alert(Translator.trans("Simulator server takes too long to respond"));
 				}
-			}, 5000);
+			}, 10000);
 		},
 
 		removePreloader: function() {
@@ -970,9 +992,10 @@
 					value = ovalues;
 				}
 			}
+			var oldValue = data.value;
 			data.value = value;
 			self.setVariable(name, data);
-			self.validate(name);
+			var valid = self.validate(name);
 			self.setFormValue(name, data);
 			if (self.simu.memo && self.simu.memo == "1" && data.memorize && data.memorize == "1") {
 				if (! cookie.exists(name) || cookie.get(name) != value) {
@@ -980,6 +1003,11 @@
 				}
 			}
 			self.lastUserInputName = "";
+			if (valid && data.value != oldValue && self.observers[name]) {
+				setTimeout(function() {
+					self.observers[name].call(data, name, data.value);
+				}, 0);
+			}
 			self.reevaluateFields(name);
 		},
 
@@ -1684,7 +1712,7 @@
 						}
 						input.listbox.setItems(items);
 					}
-					// self.setValue(dependency, "");
+					self.setValue(dependency, "");
 				});
 			}
 		},
@@ -1715,7 +1743,7 @@
 				var name = self.normalizeName(input.getAttribute('name'));
 				var data = self.getData(name);
 				if (data) {
-					var value = input.value;
+					var value = input.getAttribute('value') || input.value;
 					if (value && (data.type === "money" || data.type === "percent" || data.type === "number")) {
 						value = self.unFormatValue(value);
 					}
@@ -2535,18 +2563,41 @@
 			});
 		},
 
+		defaultDisplay(elt) {
+			var temp,
+				nodeName = elt.nodeName,
+				display = this.defaultDisplays[nodeName];
+			if (display) {
+				return display;
+			}
+			var doc = elt.ownerDocument;
+			temp = doc.body.appendChild(doc.createElement(nodeName));
+			display = window.getComputedStyle(temp).display;
+			temp.parentNode.removeChild(temp);
+			if ( display === "none" ) {
+				display = "block";
+			}
+			this.defaultDisplays[nodeName] = display;
+			return display;
+		},
+
 		showObject: function(obj) {
-			if (obj) {
-				obj.classList.remove('hidden');
+			if (obj && obj.style.display === 'none') {
+				obj.style.display = this.displays[obj] || this.defaultDisplay(obj) || '';
 				obj.removeAttribute('aria-hidden');
 			}
 			return obj;
 		},
 
 		hideObject: function(obj) {
-			if (obj) {
+			if (obj && obj.style.display !== 'none') {
+				if (obj.style.display !== '') {
+					this.displays[obj] = obj.style.display;
+				} else {
+					this.displays[obj] = this.defaultDisplay(obj);
+				}
+				obj.style.display = 'none';
 				obj.setAttribute('aria-hidden', true);
-				obj.classList.add('hidden');
 			}
 			return obj;
 		},
@@ -2599,7 +2650,7 @@
 					value = '<img src="'+value+'" alt="*">';
 				}
 			}
-			if (value && data.type === "choice") {
+			if (value && ['choice', 'department', 'year', 'month', 'day'].indexOf(data.type) >= 0) {
 				var name = this.getDataNameById(data.id);
 				var input = this.getInputByName(name);
 				if (input !== null) {
@@ -2608,7 +2659,7 @@
 						var options = input.querySelectorAll('option');
 						for (var option of options) {
 							if (option.value == value) {
-								value = option.innerText.trim();
+								value = option.textContent.trim();
 								break;
 							}
 						}
@@ -2616,10 +2667,12 @@
 						var radios = input.closest('fieldset').querySelectorAll("input[type='radio']");
 						for (var radio of radios) {
 							if (radio.value == value) {
-								value = radio.parentElement.innerText.trim();
+								value = radio.parentElement.textContent.trim();
 								break;
 							}
 						}
+					} else if (input.classList.contains('listbox-input')) {
+						value = input.getAttribute('data-text');
 					}
 				}
 			}
