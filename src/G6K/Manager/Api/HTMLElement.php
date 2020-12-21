@@ -282,6 +282,17 @@ class HTMLElement {
 		return null !== $parent ? new HTMLElement($parent, $this->document) : null;
 	}
 
+	public function closest($selector) {
+		$parent = $this;
+		do {
+			if ($parent->is($selector)) {
+				return $parent;
+			}
+			$parent = $parent->parent();
+		} while ($parent !== null);
+		return null;
+	}
+
 	public function children() {
 		$children = [];
 		foreach($this->element->childNodes as $child) {

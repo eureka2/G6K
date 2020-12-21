@@ -2293,20 +2293,18 @@
 			});
 			self.form.addEventListener('submit', function(event) {
 				var buttonId = self.lastSubmitBtnId;
-				var bwhat = self.getStep().actions[buttonId].what;
-				var bfor = self.getStep().actions[buttonId].for;
-				var buri = self.getStep().actions[buttonId].uri;
-				if (bwhat == 'submit' && bfor == 'priorStep') {
+				var btn = self.getStep().actions[self.lastSubmitBtnId];
+				if (btn.what == 'submit' && btn.for == 'priorStep') {
 					event.preventDefault();
 					self.priorStep();
 					return;
 				}
-				if (bwhat == 'submit' && bfor == 'newSimulation') {
+				if (btn.what == 'submit' && btn.for == 'newSimulation') {
+					event.preventDefault();
 					self.clearForm(self.form);
 					self.form.querySelectorAll("input.resettable").forEach( input => {
 						input.value = "";
 					});
-					event.preventDefault();
 					return;
 				}
 				if (self.hasFatalError || ! self.validateAll()) {
@@ -2314,16 +2312,16 @@
 					event.preventDefault();
 					return;
 				}
-				if (bwhat == 'submit' && bfor == 'nextStep') {
+				if (btn.what == 'submit' && btn.for == 'nextStep') {
 					event.preventDefault();
 					self.nextStep();
-				} else if (bwhat == 'submit' && bfor == 'jumpToStep') {
+				} else if (btn.what == 'submit' && btn.for == 'jumpToStep') {
 					event.preventDefault();
-					self.jumpToStep(parseInt(buri, 10));
-				} else if (bwhat == 'submit' && bfor == 'currentStep') {
+					self.jumpToStep(parseInt(btn.uri, 10));
+				} else if (btn.what == 'submit' && btn.for == 'currentStep') {
 					event.preventDefault();
-				} else if (bwhat == 'submit' && bfor == 'externalPage') {
-					self.form.action = buri;
+				} else if (btn.what == 'submit' && btn.for == 'externalPage') {
+					self.form.action = btn.uri;
 					self.form.target = '_blank';
 				}
 			});

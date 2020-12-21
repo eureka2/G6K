@@ -186,6 +186,21 @@
 		.simulator-container .hidden {
 			display: none !important;
 		}
+		.simulator-container .actionbuttons.top.link {
+			display: block;
+			float: right;
+		}
+		.simulator-container .actionbuttons.top.link .btn {
+			padding: .15em .3em;
+			margin: 0;
+			background: #f0f0f0;
+		}
+		.simulator-container .actionbuttons.top.link .btn:after {
+			content: "";
+		}
+		.simulator-container .actionbuttons.top.link + div {
+			clear: both;
+		}
 		.simulator-container.default-style {
 			font-family: var(--font-family, 'Arial, Verdana');
 			font-size: var(--font-size, 1em);

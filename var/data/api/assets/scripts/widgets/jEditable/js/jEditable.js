@@ -58,6 +58,7 @@
 			} else if (type == 'date') {
 				options.placeholder = input.getAttribute('placeholder');
 			}
+			options.title = input.getAttribute('title') || '';
 			input.style.display = 'none';
 			input.setAttribute('aria-hidden', 'true');
 			editable = document.createElement('span'); 
