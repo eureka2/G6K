@@ -109,6 +109,11 @@ class Bootstrapifier {
 					$node->addClass($bootstrapStyle);
 					$node->removeClass('default-style');
 				}
+				if ($node->hasClass('prenote')) {
+					$node->addClass('pre-note');
+				} elseif ($node->hasClass('postnote')) {
+					$node->addClass('post-note');
+				}
 			}
 		});
 		if ($this->options->markup == 'page') {

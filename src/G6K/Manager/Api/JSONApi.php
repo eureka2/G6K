@@ -108,6 +108,9 @@ class JSONApi {
 					'numberOfRequiredInputFields' => $step['numberOfRequiredInputFields']
 				]
 			];
+			if (isset($step['template'])) {
+				$stepdesc['attributes']['template'] = $step['template'];
+			}
 			$panels = [];
 			foreach ($step['panels'] as $panel) {
 				$paneldesc = [

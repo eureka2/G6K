@@ -752,6 +752,15 @@ class JSONData {
 			'output' => (string)$step['output'],
 			'description' =>  $this->paragraphs((string)$step->Description)
 		];
+		if (in_array($nstep['output'], [
+			'inlinePDF',
+			'downloadablePDF',
+			'inlineFilledPDF',
+			'downloadableFilledPDF'
+		])) {
+			$nstep['template'] = (string)$step['template'];
+			$nstep['pdfFooter'] = (bool)$step['pdfFooter'];
+		}
 		foreach ($step->Panels->Panel as $panel) {
 			$blocks = [];
 			$npanel = [

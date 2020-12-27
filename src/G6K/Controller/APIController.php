@@ -279,7 +279,8 @@ class APIController extends BaseController {
 				$htmlMarkup = new HTMLMarkup($this->translator, $this->projectDir, null ,$params->all());
 				$htmlMarkup->setSimulator($simulator);
 				$variables = array_keys($htmlMarkup->getVariables());
-				$this->checkApiParameters($form, $variables);
+				$buttons = array_keys($htmlMarkup->getButtons());
+				$this->checkApiParameters($form, $variables, $buttons);
 				if ($this->error) {
 					break;
 				}
@@ -360,6 +361,11 @@ class APIController extends BaseController {
 						UrlGeneratorInterface::ABSOLUTE_URL
 					)
 				]);
+				$apiURI = $this->generateUrl(
+					'eureka_g6k_api',
+					[ 'simu' => $simulator ],
+					UrlGeneratorInterface::ABSOLUTE_URL
+				);
 				$internalSourceURI = $this->generateUrl(
 					'eureka_g6k_source',
 					[ 'simu' => $simulator ],
@@ -371,7 +377,7 @@ class APIController extends BaseController {
 				$simulatorCss = $publicURI . "/assets/" . $options['defaultView'] . "/css/" . $simulator . ".css";
 				$observers = [];
 				foreach($form as $param => $value) {
-					if (in_array($param, $variables)) {
+					if (in_array($param, $variables) || in_array($param, $buttons)) {
 						$observers[$param] = $value;
 					}
 				}
@@ -391,6 +397,7 @@ class APIController extends BaseController {
 					"		form: document.querySelector('.simulator form'),",
 					"		locale: '" . $options['locale'] ."',",
 					"		dynamic: true,",
+					"		api: true,",
 					"		mobile: false,",
 					"		dateFormat: '" . $options['dateFormat'] . "',",
 					"		decimalPoint: '" . $options['decimalPoint'] . "',",
@@ -399,6 +406,7 @@ class APIController extends BaseController {
 					"		groupingSeparator: '" . $options['groupingSeparator'] . "',",
 					"		groupingSize: '" . $options['groupingSize'] . "',",
 					"		internalSourceURI: '" . $internalSourceURI . "',", 
+					"		apiURI: '" . $apiURI . "',", 
 					"		publicURI: '" . $publicURI . "',", 
 					"		recaptchaSiteKey: '" . $recaptcha['site_key'] . "',", 
 					"		theme: '" . $theme . "',", 
@@ -417,7 +425,7 @@ class APIController extends BaseController {
 				$response->setContent($html);
 				break;
 			case 'js':
-				$jsfile = $apiDir . "/" . $simulator . ".min.js";
+				$jsfile = $apiDir . "/" . $simulator . ".js";
 				$response->headers->set('Content-Type', 'application/javascript');
 				$response->setContent(file_get_contents($jsfile));
 				break;
@@ -425,6 +433,32 @@ class APIController extends BaseController {
 				$jsonfile = $apiDir . "/" . $simulator . ".json";
 				$response->headers->set('Content-Type', 'application/json');
 				$response->setContent(file_get_contents($jsonfile));
+				break;
+			case 'pdf':
+				$htmlMarkup = new HTMLMarkup($this->translator, $this->projectDir, null ,$params->all());
+				$htmlMarkup->setSimulator($simulator);
+				$options = $htmlMarkup->getOptions();
+				$view = $options['defaultView'];
+				$mpdf = $this->getPDF($request, $form['template'], $form, $view, $form['pdfFooter']);
+				$pdfContent = base64_encode($mpdf->Output($simulator.".pdf", 'S'));
+				$response->headers->set('Content-Type', 'application/pdf');
+				$response->headers->set('Content-Length', strlen($pdfContent));
+				$response->headers->set('Content-Disposition', 'inline; filename="'.$simulator.'.pdf"');
+				$response->headers->set('Cache-Control', 'private, max-age=0, must-revalidate');
+				$response->headers->set('Pragma', 'public');
+				$response->setContent($pdfContent);
+				break;
+			case 'fpdf':
+				$htmlMarkup = new HTMLMarkup($this->translator, $this->projectDir, null ,$params->all());
+				$htmlMarkup->setSimulator($simulator);
+				$fpdf = $this->getFilledPdf($request, $form['template'], $form);
+				$pdfContent = base64_encode($fpdf->output('S', basename($form['template'])));
+				$response->headers->set('Content-Type', 'application/pdf');
+				$response->headers->set('Content-Length', strlen($pdfContent));
+				$response->headers->set('Content-Disposition', 'inline; filename="'.$simulator.'.pdf"');
+				$response->headers->set('Cache-Control', 'private, max-age=0, must-revalidate');
+				$response->headers->set('Pragma', 'public');
+				$response->setContent($pdfContent);
 				break;
 			default:
 				$this->addEntityError(
@@ -491,7 +525,7 @@ class APIController extends BaseController {
 		return $this->rgb2hex([$r, $g, $b]);
 	  
 	}
-	private function checkApiParameters($form, $variables = []) {
+	private function checkApiParameters($form, $variables = [], $buttons = []) {
 		$parameters = [
 			'markup', 'locale', 'bootstrap',
 			'primaryColor', 'secondaryColor',
@@ -501,7 +535,9 @@ class APIController extends BaseController {
 			'fontFamily', 'fontSize', 'stylesheet'
 		];
 		foreach($form as $param => $value) {
-			if (! in_array($param, $parameters) && ! in_array($param, $variables)) {
+			if (! in_array($param, $parameters)
+				&& ! in_array($param, $variables)
+				&& ! in_array($param, $buttons)) {
 				$this->addParameterError(
 					$param,
 					$this->translator->trans("Invalid parameter"), 

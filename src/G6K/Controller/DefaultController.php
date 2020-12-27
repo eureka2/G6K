@@ -264,37 +264,7 @@ class DefaultController extends BaseController {
 	 */
 	protected function pdfOutput(Request $request, $step, $datas, $view = "Default")
 	{
-		$ua = new \Detection\MobileDetect();
-		$page = $this->render(
-			$view.'/'.str_replace(':', '/', $step->getTemplate()),
-			array(
-				'view' => $view,
-				'ua' => $ua,
-				'browserengine' => $this->getBrowserEngine($request),
-				'path' => $request->getScheme().'://'.$request->getHttpHost(),
-				'log' => $this->log,
-				'step' => $step,
-				'data' => $datas
-			)
-		);
-
-		$mpdf = new \Mpdf\Mpdf();
-		$mpdf->autoLangToFont  = true;
-		$mpdf->PDFA = true;
-		$mpdf->PDFAauto = true;
-		$mpdf->ignore_invalid_utf8 = true;
-		$mpdf->Bookmark($this->translator->trans("Beginning of the document")); 
-		$mpdf->SetDisplayMode('fullwidth');
-		if ($step->hasPdfFooter()) {
-			$footer = '<table class="pdf-footer"><tr><td>';
-			$footer .= $this->translator->trans("Simulation performed on %host% on %date%", array('%host%' => $request->getHttpHost(), '%date%' => '{DATE j-m-Y}'));
-			$footer .= '</td><td>';
-			$footer .= $this->translator->trans("Page %pageno% of %numberofpages%", array('%pageno%' => '{PAGENO}', '%numberofpages%' => '{nbpg}'));
-			$footer .= '</td></tr></table>';
-			$mpdf->SetHTMLFooter ( $footer, 'BLANK', true);
-		}
-		$mpdf->WriteHTML($page);
-
+		$mpdf = $this->getPDF($request, $step->getTemplate(), $datas, $view, $step->hasPdfFooter(), $step);
 		$mpdf->Output($this->simu->getName().".pdf", $step->getOutput() == 'inlinePDF' ? 'I' : 'D'); // I = inline, D = download
 		return false;
 	}
@@ -311,46 +281,7 @@ class DefaultController extends BaseController {
 	 */
 	protected function filledPdfOutput(Request $request, $step, $datas)
 	{
-		$template = $step->getTemplate();
-		$info = pathinfo($template, PATHINFO_FILENAME) . ".info";
-		$pdf = new AcroForm(
-			$this->pdfFormsDir.'/'.$template,
-			[
-				'pdftk' =>	$this->hasParameter('acroforms')
-							? $this->getParameter('acroforms')['pdftk']
-							: 'pdftk'
-			]
-		);
-		$mapping = [];
-		if (file_exists($this->pdfFormsDir.'/'.$info)) {
-			$pdfinfo = Yaml::parseFile($this->pdfFormsDir.'/'.$info);
-			$mapping = array_flip($pdfinfo['descriptors']['mapping']);
-		}
-		$formdata = [];
-		foreach($datas as $dataname => $value) {
-			$name = isset($mapping[$dataname]) ? StringToolBox::normalizeFieldName($mapping[$dataname]) : $dataname;
-			$formdata[$name] = $value;
-			if (!preg_match("/_\d+_$/", $name)) {
-				$formdata[$name."_0_"] = $value;
-				if (!preg_match("/^Page/", $name)) {
-					$formdata["Page1_0__".$name."_0_"] = $value;
-				}
-			} elseif (!preg_match("/^Page/", $name)) {
-				$formdata["Page1_0__".$name] = $value;
-			}
-		}
-		$textFields = $pdf->getTextFields();
-		$buttonFields = $pdf->getButtonFields();
-		$fields = [
-			'text' => array_filter($formdata, function ($name) use ($textFields) {
-				return in_array($name, $textFields);
-			}, ARRAY_FILTER_USE_KEY),
-			'button' => array_filter($formdata, function ($name) use ($buttonFields) {
-				return in_array($name, $buttonFields);
-			}, ARRAY_FILTER_USE_KEY)
-		];
-		$pdf->load($fields);
-		$pdf->merge(true); // true for flatten (need pdftk), false if not (this is the default)
+		$pdf = $this->getFilledPdf($request, $step->getTemplate(), $datas);
 		$destination = $step->getOutput() == 'inlineFilledPDF' ? 'I' : 'D';
 		$pdf->output($destination, basename($step->getTemplate()));
 		return false;

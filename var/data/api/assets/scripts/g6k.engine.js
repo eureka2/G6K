@@ -3,6 +3,7 @@
 
 	function G6k(options) {
 		this.isMobile = options.mobile;
+		this.isAPI = options.api;
 		Date.setRegionalSettings(options);
 		MoneyFunction.setRegionalSettings(options);
 		this.locale = Translator.locale = Date.locale = options.locale;
@@ -34,6 +35,7 @@
 			|| window.location.pathname
 				.replace(new RegExp('\\/' + view + '(\\/\\w+)?'), "")
 				.replace(/\/+$/, "") + "/Default/source";
+		this.apiURI = options.apiURI;
 		this.publicURI = options.publicURI;
 		this.recaptchaSiteKey = options.recaptchaSiteKey;
 		this.theme = options.theme;
@@ -288,14 +290,18 @@
 			return null;
 		},
 
-		getStep: function() {
+		getStepById: function(id) {
 			for (var s = 0; s < this.simu.steps.length; s++) {
 				var step = this.simu.steps[s];
-				if (step.id == this.currentStep) {
+				if (step.id == id) {
 					return step;
 				}
 			}
 			return null;
+		},
+
+		getStep: function() {
+			return this.getStepById(this.currentStep);
 		},
 
 		getPreviousStep: function() {
@@ -2295,8 +2301,15 @@
 				var buttonId = self.lastSubmitBtnId;
 				var btn = self.getStep().actions[self.lastSubmitBtnId];
 				if (btn.what == 'submit' && btn.for == 'priorStep') {
-					event.preventDefault();
-					self.priorStep();
+					if (self.isAPI) {
+						event.preventDefault();
+						if (self.observers[btn.name]) {
+							setTimeout(function() {
+								self.observers[btn.name].call(btn, btn.name, btn.what, btn.for);
+							}, 0);
+						}
+						self.priorStep();
+					}
 					return;
 				}
 				if (btn.what == 'submit' && btn.for == 'newSimulation') {
@@ -2305,6 +2318,11 @@
 					self.form.querySelectorAll("input.resettable").forEach( input => {
 						input.value = "";
 					});
+					if (self.isAPI && self.observers[btn.name]) {
+						setTimeout(function() {
+							self.observers[btn.name].call(btn, btn.name, btn.what, btn.for);
+						}, 0);
+					}
 					return;
 				}
 				if (self.hasFatalError || ! self.validateAll()) {
@@ -2312,17 +2330,24 @@
 					event.preventDefault();
 					return;
 				}
-				if (btn.what == 'submit' && btn.for == 'nextStep') {
-					event.preventDefault();
-					self.nextStep();
-				} else if (btn.what == 'submit' && btn.for == 'jumpToStep') {
-					event.preventDefault();
-					self.jumpToStep(parseInt(btn.uri, 10));
-				} else if (btn.what == 'submit' && btn.for == 'currentStep') {
-					event.preventDefault();
-				} else if (btn.what == 'submit' && btn.for == 'externalPage') {
-					self.form.action = btn.uri;
-					self.form.target = '_blank';
+				if (self.isAPI) {
+					if (self.observers[btn.name]) {
+						setTimeout(function() {
+							self.observers[btn.name].call(btn, btn.name, btn.what, btn.for, btn.uri);
+						}, 0);
+					}
+					if (btn.what == 'submit' && btn.for == 'nextStep') {
+						event.preventDefault();
+						self.nextStep();
+					} else if (btn.what == 'submit' && btn.for == 'jumpToStep') {
+						event.preventDefault();
+						self.jumpToStep(parseInt(btn.uri, 10));
+					} else if (btn.what == 'submit' && btn.for == 'currentStep') {
+						event.preventDefault();
+					} else if (btn.what == 'submit' && btn.for == 'externalPage') {
+						self.form.action = btn.uri;
+						self.form.target = '_blank';
+					}
 				}
 			});
 			for (const name in this.simu.datas) {
@@ -2388,25 +2413,120 @@
 			}
 		},
 
+		viewPDFInline: function(step, pdf) {
+			var self = this;
+			var data = 'data:application/pdf;base64,' + pdf;
+			var stepElt = document.getElementById('step' + step.id);
+			var currStepElt = document.getElementById('step' + self.getStep().id);
+			var width = Math.ceil(parseFloat(getComputedStyle(currStepElt, null).width));
+			var height = Math.ceil(parseFloat(getComputedStyle(currStepElt, null).height));
+			var object = document.getElementById('inlinePDF' + step.id);
+			if (object) {
+				object.setAttribute('data', data);
+			} else {
+				object = document.createElement('object');
+				object.setAttribute('id', 'inlinePDF' + step.id);
+				object.setAttribute('data', data);
+				object.setAttribute('type', 'application/pdf');
+				object.setAttribute('width', width);
+				object.setAttribute('height', height);
+				object.style.position = 'relative';
+				while(stepElt.firstChild) stepElt.removeChild(stepElt.firstChild);
+				stepElt.appendChild(object);
+				var actionbuttons = document.createElement('div');
+				actionbuttons.setAttribute('id', 'actionbuttons' + step.id);
+				actionbuttons.classList.add('actionbuttons', 'button', 'bottom');
+				actionbuttons.style.paddingTop = '0.5rem';
+				actionbuttons.style.borderTop = '1px solid #ccc';
+				var close = document.createElement('button');
+				close.setAttribute('id', 'action' + step.id + '-close');
+				close.classList.add('btn-primary');
+				close.innerHTML = Translator.trans('Close');
+				actionbuttons.appendChild(close);
+				stepElt.appendChild(actionbuttons);
+				close.addEventListener('click', function(event) {
+					event.preventDefault();
+					self.hideObject(stepElt);
+					self.showObject(currStepElt);
+				});
+			}
+			self.hideObject(currStepElt);
+			self.showObject(stepElt);
+		},
+
+		downloadPDF: function(pdf) {
+			var href = 'data:application/pdf;base64,' + pdf;
+			var link = document.createElement('a');
+			link.setAttribute('href', href);
+			link.setAttribute('download', this.simu.name + ".pdf");
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		},
+
+		fetchAndSendPDF: function(step) {
+			var self = this;
+			var data = self.variables;
+			data['template'] = step.template;
+			data['pdfFooter'] = step.pdfFooter;
+			var target = /FilledPDF$/.test(step.output) ? 'fpdf' : 'pdf';
+			ajax({
+				method: 'post',
+				url: self.apiURI + '/' + target,
+				dataType: 'pdf',
+				data: data
+			}).then(function( response, xhr, textStatus ) {
+				if (/^inline/.test(step.output)) {
+					self.viewPDFInline(step, response);
+				} else {
+					self.downloadPDF(response);
+				}
+			}).catch(function(response, xhr, textStatus) {
+				if ((xhr.status != 0 && xhr.status >= 500) || textStatus === 'timeout') {
+					self.setFatalError( Translator.trans("Data to continue this simulation are not accessible. Please try again later.") );
+				} else {
+					self.setFatalError('error : ' + xhr.statusText);
+				}
+			}).always(function( response, xhr, textStatus ) {
+			});
+		},
+
+		isPDFStep: function(step) {
+			if (step.output && /PDF/.test(step.output)) {
+				this.fetchAndSendPDF(step);
+				return true;
+			}
+			return false;
+		},
+
 		nextStep: function() {
-			this.hideObject(document.getElementById(this.getStep().elementId));
-			this.currentStep = this.getNextStep().id;
-			this.activateBreadcrumbItem();
-			this.showObject(document.getElementById(this.getStep().elementId));
+			var nstep = this.getNextStep();
+			if (!this.isPDFStep(nstep)) {
+				this.hideObject(document.getElementById(this.getStep().elementId));
+				this.currentStep = nstep.id;
+				this.activateBreadcrumbItem();
+				this.showObject(document.getElementById(nstep.elementId));
+			}
 		},
 
 		priorStep: function() {
-			this.hideObject(document.getElementById(this.getStep().elementId));
-			this.currentStep = this.getPreviousStep().id;
-			this.activateBreadcrumbItem();
-			this.showObject(document.getElementById(this.getStep().elementId));
+			var pstep = this.getPreviousStep();
+			if (!this.isPDFStep(pstep)) {
+				this.hideObject(document.getElementById(this.getStep().elementId));
+				this.currentStep = pstep.id;
+				this.activateBreadcrumbItem();
+				this.showObject(document.getElementById(pstep.elementId));
+			}
 		},
 
 		jumpToStep: function(stepId) {
-			this.hideObject(document.getElementById(this.getStep().elementId));
-			this.currentStep = stepId;
-			this.activateBreadcrumbItem();
-			this.showObject(document.getElementById(this.getStep().elementId));
+			var jstep = this.getStepById(stepId);
+			if (!this.isPDFStep(jstep)) {
+				this.hideObject(document.getElementById(this.getStep().elementId));
+				this.currentStep = jstep.id;
+				this.activateBreadcrumbItem();
+				this.showObject(document.getElementById(jstep.elementId));
+			}
 		},
 
 		triggerChange: function(input, delayed, modifiedByUser) {
