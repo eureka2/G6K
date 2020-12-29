@@ -60,18 +60,6 @@
 (function (global) {
 	'use strict';
 
-	var extend = function(out) {
-		out = out || {};
-		for (var i = 1; i < arguments.length; i++) {
-			if (!arguments[i]) continue;
-			for (var key in arguments[i]) {
-			if (arguments[i].hasOwnProperty(key))
-				out[key] = arguments[i][key];
-			}
-		}
-		return out;
-	};
-
 	var Editable = function(elt, target, options) {
 
 		if ('disable' == target) {
@@ -95,7 +83,7 @@
 			return;
 		}
 
-		var settings = extend({}, Editable.DEFAULTS, {target:target}, options);
+		var settings = Utils.extend({}, Editable.DEFAULTS, {target:target}, options);
 
 		/* setup some functions */
 		var plugin   = Editable.editable.types[settings.type].plugin || function() { };
@@ -241,9 +229,9 @@
 					var loaddata = {};
 					loaddata[settings.id] = self.id;
 					if (typeof settings.loaddata === 'function') {
-						extend(loaddata, settings.loaddata.apply(self, [self.revert, settings]));
+						Utils.extend(loaddata, settings.loaddata.apply(self, [self.revert, settings]));
 					} else {
-						extend(loaddata, settings.loaddata);
+						Utils.extend(loaddata, settings.loaddata);
 					}
 					ajax({
 						method: settings.loadtype,
@@ -358,9 +346,9 @@
 								submitdata[settings.id] = self.id;
 								/* Add extra data to be POST:ed. */
 								if (typeof settings.submitdata == 'function') {
-									extend(submitdata, settings.submitdata.apply(self, [self.revert, settings]));
+									Utils.extend(submitdata, settings.submitdata.apply(self, [self.revert, settings]));
 								} else {
-									extend(submitdata, settings.submitdata);
+									Utils.extend(submitdata, settings.submitdata);
 								}
 
 								/* Quick and dirty PUT support. */
@@ -393,7 +381,7 @@
 								};
 
 								/* Override with what is given in settings.ajaxoptions. */
-								extend(ajaxoptions, settings.ajaxoptions);   
+								Utils.extend(ajaxoptions, settings.ajaxoptions);   
 								ajax(
 									ajaxoptions
 								).then(function( data, xhr, textStatus ) {

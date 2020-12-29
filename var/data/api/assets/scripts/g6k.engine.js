@@ -2602,9 +2602,9 @@
 							mess.setAttribute('aria-live', 'assertive');
 							mess.innerHTML = '<p>' + Translator.trans(message) + '</p>';
 							that.parentElement.parentElement.insertBefore(mess, that.parentElement.nextSibling);
-							mess.fadeOut(7000, function() {
+							Utils.fadeOut(mess, 7000, function() {
 								setTimeout(function() {
-									mess.remove();
+									mess.parentElement.removeChild(mess);
 								}, 10);
 							});
 						} else {

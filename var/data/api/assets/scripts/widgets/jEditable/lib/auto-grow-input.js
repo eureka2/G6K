@@ -9,20 +9,8 @@
 (function (global) {
 	'use strict';
 
-	var extend = function(out) {
-		out = out || {};
-		for (var i = 1; i < arguments.length; i++) {
-			if (!arguments[i]) continue;
-			for (var key in arguments[i]) {
-			if (arguments[i].hasOwnProperty(key))
-				out[key] = arguments[i][key];
-			}
-		}
-		return out;
-	};
-
 	var AutoGrowInput = function(element, options) {
-		var o = extend({ maxWidth: 500, minWidth: 20, comfortZone: 0 }, options);
+		var o = Utils.extend({ maxWidth: 500, minWidth: 20, comfortZone: 0 }, options);
 		var event = 'oninput' in document.createElement('input') ? 'input' : 'keydown';
 		var input = element;
 		var minWidth = o.minWidth || input.style.width;

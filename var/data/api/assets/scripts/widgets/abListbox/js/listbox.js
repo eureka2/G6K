@@ -62,112 +62,6 @@
 		'</div>'
 	];
 
-	var extend = function(out) {
-		out = out || {};
-		for (var i = 1; i < arguments.length; i++) {
-			if (!arguments[i]) continue;
-			for (var key in arguments[i]) {
-			if (arguments[i].hasOwnProperty(key))
-				out[key] = arguments[i][key];
-			}
-		}
-		return out;
-	};
-
-	var outerHeight = function(element, includeMargin) {
-		var hidden = false;
-		if (element.style.display === 'none') {
-			element.style.display = '';
-			hidden = true;
-		}
-		var height = element.offsetHeight;
-		if (includeMargin) {
-			var style = getComputedStyle(element);
-			height += parseInt(style.marginTop) + parseInt(style.marginBottom);
-		}
-		if (hidden) {
-			element.style.display = 'none';
-		}
-		return height;
-	}
-
-	var offsetTop = function(element) {
-		var offsetTop = 0;
-		while(element) {
-			offsetTop += element.offsetTop;
-			element = element.offsetParent;
-		}
-		return offsetTop;
-	}
-
-	var offsetLeft = function(element) {
-		var offsetLeft = 0;
-		while(element) {
-			offsetLeft += element.offsetLeft;
-			element = element.offsetParent;
-		}
-		return offsetLeft;
-	}
-
-	window.requestAnimationFrame = window.requestAnimationFrame
-			|| window.mozRequestAnimationFrame
-			|| window.webkitRequestAnimationFrame
-			|| window.msRequestAnimationFrame;
-
-	var fadeIn = function (element, duration, complete) {
-		if (!complete && duration && typeof duration === 'function') {
-			complete = duration;
-			duration = 400;
-		} else if (!duration) {
-			duration = 400;
-		}
-		element.style.opacity = 0;
-		var last = +new Date();
-		var tick = function() {
-			element.style.opacity = +element.style.opacity + ( new Date() - last ) / duration;
-			last = +new Date();
-			if (+element.style.opacity < 1) {
-				(window.requestAnimationFrame && requestAnimationFrame(tick) ) || setTimeout(tick, 16);
-			} else if (complete && typeof complete === "function") {
-				element.style.opacity = 1;
-				complete.call(element);
-			}
-		};
-		tick();
-	}
-
-	var fadeOut = function (element, duration, complete) {
-		if (!complete && duration && typeof duration === 'function') {
-			complete = duration;
-			duration = 400;
-		} else if (!duration) {
-			duration = 400;
-		}
-		element.style.opacity = 1;
-		var last = +new Date();
-		var tick = function() {
-			element.style.opacity = +element.style.opacity - (new Date() - last) / duration;
-			last = +new Date();
-			if (+element.style.opacity > 0) {
-				(window.requestAnimationFrame && requestAnimationFrame(tick) ) || setTimeout(tick, 16);
-			} else if (complete && typeof complete === "function") {
-				element.style.opacity = 0;
-				complete.call(element);
-			}
-		};
-		tick();
-	}
-
-	var index = function (element, list) {
-		var len = list.length;
-		for (var i = 0; i < len; i++) {
-			if (list[i] === element) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
 	//
 	// keyCodes() is an object to contain keycodes needed for the application
 	//
@@ -204,7 +98,7 @@
 	function Listbox(target, options) {
 		var self = target.listbox = this;
 		this.target = target;  // The select containing the listbox
-		this.options = extend({}, Listbox.DEFAULTS, options);
+		this.options = Utils.extend({}, Listbox.DEFAULTS, options);
 		this.id = this.target.getAttribute('id') || 'listbox-' + Math.floor(Math.random() * 100000);
 		this.size = this.target.getAttribute('size') || this.options.size;
 		var listbox;
@@ -534,7 +428,7 @@
 			curOption.classList.add('selected');
 			curOption.setAttribute('aria-selected', true);
 		}
-		fadeOut(this.list, function() {
+		Utils.fadeOut(this.list, function() {
 			this.style.display = 'none';
 			this.setAttribute('aria-expanded', 'false');
 		});
@@ -579,9 +473,9 @@
 		}
 
 		// adjust position of the list of items
-		var listHeight = outerHeight(this.list);
+		var listHeight = Utils.outerHeight(this.list);
 		var groupTop = this.group.getBoundingClientRect().top;
-		var groupHeight = outerHeight(this.group, true);
+		var groupHeight = Utils.outerHeight(this.group, true);
 		var roomBefore = Math.floor(groupTop);
 		var roomAfter = Math.floor(window.innerHeight - (groupTop + groupHeight));
 		if (roomAfter < listHeight && roomAfter < roomBefore) {
@@ -589,7 +483,7 @@
 		} else {
 			this.list.style.top = (groupHeight) + 'px';  // show list below group
 		}
-		fadeIn(this.list, function () {
+		Utils.fadeIn(this.list, function () {
 			this.style.display = '';
 			this.setAttribute('aria-expanded', 'true');
 		});
@@ -707,9 +601,9 @@
 	 */
 	Listbox.prototype.calcOffset = function(id) {
 		var offset = 0;
-		var selectedNdx = index(id, this.list.children);
+		var selectedNdx = Utils.index(id, this.list.children);
 		for (var ndx = 0; ndx < selectedNdx; ndx++) {
-			offset += outerHeight(this.list.children[ndx]);
+			offset += Utils.outerHeight(this.list.children[ndx]);
 		}
 		return offset;
 
@@ -808,7 +702,7 @@
 	 */
 	Listbox.prototype.handleOptionKeyDown = function(id,  e) {
 		clearTimeout (this.timer);
-		var curNdx = index(id, this.list.children);
+		var curNdx = Utils.index(id, this.list.children);
 		if (e.ctrlKey) {
 			// do not process
 			return true;
@@ -972,7 +866,7 @@
 	 *
 	 */
 	Listbox.prototype.handleOptionKeyPress = function(id,  e) {
-		var curNdx = index(id, this.list.children);
+		var curNdx = Utils.index(id, this.list.children);
 		if (e.altKey || e.ctrlKey || e.shiftKey) {
 			// do not process
 			return true;
@@ -1004,7 +898,7 @@
 	 *
 	 */
 	Listbox.prototype.handleEditKeyDown = function(id,  e) {
-		var curNdx = index(this.selected, this.list.children);
+		var curNdx = Utils.index(this.selected, this.list.children);
 		if (e.altKey && (e.keyCode == this.keys.up || e.keyCode == this.keys.down)) {
 			this.toggleList(true);
 			e.stopPropagation();
@@ -1380,7 +1274,7 @@
 				self.list.dataset['alb.itemsModified'] = true;
 			}
 			if (item.classList.contains("selected") && self.items.length > 1) {
-				var curNdx = index(item, this.list.children), sel;
+				var curNdx = Utils.index(item, this.list.children), sel;
 				if (curNdx < self.items.length - 1) {
 					sel = this.list.children[curNdx + 1];
 				} else {

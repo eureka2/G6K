@@ -44,18 +44,6 @@
 ;
 (function(global) {
 
-	var extend = function(out) {
-		out = out || {};
-		for (var i = 1; i < arguments.length; i++) {
-			if (!arguments[i]) continue;
-			for (var key in arguments[i]) {
-			if (arguments[i].hasOwnProperty(key))
-				out[key] = arguments[i][key];
-			}
-		}
-		return out;
-	};
-
 	function appendContent(el, content) {
 		if (!content) return;
 
@@ -108,7 +96,7 @@
 
 	var opt;
 	var printThis = function(element, options) {
-		opt = extend({}, printThis.DEFAULTS, options);
+		opt = Utils.extend({}, printThis.DEFAULTS, options);
 
 		var strFrameName = "printThis-" + (new Date()).getTime();
 

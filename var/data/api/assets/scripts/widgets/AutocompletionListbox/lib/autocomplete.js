@@ -46,24 +46,6 @@
 		return o;
 	};
 
-	var offsetTop = function(element) {
-		var offsetTop = 0;
-		while(element) {
-			offsetTop += element.offsetTop;
-			element = element.offsetParent;
-		}
-		return offsetTop;
-	}
-
-	var offsetLeft = function(element) {
-		var offsetLeft = 0;
-		while(element) {
-			offsetLeft += element.offsetLeft;
-			element = element.offsetParent;
-		}
-		return offsetLeft;
-	}
-
 	function autoComplete(input, options) {
 		var self = this;
 		this.input = input;
@@ -139,8 +121,8 @@
 
 		this.input.updateSC = function(resize, next){
 			var positioner = self.options.alignOnParent ? self.input.parentElement : self.input; 
-			self.input.sc.style.top = (offsetTop(positioner) + positioner.offsetHeight) + 'px'; 
-			self.input.sc.style.left = offsetLeft(positioner) + 'px'; 
+			self.input.sc.style.top = (Utils.offsetTop(positioner) + positioner.offsetHeight) + 'px'; 
+			self.input.sc.style.left = Utils.offsetLeft(positioner) + 'px'; 
 			self.input.sc.style.width = positioner.offsetWidth + 'px';  
 			if (!resize) {
 				self.input.sc.style.display = 'block';
@@ -148,11 +130,11 @@
 				if (next) {
 					if (self.input.sc.scrollHeight > self.input.sc.clientHeight) {
 						var scrollBottom = self.input.sc.clientHeight + self.input.sc.scrollTop;
-						var elementBottom = offsetTop(next) + next.offsetHeight;
+						var elementBottom = Utils.offsetTop(next) + next.offsetHeight;
 						if (elementBottom > scrollBottom) {
 							self.input.sc.scrollTop = elementBottom - self.input.sc.clientHeight;
-						} else if (offsetTop(next) < self.input.sc.scrollTop) {
-							self.input.sc.scrollTop = offsetTop(next);
+						} else if (Utils.offsetTop(next) < self.input.sc.scrollTop) {
+							self.input.sc.scrollTop = Utils.offsetTop(next);
 						}
 					}
 				}

@@ -94,14 +94,13 @@ class Bootstrapifier {
 					$node->addClass('step-page');
 				} elseif ($node->hasClass('step-description')) {
 					$node->addClass('legend');
-				}
-				if ($node->hasClass('fieldset', 'disposition-classic')) {
+				} elseif ($node->hasClass('panel')) {
+					$node->addClass('step-panel-container');
+				} elseif ($node->hasClass('fieldset', 'disposition-classic')) {
 					$node->addClass('form-horizontal');
-				}
-				if ($node->hasClass('field-container')) {
+				} elseif ($node->hasClass('field-container')) {
 					$node->addClass('form-group');
-				}
-				if ($node->hasClass('field-group')) {
+				} elseif ($node->hasClass('field-group')) {
 					$node->addClass('input-group');
 					$node->removeClass('native');
 				}

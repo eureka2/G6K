@@ -357,116 +357,10 @@
 		'</div>'
 	];
 
-	var extend = function(out) {
-		out = out || {};
-		for (var i = 1; i < arguments.length; i++) {
-			if (!arguments[i]) continue;
-			for (var key in arguments[i]) {
-			if (arguments[i].hasOwnProperty(key))
-				out[key] = arguments[i][key];
-			}
-		}
-		return out;
-	};
-
-	var outerHeight = function(element, includeMargin) {
-		var hidden = false;
-		if (element.style.display === 'none') {
-			element.style.display = '';
-			hidden = true;
-		}
-		var height = element.offsetHeight;
-		if (includeMargin) {
-			var style = getComputedStyle(element);
-			height += parseInt(style.marginTop) + parseInt(style.marginBottom);
-		}
-		if (hidden) {
-			element.style.display = 'none';
-		}
-		return height;
-	}
-
-	var offsetTop = function(element) {
-		var offsetTop = 0;
-		while(element) {
-			offsetTop += element.offsetTop;
-			element = element.offsetParent;
-		}
-		return offsetTop;
-	}
-
-	var offsetLeft = function(element) {
-		var offsetLeft = 0;
-		while(element) {
-			offsetLeft += element.offsetLeft;
-			element = element.offsetParent;
-		}
-		return offsetLeft;
-	}
-
-	window.requestAnimationFrame = window.requestAnimationFrame
-			|| window.mozRequestAnimationFrame
-			|| window.webkitRequestAnimationFrame
-			|| window.msRequestAnimationFrame;
-
-	var fadeIn = function (element, duration, complete) {
-		if (!complete && duration && typeof duration === 'function') {
-			complete = duration;
-			duration = 400;
-		} else if (!duration) {
-			duration = 400;
-		}
-		element.style.opacity = 0;
-		var last = +new Date();
-		var tick = function() {
-			element.style.opacity = +element.style.opacity + ( new Date() - last ) / duration;
-			last = +new Date();
-			if (+element.style.opacity < 1) {
-				(window.requestAnimationFrame && requestAnimationFrame(tick) ) || setTimeout(tick, 16);
-			} else if (complete && typeof complete === "function") {
-				element.style.opacity = 1;
-				complete.call(element);
-			}
-		};
-		tick();
-	}
-
-	var fadeOut = function (element, duration, complete) {
-		if (!complete && duration && typeof duration === 'function') {
-			complete = duration;
-			duration = 400;
-		} else if (!duration) {
-			duration = 400;
-		}
-		element.style.opacity = 1;
-		var last = +new Date();
-		var tick = function() {
-			element.style.opacity = +element.style.opacity - (new Date() - last) / duration;
-			last = +new Date();
-			if (+element.style.opacity > 0) {
-				(window.requestAnimationFrame && requestAnimationFrame(tick) ) || setTimeout(tick, 16);
-			} else if (complete && typeof complete === "function") {
-				element.style.opacity = 0;
-				complete.call(element);
-			}
-		};
-		tick();
-	}
-
-	var index = function (element, list) {
-		var len = list.length;
-		for (var i = 0; i < len; i++) {
-			if (list[i] === element) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
 	var Datepicker = function (target, options) {
 		var self = target.datepicker = this;
 		this.target = target; // textbox that will receive the selected date string and focus (if modal)
-		this.options = extend({}, Datepicker.DEFAULTS, options)
+		this.options = Utils.extend({}, Datepicker.DEFAULTS, options)
 		this.locales = Date.dp_locales;
 		this.startview(this.options.startView);
 		if (typeof this.options.inputFormat === 'string') {
@@ -2052,7 +1946,7 @@
 						if (e.ctrlKey || e.shiftKey) {
 							return true;
 						}
-						var cellIndex = index(curCell, cells) - 1;
+						var cellIndex = Utils.index(curCell, cells) - 1;
 						var prevCell = null;
 						if (cellIndex >= 0) {
 							prevCell = cells[cellIndex];
@@ -2078,7 +1972,7 @@
 						if (e.ctrlKey || e.shiftKey) {
 							return true;
 						}
-						var cellIndex = index(curCell, cells) + 1;
+						var cellIndex = Utils.index(curCell, cells) + 1;
 						var nextCell = null;
 						if (cellIndex < cells.length) {
 							nextCell = cells[cellIndex];
@@ -2109,7 +2003,7 @@
 						return true;
 					}
 					var allCells = this.grid.querySelectorAll('td');
-					var cellIndex = index(curCell, allCells) - colCount;
+					var cellIndex = Utils.index(curCell, allCells) - colCount;
 					var prevCell = null;
 					while (cellIndex >= 0 && ! allCells[cellIndex].classList.contains('selectable')) {
 						cellIndex--;
@@ -2121,7 +2015,7 @@
 						this.selectGridCell(prevCell.getAttribute('id'));
 					} else {
 						// move to appropriate day in previous month
-						cellIndex = colCount - index(curCell, allCells) % colCount;
+						cellIndex = colCount - Utils.index(curCell, allCells) % colCount;
 						switch (this.gridType) {
 							case 0: // days grid
 								this.showDaysOfPrevMonth(cellIndex);
@@ -2143,7 +2037,7 @@
 						return true;
 					}
 					var allCells = this.grid.querySelectorAll('td');
-					var cellIndex = index(curCell, allCells) + colCount;
+					var cellIndex = Utils.index(curCell, allCells) + colCount;
 					while (cellIndex < allCells.length && ! allCells[cellIndex].classList.contains('selectable')) {
 						cellIndex++;
 					}
@@ -2154,7 +2048,7 @@
 						this.selectGridCell(nextCell.getAttribute('id'));
 					} else {
 						// move to appropriate day in next month
-						cellIndex = index(curCell, allCells) % colCount + 1;
+						cellIndex = Utils.index(curCell, allCells) % colCount + 1;
 						switch (this.gridType) {
 							case 0: // days grid
 								this.showDaysOfNextMonth(cellIndex);
@@ -2610,11 +2504,11 @@
 		}, false);
 
 		// adjust position of the calendar
-		var groupOffsetTop = Math.max(0, Math.floor(offsetTop(this.group)));
-		var groupOffsetLeft = Math.max(0, Math.floor(offsetLeft(this.group)));
-		var calendarHeight = outerHeight(this.calendar);
+		var groupOffsetTop = Math.max(0, Math.floor(Utils.offsetTop(this.group)));
+		var groupOffsetLeft = Math.max(0, Math.floor(Utils.offsetLeft(this.group)));
+		var calendarHeight = Utils.outerHeight(this.calendar);
 		var groupAbsoluteTop = this.group.getBoundingClientRect().top;
-		var groupHeight = outerHeight(this.group, true);
+		var groupHeight = Utils.outerHeight(this.group, true);
 		var roomBefore = Math.floor(groupAbsoluteTop);
 		var roomAfter = Math.floor(window.innerHeight - (groupAbsoluteTop + groupHeight));
 		if (roomAfter < calendarHeight && roomAfter < roomBefore) {
@@ -2629,7 +2523,7 @@
 			this.calendar.style.left = groupOffsetLeft + 'px';
 		}
 		// show the dialog
-		fadeIn(this.calendar, function () {
+		Utils.fadeIn(this.calendar, function () {
 			this.style.display = '';
 			this.setAttribute('aria-hidden', 'false');
 		});
@@ -2700,7 +2594,7 @@
 				document.removeEventListener('click', self.handleDocumentClick);
 			}
 			// hide the dialog
-			fadeOut(this.calendar, function () {
+			Utils.fadeOut(this.calendar, function () {
 				this.style.display = 'none';
 				this.setAttribute('aria-hidden', 'true');
 				this.classList.remove('above', 'below');
@@ -2735,9 +2629,9 @@
 			document.querySelector('body').appendChild(overlay);
 		}
 		if (on) {
-			fadeIn(overlay, 500);
+			Utils.fadeIn(overlay, 500);
 		} else if (overlay !== null) {
-			fadeOut(overlay, 500);
+			Utils.fadeOut(overlay, 500);
 		}
 	} // end greyOut()
 

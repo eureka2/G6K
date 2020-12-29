@@ -32,7 +32,7 @@ use Symfony\Component\Finder\Finder;
 
 class Scripter {
 	
-	const SCRIPTS = ['ajax','cookie','animate','defiant','jsonpath','expand','tab','date','money','expression','rule.engine','g6k.engine'];
+	const SCRIPTS = ['utils','ajax','cookie','animate','defiant','jsonpath','expand','tab','date','money','expression','rule.engine','g6k.engine'];
 
 	private $simulator;
 	private $projectDir;
