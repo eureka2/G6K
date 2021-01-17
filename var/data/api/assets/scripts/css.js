@@ -14,7 +14,7 @@
 			font-weight: normal;
 			font-style: normal; 
 		}
-		.icon, .fonticon {
+		.simulator-container .icon, .simulator-container .fonticon {
 			font-family: 'fonticon';
 			speak: none; 
 			font-style: normal;
@@ -25,7 +25,10 @@
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
 		}
-		.icomoon {
+		.simulator-container .icon:before, .simulator-container .fonticon:before {
+			font-family: 'fonticon';
+		}
+		.simulator-container .icomoon {
 			font-family: 'icomoon';
 			speak: none; 
 			font-style: normal;
@@ -36,15 +39,20 @@
 			-webkit-font-smoothing: antialiased; 
 			-moz-osx-font-smoothing: grayscale;
 		}
-		.icon, .fonticon, .icomoon {
+		.simulator-container .icomoon:before {
+			font-family: 'icomoon';
+		}
+		.simulator-container .icon, .simulator-container .fonticon, .simulator-container .icomoon {
 			color: var(--color, var(--primary-color, #0b6ba8));
+			background: transparent;
 		}
 		.simulator-container .step-page .icon:before,
 		.simulator-container .step-page .fonticon:before,
 		.simulator-container .step-page .icomoon:before {
 			color: var(--color, var(--primary-color, #0b6ba8));
 		}
-		.icon:hover, .fonticon:hover, .icomoon:hover {
+		.simulator-container .icon:hover, .simulator-container .fonticon:hover,
+		.simulator-container .icomoon:hover {
 			color: var(--color-lighten, var(--primary-color-lighten, #0b6ba8));
 		}
 		.icon-search:before{content:'\\e600';}
@@ -282,6 +290,10 @@
 		}
 		.simulator-container.default-style .icon-help:before {
 			color: var(--color, var(--primary-color, #2b4e6b));
+		}
+		.simulator-container.default-style .step-page input,
+		.simulator-container.default-style .step-page label {
+			float: none;
 		}
 		.simulator-container input[type="text"],
 		.simulator-container input[type="date"],

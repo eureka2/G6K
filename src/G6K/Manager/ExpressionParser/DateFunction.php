@@ -198,7 +198,7 @@ class DateFunction {
 			$formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, NULL, NULL, "MMMM");
 			$monthNames = [];
 			for ($i = 1; $i <= 12; $i++) {
-				$monthNames[] = mb_convert_encoding(mb_convert_case(datefmt_format($formatter, mktime(0, 0, 0, $i)), MB_CASE_LOWER, 'UTF-8'), "UTF-8");
+				$monthNames[] = mb_convert_encoding(mb_convert_case(datefmt_format($formatter, mktime(0, 0, 0, $i, 1)), MB_CASE_LOWER, 'UTF-8'), "UTF-8");
 			}
 			return $monthNames;
 		} elseif (preg_match("/^fr/i", $locale)) {

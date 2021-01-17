@@ -672,8 +672,8 @@
 						if (n != name) continue;
 					}
 					if (visible && !input.classList.contains('has-error')) {
-						input.classList.add('has-warning');
-						input.closest('.field-group').classList.replace('hidden', 'has-warning');
+						input.closest('.field-group').classList.remove('hidden');
+						input.closest('.field-group').classList.add('has-warning');
 						input.focus();
 					}
 				}
@@ -682,12 +682,13 @@
 				} else if (visible) {
 					var fieldError = fieldContainer.querySelectorAll("div.field-alert");
 					fieldError = fieldError.item(fieldError.length - 1);
-					fieldError.classList.replace('hidden', 'has-warning');
+					fieldError.classList.remove('hidden');
+					fieldError.classList.add('has-warning');
 					fieldError.innerHTML = warning;
-					this.showObject(fieldContainer);
-					fieldContainer.removeAttribute('aria-hidden');
-					this.showObject(fieldContainer.parentElement);
-					fieldContainer.parentElement.removeAttribute('aria-hidden');
+					this.showObject(fieldError);
+					fieldError.removeAttribute('aria-hidden');
+					this.showObject(fieldError.parentElement);
+					fieldError.parentElement.removeAttribute('aria-hidden');
 					this.hasWarning = true;
 				}
 			}
@@ -703,7 +704,8 @@
 					var fieldContainer = field.closest(".field-container");
 					var fieldError = fieldContainer.querySelectorAll("div.field-alert");
 					fieldError = fieldError.item(fieldError.length - 1);
-					fieldError.classList.replace('has-warning', 'hidden');
+					fieldError.classList.remove('has-warning');
+					fieldError.classList.add('hidden');
 					fieldError.innerText = "";
 				}
 				var inputs = self.form.querySelectorAll("input[name='" + name + "'], input[type='checkbox'], select[name='" + name + "']");
@@ -803,13 +805,13 @@
 						if (n != name) continue;
 					}
 					if (visible) {
-						input.classList.add('has-error');
 						if (self.getData(name).datagroup) {
 							input.setAttribute('aria-describedby', self.getData(name).datagroup + '-error');
 						} else {
 							input.setAttribute('aria-describedby', field.id + '-alert');
 						}
-						input.closest('.field-group').classList.replace('hidden', 'has-error');
+						input.closest('.field-group').classList.remove('hidden');
+						input.closest('.field-group').classList.add('has-error');
 						input.setAttribute('aria-invalid', true);
 						input.focus();
 					}
@@ -825,12 +827,13 @@
 					}
 					var fieldError = fieldContainer.querySelectorAll("div.field-alert");
 					fieldError = fieldError.item(fieldError.length - 1);
-					fieldError.classList.replace('hidden', 'has-error');
+					fieldError.classList.remove('hidden');
+					fieldError.classList.add('has-error');
 					fieldError.innerHTML = errorhtml;
-					this.showObject(fieldContainer);
-					fieldContainer.removeAttribute('aria-hidden');
-					self.showObject(fieldContainer.parentElement);
-					fieldContainer.parentElement.removeAttribute('aria-hidden');
+					this.showObject(fieldError);
+					fieldError.removeAttribute('aria-hidden');
+					self.showObject(fieldError.parentElement);
+					fieldError.parentElement.removeAttribute('aria-hidden');
 					self.hasError = true;
 				}
 			}
@@ -846,7 +849,8 @@
 					var fieldContainer = field.closest(".field-container");
 					var fieldError = fieldContainer.querySelectorAll("div.field-alert");
 					fieldError = fieldError.item(fieldError.length - 1);
-					fieldError.classList.replace('has-error', 'hidden');
+					fieldError.classList.remove('has-error');
+					fieldError.classList.add('hidden');
 					fieldError.innerText = "";
 				}
 				var inputs = self.form.querySelectorAll("input[name='" + name + "'], input[type='checkbox'], select[name='" + name + "']");

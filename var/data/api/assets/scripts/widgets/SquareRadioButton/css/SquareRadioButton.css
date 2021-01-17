@@ -20,7 +20,7 @@
 
 .field-container.SquareRadioButton-field fieldset label {
 	display: block;
-	float:left;
+	float:left !important;
 	margin: 1% 0 1% 1.6%;
 	text-align: center !important;
 }

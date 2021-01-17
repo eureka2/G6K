@@ -213,7 +213,7 @@ a.datepicker-button.default {
 	border: 1px solid var(--color, var(--primary-color, #0b6ba8));
 	color: var(--color, var(--primary-color, #0b6ba8));
 	border-radius: 0.1875rem;
-	padding: 0.25rem 0.4375rem 0.35rem 0.25rem;
+	padding: 0.25rem 0.35rem 0.35rem 0.2rem;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }

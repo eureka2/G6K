@@ -523,7 +523,7 @@ class SimulatorsAdminController extends BaseAdminController {
 		$dom->preserveWhiteSpace  = false;
 		$dom->formatOutput = true;
 		$dom->loadXML($form['xml']);
-		if (isset($form['removeUnknownAttributes']) && $form['removeUnknownAttributes']) {
+		if (isset($form['remove-unknown-attributes']) && $form['remove-unknown-attributes']) {
 			$xmlschema = new XMLSchema($this->projectDir);
 			$this->removeUnknownAttributes($xmlschema, $dom->documentElement);
 		}

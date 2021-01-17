@@ -9,7 +9,7 @@
 #modal-sendmail.simulator-modal {
 	display: none; /* Hidden by default */
 	position: fixed; /* Stay in place */
-	z-index: 1; /* Sit on top */
+	z-index: 100; /* Sit on top */
 	padding-top: 30px; /* Location of the box */
 	left: 0;
 	top: 0;
@@ -18,6 +18,7 @@
 	overflow: auto; /* Enable scroll if needed */
 	background-color: rgb(0,0,0); /* Fallback color */
 	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	opacity: 1;
 }
 
 /* Modal Content */
@@ -98,7 +99,7 @@
 #modal-sendmail.simulator-modal .modal-body input,
 #modal-sendmail.simulator-modal .modal-body textarea {
 	display: block;
-	width: 98%;
+	width: 95%;
 	padding: 6px 12px;
 	font-size: 14px;
 	line-height: 1.42857143;
