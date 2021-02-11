@@ -248,6 +248,9 @@ class APIController extends BaseController {
 	protected function runApi(Request $request, $simu, $target, $params)
 	{
 		$this->initialize();
+		if ($simu == 'simulators') {
+			return $this->listApiSimulators($request);
+		}
 		try {
 			$api = $this->getParameter('api');
 		} catch (\Exception $e) {
@@ -262,6 +265,75 @@ class APIController extends BaseController {
 		}
 		$form = array_merge($request->request->all(), $request->query->all());
 		return $this->apiOutput($request, $simu, $form, $target, $params);
+	}
+
+	protected function listApiSimulators(Request $request)
+	{
+		$id = urlencode(base64_encode( gzcompress('simulators')));
+		$self = $request->getSchemeAndHttpHost() . $request->getBasePath() . $request->getPathInfo();
+		$response = new Response();
+		$response->headers->set('Content-Type', 'application/json');
+		$content = array(
+			'links' => array(
+				'self' => $self
+			)
+		);
+		try {
+			$api = $this->getParameter('api');
+			$included = [
+				'type' => 'simulators',
+				'id' => 'simulators',
+				'data' => []
+			];
+			foreach ($api as $simu) {
+				$simufile = $this->projectDir . "/var/data/simulators/api/" . $simu . ".json";
+				if (file_exists($simufile)) {
+					$json = file_get_contents($simufile);
+					$json = json_decode($json, true);
+					$title = $json['data']['attributes']['title'];
+					$link = $request->getSchemeAndHttpHost() . $request->getBasePath() . "/" . $simu . "/api";
+					$included['data'][] = [
+						'type' => 'simulator',
+						'id' => $simu,
+						'attributes' => [
+							'title' => $title
+						],
+						'links' => [
+							'self' => $link,
+							'related' => $link . "/html"
+						]
+					];
+				}
+			}
+			if (count($included['data']) == 0) {
+				$this->addEntityError(
+					"/data/simulator",
+					$this->translator->trans("Global error"), 
+					$this->translator->trans("API is not implemented in this server")
+				);
+			} else {
+				$content['data'] = [
+					'type' => 'simulators',
+					'id' => $id,
+					'attributes' => [
+						'title' => $this->translator->trans("List of simulators served by the G6K API server")
+					]
+				];
+				$content['included'] = $included;
+			}
+		} catch (\Exception $e) {
+			$this->addEntityError(
+				"/data/simulator",
+				$this->translator->trans("Global error"), 
+				$this->translator->trans("API is not implemented in this server")
+			);
+		}
+		if ($this->error) {
+			$content['errors'] = $this->errors;
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+		}
+		$response->setContent(json_encode($content));
+		return $response;
 	}
 
 	protected function apiOutput(Request $request, $simulator, $form, string $target, $params)
@@ -286,6 +358,9 @@ class APIController extends BaseController {
 				}
 				$markup = $form['markup'] ?? 'page';
 				$bootstrap = $form['bootstrap'] ?? '';
+				$addBootstrapStylesheet = $form['addBootstrapStylesheet'] ?? 'true';
+				$addBootstrapScript = $form['addBootstrapScript'] ?? 'true';
+				$addJQueryScript = $form['addJQueryScript'] ?? 'true';
 				$primaryColor = $form['primaryColor'] ?? '#0b6ba8';
 				$secondaryColor = $form['secondaryColor'] ?? '#ececec';
 				$breadcrumbColor = $form['breadcrumbColor'] ?? $form['primaryColor'] ?? '#0b6ba8';
@@ -307,7 +382,7 @@ class APIController extends BaseController {
 					$bootstrapifier->bootstrapify($document);
 					$theme = 'bootstrap' . $bootstrap[0];
 					if ($markup == 'fragment') {
-						$bootstrapifyjs = "	bootstrapify({container: 'body', version: '" . $bootstrap . "'});";
+						$bootstrapifyjs = "	bootstrapify({container: 'body', version: '" . $bootstrap . "', addBootstrapStylesheet: " . $addBootstrapStylesheet . ", addBootstrapScript: " . $addBootstrapScript . ", addJQueryScript: " . $addJQueryScript . "});";
 					}
 				}
 				if ($stylesheet != '' && $markup == 'page') {
@@ -528,6 +603,7 @@ class APIController extends BaseController {
 	private function checkApiParameters($form, $variables = [], $buttons = []) {
 		$parameters = [
 			'markup', 'locale', 'bootstrap',
+			'addBootstrapStylesheet', 'addBootstrapScript', 'addJQueryScript', 
 			'primaryColor', 'secondaryColor',
 			'breadcrumbColor', 'tabColor',
 			'globalErrorColor', 'globalWarningColor',

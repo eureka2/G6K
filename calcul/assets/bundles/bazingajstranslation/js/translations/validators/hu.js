@@ -95,4 +95,5 @@ t.add("This value is not a valid hostname.", "Ez az \u00e9rt\u00e9k nem egy \u00
 t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "A gy\u0171jtem\u00e9nyben l\u00e9v\u0151 elemek sz\u00e1m\u00e1nak oszthat\u00f3nak kell lennie a k\u00f6vetkez\u0151vel: {{ compared_value }}.", "validators", "hu");
 t.add("This value should satisfy at least one of the following constraints:", "Ennek az \u00e9rt\u00e9knek meg kell felelni legal\u00e1bb egynek a k\u00f6vetkez\u0151 felt\u00e9telek k\u00f6z\u00fcl:", "validators", "hu");
 t.add("Each element of this collection should satisfy its own set of constraints.", "A gy\u0171jtem\u00e9ny minden elem\u00e9nek meg kell felelni a saj\u00e1t felt\u00e9teleinek.", "validators", "hu");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Ez az \u00e9rt\u00e9k nem egy \u00e9rv\u00e9nyes nemzetk\u00f6zi \u00e9rt\u00e9kpap\u00edr-azonos\u00edt\u00f3 sz\u00e1m (ISIN).", "validators", "hu");
 })(Translator);

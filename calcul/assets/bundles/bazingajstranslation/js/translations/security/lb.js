@@ -15,4 +15,6 @@ t.add("Account has expired.", "Den Account ass ofgelaf.", "security", "lb");
 t.add("Credentials have expired.", "D'Zouganksdate sinn ofgelaf.", "security", "lb");
 t.add("Account is disabled.", "De Konto ass deaktiv\u00e9iert.", "security", "lb");
 t.add("Account is locked.", "De Konto ass gespaart.", "security", "lb");
+t.add("Too many failed login attempts, please try again later.", "Ze vill m\u00ebsslonge Login-Versich, w.e.g. m\u00e9i sp\u00e9it nach emol prob\u00e9ieren.", "security", "lb");
+t.add("Invalid or expired login link.", "Ong\u00ebltegen oder ofgelafene Login-Link.", "security", "lb");
 })(Translator);

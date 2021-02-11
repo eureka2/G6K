@@ -15,4 +15,6 @@ t.add("Account has expired.", "Ra\u010dun je isteko.", "security", "hr");
 t.add("Credentials have expired.", "Akreditacijski podaci su istekli.", "security", "hr");
 t.add("Account is disabled.", "Ra\u010dun je onemogu\u0107en.", "security", "hr");
 t.add("Account is locked.", "Ra\u010dun je zaklju\u010dan.", "security", "hr");
+t.add("Too many failed login attempts, please try again later.", "Previ\u0161e neuspjelih poku\u0161aja prijave, molim poku\u0161ajte ponovo kasnije.", "security", "hr");
+t.add("Invalid or expired login link.", "Link za prijavu je isteako ili je neispravan.", "security", "hr");
 })(Translator);

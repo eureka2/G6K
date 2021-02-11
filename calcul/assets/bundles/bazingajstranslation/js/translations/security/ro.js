@@ -15,4 +15,6 @@ t.add("Account has expired.", "Contul a expirat.", "security", "ro");
 t.add("Credentials have expired.", "Datele de autentificare au expirat.", "security", "ro");
 t.add("Account is disabled.", "Contul este dezactivat.", "security", "ro");
 t.add("Account is locked.", "Contul este blocat.", "security", "ro");
+t.add("Too many failed login attempts, please try again later.", "Prea multe \u00eencerc\u0103ri de autentificare e\u0219uate, v\u0103 rug\u0103m s\u0103 \u00eencerca\u021bi mai t\u00e2rziu.", "security", "ro");
+t.add("Invalid or expired login link.", "Link de autentificare invalid sau expirat.", "security", "ro");
 })(Translator);

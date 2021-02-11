@@ -131,7 +131,7 @@ class Bootstrapifier {
 		$document->head()->append('<link>', [
 			'type' => 'text/css',
 			'rel' => 'stylesheet',
-			'href' => 'https://stackpath.bootstrapcdn.com/bootstrap/' . $version . '/css/bootstrap.min.css'
+			'href' => 'https://maxcdn.bootstrapcdn.com/bootstrap/' . $version . '/css/bootstrap.min.css'
 		]);
 		foreach ($links as $link) {
 			if (preg_match("/font-awesome/", $link->attr('href'))) {
@@ -173,12 +173,12 @@ class Bootstrapifier {
 			if (null == $nextSibling) {
 				$document->body()->append('<script>', [
 					'type' => 'text/javascript',
-					'src' => 'https://stackpath.bootstrapcdn.com/bootstrap/' . $version . '/js/bootstrap' . $bundle . '.min.js'
+					'src' => 'https://maxcdn.bootstrapcdn.com/bootstrap/' . $version . '/js/bootstrap' . $bundle . '.min.js'
 				]);
 			} else {
 				$nextSibling->before('<script>', [
 					'type' => 'text/javascript',
-					'src' => 'https://stackpath.bootstrapcdn.com/bootstrap/' . $version . '/js/bootstrap' . $bundle . '.min.js'
+					'src' => 'https://maxcdn.bootstrapcdn.com/bootstrap/' . $version . '/js/bootstrap' . $bundle . '.min.js'
 				]);
 			}
 		}

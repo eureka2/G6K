@@ -91,4 +91,9 @@ t.add("This value should be either negative or zero.", "Ta vrednost bi morala bi
 t.add("This value is not a valid timezone.", "Ta vrednost ni veljaven \u010dasovni pas.", "validators", "sl");
 t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "To geslo je u\u0161lo pri kr\u0161itvi varnosti podatkov in ga ne smete uporabljati. Prosimo, uporabite drugo geslo.", "validators", "sl");
 t.add("This value should be between {{ min }} and {{ max }}.", "Ta vrednost bi morala biti med {{ min }} in {{ max }}.", "validators", "sl");
+t.add("This value is not a valid hostname.", "Ta vrednost ni veljavno ime gostitelja.", "validators", "sl");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "\u0160tevilo elementov v tej zbirki bi moralo biti mnogokratnik {{ compared_value }}.", "validators", "sl");
+t.add("This value should satisfy at least one of the following constraints:", "Ta vrednost bi morala zadostiti vsaj eni izmed slede\u010dih omejitev:", "validators", "sl");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Vsak element te zbirke bi moral zadostiti svojemu lastnemu naboru omejitev.", "validators", "sl");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Ta vrednost ni veljavna mednarodna identifikacijska koda vrednostnih papirjev (ISIN).", "validators", "sl");
 })(Translator);

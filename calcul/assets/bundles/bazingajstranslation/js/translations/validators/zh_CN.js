@@ -83,4 +83,17 @@ t.add("This is not a valid UUID.", "\u8fd9\u4e0d\u662f\u6709\u6548\u7684UUID\u30
 t.add("This value should be a multiple of {{ compared_value }}.", "\u6b64\u503c\u5e94\u4e3a {{ compared_value }} \u7684\u500d\u6570\u3002", "validators", "zh_CN");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "\u6b64\u4e1a\u52a1\u6807\u8bc6\u7b26\u4ee3\u7801\uff08BIC\uff09\u4e0eIBAN {{ iban }} \u65e0\u5173\u3002", "validators", "zh_CN");
 t.add("This value should be valid JSON.", "\u8be5\u503c\u5e94\u8be5\u662f\u6709\u6548\u7684JSON\u3002", "validators", "zh_CN");
+t.add("This collection should contain only unique elements.", "\u8be5\u96c6\u5408\u5e94\u4ec5\u5305\u542b\u72ec\u4e00\u65e0\u4e8c\u7684\u5143\u7d20\u3002", "validators", "zh_CN");
+t.add("This value should be positive.", "\u6570\u503c\u5e94\u4e3a\u6b63\u6570\u3002", "validators", "zh_CN");
+t.add("This value should be either positive or zero.", "\u6570\u503c\u5e94\u662f\u6b63\u6570\uff0c\u6216\u4e3a\u96f6\u3002", "validators", "zh_CN");
+t.add("This value should be negative.", "\u6570\u503c\u5e94\u4e3a\u8d1f\u6570\u3002", "validators", "zh_CN");
+t.add("This value should be either negative or zero.", "\u6570\u503c\u5e94\u662f\u8d1f\u6570\uff0c\u6216\u4e3a\u96f6\u3002", "validators", "zh_CN");
+t.add("This value is not a valid timezone.", "\u65e0\u6548\u65f6\u533a\u3002", "validators", "zh_CN");
+t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "\u6b64\u5bc6\u7801\u5df2\u88ab\u6cc4\u9732\uff0c\u5207\u52ff\u4f7f\u7528\u3002\u8bf7\u66f4\u6362\u5bc6\u7801\u3002", "validators", "zh_CN");
+t.add("This value should be between {{ min }} and {{ max }}.", "\u8be5\u6570\u503c\u5e94\u5728 {{ min }} \u548c {{ max }} \u4e4b\u95f4\u3002", "validators", "zh_CN");
+t.add("This value is not a valid hostname.", "\u8be5\u6570\u503c\u4e0d\u662f\u6709\u6548\u7684\u4e3b\u673a\u540d\u79f0\u3002", "validators", "zh_CN");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "\u8be5\u96c6\u5408\u5185\u7684\u5143\u7d20\u6570\u91cf\u5f97\u662f {{ compared_value }} \u7684\u500d\u6570\u3002", "validators", "zh_CN");
+t.add("This value should satisfy at least one of the following constraints:", "\u8be5\u6570\u503c\u9700\u7b26\u5408\u4ee5\u4e0b\u5176\u4e2d\u4e00\u4e2a\u7ea6\u675f\uff1a", "validators", "zh_CN");
+t.add("Each element of this collection should satisfy its own set of constraints.", "\u8be5\u96c6\u5408\u5185\u7684\u6bcf\u4e2a\u5143\u7d20\u9700\u7b26\u5408\u5143\u7d20\u672c\u8eab\u89c4\u5b9a\u7684\u7ea6\u675f\u3002", "validators", "zh_CN");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "\u8be5\u6570\u503c\u4e0d\u662f\u6709\u6548\u7684\u56fd\u9645\u8bc1\u5238\u8bc6\u522b\u7801 \uff08ISIN\uff09\u3002", "validators", "zh_CN");
 })(Translator);

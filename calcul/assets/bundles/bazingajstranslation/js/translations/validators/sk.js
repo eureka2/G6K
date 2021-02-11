@@ -91,4 +91,9 @@ t.add("This value should be either negative or zero.", "T\u00e1to hodnota by mal
 t.add("This value is not a valid timezone.", "T\u00e1to hodnota nie je platn\u00e9 \u010dasov\u00e9 p\u00e1smo.", "validators", "sk");
 t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Toto heslo uniklo pri naru\u0161en\u00ed ochrany d\u00e1t, nie je mo\u017en\u00e9 ho pou\u017ei\u0165. Pros\u00edm, pou\u017eite in\u00e9 heslo.", "validators", "sk");
 t.add("This value should be between {{ min }} and {{ max }}.", "T\u00e1to hodnota by mala by\u0165 medzi {{ min }} a {{ max }}.", "validators", "sk");
+t.add("This value is not a valid hostname.", "T\u00e1to hodnota nie je platn\u00fd hostname.", "validators", "sk");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Po\u010det prvkov v tejto kolekcii mus\u00ed by\u0165 n\u00e1sobok {{ compared_value }}.", "validators", "sk");
+t.add("This value should satisfy at least one of the following constraints:", "T\u00e1to hodnota mus\u00ed sp\u013a\u0148a\u0165 aspo\u0148 jedno z nasleduj\u00facich obmedzen\u00ed:", "validators", "sk");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Ka\u017ed\u00fd prvok v tejto kolekcii mus\u00ed sp\u013a\u0148a\u0165 svoje vlastn\u00e9 obmedzenia.", "validators", "sk");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "T\u00e1to hodnota nie je platn\u00e9 medzin\u00e1rodn\u00e9 ozna\u010denie cenn\u00e9ho papiera (ISIN).", "validators", "sk");
 })(Translator);

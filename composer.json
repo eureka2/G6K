@@ -37,7 +37,7 @@
         "symfony/validator": "^5.1.0",
         "symfony/web-link": "^5.1.0",
         "symfony/yaml": "^5.1.0",
-        "willdurand/js-translation-bundle": "^3.0"
+        "willdurand/js-translation-bundle": "^4.0"
     },
     "require-dev": {
         "symfony/browser-kit": "^5.1.0",

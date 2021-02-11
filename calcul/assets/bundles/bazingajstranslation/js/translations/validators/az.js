@@ -91,4 +91,9 @@ t.add("This value should be either negative or zero.", "Bu d\u0259y\u0259r m\u02
 t.add("This value is not a valid timezone.", "Bu d\u0259y\u0259r do\u011fru bir zaman zola\u011f\u0131 deyil.", "validators", "az");
 t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Bu parol data o\u011furlu\u011funda tap\u0131ld\u0131\u011f\u0131 \u00fc\u00e7\u00fcn i\u015fl\u0259dilm\u0259m\u0259lidir. Z\u0259hm\u0259t olmasa, ba\u015fqa parol se\u00e7in.", "validators", "az");
 t.add("This value should be between {{ min }} and {{ max }}.", "Bu d\u0259y\u0259r {{ min }} v\u0259 {{ max }} aras\u0131nda olmald\u0131r.", "validators", "az");
+t.add("This value is not a valid hostname.", "Bu d\u0259y\u0259r do\u011fru bir host ad\u0131 deyil.", "validators", "az");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Bu kolleksiyadak\u0131 elementlerin say\u0131 {{ compared_value }} tam b\u00f6l\u00fcn\u0259ni olmal\u0131d\u0131r.", "validators", "az");
+t.add("This value should satisfy at least one of the following constraints:", "Bu d\u0259y\u0259r a\u015fa\u011f\u0131dak\u0131 m\u0259cburiyy\u0259tl\u0259rd\u0259n birini qar\u015f\u0131lamal\u0131d\u0131r:", "validators", "az");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Bu kolleksiyadak\u0131 h\u0259r element \u00f6z m\u0259cburiyy\u0259tl\u0259rini qar\u015f\u0131lamal\u0131d\u0131r.", "validators", "az");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Bu d\u0259y\u0259r do\u011fru bir Qiym\u0259tli Ka\u011f\u0131z\u0131n Beyn\u0259lxalq \u0130dentifikasiya Kodu (ISIN) deyil.", "validators", "az");
 })(Translator);

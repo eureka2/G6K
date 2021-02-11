@@ -83,4 +83,17 @@ t.add("This is not a valid UUID.", "Hierdie is nie 'n geldige UUID nie.", "valid
 t.add("This value should be a multiple of {{ compared_value }}.", "Hierdie waarde moet 'n veelvoud van {{ compared_value }} wees.", "validators", "af");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Hierdie Besigheids Identifikasie Kode (BIK) is nie geassosieer met IBAN {{ iban }} nie.", "validators", "af");
 t.add("This value should be valid JSON.", "Hierdie waarde moet geldige JSON wees.", "validators", "af");
+t.add("This collection should contain only unique elements.", "Hierdie versameling moet net unieke elemente bevat.", "validators", "af");
+t.add("This value should be positive.", "Hierdie waarde moet positief wees.", "validators", "af");
+t.add("This value should be either positive or zero.", "Hierdie waarde moet positief of nul wees.", "validators", "af");
+t.add("This value should be negative.", "Hierdie waarde moet negatief wees.", "validators", "af");
+t.add("This value should be either negative or zero.", "Hierdie waarde moet negatief of nul wees.", "validators", "af");
+t.add("This value is not a valid timezone.", "Hierdie waarde is nie 'n geldige tydsone nie.", "validators", "af");
+t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "This password has been leaked in a data breach, it must not be used. Please use another password.", "validators", "af");
+t.add("This value should be between {{ min }} and {{ max }}.", "Hierdie waarde moet tussen {{ min }} en {{ max }} wees.", "validators", "af");
+t.add("This value is not a valid hostname.", "Hierdie waarde is nie 'n geldige gasheernaam nie.", "validators", "af");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Die hoeveelheid elemente in hierdie versameling moet 'n meelvoud van {{ compared_value }} wees.", "validators", "af");
+t.add("This value should satisfy at least one of the following constraints:", "Hierdie waarde moet voldoen aan ten minste een van hierdie beperkings:", "validators", "af");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Elke element van hierdie versameling moet voldoen aan hulle eie beperkings.", "validators", "af");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Hierdie waarde is nie 'n geldige Internasionale veiligheidsidentifikasienommer (ISIN) nie.", "validators", "af");
 })(Translator);

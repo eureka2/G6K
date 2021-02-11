@@ -15,4 +15,6 @@ t.add("Account has expired.", "Platnos\u0165 \u00fa\u010dtu skon\u010dila.", "se
 t.add("Credentials have expired.", "Platnos\u0165 prihlasovac\u00edch \u00fadajov skon\u010dila.", "security", "sk");
 t.add("Account is disabled.", "\u00da\u010det je zak\u00e1zan\u00fd.", "security", "sk");
 t.add("Account is locked.", "\u00da\u010det je zablokovan\u00fd.", "security", "sk");
+t.add("Too many failed login attempts, please try again later.", "Pr\u00edli\u0161 mnoho ne\u00faspe\u0161n\u00fdch pokusov o prihl\u00e1senie. Sk\u00faste to pros\u00edm znovu nesk\u00f4r.", "security", "sk");
+t.add("Invalid or expired login link.", "Neplatn\u00fd alebo expirovan\u00fd odkaz na prihl\u00e1senie.", "security", "sk");
 })(Translator);

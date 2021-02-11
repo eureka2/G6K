@@ -69,6 +69,9 @@ It is this second technique which is implemented in this component.
 |HTML Markup                     |This control offers two options allowing you to choose the HTML markup:<br>- fragment (html fragment only)<br>- page (full html page)|fragment<br>(html fragment only)
 |Adding Bootstrap classes        |if this field is checked, Bootstrap classes will be added to relevant markup allowing bootstrap styles to apply. |unchecked
 |Bootstrap version               |If the checkbox above is checked, the bootstrap version given here will automatically add Bootstrap CSS and JS files from the CDN https://stackpath.bootstrapcdn.com and the classes corresponding to the version are added to the HTML tags.|
+|Adding Bootstrap stylesheet     |if this field is checked, the Bootstrap stylesheet will be loaded by the API from bootstrapcdn.|unchecked
+|Adding Bootstrap library        |if this field is checked, Bootstrap library will be loaded by the API from bootstrapcdn.|unchecked
+|Adding jQuery library           |if this field is checked, the jQuery library will be loaded by the API from code.jquery.com.|unchecked
 |Data observer                   |Declaration of data to watch. format : &lt;simulator name>:&lt;data name>|
 |Buttons observer                |Declaration of buttons to watch. format : &lt;simulator name>:&lt;button name>|
 

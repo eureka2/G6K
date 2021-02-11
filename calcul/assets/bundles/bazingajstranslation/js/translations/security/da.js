@@ -1,7 +1,7 @@
 (function (t) {
 // da
 t.add("An authentication exception occurred.", "En fejl indtraf ved godkendelse.", "security", "da");
-t.add("Authentication credentials could not be found.", "Loginoplysninger kan findes.", "security", "da");
+t.add("Authentication credentials could not be found.", "Loginoplysninger kan ikke findes.", "security", "da");
 t.add("Authentication request could not be processed due to a system problem.", "Godkendelsesanmodning kan ikke behandles p\u00e5 grund af et systemfejl.", "security", "da");
 t.add("Invalid credentials.", "Ugyldige loginoplysninger.", "security", "da");
 t.add("Cookie has already been used by someone else.", "Cookie er allerede brugt af en anden.", "security", "da");
@@ -15,4 +15,6 @@ t.add("Account has expired.", "Brugerkonto er udl\u00f8bet.", "security", "da");
 t.add("Credentials have expired.", "Loginoplysninger er udl\u00f8bet.", "security", "da");
 t.add("Account is disabled.", "Brugerkonto er deaktiveret.", "security", "da");
 t.add("Account is locked.", "Brugerkonto er l\u00e5st.", "security", "da");
+t.add("Too many failed login attempts, please try again later.", "For mange fejlede login fors\u00f8g, pr\u00f8v venligst senere.", "security", "da");
+t.add("Invalid or expired login link.", "Ugyldigt eller udl\u00f8bet login link.", "security", "da");
 })(Translator);

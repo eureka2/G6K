@@ -95,4 +95,5 @@ t.add("This value is not a valid hostname.", "Este valor no es un nombre de host
 t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "El n\u00famero de elementos en esta colecci\u00f3n deber\u00eda ser m\u00faltiplo de {{ compared_value }}.", "validators", "es");
 t.add("This value should satisfy at least one of the following constraints:", "Este valor deber\u00eda satisfacer al menos una de las siguientes restricciones:", "validators", "es");
 t.add("Each element of this collection should satisfy its own set of constraints.", "Cada elemento de esta colecci\u00f3n deber\u00eda satisfacer su propio conjunto de restricciones.", "validators", "es");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Este valor no es un n\u00famero de identificaci\u00f3n internacional de valores (ISIN) v\u00e1lido.", "validators", "es");
 })(Translator);

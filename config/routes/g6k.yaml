@@ -151,7 +151,7 @@ eureka_g6k_calcul:
 
 eureka_g6k_api:
     path:     /{simu}/api
-    methods: [ get ]
+    methods: [ get, post ]
     defaults: { _controller: App\G6K\Controller\APIController::api }
 
 eureka_g6k_api_target:

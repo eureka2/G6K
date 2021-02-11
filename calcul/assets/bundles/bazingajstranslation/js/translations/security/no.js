@@ -15,4 +15,6 @@ t.add("Account has expired.", "Brukerkonto har utg\u00e5tt.", "security", "no");
 t.add("Credentials have expired.", "P\u00e5loggingsinformasjon har utl\u00f8pt.", "security", "no");
 t.add("Account is disabled.", "Brukerkonto er deaktivert.", "security", "no");
 t.add("Account is locked.", "Brukerkonto er sperret.", "security", "no");
+t.add("Too many failed login attempts, please try again later.", "For mange mislykkede p\u00e5loggingsfors\u00f8k. Pr\u00f8v igjen senere.", "security", "no");
+t.add("Invalid or expired login link.", "Ugyldig eller utl\u00f8pt p\u00e5loggingskobling.", "security", "no");
 })(Translator);

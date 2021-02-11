@@ -15,4 +15,6 @@ t.add("Account has expired.", "El compte ha expirat.", "security", "ca");
 t.add("Credentials have expired.", "Les credencials han expirat.", "security", "ca");
 t.add("Account is disabled.", "El compte est\u00e0 deshabilitat.", "security", "ca");
 t.add("Account is locked.", "El compte est\u00e0 bloquejat.", "security", "ca");
+t.add("Too many failed login attempts, please try again later.", "Massa intents d'inici de sessi\u00f3 fallits, torneu-ho a provar m\u00e9s tard.", "security", "ca");
+t.add("Invalid or expired login link.", "Enlla\u00e7 d'inici de sessi\u00f3 no v\u00e0lid o caducat.", "security", "ca");
 })(Translator);

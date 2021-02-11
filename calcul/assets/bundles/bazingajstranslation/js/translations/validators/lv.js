@@ -83,4 +83,17 @@ t.add("This is not a valid UUID.", "\u0160is nav der\u012bgs UUID.", "validators
 t.add("This value should be a multiple of {{ compared_value }}.", "\u0160ai v\u0113rt\u012bbai j\u0101b\u016bt vair\u0101kas reizes atk\u0101rtotai {{ compared_value }}.", "validators", "lv");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "\u0160is Biznesa Identifik\u0101cijas Kods (BIC) neatbilst {{ iban }} konta numuram (IBAN).", "validators", "lv");
 t.add("This value should be valid JSON.", "\u0160ai v\u0113rt\u012bbai j\u0101b\u016bt der\u012bgam JSON.", "validators", "lv");
+t.add("This collection should contain only unique elements.", "\u0160ai kolekcijai j\u0101satur tikai der\u012bgi elementi.", "validators", "lv");
+t.add("This value should be positive.", "\u0160ai v\u0113rt\u012bb\u0101i j\u0101b\u016bt pozit\u012bvai.", "validators", "lv");
+t.add("This value should be either positive or zero.", "\u0160ai v\u0113rt\u012bb\u0101i j\u0101b\u016bt pozit\u012bvai vai vien\u0101dai ar nulli.", "validators", "lv");
+t.add("This value should be negative.", "\u0160ai v\u0113rt\u012bb\u0101i j\u0101b\u016bt negat\u012bvai.", "validators", "lv");
+t.add("This value should be either negative or zero.", "\u0160ai v\u0113rt\u012bb\u0101i j\u0101b\u016bt negat\u012bvai vai vien\u0101dai ar nulli.", "validators", "lv");
+t.add("This value is not a valid timezone.", "\u0160\u012b v\u0113rt\u012bba nav der\u012bga laika zona.", "validators", "lv");
+t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "\u0160\u012b parole tika public\u0113ta datu nopl\u016bd\u0113, vi\u0146u nedr\u012bkst izmantot. L\u016bdzu, izv\u0113lieties citu paroli.", "validators", "lv");
+t.add("This value should be between {{ min }} and {{ max }}.", "\u0160ai v\u0113rt\u012bbai j\u0101b\u016bt starp {{ min }} un {{ max }}.", "validators", "lv");
+t.add("This value is not a valid hostname.", "\u0160\u012b v\u0113rt\u012bba nav der\u012bgs t\u012bmek\u013ca servera nosaukums.", "validators", "lv");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Elementu skaitam \u0161aj\u0101 kolekcij\u0101 j\u0101b\u016bt {{ compared_value }} reizin\u0101jumam.", "validators", "lv");
+t.add("This value should satisfy at least one of the following constraints:", "\u0160ai v\u0113rt\u012bbai j\u0101iek\u013caujas vismaz vien\u0101 no sekojo\u0161iem ierobe\u017eojumiem:", "validators", "lv");
+t.add("Each element of this collection should satisfy its own set of constraints.", "\u0160\u012bs kolekcijas katram elementam j\u0101iek\u013caujas sav\u0101 ierobe\u017eojumu kop\u0101.", "validators", "lv");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "\u0160\u012b v\u0113rt\u012bba nav der\u012bgs starptautiskais v\u0113rtspap\u012bru identifik\u0101cijas numurs (ISIN).", "validators", "lv");
 })(Translator);

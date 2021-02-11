@@ -8,8 +8,8 @@ t.add("The value you selected is not a valid choice.", "D\u00ebse W\u00e4ert sol
 t.add("You must select at least {{ limit }} choice.|You must select at least {{ limit }} choices.", "Et muss mindestens {{ limit }} M\u00e9iglechkeet ausgewielt ginn.|Et musse mindestens {{ limit }} M\u00e9iglechkeeten ausgewielt ginn.", "validators", "lb");
 t.add("You must select at most {{ limit }} choice.|You must select at most {{ limit }} choices.", "Et dierf h\u00e9chstens {{ limit }} M\u00e9iglechkeet ausgewielt ginn.|Et dierfen h\u00e9chstens {{ limit }} M\u00e9iglechkeeten ausgewielt ginn.", "validators", "lb");
 t.add("One or more of the given values is invalid.", "Een oder m\u00e9i vun de W\u00e4erter ass ong\u00eblteg.", "validators", "lb");
-t.add("The fields {{ fields }} were not expected.", "D'Felder {{ fields }} goufen net erwaart.", "validators", "lb");
-t.add("The fields {{ fields }} are missing.", "D'Felder {{ fields }} feelen.", "validators", "lb");
+t.add("This field was not expected.", "D'Feld gouf net erwaart.", "validators", "lb");
+t.add("This field is missing.", "D'Feld feelt.", "validators", "lb");
 t.add("This value is not a valid date.", "D\u00ebse W\u00e4ert entspr\u00e9cht kenger g\u00eblteger Datumsangab.", "validators", "lb");
 t.add("This value is not a valid datetime.", "D\u00ebse W\u00e4ert entspr\u00e9cht kenger g\u00eblteger Datums- an Z\u00e4itangab.", "validators", "lb");
 t.add("This value is not a valid email address.", "D\u00ebse W\u00e4ert ass keng g\u00eblteg Email-Adress.", "validators", "lb");
@@ -83,4 +83,17 @@ t.add("This is not a valid UUID.", "D\u00ebst ass keng g\u00eblteg UUID.", "vali
 t.add("This value should be a multiple of {{ compared_value }}.", "D\u00ebse W\u00e4ert sollt e puer vun {{ compared_value }} sinn.", "validators", "lb");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "D\u00ebse \"Business Identifier Code\" (BIC) ass net mat IBAN verbonnen {{ iban }}.", "validators", "lb");
 t.add("This value should be valid JSON.", "D\u00ebse W\u00e4ert sollt g\u00eblteg JSON.", "validators", "lb");
+t.add("This collection should contain only unique elements.", "D\u00ebs Sammlung sollt just eenzegaarteg Elementer enthalen.", "validators", "lb");
+t.add("This value should be positive.", "D\u00ebse W\u00e4ert sollt positiv sinn.", "validators", "lb");
+t.add("This value should be either positive or zero.", "D\u00ebse W\u00e4ert sollt entweeder positiv oder null sinn.", "validators", "lb");
+t.add("This value should be negative.", "D\u00ebse W\u00e4ert sollt negativ sinn.", "validators", "lb");
+t.add("This value should be either negative or zero.", "D\u00ebse W\u00e4ert sollt entweeder negativ oder null sinn.", "validators", "lb");
+t.add("This value is not a valid timezone.", "D\u00ebse W\u00e4ert ass keng g\u00eblteg Z\u00e4itzon.", "validators", "lb");
+t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "D\u00ebst Passwuert war Deel vun engem Dateleck an dierf net benotzt ginn. Benotzt w.e.g. en anert Passwuert .", "validators", "lb");
+t.add("This value should be between {{ min }} and {{ max }}.", "De W\u00e4ert sollt t\u00ebscht {{ min }} a(n) {{ max }} leien.", "validators", "lb");
+t.add("This value is not a valid hostname.", "D\u00ebse W\u00e4ert ass kee g\u00ebltegen Hostnumm.", "validators", "lb");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "D'Unzuel un Elementer an d\u00ebser Sammlung sollt e multipel vu(n) {{ compared_value }} sinn.", "validators", "lb");
+t.add("This value should satisfy at least one of the following constraints:", "D\u00ebse W\u00e4ert sollt op d'mannst ee vun d\u00ebsen Aschr\u00e4nkungen erf\u00ebllen:", "validators", "lb");
+t.add("Each element of this collection should satisfy its own set of constraints.", "All Element aus d\u00ebser Sammlung sollt seng eegen Aschr\u00e4nkungen erf\u00ebllen.", "validators", "lb");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "D\u00ebse W\u00e4ert ass keng g\u00eblteg International W\u00e4ertpabeiererkennnummer (ISIN).", "validators", "lb");
 })(Translator);

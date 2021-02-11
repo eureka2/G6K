@@ -4,10 +4,17 @@
 	function bootstrapify (options) {
 		options = options || {};
 		var version = options.version || '4.5.2';
+		var addBootstrapStylesheet = options.addBootstrapStylesheet;
+		var addBootstrapScript = options.addBootstrapScript;
+		var addJQueryScript = options.addJQueryScript;
 		var container = document.querySelector(options.container || 'body');
 		container.classList.add('container');
-		addStylesheet(version);
-		addScript(version);
+		if (addBootstrapStylesheet) {
+			addStylesheet(version);
+		}
+		if (addBootstrapScript) {
+			addScript(version, addJQueryScript);
+		}
 	}
 
 	function addStylesheet(version) {
@@ -20,11 +27,11 @@
 		var bootstrap = document.createElement("link");
 		bootstrap.type = "text/css";
 		bootstrap.rel = "stylesheet";
-		bootstrap.href = "https://stackpath.bootstrapcdn.com/bootstrap/" + version + "/css/bootstrap.min.css";
+		bootstrap.href = "https://maxcdn.bootstrapcdn.com/bootstrap/" + version + "/css/bootstrap.min.css";
 		document.querySelector("head").appendChild(bootstrap);
 	}
 
-	function addScript(version) {
+	function addScript(version, addJQueryScript) {
 		var jqueryScript = null
 		var bootstrapScript = null
 		var scripts = document.querySelectorAll('script[src]');
@@ -41,7 +48,7 @@
 					break;
 				}
 			}
-			if (null === jqueryScript) {
+			if (null === jqueryScript && addJQueryScript) {
 				var jqueryScript = document.createElement("script");
 				jqueryScript.type = "text/javascript";
 				jqueryScript.src = "https://code.jquery.com/jquery-3.3.1.slim.min.js";
@@ -58,7 +65,7 @@
 			var bundle = version[0] == '3' ? '' : '.bundle';
 			var bootstrap = document.createElement("script");
 			bootstrap.type = "text/javascript";
-			bootstrap.src = "https://stackpath.bootstrapcdn.com/bootstrap/" + version + "/js/bootstrap" + bundle + ".min.js";
+			bootstrap.src = "https://maxcdn.bootstrapcdn.com/bootstrap/" + version + "/js/bootstrap" + bundle + ".min.js";
 			if (null == jqueryScript.nextSibling) {
 				document.querySelector("body").appendChild(bootstrap);
 			} else {

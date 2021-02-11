@@ -15,4 +15,6 @@ t.add("Account has expired.", "Kontua iraungi da.", "security", "eu");
 t.add("Credentials have expired.", "Kredentzialak iraungi dira.", "security", "eu");
 t.add("Account is disabled.", "Kontua desgaituta dago.", "security", "eu");
 t.add("Account is locked.", "Kontua blokeatuta dago.", "security", "eu");
+t.add("Too many failed login attempts, please try again later.", "Saioa hasteko saio huts gehiegi, saiatu berriro geroago.", "security", "eu");
+t.add("Invalid or expired login link.", "Sartzeko esteka baliogabea edo iraungia.", "security", "eu");
 })(Translator);

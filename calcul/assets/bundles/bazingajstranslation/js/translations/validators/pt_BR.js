@@ -83,4 +83,17 @@ t.add("This is not a valid UUID.", "Este n\u00e3o \u00e9 um UUID v\u00e1lido.", 
 t.add("This value should be a multiple of {{ compared_value }}.", "Este valor deve ser m\u00faltiplo de {{ compared_value }}.", "validators", "pt_BR");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Este C\u00f3digo Identificador Banc\u00e1rio (BIC) n\u00e3o est\u00e1 associado ao IBAN {{ iban }}.", "validators", "pt_BR");
 t.add("This value should be valid JSON.", "Este valor deve ser um JSON v\u00e1lido.", "validators", "pt_BR");
+t.add("This collection should contain only unique elements.", "Esta cole\u00e7\u00e3o deve conter somente elementos \u00fanicos.", "validators", "pt_BR");
+t.add("This value should be positive.", "Este valor deve ser positivo.", "validators", "pt_BR");
+t.add("This value should be either positive or zero.", "Este valor deve ser positivo ou zero.", "validators", "pt_BR");
+t.add("This value should be negative.", "Este valor deve ser negativo.", "validators", "pt_BR");
+t.add("This value should be either negative or zero.", "Este valor deve ser negativo ou zero.", "validators", "pt_BR");
+t.add("This value is not a valid timezone.", "Este valor n\u00e3o representa um fuso hor\u00e1rio v\u00e1lido.", "validators", "pt_BR");
+t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Esta senha foi divulgada num vazamento de dados e n\u00e3o deve ser utilizada. Por favor, utilize outra senha.", "validators", "pt_BR");
+t.add("This value should be between {{ min }} and {{ max }}.", "Este valor deve estar entre {{ min }} e {{ max }}.", "validators", "pt_BR");
+t.add("This value is not a valid hostname.", "Este valor n\u00e3o \u00e9 um nome de host v\u00e1lido.", "validators", "pt_BR");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "O n\u00famero de elementos desta cole\u00e7\u00e3o deve ser um m\u00faltiplo de {{ compared_value }}.", "validators", "pt_BR");
+t.add("This value should satisfy at least one of the following constraints:", "Este valor deve satisfazer pelo menos uma das seguintes restri\u00e7\u00f5es:", "validators", "pt_BR");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Cada elemento desta cole\u00e7\u00e3o deve satisfazer seu pr\u00f3prio grupo de restri\u00e7\u00f5es.", "validators", "pt_BR");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Este valor n\u00e3o \u00e9 um N\u00famero de Identifica\u00e7\u00e3o de T\u00edtulos Internacionais (ISIN) v\u00e1lido.", "validators", "pt_BR");
 })(Translator);

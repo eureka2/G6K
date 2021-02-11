@@ -15,4 +15,6 @@ t.add("Account has expired.", "Nalog je istekao.", "security", "sr_Latn");
 t.add("Credentials have expired.", "Podaci za autentifikaciju su istekli.", "security", "sr_Latn");
 t.add("Account is disabled.", "Nalog je onemogu\u0107en.", "security", "sr_Latn");
 t.add("Account is locked.", "Nalog je zaklju\u010dan.", "security", "sr_Latn");
+t.add("Too many failed login attempts, please try again later.", "Previ\u0161e neuspe\u0161nih poku\u0161aja prijavljivanja, molim poku\u0161ajte ponovo kasnije.", "security", "sr_Latn");
+t.add("Invalid or expired login link.", "Link za prijavljivanje je istekao ili je neispravan.", "security", "sr_Latn");
 })(Translator);

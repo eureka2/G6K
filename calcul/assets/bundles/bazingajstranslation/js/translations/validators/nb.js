@@ -91,4 +91,9 @@ t.add("This value should be either negative or zero.", "Denne verdien m\u00e5 v\
 t.add("This value is not a valid timezone.", "Verdien er ikke en gyldig tidssone.", "validators", "nb");
 t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Dette passordet er lekket i et datainnbrudd, det m\u00e5 ikke tas i bruk. Vennligst bruk et annet passord.", "validators", "nb");
 t.add("This value should be between {{ min }} and {{ max }}.", "Verdien m\u00e5 v\u00e6re mellom {{ min }} og {{ max }}.", "validators", "nb");
+t.add("This value is not a valid hostname.", "Denne verdien er ikke et gyldig vertsnavn.", "validators", "nb");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Antall elementer i denne samlingen b\u00f8r v\u00e6re et multiplum av {{ compared_value }}.", "validators", "nb");
+t.add("This value should satisfy at least one of the following constraints:", "Denne verdien skal tilfredsstille minst en av f\u00f8lgende begrensninger:", "validators", "nb");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Hvert element i denne samlingen skal tilfredsstille sitt eget sett med begrensninger.", "validators", "nb");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Denne verdien er ikke et gyldig International Securities Identification Number (ISIN).", "validators", "nb");
 })(Translator);
