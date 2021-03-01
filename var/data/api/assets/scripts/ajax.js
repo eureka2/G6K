@@ -1,15 +1,4 @@
-// https://github.com/fdaciuk/ajax
-;(function (root, factory) {
-	'use strict';
-
-	if (typeof define === 'function' && define.amd) {
-		define('ajax', factory);
-	} else if (typeof exports === 'object') {
-		exports = module.exports = factory();
-	} else {
-		root.ajax = factory();
-	}
-})(this, function () {
+(function (document, window) {
 	'use strict';
 
 	function ajax (options) {
@@ -145,5 +134,6 @@
 		return encodeURIComponent(value);
 	}
 
-	return ajax;
-});
+	window.ajax = ajax;
+
+}(document, window));

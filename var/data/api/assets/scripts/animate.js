@@ -108,12 +108,6 @@
 		}
 
 	}
-	if (typeof define === 'function' && define.amd) {
-		define([], function () {
-			return slide;
-		});
-	} else {
-		window.slide = slide;
-	}
+	window.slide = slide;
 
 }(document, window));

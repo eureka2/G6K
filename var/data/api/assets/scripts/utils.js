@@ -112,12 +112,6 @@
 		}
 	}
 
-	if (typeof define === 'function' && define.amd) {
-		define([], function () {
-			return Utils;
-		});
-	} else {
-		window.Utils = Utils;
-	}
+	window.Utils = Utils;
 
 }(document, window));

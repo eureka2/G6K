@@ -53,12 +53,6 @@
 		}
 
 	}
-	if (typeof define === 'function' && define.amd) {
-		define([], function () {
-			return cookie;
-		});
-	} else {
-		window.cookie = cookie;
-	}
+	window.cookie = cookie;
 
 }(document, window));

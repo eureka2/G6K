@@ -518,7 +518,7 @@ JSONPath.eval = function (obj, expr, opts) {
 };
 
 if (typeof define === 'function' && define.amd) {
-    define(function () {return JSONPath;});
+    define('JSONPath', [], function () {return JSONPath;});
 }
 else if (isNode) {
     module.exports = JSONPath;
