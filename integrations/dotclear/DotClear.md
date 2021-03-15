@@ -52,8 +52,10 @@ It is this second technique which is implemented in this plugin.
 1. In the administration menu, go to « Blog » > « Pages » > « New page » (or « Blog » > « New post »).
 2. Give your page (or your post) a title and possibly an excerpt
 4. In the toolbar of the CONTENT area, look for the « Insert simulator » button.
-5. Click this button then fill in the « Simulator name » field with the name of the simulator. This has the effect of inserting the [simulator name='lt; simulator name>'] tag into the editor.
+5. Click this button then fill in the « Simulator name » field with the name of the simulator. This has the effect of inserting the `[simulator name='<simulator name>']` tag into the editor.
 6. Click the « Save » button.
+
+Alternatively, you can insert the tag `{{tpl:simulator name="<simulator name>"}}` in a template.
 
 ## Hooks for catching data value changes or buttons clicks
 This plugin provides a way to collect information from the simulation form while the simulation is running. This allows actions to be performed depending on the data value when it changes or when the user has clicked on one of the form buttons.
