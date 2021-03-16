@@ -468,7 +468,8 @@ class ScriptHandler
 	protected static function getParameters(Event $event, $symfonyDir) {
 		$parameters = array();
 		try {
-			$dotenv = new Dotenv(true);
+			$dotenv = new Dotenv();
+			$dotenv->usePutenv();
 			$dotenv->load($symfonyDir . DIRECTORY_SEPARATOR . '.env');
 			$parameters['database_driver'] = 'pdo_' . self::getParameterValue($symfonyDir, 'DB_ENGINE');
 			$parameters['database_host'] = self::getParameterValue($symfonyDir, 'DB_HOST');
