@@ -447,10 +447,14 @@
 			padding: 0;
 			line-height: inherit;
 			border: none;
-			color: var(--color, var(--primary-color, #0b6ba8));
 			border-bottom: 3px solid;
 			margin: 0 0 0.8em;
 			width: 100%;
+		}
+		.simulator-container .step fieldset > legend,
+		.simulator-container .step .fieldset > legend,
+		.simulator-container .step .step-description.legend p {
+			color: var(--color, var(--primary-color, #0b6ba8));
 		}
 		.simulator-container.default-style h2.step-description > p {
 			margin: 0;
