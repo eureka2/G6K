@@ -18,7 +18,7 @@ It is this second technique which is implemented in this plugin.
 ## Installation
 1. In the administration menu bar, click « Admin » > « Plugins »
 2. In the « Upload plugin» field, browse the file simulator.zip located in the "integrations/textpattern" folder of your G6K installation.
-3. Once installed, find the « simulator » plugin in the list of simulators in the middle of the page and activate it by clicking on the link in the "Active" column.
+3. Once installed, find the « simulator » plugin in the list of plugins in the middle of the page and activate it by clicking on the link in the "Active" column.
 4. Refresh the page.
 
 ## Configuration

@@ -16,7 +16,7 @@ It is this second technique which is implemented in this module.
 * PHP: ^7.3
 
 ## Installation
-1. extract the file "Simulators.zip" located in the "integrations/cmsms" folder of your G6K installation into the plugins folder of your CMSMadeSimple installation.
+1. extract the file "Simulators.zip" located in the "integrations/cmsms" folder of your G6K installation into the modules folder of your CMSMadeSimple installation.
 2. In the administration menu bar, click « Site Admin » > « Module Manager »
 3. Find the « Simulators » module in the list of modules and install it by clicking on the `Install` link in the "Action" column.
 
