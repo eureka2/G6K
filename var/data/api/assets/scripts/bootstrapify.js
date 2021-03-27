@@ -54,19 +54,20 @@
 				jqueryScript.src = "https://code.jquery.com/jquery-3.3.1.slim.min.js";
 				document.querySelector("body").appendChild(jqueryScript);
 				jqueryScript.addEventListener('load', () => {
-					doAddScript();
+					doAddScript(jqueryScript);
 				});
 			} else {
-				doAddScript();
+				doAddScript(jqueryScript);
 			}
 		}
 		
-		function doAddScript() {
+		function doAddScript(jqueryScript) {
+
 			var bundle = version[0] == '3' ? '' : '.bundle';
 			var bootstrap = document.createElement("script");
 			bootstrap.type = "text/javascript";
 			bootstrap.src = "https://maxcdn.bootstrapcdn.com/bootstrap/" + version + "/js/bootstrap" + bundle + ".min.js";
-			if (null == jqueryScript.nextSibling) {
+			if (null === jqueryScript || null === jqueryScript.nextSibling) {
 				document.querySelector("body").appendChild(bootstrap);
 			} else {
 				jqueryScript.parentElement.insertBefore(bootstrap, jqueryScript.nextSibling);

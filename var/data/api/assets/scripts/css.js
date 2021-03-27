@@ -438,8 +438,7 @@
 			-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 				  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 		}
-		.simulator-container.default-style fieldset > legend,
-                .simulator-container.default-style h2.step-description {
+		.simulator-container.default-style fieldset > legend {
 			font-size: 1.2em;
 			font-weight: bold;
 			display: block;
@@ -454,6 +453,11 @@
 		.simulator-container .step fieldset > legend,
 		.simulator-container .step .fieldset > legend,
 		.simulator-container .step .step-description.legend p {
+			color: var(--color, var(--primary-color, #0b6ba8));
+		}
+		.simulator-container .step .step-description.legend ,
+         .simulator-container .step h2.step-description
+		{
 			color: var(--color, var(--primary-color, #0b6ba8));
 		}
 		.simulator-container.default-style h2.step-description > p {
@@ -577,6 +581,28 @@
 			color: #a94442;
 			background-color: #f2dede;
 			border-color: #ebccd1;
+		}
+		.simulator-container .step .listbox .listbox-edit {
+			color: #000;
+		}
+		.simulator-container .listbox.default .listbox-item:hover {
+			background-color: var(--color, var(--primary-color, #0b6ba8));
+			color: #fff;
+		}
+		.simulator-container .step .form-group[data-type=choice] a.listbox-button,
+		.simulator-container .step .form-group[data-type=department] a.listbox-button {
+			background-color: #fff;
+			color: var(--color, var(--primary-color, #0b6ba8));
+		}
+		.simulator-container .step .form-group[data-type=choice] .input-group:hover a.listbox-button span,
+		.simulator-container .step .form-group[data-type=department] .input-group:hover a.listbox-button span {
+			background-color: var(--color, var(--primary-color, #0b6ba8));
+			color: #fff;
+		}
+		.simulator-container .step .field-container[data-type=date] a.datepicker-button:hover span,
+		.simulator-container .step .field-container[data-type=date] a.datepicker-button:hover span:before{
+			background-color: var(--color, var(--primary-color, #0b6ba8));
+			color: #fff;
 		}
 	`;
 
@@ -1169,15 +1195,25 @@
 		}
 
 		.simulator-container.default-style .actionbuttons button.btn-primary {
-			color: #fff;
-			background-color: var(--primary-color, #0b6ba8);
 			float: right;
 		}
 
+		.simulator-container .actionbuttons button.btn-primary {
+			color: #fff;
+			background-color: var(--primary-color, #0b6ba8);
+		}
+
+		.simulator-container .actionbuttons button.btn-primary > span.icon:before {
+			color: #fff;
+		}
+
 		.simulator-container.default-style .actionbuttons button.btn-default {
+			float: left;
+		}
+
+		.simulator-container .actionbuttons button.btn-default {
 			color: var(--primary-color, #0b6ba8);
 			background-color: #fff;
-			float: left;
 		}
 		.simulator-container.default-style .actionbuttons button:hover {
 			filter: brightness(75%);
