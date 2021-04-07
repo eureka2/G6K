@@ -530,7 +530,7 @@ class BaseController extends AbstractController {
 				$footnotes->setDisplayable($disp);
 			}
 			$istep += $direction;
-		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
+		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount && $direction !== 0);
 		$step->setDescription($this->replaceVariables($step->getDescription()));
 		foreach ($step->getActions() as $action) {
 			if ($action->getFor() == 'function') {
