@@ -218,6 +218,13 @@ class BaseController extends AbstractController {
 	public $viewsDir;
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function getParameter(string $name) {
+		return parent::getParameter($name);
+	}
+
+	/**
 	 * Run the simulation engine for a step
 	 *
 	 * @access  protected
@@ -519,7 +526,7 @@ class BaseController extends AbstractController {
 				$footnotes->setDisplayable($disp);
 			}
 			$istep += $direction;
-		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
+		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount && $direction !== 0);
 		$step->setDescription($this->replaceVariables($step->getDescription()));
 		foreach ($step->getActions() as $action) {
 			if ($action->getFor() == 'function') {
