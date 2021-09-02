@@ -19,34 +19,34 @@
         "mobiledetect/mobiledetectlib": "^2.8",
         "mpdf/mpdf": "^8.0",
         "sensio/framework-extra-bundle": "^5.1",
-        "symfony/asset": "4.4.29",
-        "symfony/console": "4.4.29",
-        "symfony/expression-language": "4.4.29",
+        "symfony/asset": "4.3.*",
+        "symfony/console": "4.3.*",
+        "symfony/expression-language": "4.3.*",
         "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "4.4.29",
-        "symfony/lock": "4.4.29",
+        "symfony/framework-bundle": "4.3.*",
+        "symfony/lock": "4.3.*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/orm-pack": "*",
-        "symfony/process": "4.4.29",
-        "symfony/security-bundle": "4.4.29",
+        "symfony/process": "4.3.*",
+        "symfony/security-bundle": "4.3.*",
         "symfony/serializer-pack": "*",
         "symfony/swiftmailer-bundle": "^3.1",
-        "symfony/twig-bundle": "4.4.29",
-        "symfony/validator": "4.4.29",
-        "symfony/web-link": "4.4.29",
-        "symfony/yaml": "4.4.29",
+        "symfony/twig-bundle": "4.3.*",
+        "symfony/validator": "4.3.*",
+        "symfony/web-link": "4.3.*",
+        "symfony/yaml": "4.3.*",
         "willdurand/js-translation-bundle": "^3.0"
     },
     "require-dev": {
         "symfony/browser-kit": "^4.2",
-        "symfony/css-selector": "4.4.29",
+        "symfony/css-selector": "4.3.*",
         "symfony/debug-pack": "*",
-        "symfony/dotenv": "4.4.29",
+        "symfony/dotenv": "4.3.*",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "~3.4|~4.0",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
-        "symfony/var-dumper": "4.4.29"
+        "symfony/var-dumper": "4.3.*"
     },
     "config": {
         "preferred-install": {
@@ -106,7 +106,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "4.4.29"
+            "require": "4.3.*"
         },
         "branch-alias": {
             "dev-master": "4.x-dev"
