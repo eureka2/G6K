@@ -106,7 +106,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "^4.3"
+            "require": "4.4.*"
         },
         "branch-alias": {
             "dev-master": "4.x-dev"
