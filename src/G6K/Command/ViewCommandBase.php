@@ -140,7 +140,7 @@ abstract class ViewCommandBase extends CommandBase
 	 */
 	protected function updateViewParameters(string $view, string $viewurl, OutputInterface $output) {
 		try {
-			$configFile = $this->projectDir . '/config/packages/g6k.yml';
+			$configFile = $this->projectDir . '/config/packages/g6k.yaml';
 			$domain = parse_url ($viewurl, PHP_URL_HOST);
 			$domain = preg_replace("/^www\./", "", $domain);
 			if ($domain !== null) {

@@ -15,4 +15,6 @@ t.add("Account has expired.", "Der Account ist abgelaufen.", "security", "de");
 t.add("Credentials have expired.", "Die Zugangsdaten sind abgelaufen.", "security", "de");
 t.add("Account is disabled.", "Der Account ist deaktiviert.", "security", "de");
 t.add("Account is locked.", "Der Account ist gesperrt.", "security", "de");
+t.add("Too many failed login attempts, please try again later.", "Zu viele fehlgeschlagene Anmeldeversuche, bitte versuchen Sie es sp\u00e4ter noch einmal.", "security", "de");
+t.add("Invalid or expired login link.", "Ung\u00fcltiger oder abgelaufener Anmelde-Link.", "security", "de");
 })(Translator);

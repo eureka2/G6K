@@ -95,4 +95,5 @@ t.add("This value is not a valid hostname.", "Tato hodnota nen\u00ed platn\u00fd
 t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Po\u010det prvk\u016f v t\u00e9to kolekci mus\u00ed b\u00fdt n\u00e1sobek {{ compared_value }}.", "validators", "cs");
 t.add("This value should satisfy at least one of the following constraints:", "Tato hodnota mus\u00ed spl\u0148ovat alespo\u0148 jedno z n\u00e1sleduj\u00edc\u00edch omezen\u00ed:", "validators", "cs");
 t.add("Each element of this collection should satisfy its own set of constraints.", "Ka\u017ed\u00fd prvek v t\u00e9to kolekci mus\u00ed spl\u0148ovat sv\u00e1 vlastn\u00ed omezen\u00ed.", "validators", "cs");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Tato hodnota nen\u00ed platn\u00e9 mezin\u00e1rodn\u00ed identifika\u010dn\u00ed \u010d\u00edslo cenn\u00e9ho pap\u00edru (ISIN).", "validators", "cs");
 })(Translator);

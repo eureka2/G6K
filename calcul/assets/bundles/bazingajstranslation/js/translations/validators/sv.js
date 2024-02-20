@@ -91,4 +91,9 @@ t.add("This value should be either negative or zero.", "Detta v\u00e4rde b\u00f6
 t.add("This value is not a valid timezone.", "Detta v\u00e4rde \u00e4r inte en giltig tidszon.", "validators", "sv");
 t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Det h\u00e4r l\u00f6senordet har l\u00e4ckt ut vid ett dataintr\u00e5ng, det f\u00e5r inte anv\u00e4ndas. Anv\u00e4nd ett annat l\u00f6senord.", "validators", "sv");
 t.add("This value should be between {{ min }} and {{ max }}.", "Detta v\u00e4rde b\u00f6r ligga mellan {{ min }} och {{ max }}.", "validators", "sv");
+t.add("This value is not a valid hostname.", "V\u00e4rdet \u00e4r inte ett giltigt servernamn.", "validators", "sv");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Antalet element i samlingen ska vara en multipel av {{ compared_value }}.", "validators", "sv");
+t.add("This value should satisfy at least one of the following constraints:", "Det h\u00e4r v\u00e4rdet skall uppfylla minst ett av f\u00f6ljande krav:", "validators", "sv");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Varje element i samlingen skall uppfylla sin egen upps\u00e4ttning av krav.", "validators", "sv");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Det h\u00e4r v\u00e4rdet \u00e4r inte ett giltigt \"International Securities Identification Number\" (ISIN).", "validators", "sv");
 })(Translator);

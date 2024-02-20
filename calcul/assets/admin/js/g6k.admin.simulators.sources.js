@@ -1745,7 +1745,7 @@ THE SOFTWARE.
 			}
 		});
 
-		sourcePanelContainer.find('.request-columns-container').keydown(function( e ) {
+		sourcePanelContainer.find('.request-columns-container').on('keydown', function( e ) {
 			if (e.target && $(e.target).hasClass('request-columns-container') && e.keyCode == 13) {
 				e.preventDefault();
 				sourcePanelContainer.find('.add-request-column').trigger('click');
@@ -1786,7 +1786,7 @@ THE SOFTWARE.
 			}
 		});
 
-		sourcePanelContainer.find('.request-filter-conditions').keydown(function( e ) {
+		sourcePanelContainer.find('.request-filter-conditions').on('keydown', function( e ) {
 			if (e.target && $(e.target).hasClass('request-filter-conditions') && e.keyCode == 13) {
 				e.preventDefault();
 				sourcePanelContainer.find('.add-request-condition').trigger('click');
@@ -1809,7 +1809,7 @@ THE SOFTWARE.
 			}
 		});
 
-		sourcePanelContainer.find('.request-orderbykeys-container').keydown(function( e ) {
+		sourcePanelContainer.find('.request-orderbykeys-container').on('keydown', function( e ) {
 			if (e.target && $(e.target).hasClass('request-orderbykeys-container') && e.keyCode == 13) {
 				e.preventDefault();
 				sourcePanelContainer.find('.add-request-orderbykey').trigger('click');

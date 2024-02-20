@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 #}
 
-<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-3.4.1.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-migrate-3.1.0.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-3.5.1.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/base/js/libs/jquery-migrate-3.3.0.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translator.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/bundles/bazingajstranslation/js/translations/config.js') }}"></script>
 {% if asset_exists(asset('assets/bundles/bazingajstranslation/js/translations/messages/' ~ app_language ~ '.js')) %}
@@ -32,7 +32,7 @@ THE SOFTWARE.
 <script>
 $(function(){
 	$('body').append('<div id="toTop" class="btn btn-light"><i class="fas fa-arrow-up"></i>' + Translator.trans("Back to Top") + '</div>');
-	$(window).scroll(function () {
+	$(window).on('scroll', function () {
 		if ($(this).scrollTop() != 0) {
 			$('#toTop').fadeIn();
 		} else {

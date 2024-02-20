@@ -3,7 +3,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2018 Jacques Archimède
+Copyright (c) 2018-2020 Jacques Archimède
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ use Symfony\Component\Yaml\Yaml;
 
 use App\G6K\Manager\ExpressionParser\DateFunction;
 use App\G6K\Manager\ExpressionParser\MoneyFunction;
+use App\G6K\Manager\XMLSchema;
 
 use App\G6K\Model\Data;
 
@@ -42,12 +43,13 @@ Base class for all command of the g6k:simulator namespace.
  */
 abstract class SimulatorCommandBase extends CommandBase
 {
-
+	protected $schema;
 	/**
 	 * @inheritdoc
 	 */
 	public function __construct(string $projectDir, $name = "Simulator Manager") {
 		parent::__construct($projectDir, $name);
+		$this->schema = new XMLSchema($projectDir);
 	}
 
 	/**
@@ -86,6 +88,36 @@ abstract class SimulatorCommandBase extends CommandBase
 	}
 
 	/**
+	 * Removes attributes of an element (and its descendants) that are not in the xml schema. 
+	 *
+	 * @access  protected
+	 * @param   \DOMElement $element The element
+	 * @param   string $tagName The tag name of the parent element
+	 * @return  void
+	 *
+	 */
+	protected function removeUnknownAttributes(\DOMElement &$element, $tagName = '') {
+		$tagName .= "/" . $element->tagName;
+		if ($this->schema->exists($tagName)) {
+			$xsAttrs = $this->schema->getAttributeList($tagName);
+			$attributes = [];
+			foreach ($element->attributes as $name => $attrNode) {
+				$attributes[] = $name;
+			}
+			foreach ($attributes as $name) {
+				if (!in_array($name, $xsAttrs)) {
+					$element->removeAttribute($name);
+				}
+			}
+			foreach ($element->childNodes as $node) {
+				if ($node->nodeType === XML_ELEMENT_NODE) {
+					$this->removeUnknownAttributes($node, $tagName);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Validates the simulator against its schema
 	 *
 	 * @access  protected
@@ -95,7 +127,7 @@ abstract class SimulatorCommandBase extends CommandBase
 	 *
 	 */
 	protected function validatesAgainstSchema(\DOMDocument $simulator, OutputInterface $output) {
-		$schema = $this->projectDir."/var/doc/Simulator.xsd";
+		$schema = $this->projectDir."/var/data/schemas/Simulator.xsd";
 		libxml_use_internal_errors(true);
 		if (!$simulator->schemaValidate($schema)) {
 			$this->error($output, "XML Validation errors:");
@@ -183,6 +215,7 @@ abstract class SimulatorCommandBase extends CommandBase
 	 *
 	 */
 	protected function fixNewAttributes(\DOMDocument $simulator) {
+		$simulator->documentElement->setAttribute('xsi:noNamespaceSchemaLocation', '../schemas/Simulator.xsd');
 		if (! $simulator->documentElement->hasAttribute('locale')) {
 			$simulator->documentElement->setAttribute('locale', $this->parameters['app_locale']);
 		}
@@ -192,6 +225,9 @@ abstract class SimulatorCommandBase extends CommandBase
 		$dataset = $this->getDOMElementItem($simulator->documentElement->getElementsByTagName("DataSet"), 0);
 		if (! $dataset->hasAttribute('groupingSeparator')) {
 			$dataset->setAttribute('groupingSeparator', MoneyFunction::$groupingSeparator);
+		}
+		if (! $dataset->hasAttribute('groupingSize')) {
+			$dataset->setAttribute('groupingSize', MoneyFunction::$groupingSize);
 		}
 		if (! $dataset->hasAttribute('groupingSize')) {
 			$dataset->setAttribute('groupingSize', MoneyFunction::$groupingSize);
@@ -230,7 +266,7 @@ abstract class SimulatorCommandBase extends CommandBase
 	 */
 	protected function setWidgets(\DOMDocument $simulator, array $widgets) {
 		$set = false;
-		$config = Yaml::parse(file_get_contents($this->projectDir."/config/packages/g6k.yml"));
+		$config = Yaml::parse(file_get_contents($this->projectDir."/config/packages/g6k.yaml"));
 		$config = $config['parameters']['widgets'];
 		$xpath = new \DOMXPath($simulator);
 		$fields = $xpath->query("//FieldSet//Field");

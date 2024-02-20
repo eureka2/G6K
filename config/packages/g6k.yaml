@@ -1,0 +1,379 @@
+parameters:
+    upload_directory: '%env(resolve:APP_UPLOAD_DIRECTORY)%'
+
+    mail_from: '%env(resolve:MAIL_FROM)%'
+
+    domainview: 
+        localhost: Demo
+
+    viewpath:
+        Demo: www.mysite.com
+
+    page404: /404.html
+
+    recaptcha:
+        site_key: <YOUR GOOGLE SITE KEY>
+        secret_key: <YOUR GOOGLE SECRET KEY>
+
+    acroforms:
+        pdftk: "%pdftk_path%"
+
+    widgets:
+        abListbox:
+            label: Accessible and customizable listbox
+            target: [ choice, department, region, country, year, month, day ]
+            input: [ select ]
+            css:
+                - css/listbox.css
+            js: 
+                - js/listbox.js
+                - js/abListbox.js
+        abDatepicker:
+            label: Accessible and customizable datepicker
+            target: [ date ]
+            input: [ text ]
+            css: 
+                - css/datepicker.css
+            js: 
+                - js/locales/%app_locale%.js
+                - js/datepicker.js
+                - js/abDatepicker.js
+        abCoupledDatepicker:
+            label: Bind the datepicker following this one to represent the end date of a period 
+            target: [ date ]
+            input: [ text ]
+            deps:
+                - abDatepicker
+            css: 
+            js: 
+                - js/abCoupledDatepicker.js
+        AutoMoneyFormat:
+            label:  Live Amount Formatting
+            target: [ money ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/AutoMoneyFormat.js
+        AutoDateFormat:
+            label:  Live Date Formatting
+            target: [ date ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/AutoDateFormat.js
+        AutocompletionListbox:
+            label: List box with auto-completion
+            target: [ choice, department, region, country, year, month, day ]
+            input: [ select ]
+            css: 
+                - lib/jquery.auto-complete.css
+            js: 
+                - lib/jquery.auto-complete.min.js
+                - js/AutocompletionListbox.js
+        SquareRadioButton:
+            label: Choice list in the form of square block
+            target: [ choice ]
+            input: [ radio ]
+            css: 
+                - css/SquareRadioButton.css
+            js: 
+                - js/SquareRadioButton.js
+        geoAPILocalities:
+            label: Insee code obtained by autocompletion on the name of the commune or its postal code
+            target: [ text ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+            css: 
+                - css/geoAPILocalities.css
+            js: 
+                - js/geoAPILocalities.js
+        geoAPILocalitiesEditable:
+            label: Insee code obtained by autocompletion on the name of the commune or its postal code (In place mode)
+            target: [ text ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+                - jEditable
+            css: 
+            js: 
+                - js/jquery.jeditable.geoAPILocalities.js
+                - js/geoAPILocalitiesEditable.js
+        geoAPIZipCode:
+            label: Postal code obtained by autocompletion on the name of the commune or its postal code
+            target: [ number, integer, text ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+            css: 
+            js: 
+                - js/geoAPIZipCode.js
+        geoAPIZipCodeEditable:
+            label: Postal code obtained by autocompletion on the name of the commune or its postal code (In place mode)
+            target: [ number, integer ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+                - jEditable
+            css: 
+            js: 
+                - js/jquery.jeditable.geoAPIZipCode.js
+                - js/geoAPIZipCodeEditable.js
+        geoAPICoupledZipCode:
+            label: Postal code and name of commune obtained by autocompletion on the postal code
+            target: [ number, integer, text ]
+            input: [ number, text ]
+            deps:
+                - AutocompletionListbox
+            css: 
+            js: 
+                - js/geoAPICoupledZipCode.js
+        geoAPIMaps:
+            label: Insee code obtained from a France map
+            target: [ text ]
+            input: [ text ]
+            deps:
+                - geoAPILocalities
+            css: 
+                - lib/leaflet.css
+                - css/geoapimaps.css
+            js:
+                - https://maps.googleapis.com/maps/api/js?key=<YOUR API KEY> async defer
+                - lib/leaflet.js
+                - lib/leaflet-color-markers.js
+                - lib/leaflet-providers.js
+                - lib/Leaflet.GoogleMutant.js
+                - js/geoAPIMaps.js
+        jEditable:
+            label: In place form field editor
+            target: [ all ]
+            input: [ all ]
+            css: 
+            js: 
+                - lib/jquery.auto-grow-input.min.js
+                - lib/jquery.inputmask.bundle.min.js
+                - js/jquery.jeditable.js
+                - js/jquery.jeditable.autogrow.js
+                - js/jquery.jeditable.number.js
+                - js/jquery.jeditable.date.js
+                - js/jquery.jeditable.money.js
+                - js/jquery.jeditable.percent.js
+                - js/jEditable.js
+        ChoiceSlider:
+            label: List of choices in the form of a slider
+            target: [ choice, month ]
+            input: [ select ]
+            css: 
+                - css/ChoiceSlider.css
+            js: 
+                - js/ChoiceSlider.js
+        Base64image:
+            label: Loads the content of a data with the url of an uploaded image in base64 format
+            target: [ text ]
+            input: [ text ]
+            css: 
+                - css/Base64image.css
+            js: 
+                - js/Base64image.js
+        SocialSecurityNumber:
+            label: Checks the entry of the French social security number
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/SocialSecurityNumber.js
+        Email:
+            label: Checks the entry of an email adress
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/Email.js
+        PhoneNumber10Digits:
+            label: Checks the entry of a 10 digits phone number
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/PhoneNumber10Digits.js
+        PhoneNumberNorthAmerica:
+            label: Checks the entry of a North American phone number
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/PhoneNumberNorthAmerica.js
+        restcountriesAPI:
+            label: Country name obtained by autocompletion
+            target: [ text ]
+            input: [ text ]
+            deps:
+                - AutocompletionListbox
+            css: 
+            js: 
+                - js/restcountriesAPI.js
+        CharacterCounter:
+            label: Counts and displays the number of characters left to enter
+            target: [ textarea ]
+            input: [ textarea ]
+            css: 
+            js: 
+                - js/CharacterCounter.js
+        FrenchSiretNumber:
+            label: Checks the entry of the French siret number
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/FrenchSiretNumber.js
+        DigitsOnly:
+            label: Only accept digits in a text field
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/DigitsOnly.js
+        AutoHoursFormat:
+            label:  Live hours and minutes formatting
+            target: [ text ]
+            input: [ text ]
+            css: 
+            js: 
+                - js/AutoHoursFormat.js
+
+    functions:
+        copyToClipboard:
+            label: Copy the content of en element to clipboard
+            target: [ all ]
+            css: 
+            js: 
+                - js/copyToClipboard.js
+        saveFormToFile:
+            label: Saves all or part of the form data on the user's hard disk
+            target: [ article, panel, blockgroup, fieldset ]
+            css: 
+            js: 
+                - js/saveFormToFile.js
+        loadFormFromFile:
+            label: Loads all or part of the form data from the user's hard disk
+            target: [ article, panel, blockgroup, fieldset ]
+            css: 
+            js: 
+                - js/loadFormFromFile.js
+        printElement:
+            label: Prints the contents of an element
+            target: [ all ]
+            css: 
+            js: 
+                - js/printElement.js
+                - lib/printThis.js
+        printToPDF:
+            label: Takes a screenshot of part of the page in PDF format
+            target: [ all ]
+            css: 
+            js: 
+                - js/printToPDF.js
+                - lib/html2js/html2pdf.bundle.min.js
+        shareByEmail:
+            label: Share by email
+            target: [ page ]
+            css: 
+                - css/shareByEmail.css
+            js:
+                - https://www.google.com/recaptcha/api.js async defer
+                - js/shareByEmail.js
+        shareOnTwitter:
+            label: Share on Twitter
+            target: [ page ]
+            css:
+                - css/shareOnTwitter.css
+            js:
+                - js/shareOnTwitter.js
+        shareOnFacebook:
+            label: Share on Facebook
+            target: [ page ]
+            css:
+                - css/shareOnFacebook.css
+            js:
+                - js/shareOnFacebook.js
+        shareOnLinkedin:
+            label: Share on Linkedin
+            target: [ page ]
+            css:
+                - css/shareOnLinkedin.css
+            js:
+                - js/shareOnLinkedin.js
+        shareOnPinterest:
+            label: Share on Pinterest
+            target: [ page ]
+            css:
+                - css/shareOnPinterest.css
+            js:
+                - js/shareOnPinterest.js
+        shareOnVk:
+            label: Share on Vk
+            target: [ page ]
+            css:
+                - css/shareOnVk.css
+            js:
+                - js/shareOnVk.js
+        shareOnXing:
+            label: Share on Xing
+            target: [ page ]
+            css:
+                - css/shareOnXing.css
+            js:
+                - js/shareOnXing.js
+        shareOnTumblr:
+            label: Share on Tumblr
+            target: [ page ]
+            css:
+                - css/shareOnTumblr.css
+            js:
+                - js/shareOnTumblr.js
+        shareOnReddit:
+            label: Share on Reddit
+            target: [ page ]
+            css:
+                - css/shareOnReddit.css
+            js:
+                - js/shareOnReddit.js
+        shareOnViadeo:
+            label: Share on Viadeo
+            target: [ page ]
+            css:
+                - css/shareOnViadeo.css
+            js:
+                - js/shareOnViadeo.js
+
+    # api configuration
+    # api:
+        #- <simulator1-name>
+        #- <simulator2-name>
+        #- <simulator3-name>
+
+    # Deployment configuration
+    # deployment:
+        # localhost: cp -f "{local.rootdir}/{local.file}" "c:/var/www/html/simulator/{remote.dir}/"
+        # remotehost: rsync -a {local.rootdir}/{local.file} user@remoteserver:/var/www/html/simulator/{remote.file}
+
+
+services:
+    # this makes public all the services defined in this file
+    _defaults: { public: true }
+
+    kernel.listener.g6k_exception_listener:
+        class: App\G6K\EventListener\G6KExceptionListener
+        autowire: true
+        autoconfigure: true
+        public: false
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    g6k.file_uploader:
+        class: App\G6K\Services\FileUploader
+        arguments: ['%upload_directory%']
+
+    g6k.deployer:
+        class: App\G6K\Services\Deployer
+        arguments: [ "@kernel", "@translator" ]

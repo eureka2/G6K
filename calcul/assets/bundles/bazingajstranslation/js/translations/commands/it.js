@@ -21,6 +21,7 @@ t.add("- the name of the table (tablename).", "- il nome della tabella (nometabe
 t.add("- the name of the view (viewname).", "- il nome della vista (ViewName).", "commands", "it");
 t.add("- the new password of the user.", "- la nuova password dell'utente.", "commands", "it");
 t.add("- the new path of the asset (newassetpath).", "- il nuovo percorso del bene (newassetpath).", "commands", "it");
+t.add("- the output directory (outputdir) of the generated files.", " - la directory di output (outputdir) dei file generati.", "commands", "it");
 t.add("- the password of the user.", "- la password dell'utente.", "commands", "it");
 t.add("- the path of the asset (assetpath).", "- il percorso dell'attivit\u00e0 (assetpath).", "commands", "it");
 t.add("- the url (viewurl) of the website where this view is used.", "- l'url (viewurl) del sito web in cui viene utilizzato questo punto di vista.", "commands", "it");
@@ -127,6 +128,9 @@ t.add("Finding the DataSources.xml file from the other instance '%s%' in progres
 t.add("Finding the simulators directory of the other instance '%s%' in progress", "Trovare la directory simulatori dell'altra istanza '%s%' in corso", "commands", "it");
 t.add("Finding the templates directory of the other instance '%s%' in progress", "Trovare la directory dei modelli dell'altra istanza '%s%' in corso", "commands", "it");
 t.add("G6K version %s%", "Versione G6K %s%", "commands", "it");
+t.add("Generates JsonApi and JavaScript files for one or all simulators for API usage.", "Genera file JsonApi e JavaScript per uno o tutti i simulatori per l'utilizzo dell'API.", "commands", "it");
+t.add("Generates JsonApi file only.", "Genera solo il file JsonApi.", "commands", "it");
+t.add("Generator of files for the simulator API", "Generatore di file per l'API del simulatore", "commands", "it");
 t.add("getCommandArguments method is not implemented", "metodo getCommandArguments non \u00e8 implementato", "commands", "it");
 t.add("getCommandDescription method is not implemented", "metodo getCommandDescription non \u00e8 implementato", "commands", "it");
 t.add("getCommandHelp method is not implemented", "metodo getCommandHelp non \u00e8 implementato", "commands", "it");
@@ -176,6 +180,7 @@ t.add("Multiple templates directories were found in the other instance '%s%'", "
 t.add("Multiple templates directories were found in the other instance, please choose one :", "modelli pi\u00f9 directory sono stati trovati nella altro caso, sceglierne una:", "commands", "it");
 t.add("No assets from this view were found in the manifest", "Nessuna attivit\u00e0 da questo punto di vista sono stati trovati nel manifesto", "commands", "it");
 t.add("No column header in delimited text file.", "Nessuna intestazione di colonna in file di testo delimitato.", "commands", "it");
+t.add("No simulator can be used via the API", "Nessun simulatore pu\u00f2 essere utilizzato tramite l'API", "commands", "it");
 t.add("NOTICE: The data #%id%: %name% isn't used.", "AVVISO: Il dato #%id%: %name% non viene utilizzato.", "commands", "it");
 t.add("One or more data sources to exclude when &lt;datasourcename&gt; is 'all'.", "Una o pi\u00f9 sorgenti di dati per escludere quando &lt;datasourcename&gt;\u00e8 tutto'.", "commands", "it");
 t.add("One or more simulators to exclude when &lt;simulatorname&gt; is 'all'.", "Uno o pi\u00f9 simulatori da escludere quando &lt;simulatorname&gt;\u00e8 tutto'.", "commands", "it");
@@ -206,6 +211,8 @@ t.add("Skip the strength validation of the new password.", "Salta la convalida d
 t.add("Skip the strength validation of the password.", "Salta la convalida di forza della password.", "commands", "it");
 t.add("Templates migrator", "Modelli migrator", "commands", "it");
 t.add("Text field delimiter.", "delimitatore di campo di testo.", "commands", "it");
+t.add("The api files for the simulator '%s%' can't be generated, reason : %r%", "I file API per il simulatore '%s%' non possono essere generati, motivo : %r%", "commands", "it");
+t.add("The api files for the simulator '%simulatorname%' are successfully generated", "I file API per il simulatore \"%simulatorname%\" sono stati generati correttamente", "commands", "it");
 t.add("The asset is successfully renamed", "L'attivit\u00e0 viene rinominato con successo", "commands", "it");
 t.add("The asset manifest is successfully refreshed", "Il manifesto risorsa viene aggiornata con successo", "commands", "it");
 t.add("The asset manifest is successfully updated", "Il manifesto bene viene aggiornato con successo", "commands", "it");
@@ -254,6 +261,7 @@ t.add("The name of the view or 'all'.", "Il nome della vista o 'all'.", "command
 t.add("The new password of the user.", "La nuova password dell'utente.", "commands", "it");
 t.add("The new path of the asset relatively to the public directory.", "Il nuovo percorso del bene relativamente alla directory pubblica.", "commands", "it");
 t.add("The new roles of the user delimited by spaces.", "I nuovi ruoli dell'utente delimitati da spazi.", "commands", "it");
+t.add("The output directory of the generated files.", "La directory di output dei file generati.", "commands", "it");
 t.add("The password can not be empty", "La password non pu\u00f2 essere vuota", "commands", "it");
 t.add("The password of the user '%s%' can't be updated. Reason : %r%", "La password dell'utente '%s%' non pu\u00f2 essere aggiornata. Motivo : %r%", "commands", "it");
 t.add("The password of the user.", "La password dell'utente.", "commands", "it");
@@ -266,6 +274,7 @@ t.add("The schema file '%s%' doesn't exists", "Il file di schema '%s%' non esist
 t.add("The simulator '%s%' is successfully copied", "Il simulatore '%s%' viene copiato con successo", "commands", "it");
 t.add("The simulator '%s%' is successfully imported", "Il simulatore '%s%' viene importato con successo", "commands", "it");
 t.add("The simulator '%s%' is successfully validated", "Il simulatore '%s%' viene convalidato correttamente", "commands", "it");
+t.add("The simulator '%simulatorname%' can't be used via the API", "Il simulatore '%simulatorname%' non pu\u00f2 essere utilizzato tramite l'API ", "commands", "it");
 t.add("The simulator XML file '%s%' doesn't exists", "Il file simulatore XML '%s%' non esiste", "commands", "it");
 t.add("The simulator xml file of '%s%' has some errors.", "Il file XML simulatore di '%s%' ha alcuni errori.", "commands", "it");
 t.add("The stylesheet associated to '%simulatorname%' doesn't exists.", "Il foglio di stile associato a '%simulatorname%' non esiste.", "commands", "it");
@@ -293,6 +302,7 @@ t.add("The view '%view%' doesn't exists in the assets directory '%s%'", "La vist
 t.add("The view '%view%' doesn't exists in the templates directory '%s%'", "La vista '%view%' non esiste nella directory dei modelli '%s%'", "commands", "it");
 t.add("The view name (optional), if you want to restrict the migration to a view.", "Il nome della vista (opzionale), se si desidera limitare la migrazione verso una visione.", "commands", "it");
 t.add("The widget '%s%' doesn't exists", "Il widget di '%s%' non esiste", "commands", "it");
+t.add("This command allows to generate the JsonApi and JavaScript files for one or all simulators for API usage.", "Questo comando consente di generare i file JsonApi e JavaScript per uno o tutti i simulatori per l'utilizzo dell'API.", "commands", "it");
 t.add("This command allows you add an asset to the manifest.json file after its creation.", "Questo comando consente di aggiungere una risorsa per il file manifest.json dopo la sua creazione.", "commands", "it");
 t.add("This command allows you add roles to an user in the users database.", "Questo comando consente di aggiungere ruoli a un utente nel database degli utenti.", "commands", "it");
 t.add("This command allows you change the password of a user into the users database.", "Questo comando consente di modificare la password di un utente nel database degli utenti.", "commands", "it");
@@ -319,6 +329,7 @@ t.add("This command allows you update an user in the users database.", "Questo c
 t.add("To copy all data sources, enter 'all' as data source name.", "Per copiare tutte le fonti di dati, inserire 'all' come nome della sorgente dati.", "commands", "it");
 t.add("To copy all simulators, enter 'all' as simulator name.", "Per copiare tutti i simulatori, digitare 'all' come nome simulatore.", "commands", "it");
 t.add("To copy all views, enter 'all' as view name.", "Per copiare tutte le viste, digitare 'all' come nome della vista.", "commands", "it");
+t.add("To generate the files for all simulators, enter 'all' as simulator name.", "Per generare i file per tutti i simulatori, inserisci \"all\" come nome del simulatore.", "commands", "it");
 t.add("Unable to get parameters: %s%", "Impossibile ottenere i parametri: %s%", "commands", "it");
 t.add("Unknown column name : %name%", "Nome colonna sconosciuto: %name%", "commands", "it");
 t.add("Unknown role '%s%'", "Ruolo sconosciuto '%s%'", "commands", "it");

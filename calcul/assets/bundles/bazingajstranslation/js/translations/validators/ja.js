@@ -93,4 +93,7 @@ t.add("This password has been leaked in a data breach, it must not be used. Plea
 t.add("This value should be between {{ min }} and {{ max }}.", "{{ min }}\u4ee5\u4e0a{{ max }}\u4ee5\u4e0b\u3067\u306a\u3051\u308c\u3070\u306a\u308a\u307e\u305b\u3093\u3002", "validators", "ja");
 t.add("This value is not a valid hostname.", "\u6709\u52b9\u306a\u30db\u30b9\u30c8\u540d\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "validators", "ja");
 t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "\u8981\u7d20\u306e\u6570\u306f{{ compared_value }}\u306e\u500d\u6570\u3067\u306a\u3051\u308c\u3070\u306a\u308a\u307e\u305b\u3093\u3002", "validators", "ja");
+t.add("This value should satisfy at least one of the following constraints:", "\u4ee5\u4e0b\u306e\u5236\u7d04\u306e\u3046\u3061\u5c11\u306a\u304f\u3068\u30821\u3064\u3092\u6e80\u305f\u3059\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059:", "validators", "ja");
+t.add("Each element of this collection should satisfy its own set of constraints.", "\u30b3\u30ec\u30af\u30b7\u30e7\u30f3\u306e\u5404\u8981\u7d20\u306f\u3001\u305d\u308c\u305e\u308c\u306e\u5236\u7d04\u3092\u6e80\u305f\u3059\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002", "validators", "ja");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "\u3053\u306e\u5024\u306f\u6709\u52b9\u306a\u56fd\u969b\u8a3c\u5238\u8b58\u5225\u756a\u53f7\uff08ISIN\uff09\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "validators", "ja");
 })(Translator);

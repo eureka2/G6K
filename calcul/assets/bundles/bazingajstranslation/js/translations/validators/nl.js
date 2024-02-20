@@ -91,4 +91,9 @@ t.add("This value should be either negative or zero.", "Deze waarde moet negatie
 t.add("This value is not a valid timezone.", "Deze waarde is geen geldige tijdzone.", "validators", "nl");
 t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Dit wachtwoord is gelekt vanwege een data-inbreuk, het moet niet worden gebruikt. Kies een ander wachtwoord.", "validators", "nl");
 t.add("This value should be between {{ min }} and {{ max }}.", "Deze waarde moet zich tussen {{ min }} en {{ max }} bevinden.", "validators", "nl");
+t.add("This value is not a valid hostname.", "Deze waarde is geen geldige hostnaam.", "validators", "nl");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Het aantal elementen van deze collectie moet een veelvoud zijn van {{ compared_value }}.", "validators", "nl");
+t.add("This value should satisfy at least one of the following constraints:", "Deze waarde moet voldoen aan tenminste een van de volgende voorwaarden:", "validators", "nl");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Elk element van deze collectie moet voldoen aan zijn eigen set voorwaarden.", "validators", "nl");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Deze waarde is geen geldig International Securities Identification Number (ISIN).", "validators", "nl");
 })(Translator);

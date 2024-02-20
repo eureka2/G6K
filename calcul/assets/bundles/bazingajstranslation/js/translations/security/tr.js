@@ -15,4 +15,6 @@ t.add("Account has expired.", "Hesap zaman a\u015f\u0131m\u0131na u\u011frad\u01
 t.add("Credentials have expired.", "Kimlik bilgileri zaman a\u015f\u0131m\u0131na u\u011frad\u0131.", "security", "tr");
 t.add("Account is disabled.", "Hesap engellenmi\u015f.", "security", "tr");
 t.add("Account is locked.", "Hesap kilitlenmi\u015f.", "security", "tr");
+t.add("Too many failed login attempts, please try again later.", "\u00c7ok fazla ba\u015far\u0131s\u0131z giri\u015f denemesi, l\u00fctfen daha sonra tekrar deneyin.", "security", "tr");
+t.add("Invalid or expired login link.", "Ge\u00e7ersiz veya s\u00fcresi dolmu\u015f oturum a\u00e7ma ba\u011flant\u0131s\u0131.", "security", "tr");
 })(Translator);

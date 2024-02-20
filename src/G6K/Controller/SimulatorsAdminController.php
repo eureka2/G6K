@@ -57,6 +57,7 @@ use App\G6K\Model\RichText;
 
 use App\G6K\Manager\ControllersTrait;
 use App\G6K\Manager\SQLSelectTokenizer;
+use App\G6K\Manager\XMLSchema;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -517,11 +518,15 @@ class SimulatorsAdminController extends BaseAdminController {
 	 */
 	protected function runValidation(Request $request) {
 		$form = $request->request->all();
-		$schema = $this->projectDir."/var/doc/Simulator.xsd";
+		$schema = $this->projectDir."/var/data/schemas/Simulator.xsd";
 		$dom = new \DOMDocument();
 		$dom->preserveWhiteSpace  = false;
 		$dom->formatOutput = true;
 		$dom->loadXML($form['xml']);
+		if (isset($form['remove-unknown-attributes']) && $form['remove-unknown-attributes']) {
+			$xmlschema = new XMLSchema($this->projectDir);
+			$this->removeUnknownAttributes($xmlschema, $dom->documentElement);
+		}
 		libxml_use_internal_errors(true);
 		$result = array();
 		if (!$dom->schemaValidate($schema)) {
@@ -546,6 +551,37 @@ class SimulatorsAdminController extends BaseAdminController {
 		$response->setContent(json_encode($result));
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
+	}
+
+	/**
+	 * Removes attributes of an element (and its descendants) that are not in the xml schema. 
+	 *
+	 * @access  protected
+	 * @param   XMLSchema $schema The simulator schema
+	 * @param   \DOMElement $element The element
+	 * @param   string $tagName The tag name of the parent element
+	 * @return  void
+	 *
+	 */
+	protected function removeUnknownAttributes(XMLSchema $schema, \DOMElement &$element, $tagName = '') {
+		$tagName .= "/" . $element->tagName;
+		if ($schema->exists($tagName)) {
+			$xsAttrs = $schema->getAttributeList($tagName);
+			$attributes = [];
+			foreach ($element->attributes as $name => $attrNode) {
+				$attributes[] = $name;
+			}
+			foreach ($attributes as $name) {
+				if (!in_array($name, $xsAttrs)) {
+					$element->removeAttribute($name);
+				}
+			}
+			foreach ($element->childNodes as $node) {
+				if ($node->nodeType === XML_ELEMENT_NODE) {
+					$this->removeUnknownAttributes($schema, $node, $tagName);
+				}
+			}
+		}
 	}
 
 	/**

@@ -15,4 +15,6 @@ t.add("Account has expired.", "T\u00e0i kho\u1ea3n \u0111\u00e3 h\u1ebft h\u1ea1
 t.add("Credentials have expired.", "Th\u00f4ng tin x\u00e1c th\u1ef1c \u0111\u00e3 h\u1ebft h\u1ea1n.", "security", "vi");
 t.add("Account is disabled.", "T\u00e0i kho\u1ea3n b\u1ecb t\u1ea1m ng\u1eebng.", "security", "vi");
 t.add("Account is locked.", "T\u00e0i kho\u1ea3n b\u1ecb kh\u00f3a.", "security", "vi");
+t.add("Too many failed login attempts, please try again later.", "\u0110\u0103ng nh\u00e2\u0323p sai qua\u0301 nhi\u00ea\u0300u l\u00e2\u0300n, vui lo\u0300ng th\u01b0\u0309 la\u0323i l\u00e2\u0300n n\u01b0\u0303a.", "security", "vi");
+t.add("Invalid or expired login link.", "Li\u00ean k\u00ea\u0301t \u0111\u0103ng nh\u00e2\u0323p kh\u00f4ng h\u01a1\u0323p l\u00ea\u0323 ho\u0103\u0323c qua\u0301 ha\u0323n.", "security", "vi");
 })(Translator);

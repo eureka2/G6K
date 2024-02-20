@@ -90,4 +90,10 @@ t.add("This value should be negative.", "Ova vrijednost treba biti negativna.", 
 t.add("This value should be either negative or zero.", "Ova vrijednost treba biti negativna ili jednaka nuli.", "validators", "hr");
 t.add("This value is not a valid timezone.", "Ova vrijednost nije validna vremenska zona.", "validators", "hr");
 t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Ova lozinka je procurila u nekom od sigurnosnih propusta, te je potrebno koristiti drugu lozinku.", "validators", "hr");
+t.add("This value should be between {{ min }} and {{ max }}.", "Ova vrijednost treba biti izme\u0111u {{ min }} i {{ max }}.", "validators", "hr");
+t.add("This value is not a valid hostname.", "Ova vrijednost nije ispravno ime poslu\u017eitelja (engl. hostname).", "validators", "hr");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Broj elemenata u kolekciji treba biti djeljiv s {{ compared_value }}.", "validators", "hr");
+t.add("This value should satisfy at least one of the following constraints:", "Ova vrijednost mora zadovoljiti jedan od sljede\u0107ih ograni\u010denja:", "validators", "hr");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Svaki element ove kolekcije mora zadovoljiti vlastiti skup ograni\u010denja.", "validators", "hr");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Ova vrijednost nije ispravan me\u0111unarodni identifikacijski broj vrijednosnih papira (ISIN).", "validators", "hr");
 })(Translator);

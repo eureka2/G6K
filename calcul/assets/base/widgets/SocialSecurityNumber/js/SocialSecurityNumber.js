@@ -1,8 +1,3 @@
-/**
- * Controle numéro de sécu
- * ========================
- */
- 
 (function (global) {
 	"use strict";
 

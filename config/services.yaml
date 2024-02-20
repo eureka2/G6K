@@ -21,6 +21,7 @@ services:
         bind:
             $projectDir: '%kernel.project_dir%'
             $cacheDir: '%kernel.cache_dir%'
+            $publicDir: '%public_dir%'
             $uploadDir: '%upload_directory%'
 
     # makes classes in src/ available to be used as services

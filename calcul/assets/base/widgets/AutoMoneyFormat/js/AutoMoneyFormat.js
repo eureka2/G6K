@@ -2,9 +2,12 @@
 	"use strict";
 
 	function AutoMoneyFormat (input, options, onComplete) {
-		input.css('text-align', 'right');
+		if (typeof input === "object" && input && input["jquery"]) {
+			input = input[0];
+		}
+		input.style.textAlign = 'right';
 	// https://github.com/autoNumeric/autoNumeric/
-		var autoNum = new AutoNumeric(input[0], {
+		var autoNum = new AutoNumeric(input, {
 			currencySymbol: '',
 			currencySymbolPlacement: options.symbolPosition == 'before' ? 'p' : 's',
 			decimalCharacter: options.decimalPoint,
@@ -12,14 +15,14 @@
 			digitalGroupSpacing: options.groupingSize,
 			formulaMode: true
 		});
-		if (! input[0].hasAttribute('autocomplete') || input[0].getAttribute('autocomplete') !== 'off') {
-			input[0].addEventListener("input", function(event) {
+		if (! input.hasAttribute('autocomplete') || input.getAttribute('autocomplete') !== 'off') {
+			input.addEventListener("input", function(event) {
 				if (this.value.length > 0 && autoNum.getNumericString().length == 0) {
 					autoNum.set(this.value);
 				}
 			}, false);
 		}
-		input[0].addEventListener("autoNumeric:rawValueModified", function(event) {
+		input.addEventListener("autoNumeric:rawValueModified", function(event) {
 			onComplete(event.detail.newRawValue, event.detail.newValue, true, true);
 		}, true);
 	}

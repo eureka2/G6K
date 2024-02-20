@@ -15,4 +15,6 @@ t.add("Account has expired.", "\u5e10\u53f7\u5df2\u8fc7\u671f\u3002", "security"
 t.add("Credentials have expired.", "\u51ed\u8bc1\u5df2\u8fc7\u671f\u3002", "security", "zh_CN");
 t.add("Account is disabled.", "\u5e10\u53f7\u5df2\u88ab\u7981\u7528\u3002", "security", "zh_CN");
 t.add("Account is locked.", "\u5e10\u53f7\u5df2\u88ab\u9501\u5b9a\u3002", "security", "zh_CN");
+t.add("Too many failed login attempts, please try again later.", "\u767b\u5165\u5931\u8d25\u7684\u6b21\u6570\u8fc7\u591a\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5\u3002", "security", "zh_CN");
+t.add("Invalid or expired login link.", "\u5931\u6548\u6216\u8fc7\u671f\u7684\u767b\u5165\u94fe\u63a5\u3002", "security", "zh_CN");
 })(Translator);

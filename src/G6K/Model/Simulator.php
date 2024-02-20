@@ -3027,7 +3027,7 @@ class Simulator {
 	public function save($file) {
 		$xml = array();
 		$xml[] = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="' . $this->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $this->getLabel()) . '" category="' . $this->getCategory() . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '" locale="' . $this->getLocale() . '" timezone="' . $this->getTimezone() . '">';
+		$xml[] = '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schemas/Simulator.xsd" name="' . $this->getName() . '" label="' . str_replace(array('<', '"'), array("&lt;", "&quot;"), $this->getLabel()) . '" category="' . $this->getCategory() . '" defaultView="' . $this->getDefaultView() . '" referer="' . $this->getReferer() . '" dynamic="' . ($this->isDynamic() ? 1 : 0) . '" memo="' . ($this->hasMemo() ? 1 : 0) . '" locale="' . $this->getLocale() . '" timezone="' . $this->getTimezone() . '">';
 		$xml[] = '	<Description edition="' . $this->getDescription()->getEdition() . '"><![CDATA[';
 		$xml[] = $this->cleanRichText($this->getDescription());
 		$xml[] = '	]]></Description>';
@@ -3709,7 +3709,7 @@ class Simulator {
 			$datasources = new \SimpleXMLElement($datasrc, LIBXML_NOWARNING, true);
 		}
 		$simusrc = '<?xml version="1.0" encoding="utf-8"?>' .PHP_EOL;
-		$simusrc .= '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/Simulator.xsd" name="';
+		$simusrc .= '<Simulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schemas/Simulator.xsd" name="';
 		$simusrc .= $this->controller->getTranslator()->trans("new");
 		$simusrc .= '" label="';
 		$simusrc .= $this->controller->getTranslator()->trans("Simulator of calculation of ...");

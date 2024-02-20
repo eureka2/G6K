@@ -35,7 +35,7 @@ THE SOFTWARE.
 			<div class="card-body">
 				<div>
 					<form action="{{ path('eureka_g6k_admin_view_node_crud', {'view': 'new', 'node': 'dummy', 'crud': 'create'}) }}">
-					<button id="btnAddNewView" class="btn btn-secondary pull-right">{{ 'Create view'|trans }} <span class="fas fa-plus-circle"></span></button>
+					<button id="btnAddNewView" class="btn btn-secondary float-right">{{ 'Create view'|trans }} <span class="fas fa-plus-circle"></span></button>
 					</form>
 				</div>
 				<ul class="nav nav-pills flex-column">
@@ -56,7 +56,7 @@ THE SOFTWARE.
 				{% if file is not empty %}
 				<div id="table" class="card bg-primary">
 					<div class="card-header">
-						<h4 class="card-title"><span>{{ 'View «%view%»'|trans({ '%view%': view.name }) }}</span> <span class="pull-right">{{ 'File «%file%»'|trans( { '%file%':  file.name }) }}</span></h4>
+						<h4 class="card-title"><span>{{ 'View «%view%»'|trans({ '%view%': view.name }) }}</span> <span class="float-right">{{ 'File «%file%»'|trans( { '%file%':  file.name }) }}</span></h4>
 					</div>
 					<div class="card-body">
 						{% if hiddens.action == 'edit' %}
@@ -72,9 +72,9 @@ THE SOFTWARE.
 							<input type="hidden" name="file" value="{{ file.name}}">
 							<textarea id="file-{%- if hiddens.action == 'edit' -%}editor{%- else -%}viewer{%- endif -%}" name="file-content">{{file.content}}</textarea>
 							{% if hiddens.action == 'edit' %}
-							<button id="save-file" class="btn btn-primary pull-right">{{ 'Save'|trans }}</button>
+							<button id="save-file" class="btn btn-primary float-right">{{ 'Save'|trans }}</button>
 							{% else %}
-							<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': file.num, 'crud': 'edit-node'}) }}" id="edit-file" class="btn btn-primary pull-right">{{ 'Edit'|trans }}</a>
+							<a href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': file.num, 'crud': 'edit-node'}) }}" id="edit-file" class="btn btn-primary float-right">{{ 'Edit'|trans }}</a>
 							{% endif %}
 						</div>
 					</div>
@@ -82,8 +82,8 @@ THE SOFTWARE.
 				{% elseif view is not empty %}
 				<div id="table" class="card bg-primary">
 					<div class="card-header">
-						<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
-						<a class="btn btn-primary pull-right drop-view-button" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': 'dummy', 'crud': 'drop-view'}) }}" data-confirm="{{ 'Are you sure you want to drop the view %view% ?'|trans({ '%view%': view.name }) }}'">{{ 'Drop view'|trans }} <span class="fas fa-minus-circle"></span></a>
+						<a class="btn btn-primary float-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
+						<a class="btn btn-primary float-right drop-view-button" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': 'dummy', 'crud': 'drop-view'}) }}" data-confirm="{{ 'Are you sure you want to drop the view %view% ?'|trans({ '%view%': view.name }) }}'">{{ 'Drop view'|trans }} <span class="fas fa-minus-circle"></span></a>
 						<h4 class="card-title">{{ 'View «%view%»'|trans({ '%view%': view.name }) }}</h4>
 					</div>
 					<div class="card-body">
@@ -99,7 +99,7 @@ THE SOFTWARE.
 						</ul>
 						<div class="tab-content">
 							<div role="tabpanel" id="templates" class="tab-pane fade show active">
-								<a class="btn btn-secondary pull-right" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': view.templates[0].num, 'crud': 'export'}) }}">{{ 'Export'|trans }}</a>
+								<a class="btn btn-secondary float-right" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': view.templates[0].num, 'crud': 'export'}) }}">{{ 'Export'|trans }}</a>
 								<h3>{{ 'Templates'|trans }}</h3>
 								<div id="templates-tree-container">
 									<table id="templates-tree" class="table tree table-bordered table-striped table-sm">
@@ -110,7 +110,7 @@ THE SOFTWARE.
 								</div>
 							</div>
 							<div role="tabpanel" id="assets" class="tab-pane fade">
-								<a class="btn btn-secondary pull-right" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': view.assets[0].num, 'crud': 'export'}) }}">{{ 'Export'|trans }}</a>
+								<a class="btn btn-secondary float-right" href="{{ path('eureka_g6k_admin_view_node_crud', {'view': view.name, 'node': view.assets[0].num, 'crud': 'export'}) }}">{{ 'Export'|trans }}</a>
 								<h3>{{ 'Assets'|trans }}</h3>
 								<div id="assets-tree-container">
 									<table id="assets-tree" class="table tree table-bordered table-striped table-sm">
@@ -126,7 +126,7 @@ THE SOFTWARE.
 				{% elseif hiddens.action == 'create' %}
 				<div id="view" class="card bg-primary">
 					<div class="card-header">
-					<a class="btn btn-primary pull-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
+					<a class="btn btn-primary float-right help-view-button" href="{{ path('eureka_g6k_admin_documentation', { 'document' : 'views-management' }) }}" target="_blank" title=""><span>{{ 'Need help ?'|trans }}</span>&nbsp;&nbsp;<span class="fas fa-book"></span></a> 
 					<h4 class="card-title">{{ 'New view'|trans }}</h4>
 					</div>
 					<div class="card-body">
@@ -172,7 +172,7 @@ THE SOFTWARE.
 								</div>
 							</div>
 						</div>
-						<button id="btnDoCreateView" class="btn btn-primary pull-right">{{ 'Create'|trans }}</button>
+						<button id="btnDoCreateView" class="btn btn-primary float-right">{{ 'Create'|trans }}</button>
 						</form>
 					</div>
 				</div>

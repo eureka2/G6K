@@ -88,7 +88,9 @@ THE SOFTWARE.
 		var m = 3 + Math.floor( ( l + 40 ) / 44 );
 		var d = l + 28 - 31 * Math.floor( m / 4 );
 		var z = new Date();
-		z.setFullYear( year, m-1, d );
+		z.setFullYear(year);
+		z.setMonth(m - 1);
+		z.setDate(d);
 		z.setHours(0,0,0,0);
 		return z;
 	};
@@ -2280,6 +2282,12 @@ THE SOFTWARE.
 (function (global) {
 	'use strict';
 
+	Number.isNumeric = Number.isNumeric || function(value) {
+		var type = typeof value;
+		return (type === "number" || type === "string") &&
+				!isNaN(value - parseFloat(value));
+	}
+
 	function Expression(expression) {
 		this.expression = expression;
 		this.tokens = [];
@@ -2375,15 +2383,15 @@ THE SOFTWARE.
 			$.each(this.tokens, function( t, token ) {
 				if (token.type == Token.TYPE.T_FIELD && fields.length >= token.value) {
 					var value = fields[token.value - 1];
-					if ($.isArray(value)) {
+					if (Array.isArray(value)) {
 						token.type = Token.TYPE.T_ARRAY;
 						token.value = value;
-					} else if ($.isNumeric(value)) {
-						token.type = Token.TYPE.T_NUMBER;
-						token.value = parseFloat(value);
 					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
 						token.value = Date.createFromFormat(Date.inputFormat, value);
+					} else if (Number.isNumeric(value)) {
+						token.type = Token.TYPE.T_NUMBER;
+						token.value = parseFloat(value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2399,15 +2407,15 @@ THE SOFTWARE.
 			$.each(this.tokens, function( t, token ) {
 				if (token.type == Token.TYPE.T_IDENT && typeof fields[token.value] !== 'undefined' && fields[token.value] !== null) {
 					var value = fields[token.value];
-					if ($.isArray(value)) {
+					if (Array.isArray(value)) {
 						token.type = Token.TYPE.T_ARRAY;
 						token.value = value;
-					} else if ($.isNumeric(value)) {
-						token.type = Token.TYPE.T_NUMBER;
-						token.value = parseFloat(value);
 					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
 						token.value = Date.createFromFormat(Date.inputFormat, value);
+					} else if (Number.isNumeric(value)) {
+						token.type = Token.TYPE.T_NUMBER;
+						token.value = parseFloat(value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2426,15 +2434,15 @@ THE SOFTWARE.
 					var value = variables['' + token.value];
 					if (typeof value === 'undefined' || value === null || value.length == 0) {
 						completed = false;
-					} else if ($.isArray(value)) {
+					} else if (Array.isArray(value)) {
 						token.type = Token.TYPE.T_ARRAY;
 						token.value = value;
-					} else if ($.isNumeric(value)) {
-						token.type = Token.TYPE.T_NUMBER;
-						token.value = parseFloat(value);
 					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
 						token.value = Date.createFromFormat(Date.inputFormat, value);
+					} else if (Number.isNumeric(value)) {
+						token.type = Token.TYPE.T_NUMBER;
+						token.value = parseFloat(value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2446,15 +2454,15 @@ THE SOFTWARE.
 					var value = variables[token.value];
 					if (typeof value === 'undefined' || value === null || value.length == 0) {
 						completed = false;
-					} else if ($.isArray(value)) {
+					} else if (Array.isArray(value)) {
 						token.type = Token.TYPE.T_ARRAY;
 						token.value = value;
-					} else if ($.isNumeric(value)) {
-						token.type = Token.TYPE.T_NUMBER;
-						token.value = parseFloat(value);
 					} else if (Date.isDate(value)) {
 						token.type = Token.TYPE.T_DATE;
 						token.value = Date.createFromFormat(Date.inputFormat, value);
+					} else if (Number.isNumeric(value)) {
+						token.type = Token.TYPE.T_NUMBER;
+						token.value = parseFloat(value);
 					} else if (value === 'true' || value === 'false') {
 						token.type = Token.TYPE.T_BOOLEAN;
 						token.value = value === 'true';
@@ -2820,10 +2828,10 @@ THE SOFTWARE.
 						result.value = (arg1.value >= arg2.value);
 						break;
 					case Token.TYPE.T_CONTAINS:
-						result.value = $.isArray(arg1.value) && $.inArray(arg2.value.toString(), arg1.value) >= 0;
+						result.value = Array.isArray(arg1.value) && $.inArray(arg2.value.toString(), arg1.value) >= 0;
 						break;
 					case Token.TYPE.T_NOT_CONTAINS:
-						result.value = ! $.isArray(arg1.value) || $.inArray(arg2.value.toString(), arg1.value) < 0;
+						result.value = ! Array.isArray(arg1.value) || $.inArray(arg2.value.toString(), arg1.value) < 0;
 						break;
 				}
 			}
@@ -2832,12 +2840,12 @@ THE SOFTWARE.
 
 		guessType : function (token) {
 			if (token.type == Token.TYPE.T_TEXT) {
-				if ($.isNumeric(token.value)) {
-					token.type = Token.TYPE.T_NUMBER;
-					token.value = parseFloat(token.value);
-				} else if (Date.isDate(token.value)) {
+				if (Date.isDate(token.value)) {
 					token.type = Token.TYPE.T_DATE;
 					token.value = Date.createFromFormat(Date.inputFormat, token.value);
+				} else if (Number.isNumeric(token.value)) {
+					token.type = Token.TYPE.T_NUMBER;
+					token.value = parseFloat(token.value);
 				} else if (token.value === 'true' || token.value === 'false') {
 					token.type = Token.TYPE.T_BOOLEAN;
 					token.value = token.value === 'true';
@@ -3087,7 +3095,7 @@ THE SOFTWARE.
 			$.each(toks, function( t, value ) {
 				value = value.replace(/^\s+|\s+$/g, '');
 				var matches;
-				if ($.isNumeric(value)) {
+				if (Number.isNumeric(value)) {
 					if (prev.type == Token.TYPE.T_PCLOSE)
 						expr.push(new Token(Token.TYPE.T_TIMES, '*'));
 					expr.push(prev = new Token(Token.TYPE.T_NUMBER, parseFloat(value)));
@@ -3376,10 +3384,10 @@ THE SOFTWARE.
 			var self = this;
 			this.variables['script'] = 1;
 			$("div.help-panel dl dt").append('<a title="Fermer" href="javascript:">X</a>');
-			$("div.help-panel dl dt a").click(function() {
+			$("div.help-panel dl dt a").on('click', function() {
 				$(this).parents(".help-panel").parent().find('[data-toggle=collapse]').trigger('click');
 			});
-			$("input[type='reset'], button[type='reset']").click(function() {
+			$("input[type='reset'], button[type='reset']").on('click', function() {
 				$('#g6k_form').clearForm();
 				$("input.resettable").val("");
 				if (self.isDynamic) {
@@ -3393,7 +3401,7 @@ THE SOFTWARE.
 						if (typeof data.unparsedContent !== "undefined" && data.unparsedContent !== "") {
 							var content = self.evaluate(data.unparsedContent);
 							if (content !== false) {
-								if (content && data.type === "multichoice" && ! $.isArray(content)) {
+								if (content && data.type === "multichoice" && ! Array.isArray(content)) {
 									if (/\[\]$/.test(content)) {
 										content = JSON.parse(content);
 									} else {
@@ -3856,7 +3864,7 @@ THE SOFTWARE.
 			$("#global-error").addClass("fatal-error");
 			$("#g6k_form input, #g6k_form select, #g6k_form textarea" ).prop( "disabled", true );
 			var errorhtml = "";
-			if ($.isArray(error)) {
+			if (Array.isArray(error)) {
 				errorhtml = '<p>' + error.join('</p><p>') + '</p>';
 			} else {
 				errorhtml = '<p>' + error + '</p>';
@@ -3869,7 +3877,7 @@ THE SOFTWARE.
 			this.hasGlobalError = true;
 			this.hasError = true;
 			var errorhtml = "";
-			if ($.isArray(error)) {
+			if (Array.isArray(error)) {
 				errorhtml = '<p>' + error.join('</p><p>') + '</p>';
 			} else {
 				errorhtml = '<p>' + error + '</p>';
@@ -3889,7 +3897,7 @@ THE SOFTWARE.
 			this.hasError = true;
 			var errorContainer = $("#"+name+"-error");
 			var errorhtml = "";
-			if ($.isArray(error)) {
+			if (Array.isArray(error)) {
 				errorhtml = '<p>' + error.join('</p><p>') + '</p>';
 			} else {
 				errorhtml = '<p>' + error + '</p>';
@@ -3929,7 +3937,7 @@ THE SOFTWARE.
 				this.setGroupError(this.getData(name).datagroup, error);
 			} else if (visible) {
 				var errorhtml = "";
-				if ($.isArray(error)) {
+				if (Array.isArray(error)) {
 					errorhtml = '<p>' + error.join('</p><p>') + '</p>';
 				} else {
 					errorhtml = '<p>' + error + '</p>';
@@ -4014,7 +4022,7 @@ THE SOFTWARE.
 
 		unsetChoiceValue: function(name, value) { // only for type = 'multichoice'
 			var data = this.getData(name);
-			if (value && data && data.type === "multichoice" && ! $.isArray(value)) {
+			if (value && data && data.type === "multichoice" && ! Array.isArray(value)) {
 				var ovalues = data.value ? data.value : [];
 				var pos = $.inArray(value, ovalues);
 				if (pos >= 0) {
@@ -4044,7 +4052,7 @@ THE SOFTWARE.
 		setValue: function(name, value) {
 			var self = this;
 			var data = self.getData(name);
-			if (($.isArray(value) || $.isPlainObject(value)) && data.type != "array" && data.type != "multichoice") {
+			if ((Array.isArray(value) || $.isPlainObject(value)) && data.type != "array" && data.type != "multichoice") {
 				var avalue = value;
 				value = "";
 				$.each(avalue, function(key, val) {
@@ -4060,7 +4068,7 @@ THE SOFTWARE.
 				if (data.round) {
 					value = parseFloat(value).toFixed(data.round);
 				}
-			} else if (value && data.type === "multichoice" && ! $.isArray(value)) {
+			} else if (value && data.type === "multichoice" && ! Array.isArray(value)) {
 				if (/\[\]$/.test(value)) {
 					value = JSON.parse(value);
 				} else {
@@ -4162,7 +4170,7 @@ THE SOFTWARE.
 					if ((! field.modifiedByUser || field.value === '') && typeof field.unparsedContent !== "undefined" && field.unparsedContent !== "") {
 						var content = self.evaluate(field.unparsedContent);
 						if (content !== false) {
-							if (content && field.type === "multichoice" && ! $.isArray(content)) {
+							if (content && field.type === "multichoice" && ! Array.isArray(content)) {
 								if (/\[\]$/.test(content)) {
 									content = JSON.parse(content);
 								} else {
@@ -4483,7 +4491,7 @@ THE SOFTWARE.
 								result = JSONPath({path: returnPath, json: result});
 							} else { // xpath
 								result = defiant.json.search(result, returnPath);
-								if ($.isArray(result) && result.length == 1) {
+								if (Array.isArray(result) && result.length == 1) {
 									result = result[0];
 								}
 							}
@@ -4676,7 +4684,7 @@ THE SOFTWARE.
 											value = JSONPath({path: index, json: value});
 										} else { // xpath
 											value = defiant.json.search(value, index);
-											if ($.isArray(value) && value.length == 1) {
+											if (Array.isArray(value) && value.length == 1) {
 												value = value[0];
 											}
 										}
@@ -4690,7 +4698,7 @@ THE SOFTWARE.
 									self.setValue(name, value);
 								} else if (returnType == 'xml'|| returnType == 'html') {
 									value = extractXMLResult(value, index);
-									if ($.isArray(value) && value.length == 1) {
+									if (Array.isArray(value) && value.length == 1) {
 										value = value[0];
 									}
 									self.setValue(name, value);
@@ -4849,7 +4857,7 @@ THE SOFTWARE.
 								if ((! data.modifiedByUser || ! data.value || data.value.length == 0)) {
 									var content = self.evaluate(data.unparsedContent);
 									if (content !== false) {
-										if (content && data.type === "multichoice" && ! $.isArray(content)) {
+										if (content && data.type === "multichoice" && ! Array.isArray(content)) {
 											if (/\[\]$/.test(content)) {
 												content = JSON.parse(content);
 											} else {
@@ -5130,7 +5138,7 @@ THE SOFTWARE.
 				return true;
 			}); 
 
-			$("#g6k_form input[name], #g6k_form select[name], #g6k_form textarea[name]").change(function () {
+			$("#g6k_form input[name], #g6k_form select[name], #g6k_form textarea[name]").on('change', function () {
 				clearTimeout(self.inputTimeoutId);
 				var name = self.normalizeName($(this).attr('name'));
 				self.lastUserInputName = name;
@@ -5153,7 +5161,7 @@ THE SOFTWARE.
 					self.setValue(name, value);
 				}
 			});
-			$("#g6k_form input[name], #g6k_form select[name], #g6k_form textarea[name]").focusout(function () {
+			$("#g6k_form input[name], #g6k_form select[name], #g6k_form textarea[name]").on('focusout', function () {
 				var name = self.normalizeName($(this).attr('name'));
 				var data = self.getData(name);
 				if (!self.check(data)) {
@@ -5215,14 +5223,14 @@ THE SOFTWARE.
 					$(elt).focusNextInputField();
 				}, 0);
 			});
-			$("#g6k_form fieldset label.choice input[type=radio][name]").change(function(event) {
+			$("#g6k_form fieldset label.choice input[type=radio][name]").on('change', function(event) {
 				var $label = $(this).parent('label.choice');
 				$label.parent('fieldset').find('label.choice').removeClass('checked');
 				if ( $(this).is(':checked') ) {
 					$label.addClass('checked');
 				}
 			});
-			$("#g6k_form fieldset input[type=checkbox][name]").change(function(event) {
+			$("#g6k_form fieldset input[type=checkbox][name]").on('change', function(event) {
 				var id = $(this).attr('id');
 				var label = $(this).closest('fieldset').find("label[for='" + id + "']");
 				if ($(this).is(':checked')) {
@@ -5245,7 +5253,7 @@ THE SOFTWARE.
 					$label.eq(0).addClass('checked-candidate');
 				}
 			});
-			$("#g6k_form fieldset label.choice input[type=radio][name]").blur(function(event) {
+			$("#g6k_form fieldset label.choice input[type=radio][name]").on('blur', function(event) {
 				var $fieldset = $(this).parent('label.choice').parent('fieldset');
 				var focused = false;
 				var $this = $(this);
@@ -5259,16 +5267,16 @@ THE SOFTWARE.
 				}
 				$fieldset.find('label.choice').removeClass('checked-candidate');
 			});
-			$( "#g6k_form input[type=submit][name], #g6k_form button[type=submit][name]" ).click(function( event ) {
+			$( "#g6k_form input[type=submit][name], #g6k_form button[type=submit][name]" ).on('click', function( event ) {
 				self.lastSubmitBtn = this.name;
 			});
-			$( "#g6k_form input[type=submit][name], #g6k_form button[type=submit][name]" ).keypress(function( event ) {
+			$( "#g6k_form input[type=submit][name], #g6k_form button[type=submit][name]" ).on('keypress', function( event ) {
 				var key = event.which || event.keyCode;
 				if (key == 13) {
 					self.lastSubmitBtn = this.name;
 				}
 			});
-			$( "#g6k_form").submit(function( event ) {
+			$( "#g6k_form").on('submit', function( event ) {
 				var bname = self.lastSubmitBtn;
 				var bwhat = self.simu.step.actions[bname].what;
 				var bfor = self.simu.step.actions[bname].for;
@@ -5290,7 +5298,7 @@ THE SOFTWARE.
 				if (typeof data.unparsedContent !== "undefined" && data.unparsedContent !== "") {
 					var content = self.evaluate(data.unparsedContent);
 					if (content !== false) {
-						if (content && data.type === "multichoice" && ! $.isArray(content)) {
+						if (content && data.type === "multichoice" && ! Array.isArray(content)) {
 							if (/\[\]$/.test(content)) {
 								content = JSON.parse(content);
 							} else {
@@ -5436,7 +5444,7 @@ THE SOFTWARE.
 
 		formatValue: function(data) {
 			var value = data.value;
-			if (value && $.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
+			if (value && Number.isNumeric(value) && (data.type === "money" || data.type === "percent")) {
 				value = AutoNumeric.format(parseFloat(value), {
 					currencySymbol: '',
 					decimalCharacter: this.decimalPoint,
@@ -5464,7 +5472,7 @@ THE SOFTWARE.
 					value = '<img src="'+value+'" alt="*">';
 				}
 			}
-			if ($.isArray(value)) {
+			if (Array.isArray(value)) {
 				value = value.join(", ");
 			}
 			return value;

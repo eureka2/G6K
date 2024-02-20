@@ -170,6 +170,7 @@ class ImportSimulatorCommand extends SimulatorCommandBase
 		$simulator->preserveWhiteSpace  = false;
 		$simulator->formatOutput = true;
 		$simulator->load($simufile);
+		$this->removeUnknownAttributes($simulator->documentElement);
 		if (!$this->validatesAgainstSchema($simulator, $output)) {
 			return 1;
 		}

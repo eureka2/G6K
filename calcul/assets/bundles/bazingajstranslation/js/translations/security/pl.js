@@ -15,4 +15,6 @@ t.add("Account has expired.", "Konto wygas\u0142o.", "security", "pl");
 t.add("Credentials have expired.", "Dane uwierzytelniania wygas\u0142y.", "security", "pl");
 t.add("Account is disabled.", "Konto jest wy\u0142\u0105czone.", "security", "pl");
 t.add("Account is locked.", "Konto jest zablokowane.", "security", "pl");
+t.add("Too many failed login attempts, please try again later.", "Zbyt du\u017co nieudanych pr\u00f3b logowania, prosz\u0119 spr\u00f3bowa\u0107 ponownie p\u00f3\u017aniej.", "security", "pl");
+t.add("Invalid or expired login link.", "Nieprawid\u0142owy lub wygas\u0142y link logowania.", "security", "pl");
 })(Translator);

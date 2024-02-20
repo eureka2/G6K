@@ -1,0 +1,174 @@
+#modal-sendmail-title {
+	font-size: 1.5em;
+}
+#modal-sendmail {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* The Modal (background) */
+#modal-sendmail.simulator-modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 100; /* Sit on top */
+	padding-top: 30px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	opacity: 1;
+}
+
+/* Modal Content */
+#modal-sendmail.simulator-modal .modal-content {
+	position: relative;
+	background-color: #fefefe;
+	margin: auto;
+	padding: 0;
+	border: 1px solid #888;
+	border-radius: 10px;
+	outline: 0;
+	width: 60%;
+	height: 80%;
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+	-webkit-animation-name: modalanimatetop;
+	-webkit-animation-duration: 0.4s;
+	animation-name: modalanimatetop;
+	animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes modalanimatetop {
+	from {top:-300px; opacity:0} 
+	to {top:0; opacity:1}
+}
+
+@keyframes modalanimatetop {
+	from {top:-300px; opacity:0}
+	to {top:0; opacity:1}
+}
+
+/* The Close Button */
+#modal-sendmail .close {
+	color: white;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	border: none;
+	margin-top: 4px;
+	background-color: var(--primary-color-darken);
+}
+
+#modal-sendmail.simulator-modal .close:hover,
+#modal-sendmail.simulator-modal .close:focus {
+	background-color: var(--primary-color-lighten);
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#modal-sendmail.simulator-modal .modal-header {
+	padding: 2px 16px;
+	background-color: var(--color, var(--primary-color));
+	color: white;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+#modal-sendmail.simulator-modal .modal-title {
+	margin: 12px auto;
+}
+
+#modal-sendmail.simulator-modal .modal-sendmail-title {
+	color: var(--primary-color-darken, #0b6ba8);
+}
+
+
+#modal-sendmail.simulator-modal .modal-body {
+	padding: 2px 16px;
+}
+
+#modal-sendmail.simulator-modal .modal-body label {
+	display: inline-block;
+	max-width: 100%;
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+
+#modal-sendmail.simulator-modal .modal-body input,
+#modal-sendmail.simulator-modal .modal-body textarea {
+	display: block;
+	width: 95%;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	margin-bottom: 10px;
+}
+#modal-sendmail.simulator-modal .modal-body input:focus,
+#modal-sendmail.simulator-modal .modal-body textarea:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+		  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+#modal-sendmail.simulator-modal .modal-body input {
+	height: 30px;
+}
+
+#modal-sendmail.simulator-modal .modal-body textarea {
+	height: auto;
+}
+
+#modal-sendmail.simulator-modal .modal-footer {
+	padding: 2px 16px;
+	background-color: var(--color, var(--primary-color));
+	color: white;
+	height: 3.7rem;
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+}
+
+#modal-sendmail.simulator-modal .modal-footer button {
+	display: inline-block;
+	margin: 0.5em 0 1em 1em;
+	font-size: 1.2em;
+	font-weight: normal;
+	border: 1px solid var(--primary-color, #0b6ba8);
+	white-space: nowrap;
+	padding: 6px 12px;
+	line-height: 1.5;
+	border-radius: 4px;
+	text-transform: none;
+	text-decoration: none;
+	text-align: center;
+	cursor: pointer;
+	overflow: visible;
+}
+
+#modal-sendmail.simulator-modal .modal-footer button:hover {
+	filter: brightness(75%);
+}
+
+#modal-sendmail.simulator-modal .modal-footer button.btn-primary {
+	color: #fff;
+	background-color: var(--primary-color-darken, #0b6ba8);
+	float: right;
+}
+
+#modal-sendmail.simulator-modal .modal-footer button.btn-default {
+	color: var(--primary-color, #0b6ba8);
+	background-color: #fff;
+	float: right;
+}

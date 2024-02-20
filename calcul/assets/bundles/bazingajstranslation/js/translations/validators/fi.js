@@ -83,7 +83,7 @@ t.add("This is not a valid UUID.", "Arvo ei ole kelvollinen UUID.", "validators"
 t.add("This value should be a multiple of {{ compared_value }}.", "T\u00e4m\u00e4n arvon tulisi olla kerrannainen {{ compared_value }}.", "validators", "fi");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "T\u00e4m\u00e4 yritystunnus (BIC) ei ole liitetty IBAN {{ iban }}.", "validators", "fi");
 t.add("This value should be valid JSON.", "Arvon tulee olla kelvollinen JSON.", "validators", "fi");
-t.add("This collection should contain only unique elements.", "T\u00e4m\u00e4 ryhm\u00e4 tulisi sis\u00e4lt\u00e4\u00e4 vain yksil\u00f6llisi\u00e4 arvoja.", "validators", "fi");
+t.add("This collection should contain only unique elements.", "T\u00e4m\u00e4n ryhm\u00e4n tulisi sis\u00e4lt\u00e4\u00e4 vain yksil\u00f6llisi\u00e4 arvoja.", "validators", "fi");
 t.add("This value should be positive.", "Arvon tulisi olla positiivinen.", "validators", "fi");
 t.add("This value should be either positive or zero.", "Arvon tulisi olla joko positiivinen tai nolla.", "validators", "fi");
 t.add("This value should be negative.", "Arvon tulisi olla negatiivinen.", "validators", "fi");
@@ -91,4 +91,9 @@ t.add("This value should be either negative or zero.", "Arvon tulisi olla joko n
 t.add("This value is not a valid timezone.", "Arvo ei ole kelvollinen aikavy\u00f6hyke.", "validators", "fi");
 t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "T\u00e4m\u00e4 salasana on vuotanut tietomurrossa, sit\u00e4 ei saa k\u00e4ytt\u00e4\u00e4. K\u00e4yt\u00e4 toista salasanaa.", "validators", "fi");
 t.add("This value should be between {{ min }} and {{ max }}.", "Arvon tulisi olla v\u00e4lill\u00e4 {{ min }} - {{ max }}.", "validators", "fi");
+t.add("This value is not a valid hostname.", "Arvo ei ole kelvollinen laitenimi (hostname).", "validators", "fi");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Ryhm\u00e4ss\u00e4 olevien elementtien m\u00e4\u00e4r\u00e4n pit\u00e4\u00e4 olla monikerta luvulle {{ compared_value }}.", "validators", "fi");
+t.add("This value should satisfy at least one of the following constraints:", "T\u00e4m\u00e4n arvon tulee l\u00e4p\u00e4ist\u00e4 v\u00e4hint\u00e4\u00e4n yksi seuraavista tarkistuksista:", "validators", "fi");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Ryhm\u00e4n jokaisen elementin tulee l\u00e4p\u00e4ist\u00e4 omat tarkistuksensa.", "validators", "fi");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "T\u00e4m\u00e4 arvo ei ole kelvollinen ISIN-koodi (International Securities Identification Number).", "validators", "fi");
 })(Translator);

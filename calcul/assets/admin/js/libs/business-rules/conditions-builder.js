@@ -614,7 +614,7 @@ THE SOFTWARE.
 			ruleDiv.append(operatorSelect);
 			ruleDiv.append(removeLink());
 
-			fieldSelect.change();
+			fieldSelect.trigger('change');
 			var currentValue = ruleDiv.find("> .value");
 			if (currentValue.hasClass('expression')) {
 				currentValue.expressionbuilder('val', ruleData.value);
@@ -769,7 +769,7 @@ THE SOFTWARE.
 			operatorSelect.remove();
 			select.on('change', builder, onOperatorSelectChange);
 			$this.on('change', onFieldSelectChanged.call(builder, ruleData));
-			select.change();
+			select.trigger('change');
 		}
 	}
 

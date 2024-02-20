@@ -15,4 +15,6 @@ t.add("Account has expired.", "Konta der\u012bguma termi\u0146\u0161 ir beidzies
 t.add("Credentials have expired.", "Autentifik\u0101cijas datu der\u012bguma termi\u0146\u0161 ir beidzies.", "security", "lv");
 t.add("Account is disabled.", "Konts ir atsp\u0113jots.", "security", "lv");
 t.add("Account is locked.", "Konts ir sl\u0113gts.", "security", "lv");
+t.add("Too many failed login attempts, please try again later.", "P\u0101r\u0101k daudz atteiktu ieejas m\u0113\u0123in\u0101jumu, l\u016bdzu, m\u0113\u0123iniet v\u0113lreiz v\u0113l\u0101k.", "security", "lv");
+t.add("Invalid or expired login link.", "Ieejas saite ir neder\u012bga vai ar\u012b tai ir beidzies der\u012bguma termi\u0146\u0161.", "security", "lv");
 })(Translator);

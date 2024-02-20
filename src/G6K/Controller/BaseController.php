@@ -49,6 +49,10 @@ use App\G6K\Manager\ExpressionParser\DateFunction;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Yaml\Yaml;
+
+use acroforms\AcroForm;
+use acroforms\Utils\StringToolBox;
 
 /**
  *
@@ -216,6 +220,13 @@ class BaseController extends AbstractController {
 	 *
 	 */
 	public $viewsDir;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParameter(string $name) {
+		return parent::getParameter($name);
+	}
 
 	/**
 	 * Run the simulation engine for a step
@@ -519,7 +530,7 @@ class BaseController extends AbstractController {
 				$footnotes->setDisplayable($disp);
 			}
 			$istep += $direction;
-		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount);
+		} while (!$stepDisplayable && $istep > 0 && $istep <= $stepCount && $direction !== 0);
 		$step->setDescription($this->replaceVariables($step->getDescription()));
 		foreach ($step->getActions() as $action) {
 			if ($action->getFor() == 'function') {
@@ -1409,6 +1420,107 @@ class BaseController extends AbstractController {
 				$this->processDatas($istep);
 			}
 		}
+	}
+
+	/**
+	 * Returns a normal PDF genrated from a Twig template
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string $template the Twig template path
+	 * @param   array $datas the data
+	 * @param   string $view (default: "Default") The view name
+	 * @param   bool $hasPdfFooter print a footer ?
+	 * @param   \App\G6K\Model\Step|null $step the current step instance
+	 * @return  \Mpdf\Mpdf
+	 *
+	 */
+	protected function getPDF(Request $request, $template, $datas, $view = "Default", $hasPdfFooter = false, $step = null)
+	{
+		$ua = new \Detection\MobileDetect();
+		$page = $this->render(
+			$view.'/'.str_replace(':', '/', $template),
+			array(
+				'view' => $view,
+				'ua' => $ua,
+				'browserengine' => $this->getBrowserEngine($request),
+				'path' => $request->getScheme().'://'.$request->getHttpHost(),
+				'log' => $this->log,
+				'step' => $step,
+				'data' => $datas
+			)
+		);
+		$mpdf = new \Mpdf\Mpdf();
+		$mpdf->autoLangToFont  = true;
+		$mpdf->PDFA = true;
+		$mpdf->PDFAauto = true;
+		$mpdf->ignore_invalid_utf8 = true;
+		$mpdf->Bookmark($this->translator->trans("Beginning of the document")); 
+		$mpdf->SetDisplayMode('fullwidth');
+		if ($hasPdfFooter) {
+			$footer = '<table class="pdf-footer"><tr><td>';
+			$footer .= $this->translator->trans("Simulation performed on %host% on %date%", array('%host%' => $request->getHttpHost(), '%date%' => '{DATE j-m-Y}'));
+			$footer .= '</td><td>';
+			$footer .= $this->translator->trans("Page %pageno% of %numberofpages%", array('%pageno%' => '{PAGENO}', '%numberofpages%' => '{nbpg}'));
+			$footer .= '</td></tr></table>';
+			$mpdf->SetHTMLFooter ( $footer, 'BLANK', true);
+		}
+		$mpdf->WriteHTML($page);
+		return $mpdf;
+	}
+
+	/**
+	 * Return an Acroform PDF
+	 *
+	 * @access  protected
+	 * @param   \Symfony\Component\HttpFoundation\Request $request The request
+	 * @param   string $template the Twig template path
+	 * @param   array $datas the data for filling
+	 * @return  \acroforms\AcroForm;
+	 *
+	 */
+	protected function getFilledPdf(Request $request, $template, $datas)
+	{
+		$info = pathinfo($template, PATHINFO_FILENAME) . ".info";
+		$pdf = new AcroForm(
+			$this->pdfFormsDir.'/'.$template,
+			[
+				'pdftk' =>	$this->hasParameter('acroforms')
+							? $this->getParameter('acroforms')['pdftk']
+							: 'pdftk'
+			]
+		);
+		$mapping = [];
+		if (file_exists($this->pdfFormsDir.'/'.$info)) {
+			$pdfinfo = Yaml::parseFile($this->pdfFormsDir.'/'.$info);
+			$mapping = array_flip($pdfinfo['descriptors']['mapping']);
+		}
+		$formdata = [];
+		foreach($datas as $dataname => $value) {
+			$name = isset($mapping[$dataname]) ? StringToolBox::normalizeFieldName($mapping[$dataname]) : $dataname;
+			$formdata[$name] = $value;
+			if (!preg_match("/_\d+_$/", $name)) {
+				$formdata[$name."_0_"] = $value;
+				if (!preg_match("/^Page/", $name)) {
+					$formdata["Page1_0__".$name."_0_"] = $value;
+				}
+			} elseif (!preg_match("/^Page/", $name)) {
+				$formdata["Page1_0__".$name] = $value;
+			}
+		}
+		$textFields = $pdf->getTextFields();
+		$buttonFields = $pdf->getButtonFields();
+		$fields = [
+			'text' => array_filter($formdata, function ($name) use ($textFields) {
+				return in_array($name, $textFields);
+			}, ARRAY_FILTER_USE_KEY),
+			'button' => array_filter($formdata, function ($name) use ($buttonFields) {
+				return in_array($name, $buttonFields);
+			}, ARRAY_FILTER_USE_KEY)
+		];
+		$pdf->load($fields);
+		$pdf->merge(true); // true for flatten (need pdftk), false if not (this is the default)
+		return $pdf;
 	}
 
 }

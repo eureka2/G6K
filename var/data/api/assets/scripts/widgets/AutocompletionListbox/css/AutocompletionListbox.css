@@ -1,0 +1,30 @@
+.simulator-container.default-style .autocomplete-input ~ button.btn-primary,
+.simulator-container.default-style .autocomplete-input ~ button.btn-default  {
+	display: inline-block;
+	font-size: 1em;
+	font-weight: normal;
+	border: 1px solid var(--primary-color, #0b6ba8);
+	white-space: nowrap;
+	padding: 0 12px;
+	border-radius: 4px;
+	text-transform: none;
+	text-decoration: none;
+	text-align: center;
+	cursor: pointer;
+	height: 2.1rem;
+	overflow: visible;
+}
+.simulator-container.default-style .autocomplete-input ~ button.btn-primary {
+	color: #fff;
+	background-color: var(--primary-color, #0b6ba8);
+	float: right;
+}
+.simulator-container.default-style .autocomplete-input ~ button.btn-default {
+	color: var(--primary-color, #0b6ba8);
+	background-color: #fff;
+	float: left;
+}
+.simulator-container.default-style .autocomplete-input ~ button.btn-primary:hover,
+.simulator-container.default-style .autocomplete-input ~ button.btn-default:hover {
+	filter: brightness(75%);
+}

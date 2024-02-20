@@ -11,8 +11,10 @@ t.add("No authentication provider found to support the authentication token.", "
 t.add("No session available, it either timed out or cookies are not enabled.", "Walang sesyon ng magagamit, ito ay nawalan ng oras o hindi pinagana.", "security", "tl");
 t.add("No token could be found.", "Walang token na nahanap.", "security", "tl");
 t.add("Username could not be found.", "Walang username na makita.", "security", "tl");
-t.add("Account has expired.", "Ang akawnt ay nag-expire na.", "security", "tl");
-t.add("Credentials have expired.", ".ng mga kinakailangang dokumento ay nag expire na.", "security", "tl");
-t.add("Account is disabled.", "Ang akawnt ay hindi pinagana.", "security", "tl");
-t.add("Account is locked.", "ng akawnt ay nakasara.", "security", "tl");
+t.add("Account has expired.", "Ang account ay nag-expire na.", "security", "tl");
+t.add("Credentials have expired.", "Ang mga kinakailangang dokumento ay nag expire na.", "security", "tl");
+t.add("Account is disabled.", "Ang account ay hindi pinagana.", "security", "tl");
+t.add("Account is locked.", "Ang account ay nakasara.", "security", "tl");
+t.add("Too many failed login attempts, please try again later.", "Madaming bagsak na pagtatangka, pakisubukan ulit mamaya.", "security", "tl");
+t.add("Invalid or expired login link.", "Inbalido o nagexpire na ang link para makapaglogin.", "security", "tl");
 })(Translator);

@@ -15,4 +15,6 @@ t.add("Account has expired.", "Account is verlopen.", "security", "nl");
 t.add("Credentials have expired.", "Authenticatiegegevens zijn verlopen.", "security", "nl");
 t.add("Account is disabled.", "Account is gedeactiveerd.", "security", "nl");
 t.add("Account is locked.", "Account is geblokkeerd.", "security", "nl");
+t.add("Too many failed login attempts, please try again later.", "Te veel onjuiste inlogpogingen, probeer het later nogmaals.", "security", "nl");
+t.add("Invalid or expired login link.", "Ongeldige of verlopen inloglink.", "security", "nl");
 })(Translator);

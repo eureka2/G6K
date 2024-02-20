@@ -93,11 +93,13 @@ class ScriptHandler
 		$symfonyDir = str_replace(DIRECTORY_SEPARATOR . "vendor/" . $package->getPrettyName(), "", $installPath);
 
 		putenv('PUBLIC_DIR=' . ( $extras['public-dir'] ?? 'public'));
-		$dotenvdist = new Dotenv(true);
+		$dotenvdist = new Dotenv();
+		$dotenvdist->usePutenv();
 		$dotenvdist->load($symfonyDir . DIRECTORY_SEPARATOR . '.env.dist');
 
 		if (is_file($symfonyDir . DIRECTORY_SEPARATOR . '.env')) {
-			$dotenv = new Dotenv(true);
+			$dotenv = new Dotenv();
+			$dotenv->usePutenv();
 			$dotenv->load($symfonyDir . DIRECTORY_SEPARATOR . '.env');
 		}
 		$event->getIO()->write('<info>Creating the ".env" file</info>');
@@ -431,7 +433,7 @@ class ScriptHandler
 		$name = 'demo';
 		$schemafile = $databasesDir . DIRECTORY_SEPARATOR . $name . '.schema.json';
 		$datafile = $databasesDir . DIRECTORY_SEPARATOR . $name . '.json';
-		$datasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../doc/DataSources.xsd"><Databases></Databases></DataSources>', LIBXML_NOWARNING);
+		$datasources = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><DataSources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schemas/DataSources.xsd"><Databases></Databases></DataSources>', LIBXML_NOWARNING);
 		$helper = new DatasourcesHelper($datasources);
 		$dsid = 0;
 		$dom = $helper->makeDatasourceDom($schemafile, $datafile, $parameters, $databasesDir, $dsid);
@@ -466,7 +468,8 @@ class ScriptHandler
 	protected static function getParameters(Event $event, $symfonyDir) {
 		$parameters = array();
 		try {
-			$dotenv = new Dotenv(true);
+			$dotenv = new Dotenv();
+			$dotenv->usePutenv();
 			$dotenv->load($symfonyDir . DIRECTORY_SEPARATOR . '.env');
 			$parameters['database_driver'] = 'pdo_' . self::getParameterValue($symfonyDir, 'DB_ENGINE');
 			$parameters['database_host'] = self::getParameterValue($symfonyDir, 'DB_HOST');

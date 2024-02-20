@@ -16,9 +16,9 @@ t.add("This value is not a valid email address.", "Ang halagang ito ay hindi bal
 t.add("The file could not be found.", "Ang file na ito ay hindi makita.", "validators", "tl");
 t.add("The file is not readable.", "Ang file na ito ay hindi mabasa.", "validators", "tl");
 t.add("The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.", "Ang file na ito ay masyadong malaki ({{ size }} {{ suffix }}). Ang pinakamalaking sukat {{ limit }} {{ suffix }}.", "validators", "tl");
-t.add("The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}.", "Ang uri ng file ng mime ay hindi balido ({{ type }}).Ang mga pinapayagang uri ng mime ay ang  {{ types }}.", "validators", "tl");
+t.add("The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}.", "Ang uri ng file ng mime ay hindi balido ({{ type }}). Ang mga pinapayagang uri ng mime ay ang  {{ types }}.", "validators", "tl");
 t.add("This value should be {{ limit }} or less.", "Ang halaga nito ay dapat na {{ limit }} or maliit pa.", "validators", "tl");
-t.add("This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.", "Ang halaga nito ay masyadong mahaba.Ito ay dapat na {{ limit }} karakter o maliit pa.|Ang halaga nito ay masyadong mahaba. Ito ay dapat na {{ limit }} mga karakter o maliit pa.", "validators", "tl");
+t.add("This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.", "Ang halaga nito ay masyadong mahaba. Ito ay dapat na {{ limit }} karakter o maliit pa.|Ang halaga nito ay masyadong mahaba. Ito ay dapat na {{ limit }} mga karakter o maliit pa.", "validators", "tl");
 t.add("This value should be {{ limit }} or more.", "Ang halaga nito ay dapat na {{ limit }} o mas marami pa.", "validators", "tl");
 t.add("This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.", "Ang halaga nito ay masyadong maliit. Ito ay dapat na {{ limit }} karakter o marami pa.|Ang halaga nito ay masyadong maliit. Ito ay dapat na {{ limit }} mga karakter o marami pa.", "validators", "tl");
 t.add("This value should not be blank.", "Ang halaga na ito ay dapat na may laman.", "validators", "tl");
@@ -66,14 +66,14 @@ t.add("This value should be greater than {{ compared_value }}.", "Ang halagang i
 t.add("This value should be greater than or equal to {{ compared_value }}.", "Ang halagang ito ay dapat mas mataas o magkapareha sa {{ compared_value }}.", "validators", "tl");
 t.add("This value should be identical to {{ compared_value_type }} {{ compared_value }}.", "Ang halagang ito ay dapat kapareha ng {{ compared_value_type }} {{ compared_value }}.", "validators", "tl");
 t.add("This value should be less than {{ compared_value }}.", "Ang halagang ito ay dapat mas maliit sa {{ compared_value }}.", "validators", "tl");
-t.add("This value should be less than or equal to {{ compared_value }}.", "Ang halagang ito ay dapat mas mmaliit o magkapareha sa {{ compared_value }}.", "validators", "tl");
+t.add("This value should be less than or equal to {{ compared_value }}.", "Ang halagang ito ay dapat mas maliit o magkapareha sa {{ compared_value }}.", "validators", "tl");
 t.add("This value should not be equal to {{ compared_value }}.", "Ang halagang ito ay hindi dapat magkapareha sa {{ compared_value }}.", "validators", "tl");
 t.add("This value should not be identical to {{ compared_value_type }} {{ compared_value }}.", "Ang halagang ito ay hindi dapat magkapareha sa {{ compared_value_type }} {{ compared_value }}.", "validators", "tl");
 t.add("The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.", "Ang ratio ng imahe ay masyadong malaki ({{ ratio }}). Ang pinakamalaking ratio ay {{ max_ratio }}.", "validators", "tl");
-t.add("The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.", "ng ratio ng imahe ay masyadong maliit ({{ ratio }}). Ang pinamaliit na ratio ay {{ min_ratio }}.", "validators", "tl");
+t.add("The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.", "Ang ratio ng imahe ay masyadong maliit ({{ ratio }}). Ang pinakamaliit na ratio ay {{ min_ratio }}.", "validators", "tl");
 t.add("The image is square ({{ width }}x{{ height }}px). Square images are not allowed.", "Ang imahe ay kwadrado ({{ width }}x{{ height }}px). Ang mga kwadradong imahe ay hindi pwede.", "validators", "tl");
 t.add("The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.", "Ang orientasyon ng imahe ay nakalandscape ({{ width }}x{{ height }}px). Ang mga imaheng nakalandscape ang orientasyon ay hindi pwede.", "validators", "tl");
-t.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "Ang orientasyon ng imahe ay nakaportrait ({{ width }}x{{ height }}px). PAng mga imaheng nakaportrait ang orientasyon ay hindi pwede.", "validators", "tl");
+t.add("The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.", "Ang orientasyon ng imahe ay nakaportrait ({{ width }}x{{ height }}px). Ang mga imaheng nakaportrait ang orientasyon ay hindi pwede.", "validators", "tl");
 t.add("An empty file is not allowed.", "Ang file na walang laman ay hindi pwede.", "validators", "tl");
 t.add("The host could not be resolved.", "Hindi maresolba ang host.", "validators", "tl");
 t.add("This value does not match the expected {{ charset }} charset.", "Ang halaga ay hindi kapareha sa inaasahang {{ charset }} set ng karater.", "validators", "tl");
@@ -93,5 +93,7 @@ t.add("This password has been leaked in a data breach, it must not be used. Plea
 t.add("This value should be between {{ min }} and {{ max }}.", "Ang halagang ito ay dapat nasa pagitan ng {{ min }} at {{ max }}.", "validators", "tl");
 t.add("This value is not a valid hostname.", "Ang halagang ito ay hindi wastong hostname.", "validators", "tl");
 t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Ang bilang ng mga elemento sa koleksyon na ito ay dapat multiple ng {{ compared_value }}.", "validators", "tl");
+t.add("This value should satisfy at least one of the following constraints:", "Ang halagang ito ay dapat masunod ang kahit na isang sumusunod na batayan.", "validators", "tl");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Ang bawat elemento sa koleksyon na ito ay dapat masunod ang nararapat na batayan.", "validators", "tl");
 t.add("This value is not a valid International Securities Identification Number (ISIN).", "Ang halagang ito ay hindi wastong International Securities Identification Number (ISIN).", "validators", "tl");
 })(Translator);

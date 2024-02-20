@@ -30,7 +30,7 @@ t.add("This value is not a valid URL.", "V\u00e6rdien er ikke en gyldig URL.", "
 t.add("The two values should be equal.", "De to v\u00e6rdier skal v\u00e6re ens.", "validators", "da");
 t.add("The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}.", "Filen er for stor. Den maksimale st\u00f8rrelse er {{ limit }} {{ suffix }}.", "validators", "da");
 t.add("The file is too large.", "Filen er for stor.", "validators", "da");
-t.add("The file could not be uploaded.", "Filen kunne ikke blive uploadet.", "validators", "da");
+t.add("The file could not be uploaded.", "Filen kunne ikke uploades.", "validators", "da");
 t.add("This value should be a valid number.", "V\u00e6rdien skal v\u00e6re et gyldigt tal.", "validators", "da");
 t.add("This file is not a valid image.", "Filen er ikke gyldigt billede.", "validators", "da");
 t.add("This is not a valid IP address.", "Dette er ikke en gyldig IP-adresse.", "validators", "da");
@@ -80,7 +80,7 @@ t.add("This value does not match the expected {{ charset }} charset.", "Denne v\
 t.add("This is not a valid Business Identifier Code (BIC).", "Dette er ikke en gyldig Business Identifier Code (BIC).a", "validators", "da");
 t.add("Error", "Fejl", "validators", "da");
 t.add("This is not a valid UUID.", "Dette er ikke en gyldig UUID.", "validators", "da");
-t.add("This value should be a multiple of {{ compared_value }}.", "Denne v\u00e6rdi skal v\u00e6re et flertal af {{ compared_value }}.", "validators", "da");
+t.add("This value should be a multiple of {{ compared_value }}.", "Denne v\u00e6rdi skal v\u00e6re et multiplikation af {{ compared_value }}.", "validators", "da");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Denne Business Identifier Code (BIC) er ikke forbundet med IBAN {{ iban }}.", "validators", "da");
 t.add("This value should be valid JSON.", "Denne v\u00e6rdi skal v\u00e6re gyldig JSON.", "validators", "da");
 t.add("This collection should contain only unique elements.", "Denne samling b\u00f8r kun indeholde unikke elementer.", "validators", "da");
@@ -91,4 +91,9 @@ t.add("This value should be either negative or zero.", "Denne v\u00e6rdi skal v\
 t.add("This value is not a valid timezone.", "Denne v\u00e6rdi er ikke en gyldig tidszone.", "validators", "da");
 t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Denne adgangskode er blevet l\u00e6kket i et databrud, det m\u00e5 ikke bruges. Brug venligst en anden adgangskode.", "validators", "da");
 t.add("This value should be between {{ min }} and {{ max }}.", "V\u00e6rdien skal v\u00e6re mellem {{ min }} og {{ max }}.", "validators", "da");
+t.add("This value is not a valid hostname.", "V\u00e6rdien er ikke et gyldigt v\u00e6rtsnavn.", "validators", "da");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Antallet af elementer i denne samling skal v\u00e6re en multiplikation af {{ compared_value }}.", "validators", "da");
+t.add("This value should satisfy at least one of the following constraints:", "V\u00e6rdien skal overholde mindst \u00e9n af f\u00f8lgende krav::", "validators", "da");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Hvert element i denne samling skal overholde dens egne krav.", "validators", "da");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "V\u00e6rdien er ikke et gyldig International Securities Identification Number (ISIN).", "validators", "da");
 })(Translator);

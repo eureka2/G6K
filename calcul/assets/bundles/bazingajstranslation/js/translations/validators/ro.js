@@ -83,4 +83,17 @@ t.add("This is not a valid UUID.", "Identificatorul universal unic (UUID) nu est
 t.add("This value should be a multiple of {{ compared_value }}.", "Aceast\u0103 valoare trebuie s\u0103 fie un multiplu de {{ compared_value }}.", "validators", "ro");
 t.add("This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.", "Codul BIC (Business Identifier Code) nu este asociat cu codul IBAN {{ iban }}.", "validators", "ro");
 t.add("This value should be valid JSON.", "Aceast\u0103 valoare trebuie s\u0103 fie un JSON valid.", "validators", "ro");
+t.add("This collection should contain only unique elements.", "Acest set ar trebui s\u0103 con\u021bin\u0103 numai elemente unice.", "validators", "ro");
+t.add("This value should be positive.", "Aceast\u0103 valoare ar trebui s\u0103 fie pozitiv\u0103.", "validators", "ro");
+t.add("This value should be either positive or zero.", "Aceast\u0103 valoare trebuie s\u0103 fie pozitiv\u0103 sau zero.", "validators", "ro");
+t.add("This value should be negative.", "Aceast\u0103 valoare ar trebui s\u0103 fie negativ\u0103.", "validators", "ro");
+t.add("This value should be either negative or zero.", "Aceast\u0103 valoare trebuie s\u0103 fie negativ\u0103 sau zero.", "validators", "ro");
+t.add("This value is not a valid timezone.", "Aceast\u0103 valoare nu este un fus orar valid.", "validators", "ro");
+t.add("This password has been leaked in a data breach, it must not be used. Please use another password.", "Aceast\u0103 parol\u0103 a fost compromis\u0103 \u0219i nu poate fi utilizat\u0103. V\u0103 rug\u0103m s\u0103 utiliza\u021bi o alt\u0103 parol\u0103.", "validators", "ro");
+t.add("This value should be between {{ min }} and {{ max }}.", "Aceast\u0103 valoare trebuie s\u0103 fie \u00eentre {{ min }} \u0219i {{ max }}.", "validators", "ro");
+t.add("This value is not a valid hostname.", "Aceast\u0103 valoare nu este un numele gazdei valid.", "validators", "ro");
+t.add("The number of elements in this collection should be a multiple of {{ compared_value }}.", "Num\u0103rul de elemente din aceast\u0103 colec\u021bie ar trebui s\u0103 fie un multiplu al {{ compared_value }}.", "validators", "ro");
+t.add("This value should satisfy at least one of the following constraints:", "Aceast\u0103 valoare trebuie s\u0103 \u00eendeplineasc\u0103 cel pu\u021bin una dintre urm\u0103toarele reguli:", "validators", "ro");
+t.add("Each element of this collection should satisfy its own set of constraints.", "Fiecare element din acest set ar trebui s\u0103 \u00eendeplineasc\u0103 propriul set de reguli.", "validators", "ro");
+t.add("This value is not a valid International Securities Identification Number (ISIN).", "Aceast\u0103 valoare nu este un num\u0103r interna\u021bional de identificare (ISIN) valabil.", "validators", "ro");
 })(Translator);

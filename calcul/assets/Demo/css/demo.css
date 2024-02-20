@@ -453,6 +453,8 @@ body.iOS .step-page .form-group[data-type=date] .input-group  ~ button.btn-help 
 	text-align: center;
 }
 #totalMA-container span:not(.label),
-#totalPA-container span:not(.label) {
+#totalPA-container span:not(.label),
+span.output[data-name^=total],
+span.output[data-name^=total] + span.money-symbol {
 	font-size: 4em;
 }

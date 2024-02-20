@@ -15,4 +15,6 @@ t.add("Account has expired.", "Hesab\u0131n istifad\u0259 m\u00fcdd\u0259ti biti
 t.add("Credentials have expired.", "M\u0259lumatlar\u0131n istifad\u0259 m\u00fcdd\u0259ti bitib.", "security", "az");
 t.add("Account is disabled.", "Hesab qeyri-aktiv edilib.", "security", "az");
 t.add("Account is locked.", "Hesab kilitl\u0259nib.", "security", "az");
+t.add("Too many failed login attempts, please try again later.", "\u00c7oxlu u\u011fursuz giri\u015f t\u0259\u015f\u0259bb\u00fcs\u00fc, z\u0259hm\u0259t olmasa daha sonra yeniden yoxlay\u0131n.", "security", "az");
+t.add("Invalid or expired login link.", "Yanl\u0131\u015f v\u0259 ya m\u00fcdd\u0259ti ke\u00e7mi\u015f giri\u015f ke\u00e7idi.", "security", "az");
 })(Translator);

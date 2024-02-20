@@ -165,7 +165,10 @@ class CopyViewCommand extends ViewCommandBase
 		$otherConfigFile = $anotherg6kpath."/src/EUREKA/G6KBundle/Resources/config/parameters.yml";
 		$otherConfig = null;
 		if (!file_exists($otherConfigFile)) {
-			$otherConfigFile = $anotherg6kpath."/config/packages/g6k.yml";
+			$otherConfigFile = $anotherg6kpath."/config/packages/g6k.yaml";
+			if (! file_exists($otherConfigFile)) {
+				$otherConfigFile = $anotherg6kpath."/config/packages/g6k.yml";
+			}
 			if (! file_exists($otherConfigFile)) {
 				$otherConfigFile = '';
 			}

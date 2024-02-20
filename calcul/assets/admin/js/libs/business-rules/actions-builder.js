@@ -105,7 +105,7 @@ THE SOFTWARE.
 					} else if (input.is(':checkbox')) {
 						input.prop('checked', field.value == input.attr('value'));
 					} else {
-						input.val(field.value).change();
+						input.val(field.value).trigger('change');
 					}
 					if (field.fields) {
 						fields = fields.concat(field.fields);
@@ -307,7 +307,7 @@ THE SOFTWARE.
 						e.preventDefault();
 					}
 				});
-				$editable.change();
+				$editable.trigger('change');
 				fieldDiv.append($editable);
 			} else if (field.fieldType == "text") {
 				var input = $("<input>", {

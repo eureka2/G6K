@@ -15,4 +15,6 @@ t.add("Account has expired.", "A fi\u00f3k lej\u00e1rt.", "security", "hu");
 t.add("Credentials have expired.", "A hiteles\u00edt\u00e9si inform\u00e1ci\u00f3k lej\u00e1rtak.", "security", "hu");
 t.add("Account is disabled.", "Felf\u00fcggesztett fi\u00f3k.", "security", "hu");
 t.add("Account is locked.", "Z\u00e1rolt fi\u00f3k.", "security", "hu");
+t.add("Too many failed login attempts, please try again later.", "T\u00fal sok sikertelen bejelentkez\u00e9si k\u00eds\u00e9rlet, k\u00e9rj\u00fck pr\u00f3b\u00e1lja \u00fajra k\u00e9s\u0151bb.", "security", "hu");
+t.add("Invalid or expired login link.", "\u00c9rv\u00e9nytelen vagy lej\u00e1rt bejelentkez\u00e9si link.", "security", "hu");
 })(Translator);
